@@ -1484,6 +1484,237 @@ def sc22(seeds=50, mutant_budget=30):
     return ok
 
 
+# --- Phase 3, SC-23: the owner changes prices while the device is offline with sessions running -------------------
+# Founder rules (2026-10-16): (1) a running session keeps the prices frozen at its start (G12); a tier change (N4)
+# uses the price list the device holds at that moment. (2) A sale offline at the last price the device knew is a
+# valid fact: no per-sale review flag, ONE owner summary per offline period. (3) A new price takes effect on the
+# device when it is received, never retroactively; the server never re-prices a recorded sale.
+SC23_CELLS = ["a_offline_session", "b_tier_change", "c_two_periods"]
+SC23_MUTANTS = ["reprice_on_server", "per_sale_flag", "retroactive_price", "tier_uses_start_price"]
+SC23_GAP = 0.8  # seconds without device contact: an offline period for a server with GAP_MS=500
+
+
+def post_json(path, body):
+    req = urllib.request.Request(SERVER_URL + path, method="POST", data=json.dumps(body).encode(),
+                                 headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=5) as r:
+        return json.loads(r.read())
+
+
+def sc23_script(cell):
+    def script(run):
+        rng, n = run.rng, [0]
+        m = {"server_v": 1, "device": None, "sessions": {}, "pending": [], "offline": False}
+        run.sc23 = {"cell": cell, "expected_summaries": [], "online_stale": 0, "bills": {}, "tier_changes": 0}
+
+        def owner():  # the owner edits the price list on the server
+            prices = {"std": rng.choice([3000, 4500, 6000]) + rng.randint(1, 99),
+                      "vip": rng.choice([7500, 9000, 12000]) + rng.randint(1, 99),
+                      "cafe": rng.choice([1000, 1500, 2500]) + rng.randint(1, 49)}
+            r = post_json("/config", {"prices": prices})
+            m["server_v"] = r["version"]
+            run.log(f"owner price list v{r['version']}: {prices}")
+
+        def pull():
+            r = run.send({"op": "pull_config"})
+            m["device"] = (r["version"], r["prices"])  # what the device received, and from now on uses
+
+        def start(tier, at):
+            sid = f"s{run.seed}-sess{n[0]}"
+            n[0] += 1
+            v, prices = m["device"]
+            run.send({"op": "start_session", "session_id": sid, "start_min": at, "tier": tier})
+            m["sessions"][sid] = {"start": at, "segs": [(at, tier, prices[tier], v)]}
+            return sid
+
+        def change(sid, at, tier):
+            v, prices = m["device"]
+            run.send({"op": "change_tier", "session_id": sid, "at_min": at, "tier": tier})
+            m["sessions"][sid]["segs"].append((at, tier, prices[tier], v))
+            run.sc23["tier_changes"] += 1
+
+        def close(sid, end):
+            v, prices = m["device"]
+            ss = m["sessions"].pop(sid)
+            total, used = 0, []
+            for k, (frm, tier, rate, sv) in enumerate(ss["segs"]):
+                until = ss["segs"][k + 1][0] if k + 1 < len(ss["segs"]) else end
+                total += ((until - frm) * rate + 30) // 60
+                used.append(sv)
+            cafe_n = rng.randint(0, 3)
+            total += cafe_n * prices["cafe"]
+            if cafe_n:
+                used.append(v)
+            aid = f"s{run.seed}-a{sid.rsplit('sess', 1)[1]}"
+            a = {"op": "close_session", "action_id": aid, "session_id": sid, "start_min": ss["start"], "end_min": end,
+                 "cafe_n": cafe_n, "expected_piasters": total, "cfg_version": max(used)}
+            run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+            r = run.send(a)
+            run.sale_replies[aid] = r
+            if r and r.get("ok"):
+                run.seq_of[aid] = r.get("seq")
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+            run.sc23["bills"][aid] = (total, max(used))
+            m["pending"].append(max(used))
+            run.log(f"close {sid}: expected {total} (versions {used}) -> {r}")
+
+        def offline():
+            m["offline"] = True
+            time.sleep(SC23_GAP)  # no device contact for longer than the server's GAP_MS
+
+        def sync():  # back online (or still online): upload everything, then count what was billed at an old price
+            for _ in range(10):
+                r = run.send({"op": "sync"})
+                if r and r.get("ok") and r.get("pending") == 0:
+                    break
+            stale = sum(1 for v in m["pending"] if v < m["server_v"])
+            if m["offline"]:
+                if stale:
+                    run.sc23["expected_summaries"].append(stale)
+            else:
+                run.sc23["online_stale"] += stale
+            m["pending"], m["offline"] = [], False
+
+        t = [0]
+
+        def at(k):
+            t[0] += k
+            return t[0]
+
+        owner()
+        pull()
+        if cell == "a_offline_session":
+            s1 = start("std", at(0))
+            sync()
+            offline()
+            owner()  # the device does not know this list yet
+            close(s1, at(rng.randint(20, 120)))  # frozen at start (rule 1), billed at the old list: valid (rule 2)
+            s2 = start("vip", at(5))  # started offline: the last list the device knew
+            close(s2, at(rng.randint(10, 90)))
+            sync()
+            pull()  # the new list takes effect now, not before (rule 3)
+            s3 = start("std", at(5))
+            close(s3, at(rng.randint(10, 90)))
+            sync()
+        elif cell == "b_tier_change":
+            s1 = start("std", at(0))
+            sync()
+            owner()
+            pull()  # online: the device has the new list
+            change(s1, at(rng.randint(10, 60)), "vip")  # N4: the vip part at the list the device holds now
+            close(s1, at(rng.randint(10, 60)))  # the std part stays at the rate frozen at start
+            sync()
+            offline()
+            owner()
+            s2 = start("std", at(5))
+            change(s2, at(rng.randint(10, 60)), "vip")  # offline: still the last list the device knew
+            close(s2, at(rng.randint(10, 60)))
+            sync()
+            pull()
+        elif cell == "c_two_periods":
+            offline()
+            owner()
+            s1 = start("std", at(0))
+            close(s1, at(rng.randint(10, 90)))
+            sync()  # period 1: one sale at the previous price
+            pull()
+            offline()
+            s2 = start("vip", at(5))
+            close(s2, at(rng.randint(10, 90)))
+            sync()  # period 2: no price change, no summary
+            offline()
+            owner()
+            for _ in range(2):
+                s = start(rng.choice(["std", "vip"]), at(5))
+                close(s, at(rng.randint(10, 90)))
+            sync()  # period 3: two sales at the previous price
+            pull()
+    return script
+
+
+def sc23_extra(run, dump):
+    """R18 every bill equals the driver's price model (device and server; the server never re-prices);
+    R19 exactly one owner summary per offline period with previous-price sales, with the right count, none online;
+    R20 every bill carries the price-list version it used."""
+    v, st = [], run.sc23
+    c = run.open_client_store()
+    bills = {r[0]: (r[1], r[2]) for r in c.execute("SELECT action_id, sale_piasters, payload FROM bills").fetchall()}
+    c.close()
+    for aid, (want, ver) in st["bills"].items():
+        if aid in bills:
+            got, payload = bills[aid]
+            if got != want:
+                v.append(("R18", f"{aid} billed {got} on the device, model says {want}"))
+            if payload and json.loads(payload).get("cfg_version") != ver:
+                v.append(("R20", f"{aid} carries version {json.loads(payload).get('cfg_version')}, model says {ver}"))
+    summaries = dump.get("price_summaries", [])
+    per_period = [s_["n_sales"] for s_ in summaries if s_["period_key"]]
+    online = [s_ for s_ in summaries if not s_["period_key"]]
+    if per_period != st["expected_summaries"]:
+        v.append(("R19", f"summaries per offline period {per_period}, expected {st['expected_summaries']}"))
+    if online or st["online_stale"]:
+        v.append(("R19", f"previous-price sales outside an offline period: server {online}, model {st['online_stale']}"))
+    if any(not s_["owner_alert"] or s_["from_s"] is None for s_ in summaries):
+        v.append(("R19", f"summary without an owner alert or without its offline period: {summaries}"))
+    st["exercised"] = bool(st["expected_summaries"]) and (st["cell"] != "b_tier_change" or st["tier_changes"] >= 2)
+    return v, frozenset()
+
+
+def sc23_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc23-{cell}", client_env=dict(RETENTION_ENV),
+              server_env={"GAP_MS": "500", "BUSINESS_HOURS": "1"})
+    run.script, run.extra = sc23_script(cell), sc23_extra
+    r = run.go()
+    r["sc23"] = {k: v for k, v in run.sc23.items() if k != "bills"}
+    r["price_summaries"] = r.get("price_summaries")
+    return r
+
+
+def sc23(seeds=50, mutant_budget=30):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "seeds_per_cell": seeds, "gap_s": SC23_GAP, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-23 (prices while offline), commit {summary['harness_commit']}, {seeds} seeds per cell", flush=True)
+    ok = True
+    for cell in SC23_CELLS:
+        t1 = time.time()
+        bad, exercised, summaries = [], 0, 0
+        for s in range(1, seeds + 1):
+            r = sc23_run(s, cell)
+            exercised += bool(r["sc23"].get("exercised"))
+            summaries += len(r["sc23"]["expected_summaries"])
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised} runs not exercised)")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "summaries_expected": summaries,
+                                 "violating_runs": len(bad), "first_bad": bad[:3],
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:18s} exercised {exercised}/{seeds}  summaries {summaries}  violating {len(bad)}  {res}", flush=True)
+    for mu in SC23_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(SC23_CELLS) + 1, SC23_CELLS[k % len(SC23_CELLS)]
+            r = sc23_run(s, cell, mutant=mu, label=f"sc23-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None, "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:22s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: {caught[2] if caught else '-'}",
+              flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc23-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-23: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -1493,6 +1724,12 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc23":  # sc23 [seeds_per_cell]
+        sys.exit(0 if sc23(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay23":  # replay23 <seed> <cell> [mutant]
+        r = sc23_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay23", verbose=True)
+        print(json.dumps({k: r[k] for k in ("actions", "acked", "server_sales", "fired", "sc23", "violations")}, indent=1))
     if sys.argv[1] == "sc22":  # sc22 [seeds_per_cell]
         sys.exit(0 if sc22(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay22":  # replay22 <seed> <cell> [mutant]

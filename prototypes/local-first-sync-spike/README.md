@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (offline price change) next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (offline price change) dev run PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -153,6 +153,16 @@ bash prototypes/local-first-sync-spike/run.sh sc22 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay22 <seed> <cell> [mutant]
+```
+
+SC-23 (owner changes prices while the device is offline):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc23 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay23 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -613,3 +623,67 @@ The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `
 - **Windows:** `LockFileEx` or a named mutex, and two Windows user sessions on one PC. Phase 4.
 - **A lock file on a network share.** Out of scope: the store is local.
 - **The instance that loses waiting for the lock** instead of refusing; the founder's pass signal allows either.
+
+### Phase 3 — SC-23: the owner changes prices while the device is offline with sessions running
+
+**Founder rules under test (2026-10-16):**
+1. A running session keeps the prices frozen at its start (G12). A price-tier change during the session (N4) uses the price list the device holds at that moment.
+2. A sale made offline at the last price the device knew is a valid fact. The server accepts it with no per-sale "needs review" flag and shows the owner **one summary per offline period**: "N sales at the previous price while the counter was offline from X to Y".
+3. A new price takes effect on the device when the device receives it, never retroactively. The server never re-prices a recorded sale.
+
+Permission revocation while offline (abuse case 3) is **not** in SC-23. It is a separate later cell, because its rules come from the staff auth and roles research, which has not run yet.
+
+**Design under test:**
+- **Device:**
+  - Keeps the last price list it pulled: a per-tier station rate and the café item price.
+  - `start_session` freezes the tier rate of the list it holds at that moment.
+  - `change_tier` opens a new segment at the rate of the list it holds at *that* moment.
+  - `close_session` bills each segment at its own rate, rounding each half-up (a placeholder until OQ8), and prices the café items at the current list.
+  - The bill carries `cfg_version` (the newest list version it used), the segments and the café line.
+- **Server:**
+  - Records the device's amount as sent.
+  - Counts the sales billed under an older version than its current one into one `price_summaries` row (with an owner alert) per offline period: the period the device has just come back from, taken from the TS-09 contact-gap record (`GAP_MS=500`).
+  - Pulling the config counts as device contact.
+- **Driver model (independent of the client code):**
+  - Records which price list the device received, and when.
+  - Computes every bill from that record.
+  - Predicts the summary each offline period should produce; offline periods are real wall-clock gaps of 0.8 s with no device contact.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_offline_session` | a session starts online; the device goes offline; the owner changes the list; the session closes and a second one runs, both offline; reconnect; the new list is pulled; a third session runs | both offline bills at the old list, one summary of 2 for that period; the third bill at the new list |
+| `b_tier_change` | a session starts at list v2; the device pulls v3; a tier change, then close; then offline: the owner changes the list, and a session with a tier change runs offline | first bill: std part at v2, vip part and café at v3, not counted as previous-price; second bill: one summary of 1 |
+| `c_two_periods` | three offline periods: a price change in the first and third, none in the second | summaries of 1 and 2; none for the second period |
+
+**Checks added:**
+- **R18:** every bill on the device equals the model. **I3**, via the model amount, checks the server's ledger, so a re-priced sale fails.
+- **R19:** the per-period summaries equal the model exactly, none fall outside an offline period, and each has its owner alert and period.
+- **R20:** every bill carries the version the model says it used.
+- **I8:** no per-sale review flag.
+
+**Mutants:**
+- `reprice_on_server`: the server recomputes with today's list.
+- `per_sale_flag`: the server flags every previous-price sale.
+- `retroactive_price`: the device re-prices the open session with the list at close.
+- `tier_uses_start_price`: a tier change uses the session's start list.
+
+#### Run 1 (dev, uncommitted harness on `9c1602b`) — PASS
+
+`evidence/phase3-sc23-run1-dev.*`, 247 s.
+- **Cells:** all 3 PASS, 50 seeds each, every run exercised, 0 violations. The server produced exactly the 200 expected summaries (50 + 50 + 100), none outside an offline period, and no per-sale flag.
+- **Mutants:** all four caught.
+  - `reprice_on_server` after 1 run (I3: the server stored 4,871 for a sale billed 7,433).
+  - `per_sale_flag` after 1 (I8).
+  - `retroactive_price` after 2 (I3).
+  - `tier_uses_start_price` after 2 (I3).
+
+  The last two need a new list to arrive while a session is open, which happens in `b_tier_change`. In `a_offline_session` re-pricing at close changes nothing, because the device holds the same list.
+- **Spot checks after the config change:** SC-19 `d_config` PASS (13 of 13); tamper 36 of 36. The full regression follows on the committed harness.
+
+**Not covered:**
+- **Previous-price sales made while online**, before the device pulls a new list. They would land in an "online" summary (`period_key 0`). The model treats any as a violation and none occurred; the founder's rule speaks only of offline periods, so the online case needs a rule.
+- **The billing rules themselves** (rounding, minimum minutes, per-segment or total rounding): placeholders until OQ8.
+- **The owner's summary wording and dashboard view:** belong to the spec.
+- **Permission revocation:** a later cell, as above.

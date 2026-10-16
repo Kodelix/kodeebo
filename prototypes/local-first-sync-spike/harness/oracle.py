@@ -13,6 +13,8 @@ from collections import Counter, defaultdict
 
 def expected_total(a):
     # Written separately from the client on purpose: same business rule, independent code.
+    if "expected_piasters" in a:  # SC-23: the driver's own price model (device price list at each moment)
+        return a["expected_piasters"]
     minutes = a["end_min"] - a["start_min"]
     session_piasters = (minutes * a["rate_per_hour"] + 30) // 60
     return session_piasters + a["cafe_piasters"]

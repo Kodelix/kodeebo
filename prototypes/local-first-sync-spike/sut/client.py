@@ -49,6 +49,14 @@
 #   {"ok": false, "error": "another_instance", "warning": "another_instance"}. The OS releases the lock when the
 #   holder dies, so a restarted instance takes over with normal crash recovery. Windows (LockFileEx or a named
 #   mutex) is phase 4.
+# Phase 3 (SC-23, prices while offline; founder rules 2026-10-16): the device keeps the last price list it pulled
+#   (per-tier station rates, cafe item price). start_session freezes the tier rate of the list the device holds at
+#   that moment (G12); change_tier starts a new segment at the rate of the list the device holds at THAT moment
+#   (N4); close_session bills each segment at its frozen rate (half-up per segment, a placeholder until OQ8) and
+#   the cafe items at the current list. The payload carries cfg_version (newest list version used), the segments
+#   and the cafe line. A new list takes effect when it is pulled, never retroactively.
+#      MUTANT also: retroactive_price (re-prices the whole session with the list at close),
+#      tier_uses_start_price (a tier change uses the list the session started with).
 #      MUTANT also: no_instance_lock, lock_released_early (lock held only while opening the store).
 #      MUTANT also: nonatomic_migration (each DDL step commits on its own), no_premigrate_copy,
 #      reserialize_on_upgrade (rewrites stored payloads in a new byte form and recomputes their hashes).
@@ -371,7 +379,9 @@ def open_store():
             "seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT, day INTEGER NOT NULL DEFAULT 0)",
             "CREATE TABLE IF NOT EXISTS sync_state (id INTEGER PRIMARY KEY CHECK (id = 1), acked_seq INTEGER NOT NULL, "
             "archived_seq INTEGER NOT NULL, resend_from INTEGER, cfg_epoch TEXT, cfg_version INTEGER, cfg_price INTEGER, "
-            "today INTEGER NOT NULL DEFAULT 0)",
+            "today INTEGER NOT NULL DEFAULT 0, cfg_prices TEXT)",
+            "CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, start_min INTEGER NOT NULL, "
+            "start_prices TEXT NOT NULL, start_version INTEGER NOT NULL, segments TEXT NOT NULL)",
             "INSERT OR IGNORE INTO sync_state (id, acked_seq, archived_seq) VALUES (1, 0, 0)",
             "CREATE TABLE IF NOT EXISTS payments (action_id TEXT, piasters INTEGER)",
             "CREATE TABLE IF NOT EXISTS minutes (action_id TEXT, session_id TEXT, minute_idx INTEGER)",
@@ -412,13 +422,17 @@ elif open_error is not None:
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
 
 
-def close_and_pay(a):
-    end = a["end_min"] + 1 if MUTANT == "double_minute" else a["end_min"]  # planted off-by-one
-    mins = list(range(a["start_min"], end))
-    session = (len(mins) * a["rate_per_hour"] + 30) // 60  # integer piasters, half-up
-    sale = session + a["cafe_piasters"]
+def close_and_pay(a, priced=None):
+    """priced (SC-23): (minutes, sale, extra payload fields) computed by close_session from the device's prices."""
+    if priced:
+        mins, sale, extra = priced
+    else:
+        end = a["end_min"] + 1 if MUTANT == "double_minute" else a["end_min"]  # planted off-by-one
+        mins = list(range(a["start_min"], end))
+        session = (len(mins) * a["rate_per_hour"] + 30) // 60  # integer piasters, half-up
+        sale, extra = session + a["cafe_piasters"], {}
     payload = {"action_id": a["action_id"], "session_id": a["session_id"], "minutes": mins,
-               "sale_piasters": sale, "payment_piasters": sale}
+               "sale_piasters": sale, "payment_piasters": sale, **extra}
     body = json.dumps(payload, sort_keys=True, separators=(",", ":"))
     h = hashlib.sha256(body.encode()).hexdigest()
     cmd_id = "cmd-" + a["action_id"]
@@ -430,6 +444,8 @@ def close_and_pay(a):
         q("INSERT INTO payments VALUES (?,?)", (a["action_id"], sale))
         for m in mins:
             q("INSERT INTO minutes VALUES (?,?,?)", (a["action_id"], a["session_id"], m))
+        if priced:
+            q("DELETE FROM sessions WHERE session_id = ?", (a["session_id"],))
 
     def outbox():
         seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
@@ -654,13 +670,59 @@ def replay(k):
     reply({"ok": True, "op": "replay", "sent": len(rows), "results": resp["results"]})
 
 
+def device_prices():
+    v, p = q("SELECT cfg_version, cfg_prices FROM sync_state WHERE id = 1")[0]
+    if p is None:
+        raise ValueError("no price list on this device yet")
+    return v, json.loads(p)
+
+
+def start_session(m):
+    v, prices = device_prices()
+    seg = [{"from": m["start_min"], "tier": m["tier"], "rate": prices[m["tier"]], "v": v}]
+    q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], m["start_min"], json.dumps(prices), v, json.dumps(seg)))
+    reply({"ok": True, "op": "start_session", "rate": prices[m["tier"]], "v": v})
+
+
+def change_tier(m):
+    v, prices = device_prices()
+    start_prices, start_v, segs = q("SELECT start_prices, start_version, segments FROM sessions WHERE session_id = ?",
+                                    (m["session_id"],))[0]
+    if MUTANT == "tier_uses_start_price":  # planted defect: the list the session started with
+        v, prices = start_v, json.loads(start_prices)
+    segs = json.loads(segs) + [{"from": m["at_min"], "tier": m["tier"], "rate": prices[m["tier"]], "v": v}]
+    q("UPDATE sessions SET segments = ? WHERE session_id = ?", (json.dumps(segs), m["session_id"]))
+    reply({"ok": True, "op": "change_tier", "rate": prices[m["tier"]], "v": v})
+
+
+def close_session(m):
+    v, prices = device_prices()
+    start, segs = q("SELECT start_min, segments FROM sessions WHERE session_id = ?", (m["session_id"],))[0]
+    segs = json.loads(segs)
+    if MUTANT == "retroactive_price":  # planted defect: today's list applied to the whole session
+        segs = [{**sg, "rate": prices[sg["tier"]], "v": v} for sg in segs]
+    lines, total = [], 0
+    for k, sg in enumerate(segs):
+        until = segs[k + 1]["from"] if k + 1 < len(segs) else m["end_min"]
+        n = until - sg["from"]
+        total += (n * sg["rate"] + 30) // 60  # per segment, half-up (placeholder until OQ8)
+        lines.append({"tier": sg["tier"], "mins": n, "rate": sg["rate"], "v": sg["v"]})
+    cafe_n = int(m.get("cafe_n", 0))
+    total += cafe_n * prices["cafe"]
+    used = [sg["v"] for sg in segs] + ([v] if cafe_n else [])
+    extra = {"cfg_version": max(used), "segments": lines, "cafe": {"n": cafe_n, "price": prices["cafe"]}}
+    a = {"action_id": m["action_id"], "session_id": m["session_id"], "day": m.get("day", 0)}
+    close_and_pay(a, priced=(list(range(start, m["end_min"])), total, extra))
+
+
 def pull_config():
     """SC-19(d): server-to-device config feed. The epoch changes on every server restore, so a version number
     seen before the restore can come back with different content; compare epoch first."""
     try:
-        with urllib.request.urlopen(f"{SERVER}/config", timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
+        with urllib.request.urlopen(f"{SERVER}/config?device={DEVICE}", timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
             cfg = json.loads(r.read())
         epoch, version, price = str(cfg["epoch"]), int(cfg["version"]), int(cfg["price"])
+        prices = json.dumps(cfg.get("prices") or {})
     except (*NET_ERRORS, KeyError) as e:
         return reply({"ok": False, "op": "pull_config", "error": str(e)[:80]})
     le, lv = q("SELECT cfg_epoch, cfg_version FROM sync_state WHERE id = 1")[0]
@@ -672,8 +734,9 @@ def pull_config():
             record_event("config_epoch_changed", RuntimeError(f"server epoch {le} -> {epoch}"),
                          local_version=lv, server_version=version)
     if take:
-        q("UPDATE sync_state SET cfg_epoch = ?, cfg_version = ?, cfg_price = ? WHERE id = 1", (epoch, version, price))
-    reply({"ok": True, "op": "pull_config", "applied": take})
+        q("UPDATE sync_state SET cfg_epoch = ?, cfg_version = ?, cfg_price = ?, cfg_prices = ? WHERE id = 1",
+          (epoch, version, price, prices))
+    reply({"ok": True, "op": "pull_config", "applied": take, "version": version, "prices": json.loads(prices)})
 
 
 def verify():
@@ -738,6 +801,11 @@ for line in sys.stdin:
                    "counter": q("SELECT seq FROM counter WHERE id = 1")[0][0], "unreported": len(unreported)})
         elif op == "pull_config":
             pull_config()
+        elif op in ("start_session", "change_tier", "close_session"):  # SC-23
+            try:
+                {"start_session": start_session, "change_tier": change_tier, "close_session": close_session}[op](msg)
+            except (ValueError, KeyError, IndexError) as e:  # no price list yet, unknown session: not a store fault
+                reply({"ok": False, "op": op, "error": f"{type(e).__name__}: {str(e)[:80]}"})
         elif op == "state":  # SC-19 view for the driver: retention and config state
             st = q("SELECT acked_seq, archived_seq, resend_from, cfg_epoch, cfg_version, cfg_price FROM sync_state WHERE id = 1")[0]
             reply({"ok": True, "op": op, "acked_seq": st[0], "archived_seq": st[1], "resend_from": st[2],

@@ -1,0 +1,94 @@
+{
+ "harness_commit": "9c1602b+dirty",
+ "started": "2026-10-17 00:54:39",
+ "seeds_per_cell": 50,
+ "gap_s": 0.8,
+ "cells": [
+  {
+   "cell": "a_offline_session",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 52.6,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_tier_change",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 52.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_two_periods",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 100,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 134.9,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "reprice_on_server": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_offline_session"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 4871 != expected 7433"
+   ],
+   "seconds": 1.0
+  },
+  "per_sale_flag": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_offline_session"
+   ],
+   "first_violation": [
+    "I8",
+    "server flag needs_review_price for cmd-s1-a0 seq 1"
+   ],
+   "seconds": 1.1
+  },
+  "retroactive_price": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_tier_change"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 11114 != expected 12382"
+   ],
+   "seconds": 2.1
+  },
+  "tier_uses_start_price": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_tier_change"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 12437 != expected 12382"
+   ],
+   "seconds": 2.2
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 246.7
+}

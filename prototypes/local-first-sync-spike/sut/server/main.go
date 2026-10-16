@@ -15,6 +15,13 @@
 // recovered: it is recorded as lost, the owner is alerted and the cursor skips it (an explicit, recorded skip).
 // The first contact of each device in a new epoch is always recorded (reconcile_events). A device in a new epoch
 // that does not report acked_seq is refused ("reconcile_required"). MUTANT=no_reconcile skips the comparison.
+//
+// SC-23 (owner changes prices while the device is offline; founder rules 2026-10-16): the config feed carries a
+// price list (per-tier station rates and the cafe item price). A sale carries cfg_version, the newest price-list
+// version it used. The server records the amount the device sent and never re-prices it. Sales billed under an
+// older version than the server's current one are counted into ONE owner summary per offline period (the period
+// the device just came back from, from the TS-09 contact-gap record); no per-sale flag. MUTANT=reprice_on_server
+// recomputes the amount with current prices; MUTANT=per_sale_flag flags every such sale for review.
 package main
 
 import (
@@ -37,7 +44,7 @@ import (
 
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
-  reconcile_events, config, device_events;
+  reconcile_events, config, device_events, price_summaries;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -63,18 +70,36 @@ CREATE TABLE reconcile_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KE
   epoch text NOT NULL, server_cursor bigint NOT NULL, device_acked bigint NOT NULL, device_low bigint NOT NULL,
   outcome text NOT NULL, lost_from bigint, lost_to bigint, owner_alert boolean NOT NULL,
   UNIQUE (device_id, epoch, server_cursor, outcome));
-CREATE TABLE config (id int PRIMARY KEY CHECK (id = 1), version int NOT NULL, price int NOT NULL);
-INSERT INTO config VALUES (1, 1, 6000);
+CREATE TABLE config (id int PRIMARY KEY CHECK (id = 1), version int NOT NULL, price int NOT NULL,
+  prices jsonb NOT NULL);
+INSERT INTO config VALUES (1, 1, 6000, '{"std": 6000, "vip": 9000, "cafe": 1500}');
+CREATE TABLE price_summaries (device_id text NOT NULL, period_key bigint NOT NULL, n_sales int NOT NULL,
+  owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, period_key));
 CREATE TABLE device_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   kind text NOT NULL, detail jsonb NOT NULL, owner_alert boolean NOT NULL);
 `
 
 type payload struct {
-	ActionID        string `json:"action_id"`
-	SessionID       string `json:"session_id"`
-	Minutes         []int  `json:"minutes"`
-	SalePiasters    int64  `json:"sale_piasters"`
-	PaymentPiasters int64  `json:"payment_piasters"`
+	ActionID        string    `json:"action_id"`
+	SessionID       string    `json:"session_id"`
+	Minutes         []int     `json:"minutes"`
+	SalePiasters    int64     `json:"sale_piasters"`
+	PaymentPiasters int64     `json:"payment_piasters"`
+	CfgVersion      int       `json:"cfg_version"` // SC-23: newest price-list version the bill used (0 = not priced from the feed)
+	Segments        []segment `json:"segments"`
+	Cafe            *cafe     `json:"cafe"`
+}
+
+type segment struct {
+	Tier string `json:"tier"`
+	Mins int64  `json:"mins"`
+	Rate int64  `json:"rate"`
+	V    int    `json:"v"`
+}
+
+type cafe struct {
+	N     int64 `json:"n"`
+	Price int64 `json:"price"`
 }
 
 type command struct {
@@ -103,10 +128,11 @@ var (
 	lastContact = map[string]time.Time{}
 )
 
-func contact(ctx context.Context, dev string) {
+// contact records device contact; it returns the id of the offline period it just closed, or 0.
+func contact(ctx context.Context, dev string) int64 {
 	gapMs, _ := strconv.Atoi(os.Getenv("GAP_MS"))
 	if gapMs <= 0 {
-		return
+		return 0
 	}
 	now := time.Now()
 	contactMu.Lock()
@@ -115,9 +141,12 @@ func contact(ctx context.Context, dev string) {
 	contactMu.Unlock()
 	if seen && now.Sub(prev) > time.Duration(gapMs)*time.Millisecond {
 		alert := os.Getenv("BUSINESS_HOURS") == "1"
-		pool.Exec(ctx, `INSERT INTO offline_periods (device_id, from_ts, to_ts, owner_alert) VALUES ($1,$2,$3,$4)`,
-			dev, prev, now, alert)
+		var id int64
+		pool.QueryRow(ctx, `INSERT INTO offline_periods (device_id, from_ts, to_ts, owner_alert) VALUES ($1,$2,$3,$4) RETURNING id`,
+			dev, prev, now, alert).Scan(&id)
+		return id
 	}
+	return 0
 }
 
 var (
@@ -143,6 +172,20 @@ func failpoint(name string) {
 
 func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error {
 	p := c.Payload
+	if mutant == "reprice_on_server" && len(p.Segments) > 0 { // planted defect: re-prices with today's list
+		var prices map[string]int64
+		if err := tx.QueryRow(ctx, `SELECT prices FROM config WHERE id = 1`).Scan(&prices); err != nil {
+			return err
+		}
+		var amount int64
+		for _, sg := range p.Segments {
+			amount += (sg.Mins*prices[sg.Tier] + 30) / 60
+		}
+		if p.Cafe != nil {
+			amount += p.Cafe.N * prices["cafe"]
+		}
+		p.SalePiasters, p.PaymentPiasters = amount, amount
+	}
 	if _, err := tx.Exec(ctx, `INSERT INTO ledger (tenant_id, device_id, command_id, seq, action_id, kind, amount_piasters)
 		VALUES (1,$1,$2,$3,$4,'sale',$5), (1,$1,$2,$3,$4,'payment',$6)`,
 		dev, c.CommandID, c.Seq, p.ActionID, p.SalePiasters, p.PaymentPiasters); err != nil {
@@ -278,7 +321,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	contact(ctx, b.DeviceID)
+	period := contact(ctx, b.DeviceID)
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
@@ -295,7 +338,13 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	var curVersion int
+	if err := tx.QueryRow(ctx, `SELECT version FROM config WHERE id = 1`).Scan(&curVersion); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	var results []result
+	stale := 0
 	for _, c := range b.Commands {
 		out, err := applyOne(ctx, tx, b.DeviceID, c)
 		if err != nil {
@@ -303,8 +352,31 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		results = append(results, result{c.CommandID, c.Seq, out})
+		if out == "applied" && c.Payload.CfgVersion > 0 && c.Payload.CfgVersion < curVersion {
+			stale++ // billed at a previous price: a valid fact (SC-23 rule 2)
+			if mutant == "per_sale_flag" {
+				if err := flag(ctx, tx, "needs_review_price", b.DeviceID, c); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			}
+		}
 		if out == "gap" {
 			break
+		}
+	}
+	if stale > 0 {
+		// One summary per offline period: the period this contact closed, or the one a continuation batch follows.
+		key := period
+		if key == 0 {
+			tx.QueryRow(ctx, `SELECT coalesce(max(id), 0) FROM offline_periods WHERE device_id = $1
+				AND to_ts > now() - interval '30 seconds'`, b.DeviceID).Scan(&key)
+		}
+		if _, err := tx.Exec(ctx, `INSERT INTO price_summaries (device_id, period_key, n_sales) VALUES ($1,$2,$3)
+			ON CONFLICT (device_id, period_key) DO UPDATE SET n_sales = price_summaries.n_sales + EXCLUDED.n_sales`,
+			b.DeviceID, key, stale); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	}
 	var cur int64
@@ -394,24 +466,43 @@ func handleDeviceEvent(w http.ResponseWriter, r *http.Request) {
 func handleConfig(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	if r.Method == http.MethodPost {
-		price, err := strconv.Atoi(r.URL.Query().Get("price"))
-		if err != nil {
-			http.Error(w, "price", http.StatusBadRequest)
-			return
+		var err error
+		if q := r.URL.Query().Get("price"); q != "" { // SC-19: one owner edit of the standard rate
+			price, perr := strconv.Atoi(q)
+			if perr != nil {
+				http.Error(w, "price", http.StatusBadRequest)
+				return
+			}
+			_, err = pool.Exec(ctx, `UPDATE config SET version = version + 1, price = $1,
+				prices = jsonb_set(prices, '{std}', to_jsonb($1::int)) WHERE id = 1`, price)
+		} else { // SC-23: the owner edits the price list
+			var body struct {
+				Prices map[string]int64 `json:"prices"`
+			}
+			if derr := json.NewDecoder(r.Body).Decode(&body); derr != nil || len(body.Prices) == 0 {
+				http.Error(w, "prices", http.StatusBadRequest)
+				return
+			}
+			pj, _ := json.Marshal(body.Prices)
+			_, err = pool.Exec(ctx, `UPDATE config SET version = version + 1, price = coalesce(($1::jsonb->>'std')::int, price),
+				prices = $1::jsonb WHERE id = 1`, string(pj))
 		}
-		if _, err := pool.Exec(ctx, `UPDATE config SET version = version + 1, price = $1 WHERE id = 1`, price); err != nil {
+		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	} else if dev := r.URL.Query().Get("device"); dev != "" {
+		contact(ctx, dev) // a device pulling its config is in contact
 	}
 	var epoch string
 	var version, price int
-	if err := pool.QueryRow(ctx, `SELECT m.epoch, c.version, c.price FROM meta m, config c`).Scan(&epoch, &version, &price); err != nil {
+	var prices map[string]int64
+	if err := pool.QueryRow(ctx, `SELECT m.epoch, c.version, c.price, c.prices FROM meta m, config c`).Scan(&epoch, &version, &price, &prices); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"epoch": epoch, "version": version, "price": price})
+	json.NewEncoder(w).Encode(map[string]any{"epoch": epoch, "version": version, "price": price, "prices": prices})
 }
 
 func dumpRows(ctx context.Context, q string) ([]map[string]any, error) {
@@ -436,6 +527,9 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		"meta":          "SELECT epoch FROM meta",
 		"config":        "SELECT version, price FROM config",
 		"device_events": "SELECT device_id, kind, detail, owner_alert FROM device_events ORDER BY id",
+		"price_summaries": `SELECT s.device_id, s.period_key, s.n_sales, s.owner_alert,
+			extract(epoch FROM o.from_ts)::float8 AS from_s, extract(epoch FROM o.to_ts)::float8 AS to_s
+			FROM price_summaries s LEFT JOIN offline_periods o ON o.id = s.period_key ORDER BY s.period_key`,
 	} {
 		rows, err := dumpRows(ctx, q)
 		if err != nil {
