@@ -1,0 +1,78 @@
+ 
+ eReceipt API 
+ eReceipt API 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ eReceipt API
+ Definition of the API that taxpayer systems can leverage to integrate with eReceipt solution
+ Common API
+ eInvoicing API
+ Authenticate POS
+ This API allows taxpayer system to get access token to be used to access other protected APIs of the solution.
+ Read more
+ Submit Receipt Documents
+ Taxpayer can submit one or more signed documents to eReceipt solution using this API.
+ Read more
+ Get Receipt Details
+ API allows taxpayers to retrieve a single receipt/return receipt full details including validation results.
+ Read more
+ Get Receipt
+ API allows taxpayers to retrieve receipt/return receipt source JSON with additional tax authority added metadata.
+ Read more
+ Get Receipt Details Anonymously
+ API allows taxpayers to retrieve document source JSON with additional tax authority added metadata.
+ Read more
+ Get Receipt Submission
+ API returns information on receipts submitted during a single submission by taxpayer.
+ Read more
+ Search Receipts
+ API allows representatives of the taxpayers to search for submitted receipts and return receipts.
+ Read more
+ Get Recent Receipts
+ API allows taxpayer systems to query latest receipts sent or received that are available on the eInvoicing & eReceipt solution.
+ Read more
+ ERP - Receive Receipt Notifications
+ API needs to be exposed by ERP and enables ERP system to receive notifications on receipt related events - validation, receiption and cancellation.
+ Read more
+ ERP - Receive General Notifications
+ API needs to be exposed by ERP and enables ERP system to receive general notifications on general events - POS Device Credentials Expiration, POS Device Dates Expiration, POS Device Deactivated.
+ Read more
+ Request Receipt Package
+ API allows taxpayer system to request larger packages of previously sent or received receipts to be prepared for download.
+ Read more
+ Get Package Requests
+ API allows taxpayers to retrieve information on previous receipt package requests, their status.
+ Read more
+ Get Receipt Package
+ API allows taxpayer systems to download previously requested receipt packages as CSV or JSON files (compressed).
+ Read more
+ ERP - Receive Download Package Ready Notifications
+ API needs to be exposed by ERP and allows ERP system to receive notification when receipt package is ready for download.
+ Read more
+ Common API
+ eInvoicing API
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

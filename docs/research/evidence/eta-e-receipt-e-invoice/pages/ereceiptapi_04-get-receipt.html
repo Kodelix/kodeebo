@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Get Receipt</title>
+
+	<meta name="description" content="API allows taxpayers to retrieve receipt/return receipt source JSON with additional tax authority added metadata.">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Get Receipt</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Get Receipt" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="API allows taxpayers to retrieve receipt/return receipt source JSON with additional tax authority added metadata." />
+<meta name="twitter:description" property="og:description" content="API allows taxpayers to retrieve receipt/return receipt source JSON with additional tax authority added metadata." />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-09-24T00:53:57-05:00" />
+<meta property="article:modified_time" content="2026-09-24T00:53:57-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Get Receipt" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-09-24T00:53:57-05:00","datePublished":"2026-09-24T00:53:57-05:00","description":"API allows taxpayers to retrieve receipt/return receipt source JSON with additional tax authority added metadata.","headline":"Get Receipt","mainEntityOfPage":{"@type":"WebPage","@id":"/ereceiptapi/04-get-receipt/"},"url":"/ereceiptapi/04-get-receipt/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Get Receipt</h1>
+								
+								
+									<p class="hero-subheader__desc">API allows taxpayers to retrieve receipt/return receipt source JSON with additional tax authority added metadata.</p>
+								
+								
+									
+										<a href="/ereceiptapi/03-get-receipt-details/" class="btn btn--dark btn--rounded btn--w-icon btn--w-icon-left">
+											<i class="icon icon--arrow-left"></i>
+											Get Receipt Details
+										</a>
+									
+									
+										<a href="/ereceiptapi/05-get-receipt-details-anonymously/" class="btn btn--dark btn--rounded btn--w-icon">
+											<i class="icon icon--arrow-right"></i>
+											Get receipt details anonymously
+										</a>
+									
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h2 id="overview">Overview</h2>
+
+<p>API allows caller to get full details of the Receipt when requested by unique ID assigned to receipt by eInvoicing &amp; eReceipt solution.</p>
+
+<p>Details include original JSON submission and additional ID and validation details, current status added by the tax authority. Because document is submitted in JSON, this API returns receipt information in JSON.</p>
+
+<h2 id="signature">Signature</h2>
+
+<p>API is REST based API that takes unique ID of the document as URL parameter and returns document details that were received from the issuer and additional details added after registration and validation of the document in the tax authority.</p>
+
+<p>Signature:
+<code class="highlighter-rouge">GET /api/v1/receipts/{uuid}/raw</code></p>
+
+<h2 id="inputs">Inputs</h2>
+
+<p>This API accepts <a href="/standard-header-parameters/">standard eInvoicing &amp; eReceipt API header parameters</a> for authenticated call. The content type parameter can define the expected output format - JSON .</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URL parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>uuid</td>
+      <td>UUID</td>
+      <td>Unique ID of the document to retrieve.</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="outputs">Outputs</h2>
+
+<h3 id="successful-response">Successful Response</h3>
+
+<p>API returns HTTP status code <code class="highlighter-rouge">200</code>.</p>
+
+<p>The resulting structure is a single object of type <code class="highlighter-rouge">ReceiptExtended</code>.</p>
+
+<p>Document Extended contains:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rawDocument</td>
+      <td>String</td>
+      <td>Document in raw format</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>submissionUUID</td>
+      <td>String (30)</td>
+      <td>Unique ID of the submission tht document was part of</td>
+      <td>JU7GH07JNA23N</td>
+    </tr>
+    <tr>
+      <td>dateTimeReceived</td>
+      <td>DateTime</td>
+      <td>The date and time when the document was submitted.</td>
+      <td>2015-02-13T14:20Z</td>
+    </tr>
+    <tr>
+      <td>dateTimeIssued</td>
+      <td>DateTime</td>
+      <td>The date and time when the document was submitted.</td>
+      <td>2015-02-13T14:20Z</td>
+    </tr>
+    <tr>
+      <td>submissionChannel</td>
+      <td>String, <a href="/submission-channel/">Submission Channels</a></td>
+      <td>The channel through which receipt submission was made.</td>
+      <td>POS</td>
+    </tr>
+    <tr>
+      <td>maxPrecision</td>
+      <td>Decimal</td>
+      <td>maximum precision value of decimal fields</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>receipt</td>
+      <td><a href="#document-summary">Document Summary</a></td>
+      <td>Document object depending on the type</td>
+      <td>See structure.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="document-summary">Document Summary</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>uuid</td>
+      <td>UUID</td>
+      <td>Unique document ID in eInvoicing and eReceipt</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>longId</td>
+      <td>String (200)</td>
+      <td>Long document ID</td>
+      <td>BFNGXFA17265TQX34…</td>
+    </tr>
+    <tr>
+      <td>previousUUID</td>
+      <td>UUID</td>
+      <td>Reference to previous receipt</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>referenceOldUUID</td>
+      <td>UUID</td>
+      <td>This is used for the resent receipt case in case of validation failure and requirement to change something in the receipt and resend it with a different UUID.</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>referenceUUID</td>
+      <td>UUID</td>
+      <td>This field is present only for return receipt as it represents reference UUID of sales receipt</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>dateTimeIssued</td>
+      <td>DateTime</td>
+      <td>The date and time when the document was issued.</td>
+      <td>2015-02-13T13:15Z</td>
+    </tr>
+    <tr>
+      <td>dateTimeReceived</td>
+      <td>DateTime</td>
+      <td>The date and time when the document was received.</td>
+      <td>2015-02-13T13:15Z</td>
+    </tr>
+    <tr>
+      <td>receiptNumber</td>
+      <td>String (50)</td>
+      <td>Number of the receipt</td>
+      <td>12345678</td>
+    </tr>
+    <tr>
+      <td>currency</td>
+      <td>String (3)</td>
+      <td>Currency code used from ISO 4217, <a href="/codes/currencies/">Currency Codes</a></td>
+      <td>EGP</td>
+    </tr>
+    <tr>
+      <td>exchangeRate</td>
+      <td>Decimal</td>
+      <td>Exchange rate</td>
+      <td>0.12345</td>
+    </tr>
+    <tr>
+      <td>sOrderNameCode</td>
+      <td>String (200)</td>
+      <td>Order name code</td>
+      <td>ABC12345</td>
+    </tr>
+    <tr>
+      <td>orderdeliveryMode</td>
+      <td>String (30)</td>
+      <td>Delivery mode</td>
+      <td>AIR</td>
+    </tr>
+    <tr>
+      <td>grossWeight</td>
+      <td>Decimal</td>
+      <td>Gross weight</td>
+      <td>12.12345</td>
+    </tr>
+    <tr>
+      <td>netWeight</td>
+      <td>Decimal</td>
+      <td>Net weight</td>
+      <td>12.12345</td>
+    </tr>
+    <tr>
+      <td>documentType</td>
+      <td><a href="#documenttype">Document Type</a></td>
+      <td>Structure representing the documentType information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>totalSales</td>
+      <td>Decimal</td>
+      <td>sum of all sales total elements of receipt lines</td>
+      <td>1921.12345</td>
+    </tr>
+    <tr>
+      <td>totalAmount</td>
+      <td>Decimal</td>
+      <td>totalAmount = sum of all receipt line Total – total extraDiscountAmount</td>
+      <td>19281.12345</td>
+    </tr>
+    <tr>
+      <td>totalCommercialDiscount</td>
+      <td>Decimal</td>
+      <td>sum of all discount amount elements of receipts lines</td>
+      <td>12.12345</td>
+    </tr>
+    <tr>
+      <td>totalItemsDiscount</td>
+      <td>Decimal</td>
+      <td>sum of all itemsDiscountAmount elements of receipt</td>
+      <td>12.12345</td>
+    </tr>
+    <tr>
+      <td>netAmount</td>
+      <td>Decimal</td>
+      <td>Sum of all receipt lines netTotal</td>
+      <td>19271.12345</td>
+    </tr>
+    <tr>
+      <td>feesAmount</td>
+      <td>Decimal</td>
+      <td>Is the additional fees amount of receipt level</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>paymentMethod</td>
+      <td>String (50)</td>
+      <td><a href="/codes/payment-methods/">Payment Method Codes</a></td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>adjustment</td>
+      <td>Decimal</td>
+      <td>monetary amount that will be added to the total of the receipt to perform final adjustments to the total amount of the receipt. amounts</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td>seller</td>
+      <td><a href="#seller">Seller</a></td>
+      <td>Structure representing the seller information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>buyer</td>
+      <td><a href="#buyer">Buyer</a></td>
+      <td>Structure representing the buyer information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>itemData</td>
+      <td><a href="#itemdata">ItemData</a></td>
+      <td>This would be collection of objects .Structure representing the itemData information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>extraReceiptDiscount</td>
+      <td>Array of <a href="#discount">discount</a></td>
+      <td>Optional, This would be collection of objects of extra receipt level discount.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>taxTotals</td>
+      <td><a href="#taxtotals">TaxTotals</a></td>
+      <td>Structure representing the total tax information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>contractor</td>
+      <td><a href="#contractor">Contractor</a></td>
+      <td>Structure representing the contractor information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>beneficiary</td>
+      <td><a href="#beneficiary">Beneficiary</a></td>
+      <td>Structure representing the beneficiary information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>String (250)</td>
+      <td>Status of the document</td>
+      <td>valid</td>
+    </tr>
+    <tr>
+      <td>statusReason</td>
+      <td>String (250)</td>
+      <td>Status reason of the document</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>hasReturnReceipts</td>
+      <td>Boolean</td>
+      <td>return receipts availability flag.</td>
+      <td>True / False</td>
+    </tr>
+    <tr>
+      <td>returnReceipts</td>
+      <td>Array of <a href="#returnreceipt">ReturnReceipt</a></td>
+      <td>Structure representing the return receipt information.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>history</td>
+      <td><a href="#receipthistory">ReceiptHistory</a></td>
+      <td>Optional. Structure representing the receipt history information.</td>
+      <td>See structure.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="documenttype">DocumentType</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>receiptTypeCategory</td>
+      <td>String (100)</td>
+      <td>Category for receipt type</td>
+      <td>Receipt</td>
+    </tr>
+    <tr>
+      <td>receiptTypeBase</td>
+      <td>String (100)</td>
+      <td>It is the receipt base type, its value is either SR or RR</td>
+      <td>SR</td>
+    </tr>
+    <tr>
+      <td>receiptType</td>
+      <td>String (20)</td>
+      <td>the Value must be ‘s’ for Sale Receipt and ‘r’ for return receipt</td>
+      <td>s</td>
+    </tr>
+    <tr>
+      <td>receiptTypeName</td>
+      <td>String (100)</td>
+      <td>Type name</td>
+      <td>Sale Receipt</td>
+    </tr>
+    <tr>
+      <td>receiptTypeNameAr</td>
+      <td>String (100)</td>
+      <td>Type name in Arabic</td>
+      <td>إيصال البيع</td>
+    </tr>
+    <tr>
+      <td>typeVersion</td>
+      <td>String (100)</td>
+      <td>Document type version</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="seller">Seller</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>sellerId</td>
+      <td>String (30)</td>
+      <td>Registration number. For business in Egypt must be registration number</td>
+      <td>200173707</td>
+    </tr>
+    <tr>
+      <td>sellerName</td>
+      <td>String (200)</td>
+      <td>Registration name of the seller.</td>
+      <td>ABC Corp</td>
+    </tr>
+    <tr>
+      <td>branchCode</td>
+      <td>String (50)</td>
+      <td>The <a href="/codes/branch/">code of the branch</a> as registered with tax authority for the company submitting the document</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>deviceSerialNumber</td>
+      <td>String (100)</td>
+      <td>This is the POS serial number</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>syndicateLicenseNumber</td>
+      <td>String (30)</td>
+      <td>It is number in case if it is person and “C” in case if it is a professional</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>activityCode</td>
+      <td>String (10)</td>
+      <td>Name of Activity Code</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>branchAddress</td>
+      <td><a href="#branchaddress">BranchAddress</a></td>
+      <td>Structure representing the branchAddress information.</td>
+      <td>See structure</td>
+    </tr>
+    <tr>
+      <td>branchName</td>
+      <td>String (100)</td>
+      <td>Name of Branch</td>
+      <td>Branch 1</td>
+    </tr>
+    <tr>
+      <td>branchNameAr</td>
+      <td>String (100)</td>
+      <td>Name of Branch in Arabic</td>
+      <td>فرع 1</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="branchaddress">BranchAddress</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>country</td>
+      <td>String (2)</td>
+      <td>Country represented by ISO-3166-2 2 symbol <a href="/codes/countries/">code of the countries</a>.</td>
+      <td>EG</td>
+    </tr>
+    <tr>
+      <td>governate</td>
+      <td>String (100)</td>
+      <td>Governorate information as textual value</td>
+      <td>Giza Governorate</td>
+    </tr>
+    <tr>
+      <td>regionCity</td>
+      <td>String (100)</td>
+      <td>Region and city information as textual value</td>
+      <td>Dokki</td>
+    </tr>
+    <tr>
+      <td>street</td>
+      <td>String (200)</td>
+      <td>Street information</td>
+      <td>17 Nabil Al Wakad</td>
+    </tr>
+    <tr>
+      <td>buildingNumber</td>
+      <td>String (100)</td>
+      <td>Building information (number, name or both)</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>postalCode</td>
+      <td>String (30)</td>
+      <td>Postal code</td>
+      <td>11311</td>
+    </tr>
+    <tr>
+      <td>floor</td>
+      <td>String (100)</td>
+      <td>The floor number</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>room</td>
+      <td>String (100)</td>
+      <td>The room/flat number in the floor</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>landmark</td>
+      <td>String (500)</td>
+      <td>Nearest landmark to the address</td>
+      <td>Egyptian Museum</td>
+    </tr>
+    <tr>
+      <td>additionalInformation</td>
+      <td>String (500)</td>
+      <td>Any additional information to the address</td>
+      <td>Egyptian Museum</td>
+    </tr>
+    <tr>
+      <td>countryName</td>
+      <td>String (250)</td>
+      <td>Name of Country</td>
+      <td>Egypt</td>
+    </tr>
+    <tr>
+      <td>countryNameAR</td>
+      <td>String (250)</td>
+      <td>Name of Country in Arabic</td>
+      <td>مصر</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="buyer">Buyer</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>buyerId</td>
+      <td>String (30)</td>
+      <td>National ID or Company Registration No (RIN) or Foreigner Identification Number</td>
+      <td>Based on type values can be as follows: <br /> 1.type is B: Company Registration No. (RIN)<br />2.type is P: National ID<br />3.type is F: Any type of Foreigner Identification Number</td>
+    </tr>
+    <tr>
+      <td>buyerName</td>
+      <td>String (200)</td>
+      <td>Registration name of the company or name and surname of the person</td>
+      <td>ABC</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>String (1)</td>
+      <td>Type of the issuer - supported values - B for business in Egypt, P for natural person, F for foreigner</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <td>mobileNumber</td>
+      <td>String (30)</td>
+      <td>Mobile number of receiver</td>
+      <td>+201020567362</td>
+    </tr>
+    <tr>
+      <td>paymentNumber</td>
+      <td>String (30)</td>
+      <td>a reference to a payment number for which the receipt was issued, this is used for specialized industries that have such reference numbers such as utilities bill for example. It can alternatively contain a reference to the payment method reference such as authorization code in case of credit card payment.</td>
+      <td>123</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="itemdata">ItemData</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>internalCode</td>
+      <td>String (50)</td>
+      <td>Internal code is used for the product being sold – can be used to simplify references back to existing solution.</td>
+      <td>8806092129306</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>String (500)</td>
+      <td>Description of the item being sold</td>
+      <td>Samsung A02 32GB*LTE_BLACK_DS_SM-A022FZKDMEB_A022 * A022_SM-A022FZKDMEB</td>
+    </tr>
+    <tr>
+      <td>itemType</td>
+      <td>String (30)</td>
+      <td>Coding schema used to encode the item type. Must be GS1 or EGS for this version</td>
+      <td>GS1</td>
+    </tr>
+    <tr>
+      <td>itemCode</td>
+      <td>String (100)</td>
+      <td>Code of the goods or services item being sold. GS1 codes targeted for managing goods, EGS codes targeted for managing goods – goods or services</td>
+      <td>10007020</td>
+    </tr>
+    <tr>
+      <td>unitType</td>
+      <td>String (30)</td>
+      <td>Code of the unit type used from the <a href="/codes/unit-types/">code table of the measures</a></td>
+      <td>kg</td>
+    </tr>
+    <tr>
+      <td>quantity</td>
+      <td>Decimal</td>
+      <td>Number of units of the defined unit type being sold. Number should be larger than 0.</td>
+      <td>17.12345</td>
+    </tr>
+    <tr>
+      <td>unitPrice</td>
+      <td>Decimal</td>
+      <td>Price per unit.</td>
+      <td>17.12345</td>
+    </tr>
+    <tr>
+      <td>netSale</td>
+      <td>Decimal</td>
+      <td>Total amount for the receipt line after applying discount.</td>
+      <td>36.12345</td>
+    </tr>
+    <tr>
+      <td>totalSale</td>
+      <td>Decimal</td>
+      <td>sum of all sales total elements of receipt lines</td>
+      <td>425.12345</td>
+    </tr>
+    <tr>
+      <td>total</td>
+      <td>Decimal</td>
+      <td>Total amount for the receipt line after adding all pricing items, taxes, removing discounts</td>
+      <td>460.12345</td>
+    </tr>
+    <tr>
+      <td>valueDifference</td>
+      <td>Decimal</td>
+      <td>Value difference when selling goods already taxed (accepts +/- numbers), e.g., factory value based</td>
+      <td>0.12345</td>
+    </tr>
+    <tr>
+      <td>commercialDiscount</td>
+      <td>Array of <a href="#discount">discount</a></td>
+      <td>Optional, This would be collection of objects of commercial discounts applied to this item.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>itemDiscount</td>
+      <td>Array of <a href="#discount">discount</a></td>
+      <td>Optional, This would be collection of objects of non-taxable items discounts.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>additionalCommercialDiscount</td>
+      <td><a href="#discount">discount</a></td>
+      <td>Optional, Additional commercial discount after net sale on the item level</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <td>additionalItemDiscount</td>
+      <td><a href="#discount">discount</a></td>
+      <td>Optional, Additional item discount after net sale on the item level</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <td>taxableItems</td>
+      <td>Array of <a href="#taxableitem">TaxableItem</a></td>
+      <td>Structure representing the taxableItems information.</td>
+      <td>See structure</td>
+    </tr>
+    <tr>
+      <td>itemCodeName</td>
+      <td>String (250)</td>
+      <td>Item Code Name</td>
+      <td>Mobile Phone/Smartphone Accessories</td>
+    </tr>
+    <tr>
+      <td>itemCodeNameAr</td>
+      <td>String (250)</td>
+      <td>Item Code Name in Arabic</td>
+      <td>اكسسوارات الهاتف المحمول / الهواتف الذكية</td>
+    </tr>
+    <tr>
+      <td>unitTypeName</td>
+      <td>String (250)</td>
+      <td>Unit Type Name</td>
+      <td>Kilogram</td>
+    </tr>
+    <tr>
+      <td>unitTypeNameAr</td>
+      <td>String (250)</td>
+      <td>Unit Type Name in Arabic</td>
+      <td>كيلوغرام</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="discount">Discount</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Mandatory, amount of the discount applied</td>
+      <td>100.12345</td>
+    </tr>
+    <tr>
+      <td>description</td>
+      <td>String (50)</td>
+      <td>Mandatory, description of the discount applied</td>
+      <td>ABCD12345</td>
+    </tr>
+    <tr>
+      <td>rate</td>
+      <td>Decimal</td>
+      <td>Optional, Tax rate applied for the invoice line. Value from 0 to 100. If 0 value is provided then the amount will take precedence</td>
+      <td>1.12</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="taxableitem">TaxableItem</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>taxType</td>
+      <td>String (30)</td>
+      <td>Type of tax applied - from the list of approved tax type codes. <a href="/codes/tax-types/">Tax Types</a>.</td>
+      <td>T1-T20</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Amount of the tax applied, tax type defined type of tax applies to support different taxes that are possible depending on the type of sales, customer etc. Value with the precision of 2</td>
+      <td>2.12345</td>
+    </tr>
+    <tr>
+      <td>subType</td>
+      <td>String (50)</td>
+      <td>Subtype of the <a href="/codes/tax-types/">Tax Types</a> that might mean exemption rate is applied or specific rate linked to product type being sold is applied.</td>
+      <td>V001</td>
+    </tr>
+    <tr>
+      <td>rate</td>
+      <td>Decimal</td>
+      <td>Tax rate applied for the invoice line. Value from 0 to 100.</td>
+      <td>2.12</td>
+    </tr>
+    <tr>
+      <td>sign</td>
+      <td>Integer</td>
+      <td>1 for Sales, -1 for Return</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>exchangeRate</td>
+      <td>Decimal</td>
+      <td>Exchange rate</td>
+      <td>0.12345</td>
+    </tr>
+    <tr>
+      <td>taxTypeName</td>
+      <td>String (250)</td>
+      <td>Name of Tax Type in english</td>
+      <td>Value added tax</td>
+    </tr>
+    <tr>
+      <td>taxTypeNameAr</td>
+      <td>String (250)</td>
+      <td>Name of Tax Type in arabic</td>
+      <td>ضريبة القيمة المضافة</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="taxtotals">TaxTotals</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>taxType</td>
+      <td>String (30)</td>
+      <td>Mandatory, Type of tax applied - from the list of approved <a href="/codes/tax-types/">tax type codes</a>.</td>
+      <td>T1-T20</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Mandatory, Sum of all amounts of given tax in all line items. 5 decimal digits allowed.</td>
+      <td>838.12345</td>
+    </tr>
+    <tr>
+      <td>taxTypeName</td>
+      <td>String (250)</td>
+      <td>Name of Tax Type</td>
+      <td>Value added tax</td>
+    </tr>
+    <tr>
+      <td>taxTypeNameAr</td>
+      <td>String (250)</td>
+      <td>Name of Tax Type in Arabic</td>
+      <td>ضريبة القيمة المضافة</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="contractor">Contractor</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td>String (200)</td>
+      <td>Optional, Name of the Contractor</td>
+      <td>ABC CORP</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Optional, this is the amount that the contractor is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.</td>
+      <td>1536.12345</td>
+    </tr>
+    <tr>
+      <td>rate</td>
+      <td>Decimal</td>
+      <td>Optional, this is the rate that the contractor is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.</td>
+      <td>1.12</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="beneficiary">Beneficiary</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Optional, this is the amount that the beneficiary or buyer is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.</td>
+      <td>1536.12345</td>
+    </tr>
+    <tr>
+      <td>rate</td>
+      <td>Decimal</td>
+      <td>Optional, this is the rate that the beneficiary or buyer is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.</td>
+      <td>1.12</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="returnreceipt">ReturnReceipt</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>uuid</td>
+      <td>String(64)</td>
+      <td>Unique ID of the return receipt.</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>dateTimeIssued</td>
+      <td>DateTime</td>
+      <td>The date and time when the return receipt was Issued.</td>
+      <td>2015-02-13T13:15Z (datetime format would be yyyy-mm-dd and time zone would be UTC.)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="receipthistory">ReceiptHistory</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>date</td>
+      <td>DateTime</td>
+      <td>Date time of the receipt in history.</td>
+      <td>2015-02-13T13:15Z (datetime format would be yyyy-mm-dd and time zone would be UTC.)</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>String</td>
+      <td>Status of the receipt in history.</td>
+      <td>Valid.</td>
+    </tr>
+    <tr>
+      <td>reason</td>
+      <td>String</td>
+      <td>Optional, status reason of the receipt in history.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>submissionUuid</td>
+      <td>String</td>
+      <td>Submission Uuid of the receipt in history.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>canceledBy</td>
+      <td>String</td>
+      <td>Optional, cancelled by of the receipt in history.</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="error-response">Error Response</h3>
+
+<p>Error situations are reported back by this API through the <a href="/standard-error-response/">standard error response</a>.</p>
+
+<p>No custom error codes are provided by this API.</p>
+
+<h2 id="additional-considerations">Additional considerations</h2>
+
+<p>Receiver of the receipts can retrieve receipts that are in statuses valid only. If receipt exists, and is issued to given receiver, but status is cancelled, not found code is returned.</p>
+
+<p>Issuer of the receipt can retrieve receipt in received and cancelled status.</p>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+				<nav class="page-nav">
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12">
+								
+									<a href="/ereceiptapi/03-get-receipt-details/" class="page-nav__item page-nav__item--prev">
+										<i class="icon icon--arrow-left"></i>
+										Get Receipt Details
+									</a><!-- /.page-nav__item -->
+								
+								
+									<a href="/ereceiptapi/05-get-receipt-details-anonymously/" class="page-nav__item page-nav__item--next">
+										Get receipt details anonymously
+										<i class="icon icon--arrow-right"></i>
+									</a><!-- /.page-nav__item -->
+								
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.container -->
+				</nav><!-- /.page-nav -->
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'FOKADNMFGHPPCGIDPFHGJEGIEMICEGFLLKDKMJFIFHDFNOJNDKJEHIGFMPPIHNBOODMBAMDNAAMDCFGHGJGAOLHCAAJOJPJMLBDOMBFKMEPJCIFFBEECMNEOGBHOPJAE',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

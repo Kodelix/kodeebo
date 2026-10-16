@@ -1,0 +1,83 @@
+ 
+ Release Notes 
+ Release Notes 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ Release Notes
+ This section contains release notes and news items related to SDK and technical aspects of the solution.
+ Aug 2023 Release
+ Release 22-08-2023
+ Read more
+ July 2023 Release
+ Release 20-07-2023
+ Read more
+ June 2023 Release
+ Release 06-15-2023
+ Read more
+ May 2023 Release
+ Release 01-05-2023
+ Read more
+ March 2023 Release
+ Release 11-03-2023
+ Read more
+ Feb 2023 Release
+ Release 01-02-2023
+ Read more
+ Jan 2023 Release
+ Release 01-01-2023
+ Read more
+ Dec 2022 Release
+ Release 08-12-2022
+ Read more
+ Aug 2022 Release
+ Release 31-08-2022
+ Read more
+ July 2022 Release
+ Release 01-07-2022
+ Read more
+ April 2022 Release
+ Release 20-04-2022
+ Read more
+ June 2021 Release
+ Release 29-06-2021
+ Read more
+ March 2021 Release
+ Release 29-03-2021 Update code management APIs...
+ Read more
+ Feb 2021 Release
+ Release 28-02-2021 Add code management APIs...
+ Read more
+ Jan 2021 Release
+ Release 19-01-2021 Enhancements introduced in this release, read inside the relase notes for full details...
+ Read more
+ Dec 2020 Release
+ Release 29-12-2020 Various enhancements and bug fixes introduced in this release, read inside the relase notes for full details...
+ Read more
+ Nov 2020 Release
+ Release 12-11-2020 Test environment available...
+ Read more
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

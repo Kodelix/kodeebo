@@ -1,0 +1,10 @@
+law-6-2025 http=200 bytes=141233
+d3d0ea59522467636c17b00668d9eff7864b49d43f608fc893597c0ad5f94d85  law-6-2025.pdf
+CreationDate:    Sun Feb 16 21:23:57 2025 EET
+Pages:           5
+  text-bytes: 17770
+etax-licence-337-2022 http=200 bytes=1366086
+0e7ac67475c65cad006d4cc603c3ae3d0a0930df40228b73a8debcc370519046  etax-licence-337-2022.pdf
+CreationDate:    Thu Aug 25 12:44:48 2022 EET
+Pages:           1
+  text-bytes: 137

@@ -1,0 +1,161 @@
+SEQUENCE (2 elem)
+  OBJECT IDENTIFIER 1.2.840.113549.1.7.2 signedData (PKCS #7)
+  [0] (1 elem)
+    SEQUENCE (5 elem)
+      INTEGER 3
+      SET (1 elem)
+        SEQUENCE (1 elem)
+          OBJECT IDENTIFIER 2.16.840.1.101.3.4.2.1 sha-256 (NIST Algorithm)
+      SEQUENCE (1 elem)
+        OBJECT IDENTIFIER 1.2.840.113549.1.7.5 digestedData (PKCS #7)
+      [0] (1 elem)
+        SEQUENCE (3 elem)
+          SEQUENCE (8 elem)
+            [0] (1 elem)
+              INTEGER 2
+            INTEGER (127 bit) 86920238811535443712698337375403519522
+            SEQUENCE (2 elem)
+              OBJECT IDENTIFIER 1.2.840.113549.1.1.11 sha256WithRSAEncryption (PKCS #1)
+              NULL
+            SEQUENCE (3 elem)
+        Offset: 104
+        Length: 2+73
+        (constructed)
+        Value:
+        (3 elem)
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.6 countryName (X.520 DN component)
+                  PrintableString EG
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.10 organizationName (X.520 DN component)
+                  PrintableString Egypt Trust
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.3 commonName (X.520 DN component)
+                  PrintableString Egypt Trust Corporate CA G2
+            SEQUENCE (2 elem)
+              UTCTime 2020-03-31 00:00:00 UTC
+              UTCTime 2021-03-30 23:59:59 UTC
+            SEQUENCE (4 elem)
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.10 organizationName (X.520 DN component)
+                  TeletexString Egypt Trust
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.97
+                  TeletexString VATEG-113317713
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.6 countryName (X.520 DN component)
+                  PrintableString EG
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.3 commonName (X.520 DN component)
+                  UTF8String Test Sealing Demo user2
+            SEQUENCE (2 elem)
+              SEQUENCE (2 elem)
+                OBJECT IDENTIFIER 1.2.840.113549.1.1.1 rsaEncryption (PKCS #1)
+                NULL
+              BIT STRING (2160 bit) 001100001000001000000001000010100000001010000010000000010000000100000…
+                SEQUENCE (2 elem)
+                  INTEGER (2048 bit) 210054990542951242003277234899641613156441004351352170221111290453244…
+                  INTEGER 65537
+            [3] (1 elem)
+              SEQUENCE (6 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.29.19 basicConstraints (X.509 extension)
+                  OCTET STRING (2 byte) 3000
+                    SEQUENCE (0 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.29.31 cRLDistributionPoints (X.509 extension)
+                  OCTET STRING (77 byte) 304B3049A047A0458643687474703A2F2F6D706B6963726C2E65677970747472757374…
+                    SEQUENCE (1 elem)
+                      SEQUENCE (1 elem)
+                        [0] (1 elem)
+                          [0] (1 elem)
+                            [6] (67 byte) http://mpkicrl.egypttrust.com/EgyptTrustCorporateCAG2/LatestCRL.crl
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.29.14 subjectKeyIdentifier (X.509 extension)
+                  OCTET STRING (20 byte) AB3143226B72B6C51B8216E6B67976FE4E1DE631
+                    OCTET STRING (20 byte) AB3143226B72B6C51B8216E6B67976FE4E1DE631
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.16.840.1.113730.1.1 netscape-cert-type (Netscape certificate extension)
+                  OCTET STRING (4 byte) 03020780
+                    BIT STRING (1 bit) 1
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.29.35 authorityKeyIdentifier (X.509 extension)
+                  OCTET STRING (24 byte) 3016801422273FCCE25083E6BBCE97254597B2928DDCBB05
+                    SEQUENCE (1 elem)
+                      [0] (20 byte) 22273FCCE25083E6BBCE97254597B2928DDCBB05
+                SEQUENCE (3 elem)
+                  OBJECT IDENTIFIER 2.5.29.15 keyUsage (X.509 extension)
+                  BOOLEAN true
+                  OCTET STRING (4 byte) 030206C0
+                    BIT STRING (2 bit) 11
+          SEQUENCE (2 elem)
+            OBJECT IDENTIFIER 1.2.840.113549.1.1.11 sha256WithRSAEncryption (PKCS #1)
+            NULL
+          BIT STRING (2048 bit) 110001000100110111001010101001110010011000100101001111110010111111011…
+      SET (1 elem)
+        SEQUENCE (6 elem)
+          INTEGER 1
+          SEQUENCE (2 elem)
+            SEQUENCE (3 elem)
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.6 countryName (X.520 DN component)
+                  PrintableString EG
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.10 organizationName (X.520 DN component)
+                  PrintableString Egypt Trust
+              SET (1 elem)
+                SEQUENCE (2 elem)
+                  OBJECT IDENTIFIER 2.5.4.3 commonName (X.520 DN component)
+                  PrintableString Egypt Trust Corporate CA G2
+            INTEGER (127 bit) 86920238811535443712698337375403519522
+          SEQUENCE (1 elem)
+            OBJECT IDENTIFIER 2.16.840.1.101.3.4.2.1 sha-256 (NIST Algorithm)
+          [0] (4 elem)
+            SEQUENCE (2 elem)
+              OBJECT IDENTIFIER 1.2.840.113549.1.9.3 contentType (PKCS #9)
+              SET (1 elem)
+                OBJECT IDENTIFIER 1.2.840.113549.1.7.5 digestedData (PKCS #7)
+            SEQUENCE (2 elem)
+              OBJECT IDENTIFIER 1.2.840.113549.1.9.5 signingTime (PKCS #9)
+              SET (1 elem)
+                UTCTime 2020-10-30 13:03:54 UTC
+            SEQUENCE (2 elem)
+              OBJECT IDENTIFIER 1.2.840.113549.1.9.4 messageDigest (PKCS #9)
+              SET (1 elem)
+                OCTET STRING (32 byte) 6E82206BED4339122FFB75062EBCC6C2E23A00F1A27ED73B2D756B122810999D
+            SEQUENCE (2 elem)
+              OBJECT IDENTIFIER 1.2.840.113549.1.9.16.2.47 signingCertificateV2 (S/MIME Authenticated Attributes)
+              SET (1 elem)
+                SEQUENCE (1 elem)
+                  SEQUENCE (1 elem)
+                    SEQUENCE (2 elem)
+                      OCTET STRING (32 byte) 0240F2E3BF7A4DE5F62DD93A046D3E1196C301589636DE27BC808049F260D096
+                      SEQUENCE (2 elem)
+                        SEQUENCE (1 elem)
+                          [0] (1 elem)
+                            SEQUENCE (3 elem)
+                              SET (1 elem)
+                                SEQUENCE (2 elem)
+                                  OBJECT IDENTIFIER 2.5.4.6 countryName (X.520 DN component)
+                                  PrintableString EG
+                              SET (1 elem)
+                                SEQUENCE (2 elem)
+                                  OBJECT IDENTIFIER 2.5.4.10 organizationName (X.520 DN component)
+                                  PrintableString Egypt Trust
+                              SET (1 elem)
+                                SEQUENCE (2 elem)
+                                  OBJECT IDENTIFIER 2.5.4.3 commonName (X.520 DN component)
+                                  PrintableString Egypt Trust Corporate CA G2
+                        INTEGER (127 bit) 86920238811535443712698337375403519522
+          SEQUENCE (1 elem)
+            OBJECT IDENTIFIER 1.2.840.113549.1.1.1 rsaEncryption (PKCS #1)
+          OCTET STRING (256 byte) 83AEFEE5E3503E37ADB95FD52711821710D722A2659E86CE14805720420B133FB79A3…

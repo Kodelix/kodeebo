@@ -1,0 +1,6 @@
+FAIL https://sdk.invoicing.eta.gov.eg/_codes/unit-types HTTP Error 404: Not Found
+FAIL https://sdk.invoicing.eta.gov.eg/api/28-update-egs-code-usage/ HTTP Error 404: Not Found
+FAIL https://sdk.invoicing.eta.gov.eg/api/06-cancel-document/ HTTP Error 404: Not Found
+FAIL https://sdk.invoicing.eta.gov.eg/api/14-decline-rejection-cancellation/ HTTP Error 404: Not Found
+FAIL https://sdk.invoicing.eta.gov.eg/api/06-receive-download-ready-notification/ HTTP Error 404: Not Found
+pages 190

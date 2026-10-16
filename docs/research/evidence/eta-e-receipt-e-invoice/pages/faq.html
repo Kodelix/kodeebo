@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Frequently asked questions</title>
+
+	<meta name="description" content="Answers to frequently asked questions about eInvoicing integration approach">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Frequently asked questions</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Frequently asked questions" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Answers to frequently asked questions about eInvoicing integration approach" />
+<meta name="twitter:description" property="og:description" content="Answers to frequently asked questions about eInvoicing integration approach" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Frequently asked questions" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Answers to frequently asked questions about eInvoicing integration approach","headline":"Frequently asked questions","url":"/faq/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Frequently asked questions</h1>
+								
+								
+									<p class="hero-subheader__desc">Answers to frequently asked questions about eInvoicing integration approach</p>
+								
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h1 id="how-to-set-up-environment-to-access-test-apis-and-test-portals">How to set up environment to access test APIs and test portals?</h1>
+
+<p>Test environment of the solution (PreProd environments) depends on internally issued certificates. Therefore to be able to properly use either the Invoicing Portal or get to APIs that solution is exposing, first you need to configure trust of Root Certificate of the test environment in your own test and development environments (<strong>Note:</strong> do not install this certificate in your production environment).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>URL/Environment</th>
+      <th>PreProd</th>
+      <th>Prod</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Registration Portal</td>
+      <td>https://profile.preprod.eta.gov.eg</td>
+      <td>https://profile.eta.gov.eg</td>
+    </tr>
+    <tr>
+      <td>Invoicing Portal</td>
+      <td>https://preprod.invoicing.eta.gov.eg</td>
+      <td>https://invoicing.eta.gov.eg</td>
+    </tr>
+    <tr>
+      <td>System API</td>
+      <td>https://api.preprod.invoicing.eta.gov.eg</td>
+      <td>https://api.invoicing.eta.gov.eg</td>
+    </tr>
+    <tr>
+      <td>Identity Service</td>
+      <td>https://id.preprod.eta.gov.eg</td>
+      <td>https://id.eta.gov.eg</td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>To do the configuration, please download the root CA certificate file as per the environment below:</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>Environment</th>
+      <th>Root CA certificate file</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PreProd</td>
+      <td><a href="/files/preprod-root-ca.crt">Root CA certificate file</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<ol>
+  <li>
+    <p>Download the file to your local machine that will be used to test the APIs and portal of eInvoicing, right-click and choose <code class="highlighter-rouge">Install Certificate</code> (Note: Admin rights on machine are needed)
+<img src="/images/faq-install-certificate-01.png" alt="Choose Install Certificate" /></p>
+  </li>
+  <li>
+    <p>Choose <code class="highlighter-rouge">Local Machine</code>
+<img src="/images/faq-install-certificate-02.png" alt="Choose Local machine" /></p>
+  </li>
+  <li>
+    <p>Select <code class="highlighter-rouge">Trusted Root Certification Authorities</code> store
+<img src="/images/faq-install-certificate-03.png" alt="Choose Trusted Root Certification Authority Store" /></p>
+  </li>
+  <li>
+    <p>Confirm the selection of store, press <code class="highlighter-rouge">Next</code> and then press <code class="highlighter-rouge">Finish</code> on final confirmation screen</p>
+  </li>
+</ol>
+
+<div class="callout callout--info">
+    <p><strong>Note!</strong> This instruction describes how to install the certificate on Windows 10 machine. If you are using older Windows or another operating system, please follow appropriate guidance from the vendor of the OS you have.</p>
+</div>
+
+<h1 id="how-to-test-our-apis-via-postman">How to test our APIs via Postman?</h1>
+
+<p>For those that are using <a href="https://www.postman.com/">Postman</a> to do quick tests and see how the APIs should be called both on identity service and actual document exchange, please use the Postman collection <a href="/files/Egyptian eInvoicing SDK.postman_collection.json">Egyptian eInvoicing SDK.postman_collection.json</a> (use right-click Save As…) and use Postman as per the environment below (use right-click Save As…).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Environment</th>
+      <th>Postman Env. File</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PreProd</td>
+      <td><a href="/files/EEI - PREPROD Env.postman_environment.json">EEI - PREPROD Env.postman_environment.json</a></td>
+    </tr>
+    <tr>
+      <td>Prod</td>
+      <td><a href="/files/EEI - PRD Env.postman_environment.json">EEI - PRD Env.postman_environment.json</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To install the environments file, follow these steps:</p>
+<ol>
+  <li>
+    <p>On the top right hand corner, click on the gear icon named <code class="highlighter-rouge">Manage Environments</code>
+<img src="/images/faq-install-env-01.png" alt="Choose Manage environments" /></p>
+  </li>
+  <li>
+    <p>A popup named <code class="highlighter-rouge">Manage Environments</code> will show up and you need to click on the <code class="highlighter-rouge">Import</code> button, after clicking on the import button, select the right env. file named and click <code class="highlighter-rouge">Ok</code>
+<img src="/images/faq-install-env-02.png" alt="Choose the File to Import" /></p>
+  </li>
+  <li>
+    <p>A new environment named <code class="highlighter-rouge">EEI - PreProd Env</code> or <code class="highlighter-rouge">EEI - Prod Env</code> should be added to the drop down list on the top right corner, click again on the <code class="highlighter-rouge">gear icon</code> and click on the newly added environment named <code class="highlighter-rouge">EEI - PreProd Env</code> or <code class="highlighter-rouge">EEI - Prod Env</code> (Based on the environment you want to work on)
+<img src="/images/faq-install-env-04.png" alt="Environment available" /></p>
+  </li>
+  <li>
+    <p><strong>Note</strong>: In case you faced in PostMan an error stating “SSL Error: Self signed certificate in certificate chain” similar to the image below, you need to click on the link “Disable SSL Verification” or you need to follow the step in point 5.
+<img src="/images/faq-install-env-05.png" alt="Disable SSL Verification" /></p>
+  </li>
+  <li>
+    <p>Go to PostMan settings from the top right corner <code class="highlighter-rouge">Gear Icon</code>, then <strong>turn off</strong> “SSL Certificate Verification” as shown in the image below.
+<img src="/images/faq-install-env-06.png" alt="SSL Certificate Verification" /></p>
+  </li>
+</ol>
+
+<h1 id="receipt-issuance-faq"><a href="/receiptissuancefaq/">Receipt Issuance FAQ</a></h1>
+
+<p>This section contains the frequently asked questions regarding issuance of receipts.</p>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'FMHLDBPDEHDHHOJDPNCJOMCDKLCNJCEIFEJBJHBNPJIMMBFNLGKHMODKAIKBBIAILNBBOGFLAACMALPLECOAOFJFAAPKNDCIMFAGPJMBGAOCBDBLBGDMIIGGLLGNDHGD',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

@@ -1,0 +1,83 @@
+
+Main Calculations
+Main Calculations
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Main Calculations
+This section defines the validation rules and calculations for receipt field values.
+Validation rules and calculations for all the elements are as follows:
+seller.rin length must be 9 digits
+if buyer.type is [B], buyer.id length must be 9 digits
+if buyer.type is [P] and buyer.id is not null, buyer.id length must be 14 digits
+header.dateTimeIssued can’t be in the future
+itemData[*].quantity is a decimal number up to 5 decimal precisions
+itemData[*].unitPrice is a decimal number up to 5 decimal precisions
+itemData[*].unitPrice >= 0
+itemData[*].commercialDiscountData[*].amount >= 0
+totalCommercialDiscount <= totalSales
+itemData[*].totalSale is a decimal number up to 5 decimal precisions
+itemData[*].totalSale = itemData[*].quantity * itemData[*].unitPrice
+itemData[*].netSale is a decimal number up to 5 decimal precisions
+itemData[*].netSale = itemData[*].totalSale – Sum(itemData[*].commercialDiscountData[*].amount)- Sum (itemData[*].additionalCommercialDiscount.amount)
+itemData[*].valueDifference is a decimal number up to 5 decimal precisions
+itemData[*].itemDiscountData[*].amount is a decimal number up to 5 decimal precisions
+totalAmount is a decimal number up to 5 decimal precisions
+itemData[*].total = itemData[*].netSale + t3Amount [itemData[*].taxableItems[taxType=T3].amount] + TotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T5-T12].amount)] + t2Amount [itemData[*].taxableItems[taxType=T2].amount] + t1Amount [itemData[*].taxableItems[taxType=T1].amount] - Sum(itemData[*].itemDiscountData[*].amount) - Sum(itemData[*].additionalItemDiscount.amount) - t4Amount [itemData[*].taxableItems[taxType=T4].amount] + NonTotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T13-T20].amount)]
+totalSales is a decimal number up to 5 decimal precisions
+totalCommercialDiscount is a decimal number up to 5 decimal precisions
+netAmount is a decimal number up to 5 decimal precisions
+totalItemsDiscount is a decimal number up to 5 decimal precisions
+taxTotals[*].amount is a decimal number up to 5 decimal precisions
+totalSales = Sum (itemData[*].totalSale)
+totalCommercialDiscount = Sum (itemData[*].commercialDiscountData[*].amount) + Sum (itemData[*].additionalCommercialDiscount.amount)
+netAmount = Sum(itemData[*].netSale)
+taxTotals <taxType> = Sum (itemData[*].taxableItems[taxType=].amount)
+totalItemsDiscount = Sum (itemData[*].itemDiscountData[*].amount) + Sum (itemData[*].additionalItemDiscount.amount)
+extraReceiptDiscountData[*].amount is a decimal number up to 5 decimal precisions
+totalAmount = Sum (itemData[*].Total) - Sum (extraReceiptDiscountData[*].amount) + adjustment
+itemData[*].taxableItems[*].amount is a decimal number up to 5 decimal precisions
+if itemData[*].taxableItems[*].subType is not fixed, itemData[*].taxableItems[*].rate must be between 0 and 999
+if itemData[*].taxableItems[*].rate > 0, it is a decimal number up to 2 decimal precisions
+itemData[*].taxableItems[*].amount >= 0
+header.netWeight - pattern match to have decimal value with up to 5 decimal precision digits
+header.grossWeight - pattern match to have decimal value with up to 5 decimal precision digits
+if Channel = “ERP” OR Channel = “POS” and itemData[*].taxableItems[*].subType provided is fixed, then itemData[*].taxableItems[*].rate should be provided as zero or not provided at all
+if header.currency is not [EGP], header.exchangeRate is a decimal number up to 5 decimal precisions
+buyer.type is [B], seller.rin != buyer.id (can’t be the same)
+itemData[*].itemDiscountData[*].amount >= 0
+if itemData[*].taxableItems[*].taxtype=T2, then itemData[*].taxableItems[*].amount = (itemData[*].netSale + TotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T5-T12].amount)] + itemData[*].valueDifference) * itemData[*].taxableItems[taxType=”T2”].rate / 100
+if itemData[*].taxableItems[*].taxtype=T3, then itemData[*].taxableItems[*].rate = 0 OR is not supplied (rate for this item should always be 0 as this if fixed amount item)
+if itemData[*].taxableItems[*].taxtype=T1, then itemData[*].taxableItems[*].amount = (itemData[*].taxableItems[taxType=”T2” <TableTaxPercentageT2>].amount + itemData[*].netSale + TotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T5-T12].amount)] + itemData[*].valueDifference + itemData[*].taxableItems[taxType=”T3” <TableTaxFixedAmountT3>].amount) _ itemData[*].taxableItems[_ TaxableItem<T1>].Rate / 100
+itemData[*].total  is a decimal number up to 5 decimal precisions
+if itemData[*].commercialDiscountData[*].rate>0, then itemData[*].commercialDiscountData[*].amount= itemData[*].commercialDiscountData[*].rate * itemData[*].totalSale/ 100
+if itemData[*].itemDiscountData[*].rate>0, then itemData[*].itemDiscountData[*].amount= itemData[*].itemDiscountData [*].rate * itemData[*].netSale / 100
+if itemData[*].additionalCommercialDiscount.rate>0, then itemData[*].additionalCommercialDiscount.amount= itemData[*].additionalCommercialDiscount .rate * (itemData[*].totalSale – Sum(itemData[*].commercialDiscount[*].amount))/ 100
+if itemData[*].additionalItemDiscount.rate>0, then itemData[*].additionalItemDiscount.amount= itemData[*].additionalItemDiscount.rate * (itemData[*].netSale – Sum(itemData[*].itemDiscountData[*].amount))/ 100
+if extraReceiptDiscountData[*].rate>0, then extraReceiptDiscountData[*].amount= extraReceiptDiscountData[*].rate * netAmount / 100
+Note!
+• All the above calculations are subject to (± 0.5) tolerance.
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

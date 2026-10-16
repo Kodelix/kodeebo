@@ -55,5 +55,13 @@ xcuserdata/
 .build/
 Pods/
 
+# === Research evidence binaries ===
+# Large downloads stay out of git; source URL, retrieval date and SHA-256 are
+# recorded in docs/research/eta-e-receipt-e-invoice.md § 9.5. Scripts, outputs
+# and text extracts are committed.
+docs/research/evidence/eta-e-receipt-e-invoice/**/*.pdf
+docs/research/evidence/eta-e-receipt-e-invoice/**/*.png
+docs/research/evidence/eta-e-receipt-e-invoice/**/__pycache__/
+
 # === Runtime artifacts ===
 docs/consistency-failures.md

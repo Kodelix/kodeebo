@@ -1,0 +1,50 @@
+
+Receipt Batch Signature Creation
+Receipt Batch Signature Creation
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Receipt Batch Signature Creation
+Page describes the the algorithm and shows examples of how signatures for receipt batches submitted should be created.
+Note! The function to perform signature validation will not be deployed at this point until a decision is provided by ETA to test and deploy the component.
+Process
+The overall steps to take when preparing a receipt batch for submission are:
+Create receipt batch JSON, consisting of all receipts to be submitted as part of the batch, placing individual receipts into separate receipts root-level array field elements.
+Create canonical version of the JSON as per algorithm described
+Apply sha256 hash on the byte array created from canonical JSON version (using UTF-8)
+Sign the hash, using CAdES-BES signature.
+Include Base64 encoded CAdES-BES signature into original document JSON signatures element.
+Note that to ensure data transfer over network, potential newline symbols or spaces added removed between JSON elements are not changing the signature value, the solution leverages specialized data document canonicalization approach to ensure only significant data (names and values of fields) is used as part of the signature. The algorithm to implement when serializing data to get hash code to sign is described in Document Serialization Approach.
+Once multiple documents are prepared as per description above they all need to be added into documents array when JSON is used. After that the submission is ready to be sent to the eInvoicing  and eReceipt solution by calling Receipt Submission API.
+Step by Step Examples
+When going through the process steps defined results of the steps should look as shown in these examples:
+After preparing the source document for submission it should look as shown in these examples for JSON.
+After creating canonical versions of each document, they should look as shown in these examples for JSON.
+After applying hashing of the serialized document 32 byte hash value should be received for the document.
+After signing the hash value using eSeal certificate and creating CADES-BES signature it should have structure similar to this parsed structure.
+Note that parsed structure shows the contents of the CADES-BES, but actual structure is binary ASN.1 block of data, encoded using Base64.”
+After including signature data into original document content you should get files similar to these examples for JSON.
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

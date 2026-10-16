@@ -1,0 +1,41 @@
+
+Aug 2022 Release
+Aug 2022 Release
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Aug 2022 Release
+31 Aug 2022 - ETA
+Updated APIs
+Cancel Document
+– Update possible validation error when trying to cancel Freezed document
+Reject Document
+– Update possible validation error when trying to Reject Freezed document
+Get recent documents
+– Update returned response to include FreezeStatus object
+Get document details
+– Update returned response to include FreezeStatus object
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

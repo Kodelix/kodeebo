@@ -1,0 +1,218 @@
+=== generic vs coffee
+18,19c18,19
+< Receipt v1.2
+< v1.2 of the Receipt document type is the initial version of the Receipt supported by the eReceipt solution.
+---
+> Coffee & Restaurant Receipt v1.2
+> v1.2 of the Receipt document type is the initial version of the Coffee & Restaurant Receipt supported by the eReceipt solution
+21c21
+< Receipts are the documents issued by the taxpayer for the goods or services purchased by the customer registered with the Tax Authority.
+---
+> Coffee & Restaurant receipts are the documents issued by the taxpayer for the food or drinks purchased by the customer registered with the Tax Authority.
+89,96d88
+<        | contractor
+<        | contractor
+<        | Optional, Structure representing the contractor information.
+<        | See structure.
+<        | beneficiary
+<        | beneficiary
+<        | Optional, Structure representing the beneficiary information.
+<        | See structure.
+105c97
+<        | Mandatory,Date and time of issuance of receipt
+---
+>        | Mandatory, Date and time of issuance of receipt
+113c105
+<        | Mandatory, SHA256 format. UUID is a unique key on system level added by taxpayer, it is generated based on receipt content as per receipt base schema, Steps to generate UUID
+---
+>        | Mandatory, SHA256 format. UUID is a unique key on system level added by taxpayer, it is generated based on receipt content as per receipt base schema, Steps to generate UUID format
+128c120
+<        | Decimal,
+---
+>        | Decimal
+137c129
+<        | Text(30), Optional,  Order Delivery Mode Codes
+---
+>        | Text(30), Mandatory  Order Delivery Mode Codes
+139,146d130
+<        | grossWeight
+<        | Decimal,
+<        | Optional, Total weight of the goods delivered. Value in kilograms
+<        | 12.12345
+<        | netWeight
+<        | Decimal
+<        | Optional, Net weight of the goods delivered. Value in kilograms
+<        | 12.12345
+154,155c138,139
+<        | Mandatory, the Value must be ‘s’ for Sale Receipt
+<        | s
+---
+>        | Mandatory, the Value must be ‘SC’ for Coffee & Restaurant Receipt
+>        | SC
+185,188d168
+<        | syndicateLicenseNumber
+<        | String (30)
+<        | Optional. In case it is a person, then it is a number of minimum 10 characters, if the number is less than 10 characters, leading zeros should be added, example: “0001234567”. In case it is a company, the value should be “C”
+<        | 0001234567
+257c237
+<        | String (100)
+---
+>        | String (200)
+277c257
+<        | Mandatory,  Internal code is used for the product being sold – can be used to simplify references back to existing solution.
+---
+>        | Mandatory, Internal code used for the product being sold – can be used to simplify references back to existing solution.
+281c261
+<        | Mandatory,  Description of the item being sold
+---
+>        | Mandatory, Description of the item being sold
+285c265
+<        | Mandatory, Coding schema used to encode the item type. Must be GS1 or EGS for this version
+---
+>        | Mandatory, Coding schema used to encode the item type. Must be GS1 or EGS for this version.
+289c269
+<        | Mandatory, Code of the goods or services item being sold. GS1 codes targeted for managing goods, EGS codes targeted for managing goods – goods or services
+---
+>        | Mandatory, Code of the goods or services item being sold. GS1 codes targeted for managing goods, EGS codes targeted for managing goods – goods or services.
+297c277
+<        | Mandatory,  Number of units of the defined unit type being sold. Number should be larger than 0.
+---
+>        | Mandatory, Number of units of the defined unit type being sold. Number should be larger than 0.
+313c293
+<        | Mandatory, Total amount for the receipt line after adding all pricing items, taxes, removing discounts
+---
+>        | Mandatory, Total amount for the receipt line after adding all pricing items, taxes, removing discounts.
+319,322d298
+<        | itemDiscountData
+<        | Array of discount
+<        | Optional, This would be collection of objects of non-taxable items discounts.
+<        | See structure.
+330a307,310
+>        | itemDiscountData
+>        | Array of discount
+>        | Optional, This would be collection of objects of non-taxable items discounts.
+>        | See structure.
+333c313
+<        | Optional,  Value difference when selling goods already taxed (accepts +/- numbers), e.g., factory value based
+---
+>        | Optional, Value difference when selling goods already taxed (accepts +/- numbers), e.g., factory value based.
+337c317
+<        | Optional, Structure representing the taxableItems information.
+---
+>        | Optional,Structure representing the taxableItems information.
+390,419d369
+< Contractor
+<        | Element
+<        | Type
+<        | Description
+<        | Value example
+<        | name
+<        | String (100)
+<        | Optional, Name of the Contractor
+<        | ABC CORP
+<        | amount
+<        | Decimal
+<        | Optional, this is the amount that the contractor is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1536.12345
+<        | rate
+<        | Decimal
+<        | Optional, this is the rate that the contractor is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1.12
+< Beneficiary
+<        | Element
+<        | Type
+<        | Description
+<        | Value example
+<        | amount
+<        | Decimal
+<        | Optional, this is the amount that the beneficiary or buyer is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1536.12345
+<        | rate
+<        | Decimal
+<        | Optional, this is the rate that the beneficiary or buyer is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1.12
+=== generic vs entertainment
+18,19c18,19
+< Receipt v1.2
+< v1.2 of the Receipt document type is the initial version of the Receipt supported by the eReceipt solution.
+---
+> Entertainment Receipt v1.2
+> v1.2 of the Entertainment Receipt document type is the initial version of the Entertainment Receipt supported by the eReceipt solution
+21c21
+< Receipts are the documents issued by the taxpayer for the goods or services purchased by the customer registered with the Tax Authority.
+---
+> Entertainment Receipts are the documents issued by the taxpayer to cover entertainment services taken by the customer registered with the Tax Authority.
+24c24
+< The data structure of the receipt v1.2 documents consists of a single document element that contains these additional elements. Note that this description defines the data structure while actual attribute naming could be different for JSON structure.
+---
+> The data structure of the entertainment receipt v1.2 documents consists of a single document element that contains these additional elements. Note that this description defines the data structure while actual attribute naming could be different for JSON structure.
+81,84d80
+<        | paymentMethod
+<        | String (50)
+<        | Mandatory, Payment Method Codes
+<        | C
+89,96d84
+<        | contractor
+<        | contractor
+<        | Optional, Structure representing the contractor information.
+<        | See structure.
+<        | beneficiary
+<        | beneficiary
+<        | Optional, Structure representing the beneficiary information.
+<        | See structure.
+131,134d118
+<        | sOrderNameCode
+<        | String (200)
+<        | Text(30), Optional, Reference to the previous sales order for informational purposes. The field would contain the name of the sales order and/or a reference number to that sales order.
+<        | ABC12345
+139,146d122
+<        | grossWeight
+<        | Decimal,
+<        | Optional, Total weight of the goods delivered. Value in kilograms
+<        | 12.12345
+<        | netWeight
+<        | Decimal
+<        | Optional, Net weight of the goods delivered. Value in kilograms
+<        | 12.12345
+154,155c130,131
+<        | Mandatory, the Value must be ‘s’ for Sale Receipt
+<        | s
+---
+>        | Mandatory, the Value must be ‘SN’ for Entertainment services industry sales receipt
+>        | SN
+185,188d160
+<        | syndicateLicenseNumber
+<        | String (30)
+<        | Optional. In case it is a person, then it is a number of minimum 10 characters, if the number is less than 10 characters, leading zeros should be added, example: “0001234567”. In case it is a company, the value should be “C”
+<        | 0001234567
+390,419d361
+< Contractor
+<        | Element
+<        | Type
+<        | Description
+<        | Value example
+<        | name
+<        | String (100)
+<        | Optional, Name of the Contractor
+<        | ABC CORP
+<        | amount
+<        | Decimal
+<        | Optional, this is the amount that the contractor is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1536.12345
+<        | rate
+<        | Decimal
+<        | Optional, this is the rate that the contractor is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1.12
+< Beneficiary
+<        | Element
+<        | Type
+<        | Description
+<        | Value example
+<        | amount
+<        | Decimal
+<        | Optional, this is the amount that the beneficiary or buyer is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1536.12345
+<        | rate
+<        | Decimal
+<        | Optional, this is the rate that the beneficiary or buyer is paying from the receipt total amount. This is in case of receipts that has a contractor paying part of the receipt amount such as medical receipts with insurance companies paying part of the amount.
+<        | 1.12

@@ -1,0 +1,55 @@
+
+Toolkit Docker container usage
+Toolkit Docker container usage
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Toolkit Docker container usage
+Toolkit docker usage can be done with the following guide, here described how to use toolkit locally as a docker image.  It provides REST API’s and which are exposed by docker container.
+											Container Config
+											Toolkit Docker Api's
+Overview
+Docker container is the useful tool for the developer of the taxpayer to use any of the API endpoints from the local container.
+Toolkit Swagger UI will helps the developer to try out the API calls directly in the browser.
+•	It gives more information about Available endpoints and operations on each endpoint (GET, POST etc.,)
+•	Operation parameters Input and output for each operation.
+To get to know about all the available Toolkit Api endpoints.
+Navigate to the below swagger url for accessing docker container.
+http://localhost:8020/toolkit/index.html
+Navigate to the below swagger url for accessing https enabled docker container.
+https://localhost:8030/toolkit/index.html
+Toolkit docker container api’s
+Using toolkit container api’s, developer can understand more about each toolkit integrated feature(s) and their input/output parameters along with the api responses.
+Click here to know more about toolkit docker api’s
+Toolkit api’s postman collection
+Here is the importable toolkit api’s postman collection, If you need this postman collection you can click the below link to download and import it using Postman tool.
+Download the toolkit api’s importable json postman collection
+Toolkit environment postman collection
+Here is the importable toolkit environment postman collection, If you need this postman collection you can click the below link to download and import it using Postman tool.
+Download the toolkit environments importable json postman collection
+										Container Config
+										Toolkit Docker Api's
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

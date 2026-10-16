@@ -1,0 +1,114 @@
+    WWW.ETA.GOV.EG                           )POS( ‫تافصاوملا ​ةينفلا طاقنل عيبلا ةدمتعملا‬                         ‫ةحلصم بئارضلا ةيرصملا‬
+
+NO                 POS (Handheld)Minimum requirements                                       POS (Casheir) Minimum Requirements
+ 1       Processor             at least Cortex-A7 Quad-Core CPU                                        Intel i3 2 cores
+ 2       Memory               At least 2GB RAM, 8GB ROM Flash                                             4 GB DDR3
+       Memory Card         Should have a card reader, memory card
+3         Reader                          storage 64GB                                               HDD-SSD 128 GB
+                         At least 5.5"(1280 x 720 HD resolution) color                               at least 1024X768
+4         Display
+                                   LCD should be touchscreen                                             LCD Screen
+         Operating
+                         At least Android 6 preferably higher version
+5         System                                                                             at least Windows 10, Linux, Android
+         Wireless         4G LTE, compatible with 2G/3G, WiFi and
+6     Communication                         Bluetooth                                         Ethernet LAN 10/100 Connection
+7       Positioning                     A GPS compatible
+
+
+
+                 WWW.ETA.GOV.EG
+                          The machine should support the standard
+                                            protocols
+                                     for card reader such as
+8      Card Readers
+                          MSR: Triple track, bi-directional, IS0 7811
+                           Smart card reader: IS0 7816, PBOC 2018,
+                                       EMV 4.3 level 1 &2
+                          The machine should support the standard
+                                          protocols for
+9       Contactless     contactless cards such as ISOIIEC 14443 A&B,
+                                             MiFare,
+                                  Quickpass, PayPass, payWave
+
+
+
+
+    Facebook@Tax.Egypt                              Youtube@Tax_Egypt                                         Instagram@Tax_Egypt
+ WWW.ETA.GOV.EG                          )POS( ‫تافصاوملا ​ةينفلا طاقنل عيبلا ةدمتعملا‬       ‫ةحلصم بئارضلا ةيرصملا‬
+
+
+
+NO                POS (Handheld)Minimum requirements                    POS (Casheir) Minimum Requirements
+                      Rear: 5Mp CMOS, auto-focus, flashlight, support
+                                        bar code reader
+         Camera
+                       support electronic and paper QR code scanning
+                              scan range from 1MM to 200MM
+       Peripheral
+                                         At least 1 USB
+11        Ports                                                                     at least 3 USB
+12      Security                At least PCI PTS 5.x-approved
+                               Master key1 Session key, DUKPT
+13      PIN Pad
+                                DES, SDES, RSA, SHA-256, AES
+                      At least 25 Ips, 40 mm paper roll, support arabic       USB, LAN, Serial interface
+         Printer
+14                                            font                               Support arabic font
+
+
+15
+              WWW.ETA.GOV.EG
+      Certification
+                           The machine must have all supporting
+                                         certifications
+                                   for the above protocols.
+                          Should be compatible with Egypt power           Should be compatible with Egypt
+                                          standards.                              power standards.
+16       Power           Battery: detachable, and should support for
+                                              long
+                                        working hours.
+17   Environmental         Operating temperature: from 0 to 50°C
+18      Card Slot        At least 1 SIM & 2 SAMs or 2 SlMs & 1 SAM
+
+
+
+
+ Facebook@Tax.Egypt                             Youtube@Tax_Egypt                       Instagram@Tax_Egypt
+ WWW.ETA.GOV.EG                           )POS( ‫تافصاوملا ​ةينفلا طاقنل عيبلا ةدمتعملا‬                          ‫ةحلصم بئارضلا ةيرصملا‬
+
+
+
+
+NO               POS (Handheld)Minimum requirements                                      POS (Casheir) Minimum Requirements
+                        POS devices should be SDHC compatible.
+                            a. Supported Operating System
+                                Android V 6 and higher.
+                                     b. Connectivity
+     2. Micro SDHC          POS must contain Micro SD Slot
+20
+     Requirements                c. Electrical Operating
+                       Operating voltage: Vcc = 3.3 to 5VDC Power
+                             consumption: ~30mA @ 3.3VDC
+                               d. Operating Temperature
+
+
+              WWW.ETA.GOV.EG
+                         Operating temperature: –15° C to 55° C
+
+                         b. Software Application to be able to be                         b. Software Application to be able to
+        3. POS
+                                          modified                                                     be modified
+       Software
+21                               (Availability of source code)                                  (Availability of source code)
+      Application
+                        c. Development Team Able to develop the                          c. Development Team Able to develop
+     Requirements
+                                        integrations                                                the integrations
+                                on top of the POS Application                                  on top of the POS Application
+
+
+
+
+ Facebook@Tax.Egypt                              Youtube@Tax_Egypt                                          Instagram@Tax_Egypt
+

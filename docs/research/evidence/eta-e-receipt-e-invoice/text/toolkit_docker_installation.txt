@@ -1,0 +1,93 @@
+
+Docker Container Installation
+Docker Container Installation
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Docker Container Installation
+It will be useful to the developers to setup Rancher / Docker Desktop to setup and execute various toolkit features.
+											Toolkit Overview
+											Container Config
+Overview
+Rancher Desktop is an app that provides container management and Kubernetes on the desktop. It is available for Mac (both on Intel and Apple Silicon), Windows, and Linux. 
+Docker Desktop is an easy-to-install application for your Mac or Windows environment that enables you to build and share containerized applications and microservices. 
+Developer can use Rancher Desktop / Docker Desktop tool to perform their Toolkit tests from their local environment.
+Note!
+    •	Rancher desktop is an open source tool 
+    •	Docker desktop might require license for its commercial use.
+Developer will have below 2 options to run the docker image from local machine:
+Option 1: Install rancher desktop open source tool to configure and run the toolkit image
+Option 2: Install docker desktop commercial use tool to configure and run the toolkit image
+Install rancher desktop open source tool to configure and run the toolkit image
+Prerequisite
+Rancher Desktop requires the following on Windows:
+•	Windows 10 build 1909 or higher. The Home edition is supported.
+•	Running on a machine with virtualization capabilities.
+•	Persistent internet connection.
+Rancher Desktop requires Windows Subsystem for Linux on Windows; this will automatically be installed as part of the Rancher Desktop setup. Manually downloading a distribution is not necessary.
+It is also recommended to have:
+•	8 GB of memory
+•	4 CPU
+Additional resources may be required depending on the workloads you plan to run.
+“by run PowerShell command : systeminfo”
+•	Make sure wsl is installed by run powershell as admin and run this command :
+wsl --install
+If wsl installed in your machine, upon running wsl --install command will show the wsl help information.
+Here is the reference screen for your information.
+For detailed instructions, refer to the Rancher documentation
+Download & Install
+Step 1:
+•	Download Rancher Desktop, From this link
+Step 2:
+•	Run the exe that you downloaded.
+Step 3:
+•	Select option dockerd and Enable kubernetes
+Step 4:
+•	Wait until download completed :
+Make sure select the Enable Kubernates setting as part of installation
+Unselect the Enable Kubernates setting after completion of the installation
+After successful installation, rancher decktop should be up and running
+Install docker desktop commercial use tool to configure and run the toolkit image
+Prerequisite
+•	Windows 11 64-bit: Home or Pro version 21H2 or higher, or Enterprise or Education version 21H2 or higher.
+•	Windows 10 64-bit: Home or Pro 21H1 (build 19043) or higher, or Enterprise or Education 20H2 (build 19042) or higher.
+•	Enable the WSL 2 feature on Windows. For detailed instructions, refer to the Microsoft documentation
+ •	64-bit processor with Second Level Address Translation (SLAT)
+   •	4GB system RAM
+   •	BIOS-level hardware virtualization support must be enabled in the BIOS settings. For more information, see Virtualization.
+The following hardware prerequisites are required to successfully run WSL 2 on Windows 10 or Windows 11:
+Download and install the Linux kernel update package
+Download & Install
+Step 1:
+•	Download Docker Desktop, From this link download link
+Step 2:
+•	Run the exe that you downloaded.
+Step 3:
+•	Select below Configuration options:
+After successful installation, docker desktop should be up and running
+										Toolkit Overview
+										Container Config
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

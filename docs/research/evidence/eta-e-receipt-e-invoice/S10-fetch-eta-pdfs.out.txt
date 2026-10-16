@@ -1,0 +1,27 @@
+decision-230-2022 http=200 bytes=324777
+dc4432b1f3acd458431ef44e492d2fb6f391c51792b192dc0459a62b98a679cf  decision-230-2022.pdf
+  text-bytes: 14886
+decision-38-2024 http=200 bytes=555580
+93b3099d765473c09007701537ca4c0122b64921f7f7e819d8ad405e9bc5a5b5  decision-38-2024.pdf
+  text-bytes: 11798
+karar-361-2025 http=200 bytes=287030
+3158a02bdb9168602cd7324ca910ab32bd8bba9c2df0fb69c31e064f7ae3286b  karar-361-2025.pdf
+  text-bytes: 1
+ereceipt-faq-v24 http=200 bytes=1944193
+93b2cc0c942b63c8232e41370a0f52623cbd3a9604b9f39905fdf50019ff0364  ereceipt-faq-v24.pdf
+  text-bytes: 201192
+pos-requirements-v3.2 http=200 bytes=1944933
+1ad5449dc363ef6d76248154f53ad9bd486501f69e31f5a7a76b40381e80c920  pos-requirements-v3.2.pdf
+  text-bytes: 6248
+pos-vendor-docs http=200 bytes=839394
+3fe797de7baa9c596a41fdc7532200480a74536925172379b6b0f64859570d89  pos-vendor-docs.pdf
+  text-bytes: 5393
+pos-verified-vendors-v29 http=200 bytes=430659
+4799df22cd6f778b6acc58401aa72c8860e80a05d9f02adfaf5de321a78f29c2  pos-verified-vendors-v29.pdf
+  text-bytes: 17554
+pos-device-request http=200 bytes=778355
+3b23d50f532bad4184abdebb38485ef7fcee13b79e9d4acf46105ae0fc71d529  pos-device-request.pdf
+  text-bytes: 5595
+karar-289-2022 http=200 bytes=4512511
+3afc2a96e16824fcc5bc3a297ac657c61c4f3a225cf15812017d2ce033322202  karar-289-2022.pdf
+  text-bytes: 71520

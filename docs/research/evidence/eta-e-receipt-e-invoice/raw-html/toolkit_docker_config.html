@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Docker Container Config</title>
+
+	<meta name="description" content="Toolkit docker container configuration & administration can be performed with the following guide, here described how to config integration toolkit locally as a docker image.">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Docker Container Config</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Docker Container Config" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Toolkit docker container configuration &amp; administration can be performed with the following guide, here described how to config integration toolkit locally as a docker image." />
+<meta name="twitter:description" property="og:description" content="Toolkit docker container configuration &amp; administration can be performed with the following guide, here described how to config integration toolkit locally as a docker image." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Docker Container Config" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Toolkit docker container configuration &amp; administration can be performed with the following guide, here described how to config integration toolkit locally as a docker image.","headline":"Docker Container Config","url":"/toolkit/docker/config/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Docker Container Config</h1>
+								
+								
+									<p class="hero-subheader__desc">Toolkit docker container configuration & administration can be performed with the following guide, here described how to config integration toolkit locally as a docker image.</p>
+								
+								
+									
+										<a href="/toolkit/docker/installation/" class="btn btn--dark btn--rounded btn--w-icon btn--w-icon-left">
+											<i class="icon icon--arrow-left"></i>
+											Docker Container Install
+										</a>
+									
+									
+										<a href="/toolkit/docker/usage/" class="btn btn--dark btn--rounded btn--w-icon">
+											<i class="icon icon--arrow-right"></i>
+											Docker Container Usage
+										</a>
+									
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h4 id="overview">Overview</h4>
+<p>Toolkit container configuration section will helps to understand about containerization as well Rancher desktop / Docker desktop for running toolkit image from local machine to perform offline/online tests.<br />
+Toolkit docker container should be in a running state to access toolkit docker container.  To run the toolkit docker container, developer can use docker compose / docker run commands to perform their tests.<br />
+<b>Toolkit will only <u>support single point of sale</u> integration</b> not for the multiple point of sale integrations.<br /><br />
+Developer will have below 3 options to run the docker image from local machine:<br /><br />
+<b>Option 1:</b> <a href="#configure-docker-compose-to-run-the-toolkit-image-from-docker-hub">Configure docker compose to run the toolkit image from docker hub</a><br />
+<b>Option 2:</b> <a href="#configure-docker-compose-to-run-the-toolkit-image-from-tar-file">Configure docker compose to run the toolkit image from tar file</a><br />
+<b>Option 3:</b> <a href="#using-docker-run-command-and-run-it-from-local">Using docker run command and run it from local</a><br /><br />
+<b>Docker Compose</b> is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration. <br />
+<a href="/files/toolkit/docker-compose.yml">Download docker compose</a> containing definition of docker image, ports, environment and so on.<br />
+<img src="/images/toolkit/docker/docker-compose.png" alt="docker-compose" /><br /><br />
+Sample <i><code class="highlighter-rouge">Prod</code></i> configuration url’s filled here.<br />
+<a href="/faq/#how-to-set-up-environment-to-access-test-APIs-and-test-portals">Click here</a> to know more about <a href="/faq/#how-to-set-up-environment-to-access-test-APIs-and-test-portals">other environment’s</a> and their configuration url’s.<br />
+•	<i>“<strong>PosSerialNumber</strong>”</i> - This config value to be filled with your POS Serial number value and it should be the equal value in all the configurations.<br />
+•	<i>“<strong>LatestImageTag</strong>”</i> - This config value to be filled with toolkit image tag.<br /></p>
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+•	Port 8020 is the default port value to run your docker container API, if you need to configure another POS device then you need to configure another port and run docker container.  For that you need to create a another toolkit folder and keep a copy of the docker compose yml file.  In that docker compose yml file, you need to change the __PosSerialNumber__ and port number for ex: 8030 (or) 8040 etc., then it will work.<br />
+•	In the below docker-compose.yml content, __LatestImageTag__ &amp; __PosSerialNumber__ are the place holders.  Those values are need to be changed with your actual values to setup your POS device.
+</p>
+</div>
+<p>Here is the Toolkit <b>Docker compose</b> yml.<br /></p>
+<div class="callout callout--info">
+<p>
+version: '3.4'<br />
+services:<br />
+  &ensp;integrationtoolkit.api:<br />
+    &emsp;image: egyptiantaxauthority/integrationtoolkit.api:<i>__LatestImageTag__</i><br />
+    &emsp;ports:<br />
+    &emsp;- "8020:<i>80</i>"<br />
+    &emsp;restart: always<br />
+     &emsp;environment:<br />
+      &emsp;&nbsp;- DBHOST=sqlite3<br />
+      &emsp;&nbsp;- ASPNETCORE_URLS=http://+:80;<br />
+      &emsp;&nbsp;- ASPNETCORE_ENVIRONMENT=Development<br />
+      &emsp;&nbsp;- ToolkitConfig__LocalConnectionsString=Data Source=/_data/LocalReceipts.db;<br />
+      &emsp;&nbsp;- ToolkitConfig__EtaConfig__IdentityServiceUrl=<i>https://id.eta.gov.eg/connect/token</i><br />
+      &emsp;&nbsp;- ToolkitConfig__EtaConfig__InvoicingServiceBaseUrl=<i>https://api.invoicing.eta.gov.eg</i><br />
+      &emsp;&nbsp;- ToolkitConfig__EtaConfig__InvoicingServiceVersion=1<br />
+      &emsp;&nbsp;- ToolkitConfig__EtaConfig__PosSerial=<i>"__PosSerialNumber__"</i><br />
+     &emsp;volumes:<br />
+      &emsp;&nbsp;- type: volume<br />
+      &emsp;&nbsp;  source: user_data<br />
+      &emsp;&nbsp;  target: /_data<br />
+volumes:<br />
+  &emsp;&nbsp;  user_data:
+</p>
+</div>
+<h4 id="configure-docker-compose-to-run-the-toolkit-image-from-docker-hub">Configure docker compose to run the toolkit image from docker hub</h4>
+<p>Navigate to the <a href="https://hub.docker.com/" target="_blank">docker hub url</a> to search for <code class="highlighter-rouge">egyptiantax</code> repo, you can find <code class="highlighter-rouge">egyptiantaxauthority/integrationtoolkit.api</code> image.<br /><br />
+<img src="/images/toolkit/docker/docker-hub.png" alt="docker hub" /><br /><br />
+<code class="highlighter-rouge">Tags tab</code> will be helpful to search for a specific newly uploaded tag versioned images<br /><br />
+<img src="/images/toolkit/docker/docker-hub-tag.png" alt="docker hub tag" /><br /><br /> 
+Pick the desired toolkit docker image and copy the complete image name along with the tag id.<br /><br /> 
+<img src="/images/toolkit/docker/docker-hub-tag-image.png" alt="docker hub tag image" /><br /><br />
+Here is the example usecase docker image name along with the tag id <code class="highlighter-rouge">egyptiantaxauthority/integrationtoolkit.api:27835</code>, You can observe more details of the docker image here.<br /></p>
+<div class="callout callout--info">
+<p>
+Here toolkit docker image name - egyptiantaxauthority/integrationtoolkit.api<br />
+tag id - 27835<br />
+</p>
+</div>
+<p><img src="/images/toolkit/docker/docker-hub-tag-image-det.png" alt="docker hub tag image det" /><br /><br />
+Here are the steps to modify <a href="/files/toolkit/docker-compose.yml">docker compose</a> to run the toolkit from docker hub.<br />
+<b><u>Step 1:</u></b><br />
+Open the <a href="/files/toolkit/docker-compose.yml">docker compose</a> file<br />
+<b><u>Step 2:</u></b><br />
+Replace the docker image tag id with the newly uploaded image tag id.<br /><br />
+<img src="/images/toolkit/docker/docker-image-version-id.png" alt="docker image version id" /><br /><br /> 
+<b><u>Step 3:</u></b><br />
+Finally cross check the docker compose file key content like port, environment, toolkit config to make sure.<br />
+<b><u>Step 4:</u></b><br />
+Make sure Rancher desktop is running, open the windows powershell from the <code class="highlighter-rouge">IntegrationToolkit</code> folder path and execute the following command<br /></p>
+<div class="callout callout--info">
+<p>
+docker-compose up<br />
+</p>
+</div>
+<p><b><u>Step 5:</u></b><br />
+Navigate to the below local path.<br /></p>
+<div class="callout callout--info">
+<p>
+http://localhost:8020/toolkit/index.html
+</p>
+</div>
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+• Above Step 4 command and Step 5 url should run if docker container is not up and running.
+</p>
+</div>
+<h4 id="configure-docker-compose-to-run-the-toolkit-image-from-tar-file">Configure docker compose to run the toolkit image from tar file</h4>
+<p><b><u>Step 1:</u></b><br />
+<a href="/files/toolkit/integrationtoolkit.api.image.tar">Download the toolkit tar file.</a><br />
+<b><u>Step 2:</u></b><br />
+<code class="highlighter-rouge">Create a folder</code> with the name <code class="highlighter-rouge">IntegrationToolkit</code> in your desired location and open the windows powershell from the <code class="highlighter-rouge">IntegrationToolkit</code> folder path.<br />
+<b><u>Step 3:</u></b><br />
+Run the below command from windows powershell, it will load the image from tar file.<br /></p>
+<div class="callout callout--info">
+<p>
+docker load --input .\integrationtoolkit.api.image.tar
+</p>
+</div>
+<p><b><u>Step 4:</u></b><br />
+Open the <a href="/files/toolkit/docker-compose.yml">docker compose</a> file, make sure <code class="highlighter-rouge">docker-compose.yml</code> file also downloaded and available inside IntegrationToolkit folder.<br />
+<b><u>Step 5:</u></b><br />
+Replace the docker image value with the tar file image name.<br /><br />
+<img src="/images/toolkit/docker/docker-tar-image-version-id.png" alt="docker image version id" /><br /><br />
+<b><u>Step 6:</u></b><br />
+Finally cross check the docker compose file key content like port, environment, toolkit config to make sure.<br />
+<b><u>Step 7:</u></b><br />
+Make sure Docker desktop is running then open the windows powershell from the <code class="highlighter-rouge">IntegrationToolkit</code> folder path and execute the following command<br /></p>
+<div class="callout callout--info">
+<p>
+docker-compose up<br />
+</p>
+</div>
+<p><b><u>Step 8:</u></b><br />
+Navigate to the below local path.<br /></p>
+<div class="callout callout--info">
+<p>
+http://localhost:8020/toolkit/index.html
+</p>
+</div>
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+• Above Step 7 command and Step 8 url should run if docker container is not up and running.<br />
+• Docker compose will be the preferable option to run toolkit image from local.<br />
+• Docker image can run using docker-compose or docker run commands.  In both cases output will be same.
+</p>
+</div>
+<h4 id="using-docker-run-command-and-run-it-from-local">Using docker run command and run it from local</h4>
+<p><b>Docker runs</b> processes in isolated containers. A container is a process which runs on a host. The host may be local or remote. When an operator executes <code class="highlighter-rouge">docker run</code>, the container process that runs is isolated in that it has its own file system, its own networking, and its own isolated process tree separate from the host.<br />
+Docker image also can run using docker run command<br />
+<b><u>Step 1:</u></b><br />
+<a href="/files/toolkit/integrationtoolkit.api.image.tar">Download the toolkit tar file.</a><br />
+<b><u>Step 2:</u></b><br />
+<code class="highlighter-rouge">Create a folder</code> with the name <code class="highlighter-rouge">IntegrationToolkit</code> in your desired location and open the windows powershell from the <code class="highlighter-rouge">IntegrationToolkit</code> folder path.<br />
+<b><u>Step 3:</u></b><br />
+Run the below command from windows powershell, it will load the image from tar file.<br /></p>
+<div class="callout callout--info">
+<p>
+docker load --input .\integrationtoolkit.api.image.tar
+</p>
+</div>
+<p><b><u>Step 4:</u></b><br />
+Make sure Docker desktop is running then open the windows powershell from the <code class="highlighter-rouge">IntegrationToolkit</code> folder path and execute the following command<br />
+<b><u>Step 5:</u></b><br />
+Sample <i><code class="highlighter-rouge">Prod</code></i> configuration url’s filled here.<br />
+<a href="/faq/#how-to-set-up-environment-to-access-test-APIs-and-test-portals">Click here</a> to know more about <a href="/faq/#how-to-set-up-environment-to-access-test-APIs-and-test-portals">other environment’s</a> and their configuration url’s.<br />
+•	<i>“<strong>PosSerialNumber</strong>”</i> - This config value to be filled with your POS Serial number value and it should be the equal value in all the configurations.<br />
+•	<i>“<strong>LatestImageTag</strong>”</i> - This config value to be filled with toolkit image tag.<br /></p>
+<div class="callout callout--info">
+<p>
+docker run --rm -it -p 8020:80 -e ASPNETCORE_URLS="http://+" -e ToolkitConfig__LocalConnectionsString=<i>"Data Source=/_data/LocalReceipts.db;"</i> -e ToolkitConfig__EtaConfig__IdentityServiceUrl=<i>https://id.eta.gov.eg/connect/token</i> -e ToolkitConfig__EtaConfig__InvoicingServiceBaseUrl=<i>https://api.invoicing.eta.gov.eg</i> -e ToolkitConfig__EtaConfig__InvoicingServiceVersion=1 -e ToolkitConfig__EtaConfig__PosSerial=<i>__PosSerialNumber__</i> -v user_data:/_data integrationtoolkit.api:<i>__LatestImageTag__</i>
+</p>
+</div>
+<h4 id="configure-dev-ssl-certificate-to-run-under-https">Configure dev SSL Certificate to run under https</h4>
+<p>If you want to run the docker url under https, you need to generate ssl certificate and configure it in local machine(in the current folder for ex: inside IntegrationToolkit folder):<br />
+<a href="/faq/">Click here to know more about configuring certicate locally.</a><br />
+<b><u>Step 1:</u></b><br /></p>
+<div class="callout callout--info">
+<p>
+dotnet dev-certs https -ep aspnetapp.pfx -p mypassword123<br />
+</p>
+</div>
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+•	To run the above dotnet command, it requires dotnet SDK installed in the machine.<br />
+</p>
+</div>
+<p><b><u>Step 2:</u></b><br />
+Sample <i><code class="highlighter-rouge">Prod</code></i> configuration url’s filled here.<br />
+<a href="/faq/#how-to-set-up-environment-to-access-test-APIs-and-test-portals">Click here</a> to know more about <a href="/faq/#how-to-set-up-environment-to-access-test-APIs-and-test-portals">other environment’s</a> and their configuration url’s.<br />
+•	<i>“<strong>PosSerialNumber</strong>”</i> - This config value to be filled with your POS Serial number value and it should be the equal value in all the configurations.<br />
+•	<i>“<strong>LatestImageTag</strong>”</i> - This config value to be filled with toolkit image tag.<br />
+Modify the docker-compose.yml as mentioned below.<br />
+Https enabled Toolkit <b>Docker compose</b> file.<br /></p>
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+In the below docker-compose.yml content, __LatestImageTag__ &amp; __PosSerialNumber__ are the place holders.  Those values are need to be changed with your actual values to setup your POS device.
+</p>
+</div>
+<p>Here is the Toolkit <b>Docker compose</b> yml.<br /></p>
+<div class="callout callout--info">
+<p>
+version: '3.4'<br />
+services:<br />
+  &emsp;integrationtoolkit.api:<br />
+    &emsp;&ensp;&nbsp;image: egyptiantaxauthority/integrationtoolkit.api:<i>__LatestImageTag__</i><br />
+    &emsp;&ensp;&nbsp;ports:<br />
+    &emsp;&ensp;&nbsp;- "8020:80"<br />
+    &emsp;&ensp;&nbsp;- "8030:443"<br />
+    &emsp;&ensp;&nbsp;restart: always<br />
+     &emsp;&ensp;environment:<br />
+      &emsp;&ensp;&nbsp;- DBHOST=sqlite3<br />
+      &emsp;&ensp;&nbsp;- ASPNETCORE_URLS=http://+:80;<br />
+      &emsp;&ensp;&nbsp;- ASPNETCORE_URLS=http://+:80;https://+:443;<br />
+      &emsp;&ensp;&nbsp;- ASPNETCORE_ENVIRONMENT=Development<br />
+      &emsp;&ensp;&nbsp;- ToolkitConfig__LocalConnectionsString=Data Source=/_data/LocalReceipts.db;<br />
+      &emsp;&ensp;&nbsp;- ToolkitConfig__EtaConfig__IdentityServiceUrl=<i>https://id.eta.gov.eg/connect/token</i><br />
+      &emsp;&ensp;&nbsp;- ToolkitConfig__EtaConfig__InvoicingServiceBaseUrl=<i>https://api.invoicing.eta.gov.eg</i><br />
+      &emsp;&ensp;&nbsp;- ToolkitConfig__EtaConfig__InvoicingServiceVersion=1<br />
+      &emsp;&ensp;&nbsp;- ToolkitConfig__EtaConfig__PosSerial=<i>__PosSerialNumber__</i><br />
+      &emsp;&ensp;&nbsp;- ASPNETCORE_HTTPS_PORT=8030
+      &emsp;&ensp;&nbsp;- ASPNETCORE_Kestrel__Certificates__Default__Password=<i>__YourCertificatePassword__</i>
+      &emsp;&ensp;&nbsp;- ASPNETCORE_Kestrel__Certificates__Default__Path=<i>__/https/YourCertificate.pfx__</i>
+     &emsp;&ensp;volumes:<br />
+      &emsp;&ensp;&nbsp;- type: volume<br />
+      &emsp;&ensp;&nbsp;  source: user_data<br />
+      &emsp;&ensp;&nbsp;  target: /_data<br />
+volumes:<br />
+  &emsp;&ensp;&nbsp;  user_data:<br />
+</p>
+</div>
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+• Docker url also can run under https, but it is not mandatory to run under https.<br />
+•	https enabled docker-compose.yml file observations:<br />
+&emsp;&ensp;&nbsp;- "8030:443" <b>- added</b><br />
+&emsp;&ensp;&nbsp;- ASPNETCORE_URLS=http://+:80;https://+:443; <b>- added</b><br />
+&emsp;&ensp;&nbsp;- ASPNETCORE_HTTPS_PORT=8030 <b>- added</b><br />
+&emsp;&ensp;&nbsp;- ASPNETCORE_Kestrel__Certificates__Default__Password=mypassword123 <b>- added</b><br />
+&emsp;&ensp;&nbsp;- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx <b>- added</b><br />
+</p>
+</div>
+<p><b><u>Step 3:</u></b><br />
+Make sure Rancher desktop/Docker desktop is running, open the windows powershell from the <code class="highlighter-rouge">IntegrationToolkit</code> folder path and execute the following command<br /></p>
+<div class="callout callout--info">
+<p>
+docker-compose up<br />
+</p>
+</div>
+<p><b><u>Step 4:</u></b><br />
+Navigate to the below local path.<br /></p>
+<div class="callout callout--info">
+<p>
+https://localhost:8030/toolkit/index.html
+</p>
+</div>
+<p>Other useful commands, which are related to https<br /></p>
+<div class="callout callout--info">
+<p>
+dotnet dev-certs https --clean<br />
+dotnet dev-certs https --trust<br />
+dotnet dev-certs https --verbose
+</p>
+</div>
+<h4 id="stop-container-and-close-the-application">Stop container and close the application</h4>
+<div class="callout callout--info">
+<p>
+docker-compose down
+</p>
+</div>
+<p><img src="/images/toolkit/rancher/rancher-desktop-docker-compose-down.png" alt="Rancher desktop project" /><br /></p>
+<h4 id="copy-filesfolders-between-a-container-and-the-local-filesystem">Copy files/folders between a container and the local filesystem</h4>
+<p>Specific file can be copied TO the container:<br />
+<i><code class="highlighter-rouge">docker cp</code> sourcefile.txt container_id:/destinationfile.txt</i><br />
+Specific file can be copied FROM the container:<br />
+<i><code class="highlighter-rouge">docker cp</code> container_id:/sourcefile.txt destinationfile.txt</i><br /></p>
+<div class="callout callout--info">
+Using <i>docker ps</i> command we can find the toolkit container id, here in this example <i>21790a79a83a</i> is the id of the toolkit container.<br />
+<p>
+<b><u>Example commands:</u></b><br />
+docker ps<br />
+docker cp 21790a79a83a:/_data/LocalReceipts.db LocalReceipts.db
+<br />
+docker cp source.txt 21790a79a83a:/_data/destination.txt
+</p>
+</div>
+<h4 id="remove-all-unused-docker-temporary-content">Remove all unused docker temporary content</h4>
+<p>It will remove all the unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.
+<code class="highlighter-rouge">docker system prune -a</code> - Remove all unused images not just dangling ones</p>
+<h4 id="docker-inspect">Docker inspect</h4>
+<p>It is a command that returns detailed, low-level information on Docker objects. Those objects can be docker images, containers, networks, volumes, plugins, etc.  By default, docker inspect returns information in JSON format.<br />
+Usage: <code class="highlighter-rouge">docker inspect</code> [OPTIONS] CONTAINER|IMAGE [CONTAINER|IMAGE…]
+Know more about<a href="https://docs.docker.com/engine/reference/commandline/run/" target="_blank"> docker commands.</a></p>
+<h4 id="know-more-about-other-additional-configurations">Know more about other additional configurations</h4>
+<p>•	<a href="/toolkit/sqlite-config/">SQlite configuration</a><br />
+•	<a href="/toolkit/config/">Toolkit configuration</a><br />
+ •	<a href="/toolkit/static-config/">Static configuration</a><br />
+ •	<a href="/toolkitapi/01-initialize/">Dynamic/Runtime configuration</a></p>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+				<nav class="page-nav">
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12">
+								
+									<a href="/toolkit/docker/installation/" class="page-nav__item page-nav__item--prev">
+										<i class="icon icon--arrow-left"></i>
+										Docker Container Install
+									</a><!-- /.page-nav__item -->
+								
+								
+									<a href="/toolkit/docker/usage/" class="page-nav__item page-nav__item--next">
+										Docker Container Usage
+										<i class="icon icon--arrow-right"></i>
+									</a><!-- /.page-nav__item -->
+								
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.container -->
+				</nav><!-- /.page-nav -->
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'NJMGDCDCJPGNDKDNPKJHAGHHKLIHIGLGBIPBGLDMKBGMOOJGFHBBAOKOMMLHBFIJNGDBINOGAADCCGPKNCCAIHFJAANGIIMMANKHLIJMOEIMCCGDKMKAMNFADPHFFAHF',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

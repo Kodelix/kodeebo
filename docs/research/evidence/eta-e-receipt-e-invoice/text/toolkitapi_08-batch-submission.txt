@@ -1,0 +1,184 @@
+
+Batch submission API
+Batch submission API
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Batch submission API
+It will be useful to the taxpayers to submit their offline stored receipts through the external submission receiver API.
+											Get export receipts API
+											Sync submission API
+Overview
+It requires the integration toolkit is online and valid token to be available to submit the batch file.  It will allow taxpayers to submit their receipts either manually or an automatic schedule.  It will pick the new and cancelled status related issued receipts and prepare submission rar file.
+•	This API will submit all the local receipts in “New” and “Cancelled” statuses. For cancelled receipts, minimal validation will be applied, as the receipt has already been validated before, and the validation on the submission date with the issuance date will be skipped.
+•	Batch file will be signed locally using ITIDA’s signature component.
+•	The system will capture the submission UUID returned after the submission and will store it locally.
+•	After the successful receipt submission, status will be submitted for a specific receipt(s).
+Note!
+•	Maximum submission default files count would be 100 files.
+•	Submission rar file size will be configurable and it will be configured by IT operations.
+Signature
+Signature:
+POST /toolkit/batchsubmission
+Inputs
+This API should accept these headers supplied by eInvoicing:
+       | Header parameter
+       | Type
+       | Description
+       | Value example
+       | version
+       | String
+       | version number of the toolkit
+       |  
+Body of the request contains a single object that contains these fields:
+       | Input parameter
+       | Type
+       | Description
+       | Value example
+       | receiptCount
+       | Number
+       | receipt count of the batch
+       |  
+Outputs
+Upon successful submission, API must return 200 status code with the below mentioned output parameters.
+       | Output parameter
+       | Type
+       | Description
+       | Value example
+       | submissionUuid (acceptedReceipts)
+       | String
+       | accepted receipts submissin uuid of the batch
+       |  
+       | uuid (acceptedReceipts)
+       | String
+       | accepted receipts uuid of the batch
+       |  
+       | longId (acceptedReceipts)
+       | String
+       | accepted receipts long id of the batch
+       |  
+       | receiptNumber (acceptedReceipts)
+       | String
+       | accepted receipts receipt number of the batch
+       |  
+       | hashKey (acceptedReceipts)
+       | String
+       | accepted receipts hash key of the batch
+       |  
+       | receiptNumber (rejectedReceipts)
+       | String
+       | rejected receipts receipt number of the batch
+       |  
+       | uuid (rejectedReceipts)
+       | String
+       | rejected receipts uuid of the batch
+       |  
+       | code (rejectedReceipts)
+       | String
+       | rejected receipts code of the batch
+       |  
+       | message (rejectedReceipts)
+       | String
+       | rejected receipts message of the batch
+       |  
+       | target (rejectedReceipts)
+       | String
+       | rejected receipts target of the batch
+       |  
+       | propertyPath (rejectedReceipts)
+       | String
+       | rejected receipts property path of the batch
+       |  
+       | code (details)
+       | String
+       | code detail of the batch
+       |  
+       | message (details)
+       | String
+       | message detail of the batch
+       |  
+       | target (details)
+       | String
+       | target detail of the batch
+       |  
+       | propertyPath (details)
+       | String
+       | property path detail of the batch
+       |  
+       | details (details)
+       | String
+       | details detail of the batch
+       |  
+       | correlationId
+       | String
+       | Correlation id of the successful batch events
+       |  
+       | target
+       | String
+       | target of the batch
+       |  
+       | code
+       | String
+       | Success code of the batch
+       | 200 Ok / 201 Created etc.,
+       | message
+       | String
+       | Success message of the batch
+       |  
+       | details
+       | String
+       | Additional details of the batch
+       |  
+If 4xx or 5xx codes appeared as a result, It will be mentioned with the below error output parameters.
+       | Output parameter
+       | Type
+       | Description
+       | Value example
+       | correlationId
+       | String
+       | Correlation id of the error batch events
+       |  
+       | target
+       | String
+       | Error occurred field information
+       |  
+       | code
+       | String
+       | Error code
+       | bad request/invalid data etc.,
+       | message
+       | String
+       | Error message
+       |  
+       | details
+       | String
+       | Error additional details, useful for further investigation
+       |  
+Additional considerations
+This API is called only over protected HTTPS channel.
+										Get export receipts API
+										Sync submission API
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

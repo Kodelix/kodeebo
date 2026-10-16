@@ -1,0 +1,5 @@
+sha256(canonical) d43fae25b02b7e466fa5aa39e5fa45c7d92661e5b0a0e7964e04783bff3c2651 IN PARSED CADES: False
+sha256(sha256(canonical)) b17fb1ecd077e636ed1b325126a12860145e3562ea9faa760041d5d5722c0a59 IN PARSED CADES: False
+sha256(canonical+newline) a3cdacad0ed76feec5cf2175bb282d9cbcb73f41eea58cbc150a85bee3e40ad1 IN PARSED CADES: False
+sha256(hex string of hash) 37cd80b3cb2f61496159f6e600665558fc810e7706340b02b9d769878cf63c24 IN PARSED CADES: False
+sha256(raw one-doc.json bytes) 586615e7f278791e774e946c0b20b19c4eba13098527eea9234c298adfed087e IN PARSED CADES: False

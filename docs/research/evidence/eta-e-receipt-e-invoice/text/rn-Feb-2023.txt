@@ -1,0 +1,42 @@
+
+Feb 2023 Release
+Feb 2023 Release
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Feb 2023 Release
+01 Feb 2023 - ETA
+Enhancements and Improvements
+Updated Postman Collection
+API
+Updated API: Get Recent Documents
+Introduced various new optional filter parameters for more targeted queries. See Inputs section.
+Updated default time window configuration and the maximum number of documents that can be returned. See Additional Considerations section.
+Updated metdata response object.
+New API: Search Documents
+A new API which replaces Get Recent Documents API. The Search Documents API has enhanced various filters for accurate queries and provides access to even quite large result sets in a paginated way.
+Taxpayers are recommended to upgrade their integration from Get Recent Documents to Search Documents API as “Get Recent Documents” API will be subject to more limits in terms of maximum number of records returned and throttling limits in the near future.
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Main Calculations</title>
+
+	<meta name="description" content="This section defines the validation rules and calculations for receipt field values.">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Main Calculations</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Main Calculations" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This section defines the validation rules and calculations for receipt field values." />
+<meta name="twitter:description" property="og:description" content="This section defines the validation rules and calculations for receipt field values." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Main Calculations" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"This section defines the validation rules and calculations for receipt field values.","headline":"Main Calculations","url":"/main-calculations/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Main Calculations</h1>
+								
+								
+									<p class="hero-subheader__desc">This section defines the validation rules and calculations for receipt field values.</p>
+								
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h1 id="validation-rules-and-calculations-for-all-the-elements-are-as-follows">Validation rules and calculations for all the elements are as follows:</h1>
+
+<ol>
+  <li>seller.rin length must be 9 digits</li>
+  <li>if buyer.type is [B], buyer.id length must be 9 digits</li>
+  <li>if buyer.type is [P] and buyer.id is not null, buyer.id length must be 14 digits</li>
+  <li>header.dateTimeIssued can’t be in the future</li>
+  <li>itemData[*].quantity is a decimal number up to 5 decimal precisions</li>
+  <li>itemData[*].unitPrice is a decimal number up to 5 decimal precisions</li>
+  <li>itemData[*].unitPrice &gt;= 0</li>
+  <li>itemData[*].commercialDiscountData[*].amount &gt;= 0</li>
+  <li>totalCommercialDiscount &lt;= totalSales</li>
+  <li>itemData[*].totalSale is a decimal number up to 5 decimal precisions</li>
+  <li>itemData[*].totalSale = itemData[*].quantity * itemData[*].unitPrice</li>
+  <li>itemData[*].netSale is a decimal number up to 5 decimal precisions</li>
+  <li>itemData[*].netSale = itemData[*].totalSale – Sum(itemData[*].commercialDiscountData[*].amount)- Sum (itemData[*].additionalCommercialDiscount.amount)</li>
+  <li>itemData[*].valueDifference is a decimal number up to 5 decimal precisions</li>
+  <li>itemData[*].itemDiscountData[*].amount is a decimal number up to 5 decimal precisions</li>
+  <li>totalAmount is a decimal number up to 5 decimal precisions</li>
+  <li>itemData[*].total = itemData[*].netSale + t3Amount [itemData[*].taxableItems[taxType=T3].amount] + TotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T5-T12].amount)] + t2Amount [itemData[*].taxableItems[taxType=T2].amount] + t1Amount [itemData[*].taxableItems[taxType=T1].amount] - Sum(itemData[*].itemDiscountData[*].amount) - Sum(itemData[*].additionalItemDiscount.amount) - t4Amount [itemData[*].taxableItems[taxType=T4].amount] + NonTotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T13-T20].amount)]</li>
+  <li>totalSales is a decimal number up to 5 decimal precisions</li>
+  <li>totalCommercialDiscount is a decimal number up to 5 decimal precisions</li>
+  <li>netAmount is a decimal number up to 5 decimal precisions</li>
+  <li>totalItemsDiscount is a decimal number up to 5 decimal precisions</li>
+  <li>taxTotals[*].amount is a decimal number up to 5 decimal precisions</li>
+  <li>totalSales = Sum (itemData[*].totalSale)</li>
+  <li>totalCommercialDiscount = Sum (itemData[*].commercialDiscountData[*].amount) + Sum (itemData[*].additionalCommercialDiscount.amount)</li>
+  <li>netAmount = Sum(itemData[*].netSale)</li>
+  <li>taxTotals &lt;taxType&gt; = Sum (itemData[*].taxableItems[taxType=<taxType>].amount)</taxType></li>
+  <li>totalItemsDiscount = Sum (itemData[*].itemDiscountData[*].amount) + Sum (itemData[*].additionalItemDiscount.amount)</li>
+  <li>extraReceiptDiscountData[*].amount is a decimal number up to 5 decimal precisions</li>
+  <li>totalAmount = Sum (itemData[*].Total) - Sum (extraReceiptDiscountData[*].amount) + adjustment</li>
+  <li>itemData[*].taxableItems[*].amount is a decimal number up to 5 decimal precisions</li>
+  <li>if itemData[*].taxableItems[*].subType is not fixed, itemData[*].taxableItems[*].rate must be between 0 and 999</li>
+  <li>if itemData[*].taxableItems[*].rate &gt; 0, it is a decimal number up to 2 decimal precisions</li>
+  <li>itemData[*].taxableItems[*].amount &gt;= 0</li>
+  <li>header.netWeight - pattern match to have decimal value with up to 5 decimal precision digits</li>
+  <li>header.grossWeight - pattern match to have decimal value with up to 5 decimal precision digits</li>
+  <li>if Channel = “ERP” OR Channel = “POS” and itemData[*].taxableItems[*].subType provided is fixed, then itemData[*].taxableItems[*].rate should be provided as zero or not provided at all</li>
+  <li>if header.currency is not [EGP], header.exchangeRate is a decimal number up to 5 decimal precisions</li>
+  <li>buyer.type is [B], seller.rin != buyer.id (can’t be the same)</li>
+  <li>itemData[*].itemDiscountData[*].amount &gt;= 0</li>
+  <li>if itemData[*].taxableItems[*].taxtype=T2, then itemData[*].taxableItems[*].amount = (itemData[*].netSale + TotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T5-T12].amount)] + itemData[*].valueDifference) * itemData[*].taxableItems[taxType=”T2”].rate / 100</li>
+  <li>if itemData[*].taxableItems[*].taxtype=T3, then itemData[*].taxableItems[*].rate = 0 OR is not supplied (rate for this item should always be 0 as this if fixed amount item)</li>
+  <li>if itemData[*].taxableItems[*].taxtype=T1, then itemData[*].taxableItems[*].amount = (itemData[*].taxableItems[taxType=”T2” &lt;TableTaxPercentageT2&gt;].amount + itemData[*].netSale + TotalTaxableFees [Sum(itemData[*].taxableItems[taxType=T5-T12].amount)] + itemData[*].valueDifference + itemData[*].taxableItems[taxType=”T3” &lt;TableTaxFixedAmountT3&gt;].amount) _ itemData[*].taxableItems[_ TaxableItem&lt;T1&gt;].Rate / 100</li>
+  <li>itemData[*].total  is a decimal number up to 5 decimal precisions</li>
+  <li>if itemData[*].commercialDiscountData[*].rate&gt;0, then itemData[*].commercialDiscountData[*].amount= itemData[*].commercialDiscountData[*].rate * itemData[*].totalSale/ 100</li>
+  <li>if itemData[*].itemDiscountData[*].rate&gt;0, then itemData[*].itemDiscountData[*].amount= itemData[*].itemDiscountData [*].rate * itemData[*].netSale / 100</li>
+  <li>if itemData[*].additionalCommercialDiscount.rate&gt;0, then itemData[*].additionalCommercialDiscount.amount= itemData[*].additionalCommercialDiscount .rate * (itemData[*].totalSale – Sum(itemData[*].commercialDiscount[*].amount))/ 100</li>
+  <li>if itemData[*].additionalItemDiscount.rate&gt;0, then itemData[*].additionalItemDiscount.amount= itemData[*].additionalItemDiscount.rate * (itemData[*].netSale – Sum(itemData[*].itemDiscountData[*].amount))/ 100</li>
+  <li>if extraReceiptDiscountData[*].rate&gt;0, then extraReceiptDiscountData[*].amount= extraReceiptDiscountData[*].rate * netAmount / 100<br /></li>
+</ol>
+
+<div class="callout callout--info">
+<p><strong>Note!</strong>
+• All the above calculations are subject to (± 0.5) tolerance.
+</p>
+</div>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'GPIGDJPDEJBLKOJHIMCCOKMCEPHCJEDBJCMNICPDEJJDGIIJMBBJGMFIALCEOMEOBAEBKMMJAAECGNJGIHHABNLPAAGPEJABKOKGHHLKLINBAFLPDGGCDLEFMFKLCPIB',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

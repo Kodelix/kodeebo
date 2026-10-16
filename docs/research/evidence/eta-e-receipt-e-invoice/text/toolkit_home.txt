@@ -1,0 +1,90 @@
+
+Integration Toolkit
+Integration Toolkit
+Release Notes
+API
+Types
+Codes
+Integration Toolkit
+FAQ
+Contacts
+						Egyptian eInvoicing & eReceipt SDK
+								Release Notes
+								API
+										COMMON
+										EINVOICING
+										ERECEIPT
+										APIs Governance & Rate Limiting
+								Types
+								Codes
+								Integration Toolkit
+										Install
+										Config
+										Usage
+								FAQ
+										Integration Practices
+										RECEIPT ISSUANCE FAQ
+								Contacts
+Integration Toolkit
+Toolkit is useful to facilitate the developers with various options to integrate the e-Receipt solution. It will support various scenarios to make it easier for developer of the taxpayers to issue and submit their receipts through their POS/ERP systems.
+Overview
+The toolkit is a set of utilities used to help taxpayer’s developers integrate with eReceipt platform, Toolkit is offered in three flavors Docker Container for Rest API, Nuget Library and Command Line Interface(CLI).  It is intended to support different scenarios that can be performed in offline/online mode.
+Features that can be supported in offline mode as follows:
+•	Issue Receipt
+•	Generate Receipt QR code
+•	Assign globally unique receipt UUID
+•	Store and export issued receipts
+•	Validate documents locally
+•	Sign receipt submission
+Other than working offline, the toolkit needs to be available in online mode for specific scenarios that require connection to the eReceipt solution. It will also use external API’s exposed by the eReceipt solution’s server-side to perform the following:
+•	Help authenticate POS
+•	Synchronize receipts
+•	Update codes and business rules in local cache
+Toolkit is implemented to store receipts or any other local data in SQlite database, So developer need to configure how to connect to it while initialization of application services.
+Toolkit will store the receipts in the local database with a specific status. The status is an integer value, which could be one of the following:
+       | Status
+       | Value
+       | Note
+       | Exported
+       | -1
+       | The status of the receipt will be changed from new to exported when the user performs an export operation
+       | New
+       | 0
+       | The status of the receipt when it is issued
+       | Submitted
+       | 1
+       | The status of the receipt when it is submitted
+       | Valid
+       | 2
+       | The status of the receipt if the submission result is successful
+       | Invalid
+       | 3
+       | The status of the receipt if the submission has validation issues
+       | Cancelled
+       | 4
+       | The status of the receipt if it got cancelled by the reviewer
+Note!
+    • Toolkit configured sqlite db only works for one POS Device.
+    • It is optional for the taxpayer to integrate their systems with the toolkit.
+    • Signing the submission is not required as this feature is disabled.
+    • Data cleanup will be handled by a background job that will be used to delete all cached and stored data older than a predefined period (for example 1 Month).
+    • Tracing applied on offline toolkit capabilities. Tracing enabled through a Local text file content using Serilog.
+Installation
+Integration toolkit is available in any of the below options,  So developer needs to install the below suitable option to setup and proceed further:
+•	Docker Container Install - Docker Container image is a lightweight, standalone, executable package of software that includes everything needed to run an API(Application Programming Interface).
+•	Nuget Install - NuGet is the package manager for .NET. The NuGet client tools provide the ability to produce and consume packages. The NuGet Gallery is the central package repository used by all package authors and consumers.  Using this integration, developer can consume the nuget package and build their custom tool.
+•	Command Line Interface(CLI) Install - Command Line Interface (CLI) is a text-based user interface (UI) used to run various toolkit features.  Using this tool, developer can perform their quick tests.
+Configuration and Administration
+To configure various toolkit options, developer needs to follow this section to understand about the configuration steps.  Here developer can choose container configuration if he/she wants to consume toolkit API’s or can choose and configure CLI/Nuget test tool for quick tests.
+Here are the various configuration and administration toolkit options:
+•	Docker Container Config
+•   Nuget Config
+•   Command Line Interface(CLI) Config
+Usage guide
+Usage guide will gives detailed information about the container usage / nuget usage / cli usage.
+•	Docker Container Usage
+•	Nuget Usage
+•	Command Line Interface(CLI) Usage
+					Back to homepage
+						Egyptian eInvoicing & eReceipt SDK
+Copyright © 2021 - Egyptian Tax Authority

@@ -1,0 +1,68 @@
+ 
+ Dec 2022 Release 
+ Dec 2022 Release 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ Dec 2022 Release
+ 08 Dec 2022 - ETA
+ Enhancements and Improvements
+ New Integration Toolkit section, documenting toolkit options, installation, configuration and user manual Integration Toolkit 
+ Updated Postman Collection 
+ Updated Maximum number of line Items per receipt in Receipt Issuance FAQ. 
+ Updated Taxpayer with B2C only tag to submit Invoice documents in Receipt Issuance FAQ. 
+ Updated Receipt Issuance FAQ - Main Calculations with the new tolerance value
+ Updated National Id validator value to include new receipt version 1.2 limit in Receipt Issuance FAQ. 
+ Updated receipt types with new version 1.2 Receipt Types 
+ Updated QR Code to only include the total amount and the issuer RIN
+ Added Business Buyer Type restriction to the core validator in Receipt Issuance FAQ. 
+ API
+ New API: ERP - Receive Receipt Notifications 
+ New API: ERP - Receive General Notifications 
+ New API: ERP - Receive Download Package Ready Notifications 
+ New API: Request Receipt Package 
+ New API: Get Package Requests 
+ New API: Get Receipt Package 
+ Moved to eInvoicing API: ERP - Receive Document Notifications 
+ Added Input and Output parameter string size for all API
+ Updated API: Get Receipt Details to include all the return receipts for a receipt
+ Updated API: Get Receipt to include all the return receipts for a receipt
+ Updated API: Get Receipt Details Anonymously to include all the return receipts for a receipt
+ Types
+ Added Input and Output parameter string size for all Receipt Types
+ New Professional Receipt document type
+ New Utility Receipt document type
+ New Entertainment Receipt document type
+ New Banking Receipt document type
+ New Shipping Receipt document type
+ New Education Receipt document type
+ New Professional Return Receipt document type
+ New Utility Return Receipt document type
+ New Entertainment Return Receipt document type
+ New Banking Return Receipt document type
+ New Shipping Return Receipt document type
+ New Education Return Receipt document type
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

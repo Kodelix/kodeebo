@@ -1,0 +1,450 @@
+[
+  {
+    "name": "0x00-Header.yaml",
+    "path": "5.0/en/0x00-Header.yaml",
+    "sha": "309d2b6f5df0808bfd3864b0205f1c5614e0f5c6",
+    "size": 436,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x00-Header.yaml?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x00-Header.yaml",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/309d2b6f5df0808bfd3864b0205f1c5614e0f5c6",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x00-Header.yaml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x00-Header.yaml?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/309d2b6f5df0808bfd3864b0205f1c5614e0f5c6",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x00-Header.yaml"
+    }
+  },
+  {
+    "name": "0x01-Frontispiece.md",
+    "path": "5.0/en/0x01-Frontispiece.md",
+    "sha": "b6ad6346a23741c1d05fa0cbb4128ef96bdc3e50",
+    "size": 2115,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x01-Frontispiece.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x01-Frontispiece.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/b6ad6346a23741c1d05fa0cbb4128ef96bdc3e50",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x01-Frontispiece.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x01-Frontispiece.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/b6ad6346a23741c1d05fa0cbb4128ef96bdc3e50",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x01-Frontispiece.md"
+    }
+  },
+  {
+    "name": "0x02-Preface.md",
+    "path": "5.0/en/0x02-Preface.md",
+    "sha": "4c0b8d3764706e570e54b01ff77a011539f4f400",
+    "size": 2786,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x02-Preface.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x02-Preface.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/4c0b8d3764706e570e54b01ff77a011539f4f400",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x02-Preface.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x02-Preface.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/4c0b8d3764706e570e54b01ff77a011539f4f400",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x02-Preface.md"
+    }
+  },
+  {
+    "name": "0x03-What-is-the-ASVS.md",
+    "path": "5.0/en/0x03-What-is-the-ASVS.md",
+    "sha": "925ecb33b603de85101e2d907140eba680501e4a",
+    "size": 21589,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x03-What-is-the-ASVS.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x03-What-is-the-ASVS.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/925ecb33b603de85101e2d907140eba680501e4a",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x03-What-is-the-ASVS.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x03-What-is-the-ASVS.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/925ecb33b603de85101e2d907140eba680501e4a",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x03-What-is-the-ASVS.md"
+    }
+  },
+  {
+    "name": "0x04-Assessment_and_Certification.md",
+    "path": "5.0/en/0x04-Assessment_and_Certification.md",
+    "sha": "da84e85661189d89ba1bef5f943320cdd8cf00f6",
+    "size": 5397,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x04-Assessment_and_Certification.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x04-Assessment_and_Certification.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/da84e85661189d89ba1bef5f943320cdd8cf00f6",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x04-Assessment_and_Certification.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x04-Assessment_and_Certification.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/da84e85661189d89ba1bef5f943320cdd8cf00f6",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x04-Assessment_and_Certification.md"
+    }
+  },
+  {
+    "name": "0x05-For-Users-Of-4.0.md",
+    "path": "5.0/en/0x05-For-Users-Of-4.0.md",
+    "sha": "281d61a775e75dee7838343b396817fec55ebcbf",
+    "size": 8580,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x05-For-Users-Of-4.0.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x05-For-Users-Of-4.0.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/281d61a775e75dee7838343b396817fec55ebcbf",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x05-For-Users-Of-4.0.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x05-For-Users-Of-4.0.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/281d61a775e75dee7838343b396817fec55ebcbf",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x05-For-Users-Of-4.0.md"
+    }
+  },
+  {
+    "name": "0x10-V1-Encoding-and-Sanitization.md",
+    "path": "5.0/en/0x10-V1-Encoding-and-Sanitization.md",
+    "sha": "2a85c331483ab8a17f184fe256fe6ef16ca10f43",
+    "size": 12968,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x10-V1-Encoding-and-Sanitization.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x10-V1-Encoding-and-Sanitization.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/2a85c331483ab8a17f184fe256fe6ef16ca10f43",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x10-V1-Encoding-and-Sanitization.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x10-V1-Encoding-and-Sanitization.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/2a85c331483ab8a17f184fe256fe6ef16ca10f43",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x10-V1-Encoding-and-Sanitization.md"
+    }
+  },
+  {
+    "name": "0x11-V2-Validation-and-Business-Logic.md",
+    "path": "5.0/en/0x11-V2-Validation-and-Business-Logic.md",
+    "sha": "2b8bf8a6f0f61aae849f88fd8ba2eb5f996fde45",
+    "size": 7100,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x11-V2-Validation-and-Business-Logic.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x11-V2-Validation-and-Business-Logic.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/2b8bf8a6f0f61aae849f88fd8ba2eb5f996fde45",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x11-V2-Validation-and-Business-Logic.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x11-V2-Validation-and-Business-Logic.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/2b8bf8a6f0f61aae849f88fd8ba2eb5f996fde45",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x11-V2-Validation-and-Business-Logic.md"
+    }
+  },
+  {
+    "name": "0x12-V3-Web-Frontend-Security.md",
+    "path": "5.0/en/0x12-V3-Web-Frontend-Security.md",
+    "sha": "3d94e02905effc5d508787c539e42e4301636be8",
+    "size": 13546,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x12-V3-Web-Frontend-Security.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x12-V3-Web-Frontend-Security.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/3d94e02905effc5d508787c539e42e4301636be8",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x12-V3-Web-Frontend-Security.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x12-V3-Web-Frontend-Security.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/3d94e02905effc5d508787c539e42e4301636be8",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x12-V3-Web-Frontend-Security.md"
+    }
+  },
+  {
+    "name": "0x13-V4-API-and-Web-Service.md",
+    "path": "5.0/en/0x13-V4-API-and-Web-Service.md",
+    "sha": "470abc3ef7fea9af33291bf4bae48bf16ce1c3e2",
+    "size": 7087,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x13-V4-API-and-Web-Service.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x13-V4-API-and-Web-Service.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/470abc3ef7fea9af33291bf4bae48bf16ce1c3e2",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x13-V4-API-and-Web-Service.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x13-V4-API-and-Web-Service.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/470abc3ef7fea9af33291bf4bae48bf16ce1c3e2",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x13-V4-API-and-Web-Service.md"
+    }
+  },
+  {
+    "name": "0x14-V5-File-Handling.md",
+    "path": "5.0/en/0x14-V5-File-Handling.md",
+    "sha": "e8d601cefe4f7ae194e69f32afec6c47f8b231c5",
+    "size": 5101,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x14-V5-File-Handling.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x14-V5-File-Handling.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/e8d601cefe4f7ae194e69f32afec6c47f8b231c5",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x14-V5-File-Handling.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x14-V5-File-Handling.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/e8d601cefe4f7ae194e69f32afec6c47f8b231c5",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x14-V5-File-Handling.md"
+    }
+  },
+  {
+    "name": "0x15-V6-Authentication.md",
+    "path": "5.0/en/0x15-V6-Authentication.md",
+    "sha": "d9fa0025ad5bc804447aa95d1985bacc7ed1970e",
+    "size": 22549,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x15-V6-Authentication.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x15-V6-Authentication.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/d9fa0025ad5bc804447aa95d1985bacc7ed1970e",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x15-V6-Authentication.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x15-V6-Authentication.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/d9fa0025ad5bc804447aa95d1985bacc7ed1970e",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x15-V6-Authentication.md"
+    }
+  },
+  {
+    "name": "0x16-V7-Session-Management.md",
+    "path": "5.0/en/0x16-V7-Session-Management.md",
+    "sha": "0124d000ac2a51f3e49cce2a8e89293fffefd36c",
+    "size": 8989,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x16-V7-Session-Management.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x16-V7-Session-Management.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/0124d000ac2a51f3e49cce2a8e89293fffefd36c",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x16-V7-Session-Management.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x16-V7-Session-Management.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/0124d000ac2a51f3e49cce2a8e89293fffefd36c",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x16-V7-Session-Management.md"
+    }
+  },
+  {
+    "name": "0x17-V8-Authorization.md",
+    "path": "5.0/en/0x17-V8-Authorization.md",
+    "sha": "eef42095545b35a10c83b4dc2d20833c89daf618",
+    "size": 5920,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x17-V8-Authorization.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x17-V8-Authorization.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/eef42095545b35a10c83b4dc2d20833c89daf618",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x17-V8-Authorization.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x17-V8-Authorization.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/eef42095545b35a10c83b4dc2d20833c89daf618",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x17-V8-Authorization.md"
+    }
+  },
+  {
+    "name": "0x18-V9-Self-contained-Tokens.md",
+    "path": "5.0/en/0x18-V9-Self-contained-Tokens.md",
+    "sha": "d34dd16b3ed6591f836e76422294012a41ee5f18",
+    "size": 4130,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x18-V9-Self-contained-Tokens.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x18-V9-Self-contained-Tokens.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/d34dd16b3ed6591f836e76422294012a41ee5f18",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x18-V9-Self-contained-Tokens.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x18-V9-Self-contained-Tokens.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/d34dd16b3ed6591f836e76422294012a41ee5f18",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x18-V9-Self-contained-Tokens.md"
+    }
+  },
+  {
+    "name": "0x19-V10-OAuth-and-OIDC.md",
+    "path": "5.0/en/0x19-V10-OAuth-and-OIDC.md",
+    "sha": "e726216b4b061b13108404304ab8fe939aebb2bd",
+    "size": 20669,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x19-V10-OAuth-and-OIDC.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x19-V10-OAuth-and-OIDC.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/e726216b4b061b13108404304ab8fe939aebb2bd",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x19-V10-OAuth-and-OIDC.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x19-V10-OAuth-and-OIDC.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/e726216b4b061b13108404304ab8fe939aebb2bd",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x19-V10-OAuth-and-OIDC.md"
+    }
+  },
+  {
+    "name": "0x20-V11-Cryptography.md",
+    "path": "5.0/en/0x20-V11-Cryptography.md",
+    "sha": "be70abcd6fa41f831174cb7d9989e5d389af0b18",
+    "size": 11998,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x20-V11-Cryptography.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x20-V11-Cryptography.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/be70abcd6fa41f831174cb7d9989e5d389af0b18",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x20-V11-Cryptography.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x20-V11-Cryptography.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/be70abcd6fa41f831174cb7d9989e5d389af0b18",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x20-V11-Cryptography.md"
+    }
+  },
+  {
+    "name": "0x21-V12-Secure-Communication.md",
+    "path": "5.0/en/0x21-V12-Secure-Communication.md",
+    "sha": "08013d3b6e9960c1c2bc90de311d41d15ac004e4",
+    "size": 5245,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x21-V12-Secure-Communication.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x21-V12-Secure-Communication.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/08013d3b6e9960c1c2bc90de311d41d15ac004e4",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x21-V12-Secure-Communication.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x21-V12-Secure-Communication.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/08013d3b6e9960c1c2bc90de311d41d15ac004e4",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x21-V12-Secure-Communication.md"
+    }
+  },
+  {
+    "name": "0x22-V13-Configuration.md",
+    "path": "5.0/en/0x22-V13-Configuration.md",
+    "sha": "9bac566a4995baeb3a9d11f56c5ed0ac476ce9f2",
+    "size": 7828,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x22-V13-Configuration.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x22-V13-Configuration.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/9bac566a4995baeb3a9d11f56c5ed0ac476ce9f2",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x22-V13-Configuration.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x22-V13-Configuration.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/9bac566a4995baeb3a9d11f56c5ed0ac476ce9f2",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x22-V13-Configuration.md"
+    }
+  },
+  {
+    "name": "0x23-V14-Data-Protection.md",
+    "path": "5.0/en/0x23-V14-Data-Protection.md",
+    "sha": "1d56e04835140ee2f3ff7fda95a3d38a1c58e578",
+    "size": 7285,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x23-V14-Data-Protection.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x23-V14-Data-Protection.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/1d56e04835140ee2f3ff7fda95a3d38a1c58e578",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x23-V14-Data-Protection.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x23-V14-Data-Protection.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/1d56e04835140ee2f3ff7fda95a3d38a1c58e578",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x23-V14-Data-Protection.md"
+    }
+  },
+  {
+    "name": "0x24-V15-Secure-Coding-and-Architecture.md",
+    "path": "5.0/en/0x24-V15-Secure-Coding-and-Architecture.md",
+    "sha": "4f8ee500f348a679845fdc1bacf9d316501d93d6",
+    "size": 10222,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x24-V15-Secure-Coding-and-Architecture.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x24-V15-Secure-Coding-and-Architecture.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/4f8ee500f348a679845fdc1bacf9d316501d93d6",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x24-V15-Secure-Coding-and-Architecture.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x24-V15-Secure-Coding-and-Architecture.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/4f8ee500f348a679845fdc1bacf9d316501d93d6",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x24-V15-Secure-Coding-and-Architecture.md"
+    }
+  },
+  {
+    "name": "0x25-V16-Security-Logging-and-Error-Handling.md",
+    "path": "5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md",
+    "sha": "4c55c9c4e7fe8d92534b8c820bf197009675ce97",
+    "size": 8174,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/4c55c9c4e7fe8d92534b8c820bf197009675ce97",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/4c55c9c4e7fe8d92534b8c820bf197009675ce97",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md"
+    }
+  },
+  {
+    "name": "0x26-V17-WebRTC.md",
+    "path": "5.0/en/0x26-V17-WebRTC.md",
+    "sha": "cf25614600e98628c7ce7f4a423737126cfab8af",
+    "size": 8738,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x26-V17-WebRTC.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x26-V17-WebRTC.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/cf25614600e98628c7ce7f4a423737126cfab8af",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x26-V17-WebRTC.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x26-V17-WebRTC.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/cf25614600e98628c7ce7f4a423737126cfab8af",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x26-V17-WebRTC.md"
+    }
+  },
+  {
+    "name": "0x90-Appendix-A_Glossary.md",
+    "path": "5.0/en/0x90-Appendix-A_Glossary.md",
+    "sha": "146baa7b95c2dbb00db31d45f4fbecb1ec11fd6b",
+    "size": 18404,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x90-Appendix-A_Glossary.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x90-Appendix-A_Glossary.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/146baa7b95c2dbb00db31d45f4fbecb1ec11fd6b",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x90-Appendix-A_Glossary.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x90-Appendix-A_Glossary.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/146baa7b95c2dbb00db31d45f4fbecb1ec11fd6b",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x90-Appendix-A_Glossary.md"
+    }
+  },
+  {
+    "name": "0x91-Appendix-B_References.md",
+    "path": "5.0/en/0x91-Appendix-B_References.md",
+    "sha": "a0fdd1babb62bb0623643fb798de02d753c755ad",
+    "size": 3308,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x91-Appendix-B_References.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x91-Appendix-B_References.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/a0fdd1babb62bb0623643fb798de02d753c755ad",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x91-Appendix-B_References.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x91-Appendix-B_References.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/a0fdd1babb62bb0623643fb798de02d753c755ad",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x91-Appendix-B_References.md"
+    }
+  },
+  {
+    "name": "0x92-Appendix-C_Cryptography.md",
+    "path": "5.0/en/0x92-Appendix-C_Cryptography.md",
+    "sha": "bef9421a93efdf3b2a20a120ff1a70c69c67d879",
+    "size": 23150,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x92-Appendix-C_Cryptography.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x92-Appendix-C_Cryptography.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/bef9421a93efdf3b2a20a120ff1a70c69c67d879",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x92-Appendix-C_Cryptography.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x92-Appendix-C_Cryptography.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/bef9421a93efdf3b2a20a120ff1a70c69c67d879",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x92-Appendix-C_Cryptography.md"
+    }
+  },
+  {
+    "name": "0x93-Appendix-D_Recommendations.md",
+    "path": "5.0/en/0x93-Appendix-D_Recommendations.md",
+    "sha": "496dd5ba61300210f3966f337f43b8e117cff0b2",
+    "size": 4968,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x93-Appendix-D_Recommendations.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x93-Appendix-D_Recommendations.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/496dd5ba61300210f3966f337f43b8e117cff0b2",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x93-Appendix-D_Recommendations.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x93-Appendix-D_Recommendations.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/496dd5ba61300210f3966f337f43b8e117cff0b2",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x93-Appendix-D_Recommendations.md"
+    }
+  },
+  {
+    "name": "0x94-Appendix-E_Contributors.md",
+    "path": "5.0/en/0x94-Appendix-E_Contributors.md",
+    "sha": "9c8ee5d9f73b30c3cd8546c0c943d24f94e9fc6f",
+    "size": 14687,
+    "url": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x94-Appendix-E_Contributors.md?ref=v5.0.0_release",
+    "html_url": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x94-Appendix-E_Contributors.md",
+    "git_url": "https://api.github.com/repos/OWASP/ASVS/git/blobs/9c8ee5d9f73b30c3cd8546c0c943d24f94e9fc6f",
+    "download_url": "https://raw.githubusercontent.com/OWASP/ASVS/v5.0.0_release/5.0/en/0x94-Appendix-E_Contributors.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/OWASP/ASVS/contents/5.0/en/0x94-Appendix-E_Contributors.md?ref=v5.0.0_release",
+      "git": "https://api.github.com/repos/OWASP/ASVS/git/blobs/9c8ee5d9f73b30c3cd8546c0c943d24f94e9fc6f",
+      "html": "https://github.com/OWASP/ASVS/blob/v5.0.0_release/5.0/en/0x94-Appendix-E_Contributors.md"
+    }
+  }
+]

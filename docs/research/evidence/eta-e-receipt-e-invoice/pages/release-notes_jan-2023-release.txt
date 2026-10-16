@@ -1,0 +1,50 @@
+ 
+ Jan 2023 Release 
+ Jan 2023 Release 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ Jan 2023 Release
+ 01 Jan 2023 - ETA
+ Updated APIs
+ Update possible error response when taxpayer profile has B2B Deny ERP Submission tag assigned to it by ETA Admin. Impacted endpoint:
+ Submit Documents 
+ Update possible error response when taxpayer profile has B2B Deny ERP Cancellation/Rejection tag assigned to it by ETA Admin. Impacted endpoints:
+ Cancel Document 
+ Reject Document 
+ Decline Document Cancellation 
+ Decline Document Rejection 
+ Update possible error response when taxpayer profile has B2B Deny ERP Document Retrieval tag assigned to it by ETA Admin. Impacted endpoints:
+ Get Recent Documents 
+ Request Document Package 
+ Get Package Requests 
+ Get Document Package 
+ Get Document 
+ Get Submission 
+ Get Document Printout 
+ Get Document Details 
+ Update the allowed upper limit value of field rate in taxableitems array.
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Invoice v1.0</title>
+
+	<meta name="description" content="v1.0 of the Invoice document type is the initial version of the Invoices supported by the eInvoicing solution">
+
+
+	<meta name="keywords" content="Invoice v1.0">
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Invoice v1.0</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Invoice v1.0" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="v1.0 of the Invoice document type is the initial version of the Invoices supported by the eInvoicing solution" />
+<meta name="twitter:description" property="og:description" content="v1.0 of the Invoice document type is the initial version of the Invoices supported by the eInvoicing solution" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-09-24T00:53:57-05:00" />
+<meta property="article:modified_time" content="2026-09-24T00:53:57-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Invoice v1.0" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-09-24T00:53:57-05:00","datePublished":"2026-09-24T00:53:57-05:00","description":"v1.0 of the Invoice document type is the initial version of the Invoices supported by the eInvoicing solution","headline":"Invoice v1.0","mainEntityOfPage":{"@type":"WebPage","@id":"/documents/invoice-v1-0/"},"url":"/documents/invoice-v1-0/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Invoice v1.0</h1>
+								
+								
+									<p class="hero-subheader__desc">v1.0 of the Invoice document type is the initial version of the Invoices supported by the eInvoicing solution</p>
+								
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h1 id="overview">Overview</h1>
+
+<p>Invoice is the main document type supported by the eInvoicing solution. It is used to <a href="/einvoicingapi/01-submit-documents/">register issued invoices</a> with the Tax Authority.</p>
+
+<h1 id="data-structure">Data Structure</h1>
+
+<h2 id="core">Core</h2>
+
+<p>The data structure of the invoice v1.0 documents consists of a single <code class="highlighter-rouge">document</code> element that contains these additional elements. Note that this description defines the data structure while actual attribute naming could be different for JSON and XML data structures.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>issuer</td>
+      <td><a href="#issuer">Issuer</a></td>
+      <td>Structure representing the issuer information.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>receiver</td>
+      <td><a href="#receiver">Receiver</a></td>
+      <td>Structure representing the receiver</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>documentType</td>
+      <td>String</td>
+      <td>Document type name. Must be <code class="highlighter-rouge">i</code> for invoice.</td>
+      <td>i</td>
+    </tr>
+    <tr>
+      <td>documentTypeVersion</td>
+      <td>String</td>
+      <td>Document type version name. Must be <code class="highlighter-rouge">1.0</code> for this version.</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td>dateTimeIssued</td>
+      <td>Date</td>
+      <td>The date and time when the document was issued. Date and time cannot be in future. Time to be supplied in UTC timezone.</td>
+      <td>2015-02-13T13:15:00Z</td>
+    </tr>
+    <tr>
+      <td>taxpayerActivityCode</td>
+      <td>String</td>
+      <td>Tax activity code of the business issuing the document representing the activity that caused it to be issued. Must be valid <a href="/codes/activity-types/">activity type code</a>.</td>
+      <td>9478</td>
+    </tr>
+    <tr>
+      <td>internalId</td>
+      <td>String</td>
+      <td>Internal document ID used to link back to the ERP document number. Value defined by the submitter.</td>
+      <td>AZ-24883</td>
+    </tr>
+    <tr>
+      <td>purchaseOrderReference</td>
+      <td>String</td>
+      <td>Optional: reference to purchase order that this document is related to.</td>
+      <td>P-233-A6375</td>
+    </tr>
+    <tr>
+      <td>purchaseOrderDescription</td>
+      <td>String</td>
+      <td>Optional: Additional information about the purchase order provided to the recipient of the document.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>salesOrderReference</td>
+      <td>String</td>
+      <td>Optional: Reference to the previous sales order for informational purposes.</td>
+      <td>828874-023/233</td>
+    </tr>
+    <tr>
+      <td>salesOrderDescription</td>
+      <td>String</td>
+      <td>Optional: Additional information about the sales order provided to the recipient of the document.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>proformaInvoiceNumber</td>
+      <td>String (max 50)</td>
+      <td>Optional: Reference to the previous proforma invoice.</td>
+      <td>2020A-012</td>
+    </tr>
+    <tr>
+      <td>payment</td>
+      <td><a href="#payment">Payment</a></td>
+      <td>Optional: Structure containing fields providing information on how payments needs to be made.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>delivery</td>
+      <td><a href="#delivery">Delivery</a></td>
+      <td>Optional: Structure containing fields providing information on how the delivery of goods</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>invoiceLines</td>
+      <td><a href="#invoice-line">Invoice Line[]</a></td>
+      <td>Invoice lines of the invoice. Needs to have at least one invoice line.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>totalSalesAmount</td>
+      <td>Decimal</td>
+      <td>Sum all all InvoiceLine/SalesTotal items</td>
+      <td>8873.29956</td>
+    </tr>
+    <tr>
+      <td>totalDiscountAmount</td>
+      <td>Decimal</td>
+      <td>Total amount of discounts: sum of all Discount amount elements of InvoiceLine items.</td>
+      <td>663.23985</td>
+    </tr>
+    <tr>
+      <td>netAmount</td>
+      <td>Decimal</td>
+      <td>TotalSales – TotalDiscount</td>
+      <td>8183.23857</td>
+    </tr>
+    <tr>
+      <td>taxTotals</td>
+      <td><a href="#tax-total">Tax Total[]</a></td>
+      <td>Totals per tax type.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>extraDiscountAmount</td>
+      <td>Decimal</td>
+      <td>Additional discount amount applied at the level of the overall document, not individual lines.</td>
+      <td>12.09864</td>
+    </tr>
+    <tr>
+      <td>totalItemsDiscountAmount</td>
+      <td>Decimal</td>
+      <td>Total amount of item discounts: sum of all Item Discount amount elements of InvoiceLine items.</td>
+      <td>663.23946</td>
+    </tr>
+    <tr>
+      <td>totalAmount</td>
+      <td>Decimal</td>
+      <td>Total amount of the invoice calculated as NetAmount + Totals of tax amounts. 5 decimal digits allowed.</td>
+      <td>8934.00769</td>
+    </tr>
+    <tr>
+      <td>signatures</td>
+      <td><a href="#signature">Signature[]</a></td>
+      <td>Structure containing one or two digital signatures. At least signature of the Issuer must be present. Signature of the Service provider is optional.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>serviceDeliveryDate</td>
+      <td>Date</td>
+      <td>Optional: The date representing the service delivery date.</td>
+      <td>2024-07-17</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="issuer">Issuer</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>type</td>
+      <td>String</td>
+      <td>Type of the issuer - supported values - B for business in Egypt, P for natural person, F for foreigner. Note that P and F are reserved values for future use.</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td>String</td>
+      <td>Registration number. For business in Egypt must be registration number.</td>
+      <td>10201020102</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>String</td>
+      <td>Registration name of the company.</td>
+      <td>My company</td>
+    </tr>
+    <tr>
+      <td>address</td>
+      <td><a href="#issuer-address">Address</a></td>
+      <td>Address structure of the issuer branch including branch code.</td>
+      <td>See the structure</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="issuer-address">Issuer Address</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>branchId</td>
+      <td>String</td>
+      <td>Mandatory when issuer is of type B, otherwise optional. The <a href="/codes/branch/">code of the branch</a> as registered with tax authority for the company submitting the document.</td>
+      <td>1234</td>
+    </tr>
+    <tr>
+      <td>country</td>
+      <td>String</td>
+      <td>Country represented by ISO-3166-2 2 symbol <a href="/codes/countries/">code of the countries</a>. Must be EG for internal business issuers.</td>
+      <td>EG</td>
+    </tr>
+    <tr>
+      <td>governate</td>
+      <td>String</td>
+      <td>Governorate information as textual value</td>
+      <td>Giza Governorate</td>
+    </tr>
+    <tr>
+      <td>regionCity</td>
+      <td>String</td>
+      <td>Region and city information as textual value</td>
+      <td>Dokki</td>
+    </tr>
+    <tr>
+      <td>street</td>
+      <td>String</td>
+      <td>street information</td>
+      <td>17 Nabil Al Wakad</td>
+    </tr>
+    <tr>
+      <td>buildingNumber</td>
+      <td>String</td>
+      <td>building information</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>postalCode</td>
+      <td>String</td>
+      <td>Optional: Postal code</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>floor</td>
+      <td>String</td>
+      <td>Optional: the floor number</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>room</td>
+      <td>String</td>
+      <td>Optional: the room/flat number in the floor</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>landmark</td>
+      <td>String</td>
+      <td>Optional: nearest landmark to the address</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>additionalInformation</td>
+      <td>String</td>
+      <td>Optional: any additional information to the address</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="receiver">Receiver</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>type</td>
+      <td>String</td>
+      <td>Type of the receiver - supported values - B for business in Egypt, P for natural person, F for foreigner.</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td>String</td>
+      <td>Registration number. For business in Egypt must be registration number. For residents must be national ID. For foreign buyers must be VAT ID of the foreign company. Optional if person buyer and invoice amount less than threshold limit defined. Receiver and issuer cannot be the same.</td>
+      <td>10201020102</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td>String</td>
+      <td>Registration name of the company or name and surname of the person. Optional if person buyer and invoice amount less than threshold limit defined.</td>
+      <td>My company</td>
+    </tr>
+    <tr>
+      <td>address</td>
+      <td><a href="#receiver-address">Address</a></td>
+      <td>Address of the receiver. Optional if person buyer and invoice amount less than threshold limit defined.</td>
+      <td>See the structure</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="receiver-address">Receiver Address</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>country</td>
+      <td>String</td>
+      <td>Country represented by ISO-3166-2 2 symbol <a href="/codes/countries/">code of the countries</a>. Must be EG for internal business issuers.</td>
+      <td>EG</td>
+    </tr>
+    <tr>
+      <td>governate</td>
+      <td>String</td>
+      <td>Governorate information as textual value</td>
+      <td>Giza Governorate</td>
+    </tr>
+    <tr>
+      <td>regionCity</td>
+      <td>String</td>
+      <td>Region and city information as textual value</td>
+      <td>Dokki</td>
+    </tr>
+    <tr>
+      <td>street</td>
+      <td>String</td>
+      <td>street information</td>
+      <td>17 Nabil Al Wakad</td>
+    </tr>
+    <tr>
+      <td>buildingNumber</td>
+      <td>String</td>
+      <td>building information (number, name or both)</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>postalCode</td>
+      <td>String</td>
+      <td>Optional: Postal code</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>floor</td>
+      <td>String</td>
+      <td>Optional: the floor number</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>room</td>
+      <td>String</td>
+      <td>Optional: the room/flat number in the floor</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>landmark</td>
+      <td>String</td>
+      <td>Optional: nearest landmark to the address</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>additionalInformation</td>
+      <td>String</td>
+      <td>Optional: any additional information to the address</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="payment">Payment</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>bankName</td>
+      <td>String</td>
+      <td>Optional: Name of the bank of document issuer.</td>
+      <td>Alpha Bank</td>
+    </tr>
+    <tr>
+      <td>bankAddress</td>
+      <td>String</td>
+      <td>Optional: Address of the bank of document issuer. Captured as single line of text, not a structure.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>bankAccountNo</td>
+      <td>String</td>
+      <td>Optional: Local bank account number in the bank</td>
+      <td>12-1982939</td>
+    </tr>
+    <tr>
+      <td>bankAccountIBAN</td>
+      <td>String</td>
+      <td>Optional: International bank account number used primarily for international documents.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>swiftCode</td>
+      <td>String</td>
+      <td>Optional: International Swift code of the bank.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>terms</td>
+      <td>String</td>
+      <td>Optional: Description of the payment terms describing when and how payments needs to be made, for example.</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="delivery">Delivery</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>approach</td>
+      <td>String</td>
+      <td>Optional: Information on the approach for delivery used, means of transportation.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>packaging</td>
+      <td>String</td>
+      <td>Optional: Information on types of packages used when delivering the goods</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>dateValidity</td>
+      <td>String</td>
+      <td>Optional: Validity date for exported products.</td>
+      <td>2015-02-13T13:15:00Z</td>
+    </tr>
+    <tr>
+      <td>exportPort</td>
+      <td>String</td>
+      <td>Optional: Port exporting the goods.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>countryOfOrigin</td>
+      <td>String</td>
+      <td>Optional: Country of origin of goods/services. Country represented by ISO-3166-2 2 symbol code of the countries.</td>
+      <td>SA</td>
+    </tr>
+    <tr>
+      <td>grossWeight</td>
+      <td>Decimal</td>
+      <td>Optional: Total weight of the goods delivered. Value in kilograms.</td>
+      <td>9929.00000</td>
+    </tr>
+    <tr>
+      <td>netWeight</td>
+      <td>Decimal</td>
+      <td>Optional: Net weight of the goods delivered. Value in kilograms.</td>
+      <td>9400.00000</td>
+    </tr>
+    <tr>
+      <td>terms</td>
+      <td>String</td>
+      <td>Optional: Delivery terms/shipping terms information.</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="invoice-line">Invoice Line</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>description</td>
+      <td>String</td>
+      <td>Description of the item being sold.</td>
+      <td>One ton of Aria apples.</td>
+    </tr>
+    <tr>
+      <td>itemType</td>
+      <td>String</td>
+      <td>Coding schema used to encode the item type. Must be <code class="highlighter-rouge">GS1</code> or <code class="highlighter-rouge">EGS</code> for this version.</td>
+      <td>GS1</td>
+    </tr>
+    <tr>
+      <td>itemCode</td>
+      <td>String</td>
+      <td>Code of the goods or services item being sold. GS1 codes targeted for managing goods,  EGS codes targeted for managing goods – goods or services.</td>
+      <td>10003752</td>
+    </tr>
+    <tr>
+      <td>unitType</td>
+      <td>String</td>
+      <td>Code of the unit type used from the <a href="/codes/unit-types/">code table of the measures</a>.</td>
+      <td>kg</td>
+    </tr>
+    <tr>
+      <td>quantity</td>
+      <td>Decimal</td>
+      <td>Number of units of the defined unit type being sold. Number should be larger than 0.</td>
+      <td>4.44444</td>
+    </tr>
+    <tr>
+      <td>unitValue</td>
+      <td><a href="#value">Value</a></td>
+      <td>The structure defining the price of a single unit sold.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>salesTotal</td>
+      <td>Decimal</td>
+      <td>Total amount for the invoice line considering quantity and unit price in EGP (with excluded factory amounts if they are present for specific types in documents).</td>
+      <td>23.67485</td>
+    </tr>
+    <tr>
+      <td>total</td>
+      <td>Decimal</td>
+      <td>Total amount for the invoice line after adding all pricing items, taxes, removing discounts.</td>
+      <td>455.12875</td>
+    </tr>
+    <tr>
+      <td>valueDifference</td>
+      <td>Decimal</td>
+      <td>Value difference when selling goods already taxed (accepts +/- numbers), e.g., factory value based.</td>
+      <td>10.68942</td>
+    </tr>
+    <tr>
+      <td>totalTaxableFees</td>
+      <td>Decimal</td>
+      <td>Total amount of additional taxable fees to be used in final tax calculation.</td>
+      <td>1.25782</td>
+    </tr>
+    <tr>
+      <td>netTotal</td>
+      <td>Decimal</td>
+      <td>Total amount for the invoice line after applying discount.</td>
+      <td>23.67957</td>
+    </tr>
+    <tr>
+      <td>itemsDiscount</td>
+      <td>Decimal</td>
+      <td>Non-taxable items discount.</td>
+      <td>12.22785</td>
+    </tr>
+    <tr>
+      <td>discount</td>
+      <td><a href="#discount">Discount</a></td>
+      <td>Optional: the structure defining the discount applied on a single unit sold.</td>
+      <td>See structure</td>
+    </tr>
+    <tr>
+      <td>taxableItems</td>
+      <td><a href="#taxable-item">Taxable Item[]</a></td>
+      <td>Optional: List of taxable items. Can have zero or more of supported tax items below from the list of all tax types including VAT, WHT and table tax, local authority fees (municipality), development.</td>
+      <td>See structure.</td>
+    </tr>
+    <tr>
+      <td>internalCode</td>
+      <td>String</td>
+      <td>Optional: Internal code used for the product being sold – can be used to simplify references back to existing solution.</td>
+      <td>8383S</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="value">Value</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>currencySold</td>
+      <td>String</td>
+      <td>Currency code used from ISO 4217.</td>
+      <td>EGP</td>
+    </tr>
+    <tr>
+      <td>amountEGP</td>
+      <td>Decimal</td>
+      <td>Price of unit of goods/services sold in EGP. Should be valid decimal with max 5 decimal digits. Value rounded to 5 decimal digits if calculated using currency sold and exchange rate.</td>
+      <td>1.21984</td>
+    </tr>
+    <tr>
+      <td>amountSold</td>
+      <td>Decimal</td>
+      <td>Mandatory if currencySold &lt;&gt; EGP. Should not have value otherwise</td>
+      <td>1.21689</td>
+    </tr>
+    <tr>
+      <td>currencyExchangeRate</td>
+      <td>Decimal</td>
+      <td>Exchange rate of the Egyptian bank on the day of invoicing used to convert currency sold to the value of currency EGP. Mandatory if currencySold is not EGP. Should be valid decimal with max 5 decimal digits.</td>
+      <td>1.92992</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="discount">Discount</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rate</td>
+      <td>Decimal</td>
+      <td>Optional: discount percentage rate applied. Must be from 0 to 100.</td>
+      <td>5.00</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Optional: amount of discount provided to customer for this item. Should be smaller or equal to value Total. If percentage specified should be valid amount calculated from total by applying discount percentage. Value with the precision of 5 decimal digits.</td>
+      <td>10.00678</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="taxable-item">Taxable Item</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>taxType</td>
+      <td>String</td>
+      <td>Type of tax applied - from the list of approved tax type codes. The TaxType needs to be unique across the invoice line (no VAT twice in one invoice line), TaxType is from the list of supported <a href="/codes/tax-types/">tax types</a>.</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Amount of the tax applied – tax type defined type of tax applies to support different taxes that are possible depending on the type of sales, customer etc. Value with the precision of 5</td>
+      <td>2.00987</td>
+    </tr>
+    <tr>
+      <td>subType</td>
+      <td>String</td>
+      <td>Subtype of the <a href="/codes/tax-types/">tax type</a> that might mean exemption rate is applied or specific rate linked to product type being sold is applied.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>rate</td>
+      <td>Decimal</td>
+      <td>Tax rate applied for the invoice line. Value from 0 to 999.</td>
+      <td>2.00</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="tax-total">Tax Total</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>taxType</td>
+      <td>String</td>
+      <td>Type of tax applied - from the list of approved <a href="/codes/tax-types/">tax type codes</a>. The TaxType needs to be unique across the invoice line (no VAT twice in one invoice line), TaxType is from the list of supported tax types.</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>Decimal</td>
+      <td>Sum of all amounts of given tax in all invoice lines. 5 decimal digits allowed.</td>
+      <td>838.10873</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="signature">Signature</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>type</td>
+      <td>String</td>
+      <td>Type of the signature: Issuer (I), ServiceProvider (S)</td>
+      <td>I</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td>String</td>
+      <td>Signature value that contains CADES-BES structure containing signer certificate, hash value signed and actual signature value.</td>
+      <td>Base64 encoded string</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="additional-considerations">Additional Considerations</h1>
+
+<h2 id="signature-creation">Signature Creation</h2>
+
+<p>Signed content is entire Document structure except signature section for I signature type and entire structure + previous I signature for S type of signature. SHA256 hashing used for creating hash of the elements to sign.</p>
+
+<p>More details on how to define structure of the document to hash, create canonical version, apply hashing, sign the hash and then embed the signature are provided in section <a href="/signature-creation/">Signature Creation</a>.</p>
+
+<h2 id="signature-validation">Signature Validation</h2>
+
+<p>The validation rules for signatures are:</p>
+<ul>
+  <li>Base64 encoded value that is a valid CADES-BES structure.</li>
+  <li>CADES-BES signing certificate is valid at the date of submission of document for validation.</li>
+  <li>Signing certificate is issued to:
+    <ol>
+      <li>issuer of the document, i.e., taxpayer registration number matches in certificate and document,</li>
+      <li>person representative who is active representative of taxpayer at the document issuance date and time.</li>
+    </ol>
+  </li>
+  <li>CADES-BES signature is valid RSA signature created using one of the approved eSeal or natural person signature certificates in Egypt.</li>
+</ul>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'OOJAPDEADKEIIDDFFBDPDHINNMCHODBOJCCGMNDDMBAJBMBMCKJJEAPAOGEHAMMNMKOBNCIDAAMLEPBMDPKAGFBDAAGMGHLIJOLPNBKDFONGKOPKGICHELDLHJBHGNLF',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

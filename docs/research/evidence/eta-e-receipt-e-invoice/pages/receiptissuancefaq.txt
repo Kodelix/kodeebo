@@ -1,0 +1,227 @@
+ 
+ Receipt Issuance FAQ 
+ Receipt Issuance FAQ 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ Receipt Issuance FAQ
+ Answers to frequently asked questions about issuance of receipt
+ Main Calculations
+ Main calculations are list of predefined validation checks and calculations required to check the validity of receipt content before submitting the receipt.
+ Click here to view validation rules for all the field values.
+ Local Validations
+ The following validations can be done offline on the receipts before storing them locally:
+ Validation of receipt/return receipt base structure
+ Validation of the issued document type version to check its structure matching what is required by the document type version. (Only JSON format supported).
+The structure will be checked against the receipt base structure .
+ Code Validator
+ Code validator enables validation of various codes used in issued documents to make sure they are referencing valid codes, for example Payment Methods, Currency Codes, Tax Types, Tax SubTypes, GS1, EGS, Unit Types, Activity Codes, buyer Types, Order Delivery Mode, Branches Codes, allowed receipt types for taxpayer as per activity code.
+ Code validator depends on cache of code table information that allows it to validate the documents quicker.
+ Note: System must validate goods and services codes used by the taxpayer against goods and services codes defined for usage by the taxpayer (if access to APIs to retrieve and cache this information is available)
+ Core Fields Validator
+ Core fields validator is used to validate that the receipt contains at least the main fields that any receipt should have to be processed by the system.
+ Core fields validation rules:
+ tax type must be unique
+ issuer Id must be the same in the token (submitter of the document must be the issuer)
+ issuer Id is required
+ issuer name is required
+ receiver type is required
+ if receiver type is not [P], receiver id is required
+ if receiver type is not [P], receiver name is required
+ document type is required
+ document type version is required
+ internal id is required
+ issuance date time format must be valid
+ issuance date time can’t be in the future
+ issuance date time value must be in the range of submission workflow parameter unless the ReferenceOldUUID is provided
+ ReferenceOldUUID cannot be equal to the UUID
+ receiver type is [B], issuer and receiver can’t be the same
+ issuer branch id is required
+ if currency is not EGP, currency exchange rate is required, else, currency exchange rate is not required
+ issuer id owning the POS is the same issuer in the receipt
+ POS is allowed to submit at the time of receipt issuance
+ taxpayer is allowed to submit using the submission channel
+ reference sales receipt can’t be supplied for the document type [s]
+ document UUID is 64 alphanumeric string that is a valid hash of the content of the serialized receipt with all content excluding the UUID itself.
+ document previous UUID is a 64 alphanumeric string
+ if submitted by a POS, validate that all receipts within the submission are issued by the same POS
+ If Business Buyer Type restricted flag is enabled on the system level, validate that the receipt buyer type isn’t business (B)
+ For return receipts, the referenceUUID should be a UUID of a receipt from the original document type. Example: If the return receipt is General Services Return Receipt , then the referenceUUID should be a UUID for General Services Receipt receipt
+ If POS device is retired or permanently retired then the submitted document should be rejected and the entire submission should be eventually rejected irrespective of the submission channel.
+ National ID Validator
+ National ID validator is used to check recipients of type person to verify that they are specified when required and they have valid values supplied. The validator depends on minimal amount parameter that defines when national ID information becomes mandatory for recipients of type person.
+ National ID becomes mandatory when buyer type is P and totalAmount equals to or greater than a configured value (50000 EGP for receipts with versions 1.0-1.1, 150000 EGP for receipts with version 1.2 and newer)
+ Taxpayer Validator
+ Taxpayer validator is the tool that validates if the taxpayers referenced in the submitted document are valid at the date of issuance of the document. It also performs checks on the issuer taxpayer that require async processing and cannot be done synchronously in core fields validator.
+Taxpayer validator will also validate branches activity dates in order to stop receipt issuance in case of a ceased/inactive branches.
+ Duplicate Document Validator
+ Duplicate document validator can be used for both validation (that invalidates documents) and for alerting (that generate alerts to employees) as all other processors, but this one is targeted primarily at the alerting pipelines.
+ Processor tries to find documents submitted recently that are like the document that is being processed to identify cases where the same document (often) by mistake has been submitted twice or even more than twice.
+ Processor enables configuration of parameters used to identify the match by allowing process administrators to define the combination of attributes that need to match from the list of offered attributes.
+ Re-submitting Invalid Receipts
+ In order not to break the chain to update invalid receipt in middle , change the UUID accordingly :
+ Assuming we have invalid batch consisting of 3 receipts(R1,R2,R3)
+ The structure of the invalid batch consist of one Invalid - R2 and two Valid - R1,R3 Receipt.
+ {
+- Receipt #1
+ [
+ UUID: "R1",
+ PreviousUUID: "EMPTY STRING ASSUMING THAT THIS IS THE FIRST RECEIPT SUBMITTED FROM THE POS"
+ ],
+- Receipt #2 "The invalid receipt"
+ [
+ UUID: "R2",
+ PreviousUUID: "R1"
+ ],
+- Receipt #3
+ [
+ UUID: "R3",
+ PreviousUUID: "R2"
+ ]
+}
+ In case of correcting the invalid receipt that requires any change in the receipt content, the UUID will be changed accordingly, this is will be the valid structure when resubmitting the corrected batch:
+ {
+ -- Receipt #1 'the receipt content won't be changed'
+ [
+ UUID: "R1",
+ PreviousUUID: ""
+ ],
+ -- Receipt #2 "The corrected receipt"
+ [
+ UUID: "R2*" 'The New UUID',
+ PreviousUUID: "R1", 'Note that We used the same previous UUID value that exists in the invalid receipt',
+ ReferenceOldUUID: "R2" 'This is the UUID of the invalid receipt'
+ ],
+ -- Receipt #3 'the receipt content won't be changed'
+ [
+ UUID: "R3",
+ PreviousUUID: "R2"
+ ]
+}
+ Click here to view validation rules for receipt reference old UUID.
+ How to generate receipt UUID?
+ Receipt UUID is a unique key on system level, it is generated based on receipt content as per receipt base schema through the following procedure:
+ Make sure to include all key fields in receipt object including UUID of previous receipt issued by same POS device.
+ If receipt type is return then make sure to include referenceUUID of the receipt in this return object.
+ Make sure receipt object has empty receipt UUID which is being generated.
+ Serialize and normalize receipt object and flatten all its properties in one line text.
+ Create a hash value of the normalized text using SHA256.
+ Convert the hash value from array of 32 bytes to hexadecimal string of 64 characters.
+ Use the hexadecimal string as receipt UUID.
+ How to sign a receipt batch?
+ Click here to get the detailed information about signing a receipt batch.
+ Note! The function to perform signature validation will not be deployed at this point until a decision is provided by ETA to test and deploy the component.
+ Receipt QR Code
+ The taxpayer should generate a QR code and place it on the printed receipt. This QR code represents a URL to the receipt details in the eInvoicing portal.
+ QR Code Content
+ QR code content is described as per the following sections:
+ 1. Technical
+ Name 
+ Description 
+ URL 
+ URL of the Receipt Details Page in e-receipt solution (portal). URL format:
+ {eInvoicingPortalURL} /receipts/search/ {UUID} /share/ {ReceiptDateAndTime} 
+ Note {ReceiptDateAndTime} is the receipt issuance date and time in UTC.
+ You may pick eInvoicing Portal URL from here 
+ URL Example: http://invoicing.eta.gov.eg/receipts/search/68e656b251e67e8358bef8483ab0d51c6619f3e7a1a9f0e75838d41ff368f320/share/2022-02-19T02:00Z 
+ 2. Seller Information
+ Name 
+ Description 
+ Value example 
+ Registration Number 
+ Registration Number of Seller 
+ 674859545 
+ 3. Receipt Data
+ Name 
+ Description 
+ Value example 
+ Total 
+ Receipt’s Total Amount 
+ 1000.000 
+ QR Code Template
+ All QR code content should be included in one line text as per the following template:
+ {URL} #Total: {Total} ,IssuerRIN: {Registration Number} 
+ Example of formated QR Code Content
+ http://invoicing.eta.gov.eg/receipts/search/68e656b251e67e8358bef8483ab0d51c6619f3e7a1a9f0e75838d41ff368f320/share/2022-02-19T02:00Z#Total:1000.000,IssuerRIN:674859545 
+ Receipt batch Schema and Structure
+ Click here to download sample of the receipt batch schema and structure in the JSON format.
+ How to submit late receipt ?
+ To submit receipts with old issuance date first you need to create the Late Submission Request.
+ Late Submission Configuration Parameters
+ The following are the Late Submission Parameters in System Configurations managed by ETA team:
+ Number of Request Per year - Sets the maximum number of allowed Late Submission Requests per year
+ Late Submission Window (Days) - Sets the maximum age of documents that will be accepted by a Late Submission Request
+ Late Submission Period (Hours) - Sets the duration of the Late Submission Request that allows the taxpayer representatives to submit their requests within this duration
+ Validations for Late Submission
+ The Following are the validations for Late Submissions:
+ Late Submission Request will consume from users current yearly quota and accept and reject submission based on the maximum number allowed .
+ In case of an active request new request can’t be raised.
+ A late document submission flag will be assigned to all documents submitted within the “Late Document Submission” period if these documents issuance date compared to current date and time, is more than the submission workflow parameter while less than the window for late submission system configuration parameter.
+ The token needs to be refreshed before the late submission requests are added to the token to be used, this means the ERP or POS device needs to re-authenticate before it can get the updated token.
+ The configuration parameters change does not impact active requests except the Later submission window.
+ Validation with Reference Old UUID
+ If the document Submitted has the reference old UUID added to it :
+ If the value of the reference old UUID is the same as another document in the valid state on the system, then the validation fails and document is rejected and the submission is marked as invalid.
+ If the value of the reference old UUID is not the same as another document in the valid state on the system :
+ If the reference old UUID is the same as the UUID of a previously invalidated document :
+ The issuance date of the submitted document is beyond the system configuration parameter “amendment with reference”, the validation fails and the submission is marked as invalid.
+ The issuance date of the submitted document is beyond the system configuration parameter “amendment with reference”, there is an active late submission request assigned to the taxpayer’s profile, the receipt issuance date is within the “Late Submission Window” the validation passes.
+ The issuance date of the submitted document is beyond the system configuration parameter “amendment with reference”, there is an active late submission request assigned to the taxpayer’s profile, the receipt issuance date is beyond the “Late Submission Window” the validation fails and document is rejected with proper errors returned and the submission is marked as invalid.
+ The issuance date of the submitted document is within the system configuration parameter “amendment with reference”, the validation passes and document validated against other configured validations in the system.
+ If the reference old UUID cannot be found in any of the previously invalidated documents.
+ The issuance date of the submitted document is beyond the system configuration parameter “amendment without reference”, the validation fails and the submission is marked as invalid.
+ The issuance date of the submitted document is within the system configuration parameter “amendment without reference”, the validation passes.
+ The issuance date of the submitted document is beyond the system configuration parameter “amendment without reference”, there is an active late submission request assigned to the taxpayer’s profile, the receipt issuance date is within the “Late Submission Window” the validation passes.
+ The issuance date of the submitted document is beyond the system configuration parameter “amendment without reference”, there is an active late submission request assigned to the taxpayer’s profile, the receipt issuance date is beyond the “Late Submission Window” the validation fails and the submission is marked as invalid.
+ Note! Amendment with reference value is: 96 hours.
+ Amendment without reference value is: 72 hours
+ Example
+ Taxpayer profile attribute for late submission is active, configuration parameter “Window For Late Submission” is set with value 25 days, document submitted to system on 1st of October while its issuance date was on 10th of September, then document is accepted.
+ Taxpayer profile attribute for late submission is active, configuration parameter “Window For Late Submission” is set with value 25 days, document submitted to system on 1st of October while its issuance date was on 4th of September, then document is rejected.
+ Taxpayer profile attribute for late submission is active, configuration parameter “Window For Late Submission” is set with value 0 days, document submitted to system on 1st of October while its issuance date was on 1st of October, then document is accepted.
+ Taxpayer profile attribute for late submission is active, configuration parameter “Window For Late Submission” is set with value 0 days, document submitted to system on 1st of October while its issuance date was on 30th of September, then document is rejected.
+ Limitations on receipt submission
+ The following limitations are managed by the IT Operator for the process of receipt submission:
+ Maximum Submission Size is 500 receipts (1.5 Mbytes)
+ Minimum Submission Size is 1 receipt
+ Average number of lines per receipt (10)
+ Maximum number of line Items per receipt is 300
+ The receipt is allowed to be submitted within the allowed duration (24 hours), unless this receipt is being resubmitted and has the OLD UUID added to the receipt/return receipt
+ Submission datetime can’t be in the future
+ Supported content type: application/json
+ Submit with allowed branch
+ Submit with valid/active document type and document type version
+ Reason is required for late submission request.
+ Maximum allowed days to issue a return receipt is 540 days of the issuance date of the sales receipt.
+ Limitations on POS device
+ The length of POS Serial Number can be up to 100 characters.
+ POS device issuing the receipt has to have been registered and linked to the issuer RIN before the receipt is issued.
+ The issuer should have been allowed to issue receipts by assigning the B2C tag on the system.
+ The taxpayer should not be blocked.
+ Taxpayer with B2C only tag and still want to submit Invoice documents
+ Click here to get the detailed guidelines information about documents submission using B2B.
+ Note! As a B2C only tagged taxpayer, you need follow the guidelines to perform invoice documents submission using B2B.
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

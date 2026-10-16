@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>APIs Governance & Rate Limiting</title>
+
+	<meta name="description" content="Governance & rate limiting rules system applies for optimal usage">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>APIs Governance &amp; Rate Limiting</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="APIs Governance &amp; Rate Limiting" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Governance &amp; rate limiting rules system applies for optimal usage" />
+<meta name="twitter:description" property="og:description" content="Governance &amp; rate limiting rules system applies for optimal usage" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="APIs Governance &amp; Rate Limiting" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Governance &amp; rate limiting rules system applies for optimal usage","headline":"APIs Governance &amp; Rate Limiting","url":"/apigovernance/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">APIs Governance & Rate Limiting</h1>
+								
+								
+									<p class="hero-subheader__desc">Governance & rate limiting rules system applies for optimal usage</p>
+								
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h2 id="overview">Overview</h2>
+<p>The solution implements governance rules on system APIs published as per the previous sections. The governance rules implemented has the objective of protecting the system against malicious and non-optimal usage. One of the governance approaches implemented in the solution APIs is to enforce specific rate limiting (throttling) rules. Throttling is a risk management technique which is configured based on the system scale parameters to make sure the system provides the best performance possible.</p>
+
+<h2 id="why-is-api-rate-limiting-necessary">Why is API rate limiting necessary?</h2>
+<p>API rate limiting can be used as a defensive security measure for the API, and a quality control method. As a shared service, the API must protect itself from excessive use to encourage an optimal experience for anyone using the API. Rate limiting on both server-side and client-side is extremely important for maximizing reliability and minimizing latency.
+Part of the rate limiting functionality that is implemented in the solution is a rate limiting technique called the selective rate limiter. The selective (or specific) rate limiting technique has the objective of enforcing specific APIs rate limiting parameters per each ERP or POS system. This would enforce fare usage among the different systems calling the solution. Part of the development performed when integrating with the solution should cater for this rate limiting technique and handle any error messages that are expected to be returned by the solution in the case of being rate limited. The rate-limit functionality prevents API usage spikes on a per ERP/POS system basis by limiting the call rate to a specified number per a specified time period. When the call rate is exceeded, the caller receives a 429 Too Many Requests response status code.</p>
+
+<h2 id="how-will-this-change-your-integration">How will this change your integration?</h2>
+<p>The integration implementation will have to change in two ways,</p>
+<ol>
+  <li>Your integration implementation should now cater for making sure you are not hitting any of the APIs rate limits that are listed later in this page as much as possible. This would be done by implementing proper integration techniques and following the integration recommended practices as listed here <a href="https://sdk.invoicing.eta.gov.eg/integrationpractices/">https://sdk.invoicing.eta.gov.eg/integrationpractices/</a></li>
+  <li>Handle any errors being returned from the rate limiting functionality in a proper way. The system returns two types of standard HTTP responses in the case of hitting rate limits, HTTP 503 and HTTP 429. Handling each error response would require proper implementation, the recommended handling approaches for each error response is provided below.</li>
+</ol>
+
+<h1 id="error-reponses-and-error-handling-approaches">Error Reponses and Error Handling Approaches</h1>
+<p>The following are a list of standard errors being returned in case of being rate limited.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>HTTP STATUS CODE</th>
+      <th>ERROR CODE</th>
+      <th>DESCRIPTION</th>
+      <th>ERROR RESPONSE BODY</th>
+      <th>HANDLING APPROACH</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>503</td>
+      <td>ServiceUnavailable</td>
+      <td>This error is returned in case an API being called by all taxpayers’ system in a very high rate that is not excepted.</td>
+      <td>{ “error”: “Too many requests”, “message”: “The server is currently unable to handle the request due to a temporary overload. Please try again later.”, “code”: 503}</td>
+      <td>This should be handled by retrying the same call again after a specific period. The selected period to wait depends on the functionality being performed, but it is advised to wait enough time to reduce the number of retires. This can range from 1 seconds and up to 3 seconds depending on the API being called.</td>
+    </tr>
+    <tr>
+      <td>429</td>
+      <td>TooManyRequests</td>
+      <td>This error is returned in case an API being called by a specific taxpayers’ system in a very high rate that is not excepted and exceeding the specific rates defined later in this page per API.</td>
+      <td>{“error”: “Too many requests”, “message”: “Your system has sent too many requests in a given amount of time. Please try again later after the specified time value provided in the Retry-After header.”,”code”: 429 }</td>
+      <td>This should be handled by retrying the same call again after waiting a specific period. The selected period to wait depends on the functionality being performed, but a value to wait should be larger then the value returned in the response in the header Retry-After that is provided in the standard HTTP header.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="apis-throttling-specifications">APIs Throttling Specifications</h1>
+<p>This section provides an overview of the detailed configuration for the rate limiting specifications per API provided for the ERP integration. Please, find in the below table a breakdown of the APIs rate limiting specifications per API provided in the solution and applies a rate limiting functionality that requires the systems integrating with the solution to handle.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Area</th>
+      <th>API</th>
+      <th>Rate Limiting Specifications</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Common</td>
+      <td>Search my EGS code usage requests</td>
+      <td>The number of allowed calls on this API is limited to 1 request every 5 seconds per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>Common</td>
+      <td>Search Published Codes</td>
+      <td>The number of allowed calls on this API is limited to 1 request every 10 seconds per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Invoicing</td>
+      <td>Get Recent Documents</td>
+      <td>The number of allowed calls on this API is limited to 3 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Invoicing</td>
+      <td>Get Document</td>
+      <td>The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Invoicing</td>
+      <td>Get Document Printout (PDF)</td>
+      <td>The number of allowed calls on this API is limited to 1 request every 5 seconds per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Invoicing</td>
+      <td>Get Document Details</td>
+      <td>The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Invoicing</td>
+      <td>Search Documents</td>
+      <td>The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Receipts</td>
+      <td>Get Receipt Details</td>
+      <td>The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Receipts</td>
+      <td>Get Receipt</td>
+      <td>The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Receipts</td>
+      <td>Search Receipts</td>
+      <td>The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+    <tr>
+      <td>E-Receipts</td>
+      <td>Get Recent Receipts</td>
+      <td>The number of allowed calls on this API is limited to 3 request every 1 second per ERP/POS system calling the solution.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'ICIKDGDBBOGFBCCCFGGMBBMNMHJOACGPEBEENDCDHNGHBLJONJHPIHDOCCFPEEPBPBNBHKPPAAEOMGAHLGFAHKGBAAMFDCFBDHDGOKHLMJDNEMDHLFELPJBMGMLKBKCF',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

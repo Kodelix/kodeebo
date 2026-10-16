@@ -1,0 +1,190 @@
+WWW.ETA.GOV.EG
+
+NO
+1
+2
+3
+4
+5
+6
+7
+
+8
+
+9
+
+)POS( تافصاوملا ​ةينفلا طاقنل عيبلا ةدمتعملا
+
+POS (Handheld)Minimum requirements
+Processor
+at least Cortex-A7 Quad-Core CPU
+Memory
+At least 2GB RAM, 8GB ROM Flash
+Memory Card
+Should have a card reader, memory card
+Reader
+storage 64GB
+At least 5.5"(1280 x 720 HD resolution) color
+Display
+LCD should be touchscreen
+Operating
+At least Android 6 preferably higher version
+System
+Wireless
+4G LTE, compatible with 2G/3G, WiFi and
+Communication
+Bluetooth
+Positioning
+A GPS compatible
+The machine should support the standard
+protocols
+for card reader such as
+Card Readers
+MSR: Triple track, bi-directional, IS0 7811
+Smart card reader: IS0 7816, PBOC 2018,
+EMV 4.3 level 1 &2
+The machine should support the standard
+protocols for
+Contactless
+contactless cards such as ISOIIEC 14443 A&B,
+MiFare,
+Quickpass, PayPass, payWave
+
+ةحلصم بئارضلا ةيرصملا
+
+POS (Casheir) Minimum Requirements
+Intel i3 2 cores
+4 GB DDR3
+HDD-SSD 128 GB
+at least 1024X768
+LCD Screen
+at least Windows 10, Linux, Android
+Ethernet LAN 10/100 Connection
+
+WWW.ETA.GOV.EG
+
+Facebook@Tax.Egypt
+
+Youtube@Tax_Egypt
+
+Instagram@Tax_Egypt
+
+WWW.ETA.GOV.EG
+
+NO
+
+11
+12
+13
+14
+15
+16
+17
+18
+
+)POS( تافصاوملا ​ةينفلا طاقنل عيبلا ةدمتعملا
+
+ةحلصم بئارضلا ةيرصملا
+
+POS (Handheld)Minimum requirements
+POS (Casheir) Minimum Requirements
+Rear: 5Mp CMOS, auto-focus, flashlight, support
+bar code reader
+Camera
+support electronic and paper QR code scanning
+scan range from 1MM to 200MM
+Peripheral
+At least 1 USB
+Ports
+at least 3 USB
+Security
+At least PCI PTS 5.x-approved
+Master key1 Session key, DUKPT
+PIN Pad
+DES, SDES, RSA, SHA-256, AES
+At least 25 Ips, 40 mm paper roll, support arabic
+USB, LAN, Serial interface
+Printer
+font
+Support arabic font
+The machine must have all supporting
+Certification
+certifications
+for the above protocols.
+Should be compatible with Egypt power
+Should be compatible with Egypt
+standards.
+power standards.
+Power
+Battery: detachable, and should support for
+long
+working hours.
+Environmental
+Operating temperature: from 0 to 50°C
+Card Slot
+At least 1 SIM & 2 SAMs or 2 SlMs & 1 SAM
+
+WWW.ETA.GOV.EG
+
+Facebook@Tax.Egypt
+
+Youtube@Tax_Egypt
+
+Instagram@Tax_Egypt
+
+WWW.ETA.GOV.EG
+
+NO
+
+20
+
+)POS( تافصاوملا ​ةينفلا طاقنل عيبلا ةدمتعملا
+
+ةحلصم بئارضلا ةيرصملا
+
+POS (Handheld)Minimum requirements
+POS devices should be SDHC compatible.
+a. Supported Operating System
+Android V 6 and higher.
+b. Connectivity
+POS must contain Micro SD Slot
+2. Micro SDHC
+Requirements
+c. Electrical Operating
+Operating voltage: Vcc = 3.3 to 5VDC Power
+consumption: ~30mA @ 3.3VDC
+d. Operating Temperature
+Operating temperature: –15° C to 55° C
+
+POS (Casheir) Minimum Requirements
+
+b. Software Application to be able to be
+modified
+(Availability of source code)
+c. Development Team Able to develop the
+integrations
+on top of the POS Application
+
+b. Software Application to be able to
+be modified
+(Availability of source code)
+c. Development Team Able to develop
+the integrations
+on top of the POS Application
+
+WWW.ETA.GOV.EG
+
+21
+
+3. POS
+Software
+Application
+Requirements
+
+Facebook@Tax.Egypt
+
+Youtube@Tax_Egypt
+
+Instagram@Tax_Egypt
+
+

@@ -1,0 +1,92 @@
+ 
+ Getting started... 
+ Getting started… 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ Getting started...
+ eInvoicing and integration with eInvoicing & eReceipt solution
+ Egyptian eInvoicing & eReceipt
+ Egypt Ministry of Finance and Egyptian Tax Authority is in the process of modernizing the solutions used for tax information management and processing. One of the important elements of this overall modernization is implementation of digital processing of the invoices and receipts. It is an activity that is part of Egypt’s vision 2030 for Digital Transformation, and improving governmental services, and within the framework of ETA Reform Programme, where eInvoice & eReceipt is one of the main projects, which is about creating a central solution that enables ETA to follow all trading transactions between companies (B2B) and companies and consumers(B2C), through the instant exchange of invoice and receipt data in digital format.
+ eInvoicing & eReceipt platform is going to enable digital capturing of invoices and receipts circulating in the country with business to business (B2B) invoices and business to consumer (B2C). Ministerial Decision No.(188) for 2020 was issued to bind the tax society to the eInvoice system.
+ Expected Benefits
+ eInvoicing & eReceipt platform will streamline and simplify taxpayer assessment, VAT declarations management, as well as audit and compliance processes and enable following overall benefits:
+ Full digital invoice and receipt processing​
+ Simplification of declaration submission​
+ Reports and additional insights, both on the level of all companies and economic activity of Egypt.​
+ Improved digital taxpayer experience​
+ Encourage informal economy into compliance with formal
+ Specific taxpayer benefits expected short-term are:
+ Validate invoice and receipt items and data for parties before issuing.
+ Enhance the company taxation position by classifying it as a Low-Risk profile company
+ Facilitate inter-company settlement procedures for VAT
+ Updates and improves invoices and receipts exchanging methods between companies
+ Facilitate CPA review for preparing financial statement
+ Help company to make reports and quick accurate analysis for the purpose of decision-making support
+ Allows data analysis for the identification of fraud
+ Specific taxpayer benefits expected long-term are:
+ Reduce the administrative burden, cost of transactions and the need to archive paper invoice and receipts
+ Reduce audit procedure with the possibility of remote audit
+ Facilitate Tax Refund procedure
+ Facilitate the process of preparing and filing declarations
+ Eliminate the traditional review and reconciliation procedures with companies
+ Effectively support the merge of Informal Economy, and control increase on tax community, and achieve tax justice
+ Transparency and a channel to capture complains
+ Solution Overview
+ The overview of the main user groups interacting with the solution and the external interaction elements is provided in the image below.
+Image shows:
+ taxpayers that can be in both role of the issuers of documents and the role of receivers
+ tax authority employees that are defining the configuration of the process and overseeing it
+ various elements of interaction available
+ For companies integrating their ERPs and POS using this SDK the main elements are System integration and Notifications management:
+ System integration provides set of APIs defined in this SDK that can be called by taxpayers
+ Notifications can be configured to call back taxpayer ERP and POS systems to notify about various events
+ Additional pre-requisite element of interaction is digital taxpayer profile (taxpayer identity) that needs to be defined and configured to allow system access to the APIs mentioned above. It is part of the taxpayer identity management module of the solution that also is exposed to taxpayer representatives through Web UI. High level architecture of the solution showing internal modules including the identity management module is shown in figure below. Figure also shows the developer resources modules and this is SDK is one of them.
+ Integration approach
+ This section defines multiple aspects of the integration approach that apply to all the APIs defined in this SDK.
+ Principles
+ Integration approach of ERP systems with eInvoicing & eReceipt solution follows modern principles of:
+ externalized identity - identity of the users and systems accessing the solution APIs and UI are stored separately from actual document processing modules
+ standards based interfaces - API are built as REST based interfaces working with JSON as input and output data structures, yet the document formats support both XML and JSON
+ asynchronous processing - APIs that are performing more complex operations, e.g., accepting the submitted documents, support part of the operations done synchronously and part of the operations done asynchronously. This speeds up response times, reduces potential for errors. To enable asynchronous processing approach, solution exposes either APIs that allow to poll for results or notifications that call back the ERP and POS to notify about the completion of the processing.
+ data protection - all the interactions with solution APIs are performed only over TLS based protected channels. documents submitted have additional level of protection through digital signatures that issuers need to use. Digital signatures ensure that it is possible to algorithmically verify that data submitted was really submitted by a given taxpayer and has not been changed during transit or during the data storage.
+ Integration Process
+ The overall process that needs to be followed to integrate the taxpayer’s ERP solution with the eInvoicing & eReceipt is depicted in image below.
+ The interactions shown with grey markers in the image are the ones needed to set up the integration approach, ensure necessary pre-requisites are in place. These are:
+ Registering digital profile with ETA that will provide access to web application used to manage representatives and also systems.
+ Receiving invitation to register the taxpayer administrator account used to manage digital profile of the taxpayer.
+ Inviting other representatives and registering one or more ERP and POS systems of taxpayer that will be accessing the eInvoicing & eReceipt APIs.
+ Getting API access credentials that need to be configured in ERP and POS system and used during the login process.
+ Getting eSeal X.509 certificate that needs to be configured in ERP and POS system that is submitting digitally signed documents.
+ The interactions shown with blue markers are everyday interactions of integration working. Steps include:
+ A. Calling identity management system to get session token (access token) that then is used to call APIs
+ B. Calling one or more of the system APIs during the session, including calls to submit documents, retrieve documents, retrieve notifications
+ C. (optional) If configured, getting notified about document status change events and processing status of document package . Notification is delivered as REST API call back to ERP system. This requires the endpoint to be available for calls from eInvoicing.
+ Questions/Comments/Feedback
+ Given this SDK is initial version that is meant for early adopters of the eInvoicing & eReceipt solution, if you have any additional questions about the implementation approach, pre-requisites needed, or constructive feedback, please reach out to the relevant teams at ETA .
+ Please see also FAQ section that can provide you with additional tips and tricks about integration.
+ We welcome your feedback so that we can improve SDK and overall solution before it gets broadly adopted!
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

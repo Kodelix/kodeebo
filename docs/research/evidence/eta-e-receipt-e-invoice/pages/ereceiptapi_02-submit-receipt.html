@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Submit Receipt Documents</title>
+
+	<meta name="description" content="Taxpayer can submit one or more signed documents to eReceipt solution using this API.">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Submit Receipt Documents</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Submit Receipt Documents" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taxpayer can submit one or more signed documents to eReceipt solution using this API." />
+<meta name="twitter:description" property="og:description" content="Taxpayer can submit one or more signed documents to eReceipt solution using this API." />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-09-24T00:53:57-05:00" />
+<meta property="article:modified_time" content="2026-09-24T00:53:57-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Submit Receipt Documents" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-09-24T00:53:57-05:00","datePublished":"2026-09-24T00:53:57-05:00","description":"Taxpayer can submit one or more signed documents to eReceipt solution using this API.","headline":"Submit Receipt Documents","mainEntityOfPage":{"@type":"WebPage","@id":"/ereceiptapi/02-submit-receipt/"},"url":"/ereceiptapi/02-submit-receipt/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Submit Receipt Documents</h1>
+								
+								
+									<p class="hero-subheader__desc">Taxpayer can submit one or more signed documents to eReceipt solution using this API.</p>
+								
+								
+									
+										<a href="/ereceiptapi/01-authenticate-pos/" class="btn btn--dark btn--rounded btn--w-icon btn--w-icon-left">
+											<i class="icon icon--arrow-left"></i>
+											Authenticate POS
+										</a>
+									
+									
+										<a href="/ereceiptapi/03-get-receipt-details/" class="btn btn--dark btn--rounded btn--w-icon">
+											<i class="icon icon--arrow-right"></i>
+											Get Receipt Details
+										</a>
+									
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h2 id="overview">Overview</h2>
+
+<p>Receipt Submission API is the main API of the solution because it is used to submit one or more receipts of different types to the solution. Receipts submitted are grouped into the submission, each of the receipt part of the submission must be linked to and complying with data structure of the receipt type version active at the moment of issuance of the receipt (see <a href="/types/#receipt">receipt type versions supported</a>).</p>
+
+<p>Receipt submission API supports receipts submitted in JSON format. Taxpayer POS system or integration module is responsible for transforming the data into JSON format as per the receipt type structure expected by API (see <a href="/types/">receipt type versions supported</a>). Note that all receipts within the submission and enclosing submission element itself needs to be in the same format. The format used should be provided through Content-type request header value (“application/json”).</p>
+
+<p>When API is called it performs minimal set of validations through validation equation to check that submission is of correct structure, that each receipt within it is issued by the taxpayer issuing the receipts and that structure of each of the receipts match the appropriate structure of the receipt type version used.</p>
+
+<p>After synchronous validation succeeds (at least partially), caller receives back the assigned submission ID that are accepted for further processing.</p>
+
+<div class="callout callout--info">
+    <p><strong>Note!</strong> POS should be activated before submission on any other channel.</p>
+</div>
+
+<h2 id="signature">Signature</h2>
+
+<p>API is REST based API that receives its receipt submission information in the body of the request.</p>
+
+<p>Signature:
+<code class="highlighter-rouge">POST /api/v1/receiptsubmissions</code></p>
+
+<h2 id="inputs">Inputs</h2>
+
+<p>This API accepts <a href="/standard-header-parameters/">standard eReceipt API header parameters</a> for authenticated call except for the one defined below:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Header parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Content type</td>
+      <td>String (70)</td>
+      <td>Defines the type of the document submission format used. Can use JSON only.</td>
+      <td>application/json</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Body of the request contains a single <code class="highlighter-rouge">receipts</code> value that contains one or more Document objects. Document objects of different types and even versions can have different fields supplied.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Input parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>receipts</td>
+      <td>Document[]</td>
+      <td>List of document objects submitted. List should have at least one document.</td>
+      <td>Array of Documents</td>
+    </tr>
+    <tr>
+      <td>signatures</td>
+      <td><a href="#document-signature">Signature[]</a></td>
+      <td>Structure containing one or two digital signatures. At least signature of the Issuer must be present. Signature of the Service provider is optional.</td>
+      <td>See structure.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Document can be either:</p>
+
+<ul>
+  <li><a href="/types/#receipt">Receipt</a> - Receipt is the document issued by the taxpayer for the good or service purchased by customer.</li>
+  <li><a href="/types/#return-receipt">Return Receipt</a> - Return Receipt is a document issued by the taxpayer for the purchase goods or service that are returned by the customer.</li>
+  <li><a href="/types/#return-receipt-without-reference">Return Receipt Without Reference</a> - Return Receipt Without Reference is a document issued by the taxpayer for the purchase goods or service that are returned by the customer for international return receipts or return receipt that are referencing sales receipts that are not captured on the system..</li>
+</ul>
+
+<h2 id="outputs">Outputs</h2>
+
+<h3 id="successful-response">Successful Response</h3>
+
+<p>On a successful submission API returns unique submission ID. This ID will be used to track the status of the submission</p>
+
+<p>Given that the process of validation is not complete when result is returned, API returns HTTP status code <code class="highlighter-rouge">202</code>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>submissionUUID</td>
+      <td>String (30)</td>
+      <td>Unique ID of the submission.</td>
+      <td>TZRKK8MFZCPSTW9XCYWBMKME10</td>
+    </tr>
+    <tr>
+      <td>acceptedDocuments</td>
+      <td><a href="#document-accepted">Document Accepted[]</a></td>
+      <td>List of documents that are accepted.</td>
+      <td>See structure</td>
+    </tr>
+    <tr>
+      <td>rejectedDocuments</td>
+      <td><a href="#document-rejected">Document Rejected[]</a></td>
+      <td>List of documents that are not accepted together with their error information.</td>
+      <td>See structure</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="document-accepted">Document Accepted</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>uuid</td>
+      <td>UUID</td>
+      <td>Unique document ID, SHA256 format</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>longId</td>
+      <td>String (200)</td>
+      <td>Unique long Id that was assigned by eInvoicing and eReceipt solution</td>
+      <td>BFNGXFA17265TQX34…</td>
+    </tr>
+    <tr>
+      <td>receiptNumber</td>
+      <td>String (50)</td>
+      <td>Internal ID used in submission for the document</td>
+      <td>PZ-234-A</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="document-rejected">Document Rejected</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>receiptNumber</td>
+      <td>String (50)</td>
+      <td>Internal ID used in submission for the document</td>
+      <td>232522</td>
+    </tr>
+    <tr>
+      <td>uuid</td>
+      <td>UUID</td>
+      <td>Unique document ID, SHA256 format</td>
+      <td>68e656b251e67e835…</td>
+    </tr>
+    <tr>
+      <td>error</td>
+      <td><a href="#error">Error</a></td>
+      <td>Error information detailing why the document was not accepted in this submission</td>
+      <td>See structure</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Note</strong> <a href="/files/rejecteddocument.json">Sample of rejected document</a></p>
+
+<h4 id="error">Error</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>message</td>
+      <td>String (4000)</td>
+      <td>Human readable error message. If available, message is returned in user’s preferred language.</td>
+      <td>Issuance date time value is out of the range of submission workflow parameter</td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td>String</td>
+      <td>The target/subject of the error, e.g. UUID of the document (in top level error), parameter that caused the error (in errors under details).</td>
+      <td>68e656b251e67e835… or Datetimeissued</td>
+    </tr>
+    <tr>
+      <td>propertyPath</td>
+      <td>String</td>
+      <td>Optional: Document property name that caused the error</td>
+      <td>receipts.datetimeissued</td>
+    </tr>
+    <tr>
+      <td>details</td>
+      <td><a href="#error">Error</a>[]</td>
+      <td>Optional: list of multiple errors detected that caused document to get rejected.</td>
+      <td>See Structure.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="error-response">Error Response</h3>
+
+<p>Error situations are reported back by this API through the <a href="/standard-error-response/">standard error response</a>.</p>
+
+<p>Additional specialized error messages can be returned as a result of validation of documents:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>HTTP Status Code</th>
+      <th>Error Code</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>400</td>
+      <td>BadStructure</td>
+      <td>Returned when there is a structural error with the submission message. Either is not having the Documents included in a single Document tag or there are other elements that are not allowed.</td>
+    </tr>
+    <tr>
+      <td>403</td>
+      <td>IncorrectSubmitter</td>
+      <td>Returned when submitted of the documents is trying to submit them on behalf of the other taxpayer. Also returned when intermediary is submitting documents on behalf of taxpayer, but they do not have such a permission. Details including supported size in the <a href="#error">Error</a> object in the body of the return message.</td>
+    </tr>
+    <tr>
+      <td>400</td>
+      <td>MaximumSizeExceeded</td>
+      <td>Returned when the size of the submission exceeds allowed limit. Details including supported size in the <a href="#error">Error</a> object in the body of the return message. It is expected that calling system creates smaller submissions and submit them one by one.</td>
+    </tr>
+    <tr>
+      <td>422</td>
+      <td>DuplicateSubmission</td>
+      <td>Returned when an identical submission is detected based on the previous submissions sent by the same taxpayer within the past 10 minutes. Issuer can try submitting the same payload again based on the returned value in the response header <code class="highlighter-rouge">Retry-After</code> in seconds. Detection works on hashing the request payload and compare it with previous submissions.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="document-signature">Document Signature</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>signatureType</td>
+      <td>String</td>
+      <td>Type of the signature: Issuer (I), ServiceProvider (S)</td>
+      <td>I</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td>String</td>
+      <td>Signature value contains CAdES-BES standard Base64 encoded signature</td>
+      <td>Base64 encoded string</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout callout--info">
+    <p><strong>Note!</strong> The function to perform signature validation will not be deployed at this point until a decision is provided by ETA to test and deploy the component.</p>
+ </div>
+
+<h2 id="additional-considerations">Additional considerations</h2>
+
+<h3 id="mapping-internal-ids-to-eta-assigned-ones">Mapping Internal IDs to ETA Assigned Ones</h3>
+
+<p>To support mapping of internal documents managed in Taxpayer ERP and POS solution to documents issued or received through eInvoicing solution, when submitting documents to eInvoicing taxpayers can supply their internal invoice identifiers (used in ERP and POS solution) and also internal product identifiers for the goods or services sold.</p>
+
+<p>When eInvoicing solution returns back assigned unique IDs for document submission (containing one or more documents) each individual document accepted by the solution contains assigned eInvoicing ID, long unique ID used for inclusion in the document printouts and internal document ID that was supplied by the submitter.</p>
+
+<p><strong>Note:</strong> Only Taxpayers assigned with B2C tag will be allowed to submit receipts.</p>
+
+<h3 id="throttling">Throttling</h3>
+
+<p>Given large amounts of submissions coming from multiple taxpayers, it is recommended that taxpayers submit receipts in batches, it is important that ERP and POS systems are not calling the API too frequently. Therefore solution leverages throttling techniques configured by administrators. See <a href="/standard-header-parameters/">standard headers description</a> to see headers that are returned in successful responses and <a href="/standard-error-response/">standard error response information</a> for throttling error information.</p>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+				<nav class="page-nav">
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12">
+								
+									<a href="/ereceiptapi/01-authenticate-pos/" class="page-nav__item page-nav__item--prev">
+										<i class="icon icon--arrow-left"></i>
+										Authenticate POS
+									</a><!-- /.page-nav__item -->
+								
+								
+									<a href="/ereceiptapi/03-get-receipt-details/" class="page-nav__item page-nav__item--next">
+										Get Receipt Details
+										<i class="icon icon--arrow-right"></i>
+									</a><!-- /.page-nav__item -->
+								
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.container -->
+				</nav><!-- /.page-nav -->
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'PCDEIMNLMEPDBKHNNIOOAEHKLMIPDHEBLILOPCDJLLIOAPBKEIIAJCLBENFEHHCMLEOBBNCBAAENALKGCAJAFCNGAABCBFEFADJMLCDBBPABOBAHCNOFFLGNPFDGNFNL',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

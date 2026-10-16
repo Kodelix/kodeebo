@@ -1,0 +1,96 @@
+ 
+ APIs Governance & Rate Limiting 
+ APIs Governance & Rate Limiting 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ APIs Governance & Rate Limiting
+ Governance & rate limiting rules system applies for optimal usage
+ Overview
+ The solution implements governance rules on system APIs published as per the previous sections. The governance rules implemented has the objective of protecting the system against malicious and non-optimal usage. One of the governance approaches implemented in the solution APIs is to enforce specific rate limiting (throttling) rules. Throttling is a risk management technique which is configured based on the system scale parameters to make sure the system provides the best performance possible.
+ Why is API rate limiting necessary?
+ API rate limiting can be used as a defensive security measure for the API, and a quality control method. As a shared service, the API must protect itself from excessive use to encourage an optimal experience for anyone using the API. Rate limiting on both server-side and client-side is extremely important for maximizing reliability and minimizing latency.
+Part of the rate limiting functionality that is implemented in the solution is a rate limiting technique called the selective rate limiter. The selective (or specific) rate limiting technique has the objective of enforcing specific APIs rate limiting parameters per each ERP or POS system. This would enforce fare usage among the different systems calling the solution. Part of the development performed when integrating with the solution should cater for this rate limiting technique and handle any error messages that are expected to be returned by the solution in the case of being rate limited. The rate-limit functionality prevents API usage spikes on a per ERP/POS system basis by limiting the call rate to a specified number per a specified time period. When the call rate is exceeded, the caller receives a 429 Too Many Requests response status code.
+ How will this change your integration?
+ The integration implementation will have to change in two ways,
+ Your integration implementation should now cater for making sure you are not hitting any of the APIs rate limits that are listed later in this page as much as possible. This would be done by implementing proper integration techniques and following the integration recommended practices as listed here https://sdk.invoicing.eta.gov.eg/integrationpractices/ 
+ Handle any errors being returned from the rate limiting functionality in a proper way. The system returns two types of standard HTTP responses in the case of hitting rate limits, HTTP 503 and HTTP 429. Handling each error response would require proper implementation, the recommended handling approaches for each error response is provided below.
+ Error Reponses and Error Handling Approaches
+ The following are a list of standard errors being returned in case of being rate limited.
+ HTTP STATUS CODE 
+ ERROR CODE 
+ DESCRIPTION 
+ ERROR RESPONSE BODY 
+ HANDLING APPROACH 
+ 503 
+ ServiceUnavailable 
+ This error is returned in case an API being called by all taxpayers’ system in a very high rate that is not excepted. 
+ { “error”: “Too many requests”, “message”: “The server is currently unable to handle the request due to a temporary overload. Please try again later.”, “code”: 503} 
+ This should be handled by retrying the same call again after a specific period. The selected period to wait depends on the functionality being performed, but it is advised to wait enough time to reduce the number of retires. This can range from 1 seconds and up to 3 seconds depending on the API being called. 
+ 429 
+ TooManyRequests 
+ This error is returned in case an API being called by a specific taxpayers’ system in a very high rate that is not excepted and exceeding the specific rates defined later in this page per API. 
+ {“error”: “Too many requests”, “message”: “Your system has sent too many requests in a given amount of time. Please try again later after the specified time value provided in the Retry-After header.”,”code”: 429 } 
+ This should be handled by retrying the same call again after waiting a specific period. The selected period to wait depends on the functionality being performed, but a value to wait should be larger then the value returned in the response in the header Retry-After that is provided in the standard HTTP header. 
+ APIs Throttling Specifications
+ This section provides an overview of the detailed configuration for the rate limiting specifications per API provided for the ERP integration. Please, find in the below table a breakdown of the APIs rate limiting specifications per API provided in the solution and applies a rate limiting functionality that requires the systems integrating with the solution to handle.
+ Area 
+ API 
+ Rate Limiting Specifications 
+ Common 
+ Search my EGS code usage requests 
+ The number of allowed calls on this API is limited to 1 request every 5 seconds per ERP/POS system calling the solution. 
+ Common 
+ Search Published Codes 
+ The number of allowed calls on this API is limited to 1 request every 10 seconds per ERP/POS system calling the solution. 
+ E-Invoicing 
+ Get Recent Documents 
+ The number of allowed calls on this API is limited to 3 request every 1 second per ERP/POS system calling the solution. 
+ E-Invoicing 
+ Get Document 
+ The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution. 
+ E-Invoicing 
+ Get Document Printout (PDF) 
+ The number of allowed calls on this API is limited to 1 request every 5 seconds per ERP/POS system calling the solution. 
+ E-Invoicing 
+ Get Document Details 
+ The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution. 
+ E-Invoicing 
+ Search Documents 
+ The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution. 
+ E-Receipts 
+ Get Receipt Details 
+ The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution. 
+ E-Receipts 
+ Get Receipt 
+ The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution. 
+ E-Receipts 
+ Search Receipts 
+ The number of allowed calls on this API is limited to 2 request every 1 second per ERP/POS system calling the solution. 
+ E-Receipts 
+ Get Recent Receipts 
+ The number of allowed calls on this API is limited to 3 request every 1 second per ERP/POS system calling the solution. 
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

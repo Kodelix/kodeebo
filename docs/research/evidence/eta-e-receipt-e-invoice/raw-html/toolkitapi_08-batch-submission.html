@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, minimum-scale=1.0">
+<title>Batch submission API</title>
+
+	<meta name="description" content="It will be useful to the taxpayers to submit their offline stored receipts through the external submission receiver API.">
+
+
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,500i,700,700i|Noto+Sans:400,400i,700,700i|Source+Code+Pro&amp;subset=latin-ext">
+<link rel="stylesheet" href="/doks-theme/assets/css/style.css">
+<link type="application/atom+xml" rel="alternate" href="/feed.xml" />
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Batch submission API</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Batch submission API" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="It will be useful to the taxpayers to submit their offline stored receipts through the external submission receiver API." />
+<meta name="twitter:description" property="og:description" content="It will be useful to the taxpayers to submit their offline stored receipts through the external submission receiver API." />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-09-24T00:53:57-05:00" />
+<meta property="article:modified_time" content="2026-09-24T00:53:57-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Batch submission API" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-09-24T00:53:57-05:00","datePublished":"2026-09-24T00:53:57-05:00","description":"It will be useful to the taxpayers to submit their offline stored receipts through the external submission receiver API.","headline":"Batch submission API","mainEntityOfPage":{"@type":"WebPage","@id":"/toolkitapi/08-batch-submission/"},"url":"/toolkitapi/08-batch-submission/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+	</head>
+	<body class="yellow" data-spy="scroll" data-target=".js-scrollspy">
+		
+	<div class="offcanvas visible-xs">
+		<ul class="offcanvas__nav">
+			
+				<li><a href="/release-notes/">Release Notes</a></li>
+			
+				<li><a href="/api/">API</a></li>
+			
+				<li><a href="/types/">Types</a></li>
+			
+				<li><a href="/codes/">Codes</a></li>
+			
+				<li><a href="/toolkit/home/">Integration Toolkit</a></li>
+			
+				<li><a href="/faq/">FAQ</a></li>
+			
+				<li><a href="/contacts/">Contacts</a></li>
+			
+		</ul><!-- /.offcanvas__nav -->
+	</div><!-- /.offcanvas -->
+
+
+
+	<header class="site-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					
+						<a href="/" class="site-header__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<ul class="site-header__nav hidden-xs">
+							
+							<li>
+								<a href="/release-notes/">Release Notes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/api/">API</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/api/">COMMON</a>
+									</li>
+									
+									<li>
+										<a href="/einvoicingapi/">EINVOICING</a>
+									</li>
+									
+									<li>
+										<a href="/ereceiptapi/">ERECEIPT</a>
+									</li>
+									
+									<li>
+										<a href="/apigovernance/">APIs Governance & Rate Limiting</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/types/">Types</a>
+								
+							</li>
+							
+							<li>
+								<a href="/codes/">Codes</a>
+								
+							</li>
+							
+							<li>
+								<a href="/toolkit/home/">Integration Toolkit</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/toolkit/home/#installation">Install</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#configuration-and-administration">Config</a>
+									</li>
+									
+									<li>
+										<a href="/toolkit/home/#usage-guide">Usage</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/faq/">FAQ</a>
+								
+								<ul>
+									
+									<li>
+										<a href="/integrationpractices/">Integration Practices</a>
+									</li>
+									
+									<li>
+										<a href="/receiptissuancefaq/">RECEIPT ISSUANCE FAQ</a>
+									</li>
+									
+								</ul>
+								
+							</li>
+							
+							<li>
+								<a href="/contacts/">Contacts</a>
+								
+							</li>
+							
+						</ul><!-- /.site-header__nav -->
+						<button class="offcanvas-toggle visible-xs">
+							<span></span>
+							<span></span>
+							<span></span>
+						</button><!-- /.offcanvas-toggle -->
+					
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</header><!-- /.site-header -->
+
+
+		<div class="hero-subheader">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="align-container" data-mh>
+							<div class="align-inner">
+								
+									<h1 class="hero-subheader__title">Batch submission API</h1>
+								
+								
+									<p class="hero-subheader__desc">It will be useful to the taxpayers to submit their offline stored receipts through the external submission receiver API.</p>
+								
+								
+									
+										<a href="/toolkitapi/07-get-export-receipts/" class="btn btn--dark btn--rounded btn--w-icon btn--w-icon-left">
+											<i class="icon icon--arrow-left"></i>
+											Get export receipts API
+										</a>
+									
+									
+										<a href="/toolkitapi/09-sync-submission/" class="btn btn--dark btn--rounded btn--w-icon">
+											<i class="icon icon--arrow-right"></i>
+											Sync submission API
+										</a>
+									
+								
+							</div><!-- /.align-inner -->
+						</div><!-- /.align-container -->
+					</div><!-- /.col -->
+					
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.hero-subheader -->
+		<div class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7">
+						<div class="content">
+							<h2 id="overview">Overview</h2>
+
+<p>It requires the integration toolkit is online and valid token to be available to submit the batch file.  It will allow taxpayers to submit their receipts either manually or an automatic schedule.  It will pick the new and cancelled status related issued receipts and prepare submission rar file.</p>
+
+<p>•	This API will submit all the local receipts in “New” and “Cancelled” statuses. For cancelled receipts, minimal validation will be applied, as the receipt has already been validated before, and the validation on the submission date with the issuance date will be skipped.<br />
+•	Batch file will be signed locally using ITIDA’s signature component.<br />
+•	The system will capture the submission UUID returned after the submission and will store it locally.<br />
+•	After the successful receipt submission, status will be submitted for a specific receipt(s).</p>
+
+<div class="callout callout--warning">
+<p><strong>Note!</strong>
+•	Maximum submission default files count would be 100 files.<br />
+•	Submission rar file size will be configurable and it will be configured by IT operations.
+</p>
+ </div>
+<h2 id="signature">Signature</h2>
+
+<p>Signature:
+<code class="highlighter-rouge">POST /toolkit/batchsubmission</code></p>
+
+<h2 id="inputs">Inputs</h2>
+
+<p>This API should accept these headers supplied by eInvoicing:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Header parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>version</td>
+      <td>String</td>
+      <td>version number of the toolkit</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Body of the request contains a single object that contains these fields:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Input parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>receiptCount</td>
+      <td>Number</td>
+      <td>receipt count of the batch</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="outputs">Outputs</h2>
+
+<p>Upon successful submission, API must return <code class="highlighter-rouge">200</code> status code with the below mentioned output parameters.<br /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>submissionUuid (acceptedReceipts)</td>
+      <td>String</td>
+      <td>accepted receipts submissin uuid of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>uuid (acceptedReceipts)</td>
+      <td>String</td>
+      <td>accepted receipts uuid of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>longId (acceptedReceipts)</td>
+      <td>String</td>
+      <td>accepted receipts long id of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>receiptNumber (acceptedReceipts)</td>
+      <td>String</td>
+      <td>accepted receipts receipt number of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>hashKey (acceptedReceipts)</td>
+      <td>String</td>
+      <td>accepted receipts hash key of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>receiptNumber (rejectedReceipts)</td>
+      <td>String</td>
+      <td>rejected receipts receipt number of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>uuid (rejectedReceipts)</td>
+      <td>String</td>
+      <td>rejected receipts uuid of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>code (rejectedReceipts)</td>
+      <td>String</td>
+      <td>rejected receipts code of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>message (rejectedReceipts)</td>
+      <td>String</td>
+      <td>rejected receipts message of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>target (rejectedReceipts)</td>
+      <td>String</td>
+      <td>rejected receipts target of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>propertyPath (rejectedReceipts)</td>
+      <td>String</td>
+      <td>rejected receipts property path of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>code (details)</td>
+      <td>String</td>
+      <td>code detail of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>message (details)</td>
+      <td>String</td>
+      <td>message detail of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>target (details)</td>
+      <td>String</td>
+      <td>target detail of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>propertyPath (details)</td>
+      <td>String</td>
+      <td>property path detail of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>details (details)</td>
+      <td>String</td>
+      <td>details detail of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>correlationId</td>
+      <td>String</td>
+      <td>Correlation id of the successful batch events</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td>String</td>
+      <td>target of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>code</td>
+      <td>String</td>
+      <td>Success code of the batch</td>
+      <td>200 Ok / 201 Created etc.,</td>
+    </tr>
+    <tr>
+      <td>message</td>
+      <td>String</td>
+      <td>Success message of the batch</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>details</td>
+      <td>String</td>
+      <td>Additional details of the batch</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If <code class="highlighter-rouge">4xx</code> or <code class="highlighter-rouge">5xx</code> codes appeared as a result, It will be mentioned with the below error output parameters.<br /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Output parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Value example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>correlationId</td>
+      <td>String</td>
+      <td>Correlation id of the error batch events</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td>String</td>
+      <td>Error occurred field information</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>code</td>
+      <td>String</td>
+      <td>Error code</td>
+      <td>bad request/invalid data etc.,</td>
+    </tr>
+    <tr>
+      <td>message</td>
+      <td>String</td>
+      <td>Error message</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>details</td>
+      <td>String</td>
+      <td>Error additional details, useful for further investigation</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="additional-considerations">Additional considerations</h2>
+
+<p>This API is called only over protected <code class="highlighter-rouge">HTTPS</code> channel.</p>
+
+						</div><!-- /.content -->
+					</div><!-- /.col -->
+					<div class="col-md-4 col-md-offset-1">
+						<div class="sections-list-wrapper">
+							<div class="sections-list js-sections js-affix js-scrollspy hidden-xs hidden-sm"></div><!-- /.sections-list -->
+						</div>
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container -->
+		</div><!-- /.section -->
+		
+		<div class="js-footer-area">
+			
+				<nav class="page-nav">
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12">
+								
+									<a href="/toolkitapi/07-get-export-receipts/" class="page-nav__item page-nav__item--prev">
+										<i class="icon icon--arrow-left"></i>
+										Get export receipts API
+									</a><!-- /.page-nav__item -->
+								
+								
+									<a href="/toolkitapi/09-sync-submission/" class="page-nav__item page-nav__item--next">
+										Sync submission API
+										<i class="icon icon--arrow-right"></i>
+									</a><!-- /.page-nav__item -->
+								
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.container -->
+				</nav><!-- /.page-nav -->
+			
+			
+				<div class="micro-nav">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<a href="/" class="micro-nav__back">
+					<i class="icon icon--arrow-left"></i>
+					Back to homepage
+				</a><!-- /.micro-nav__back -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+	</div><!-- /.container -->
+</div><!-- /.micro-nav -->
+
+			
+			
+	<footer class="site-footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					
+						<a href="/" class="site-footer__logo">Egyptian eInvoicing & eReceipt SDK</a>
+					
+					
+						<hr>
+						<p class="site-footer__copyright">Copyright &copy; 2021 - <a href="/contacts/">Egyptian Tax Authority</a></p>
+					
+				</div><!-- /.col -->
+				
+			</div><!-- /.row -->
+		</div><!-- /.container -->
+	</footer><!-- /.site-footer -->
+
+
+<script src="/doks-theme/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/affix.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/bootstrap/scrollspy.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/vendor/matchHeight.min.js"></script>
+<script type="text/javascript" src="/doks-theme/assets/js/scripts.min.js"></script>
+
+
+
+
+		</div><!-- /.js-footer-area -->
+	</body>
+</html>
+<script id="f5_cspm">(function(){var f5_cspm={f5_p:'EBPIDGCMFLCOEPAKOLLHKLJFFEONAPLHFKCEJAEFLBDDHLNIKONJGOGEPLHNAIBGKNHBDENMAALEKLPFCNBAJHBLAAFLOACJCMKEMKDBALEHGCFMAEKFNCDFEMBEFDAH',setCharAt:function(str,index,chr){if(index>str.length-1)return str;return str.substr(0,index)+chr+str.substr(index+1);},get_byte:function(str,i){var s=(i/16)|0;i=(i&15);s=s*32;return((str.charCodeAt(i+16+s)-65)<<4)|(str.charCodeAt(i+s)-65);},set_byte:function(str,i,b){var s=(i/16)|0;i=(i&15);s=s*32;str=f5_cspm.setCharAt(str,(i+16+s),String.fromCharCode((b>>4)+65));str=f5_cspm.setCharAt(str,(i+s),String.fromCharCode((b&15)+65));return str;},set_latency:function(str,latency){latency=latency&0xffff;str=f5_cspm.set_byte(str,40,(latency>>8));str=f5_cspm.set_byte(str,41,(latency&0xff));str=f5_cspm.set_byte(str,35,2);return str;},wait_perf_data:function(){try{var wp=window.performance.timing;if(wp.loadEventEnd>0){var res=wp.loadEventEnd-wp.navigationStart;if(res<60001){var cookie_val=f5_cspm.set_latency(f5_cspm.f5_p,res);window.document.cookie='f5avr0909970061aaaaaaaaaaaaaaaa_cspm_='+encodeURIComponent(cookie_val)+';path=/;'+'';}
+return;}}
+catch(err){return;}
+setTimeout(f5_cspm.wait_perf_data,100);return;},go:function(){var chunk=window.document.cookie.split(/\s*;\s*/);for(var i=0;i<chunk.length;++i){var pair=chunk[i].split(/\s*=\s*/);if(pair[0]=='f5_cspm'&&pair[1]=='1234')
+{var d=new Date();d.setTime(d.getTime()-1000);window.document.cookie='f5_cspm=;expires='+d.toUTCString()+';path=/;'+';';setTimeout(f5_cspm.wait_perf_data,100);}}}}
+f5_cspm.go();}());</script>

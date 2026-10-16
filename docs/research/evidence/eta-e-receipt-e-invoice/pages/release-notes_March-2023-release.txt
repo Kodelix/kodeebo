@@ -1,0 +1,46 @@
+ 
+ March 2023 Release 
+ March 2023 Release 
+ Release Notes 
+ API 
+ Types 
+ Codes 
+ Integration Toolkit 
+ FAQ 
+ Contacts 
+ Egyptian eInvoicing & eReceipt SDK 
+ Release Notes 
+ API 
+ COMMON 
+ EINVOICING 
+ ERECEIPT 
+ APIs Governance & Rate Limiting 
+ Types 
+ Codes 
+ Integration Toolkit 
+ Install 
+ Config 
+ Usage 
+ FAQ 
+ Integration Practices 
+ RECEIPT ISSUANCE FAQ 
+ Contacts 
+ March 2023 Release
+ 11 Mar 2023 - ETA
+ Enhancements and Improvements
+ Added retirement note to all receipt base types v1.1 and to the specialized industries receipt types v1.0 Receipt Types :
+ Receipt v1.0 
+ Return Receipt v1.0 
+ Receipt v1.1 
+ Return Receipt v1.1 
+ Coffee & Restaurant Receipt v1.0 
+ Coffee & Restaurant Return Receipt v1.0 
+ General Services Receipt v1.0 
+ General Services Return Receipt v1.0 
+ Retail Receipt v1.0 
+ Retail Return Receipt v1.0 
+ Transportation Receipt v1.0 
+ Transportation Return Receipt v1.0 
+ Back to homepage
+ Egyptian eInvoicing & eReceipt SDK 
+ Copyright © 2021 - Egyptian Tax Authority 

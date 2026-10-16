@@ -1,0 +1,19 @@
+karar-302-2024 http=200 bytes=740753
+5bcb3ee90e49c02b267d5d5073460b598dd34269d41b43f1562f57ba9fcf713f  karar-302-2024.pdf
+CreationDate:    Thu Jul 18 18:52:56 2024 EEST
+Pages:           1
+karar-396-2024 http=200 bytes=1250872
+8a93424eccb2cb0f2cbab5715a048c9a5339617dc23a977dcef96057690f6490  karar-396-2024.pdf
+Pages:           1
+karar-455-2024 http=200 bytes=235734
+88ea97611560eb1584f38f45263f07be13bdb1b3f31a26685b107068b5a05ac8  karar-455-2024.pdf
+CreationDate:    Wed Dec  4 17:53:36 2024 EET
+Pages:           1
+karar-123-2025 http=200 bytes=472134
+f764fa3fd9a2c7a4e7674a701f192df2e8dd495648cad66e5b756be766c77873  karar-123-2025.pdf
+CreationDate:    Wed Mar 26 15:22:00 2025 EET
+Pages:           1
+karar-232-2024 http=200 bytes=218181
+b9792a7561316c14e8bd310fe8f021f66eef369899a9b1d93a16a0dc8b6de68c  karar-232-2024.pdf
+CreationDate:    Wed Jun  5 11:03:41 2024 EEST
+Pages:           1
