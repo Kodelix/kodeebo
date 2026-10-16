@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) dev run PASS on uncommitted harness; SC-20 onward next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -104,6 +104,16 @@ bash prototypes/local-first-sync-spike/run.sh replay2 <seed> <cell|random> [muta
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh ts09
+```
+
+Phase 3 commands (SC-19, server restore):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc19 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay19 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -316,3 +326,60 @@ The spike is not concluded; the verdict comes after the last phase. Phase result
 **Conditions:** same NVMe dev host as phases 0–1, single tenant and device, 8 actions per run, loopback network only. About 0.56 s per campaign run, indicative only.
 
 **Not covered by phase 2:** a real lossy link (Toxiproxy acts at the TCP stream level, not on packet loss or reordering); a server crash during PostgreSQL's own commit (the server failpoints sit before and after `COMMIT`); several devices; reordering and partial batches (phase 3).
+
+### Phase 3 — SC-19: server restored from backup (first case, the highest-risk gap)
+
+**Design under test** (sync note § 9.1.2; retention values from OQ29, provisional):
+- **Client (`RETENTION=1`):**
+  - An outbox row is deleted once a fully parsed ack arrives.
+  - The bill row keeps the command id, sequence, payload bytes and hash, so a command can be rebuilt byte-identical.
+  - Every batch reports `acked_seq` (H, the highest acknowledged sequence) and `low_seq` (the lowest retained one).
+  - A bill is pruned only if it is **below the server's durable watermark and older than 60 days** (simulated days).
+- **Server:**
+  - **Watermark:** the highest sequence in a backup whose restore has been verified. The driver restores each backup into a scratch database, reads the cursor there, then posts it.
+  - **Restore epoch:** every restore sets a new epoch (the runbook step), so the server knows it was restored. Each device's first contact in a new epoch is recorded.
+  - **Resend:** when the cursor N is below H, the server answers "resend from N+1".
+  - **Lost range:** when the device has already pruned part of N+1..H, that exact range is recorded as lost with an owner alert, and the cursor skips it explicitly.
+- **Backups:** real `pg_dump` archives restored with `pg_restore --clean --single-transaction`. A dump is a transaction-consistent snapshot, which is what a PITR target gives. PostgreSQL's own WAL-archive PITR is not exercised.
+- **Config feed (variant d):** `epoch, version, price`. The device compares the epoch first, because after a restore the same version number can come back with different content.
+
+**Cells** (calendar in simulated days: sales on days 1, 8, 30 and 75; B2 on day 31; restore on day 76):
+
+| Cell | Restore | Expected |
+|---|---|---|
+| `a_before`, `a_inside`, `a_after` | latest backup B2, taken before, inside (server sleeps before COMMIT) or after a batch | full recovery by resend |
+| `b_older` | B1 (day 20, inside a server window shorter than 60 days) | full recovery: everything after B1 is younger than 60 days |
+| `b_expired` | B1 (day 2, older than 60 days) | exact lost range = the pruned day-8 sales, owner alert |
+| `c_offline` | B2, while the cashier keeps selling | full recovery, offline sales synced after |
+| `d_config` | B2, then two owner edits that reuse version numbers | device ends on the server's config |
+| `e_unverified` | B1; B2's restore check failed, so it gave no watermark | full recovery: nothing above the last verified watermark was pruned |
+
+**Oracle (added):**
+- **R2:** a lost range is legitimate only if every lost sequence is below a verified watermark and older than 60 days.
+- **R3:** every restore produces a reconciliation event, plus a resend or lost range with an owner alert when the restored cursor is below H.
+- **R4:** every command on the server has its original command id and the canonical payload hash.
+- **R5:** the device's config equals the server's.
+- **I1:** applies as before; missing actions are excused only inside a reported lost range.
+
+**Mutants:** `prune_unconfirmed` (prunes by age, without the watermark), `no_reconcile` (server ignores H), `rebuild_new_ids`, `config_version_only`.
+
+#### Run 1 (dev, uncommitted harness on `1a686d6`) — PASS
+
+`evidence/phase3-sc19-run1-dev.log` and `-summary.json`, 951 s.
+- **Cells:** all 8 PASS, 50 seeds each, 0 violations. Every cell pruned bills, and `a_inside` backed up mid-batch in 50 of 50 runs.
+- **`b_expired`:** the exact lost range was recorded with an owner alert in 50 of 50 runs; it is the only cell where the rule allows a loss.
+- **Mutants:** all four caught. `prune_unconfirmed` after 8 runs (the first `e_unverified` run), the others after 1.
+
+**Finding P3-F1 — what "archive confirmed" means decides whether a restore can lose money.** An earlier placeholder rule pruned on archive confirmation alone, with no age limit. Under it, restoring the older backup lost 3 of 11 sales in every `b_older` run: reported exactly, but lost. Under the founder's OQ29 rule (verified-restore watermark **and** 60 days, with a server backup window shorter than 60 days), a restore from any backup inside the window recovers everything. A loss needs a backup older than 60 days (`b_expired`). Two conditions carry this result:
+- **The server backup window must stay shorter than the device window.** If backups older than 60 days are ever restored, the loss in `b_expired` is real.
+- **The watermark must come from a verified restore.** `e_unverified` shows that a backup whose restore was not verified must not move it; `prune_unconfirmed` is caught exactly there.
+
+**Finding P3-F2 (harness).** The first SC-19 attempt could not tell whether the `a_inside` backup really fell inside a batch: earlier syncs had drained the outbox, so the "inside" sync sent nothing. The cell now forces pending commands and is NOT ASSESSED unless the backup misses a batch that then commits.
+
+**Regression after the client change** (`evidence/phase3-regression-*.log`, same uncommitted harness): phase 0 self-test PASS, with a kill table identical to phase 1 run 3 except elapsed time; phase 1 kill matrix PASS, identical cell by cell; phase 2 at 10 seeds per cell and 300 runs PASS, the same as phase 2 run 1; tamper 36 of 36 PASS. Phases 0–2 run without `RETENTION`, so this shows the shared code path did not change their behaviour. The phase 3 campaign runs with it.
+
+**Not covered by SC-19:**
+- **A device that lies about H.** Under-reporting would hide its own lost sales from the server. That is the insider case of OQ27.
+- **A device that is offline across the whole restore and the backup window.** It reconnects with records the server never had in any backup; they resend normally, which the `c_offline` and backlog cases cover.
+- **Side effects re-sent after a restore** (ETA submissions, alerts): not modelled. ETA's handling of a resubmitted receipt UUID is open (ETA note F310, F325).
+- **Several devices.**

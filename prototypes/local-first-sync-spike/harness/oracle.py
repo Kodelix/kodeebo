@@ -6,6 +6,8 @@
 # have produced from the driver's intent log, then checks the client store and the server
 # ledger after quiescence. Invariants: docs/research/local-first-sync.md § 5.1.5 ([E] 5.1)
 # and § 9.1.1 (I10).
+import hashlib
+import json
 from collections import Counter, defaultdict
 
 
@@ -16,8 +18,9 @@ def expected_total(a):
     return session_piasters + a["cafe_piasters"]
 
 
-def check(intent, acked, client, server, quiesced, integrity):
-    """Return a list of (invariant, detail) violations. Empty list = run passes."""
+def check(intent, acked, client, server, quiesced, integrity, allowed_missing=frozenset()):
+    """Return a list of (invariant, detail) violations. Empty list = run passes. allowed_missing: action ids
+    the server reported as an unrecoverable range (SC-19); check_restore judges whether that loss was legitimate."""
     v = []
     actions = {a["action_id"]: a for a in intent}
     local_bills = set(client["bills"])
@@ -29,7 +32,7 @@ def check(intent, acked, client, server, quiesced, integrity):
 
     # I1 - no acknowledged or locally recorded action is lost
     for aid in sorted(must_exist):
-        if not sales.get(aid):
+        if not sales.get(aid) and aid not in allowed_missing:
             why = "acknowledged" if aid in acked else "recorded on the device"
             v.append(("I1", f"{aid} {why} but missing on the server"))
 
@@ -98,3 +101,63 @@ def check(intent, acked, client, server, quiesced, integrity):
 
     # I10 - tamper is visible: hook only in phase 0 (no tamper scenario runs yet)
     return v
+
+
+def expected_hash(a):
+    # Canonical command payload, written independently of the client: sorted keys, no spaces.
+    total = expected_total(a)
+    body = {"action_id": a["action_id"], "session_id": a["session_id"],
+            "minutes": list(range(a["start_min"], a["end_min"])), "sale_piasters": total, "payment_piasters": total}
+    return hashlib.sha256(json.dumps(body, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def check_restore(intent, seq_of, server, restores, before, device_cfg, max_archived, retain_days=60):
+    """SC-19 (server restored from backup). Returns (violations, allowed_missing).
+    seq_of: action id -> device sequence (from the sale replies); restores: [{"epoch", "cursor_after", "h_before"}];
+    before: device identity snapshot taken before the restore, seq -> (command_id, payload_hash);
+    device_cfg: (epoch, version, price) on the device after quiescence; max_archived: highest verified-restore
+    watermark the driver posted. OQ29: the device may prune only below it AND older than retain_days."""
+    v = []
+    actions = {a["action_id"]: a for a in intent}
+    by_seq = {s_: aid for aid, s_ in seq_of.items() if s_ is not None}
+    lost = set()
+    for e in server["reconcile"]:
+        if e["outcome"] == "lost_range":
+            lost |= set(range(e["lost_from"], e["lost_to"] + 1))
+            if not e["owner_alert"]:
+                v.append(("R3", f"lost range {e['lost_from']}-{e['lost_to']} recorded without an owner alert"))
+    # R2 - a reported loss is legitimate only if the device was allowed to prune it (OQ29): below a verified
+    # watermark AND older than retain_days on the last day of the run
+    today = max([a.get("day", 0) for a in intent] or [0])
+    for x in sorted(lost):
+        a = actions.get(by_seq.get(x))
+        if x >= max_archived:
+            v.append(("R2", f"seq {x} lost although no verified backup holds it (watermark {max_archived})"))
+            break
+        if a is not None and a.get("day", 0) >= today - retain_days:
+            v.append(("R2", f"seq {x} lost although it is only {today - a.get('day', 0)} days old"))
+            break
+    # R3 - the server detects every restore itself: a reconciliation event in the new epoch, and a resend or lost
+    # range whenever its restored cursor was below what the device held acknowledged
+    for r in restores:
+        ev = [e for e in server["reconcile"] if e["epoch"] == r["epoch"]]
+        if not ev:
+            v.append(("R3", f"no reconciliation event after restore to epoch {r['epoch']}"))
+        elif r["cursor_after"] < r["h_before"] and not any(e["outcome"] in ("resend", "lost_range") for e in ev):
+            v.append(("R3", f"restore {r['epoch']}: cursor {r['cursor_after']} < device {r['h_before']} not detected"))
+    # R4 - identity: every command on the server has the original command id and the canonical payload hash
+    inbox = {r["seq"]: r for r in server["inbox"]}
+    for s_, (cid, h) in before.items():
+        row = inbox.get(s_)
+        if row and (row["command_id"] != cid or row["payload_hash"] != h):
+            v.append(("R4", f"seq {s_} came back as {row['command_id']} / {row['payload_hash'][:8]}, was {cid} / {h[:8]}"))
+    for s_, row in inbox.items():
+        aid = by_seq.get(s_)
+        if aid in actions and row["payload_hash"] != expected_hash(actions[aid]):
+            v.append(("R4", f"seq {s_} payload hash differs from the canonical payload of {aid}"))
+    # R5 - config feed converges after a restore rewound it
+    srv = (server["meta"][0]["epoch"], server["config"][0]["version"], server["config"][0]["price"])
+    if tuple(device_cfg) != srv:
+        v.append(("R5", f"device config {tuple(device_cfg)} != server {srv}"))
+    allowed = {by_seq[x] for x in lost if x in by_seq}
+    return v, allowed

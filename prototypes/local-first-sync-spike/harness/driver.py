@@ -16,6 +16,7 @@ import subprocess
 import sys
 import time
 import urllib.request
+from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -134,10 +135,15 @@ class Net:
 
 class Run:
     def __init__(self, seed, mutant, verbose=False, store=None, cipher=None, fault=None, label=None, net=None,
-                 server_env=None):
+                 server_env=None, client_env=None):
         self.seed, self.mutant, self.verbose = seed, mutant, verbose
         self.net, self.server_env = net, server_env or {}
-        self.script = None  # optional replacement for the random action loop (TS-09)
+        self.client_env = client_env or {}
+        self.script = None  # optional replacement for the random action loop (TS-09, SC-19)
+        self.extra = None  # optional extra oracle: f(run, dump) -> (violations, allowed_missing) (SC-19)
+        self.server_down = False  # a planned outage: do not restart the server (SC-19 restore window)
+        self.seq_of = {}  # action id -> device sequence, from the sale replies
+        self.day = 0  # simulated day stamped on each sale (SC-19: retention by age)
         # Phase 2 exercise counters: ops sent under a toxic, of those how many failed, and "duplicate" outcomes
         # on normal syncs (= a command the server committed whose reply the client never got).
         self.net_stats = {"faulted_ops": 0, "failed_ops": 0, "duplicates_seen": 0, "concurrent_both_parsed": 0}
@@ -229,12 +235,13 @@ class Run:
         e = self.env("client", first)
         if self.net:
             e["HTTP_TIMEOUT"] = "2"
+        e.update(self.client_env)
         self.client = subprocess.Popen([sys.executable, CLIENT_PY, self.db, PROXY_URL if self.net else SERVER_URL], env=e,
                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1,
                                        stderr=open(os.path.join(self.dir, "client.log"), "a"))
 
     def ensure_alive(self):
-        if self.server.poll() is not None:
+        if not self.server_down and self.server.poll() is not None:
             self.fired.append(f"server died rc={self.server.returncode}")
             self.log("  server died, restarting without fault")
             self.start_server()
@@ -292,9 +299,12 @@ class Run:
 
     def sale(self, i):
         a = self.new_action(i)
+        if self.day:
+            a["day"] = self.day
         self.intent.execute("INSERT INTO actions VALUES (?,?)", (a["action_id"], json.dumps(a)))  # before submit
         r = self.send(a)
         if r and r.get("ok"):
+            self.seq_of[a["action_id"]] = r.get("seq")
             self.intent.execute("INSERT INTO acks VALUES (?)", (a["action_id"],))
             self.log(f"sale {a['action_id']} acknowledged")
         else:
@@ -341,15 +351,19 @@ class Run:
         c.close()
         intent = [json.loads(b) for (b,) in self.intent.execute("SELECT body FROM actions")]
         acked = [a for (a,) in self.intent.execute("SELECT action_id FROM acks")]
-        violations = oracle.check(intent, acked, client, dump, quiesced, integrity)
+        extra, allowed = self.extra(self, dump) if self.extra else ([], frozenset())
+        violations = oracle.check(intent, acked, client, dump, quiesced, integrity, allowed) + extra
         events = self.db + ".events.jsonl"
-        if os.path.exists(events):  # no tamper in these runs, so any refusal is a store failure
-            violations.append(("I9", f"client refused its store: {open(events).read()[:200]}"))
+        if os.path.exists(events):  # no tamper in these runs, so any store refusal is a store failure
+            refusals = [ln for ln in open(events) if '"store_' in ln]
+            if refusals:
+                violations.append(("I9", f"client refused its store: {refusals[0][:200]}"))
         violations += [("I10", leak) for leak in self.leaks]  # TS-04a: plaintext on disk
         result = {"seed": self.seed, "mutant": self.mutant, "store": self.store, "cipher": self.cipher,
                   "fault": self.fault, "fired": self.fired,
                   "actions": len(intent), "acked": len(acked), "server_sales": sum(1 for r in dump["ledger"] if r["kind"] == "sale"),
-                  "net": self.net_stats, "offline": dump.get("offline", []), "violations": violations}
+                  "net": self.net_stats, "offline": dump.get("offline", []),
+                  "reconcile_events": dump.get("reconcile", []), "violations": violations}
         with open(os.path.join(self.dir, "result.json"), "w") as f:
             json.dump({**result, "trace": self.trace}, f, indent=1)
         return result
@@ -624,11 +638,249 @@ def ts09(toxi):
     return out
 
 
+# --- Phase 3, SC-19: server restored from backup / PITR -------------------------------------------------------
+# Backups are real pg_dump archives of the spike database (a transaction-consistent snapshot, which is what a PITR
+# target gives: the restore lands on a commit boundary). Restore = stop the server, pg_restore --clean in one
+# transaction, bump meta.epoch (the restore runbook step), start the server. PostgreSQL's own WAL-archive PITR is
+# not exercised: its correctness is not the question; what the devices do after any restore is.
+PG_CONTAINER = "lfs-spike-pg"
+SC19_CELLS = ["a_before", "a_inside", "a_after", "b_older", "b_expired", "c_offline", "d_config", "e_unverified"]
+SC19_MUTANTS = ["prune_unconfirmed", "no_reconcile", "rebuild_new_ids", "config_version_only"]
+RETENTION_ENV = {"RETENTION": "1", "RETAIN_DAYS": "60"}  # OQ29 provisional (founder): 60 days on the device
+# Simulated calendar (days): sales on day 1 and day 8, B2 on day 31, sales on day 75 (so day < 15 is older than
+# 60 days), restore on day 76. B1 is on day 20 (inside a server window shorter than 60 days), except in b_expired
+# and e_unverified, where it is on day 2 (older than 60 days at the restore).
+SCRATCH_DB = "verify_scratch"  # throwaway database inside the throwaway spike container
+
+
+def psql(sql, db="postgres"):
+    out = subprocess.run(["docker", "exec", PG_CONTAINER, "psql", "-U", "postgres", "-d", db, "-tAX",
+                          "-v", "ON_ERROR_STOP=1", "-c", sql], capture_output=True, text=True, check=True)
+    return out.stdout.strip()
+
+
+def pg_backup(path):
+    with open(path, "wb") as f:
+        subprocess.run(["docker", "exec", PG_CONTAINER, "pg_dump", "-U", "postgres", "-d", "postgres", "-Fc"],
+                       stdout=f, check=True)
+
+
+def pg_verify(path):
+    """OQ29 durable watermark: restore the backup into the scratch database and read the highest device sequence it
+    holds. Returns that sequence, or None if the restore fails (then the backup confirms nothing)."""
+    subprocess.run(["docker", "exec", PG_CONTAINER, "dropdb", "-U", "postgres", "--if-exists", SCRATCH_DB], check=True)
+    subprocess.run(["docker", "exec", PG_CONTAINER, "createdb", "-U", "postgres", SCRATCH_DB], check=True)
+    try:
+        with open(path, "rb") as f:
+            subprocess.run(["docker", "exec", "-i", PG_CONTAINER, "pg_restore", "-U", "postgres", "-d", SCRATCH_DB,
+                            "--single-transaction"], stdin=f, check=True, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.PIPE)
+        return int(psql("SELECT last_seq FROM cursor_ WHERE device_id = 'dev-1'", db=SCRATCH_DB))
+    except subprocess.CalledProcessError:
+        return None
+
+
+def pg_restore(path, epoch):
+    with open(path, "rb") as f:
+        subprocess.run(["docker", "exec", "-i", PG_CONTAINER, "pg_restore", "-U", "postgres", "-d", "postgres",
+                        "--clean", "--if-exists", "--single-transaction"], stdin=f, check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    psql(f"UPDATE meta SET epoch = '{epoch}'")  # restore runbook: every restore starts a new epoch
+    return int(psql("SELECT last_seq FROM cursor_ WHERE device_id = 'dev-1'"))
+
+
+def http_post(path):
+    req = urllib.request.Request(SERVER_URL + path, method="POST", data=b"")
+    with urllib.request.urlopen(req, timeout=5) as r:
+        return json.loads(r.read())
+
+
+def sc19_script(cell):
+    def script(run):
+        rng, i = run.rng, [0]
+        run.restores, run.max_archived, run.before, run.inside = [], 0, {}, None
+
+        def sell(n, sync_p=0.7):
+            for _ in range(n):
+                run.sale(i[0])
+                i[0] += 1
+                if rng.random() < sync_p:
+                    run.log("sync", run.send({"op": "sync"}))
+
+        def drain():
+            for _ in range(10):
+                r = run.send({"op": "sync"})
+                if r and r.get("ok") and r.get("pending") == 0:
+                    return
+
+        def backup(name, during_sync=False, verified=True):
+            path = os.path.join(run.dir, name + ".dump")
+            applied = []
+            if during_sync:  # restore point inside a batch: the server sleeps before COMMIT (SLOW_COMMIT_MS)
+                run.ensure_alive()
+                run.client.stdin.write(json.dumps({"op": "sync"}) + "\n")
+                run.client.stdin.flush()
+                time.sleep(0.15)
+                pg_backup(path)
+                line = run.client.stdout.readline().strip()
+                run.log("sync (backup inside)", line[:200])
+                applied = [x["seq"] for x in json.loads(line).get("results", []) if x["result"] == "applied"]
+            else:
+                pg_backup(path)
+            wm = pg_verify(path) if verified else None  # e_unverified: the restore check of this backup fails
+            if during_sync:  # the backup missed a batch that then committed
+                run.inside = bool(applied) and wm is not None and wm < min(applied)
+            if wm is not None:
+                http_post(f"/archive?device=dev-1&seq={wm}")  # durable watermark: restore verified
+                run.max_archived = max(run.max_archived, wm)
+            run.log(f"backup {name} day {run.day}: watermark {wm if wm is not None else 'none (restore not verified)'}")
+            return path
+
+        def owner_edit():
+            run.log("owner config", http_post(f"/config?price={rng.choice([3000, 4500, 6000, 9000, 12000]) + rng.randint(1, 99)}"))
+
+        early_b1 = cell in ("b_expired", "e_unverified")
+        owner_edit()
+        run.send({"op": "pull_config"})
+        run.day = 1
+        sell(3)
+        drain()
+        if early_b1:
+            run.day = 2
+            b1 = backup("b1")
+        run.day = 8
+        sell(2)
+        drain()
+        if not early_b1:
+            run.day = 20
+            b1 = backup("b1")
+        run.day = 30
+        sell(3, sync_p=0 if cell in ("a_before", "a_inside") else 0.7)  # those two need pending commands
+        run.day = 31
+        if cell == "a_before":
+            b2 = backup("b2")  # pending commands exist; the sync comes after the backup
+            drain()
+        elif cell == "a_inside":
+            b2 = backup("b2", during_sync=True)
+        else:
+            drain()
+            b2 = backup("b2", verified=cell != "e_unverified")
+        run.day = 75
+        sell(3)
+        drain()  # all acknowledged; outbox rows gone; bills below the watermark and older than 60 days pruned
+        for _ in range(2):
+            owner_edit()
+        run.send({"op": "pull_config"})
+        st = run.send({"op": "state"})
+        run.before = {b[1]: (b[2], b[3]) for b in st["bills"] if b[1] is not None}
+        run.pruned = len(run.seq_of) - len(st["bills"])
+        h_before = st["acked_seq"]
+        # --- the restore, day 76 ---
+        run.day = 76
+        run.server_down = True
+        run.server.terminate()
+        run.server.wait()
+        epoch = f"r{run.seed}-{cell}"
+        if cell == "c_offline":
+            sell(3)  # the cashier keeps selling while the server is being restored; sync attempts fail
+        src = "b1" if cell in ("b_older", "b_expired", "e_unverified") else "b2"
+        cur = pg_restore(b1 if src == "b1" else b2, epoch)
+        run.restores.append({"epoch": epoch, "cursor_after": cur, "h_before": h_before})
+        run.log(f"restored {src}: cursor {cur}, device acked {h_before}, pruned {run.pruned}, epoch {epoch}")
+        run.server_down = False
+        run.start_server()
+        if cell == "d_config":
+            for _ in range(2):
+                owner_edit()  # version numbers seen before the restore come back with new content
+        sell(2)
+        drain()
+        run.send({"op": "pull_config"})
+    return script
+
+
+def sc19_extra(run, dump):
+    c = run.open_client_store()
+    cfg = c.execute("SELECT cfg_epoch, cfg_version, cfg_price FROM sync_state WHERE id = 1").fetchall()[0]
+    c.close()
+    intent = [json.loads(b) for (b,) in run.intent.execute("SELECT body FROM actions")]
+    return oracle.check_restore(intent, run.seq_of, dump, run.restores, run.before, cfg, run.max_archived,
+                                retain_days=int(RETENTION_ENV["RETAIN_DAYS"]))
+
+
+def sc19_run(seed, cell, mutant=None, label=None, verbose=False):
+    env = {"SLOW_COMMIT_MS": "400"} if cell == "a_inside" else {}
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc19-{cell}", server_env=env, client_env=RETENTION_ENV)
+    run.script, run.extra = sc19_script(cell), sc19_extra
+    r = run.go()
+    r["restores"], r["inside"], r["pruned"] = run.restores, run.inside, run.pruned
+    return r
+
+
+def sc19(seeds=50, mutant_budget=60):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "seeds_per_cell": seeds, "retention": RETENTION_ENV, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-19, commit {summary['harness_commit']}, {seeds} seeds per cell", flush=True)
+    ok = True
+    for cell in SC19_CELLS:
+        t1 = time.time()
+        bad, outcomes, inside, pruned = [], Counter(), 0, 0
+        for s in range(1, seeds + 1):
+            r = sc19_run(s, cell)
+            inside += bool(r["inside"])
+            pruned += r["pruned"]
+            for e in r["reconcile_events"]:
+                outcomes[e["outcome"]] += 1
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        # Exercised: the restore left a gap, the device had pruned something, a_inside really backed up mid-batch,
+        # and b_expired really produced a lost range (the only cell where the rule allows one)
+        exercised = (outcomes["resend"] + outcomes["lost_range"] > 0 and pruned > 0
+                     and (cell != "a_inside" or inside > 0) and (cell != "b_expired" or outcomes["lost_range"] > 0))
+        res = "FAIL" if bad else ("PASS" if exercised else "NOT ASSESSED (a cell condition never happened)")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "reconcile_outcomes": dict(outcomes),
+                                 "backup_inside_batch": inside if cell == "a_inside" else None, "bills_pruned": pruned,
+                                 "violating_runs": len(bad), "first_bad": bad[:3],
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:12s} outcomes {dict(outcomes)}  pruned {pruned}{f'  inside {inside}/{seeds}' if cell == 'a_inside' else ''}"
+              f"  violating {len(bad)}  {res}", flush=True)
+    for m in SC19_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for n in range(mutant_budget):
+            s, cell = n // len(SC19_CELLS) + 1, SC19_CELLS[n % len(SC19_CELLS)]
+            r = sc19_run(s, cell, mutant=m, label=f"sc19-mutant-{m}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][m] = {"caught": bool(caught), "runs_to_catch": n + 1 if caught else None,
+                                 "seed_cell": caught[:2] if caught else None,
+                                 "first_violation": caught[2] if caught else None, "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {m:20s} {'CAUGHT' if caught else 'SURVIVED'} after {n + 1} runs: {caught[2] if caught else '-'}",
+              flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc19-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-19: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
     if sys.argv[1] == "phase1":
         sys.exit(0 if phase1() else 1)
+    if sys.argv[1] == "sc19":  # sc19 [seeds_per_cell]
+        sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay19":  # replay19 <seed> <cell> [mutant]
+        r = sc19_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay19", verbose=True)
+        print(json.dumps({k: r[k] for k in ("actions", "acked", "server_sales", "restores", "reconcile_events",
+                                            "violations")}, indent=1))
     if sys.argv[1] == "phase2":  # phase2 [seeds_per_cell] [campaign_runs]
         sys.exit(0 if phase2(*(int(x) for x in sys.argv[2:4])) else 1)
     if sys.argv[1] == "ts09":

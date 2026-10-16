@@ -1,0 +1,7 @@
+phase 0 self-test, commit 1a686d6+dirty
+correct stub: 300 runs, 0 with violations (112.1 s)
+mutant separate_outbox_txn    CAUGHT after 7 runs: ('I1', 's7-a1 recorded on the device but missing on the server')
+mutant no_dedupe              CAUGHT after 2 runs: ('I2', 's2-a3 has 2 sale rows')
+mutant ack_before_commit      CAUGHT after 24 runs: ('I1', 's24-a0 acknowledged but missing on the server')
+mutant double_minute          CAUGHT after 1 runs: ('I3', 's1-a0 sale 23200 != expected 23050')
+GATE: PASS  (total 125.1 s)

@@ -6,7 +6,15 @@
 // compare-and-set cursor per device, one database transaction per batch.
 // Env: PG_DSN, ADDR (127.0.0.1 only), RESET=1 (recreate schema), MUTANT, FP=name:hit,
 //
-//	GAP_MS (contact gap that counts as offline, TS-09), BUSINESS_HOURS (1 = alert on gaps, 0 = record only).
+//	GAP_MS (contact gap that counts as offline, TS-09), BUSINESS_HOURS (1 = alert on gaps, 0 = record only),
+//	SLOW_COMMIT_MS (sleep before COMMIT, so a backup can be taken inside a batch: SC-19).
+//
+// SC-19 (server restored from backup): every restore sets a new meta.epoch (restore runbook step). A device's
+// batch carries acked_seq (its highest acknowledged sequence H) and low_seq (its lowest retained sequence L).
+// When the cursor N < H the server asks for "resend from N+1"; when L > N+1 the range N+1..L-1 can no longer be
+// recovered: it is recorded as lost, the owner is alerted and the cursor skips it (an explicit, recorded skip).
+// The first contact of each device in a new epoch is always recorded (reconcile_events). A device in a new epoch
+// that does not report acked_seq is refused ("reconcile_required"). MUTANT=no_reconcile skips the comparison.
 package main
 
 import (
@@ -28,7 +36,8 @@ import (
 )
 
 const schema = `
-DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods;
+DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
+  reconcile_events, config;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -46,6 +55,16 @@ CREATE TABLE flags (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, kind tex
 CREATE TABLE offline_periods (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   from_ts timestamptz NOT NULL, to_ts timestamptz NOT NULL, owner_alert boolean NOT NULL);
 INSERT INTO cursor_ VALUES (1, 'dev-1', 0);
+CREATE TABLE meta (id int PRIMARY KEY CHECK (id = 1), epoch text NOT NULL);
+INSERT INTO meta VALUES (1, 'e0');
+CREATE TABLE device_epoch (device_id text PRIMARY KEY, epoch text NOT NULL);
+CREATE TABLE archive_mark (device_id text PRIMARY KEY, archived_seq bigint NOT NULL);
+CREATE TABLE reconcile_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
+  epoch text NOT NULL, server_cursor bigint NOT NULL, device_acked bigint NOT NULL, device_low bigint NOT NULL,
+  outcome text NOT NULL, lost_from bigint, lost_to bigint, owner_alert boolean NOT NULL,
+  UNIQUE (device_id, epoch, server_cursor, outcome));
+CREATE TABLE config (id int PRIMARY KEY CHECK (id = 1), version int NOT NULL, price int NOT NULL);
+INSERT INTO config VALUES (1, 1, 6000);
 `
 
 type payload struct {
@@ -66,6 +85,8 @@ type command struct {
 type batch struct {
 	DeviceID string    `json:"device_id"`
 	Commands []command `json:"commands"`
+	AckedSeq *int64    `json:"acked_seq"` // SC-19: highest sequence the device holds an ack for
+	LowSeq   *int64    `json:"low_seq"`   // SC-19: lowest sequence the device still retains (H+1 if none)
 }
 
 type result struct {
@@ -181,6 +202,73 @@ func applyOne(ctx context.Context, tx pgx.Tx, dev string, c command) (string, er
 	return "applied", insertEffects(ctx, tx, dev, c)
 }
 
+var errReconcileRequired = errors.New("reconcile required")
+
+// reconcile compares the device's acknowledged high-water mark with the server cursor (SC-19). It returns the
+// sequence the device must resend from (0 = nothing to resend).
+func reconcile(ctx context.Context, tx pgx.Tx, b batch) (int64, error) {
+	var epoch string
+	if err := tx.QueryRow(ctx, `SELECT epoch FROM meta WHERE id=1`).Scan(&epoch); err != nil {
+		return 0, err
+	}
+	var devEpoch string
+	err := tx.QueryRow(ctx, `SELECT epoch FROM device_epoch WHERE device_id=$1`, b.DeviceID).Scan(&devEpoch)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return 0, err
+	}
+	newEpoch := devEpoch != epoch
+	if b.AckedSeq == nil {
+		if newEpoch && epoch != "e0" {
+			return 0, errReconcileRequired
+		}
+		return 0, nil // phases 0-2 clients do not report; nothing to compare
+	}
+	var cur int64
+	if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id=1 AND device_id=$1 FOR UPDATE`, b.DeviceID).Scan(&cur); err != nil {
+		return 0, err
+	}
+	h, low := *b.AckedSeq, h1(b)
+	outcome, resendFrom := "in_sync", int64(0)
+	var lostFrom, lostTo *int64
+	if mutant != "no_reconcile" && cur < h {
+		if low <= cur+1 {
+			outcome, resendFrom = "resend", cur+1
+		} else {
+			// The device pruned part of what the server lost: record the exact range, alert, skip it explicitly.
+			f, t := cur+1, low-1
+			lostFrom, lostTo = &f, &t
+			outcome, resendFrom = "lost_range", low
+			if _, err := tx.Exec(ctx, `UPDATE cursor_ SET last_seq=$2 WHERE tenant_id=1 AND device_id=$1`, b.DeviceID, low-1); err != nil {
+				return 0, err
+			}
+		}
+	}
+	if newEpoch || outcome != "in_sync" {
+		if _, err := tx.Exec(ctx, `INSERT INTO reconcile_events (device_id, epoch, server_cursor, device_acked, device_low,
+			outcome, lost_from, lost_to, owner_alert) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT DO NOTHING`,
+			b.DeviceID, epoch, cur, h, low, outcome, lostFrom, lostTo, outcome != "in_sync"); err != nil {
+			return 0, err
+		}
+	}
+	if newEpoch {
+		if _, err := tx.Exec(ctx, `INSERT INTO device_epoch VALUES ($1,$2) ON CONFLICT (device_id) DO UPDATE SET epoch=$2`,
+			b.DeviceID, epoch); err != nil {
+			return 0, err
+		}
+	}
+	if resendFrom > h {
+		resendFrom = 0
+	}
+	return resendFrom, nil
+}
+
+func h1(b batch) int64 {
+	if b.LowSeq == nil {
+		return *b.AckedSeq + 1
+	}
+	return *b.LowSeq
+}
+
 func handleBatch(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var b batch
@@ -195,6 +283,16 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(context.Background())
+	resendFrom, err := reconcile(ctx, tx, b)
+	if errors.Is(err, errReconcileRequired) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"results":[],"reconcile_required":true}`))
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	var results []result
 	for _, c := range b.Commands {
 		out, err := applyOne(ctx, tx, b.DeviceID, c)
@@ -212,8 +310,23 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if resendFrom > 0 && cur >= resendFrom {
+		resendFrom = cur + 1 // this batch closed part of the gap: ask for the rest only
+		if resendFrom > *b.AckedSeq {
+			resendFrom = 0
+		}
+	}
+	var archived int64
+	if err := tx.QueryRow(ctx, `SELECT coalesce(max(archived_seq), 0) FROM archive_mark WHERE device_id=$1`, b.DeviceID).Scan(&archived); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	failpoint("server:before_commit")
-	resp, _ := json.Marshal(map[string]any{"results": results, "cursor": cur})
+	if ms, _ := strconv.Atoi(os.Getenv("SLOW_COMMIT_MS")); ms > 0 {
+		time.Sleep(time.Duration(ms) * time.Millisecond)
+	}
+	resp, _ := json.Marshal(map[string]any{"results": results, "cursor": cur, "resend_from": resendFrom,
+		"archived_seq": archived})
 	w.Header().Set("Content-Type", "application/json")
 	if mutant == "ack_before_commit" {
 		// Planted defect: the client is told "applied" before the commit is durable.
@@ -235,6 +348,47 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp)
 }
 
+// handleArchive records that a verified backup holds the device's commands up to seq (the backup tool's
+// confirmation; the device may prune retained records at or below it, SC-19).
+func handleArchive(w http.ResponseWriter, r *http.Request) {
+	seq, err := strconv.ParseInt(r.URL.Query().Get("seq"), 10, 64)
+	if err != nil {
+		http.Error(w, "seq", http.StatusBadRequest)
+		return
+	}
+	if _, err := pool.Exec(r.Context(), `INSERT INTO archive_mark VALUES ($1,$2)
+		ON CONFLICT (device_id) DO UPDATE SET archived_seq = greatest(archive_mark.archived_seq, $2)`,
+		r.URL.Query().Get("device"), seq); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprint(w, `{"ok":true}`)
+}
+
+// handleConfig: GET returns the current config with the restore epoch; POST ?price= is an owner edit (version+1).
+func handleConfig(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	if r.Method == http.MethodPost {
+		price, err := strconv.Atoi(r.URL.Query().Get("price"))
+		if err != nil {
+			http.Error(w, "price", http.StatusBadRequest)
+			return
+		}
+		if _, err := pool.Exec(ctx, `UPDATE config SET version = version + 1, price = $1 WHERE id = 1`, price); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	var epoch string
+	var version, price int
+	if err := pool.QueryRow(ctx, `SELECT m.epoch, c.version, c.price FROM meta m, config c`).Scan(&epoch, &version, &price); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{"epoch": epoch, "version": version, "price": price})
+}
+
 func dumpRows(ctx context.Context, q string) ([]map[string]any, error) {
 	rows, err := pool.Query(ctx, q)
 	if err != nil {
@@ -247,12 +401,15 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	out := map[string]any{}
 	for name, q := range map[string]string{
-		"ledger":  "SELECT id, device_id, command_id, seq, action_id, kind, amount_piasters FROM ledger ORDER BY id",
-		"minutes": "SELECT id, action_id, session_id, minute_idx FROM minutes ORDER BY id",
-		"inbox":   "SELECT device_id, command_id, seq, payload_hash, outcome FROM inbox ORDER BY seq",
-		"flags":   "SELECT id, kind, device_id, command_id, seq FROM flags ORDER BY id",
-		"cursor":  "SELECT device_id, last_seq FROM cursor_",
-		"offline": "SELECT device_id, extract(epoch FROM from_ts)::float8 AS from_s, extract(epoch FROM to_ts)::float8 AS to_s, owner_alert FROM offline_periods ORDER BY id",
+		"ledger":    "SELECT id, device_id, command_id, seq, action_id, kind, amount_piasters FROM ledger ORDER BY id",
+		"minutes":   "SELECT id, action_id, session_id, minute_idx FROM minutes ORDER BY id",
+		"inbox":     "SELECT device_id, command_id, seq, payload_hash, outcome FROM inbox ORDER BY seq",
+		"flags":     "SELECT id, kind, device_id, command_id, seq FROM flags ORDER BY id",
+		"cursor":    "SELECT device_id, last_seq FROM cursor_",
+		"offline":   "SELECT device_id, extract(epoch FROM from_ts)::float8 AS from_s, extract(epoch FROM to_ts)::float8 AS to_s, owner_alert FROM offline_periods ORDER BY id",
+		"reconcile": "SELECT device_id, epoch, server_cursor, device_acked, device_low, outcome, lost_from, lost_to, owner_alert FROM reconcile_events ORDER BY id",
+		"meta":      "SELECT epoch FROM meta",
+		"config":    "SELECT version, price FROM config",
 	} {
 		rows, err := dumpRows(ctx, q)
 		if err != nil {
@@ -289,6 +446,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /batch", handleBatch)
 	mux.HandleFunc("GET /dump", handleDump)
+	mux.HandleFunc("POST /archive", handleArchive)
+	mux.HandleFunc("GET /config", handleConfig)
+	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
 		contact(r.Context(), r.URL.Query().Get("device"))
