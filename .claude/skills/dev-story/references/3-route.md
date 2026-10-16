@@ -31,6 +31,7 @@ that the story does not create is also a STOP — report it.
 | KMP shared | `mobile/shared/` | `stack.mobile` = `kmp` or `kmp+swiftui` | `kmp-specialist` (with `offline-sync-specialist` when the spec defines offline behaviour) |
 | Android | `mobile/android/` | `stack.mobile` = `compose`, `kmp` or `kmp+swiftui` | `android-lead` (with `compose-ui-specialist`, `android-platform-specialist`) |
 | iOS | `mobile/ios/` | `stack.mobile` = `swiftui` or `kmp+swiftui` | `ios-lead` (with `swiftui-specialist`, `swift-concurrency-specialist`) |
+| Desktop client | `desktop/` | `stack.desktop` set and not `none` | the lead the desktop ADR names (no studio default); no ADR naming one → STOP and report it |
 | Deploy / CI | `deploy/`, CI config | story edits compose files, healthchecks, installer, pipelines | `platform-lead` (with `infra-engineer`) — and `.claude/rules/deploy.md` for self-hosted licence rules |
 | Provider integration | `backend/` adapters | payments, SMS/OTP, email, storage, push, OAuth, webhooks | `integrations-engineer` behind a port, under the backend lead |
 

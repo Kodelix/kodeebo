@@ -33,7 +33,7 @@ sets one without the user's confirmation.
 | `design/product-brief.md` Distribution and Stack lines | `distribution.model`, and layers the brief already names |
 
 Code roots: `layout.code_roots` if set; otherwise the conventional `backend/`,
-`web/`, `site/`, `mobile/`, `contracts/` that exist on disk (the resolution
+`web/`, `site/`, `mobile/`, `desktop/`, `contracts/` that exist on disk (the resolution
 `resolve_code_root` performs). **If code exists elsewhere** (`app/`, `services/`,
 a nested `apps/`), propose those directories for `layout.code_roots` — otherwise
 hooks that scan source will not see them.
@@ -85,6 +85,7 @@ the honest trade-off, then let the user choose.
 - **Web app**: the studio ships one answer, a static Vite + React SPA with no Node server in production (`CLAUDE.md`, `docs/ROADMAP.md`). `none` is right for an API-only or mobile-only product.
 - **Backend**: `go` and `ktor` each have a studio lead agent (`go-lead`, `ktor-lead`) and a shared-core track (`saas-core-go`, `saas-core-kotlin`). The trade-off to put to the user: Kotlin on both the backend and a KMP/Android client lets code and people move between them; Go keeps the backend a separate toolchain from the mobile apps. `go+ktor` doubles the cores, agents and CI — recommend it only with a stated reason.
 - **Tenancy**: `shared-schema-rls` is the lowest-cost multi-tenant model and the one the studio's tenant-isolation checks are written around; stronger models cost more operations. Say which isolation test each implies (`.claude/docs/security-baseline.md`).
+- **Desktop**: the studio has no default desktop runtime and no desktop lead agent. `stack.desktop` is set only from a `/research` note and an ADR (OS versions to support, packaging, offline storage, hardware such as printers and cash drawers); until they exist leave it unset, or `none` when the product has no desktop client. The ADR also names which lead owns `desktop/` (`/dev-story` routes by it).
 - **Data**: recommend the fewest stores that do the job. Cache-engine licensing in customer bundles is a hard constraint (Phase 3).
 - **Mobile**: `compose` or `swiftui` alone for one platform; `kmp` / `kmp+swiftui` when business logic should be shared. For factual claims about a layer's current version or support window, read `docs/stack-reference/<layer>/VERSION.md` and cite it; do not state a version or date from memory.
 

@@ -1432,7 +1432,7 @@ written from sourced research.
 
 | Reader | Keys | What it does |
 |--------|------|--------------|
-| `session-start.sh` | `stack.backend`, `.web`, `.site`, `.mobile`, `.data` | Prints `STACK REFERENCE MISSING for: …` for every configured layer (compound values split on `+`) that has no `docs/stack-reference/<part>/VERSION.md` |
+| `session-start.sh` | `stack.backend`, `.web`, `.site`, `.mobile`, `.desktop`, `.data` | Prints `STACK REFERENCE MISSING for: …` for every configured layer (compound values split on `+`) that has no `docs/stack-reference/<part>/VERSION.md`; any configured `stack.desktop` needs the `desktop` layer's `VERSION.md` (not written yet: it comes from the first product's desktop `/research`) |
 | `detect-gaps.sh` | `stack.backend`, `.web`, `.mobile`, `project.stage`, `modes.workflow`, code roots | Fresh-project banner; "code exists but `stack.backend` unset"; "NOT CHECKED: no code root"; contracts missing; research notes; `PRODUCT.md` when a UI layer is configured; specs expected at the tier |
 | `statusline.sh` | `stack.backend` | Stage heuristic: a configured backend means at least `Architecture` |
 | `project-coherence.sh` | `stack.backend`, `distribution.model` | `go.mod` presence for a Go backend; the self-hosted bundle check; compares declared versions against `pins.yaml` and emits `LICENCE` lines |
@@ -1522,6 +1522,22 @@ it must not appear in the self-hosted customer bundle (`LICENCE` line from
 `project-coherence.sh`, `.claude/rules/deploy.md`). Two stores for one job is a
 finding.
 
+## stack.desktop
+
+**Controls:** The desktop client (for example a cashier or point-of-sale app on Windows) and who builds it
+**Values:** free text decided by `/research` and an ADR — the chosen desktop runtime — or `none`; **not enum-checked** (the studio has no default desktop runtime)
+**Default:** none — unset stays unset
+**Set by:** `/setup-stack` (recorded as given; `NOT ASSESSED — stack.desktop has no decision record` when no research note or ADR names it)
+**Read by:** `dev-story` (routes `desktop/` to the lead the ADR names; no ADR → STOP), `test-setup`, `setup-stack`, `start`; the `stack` line; `session-start.sh`
+**Locally overridable:** no
+
+Any configured value requires the cross-cutting `docs/stack-reference/desktop/`
+layer (OS support window, packaging, bundled runtime, signing, auto-update);
+`session-start.sh` and `/setup-stack` Phase 5 report it missing. A runtime that has
+its own directory under `docs/stack-reference/` is required too.
+
+---
+
 ## stack.messaging
 
 **Controls:** The message broker or stream, when the architecture needs one
@@ -1597,7 +1613,7 @@ whatever the model.
 
 **Controls:** Which directories hold source — every hook and skill that scans, counts or writes source iterates this list
 **Values:** a list of relative directory names (e.g. `[backend, web, mobile, contracts]`)
-**Default:** none. **Unset does not default**: `resolve_code_root` falls back to detecting the conventional directories that exist on disk (`backend`, `web`, `site`, `mobile`, `contracts`, `core`); if none exist the result is empty and the caller must announce that its check did not run
+**Default:** none. **Unset does not default**: `resolve_code_root` falls back to detecting the conventional directories that exist on disk (`backend`, `web`, `site`, `mobile`, `desktop`, `contracts`, `core`); if none exist the result is empty and the caller must announce that its check did not run
 **Set by:** `/setup-stack` (it records existing directories; it never scaffolds one). The helper does not validate the entries; `/setup-stack` reports a root that does not exist
 **Read by:** `resolve_code_root` (prints the roots and a source of `layout.code_roots`, `detected` or `unset`) — called by `session-start.sh` (TODO/FIXME scan), `detect-gaps.sh` (checks 3–7), `validate-commit.sh` (source scans), `statusline.sh`, and the skills that scan source, including `dev-story`, `code-review`, `gate-check`, `security-audit`, `story-done`, `smoke-check`, `perf-profile`, `regression-suite`, `localize`, `test-setup` and `create-architecture`
 **Locally overridable:** no
@@ -1905,6 +1921,7 @@ stack:
   web: vite-react            # vite-react | none
   site: astro                # astro | none
   mobile: kmp+swiftui        # compose | kmp | kmp+swiftui | swiftui | none
+  desktop: none              # decided by /research + ADR | none
   data: [postgres, redis]    # any of: postgres, mongo, redis, dragonfly
   messaging: ""              # decided by /research + ADR (nats | rabbitmq | kafka | none)
 

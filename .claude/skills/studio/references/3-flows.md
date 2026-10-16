@@ -103,7 +103,7 @@ Every flow below is resolved against the tier table in section 0 before it is sh
 | release | `/gate-check hardening` then `/gate-check release` → `/release-checklist` → `/team-release` (canary, rollback triggers, post-deploy verification) → `/release-notes` |
 | incident | `/incident` → `/postmortem` → follow-up stories |
 | core | `/core-use` (adopt) or `/core-extract` (promote) → `/core-release` in the core repo → `/core-upgrade` in products |
-| business | `/business` (routes to the business team; may chain `/market-research`, `/competitor-analysis`, `/pricing-strategy`, `/offer-design`, `/gtm-plan`, `/business-case`) |
+| business | `/business` (routes to the business team; may chain `/market-research`, `/competitor-analysis`, `/pricing-strategy`, `/offer-design`, `/gtm-plan`, `/business-case`; brand architecture, naming and trademark screening go to `/brand-architecture`) |
 
 ### new-product by tier
 

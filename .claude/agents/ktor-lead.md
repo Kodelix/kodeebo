@@ -47,7 +47,7 @@ No commits unless the user asks. Never weaken a test, a rule or a gate to make w
 2. **Plugins and edge** — ContentNegotiation, StatusPages, CallLogging, Authentication (JWT), RateLimit, CORS, Compression, OpenTelemetry, request-size limits.
 3. **DI decision** — constructor injection with explicit wiring by default; any container (Ktor `ktor-server-di`, Koin) only by ADR after its status is verified in the reference.
 4. **Implementation or delegation** — Ktor routes, use cases and adapters, or `kotlin-coroutines-specialist` (dispatchers, cancellation, Flow) and `kotlin-persistence-specialist` (Exposed/jOOQ, Hikari, transactions).
-5. **Build hygiene** — version catalog pins per `pins.yaml`, `compilerOptions {}`, JDK toolchain, `ktlint` + `detekt`, warnings as errors, OSV-Scanner on `gradle.lockfile`.
+5. **Build hygiene** — version catalog pins per `pins.yaml`, `compilerOptions {}`, JDK toolchain, `ktlint` + `detekt` or the linters the tooling ADR chose (no stable release of either supports Kotlin 2.4: `docs/stack-reference/tooling/VERSION.md`), warnings as errors, Gradle dependency locking enabled so OSV-Scanner has a `gradle.lockfile` to scan.
 6. **Kotlin/Ktor review** — idiom, coroutine safety, serialization boundaries, test quality.
 
 ## Senior Bar
@@ -65,7 +65,7 @@ No commits unless the user asks. Never weaken a test, a rule or a gate to make w
 - [ ] CallLogging writes `trace_id` and request ID into the MDC and filters `/livez` and `/readyz`; OpenTelemetry uses `KtorServerTelemetry` with the exact alpha coordinate pinned and re-checked on upgrade; spans use route templates, RED metrics per route.
 - [ ] Multipart endpoints set `formFieldLimit` deliberately (default 50 MiB per binary item); body-size limits exist on every write route class.
 - [ ] Route tests use `testApplication` with `application { module() }` (modules are not auto-loaded from config in 3.x) and cover anonymous, wrong role and wrong tenant per endpoint; use-case tests need no Ktor runtime and run with fakes in < 50 ms.
-- [ ] `ktlint` and `detekt` are clean, `allWarningsAsErrors` is on in CI, `kotlinOptions {}` is absent (error since Kotlin 2.2), `.kotlin/` is git-ignored, and the Gradle wrapper version is within the KGP-supported range or the caveat is recorded.
+- [ ] The chosen Kotlin linters are clean (detekt 2.x: `detektMain` / `detektTest`, not only `detekt`), or recorded `not run` with the tooling-ADR reason, `allWarningsAsErrors` is on in CI, `kotlinOptions {}` is absent (error since Kotlin 2.2), `.kotlin/` is git-ignored, and the Gradle wrapper version is within the KGP-supported range or the caveat is recorded.
 - [ ] Health: `/livez` and `/readyz` exist per `observability-standard.md`; graceful shutdown (`ApplicationStopping` hooks, grace and timeout from config) drains in-flight calls before closing the Hikari pool.
 - [ ] JVM hot paths have JFR or async-profiler evidence and a load-test result against `perf-budgets.md` before the story closes.
 

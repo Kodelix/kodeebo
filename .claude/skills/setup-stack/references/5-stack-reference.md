@@ -47,9 +47,11 @@ and treat any directory found there that maps to a configured value as required.
 | `stack.mobile: swiftui` | `swiftui` |
 | `stack.data` contains `postgres` / `mongo` / `redis` / `dragonfly` | the directory of the same name |
 | `deploy.target: compose-vps` | `docker-compose` |
+| `stack.desktop` set and not `none` | `desktop` (cross-cutting: OS support window, packaging and installers, bundled runtime, code signing, auto-update), plus a directory named after the value if one exists |
 
 A configured value with **no directory in the table or on disk** — `deploy.target:
-kubernetes`, any `stack.messaging` choice — has no stack reference. Report it as
+kubernetes`, any `stack.messaging` choice, a `stack.desktop` runtime with no
+directory — has no stack reference. Report it as
 `NOT SOURCEABLE — no stack reference for <value> under docs/stack-reference/` and
 offer a researcher run (5d) to create one. Do not describe that layer's versions
 from memory in the meantime.

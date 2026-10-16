@@ -44,6 +44,7 @@ unsourced line. Never fill a gap from training data.
 | KMP shared | `mobile/shared/` | `src/commonTest/kotlin/` |
 | Android | `mobile/android/` | `app/src/test/` (unit), `app/src/androidTest/` (instrumented) |
 | iOS | `mobile/ios/` | Swift Testing / XCTest targets |
+| Desktop client | `desktop/` | as the desktop ADR states (`PENDING — NOT SOURCEABLE` until it does) |
 | Contracts | `contracts/` | contract tests run from each consumer |
 
 [Keep only the rows for configured layers; list the others under "Not configured".]

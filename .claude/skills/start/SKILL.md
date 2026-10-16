@@ -61,7 +61,7 @@ Do NOT show these results unprompted — they inform your recommendations, not t
 conversation opener.
 
 Check:
-- **Stack configured?** Read `stack.backend` (and `stack.web`, `stack.mobile`) in
+- **Stack configured?** Read `stack.backend` (and `stack.web`, `stack.mobile`, `stack.desktop`) in
   `project.yaml`. Any non-empty layer means a stack has been chosen. Empty or
   absent means not set — never guess one from the files on disk.
 - **Product brief exists?** Check `design/product-brief.md`. A file that is only
@@ -70,7 +70,7 @@ Check:
   markdown files in `design/specs/` other than the map.
 - **Source code exists?** The code roots are `layout.code_roots` from
   `project.yaml`; when that is empty, the conventional directories that exist on
-  disk (`backend/`, `web/`, `site/`, `mobile/`, `contracts/`) — the same
+  disk (`backend/`, `web/`, `site/`, `mobile/`, `desktop/`, `contracts/`) — the same
   detection `resolve_code_root` performs in `.claude/hooks/yaml-helper.sh`. Glob
   each for source files (`*.go`, `*.kt`, `*.kts`, `*.ts`, `*.tsx`, `*.swift`,
   `*.astro`, `*.sql`, `*.proto`, `*.yaml` under `contracts/`). **If no code root

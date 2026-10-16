@@ -18,5 +18,5 @@ Read `docs/stack-reference/ktor/` and `docs/stack-reference/kotlin/` before usin
 - Database: HikariCP with explicit pool sizing and timeouts; parameterized queries only; transactions owned by the use case.
 - Plugins: CallLogging with MDC `trace_id`, OpenTelemetry instrumentation, CORS allowlist, rate limiting, compression, default headers.
 - Immutability: `val` and immutable collections by default; data classes for values; no platform types leaking from Java APIs.
-- Lint: `ktlint` + `detekt` clean; compiler warnings treated as errors in CI.
+- Lint: the Kotlin linters the tooling ADR chose are clean (`ktlint` + `detekt` by default, but no stable release of either supports Kotlin 2.4 — read `docs/stack-reference/tooling/VERSION.md`, Kotlin part, before configuring them); with detekt 2.x CI runs the type-resolved tasks (`detektMain` / `detektTest`), not only `detekt`; compiler warnings treated as errors in CI.
 - Tests: `kotlin.test`/JUnit 5, Ktor `testApplication` for routes, Testcontainers in the `integrationTest` source set.

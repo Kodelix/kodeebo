@@ -26,6 +26,7 @@ English). A question can carry more than one class; list all of them.
 | Changing what the product is: scope, edition, ICP of record, positioning of record | `product-director` | State the business evidence that bears on it, then say "decision belongs to `product-director`" |
 | Implementing a decided price: plans, entitlements, coupons in the catalogue, tax display, billing code | `pricing-billing-designer` (after `product-director` sign-off) | Point at `business/pricing/` handoff, `/pricing-check` |
 | A legal, tax, accounting or contract-law conclusion | A qualified advisor | Quote the official rule with its date; draw no conclusion |
+| A brand architecture choice, a product name, or "can we use this name" (trademark, domain, handle, Arabic meaning) | `/brand-architecture` (owner `marketing-lead`; legal parts need counsel) | State any sourced market fact, then route; never call a name clear or available, never assert an Arabic or dialect meaning from memory |
 | Technical facts (library, API, infra cost drivers) | `/research` | Name the missing input |
 | Contacting a customer, competitor or partner; publishing; committing spend | The user | Produce the draft only |
 

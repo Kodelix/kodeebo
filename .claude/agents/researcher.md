@@ -105,6 +105,8 @@ Path: `docs/research/<feature-slug>.md` (kebab-case slug; one note per decision 
 
 Write early, fill as you go: create the file with all nine headings within your first three turns and add each finding as you fetch it. Your turn budget is finite; a run that ends with the findings only in your context has produced nothing. When about five turns remain, stop fetching, mark what you did not reach `NOT SOURCEABLE — turn budget, not reached`, and finish the remaining sections from the file.
 
+The same rule holds for a **stack-reference refresh or new layer** (`docs/stack-reference/**`, `pins.yaml`): within your first three turns write the rows or section you are adding, each field `NOT SOURCEABLE — not yet fetched`, then replace each one with the sourced fact as you confirm it. A refresh that fetched everything and wrote nothing is the same failure.
+
 ```
 # Research: <feature>
 Date: <YYYY-MM-DD> · Requested by: <role/story> · Status: draft | accepted | stale

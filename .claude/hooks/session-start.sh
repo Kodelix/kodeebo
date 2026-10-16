@@ -234,6 +234,10 @@ if [ -f project.yaml ] && command -v get_yaml_key >/dev/null 2>&1; then
             [ -f "docs/stack-reference/$_part/VERSION.md" ] || _missing="$_missing $_part"
         done
     done
+    # stack.desktop is free text from /research + ADR; any configured value needs
+    # the cross-cutting desktop reference (OS support, packaging, signing, updates).
+    _v=$(get_yaml_key project.yaml stack.desktop 2>/dev/null)
+    case "$_v" in ""|none) ;; *) [ -f "docs/stack-reference/desktop/VERSION.md" ] || _missing="$_missing desktop" ;; esac
     for _part in $(get_yaml_array project.yaml stack.data 2>/dev/null); do
         [ -f "docs/stack-reference/$_part/VERSION.md" ] || _missing="$_missing $_part"
     done

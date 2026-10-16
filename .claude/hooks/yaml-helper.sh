@@ -1206,7 +1206,7 @@ resolve_setting() {
 #   exit:   always 0
 #
 # A SaaS product is a monorepo with several code roots — backend/, web/,
-# mobile/, contracts/ — not the single engine root of the game template. Every
+# mobile/, desktop/, contracts/ — not the single engine root of the game template. Every
 # hook that scans source files iterates this list.
 #
 # UNSET DOES NOT DEFAULT. An absent `layout.code_roots` falls back to detecting
@@ -1221,7 +1221,7 @@ resolve_code_root() {
     [ -n "$roots" ] && src="layout.code_roots"
   fi
   if [ -z "$roots" ]; then
-    for d in backend web site mobile contracts core; do
+    for d in backend web site mobile desktop contracts core; do
       [ -d "$_YH_ROOT/$d" ] && roots="${roots:+$roots }$d"
     done
     [ -n "$roots" ] && src="detected"
@@ -1431,7 +1431,7 @@ resolve_config() {
   # printed on the stack line.
   if _rc_want stack || _rc_want tenancy || _rc_want distribution || _rc_want deploy; then
     # An invalid value is shown as INVALID, never as if it were configured.
-    for pair in backend:stack.backend web:stack.web site:stack.site mobile:stack.mobile \
+    for pair in backend:stack.backend web:stack.web site:stack.site mobile:stack.mobile desktop:stack.desktop \
                 deploy:deploy.target distribution:distribution.model tenancy:tenancy.model; do
       sk="${pair%%:*}"
       sv=$(get_yaml_key "$_YH_ROOT/project.yaml" "${pair#*:}" 2>/dev/null)

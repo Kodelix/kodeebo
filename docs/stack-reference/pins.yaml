@@ -5,7 +5,7 @@
 #
 # Values are MINIMUMS for new products unless marked `exact`. A product may be
 # ahead; being behind is reported, never blocked.
-# Last verified: 2026-10-11 (spot-checked against GitHub releases, npm,
+# Last verified: 2026-10-16 (spot-checked against GitHub releases, npm,
 # Docker Hub and go.dev by the orchestrator after subagent research).
 
 go:
@@ -17,7 +17,17 @@ tooling:
   golangci_lint: "2.14.0"
   govulncheck: "1.8.0"
   gitleaks: "8.30.1"           # DECIDED T1: keep gitleaks (security patches only upstream); re-evaluate Betterleaks later
-  osv_scanner: "2.6.0"
+  osv_scanner: "2.6.0"           # scans gradle.lockfile only when the product enables Gradle dependency locking
+  # Kotlin (tooling/VERSION.md, Kotlin part — verified 2026-10-16)
+  kover: "0.9.11"
+  konsist: "0.18.1"            # pre-1.0; option for architecture tests (cto ADR), as is archunit
+  archunit: "1.5.1"            # JVM bytecode only; open Kotlin 2.4.20+ `when (x) { is T -> }` dependency gap
+  compose_rules: "0.6.8"       # must match the host linter's version line
+  ktlint_gradle: "14.2.0"
+  # ktlint and detekt: NO STABLE KOTLIN-2.4-COMPATIBLE RELEASE (ktlint 1.8.0 and
+  # detekt 1.23.8 do not support Kotlin 2.4; 2.0.0-ALPHA-4 / 2.0.0-alpha.6 are
+  # pre-releases, and detekt skips 2.4.20+ for 2.5.0). Not pinned: each Kotlin
+  # product chooses by cto ADR — see tooling/VERSION.md for the options.
 
 kotlin:
   kotlin: "2.4.21"

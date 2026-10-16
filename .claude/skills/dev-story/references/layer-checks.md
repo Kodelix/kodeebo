@@ -13,8 +13,11 @@
 `docs/stack-reference/go/best-practices.md`, `docs/stack-reference/tooling/best-practices.md`.
 `pnpm` supply-chain and audit commands: `docs/stack-reference/vite-react/best-practices.md` §11.
 Swift tests: `docs/stack-reference/swiftui/VERSION.md` (macOS with Xcode only).
-Gradle task names (`ktlintCheck`, `detekt`, the integration-test task) are
-**NOT SOURCEABLE** in `docs/stack-reference/` — confirm them with
+Kotlin linter, coverage and architecture-test tooling: `docs/stack-reference/tooling/best-practices.md`
+(Kotlin part) — note that no stable ktlint or detekt supports Kotlin 2.4, so which
+ones the product runs is its tooling ADR's call. Task names still depend on the
+build (ktlint-gradle `ktlintCheck`, kotlinter `lintKotlin`; detekt 2.x plain
+`detekt` skips type-resolved rules, `detektMain` / `detektTest` run them) — confirm them with
 `./gradlew tasks --all` in the project (or from the build files) before running;
 a task that does not exist is `not run — task not defined`, never a pass. The same
 holds for `package.json` script names: read `web/package.json` `scripts` first.
@@ -37,8 +40,10 @@ holds for `package.json` script names: read `web/package.json` `scripts` first.
 | Check | Command | Passes when | Needs |
 |---|---|---|---|
 | Build + unit tests + lint | `./gradlew -p <module-root> check` (confirm the wrapper location in the build files first) | exit 0 | JDK per `pins.yaml` |
-| Style | `./gradlew ktlintCheck` (task name per build config) | exit 0 | ktlint configured — else `not run — ktlint not configured` |
-| Static analysis | `./gradlew detekt` (task name per build config) | exit 0 | detekt configured — else `not run — detekt not configured` |
+| Style | `./gradlew ktlintCheck` or `lintKotlin` (per build config) | exit 0 | ktlint configured — else `not run — ktlint not configured` |
+| Static analysis | `./gradlew detektMain detektTest` with detekt 2.x, `detekt` with 1.x (per build config) | exit 0 | detekt configured — else `not run — detekt not configured` |
+| Coverage | `./gradlew koverVerify` (per build config) | exit 0 | Kover configured — else `not run — Kover not configured` |
+| Architecture tests | the test task that holds the Konsist / ArchUnit rules | exit 0 | architecture tests present — else `not run — no architecture tests` (gate 2 evidence then rests on review) |
 | Integration tests | the integration source-set task defined in the build (`src/integrationTest/kotlin/`) | exit 0 | JDK + container runtime |
 | Android instrumented tests | `./gradlew connectedAndroidTest` (task per build config) | exit 0 | emulator or device attached — else `not run — no emulator/device` |
 | Dependency scan | `osv-scanner scan -r .` (reads Gradle lockfiles/manifests) | clean | `osv-scanner` — may be NOT INSTALLED |

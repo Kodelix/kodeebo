@@ -246,7 +246,7 @@ fi
 if [ -n "$MATCHED_BRANCH" ] || [ -n "$_GL_NOTE" ]; then
     MSG=""
     if [ -n "$MATCHED_BRANCH" ]; then
-        MSG="Push to protected branch '$MATCHED_BRANCH'. CI is the gate: lint (golangci-lint / ktlint+detekt / eslint+tsc / swiftlint), unit + Testcontainers integration + contract tests, govulncheck/OSV scan. Confirm they pass locally for the roots you changed, and that no S1 bug or failing security test is open."
+        MSG="Push to protected branch '$MATCHED_BRANCH'. CI is the gate: lint (golangci-lint / ktlint+detekt or the ADR-chosen Kotlin linters / eslint+tsc / swiftlint), unit + Testcontainers integration + contract tests, govulncheck/OSV scan. Confirm they pass locally for the roots you changed, and that no S1 bug or failing security test is open."
     fi
     MSG="$MSG$_GL_NOTE"
     . .claude/hooks/yaml-helper.sh 2>/dev/null

@@ -28,6 +28,7 @@ file the product edited, and never reads or writes product-owned files.
 │   ├── shared/                  # KMP shared module (when stack.mobile includes kmp)
 │   ├── android/                 # Android app (Jetpack Compose)
 │   └── ios/                     # iOS app (SwiftUI)
+├── desktop/                     # Desktop client (when stack.desktop is set) — runtime, layout and owner per its ADR
 ├── contracts/                   # OpenAPI / protobuf — the single source of truth between clients and backend
 ├── deploy/
 │   ├── hosted/                  # our infrastructure (compose, proxy, backups)
@@ -58,6 +59,7 @@ file the product edited, and never reads or writes product-owned files.
 │   ├── pricing/                 # Pricing strategy, offers, price tests
 │   ├── marketing/               # GTM and marketing plans, campaign results
 │   ├── sales/                   # Sales playbook, proposals, deal terms
+│   ├── brand/                   # Brand architecture, naming screens, counsel briefs (/brand-architecture)
 │   └── cases/                   # Business cases and unit-economics models
 ├── tools/
 │   ├── seed/                    # Seed / fixture data generators (/test-helpers, /test-setup)
@@ -109,6 +111,7 @@ then detection of the conventional directories that exist on disk.
 | KMP shared | `mobile/shared/` | `src/commonMain/kotlin/`, `src/androidMain/`, `src/iosMain/` | `src/commonTest/kotlin/` |
 | Android | `mobile/android/` | `app/src/main/kotlin/` | `app/src/test/` (unit), `app/src/androidTest/` (instrumented) |
 | iOS | `mobile/ios/` | Xcode targets / Swift packages | Swift Testing / XCTest targets |
+| Desktop client | `desktop/` | per the desktop ADR (`stack.desktop`) | per the desktop ADR |
 | Contracts | `contracts/` | `openapi/*.yaml`, `proto/**/*.proto` | Contract tests run from each consumer |
 
 The `{domain,app,adapters}` split is the clean-architecture rule

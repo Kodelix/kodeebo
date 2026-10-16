@@ -246,6 +246,7 @@ the ported skills (`skill-authoring-brief.md`).
 | `/competitor-analysis` | new | sonnet | Competitor files with dated price captures and comparison matrix |
 | `/pricing-strategy` | new | sonnet | Value metric, packaging, regional prices, licence economics, price tests |
 | `/offer-design` | new | sonnet | Launch deals, discounts, bundles, trials with guardrails and expected impact |
+| `/brand-architecture` | new | sonnet | Brand architecture decision, name criteria and candidate screening (trademark screening record, brief for counsel), per-vertical theme handoff |
 | `/gtm-plan` | new | sonnet | Go-to-market: segment, positioning, channels, launch sequence, targets |
 | `/marketing-plan` | new | sonnet | Channels, content, budget, CAC targets, measurement |
 | `/sales-playbook` | new | sonnet | Sales motion, qualification, pipeline, enterprise terms, objections |

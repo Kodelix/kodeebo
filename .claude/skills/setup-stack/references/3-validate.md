@@ -49,7 +49,10 @@ one of `postgres`, `mongo`, `redis`, `dragonfly`; `layout.code_roots` entries mu
 relative directory names (no leading `/` or `..`) — and a root that does not exist
 on disk is reported, not rejected (it may be created by the first story);
 `stack.messaging` is free text from `/research` (`nats`, `rabbitmq`, `kafka`,
-`none`) and is recorded as given.
+`none`) and is recorded as given; so is `stack.desktop` (the desktop client
+runtime a `/research` note and ADR chose, or `none`) — if no research note or ADR
+names the value yet, record it and report `NOT ASSESSED — stack.desktop has no
+decision record`.
 
 If the helper is unavailable (missing file, no Python), report
 `NOT ASSESSED — enum validation did not run` and do not write: an unvalidated

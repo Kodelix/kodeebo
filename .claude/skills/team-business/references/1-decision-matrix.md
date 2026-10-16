@@ -13,6 +13,7 @@ Read in Phase 1 and again before each wave if the conversation was compacted.
 | Add a self-hosted / enterprise edition | yes | yes | no | yes |
 | Is this product worth building / continuing (viability) | yes | yes | yes | yes |
 | Pure market-size or competitor question | yes | no | no | no — use `/market-research` or `/competitor-analysis` |
+| Brand architecture, product naming or trademark screening | no | no | `marketing-lead` owns | no — use `/brand-architecture` |
 
 A specialist marked "no" is **not spawned and the plan says so with the reason**.
 A decision that fits one row only needs less than a team: say "this is a

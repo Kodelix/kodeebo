@@ -22,7 +22,7 @@ every mode, as `.claude/docs/automation-modes.md` describes for exempt skills.
 **What this skill owns.** It writes only these `project.yaml` keys, each
 validated against the enum list in `.claude/hooks/yaml-helper.sh`
 (`_yaml_helper_enums`): `stack.backend`, `stack.web`, `stack.site`,
-`stack.mobile`, `stack.data`, `stack.messaging`, `deploy.target`,
+`stack.mobile`, `stack.desktop`, `stack.data`, `stack.messaging`, `deploy.target`,
 `distribution.model`, `tenancy.model`, `layout.code_roots`, `core.track` (and
 `core.repo` / `core.version` / `core.modules` when the user supplies them). It
 never writes `modes.*`, `docs.density`, `qa.level` or `team.size`, and it never
@@ -47,7 +47,7 @@ validates.
 Four modes:
 
 - **Guided**: `/setup-stack` — no arguments; evidence scan, then one question per unset layer (Phase 2)
-- **Direct**: `/setup-stack backend=go web=vite-react tenancy=shared-schema-rls` — `key=value` pairs, where key is one of `backend`, `web`, `site`, `mobile`, `data`, `messaging`, `deploy`, `distribution`, `tenancy`, `track`, `roots`. Anything not given stays as it is in `project.yaml`; nothing is guessed to fill it in. `data` and `roots` take a comma list (`data=postgres,redis`).
+- **Direct**: `/setup-stack backend=go web=vite-react tenancy=shared-schema-rls` — `key=value` pairs, where key is one of `backend`, `web`, `site`, `mobile`, `desktop`, `data`, `messaging`, `deploy`, `distribution`, `tenancy`, `track`, `roots`. Anything not given stays as it is in `project.yaml`; nothing is guessed to fill it in. `data` and `roots` take a comma list (`data=postgres,redis`).
 - **Verify**: `/setup-stack verify` — change nothing in `project.yaml`; run Phases 3 (validation of what is already there), 5 (stack reference) and 6 (coherence) and report
 - **Refresh**: `/setup-stack refresh [layer]` — re-verify one layer's stack reference (or every configured layer) through the `researcher` agent (Phase 5)
 
