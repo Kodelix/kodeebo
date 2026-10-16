@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: "Part5 sample - synthetic, not the real contract"
+  version: 0.0.1
+servers:
+- url: /
+paths:
+  /v1/sessions/{id}:
+    get:
+      operationId: getSession
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+          description: ok
+        "4XX":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: problem
+components:
+  schemas:
+    Session:
+      example:
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        state: open
+        amountMinor: 0
+        startedAt: 2000-01-23T04:56:07.000+00:00
+        payment:
+          kind: kind
+      properties:
+        id:
+          format: uuid
+          type: string
+        state:
+          enum:
+          - open
+          - closed
+          - voided
+          type: string
+        amountMinor:
+          format: int64
+          type: integer
+        startedAt:
+          format: date-time
+          type: string
+        payment:
+          $ref: "#/components/schemas/Session_payment"
+      required:
+      - amountMinor
+      - id
+      - startedAt
+      - state
+      type: object
+    Cash:
+      example:
+        kind: kind
+      properties:
+        kind:
+          type: string
+      required:
+      - kind
+      type: object
+    Wallet:
+      properties:
+        kind:
+          type: string
+      required:
+      - kind
+      type: object
+    Problem:
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+      type: object
+    Session_payment:
+      discriminator:
+        propertyName: kind
+      oneOf:
+      - $ref: "#/components/schemas/Cash"
+      - $ref: "#/components/schemas/Wallet"
+

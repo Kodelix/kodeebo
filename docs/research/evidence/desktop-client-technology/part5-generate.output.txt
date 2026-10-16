@@ -1,0 +1,25 @@
+run at 2026-10-16T02:00Z
+openjdk version "21.0.12.1" 2026-08-18
+7.26.0
+kotlin multiplatform exit=0
+typescript-fetch exit=0
+dart-dio exit=0
+csharp exit=0
+--- kotlin-mpp build file pins:
+4:    kotlin("multiplatform") version "2.4.0" // kotlin_version
+5:    kotlin("plugin.serialization") version "2.4.0" // kotlin_version
+11:val kotlin_version = "2.4.0"
+13:val serialization_version = "1.11.0"
+14:val ktor_version = "3.5.1"
+34:                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
+36:                api("io.ktor:ktor-client-core:$ktor_version")
+37:                api("io.ktor:ktor-client-serialization:$ktor_version")
+38:                api("io.ktor:ktor-client-content-negotiation:$ktor_version")
+39:                api("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+47:                implementation(kotlin("test"))
+48:                implementation("io.ktor:ktor-client-mock:$ktor_version")
+54:                implementation(kotlin("stdlib-jdk7"))
+55:                implementation("io.ktor:ktor-client-cio-jvm:$ktor_version")
+61:                implementation(kotlin("test-junit"))
+67:                api("io.ktor:ktor-client-ios:$ktor_version")
+73:                api("io.ktor:ktor-client-js:$ktor_version")

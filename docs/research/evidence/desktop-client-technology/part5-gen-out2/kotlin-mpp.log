@@ -1,0 +1,14 @@
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/kotlin-mpp) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: kotlin (client)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'kotlin' is considered stable.
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Environment variable KOTLIN_POST_PROCESS_FILE not defined so the Kotlin code may not be properly formatted. To define it, try 'export KOTLIN_POST_PROCESS_FILE="/usr/local/bin/ktlint -F"' (Linux/Mac)
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+Exception in thread "main" java.lang.RuntimeException: Multiplatform only supports string and kotlinx-datetime. Try adding '--additional-properties dateLibrary=kotlinx-datetime' to your command.
+	at org.openapitools.codegen.languages.KotlinClientCodegen.processMultiplatformLibrary(KotlinClientCodegen.java:932)
+	at org.openapitools.codegen.languages.KotlinClientCodegen.processOpts(KotlinClientCodegen.java:583)
+	at org.openapitools.codegen.DefaultGenerator.configureGeneratorProperties(DefaultGenerator.java:257)
+	at org.openapitools.codegen.DefaultGenerator.generate(DefaultGenerator.java:1294)
+	at org.openapitools.codegen.cmd.Generate.execute(Generate.java:626)
+	at org.openapitools.codegen.cmd.OpenApiGeneratorCommand.run(OpenApiGeneratorCommand.java:32)
+	at org.openapitools.codegen.OpenAPIGenerator.main(OpenAPIGenerator.java:66)

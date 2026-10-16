@@ -1,0 +1,17 @@
+.openapi-generator-ignore
+apis/DefaultApi.ts
+apis/index.ts
+docs/Cash.md
+docs/DefaultApi.md
+docs/Problem.md
+docs/Session.md
+docs/SessionPayment.md
+docs/Wallet.md
+index.ts
+models/Cash.ts
+models/Problem.ts
+models/Session.ts
+models/SessionPayment.ts
+models/Wallet.ts
+models/index.ts
+runtime.ts

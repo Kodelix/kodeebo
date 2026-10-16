@@ -1,0 +1,63 @@
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: kotlin (client)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'kotlin' is considered stable.
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Environment variable KOTLIN_POST_PROCESS_FILE not defined so the Kotlin code may not be properly formatted. To define it, try 'export KOTLIN_POST_PROCESS_FILE="/usr/local/bin/ktlint -F"' (Linux/Mac)
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[main] INFO  o.o.codegen.InlineModelResolver - Inline schema created as Session_payment. To have complete control of the model name, set the `title` field or use the modelNameMapping option (e.g. --model-name-mappings Session_payment=NewModel,ModelA=NewModelA in CLI) or inlineSchemaNameMapping option (--inline-schema-name-mappings Session_payment=NewModel,ModelA=NewModelA in CLI).
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Model Session implements interface(s): []
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Model Cash implements interface(s): []
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Model Wallet implements interface(s): []
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Model Problem implements interface(s): []
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Model Session_payment implements interface(s): []
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/models/Cash.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/test/kotlin/sample/api/models/CashTest.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/docs/Cash.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/models/Problem.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/test/kotlin/sample/api/models/ProblemTest.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/docs/Problem.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/models/Session.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/test/kotlin/sample/api/models/SessionTest.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/docs/Session.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/models/SessionPayment.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/test/kotlin/sample/api/models/SessionPaymentTest.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/docs/SessionPayment.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/models/Wallet.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/test/kotlin/sample/api/models/WalletTest.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/docs/Wallet.md
+[main] INFO  o.o.c.l.AbstractKotlinCodegen - Model Session implements interface(s): []
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/apis/DefaultApi.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/test/kotlin/sample/api/apis/DefaultApiTest.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/docs/DefaultApi.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/build.gradle.kts
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/settings.gradle.kts
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/gradlew
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/gradlew.bat
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/gradle/wrapper/gradle-wrapper.properties
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/gradle/wrapper/gradle-wrapper.jar
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/ApiClient.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/ApiAbstractions.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/PartConfig.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/RequestConfig.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/RequestMethod.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/Base64ByteArray.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/HttpResponse.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/infrastructure/OctetByteArray.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/auth/ApiKeyAuth.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/auth/Authentication.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/auth/HttpBasicAuth.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/auth/HttpBearerAuth.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/src/commonMain/kotlin/sample/api/auth/OAuth.kt
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/.openapi-generator-ignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/.openapi-generator/VERSION
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out3/kotlin-mpp/.openapi-generator/FILES
+################################################################################
+# Thanks for using OpenAPI Generator.                                          #
+# Please consider donating to help us maintain this project 🙏                 #
+# https://opencollective.com/openapi_generator/donate                          #
+#                                                                              #
+# This generator's contributed by Jim Schubert (https://github.com/jimschubert)#
+# Please support his work directly via https://patreon.com/jimschubert 🙏      #
+################################################################################

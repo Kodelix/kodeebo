@@ -1,0 +1,11 @@
+run at 2026-10-16T01:58Z
+electron npm:electron@44.8.0 -> 0 []
+tauri crates.io:tauri@2.12.4 -> 0 []
+ktor-client-core Maven:io.ktor:ktor-client-core@3.6.0 -> 0 []
+capacitor-core npm:@capacitor/core@8.5.3 -> 0 []
+react-native npm:react-native@0.88.0 -> 0 []
+react-native-084 npm:react-native@0.84.0 -> 0 []
+openapi-generator Maven:org.openapitools:openapi-generator@7.26.0 -> 0 []
+sqldelight-sqlite-driver Maven:app.cash.sqldelight:sqlite-driver@2.4.1 -> 0 []
+control-electron-old npm:electron@10.0.0 -> 50 ['GHSA-2q4g-w47c-4674', 'GHSA-3c8v-cfp5-9885', 'GHSA-3p22-ghq8-v749', 'GHSA-4f78-qhmw-8j8m', 'GHSA-4p4r-m79c-wq3v', 'GHSA-532v-xpq5-8h95', 'GHSA-56pc-6jqp-xqj8', 'GHSA-5c9j-mhmv-5xgx', 'GHSA-5rqw-r77c-jp79', 'GHSA-6r2x-8pq8-9489', 'GHSA-77xc-hjv8-ww97', 'GHSA-7m48-wc93-9g85']
+npm registry latest (2026-10-16): @capacitor/core 8.5.3, react-native 0.88.0

@@ -1,0 +1,76 @@
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: csharp (client)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'csharp' is considered stable.
+[main] INFO  o.o.c.l.AbstractCSharpCodegen - Environment variable CSHARP_POST_PROCESS_FILE not defined so the C# code may not be properly formatted by uncrustify (0.66 or later) or other code formatter. To define it, try `export CSHARP_POST_PROCESS_FILE="/usr/local/bin/uncrustify --no-backup" && export UNCRUSTIFY_CONFIG=/path/to/uncrustify-rules.cfg` (Linux/Mac). Note: replace /path/to with the location of uncrustify-rules.cfg
+[main] INFO  o.o.c.l.AbstractCSharpCodegen - NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[main] INFO  o.o.c.languages.CSharpClientCodegen - Generating code for .NET Framework net10.0
+[main] INFO  o.o.codegen.InlineModelResolver - Inline schema created as Session_payment. To have complete control of the model name, set the `title` field or use the modelNameMapping option (e.g. --model-name-mappings Session_payment=NewModel,ModelA=NewModelA in CLI) or inlineSchemaNameMapping option (--inline-schema-name-mappings Session_payment=NewModel,ModelA=NewModelA in CLI).
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Model/Cash.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Model/CashTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/models/Cash.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Model/Problem.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Model/ProblemTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/models/Problem.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Model/Session.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Model/SessionTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/models/Session.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Model/SessionPayment.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Model/SessionPaymentTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/models/SessionPayment.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Model/Wallet.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Model/WalletTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/models/Wallet.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Api/DefaultApi.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Api/DefaultApiTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/apis/DefaultApi.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/.gitignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/Org.OpenAPITools.sln
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/appveyor.yml
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/scripts/git_push.sh
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/docs/scripts/git_push.ps1
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Org.OpenAPITools.csproj
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/TokenProvider`1.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/RateLimitProvider`1.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/TokenContainer`1.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/TokenBase.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/ApiException.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/ApiResponse`1.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/ClientUtils.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/HostConfiguration.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/ApiFactory.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/DateTimeJsonConverter.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/DateTimeNullableJsonConverter.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/DateOnlyJsonConverter.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/DateOnlyNullableJsonConverter.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/ApiResponseEventArgs.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/ExceptionEventArgs.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/JsonSerializerOptionsProvider.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/CookieContainer.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/Option.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Client/FileParameter.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Api/IApi.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Logging/RestLogEvents.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Extensions/IHttpClientBuilderExtensions.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Extensions/IHostBuilderExtensions.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Extensions/IHostApplicationBuilderExtensions.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools/Extensions/IServiceCollectionExtensions.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Org.OpenAPITools.Test.csproj
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Api/DependencyInjectionTests.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/src/Org.OpenAPITools.Test/Api/ApiTestsBase.cs
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/api/openapi.yaml
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/.openapi-generator-ignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/.openapi-generator/VERSION
+[main] INFO  o.o.codegen.TemplateManager - writing file /home/kiko/saas-products/kodeebo/docs/research/evidence/desktop-client-technology/part5-gen-out2/csharp/.openapi-generator/FILES
+################################################################################
+# Thanks for using OpenAPI Generator.                                          #
+# Please consider donating to help us maintain this project 🙏                 #
+# https://opencollective.com/openapi_generator/donate                          #
+#                                                                              #
+# This generator's contributed by Jim Schubert (https://github.com/jimschubert)#
+# Please support his work directly via https://patreon.com/jimschubert 🙏      #
+################################################################################

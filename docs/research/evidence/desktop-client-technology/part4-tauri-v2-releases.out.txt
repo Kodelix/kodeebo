@@ -1,0 +1,16 @@
+pattern tauri-v2\. count 28
+('2026-10-14T18:52:14Z', 'tauri-v2.12.4', False)
+('2026-10-10T17:47:59Z', 'tauri-v2.12.3', False)
+('2026-10-09T02:28:30Z', 'tauri-v2.12.2', False)
+('2026-09-30T20:47:47Z', 'tauri-v2.12.1', False)
+pattern ^updater-v2\. count 5
+('2026-10-14T19:17:48Z', 'updater-v2.14.0', False)
+('2026-10-10T16:56:43Z', 'updater-v2.13.3', False)
+('2026-10-07T20:46:35Z', 'updater-v2.13.2', False)
+('2026-09-29T20:07:12Z', 'updater-v2.13.1', False)
+pattern ^updater-v count 8
+('2026-10-14T21:52:00Z', 'updater-v3.0.0-alpha.3', False)
+('2026-10-14T19:17:48Z', 'updater-v2.14.0', False)
+('2026-10-10T16:56:43Z', 'updater-v2.13.3', False)
+('2026-10-07T20:46:35Z', 'updater-v2.13.2', False)
+run at 2026-10-16T01:58Z

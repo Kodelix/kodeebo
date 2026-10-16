@@ -1,0 +1,10 @@
+Exception in thread "main" org.openapitools.codegen.SpecValidationException: There were issues with the specification. The option can be disabled via validateSpec (Maven/Gradle) or --skip-validate-spec (CLI).
+ | Error count: 1, Warning count: 0
+Errors: 
+	-attribute info.not the Kodeebo contract) is unexpected
+
+	at org.openapitools.codegen.config.CodegenConfigurator.toContext(CodegenConfigurator.java:741)
+	at org.openapitools.codegen.config.CodegenConfigurator.toClientOptInput(CodegenConfigurator.java:768)
+	at org.openapitools.codegen.cmd.Generate.execute(Generate.java:618)
+	at org.openapitools.codegen.cmd.OpenApiGeneratorCommand.run(OpenApiGeneratorCommand.java:32)
+	at org.openapitools.codegen.OpenAPIGenerator.main(OpenAPIGenerator.java:66)
