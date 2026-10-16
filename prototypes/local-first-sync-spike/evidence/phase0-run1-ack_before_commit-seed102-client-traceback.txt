@@ -1,0 +1,12 @@
+    ~~~~~~^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/client.py", line 134, in replay
+    resp = post(rows_to_cmds(rows))
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/client.py", line 94, in post
+    return json.loads(r.read())
+                      ~~~~~~^^
+  File "/usr/lib/python3.14/http/client.py", line 488, in read
+    return self._read_chunked(amt)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/lib/python3.14/http/client.py", line 633, in _read_chunked
+    raise IncompleteRead(b''.join(value)) from exc
+http.client.IncompleteRead: IncompleteRead(82 bytes read)

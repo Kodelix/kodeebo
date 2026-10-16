@@ -1,0 +1,69 @@
+{
+ "seed": 24,
+ "mutant": "ack_before_commit",
+ "fault": [
+  "server:after_response_before_commit",
+  1
+ ],
+ "fired": [
+  "server died rc=-9"
+ ],
+ "actions": 8,
+ "acked": 8,
+ "server_sales": 0,
+ "violations": [
+  [
+   "I1",
+   "s24-a0 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a1 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a2 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a3 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a4 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a5 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a6 acknowledged but missing on the server"
+  ],
+  [
+   "I1",
+   "s24-a7 acknowledged but missing on the server"
+  ],
+  [
+   "I7",
+   "outbox did not drain after faults stopped"
+  ]
+ ],
+ "trace": [
+  "seed=24 mutant=ack_before_commit fault=('server:after_response_before_commit', 1)",
+  "sale s24-a0 acknowledged",
+  "replay {'ok': True, 'op': 'replay', 'sent': 0}",
+  "sale s24-a1 acknowledged",
+  "sale s24-a2 acknowledged",
+  "sale s24-a3 acknowledged",
+  "replay {'ok': True, 'op': 'replay', 'sent': 0}",
+  "sale s24-a4 acknowledged",
+  "sync {'ok': True, 'op': 'sync', 'results': [{'command_id': 'cmd-s24-a0', 'seq': 1, 'result': 'applied'}, {'command_id': 'cmd-s24-a1', 'seq': 2, 'result': 'applied'}, {'command_id': 'cmd-s24-a2', 'seq': 3, 'result': 'applied'}, {'command_id': 'cmd-s24-a3', 'seq': 4, 'result': 'applied'}, {'command_id': 'cmd-s24-a4', 'seq': 5, 'result': 'applied'}], 'pending': 0}",
+  "  server died, restarting without fault",
+  "sale s24-a5 acknowledged",
+  "replay {'ok': True, 'op': 'replay', 'sent': 1, 'results': [{'command_id': 'cmd-s24-a4', 'seq': 5, 'result': 'gap'}]}",
+  "sale s24-a6 acknowledged",
+  "sale s24-a7 acknowledged",
+  "replay {'ok': True, 'op': 'replay', 'sent': 2, 'results': [{'command_id': 'cmd-s24-a3', 'seq': 4, 'result': 'gap'}]}"
+ ]
+}

@@ -1,0 +1,4 @@
+# PROTOTYPE - NOT FOR PRODUCTION
+# Run output and the built server binary are not committed.
+runs/
+sut/server/server

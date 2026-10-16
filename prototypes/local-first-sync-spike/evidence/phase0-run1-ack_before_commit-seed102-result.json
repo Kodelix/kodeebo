@@ -1,0 +1,32 @@
+{
+ "seed": 102,
+ "mutant": "ack_before_commit",
+ "fault": [
+  "server:after_response_before_commit",
+  2
+ ],
+ "fired": [
+  "server died rc=-9",
+  "client died rc=1"
+ ],
+ "actions": 8,
+ "acked": 8,
+ "server_sales": 8,
+ "violations": [],
+ "trace": [
+  "seed=102 mutant=ack_before_commit fault=('server:after_response_before_commit', 2)",
+  "sale s102-a0 acknowledged",
+  "sync {'ok': True, 'op': 'sync', 'results': [{'command_id': 'cmd-s102-a0', 'seq': 1, 'result': 'applied'}], 'pending': 0}",
+  "sale s102-a1 acknowledged",
+  "sale s102-a2 acknowledged",
+  "replay None",
+  "  server died, restarting without fault",
+  "  client died, restarting without fault",
+  "sale s102-a3 acknowledged",
+  "sale s102-a4 acknowledged",
+  "sale s102-a5 acknowledged",
+  "sale s102-a6 acknowledged",
+  "sync {'ok': True, 'op': 'sync', 'results': [{'command_id': 'cmd-s102-a1', 'seq': 2, 'result': 'applied'}, {'command_id': 'cmd-s102-a2', 'seq': 3, 'result': 'applied'}, {'command_id': 'cmd-s102-a3', 'seq': 4, 'result': 'applied'}, {'command_id': 'cmd-s102-a4', 'seq': 5, 'result': 'applied'}, {'command_id': 'cmd-s102-a5', 'seq': 6, 'result': 'applied'}, {'command_id': 'cmd-s102-a6', 'seq': 7, 'result': 'applied'}], 'pending': 0}",
+  "sale s102-a7 acknowledged"
+ ]
+}

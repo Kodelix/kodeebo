@@ -1,0 +1,69 @@
+{
+ "harness_commit": "11ace09+dirty",
+ "started": "2026-10-16 07:08:30",
+ "correct": {
+  "runs": 300,
+  "violating_runs": 0,
+  "seconds": 105.3
+ },
+ "mutants": {
+  "separate_outbox_txn": {
+   "caught": true,
+   "runs_to_catch": 7,
+   "budget": 200,
+   "first_violation": [
+    "I1",
+    "s7-a1 recorded on the device but missing on the server"
+   ],
+   "fault": [
+    "client:after_business_commit",
+    2
+   ],
+   "seconds": 2.4
+  },
+  "no_dedupe": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "budget": 200,
+   "first_violation": [
+    "I2",
+    "s2-a3 has 2 sale rows"
+   ],
+   "fault": [
+    "client:before_local_commit",
+    1
+   ],
+   "seconds": 0.7
+  },
+  "ack_before_commit": {
+   "caught": true,
+   "runs_to_catch": 24,
+   "budget": 200,
+   "first_violation": [
+    "I1",
+    "s24-a0 acknowledged but missing on the server"
+   ],
+   "fault": [
+    "server:after_response_before_commit",
+    1
+   ],
+   "seconds": 8.7
+  },
+  "double_minute": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "budget": 200,
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 23200 != expected 23050"
+   ],
+   "fault": [
+    "client:mid_local_txn",
+    2
+   ],
+   "seconds": 0.3
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 117.5
+}

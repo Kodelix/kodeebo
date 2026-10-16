@@ -1,0 +1,12 @@
+phase 0 run 2, correct stub, 300 runs: fault point chosen / fired (SIGKILL observed)
+client:after_business_commit               chosen  23  fired   0
+client:after_local_commit                  chosen  37  fired  37
+client:after_mark                          chosen  27  fired  24
+client:after_response_before_mark          chosen  19  fired  18
+client:before_local_commit                 chosen  25  fired  25
+client:before_send                         chosen  18  fired  18
+client:mid_local_txn                       chosen  27  fired  27
+none                                       chosen  36  fired   0
+server:after_commit_before_response        chosen  35  fired  35
+server:after_response_before_commit        chosen  21  fired   0
+server:before_commit                       chosen  32  fired  32
