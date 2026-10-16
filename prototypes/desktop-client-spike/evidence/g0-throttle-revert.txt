@@ -1,0 +1,94 @@
+# G0 disk throttle + snapshot revert — 2026-10-16
+Host: Linux, NVMe, libvirt 12.8.0 / QEMU; VM kodeebo-win10 4 GB / 2 vCPU, SATA (AHCI) disk, qcow2 overlay chain clean -> clean-ssh; Defender on; DiskSpd 2.3.0 (Authenticode: Valid, CN=Microsoft Windows); 1 GiB file, 30 s, 5 s warm-up, -Sh (caching off), single thread.
+Throttle: virsh blkdeviotune sda --live --total-iops-sec 100 --total-bytes-sec 83886080 (80 MiB/s). --config values stayed 0 (VM definition unchanged). Target class = 5400 rpm HDD: ASSUMPTION of the plan, not a sourced figure.
+Columns: bytes | I/Os | MiB/s | I/O per s | AvgLat ms | LatStdDev ms
+
+## Unthrottled
+diskspd.exe signature: Valid; signer: CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US
+diskspd version: 2.3.0
+=== [unthrottled] random 4K 70/30 read/write, QD4: diskspd -c1G -d30 -W5 -r -b4K -o4 -t1 -w30 -Sh -L C:\g0\t.dat
+Total IO
+total:        4038955008 |       986073 |     128.39 |   32869.07 |    0.065 |     0.389
+Read IO
+total:        2829234176 |       690731 |      89.94 |   23024.34 |    0.063 |     0.397
+Write IO
+total:        1209720832 |       295342 |      38.46 |    9844.72 |    0.071 |     0.371
+   99th |      0.151 |      0.172 |      0.158
+    max |     87.841 |     84.946 |     87.841
+=== [unthrottled] sequential 1M read, QD2: diskspd -c1G -d30 -W5 -b1M -o2 -t1 -w0 -Sh -L C:\g0\t.dat
+Total IO
+total:      144093216768 |       137418 |    4580.60 |    4580.60 |    0.232 |     2.354
+Read IO
+total:      144093216768 |       137418 |    4580.60 |    4580.60 |    0.232 |     2.354
+Write IO
+total:                 0 |            0 |       0.00 |       0.00 |    0.000 |       N/A
+   99th |      0.516 |        N/A |      0.516
+    max |    613.748 |        N/A |    613.748
+=== [unthrottled] sequential 1M write, QD2: diskspd -c1G -d30 -W5 -b1M -o2 -t1 -w100 -Sh -L C:\g0\t.dat
+Total IO
+total:       82168512512 |        78362 |    2612.06 |    2612.06 |    0.656 |     2.508
+Read IO
+total:                 0 |            0 |       0.00 |       0.00 |    0.000 |       N/A
+Write IO
+total:       82168512512 |        78362 |    2612.06 |    2612.06 |    0.656 |     2.508
+   99th |        N/A |      2.391 |      2.391
+    max |        N/A |    437.026 |    437.026
+
+## Throttled (100 IOPS, 80 MiB/s)
+diskspd.exe signature: Valid; signer: CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US
+diskspd version: 2.3.0
+=== [throttled] random 4K 70/30 read/write, QD4: diskspd -c1G -d30 -W5 -r -b4K -o4 -t1 -w30 -Sh -L C:\g0\t.dat
+Total IO
+total:          11927552 |         2912 |       0.38 |      97.07 |   41.214 |    14.775
+Read IO
+total:           8400896 |         2051 |       0.27 |      68.37 |   48.447 |     8.265
+Write IO
+total:           3526656 |          861 |       0.11 |      28.70 |   23.983 |    12.411
+   99th |     69.849 |     59.977 |     69.604
+    max |     89.747 |     70.218 |     89.747
+=== [throttled] sequential 1M read, QD2: diskspd -c1G -d30 -W5 -b1M -o2 -t1 -w0 -Sh -L C:\g0\t.dat
+Total IO
+total:         370147328 |          353 |      11.76 |      11.76 |  170.131 |    15.793
+Read IO
+total:         370147328 |          353 |      11.76 |      11.76 |  170.131 |    15.793
+Write IO
+total:                 0 |            0 |       0.00 |       0.00 |    0.000 |       N/A
+   99th |    240.222 |        N/A |    240.222
+    max |    259.852 |        N/A |    259.852
+=== [throttled] sequential 1M write, QD2: diskspd -c1G -d30 -W5 -b1M -o2 -t1 -w100 -Sh -L C:\g0\t.dat
+Total IO
+total:         373293056 |          356 |      11.87 |      11.87 |  168.445 |    23.284
+Read IO
+total:                 0 |            0 |       0.00 |       0.00 |    0.000 |       N/A
+Write IO
+total:         373293056 |          356 |      11.87 |      11.87 |  168.445 |    23.284
+   99th |        N/A |    260.436 |    260.436
+    max |        N/A |    290.823 |    290.823
+
+## Block-size check, throttled, sequential read QD2, 15 s (first total: row = Total IO)
+128K:
+total:         189136896 |         1443 |      12.02 |      96.20
+64K:
+total:          92667904 |         1414 |       5.89 |      94.17
+
+## Result vs plan (±20%)
+random 4K: 97.07 IOPS vs 100 -> PASS
+sequential 1M: 11.76 MiB/s read, 11.87 MiB/s write vs 80 MiB/s -> FAIL
+Finding G0-F2: QEMU's IOPS cap counts every request whatever its size, and the guest sends large I/O as about 128 KiB requests (1 MiB and 128 KiB blocks both give ~96 I/O per s, ~12 MiB/s; 64 KiB gives ~94 I/O per s, 5.9 MiB/s). An IOPS + bandwidth throttle therefore cannot make random I/O HDD-slow and sequential I/O HDD-fast at once: with 100 IOPS, sequential is ~12 MiB/s (slower than a real HDD); to reach 80 MiB/s sequentially, random 4K would rise to ~640 IOPS (faster than a real HDD). The 128 KiB request size is inferred from the matching numbers, not read from a driver setting.
+
+## Snapshot revert (libvirt 12.8.0, external snapshot)
+1. Boot from clean-ssh; write C:\g0-revert-marker.txt (admin) and C:\g0\ (DiskSpd files).
+2. Shut down; virsh snapshot-revert kodeebo-win10 clean-ssh -> 'Domain snapshot clean-ssh reverted', exit 0. libvirt discarded the 1.3 GB top overlay (kodeebo-win10.clean-ssh) and created a fresh 193 KB overlay kodeebo-win10.1792177439 on the clean-ssh state.
+3. Boot: marker absent; C:\g0 absent; blkdeviotune total_iops_sec 0 (--config and --live) -> revert PASS; throttle must be re-applied after every boot.
+Not covered by the disk snapshot: the emulated TPM state and the UEFI NVRAM (the snapshot XML lists only disks). Nothing in round 1 depends on them (no BitLocker, no TPM keys); noted for S11/S14.
+
+## Founder decisions (2026-10-16)
+- Throttle: keep 100 IOPS + 80 MiB/s. Random I/O is HDD-like; sequential I/O (~12 MiB/s) is slower than a real HDD, so start-up, install and other sequential-heavy numbers are an UPPER BOUND (pessimistic). The sequential ±20% check is reported, not gated.
+- Baseline: new snapshot clean-ssh2 (child of clean-ssh) holds the G0-F1 and G0-F3 fixes; clean and clean-ssh are kept unchanged. Runs restore clean-ssh2.
+
+## Re-check on clean-ssh2 (revert -> boot)
+admin SSH up ~10 s after start; cashier auto-logged on (console session 1, Active)
+cashier key logins: 30 of 30; password and keyboard-interactive refused for cashier and admin (Permission denied (publickey))
+C:\g0 absent; C:\ProgramData\ssh holds only administrators_authorized_keys; blkdeviotune total_iops_sec 0 after boot
+
+## G0 verdict: PASS (guest channel, revert, random-I/O throttle within ±20%); sequential throttle reported only, by founder decision.

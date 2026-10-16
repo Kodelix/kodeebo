@@ -1,0 +1,10 @@
+# Dedicated spike SSH key pair and known-hosts: never committed
+.keys/
+# Downloaded installers and toolchains (provenance is in evidence/downloads.txt)
+.cache/
+# Disposable build trees, ISO staging and raw run output
+build/
+staging/
+runs/
+*.iso
+*.qcow2

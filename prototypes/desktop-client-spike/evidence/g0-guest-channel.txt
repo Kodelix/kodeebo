@@ -1,0 +1,36 @@
+# G0 guest channel + VM baseline — 2026-10-16 (host: Linux, libvirt 12.8.0, VM kodeebo-win10, IP 192.168.122.208)
+
+## Host key verification
+received SHA256: SHA256:l9oI0sl+8Da1PEJd0OUIFQtj+c9W72ivAC9i/Jh2I4k
+received MD5:    MD5:41:63:4e:5e:d4:f2:94:61:b3:14:16:04:d6:3e:ba:f2
+VM screen MD5 (founder): MD5:41:63:4e:5e:d4:f2:94:61:b3:14:16:04:d6:3e:ba:f2 -> all 16 bytes match; SHA256 7th char is lowercase l (founder's '1' was a transcription error)
+
+## Logins (dedicated key, pinned host key)
+admin: desktop-r3brud6\kodeebo-win10 — High Mandatory Level (S-1-16-12288), member of Administrators
+cashier: desktop-r3brud6\cashier — Medium Mandatory Level (S-1-16-8192); auto-logged on at console (session 1, Active)
+
+## Password / keyboard-interactive refused (after fix)
+cashier@192.168.122.208: Permission denied (publickey).
+kodeebo-win10@192.168.122.208: Permission denied (publickey).
+Finding G0-F1: OpenSSH_7.7p1 (Windows 10 capability) ignored 'KbdInteractiveAuthentication no'; sshd -T showed kbdinteractive/challengeresponse = yes and the server advertised keyboard-interactive. Fixed with 'ChallengeResponseAuthentication no' (guest/fix-sshd-kbdint.ps1; setup-ssh.ps1 updated).
+
+## Baseline (guest/baseline.ps1, run before the clean-ssh snapshot)
+OS: Windows 10 Pro 22H2 build 19045.2965 (Professional)
+Hotfixes: KB5014032 2023-05-05; KB5025315 2023-05-05; KB5026361 2023-05-05; KB5022502 2023-05-05; KB5015684 2023-05-05
+WebView2 runtime (machine): 155.0.4283.45
+Edge: 155.0.4283.45
+Defender real-time protection: True; AV signatures 1.461.56.0
+wuauserv: Stopped; reboot required by Windows Update: False
+RAM: 4,028 MB; logical CPUs: 2
+C: used 25.1 GB, free 38.3 GB
+TPM present: True
+UAC EnableLUA=1; ConsentPromptBehaviorAdmin=5; ConsentPromptBehaviorUser=3
+sshd version: OpenSSH_7.7p1 for Windows
+sshd effective auth settings:
+
+## Cashier login intermittently refused (found during G0, fixed in the running layer)
+Symptom: about 40% of key logins as "cashier" ended "Permission denied (publickey)" (2 of 5 throttled, 2 of 3 unthrottled, 3 of 3 just after boot); admin logins never failed.
+sshd log: every successful cashier login logs "Accepted key ... found at C:/ProgramData/ssh/cashier_authorized_keys:1"; every failed one logs only "Failed publickey" with no key-file line, so on those connections OpenSSH 7.7 for Windows did not apply "Match User cashier -> AuthorizedKeysFile". Key file content, owner and ACL were correct throughout.
+Finding G0-F3: a Match User key-file rule is unreliable for a standard user on this sshd build. Fix (guest/fix-cashier-key.ps1): cashier's key moved to C:\Users\cashier\.ssh\authorized_keys (owner cashier; cashier, SYSTEM, Administrators full), Match block removed; setup-ssh.ps1 updated to the same design.
+After the fix: cashier 30 of 30 logins, admin 10 of 10; password and keyboard-interactive still refused for both (Permission denied (publickey)).
+The snapshot clean-ssh still holds the OLD (Match) design; the fix exists only in the running layer.
