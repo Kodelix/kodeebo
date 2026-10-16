@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) dev run PASS on uncommitted harness; SC-20 onward next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -369,6 +369,10 @@ The spike is not concluded; the verdict comes after the last phase. Phase result
 - **Cells:** all 8 PASS, 50 seeds each, 0 violations. Every cell pruned bills, and `a_inside` backed up mid-batch in 50 of 50 runs.
 - **`b_expired`:** the exact lost range was recorded with an owner alert in 50 of 50 runs; it is the only cell where the rule allows a loss.
 - **Mutants:** all four caught. `prune_unconfirmed` after 8 runs (the first `e_unverified` run), the others after 1.
+
+#### Run 2 (committed harness `a65d6f8`) — SC-19 **PASS**
+
+`evidence/phase3-sc19-run2.log` and `-summary.json` (log header `commit a65d6f8`, no `+dirty`), 940 s. Identical to run 1, cell by cell: 8 × 50 runs with 0 violations, `a_inside` mid-batch in 50 of 50 runs, `b_expired` exact lost range in 50 of 50, and the four mutants caught after the same number of runs (8, 1, 1, 1). Run 1 ran on uncommitted code and is kept as history.
 
 **Finding P3-F1 — what "archive confirmed" means decides whether a restore can lose money.** An earlier placeholder rule pruned on archive confirmation alone, with no age limit. Under it, restoring the older backup lost 3 of 11 sales in every `b_older` run: reported exactly, but lost. Under the founder's OQ29 rule (verified-restore watermark **and** 60 days, with a server backup window shorter than 60 days), a restore from any backup inside the window recovers everything. A loss needs a backup older than 60 days (`b_expired`). Two conditions carry this result:
 - **The server backup window must stay shorter than the device window.** If backups older than 60 days are ever restored, the loss in `b_expired` is real.

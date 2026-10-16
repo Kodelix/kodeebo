@@ -1,0 +1,180 @@
+{
+ "harness_commit": "a65d6f8",
+ "started": "2026-10-16 20:34:59",
+ "seeds_per_cell": 50,
+ "retention": {
+  "RETENTION": "1",
+  "RETAIN_DAYS": "60"
+ },
+ "cells": [
+  {
+   "cell": "a_before",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 200,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 96.4,
+   "result": "PASS"
+  },
+  {
+   "cell": "a_inside",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": 50,
+   "bills_pruned": 200,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 285.3,
+   "result": "PASS"
+  },
+  {
+   "cell": "a_after",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 250,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 79.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_older",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 250,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 83.7,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_expired",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "lost_range": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 250,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 103.6,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_offline",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 250,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 107.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_config",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 250,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 85.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "e_unverified",
+   "runs": 50,
+   "reconcile_outcomes": {
+    "in_sync": 50,
+    "resend": 50
+   },
+   "backup_inside_batch": null,
+   "bills_pruned": 100,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 77.9,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "prune_unconfirmed": {
+   "caught": true,
+   "runs_to_catch": 8,
+   "seed_cell": [
+    1,
+    "e_unverified"
+   ],
+   "first_violation": [
+    "R2",
+    "seq 4 lost although no verified backup holds it (watermark 3)"
+   ],
+   "seconds": 16.1
+  },
+  "no_reconcile": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_before"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-a10 acknowledged but missing on the server"
+   ],
+   "seconds": 1.7
+  },
+  "rebuild_new_ids": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_before"
+   ],
+   "first_violation": [
+    "R4",
+    "seq 6 came back as cmd-r-s1-a5 / 3aa8d7c9, was cmd-s1-a5 / 3aa8d7c9"
+   ],
+   "seconds": 1.5
+  },
+  "config_version_only": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_before"
+   ],
+   "first_violation": [
+    "R5",
+    "device config ('e0', 4, 9076) != server ('r1-a_before', 2, 9098)"
+   ],
+   "seconds": 1.5
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 940.2
+}
