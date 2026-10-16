@@ -1,0 +1,122 @@
+{
+ "harness_commit": "128cdea",
+ "started": "2026-10-16 22:50:44",
+ "seeds_per_cell": 50,
+ "cells": [
+  {
+   "cell": "none",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 23.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "before_copy",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 26.7,
+   "result": "PASS"
+  },
+  {
+   "cell": "after_copy",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 27.0,
+   "result": "PASS"
+  },
+  {
+   "cell": "mid_ddl",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 26.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "after_commit",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 27.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "before_marker",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 26.6,
+   "result": "PASS"
+  },
+  {
+   "cell": "before_cleanup",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 27.0,
+   "result": "PASS"
+  },
+  {
+   "cell": "downgrade",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 28.1,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "nonatomic_migration": {
+   "caught": true,
+   "runs_to_catch": 4,
+   "seed_cell": [
+    1,
+    "mid_ddl"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-a5 acknowledged but missing on the server"
+   ],
+   "seconds": 2.1
+  },
+  "no_premigrate_copy": {
+   "caught": true,
+   "runs_to_catch": 5,
+   "seed_cell": [
+    1,
+    "after_commit"
+   ],
+   "first_violation": [
+    "R12",
+    "no valid pre-migration copy after a kill at after_commit: None"
+   ],
+   "seconds": 2.8
+  },
+  "reserialize_on_upgrade": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "none"
+   ],
+   "first_violation": [
+    "I8",
+    "server flag payload_mismatch for cmd-s1-a3 seq 4"
+   ],
+   "seconds": 0.5
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 218.0
+}

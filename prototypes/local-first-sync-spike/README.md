@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) dev run PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -534,6 +534,14 @@ The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `
   - `nonatomic_migration` after 4 runs: a half-migrated store that the next start could not finish, so acknowledged sales never synced (I1, I7, R11).
   - `no_premigrate_copy` after 5 runs (R12).
   - `reserialize_on_upgrade` after 1 run: the server flagged `payload_mismatch` for the lost-ack commands (I8, R13).
+
+#### Run 2 (committed harness `128cdea`) — SC-21a **PASS**, full regression PASS
+
+`evidence/phase3-sc21a-run2-*` (every log header `commit 128cdea`, no `+dirty`).
+- **SC-21a:** identical to run 1, line by line (218 s).
+- **SC-20 and SC-19:** identical to their run 2.
+- **SC-20 real tmpfs leg:** 50 of 50 runs exercised, 0 violations.
+- **Earlier phases:** phase 0 PASS, phase 1 kill matrix PASS, phase 2 at 10 seeds per cell and 300 runs PASS, tamper 36 of 36.
 
 **Finding P3-F4 — an update must never change the bytes of a stored command.** If the new version rewrites stored payloads, even only their JSON layout, a command the server applied before the update (its ack lost) no longer dedupes: the server sees the same command id with a different hash. Under OQ6 that is recorded and flagged for review, never applied twice, but every such sale lands in the owner's review queue. **Rule:** stored command payloads are immutable; the wire format may change only for new commands, behind the envelope version.
 
