@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 dev run PASS (10 seeds per cell, 300 campaign runs, uncommitted harness), full run (50 seeds per cell, 3,000 campaign runs) next on the committed harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -287,6 +287,16 @@ The spike is not concluded; the verdict comes after the last phase. Phase result
 
 **Finding P2-F2 (harness, not protocol).** The first dev attempt never caught `separate_outbox_txn`. Its only catching point is P3 (`client:after_business_commit`), which exists only in that mutant and was missing from the phase 2 kill list. P3 is now in the list; on the correct client it never fires. Separately, `ack_before_commit` needed 147 runs, close to the 200-run budget, so phase 2 uses a budget of 400. Seeds are deterministic, so the budget changes no outcome.
 
-**Conditions:** same NVMe dev host as phases 0–1, single tenant and device, 8 actions per run, loopback network only. About 0.5 s per campaign run, indicative only.
+#### Run 2 (full size, committed harness `be3f49e`) — gate **PASS**
+
+`evidence/phase2-run2.log` and `-summary.json` (log header `commit be3f49e`, no `+dirty`), 2,513 s in total.
+- **Cells:** all 13 PASS, 50 seeds each (650 runs), 0 violations, and every toxic was shown to bite. Response-loss cells and `reset_peer`: 400 committed-but-unacknowledged commands per cell, and every resend came back `duplicate` (400 of 400). `concurrent`: both replies parsed 400 times, and the second was `duplicate` every time. Request-side cells and `down`: 400 failed syncs per cell, and the server had no effect from any of them. `slow` and `slicer`: 0 failed syncs.
+- **Campaign:** 3,000 runs with 0 violations. 1,098 runs had a process kill fire; 12,502 ops crossed a toxic and 9,564 of those failed; the server answered `duplicate` 11,810 times, and 1,527 concurrent double sends had both replies parse.
+- **Mutants** (budget 400): all four caught, in the same number of runs as run 1. `separate_outbox_txn` after 5, `no_dedupe` after 1, `ack_before_commit` after 147, `double_minute` after 1.
+- **TS-09:** PASS in both modes. Recorded `from` and `to` were within 0.3–1.6 ms of the driver's observations; `owner_alert` was true only with business hours on; 16 of 16 sales reached the server.
+
+**Gate:** 0 violations across every cell and ≥ 3,000 randomized runs, every mutant caught, TS-09 pass signals met. **Phase 2 gate: PASS (run 2).** Run 1 ran on uncommitted code and is kept as history.
+
+**Conditions:** same NVMe dev host as phases 0–1, single tenant and device, 8 actions per run, loopback network only. About 0.56 s per campaign run, indicative only.
 
 **Not covered by phase 2:** a real lossy link (Toxiproxy acts at the TCP stream level, not on packet loss or reordering); a server crash during PostgreSQL's own commit (the server failpoints sit before and after `COMMIT`); several devices; reordering and partial batches (phase 3).

@@ -1,0 +1,34 @@
+phase 2, commit be3f49e, 50 seeds per cell, campaign 3000
+  down            faulted  477 failed  400 dup    0 both   0  violating 0  PASS
+  req_blackhole   faulted  477 failed  400 dup    0 both   0  violating 0  PASS
+  req_cut_10      faulted  477 failed  400 dup    0 both   0  violating 0  PASS
+  req_cut_120     faulted  477 failed  400 dup    0 both   0  violating 0  PASS
+  req_cut_400     faulted  477 failed  400 dup    0 both   0  violating 0  PASS
+  reset_peer      faulted  477 failed  400 dup  400 both   0  violating 0  PASS
+  resp_blackhole  faulted  477 failed  400 dup  400 both   0  violating 0  PASS
+  resp_cut_1      faulted  477 failed  400 dup  400 both   0  violating 0  PASS
+  resp_cut_150    faulted  477 failed  400 dup  400 both   0  violating 0  PASS
+  resp_cut_20     faulted  477 failed  400 dup  400 both   0  violating 0  PASS
+  slicer          faulted  477 failed    0 dup    0 both   0  violating 0  PASS
+  slow            faulted  477 failed    0 dup    0 both   0  violating 0  PASS
+  concurrent      faulted  477 failed    0 dup  400 both 400  violating 0  PASS
+  campaign 250/3000  violating 0  (140 s)
+  campaign 500/3000  violating 0  (283 s)
+  campaign 750/3000  violating 0  (427 s)
+  campaign 1000/3000  violating 0  (566 s)
+  campaign 1250/3000  violating 0  (699 s)
+  campaign 1500/3000  violating 0  (835 s)
+  campaign 1750/3000  violating 0  (969 s)
+  campaign 2000/3000  violating 0  (1111 s)
+  campaign 2250/3000  violating 0  (1257 s)
+  campaign 2500/3000  violating 0  (1396 s)
+  campaign 2750/3000  violating 0  (1535 s)
+  campaign 3000/3000  violating 0  (1686 s)
+  campaign: 3000 runs, 1098 with a process kill, violating 0  PASS
+  mutant separate_outbox_txn    CAUGHT after 5 runs: ('I1', 's5-a2 recorded on the device but missing on the server')
+  mutant no_dedupe              CAUGHT after 1 runs: ('I2', 's1-a0 has 2 sale rows')
+  mutant ack_before_commit      CAUGHT after 147 runs: ('I1', 's147-a6 acknowledged but missing on the server')
+  mutant double_minute          CAUGHT after 1 runs: ('I3', 's1-a0 sale 21550 != expected 21400')
+  TS-09 business_hours=1: 2 periods, sales 16/16 on server, PASS []
+  TS-09 business_hours=0: 2 periods, sales 16/16 on server, PASS []
+GATE: PASS  (total 2512.9 s)

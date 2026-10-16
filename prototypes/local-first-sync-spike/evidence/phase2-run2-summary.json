@@ -1,0 +1,314 @@
+{
+ "harness_commit": "be3f49e",
+ "started": "2026-10-16 17:05:52",
+ "toxiproxy": "v2.13.0",
+ "store": "sqlite3mc chacha20, journal delete + marker (OQ28 A+B)",
+ "seeds_per_cell": 50,
+ "cells": [
+  {
+   "cell": "down",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 16.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "req_blackhole",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 139.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "req_cut_10",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "req_cut_120",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 18.7,
+   "result": "PASS"
+  },
+  {
+   "cell": "req_cut_400",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 19.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "reset_peer",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 400,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 23.6,
+   "result": "PASS"
+  },
+  {
+   "cell": "resp_blackhole",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 400,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "resp_cut_1",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 400,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 19.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "resp_cut_150",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 400,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 22.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "resp_cut_20",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 400,
+   "duplicates_seen": 400,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 21.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "slicer",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 0,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 48.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "slow",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 0,
+   "duplicates_seen": 0,
+   "concurrent_both_parsed": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 163.4,
+   "result": "PASS"
+  },
+  {
+   "cell": "concurrent",
+   "runs": 50,
+   "faulted_ops": 477,
+   "failed_ops": 0,
+   "duplicates_seen": 400,
+   "concurrent_both_parsed": 400,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 188.6,
+   "result": "PASS"
+  }
+ ],
+ "campaign": {
+  "runs": 3000,
+  "process_kills_fired": 1098,
+  "faulted_ops": 12502,
+  "failed_ops": 9564,
+  "duplicates_seen": 11810,
+  "concurrent_both_parsed": 1527,
+  "violating_runs": 0,
+  "first_bad": [],
+  "seconds": 1686.0,
+  "result": "PASS"
+ },
+ "mutants": {
+  "separate_outbox_txn": {
+   "caught": true,
+   "runs_to_catch": 5,
+   "budget": 400,
+   "first_violation": [
+    "I1",
+    "s5-a2 recorded on the device but missing on the server"
+   ],
+   "fault": [
+    "client:after_business_commit",
+    3
+   ],
+   "seconds": 1.7
+  },
+  "no_dedupe": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "budget": 400,
+   "first_violation": [
+    "I2",
+    "s1-a0 has 2 sale rows"
+   ],
+   "fault": [
+    "client:mid_local_txn",
+    2
+   ],
+   "seconds": 0.3
+  },
+  "ack_before_commit": {
+   "caught": true,
+   "runs_to_catch": 147,
+   "budget": 400,
+   "first_violation": [
+    "I1",
+    "s147-a6 acknowledged but missing on the server"
+   ],
+   "fault": [
+    "server:after_response_before_commit",
+    2
+   ],
+   "seconds": 93.7
+  },
+  "double_minute": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "budget": 400,
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 21550 != expected 21400"
+   ],
+   "fault": [
+    "client:mid_local_txn",
+    2
+   ],
+   "seconds": 0.4
+  }
+ },
+ "ts09": {
+  "gap_ms": 500,
+  "planned_gaps_s": [
+   1.2,
+   2.0
+  ],
+  "tolerance_s": 0.25,
+  "cases": [
+   {
+    "business_hours": "1",
+    "sales": 16,
+    "server_sales": 16,
+    "observed": [
+     {
+      "planned_s": 1.2,
+      "last_contact_before": 1792162052.9053237,
+      "first_contact_after": 1792162054.3614116
+     },
+     {
+      "planned_s": 2.0,
+      "last_contact_before": 1792162055.2745697,
+      "first_contact_after": 1792162057.54061
+     }
+    ],
+    "recorded": [
+     {
+      "device_id": "dev-1",
+      "from_s": 1792162052.906932,
+      "owner_alert": true,
+      "to_s": 1792162054.361754
+     },
+     {
+      "device_id": "dev-1",
+      "from_s": 1792162055.275151,
+      "owner_alert": true,
+      "to_s": 1792162057.541639
+     }
+    ],
+    "problems": [],
+    "result": "PASS"
+   },
+   {
+    "business_hours": "0",
+    "sales": 16,
+    "server_sales": 16,
+    "observed": [
+     {
+      "planned_s": 1.2,
+      "last_contact_before": 1792162059.7429278,
+      "first_contact_after": 1792162061.1664438
+     },
+     {
+      "planned_s": 2.0,
+      "last_contact_before": 1792162062.090372,
+      "first_contact_after": 1792162064.4161937
+     }
+    ],
+    "recorded": [
+     {
+      "device_id": "dev-1",
+      "from_s": 1792162059.74412,
+      "owner_alert": false,
+      "to_s": 1792162061.168016
+     },
+     {
+      "device_id": "dev-1",
+      "from_s": 1792162062.091586,
+      "owner_alert": false,
+      "to_s": 1792162064.417649
+     }
+    ],
+    "problems": [],
+    "result": "PASS"
+   }
+  ],
+  "result": "PASS"
+ },
+ "gate": "PASS",
+ "seconds_total": 2512.9
+}
