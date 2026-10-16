@@ -27,7 +27,14 @@ CIPHERS = ["chacha20", "sqlcipher"]
 KEY = os.urandom(32).hex()    # fresh random test key per run, never a real secret
 WRONG = os.urandom(32).hex()  # a different random test key
 N_SALES = 5
-STORE_FILES_SKIP = (".events.jsonl", ".stderr.txt")
+STORE_FILES_SKIP = (".events.jsonl", ".stderr.txt", ".lock")  # .lock: SC-22 instance lock, must stay empty
+LOCK_NAME = "client.db.lock"
+
+
+def lock_is_empty(d):
+    """SC-22's lock file is an OS lock handle only: it must never hold data (checked in every tamper row)."""
+    p = os.path.join(d, LOCK_NAME)
+    return not os.path.exists(p) or os.path.getsize(p) == 0
 
 
 def sha(path):
@@ -121,7 +128,7 @@ def probe_after(db, cipher, key, journal="delete"):
     copies = sorted(os.listdir(rec), key=int) if os.path.isdir(rec) else []
     preserved = bool(copies) and all(sha(os.path.join(rec, copies[-1], n)) == h for n, h in before.items())
     return {"stats": stats, "sale_reply": s, "exit_rc": rc, "events": events(db), "originals_preserved": preserved,
-            "main_db_unchanged": before.get("client.db") == sha(db),
+            "main_db_unchanged": before.get("client.db") == sha(db), "lock_empty": lock_is_empty(d),
             "traceback": "Traceback" in open(db + ".stderr.txt").read()}
 
 
@@ -133,10 +140,11 @@ def classify(r, expect_sales):
     """PASS: refused + recorded + file not written; or opened with exactly the expected consistent state."""
     st = r["stats"] or {}
     if refused(r):
-        if r["events"] and (r["main_db_unchanged"] or r["originals_preserved"]) and not r["traceback"]:
+        if r["events"] and (r["main_db_unchanged"] or r["originals_preserved"]) and not r["traceback"] and r["lock_empty"]:
             how = "file not written" if r["main_db_unchanged"] else "SQLite recovery rewrote the file; originals preserved byte-identical"
             return "PASS", f"detected, refused, recorded ({r['events'][-1]}); {how}"
-        return "FAIL", f"refused but recorded={bool(r['events'])} unchanged={r['main_db_unchanged']} traceback={r['traceback']}"
+        return "FAIL", (f"refused but recorded={bool(r['events'])} unchanged={r['main_db_unchanged']} "
+                        f"traceback={r['traceback']} lock_empty={r['lock_empty']}")
     counts = [st.get(k) for k in ("bills", "payments", "minute_actions", "outbox", "counter")]
     consistent = len(set(counts)) == 1 and st.get("integrity") == "ok"
     if consistent and counts[0] == expect_sales:
@@ -253,7 +261,10 @@ def ts05(cipher):
                  and r["exit_rc"] == 0 and not r["traceback"] for r in results)
         unchanged = sha(db) == original
         stray = sorted(n for n in os.listdir(d) if n.startswith("client.db") and
-                       n not in ("client.db", "client.db.hwm", "client.db.events.jsonl", "client.db.stderr.txt", "client.db.recovery"))
+                       n not in ("client.db", "client.db.hwm", "client.db.events.jsonl", "client.db.stderr.txt", "client.db.recovery",
+                                 LOCK_NAME))
+        if not lock_is_empty(d):
+            stray.append(LOCK_NAME + " (not empty)")
         rows.append(row(cipher, name, "PASS" if ok and unchanged and not stray else "FAIL",
                         f"all refused and recorded={ok}; file unchanged={unchanged}; extra files={stray}", attempts=times))
     r = probe_after(db, cipher, KEY)
