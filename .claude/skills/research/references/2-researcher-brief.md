@@ -17,6 +17,8 @@ Destination (create this one new file, plus tier-E evidence under
 docs/research/evidence/<slug>/ if you run anything; nothing else): {docs/research/<slug>.md,
 or the temporary section path when sub-questions run in parallel}
 Mode: {new | re-verify | extend}   Existing note to build on: {path | none}
+ID block (parallel parts only): findings {F n01-F n99}, spikes {S n0-S n9}; use no
+ID outside it; cite IDs from other parts or notes with a prefix (e.g. "desktop-note F117").
 
 Decision this informs: {one paragraph from Phase 1}
 Feature / story: {design/specs/<slug>.md | story ID | none}
@@ -39,7 +41,9 @@ Rules you must follow:
   per source.
 - A test or query you run yourself is tier E: save the script and its output
   under docs/research/evidence/<slug>/ and cite that path with the command,
-  versions and date. It never overrides tier 1-2. A test you could not run is
+  versions and date. Never delete a script or output you ran, even a failed or
+  wrong run: label it (`wrong test — see F<n>`) and keep it; a claim whose
+  evidence is gone is an unrecorded observation, not a finding. It never overrides tier 1-2. A test you could not run is
   "PENDING - <spike id>", not a finding.
 - Unsourceable is a valid finding: "NOT SOURCEABLE - <what was searched>".
   Never fill a version, flag, API name, regulation or requirement ID from memory.
@@ -83,8 +87,9 @@ could not write the file, say so - a reply without the file is a failed phase.
 | Nothing was written elsewhere | `git status` / `Glob` for stray files under `docs/` (tier-E evidence under `docs/research/evidence/<slug>/` is expected) |
 
 When sub-questions ran in parallel, merge the section files into the single
-destination note by section (Versions and Findings are concatenated with unique
-`F` numbers; Options, Decision and the rest are written once by you from the
+destination note by section (Versions and Findings are concatenated — the
+disjoint ID blocks make the `F` and `S` numbers unique; check for duplicates
+before writing; Options, Decision and the rest are written once by you from the
 sections returned), then delete the temporary files **only after** the user
 approved the merged note.
 

@@ -3,7 +3,7 @@ name: researcher
 description: "Researcher — DoD gate 1 research notes in docs/research/ from primary sources: exact versions, options considered, NOT SOURCEABLE findings; refreshes docs/stack-reference/ Last verified dates."
 tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Bash
 model: sonnet
-maxTurns: 25
+maxTurns: 40
 memory: project
 ---
 

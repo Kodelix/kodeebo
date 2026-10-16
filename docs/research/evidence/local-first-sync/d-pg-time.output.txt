@@ -1,0 +1,85 @@
+# d-pg-time 2026-10-16T02:55:18Z
+image tzdata header: # version 2026c
+pg_config tzdata: '--with-system-tzdata=/usr/share/zoneinfo'
+== version / tz data
+                                                      version                                                       
+--------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+(1 row)
+
+ TimeZone 
+----------
+ Etc/UTC
+(1 row)
+
+     name     | abbrev | utc_offset | is_dst 
+--------------+--------+------------+--------
+ Africa/Cairo | EEST   | 03:00:00   | t
+(1 row)
+
+== Egypt 2026 transitions as PostgreSQL sees them (session TimeZone Africa/Cairo)
+         utc         |      cairo_local       
+---------------------+------------------------
+ 2026-04-23 21:30:00 | 2026-04-23 23:30:00+02
+ 2026-04-23 22:00:00 | 2026-04-24 01:00:00+03
+ 2026-04-23 22:30:00 | 2026-04-24 01:30:00+03
+ 2026-10-29 20:30:00 | 2026-10-29 23:30:00+03
+ 2026-10-29 21:00:00 | 2026-10-29 23:00:00+02
+ 2026-10-29 21:30:00 | 2026-10-29 23:30:00+02
+ 2026-10-29 22:00:00 | 2026-10-30 00:00:00+02
+(7 rows)
+
+== local-time input in the nonexistent hour (spring) and the repeated hour (autumn)
+ nonexistent_0030_as_utc 
+-------------------------
+ 2026-04-23 22:30:00
+(1 row)
+
+ repeated_2330_as_utc 
+----------------------
+ 2026-10-29 21:30:00
+(1 row)
+
+ _ignore  
+----------
+ 00:20:00
+(1 row)
+
+== elapsed across the autumn change: UTC difference vs naive local-clock difference
+ true_elapsed | naive_local_diff 
+--------------+------------------
+ 01:10:00     | 00:10:00
+(1 row)
+
+== elapsed across the spring change
+ true_elapsed | naive_local_diff 
+--------------+------------------
+ 01:00:00     | 02:00:00
+(1 row)
+
+== now() is transaction start; clock_timestamp() is the moment of the call (use the latter or statement time for "server received")
+              t0               
+-------------------------------
+ 2026-10-16 05:55:23.849987+03
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+         now_after_1s          | clock_ts_advanced 
+-------------------------------+-------------------
+ 2026-10-16 05:55:23.849987+03 | t
+(1 row)
+
+== business day: a 2026-10-29 shift running past midnight, Egypt local cut-off 04:00 (config value in real life)
+ business_day |      local_ts       
+--------------+---------------------
+ 2026-10-29   | 2026-10-29 23:30:00
+ 2026-10-29   | 2026-10-30 02:30:00
+ 2026-10-29   | 2026-10-30 03:30:00
+(3 rows)
+
+== billing algorithm A in SQL over the same 5007 vectors (bigint math)
+d-billing-expected-python.txt d-billing-out-sql.txt differ: byte 3, line 1

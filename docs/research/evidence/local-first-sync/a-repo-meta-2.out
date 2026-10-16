@@ -1,0 +1,70 @@
+=== rocicorp/mono
+license=Apache-2.0 archived=false pushed_at=2026-10-15T21:49:08Z stars=3411 default=main desc=99% of Queries in Zero Milliseconds
+release v12.2.2-source published=2023-12-08T20:12:27Z prerelease=false
+release v12.2.1-source published=2023-11-29T00:16:09Z prerelease=false
+published-advisories: none
+=== rocicorp/replicache
+license=none archived=true pushed_at=2022-05-07T01:42:10Z stars=1173 default=main desc=Realtime Sync for Any Backend Stack
+release v10.0.0 published=2022-05-07T01:42:10Z prerelease=false
+release v9.0.0 published=2022-03-04T03:12:48Z prerelease=false
+release v9.0.0-beta.2 published=2022-02-25T01:03:19Z prerelease=false
+release v9.0.0-beta.1 published=2022-02-11T00:40:04Z prerelease=false
+published-advisories: none
+=== tursodatabase/libsql
+license=MIT archived=false pushed_at=2026-10-13T18:14:15Z stars=17276 default=main desc=libSQL is a fork of SQLite that is both Open Source, and Open Contributions.
+release libsql-server-v0.24.32 published=2025-02-14T12:59:35Z prerelease=false
+release libsql-server-v0.24.31 published=2025-01-06T18:38:19Z prerelease=false
+release libsql-server-v0.24.30 published=2024-12-17T12:52:26Z prerelease=false
+release libsql-server-v0.24.29 published=2024-12-17T11:02:59Z prerelease=false
+published-advisories: none
+=== tursodatabase/turso
+license=MIT archived=false pushed_at=2026-10-16T02:41:09Z stars=24784 default=main desc=A SQL database in Rust: SQLite-compatible, now also speaking Postgres (experimental). The LLVM of databases.
+release v0.9.0-pre.1 published=2026-10-15T09:59:28Z prerelease=true
+release v0.8.3 published=2026-10-12T15:03:37Z prerelease=false
+release v0.8.3-pre.2 published=2026-10-12T06:48:50Z prerelease=true
+release v0.8.3-pre.1 published=2026-10-08T08:28:11Z prerelease=true
+published-advisories: none
+=== vlcn-io/cr-sqlite
+license=MIT archived=false pushed_at=2026-08-10T10:55:49Z stars=3808 default=main desc=Convergent, Replicated SQLite. Multi-writer and CRDT support for SQLite
+release v0.16.3 published=2024-01-17T17:42:28Z prerelease=false
+release v0.16.2 published=2024-01-06T12:14:55Z prerelease=false
+release v0.16.1 published=2023-12-16T12:02:19Z prerelease=false
+release v0.16.0 published=2023-12-16T11:24:18Z prerelease=false
+published-advisories: none
+=== couchbase/sync_gateway
+license=NOASSERTION archived=false pushed_at=2026-10-16T00:18:37Z stars=454 default=main desc=Manages access and synchronization between Couchbase Lite and Couchbase Server
+release 4.1.2 published=2026-09-18T10:08:40Z prerelease=false
+release 4.0.8 published=2026-09-18T10:07:35Z prerelease=false
+release 3.3.8 published=2026-09-18T10:07:12Z prerelease=false
+release 4.1.1 published=2026-08-04T10:55:09Z prerelease=false
+published-advisories: none
+=== couchbase/couchbase-lite-java
+license=Apache-2.0 archived=true pushed_at=2020-12-10T23:00:41Z stars=52 default=master desc=Portable java version of Couchbase Lite
+release 2.7.0 published=2020-01-20T23:15:38Z prerelease=false
+release 1.4.4 published=2018-10-16T18:22:49Z prerelease=false
+release 1.3.1 published=2016-09-13T18:31:00Z prerelease=false
+release 1.3.0 published=2016-08-02T19:47:50Z prerelease=false
+published-advisories: none
+=== apache/couchdb
+license=Apache-2.0 archived=false pushed_at=2026-10-16T00:40:38Z stars=6974 default=main desc=Seamless multi-primary syncing database with an intuitive HTTP/JSON API, designed for reliability
+published-advisories: none
+=== pouchdb/pouchdb
+license=Apache-2.0 archived=false pushed_at=2026-10-14T22:35:55Z stars=17617 default=master desc=:kangaroo: - PouchDB is a pocket-sized database.
+release 9.0.0 published=2024-06-21T16:10:33Z prerelease=false
+release 8.0.1 published=2023-02-09T11:14:44Z prerelease=false
+release 8.0.0 published=2022-12-15T11:55:31Z prerelease=false
+release 7.3.1 published=2022-11-11T15:10:58Z prerelease=false
+published-advisories: none
+=== realm/realm-kotlin
+license=Apache-2.0 archived=false pushed_at=2025-10-31T19:10:34Z stars=1102 default=main desc=Kotlin Multiplatform and Android SDK for the Realm Mobile Database: Build Better Apps Faster.
+published-advisories: none
+=== realm/realm-js
+license=Apache-2.0 archived=false pushed_at=2026-10-06T19:01:16Z stars=6003 default=main desc= Realm is a mobile database: an alternative to SQLite & key-value stores
+release realm-react-v0.20.0 published=2025-10-17T12:18:40Z prerelease=false
+release v20.2.0 published=2025-08-11T17:18:13Z prerelease=false
+release v12.15.0 published=2025-08-11T16:24:46Z prerelease=false
+release v12.14.2 published=2025-04-10T09:41:22Z prerelease=false
+published-advisories: none
+=== orbitinghail/sqlsync
+license=Apache-2.0 archived=false pushed_at=2025-11-19T20:47:39Z stars=2920 default=main desc=SQLSync is a collaborative offline-first wrapper around SQLite. It is designed to synchronize web application state between users, devices, and the edge.
+published-advisories: none

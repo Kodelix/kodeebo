@@ -1,0 +1,21 @@
+python 3.14.7 sqlite 3.53.4
+
+=== (1) atomicity across a hard exit
+committed action -> seq 1
+child exit code (9 = os._exit before COMMIT): 9
+payments: [('B1', 5000)]
+outbox  : [(1, 'cmd-1', 'pending')]
+next_seq: 2
+integrity_check: ok
+
+=== (2) AUTOINCREMENT gap after a failed insert vs counter-row sequence
+expected failure: UNIQUE constraint failed: a.k
+AUTOINCREMENT ids: [1, 2] (a gap shows a consumed id)
+sqlite_sequence  : [('a', 2)]
+expected failure: CHECK constraint failed: amount_piasters>=0
+counter-row outbox seqs: [1, 2, 3, 4]
+
+=== (3) backup restore reuses sequence numbers the server already holds
+server holds seq: [1, 2, 3, 4, 5, 6]
+restored device now issues seq 4 command cmd-restored-4
+server already has seq 4 with command cmd-live-4 -> DIFFERENT command for a used seq: clone/restore signal

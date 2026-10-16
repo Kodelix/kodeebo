@@ -99,10 +99,17 @@ library, or two layers), spawn one `researcher` per sub-question **in parallel**
 in a single message, each with its own temporary section file named in the
 brief, and merge afterwards. **Split by size too:** a researcher has a turn
 budget (`maxTurns` in `.claude/agents/researcher.md`), so one researcher covers
-at most three decision areas (an ADR-sized choice or a named gap each). A larger
-scope is grouped into sets of three or fewer, one researcher per set, even when
+at most two decision areas (an ADR-sized choice or a named gap each). A larger
+scope is grouped into sets of two or fewer, one researcher per set, even when
 the sets share mechanisms — the merge is cheaper than a note that never gets
-written.
+written. (Two Kodeebo runs with three areas per researcher ran out of turns in
+8 of 10 parts before writing sections 4–9.)
+
+**Disjoint IDs per part.** Give each parallel researcher its own ID block in the
+brief — part *n* (from 1) owns findings `F{n}01–F{n}99` and spikes
+`S{n}0–S{n}9` — and tell it to cite another part's or note's ID only with a
+prefix (`desktop-note F117`). The merge then concatenates without renumbering;
+an ID used twice is a merge defect to fix before Phase 4, never silently.
 
 The brief names the destination path so the researcher's new file is the
 sanctioned subagent write. The user has approved that path in Phase 1. Collect

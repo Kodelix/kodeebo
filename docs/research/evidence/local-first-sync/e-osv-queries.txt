@@ -1,0 +1,21 @@
+# e-osv-queries.txt  date: 2026-10-16  endpoint: https://api.osv.dev/v1/query (POST); version-specific queries
+## Go github.com/Shopify/toxiproxy/v2 @ v2.13.0
+0 vulns []
+## Go pgregory.net/rapid @ v1.3.0
+0 vulns []
+## Go github.com/leanovate/gopter @ v0.2.11
+0 vulns []
+## Go github.com/anishathalye/porcupine @ v1.3.1
+0 vulns []
+## npm fast-check @ 4.10.2
+0 vulns []
+## npm @fast-check/vitest @ 0.5.0
+0 vulns []
+## Maven io.kotest:kotest-property @ 6.2.6
+0 vulns []
+## Maven net.jqwik:jqwik @ 1.10.2
+0 vulns []
+## Maven eu.rekawek.toxiproxy:toxiproxy-java @ 2.1.11
+0 vulns []
+## control (known-vulnerable package, proves the query path can return hits)
+23 vulns (control, expect >0)

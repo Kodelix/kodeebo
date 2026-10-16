@@ -1,0 +1,13 @@
+# d-billing-run 2026-10-16T02:54:51Z
+Python 3.14.7
+go version go1.27.2 linux/amd64
+openjdk version "21.0.12.1" 2026-08-18
+v24.21.0
+cases=5007 float_shortcut_disagreements_with_integer=137
+python lines=5007 sha256=387a9692c2fdf43d
+go lines=5007 sha256=387a9692c2fdf43d
+java lines=5007 sha256=387a9692c2fdf43d
+node lines=5007 sha256=387a9692c2fdf43d
+python == go: identical
+python == java: identical
+python == node: identical

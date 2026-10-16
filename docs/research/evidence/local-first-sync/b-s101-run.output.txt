@@ -1,0 +1,104 @@
+run at 2026-10-16T02:52:43Z
+PostgreSQL 18.6 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+setup ok
+=== T1: replay returns the stored outcome; different payload under same command id is detected
+ apply_cmd 
+-----------
+ applied
+(1 row)
+
+     apply_cmd     
+-------------------
+ duplicate:applied
+(1 row)
+
+    apply_cmd     
+------------------
+ payload_mismatch
+(1 row)
+
+ apply_cmd 
+-----------
+ gap
+(1 row)
+
+ apply_cmd 
+-----------
+ rejected
+(1 row)
+
+ apply_cmd 
+-----------
+ applied
+(1 row)
+
+              device_id               | last_applied_seq 
+--------------------------------------+------------------
+ aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa |                3
+(1 row)
+
+ device_seq | outcome  |                  response                  
+------------+----------+--------------------------------------------
+          1 | applied  | {"ok": true}
+          2 | rejected | {"ok": false, "reason": "negative_amount"}
+          3 | applied  | {"ok": true}
+(3 rows)
+
+=== T2: concurrent identical command: the second INSERT blocks until the first commits (no 409 needed at DB level)
+session A:  applied
+session B (concurrent duplicate) result: duplicate_seq:applied  waited_seconds=2.1
+=== T3: 5 sequence numbers, each sent 6 times, 30 concurrent psql sessions in shuffled order, retried until no gap
+ ?column? | last_applied_seq 
+----------+------------------
+ cursor   |                5
+(1 row)
+
+    ?column?    | count |   ?column?   | count 
+----------------+-------+--------------+-------
+ apply_log rows |     5 | distinct seq |     5
+(1 row)
+
+                             ?column?                             | bool_and 
+------------------------------------------------------------------+----------
+ order check: global_order ascending equals device_seq ascending? | t
+(1 row)
+
+ global_order | device_seq | amount_piasters 
+--------------+------------+-----------------
+            5 |          1 |             100
+            6 |          2 |             200
+            7 |          3 |             300
+            8 |          4 |             400
+            9 |          5 |             500
+(5 rows)
+
+=== T4: tenant scoping of the key (RLS role). Global-unique key leaks existence across tenants; tenant-leading key does not
+-- [tenant 11] INSERT INTO inbox_bad_global VALUES ('c0000000-0000-0000-0000-00000000dead','11111111-1111-1111-1111-111111111111')
+# tenant 2 inserts the same command_id into the GLOBAL-unique table; per-statement process so SET ROLE needs re-issue in the same call
+ERROR:  duplicate key value violates unique constraint "inbox_bad_global_pkey"
+# same with ON CONFLICT DO NOTHING RETURNING (0 rows returned, no indication of why):
+ command_id | tenant_id 
+(0 rows)
+# tenant 2 reads the global table (RLS hides tenant 1 row):
+--------------
+            0
+(1 row)
+
+# tenant-leading inbox key: tenant 1 then tenant 2 use the SAME command id:
+--------------------------------------
+ c0000000-0000-0000-0000-00000000beef
+(1 row)
+
+--------------------------------------
+ c0000000-0000-0000-0000-00000000beef
+(1 row)
+
+# tenant 2 context writes a row carrying tenant 1 id (expect RLS WITH CHECK violation):
+
+ERROR:  new row violates row-level security policy for table "inbox"
+# ON CONFLICT DO UPDATE aimed at tenant 1 row from tenant 2 context:
+
+ERROR:  new row violates row-level security policy for table "inbox"
+# final check as superuser: tenant 1 beef row response unchanged:
+11111111-1111-1111-1111-111111111111|{}
+22222222-2222-2222-2222-222222222222|{}

@@ -1,0 +1,10 @@
+container: fc80eec660d0 
+version: PostgreSQL 18.6 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+naive read #1 sees ids: ['2'] -> cursor = 2
+snapshot at read #1 (xmin:xmax:xip): 754:756:754
+horizon read #1 (tx < xmin) sees ids: [] | horizon = 754
+naive read #2 (id > 2 ) sees ids: NOTHING  -> id 1 is permanently skipped
+horizon read #2 ( 754 <= tx < 756 ) sees ids: ['1', '2']
+all rows: 1|754|A-slow ; 2|755|B-fast
+nextval after a rolled-back nextval: 2 (first call returned 1 inside the rolled-back txn; 1 here would mean reuse)
+exit 0

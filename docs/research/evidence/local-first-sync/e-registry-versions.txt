@@ -1,0 +1,36 @@
+# e-registry-versions.txt  date: 2026-10-16 host: Linux 7.2.9-2-cachyos x86_64
+## proxy.golang.org rapid
+{"Version":"v1.3.0","Time":"2026-03-30T15:56:16Z","Origin":{"VCS":"git","URL":"https://github.com/flyingmutant/rapid","Hash":"9bafe07343742c860ff53bf66075648f8ebb54a5","Ref":"refs/tags/v1.3.0"}}
+## proxy.golang.org gopter
+{"Version":"v0.2.11","Time":"2024-04-03T11:45:41Z","Origin":{"VCS":"git","URL":"https://github.com/leanovate/gopter","Ref":"refs/tags/v0.2.11","Hash":"b641a797febee7a0bb8a44d40cec92f2c894297f"}}
+## proxy.golang.org toxiproxy
+{"Version":"v2.13.0","Time":"2026-10-14T17:51:20Z","Origin":{"VCS":"git","URL":"https://github.com/Shopify/toxiproxy","Hash":"ff428b0e2c46af894c55711c2a3e427fce6b1ef2","Ref":"refs/tags/v2.13.0"}}
+## proxy.golang.org porcupine
+{"Version":"v1.3.1","Time":"2026-09-21T03:19:25Z","Origin":{"VCS":"git","URL":"https://github.com/anishathalye/porcupine","Hash":"97cd067defd99df172053ba7f4ca5bbae57fe446","Ref":"refs/tags/v1.3.1"}}
+## npm fast-check
+fast-check 4.10.2 MIT
+## npm fast-check time
+4.10.2 2026-09-19T19:34:54.991Z
+## npm @fast-check/vitest
+@fast-check/vitest 0.5.0 MIT
+## maven kotest-property
+    <latest>6.2.6</latest>
+    <release>6.2.6</release>
+    <lastUpdated>20261014182149</lastUpdated>
+## maven jqwik
+    <latest>1.10.2</latest>
+    <release>1.10.2</release>
+    <lastUpdated>20261010104743</lastUpdated>
+## maven toxiproxy-java
+    <latest>2.1.11</latest>
+    <release>2.1.11</release>
+    <lastUpdated>20250822141821</lastUpdated>
+## maven testcontainers toxiproxy
+    <latest>1.21.4</latest>
+    <release>1.21.4</release>
+    <lastUpdated>20251216003945</lastUpdated>
+## clojars elle
+{"description":"Black-box transactional consistency checker based on cycle detection","downloads":2058138,"homepage":"https://github.com/jepsen-io/elle","scm":{"connection":"scm:git:git://github.com/jepsen-io/elle.git","developer-connection":"scm:git:ssh://git@github.com/jepsen-io/elle.git","tag":"ea26c92f2dfcdd392b290a66409b705839d27e88","url":"https://github.com/jepsen-io/elle"},"latest_version":"0.2.8-SNAPSHOT","licenses":[{"name":"EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0","url":"https://www.eclipse.org/legal/epl-2.0/"}],"jar_name":"elle","latest_release":"0.2.7","group_name
+## clojars jepsen
+{"description":"Distributed systems testing framework.","downloads":1424395,"homepage":"https://jepsen.io","scm":{"connection":"scm:git:git://github.com/jepsen-io/jepsen.git","developer-connection":"scm:git:ssh://git@github.com/jepsen-io/jepsen.git","tag":"78697dc35d66ad7eae095e1d0142e22fc8a23ec5","url":"https://github.com/jepsen-io/jepsen/"},"latest_version":"0.3.15-SNAPSHOT","licenses":[{"name":"Eclipse Public License","url":"http://www.eclipse.org/legal/epl-v10.html"}],"jar_name":"jepsen","latest_release":"0.3.14","group_name":"jepsen","recent_versions":[{"version":"0.3.15-SNAPSHOT","downlocurl: Failed writing body
+

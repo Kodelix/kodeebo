@@ -1,0 +1,20 @@
+@rocicorp/zero latest=1.10.0 published=2026-10-09T11:33:59.661Z license=Apache-2.0 deprecated=no modified=2026-10-15T22:21:21.767Z
+replicache latest=15.3.0 published=2025-07-02T06:24:51.830Z license=https://roci.dev/terms.html deprecated=no modified=2026-05-22T15:12:12.910Z
+pouchdb latest=9.0.0 published=2024-06-21T15:46:46.178Z license=Apache-2.0 deprecated=no modified=2025-10-13T17:09:33.647Z
+@electric-sql/client latest=1.5.28 published=2026-09-09T11:29:57.495Z license=Apache-2.0 deprecated=no modified=2026-09-09T11:29:57.830Z
+@electric-sql/pglite latest=0.5.10 published=2026-10-14T15:31:38.005Z license=Apache-2.0 deprecated=no modified=2026-10-14T15:31:38.441Z
+@powersync/web latest=2.4.2 published=2026-10-01T10:17:19.059Z license=Apache-2.0 deprecated=no modified=2026-10-15T11:49:02.711Z
+@powersync/node latest=1.1.1 published=2026-10-01T10:13:17.003Z license=Apache-2.0 deprecated=no modified=2026-10-15T11:47:36.336Z
+@vlcn.io/crsqlite latest=0.16.3 published=2024-01-17T17:42:38.963Z license=Apache 2 deprecated=no modified=2024-01-17T17:42:39.155Z
+@libsql/client latest=0.18.0 published=2026-09-02T10:11:27.674Z license=MIT deprecated=no modified=2026-09-02T10:11:28.921Z
+@tursodatabase/sync latest=0.8.3 published=2026-10-12T14:59:31.301Z license=MIT deprecated=no modified=2026-10-15T09:38:35.806Z
+@tursodatabase/database latest=0.8.3 published=2026-10-12T14:59:56.998Z license=MIT deprecated=no modified=2026-10-15T09:34:06.536Z
+realm latest=20.2.0 published=2025-08-11T17:17:46.164Z license=apache-2.0 deprecated=no modified=2025-08-11T17:17:46.531Z
+@dittolive/ditto latest=5.1.0 published=2026-08-19T16:56:21.335Z license=SEE LICENSE IN LICENSE.md deprecated=no modified=2026-10-08T15:48:21.435Z
+@op-engineering/op-sqlite latest=18.2.5 published=2026-09-20T14:40:02.773Z license=MIT deprecated=no modified=2026-09-20T14:40:03.089Z
+jazz-tools latest=0.20.19 published=2026-07-03T17:48:03.843Z license=MIT deprecated=no modified=2026-10-04T21:39:17.107Z
+@tanstack/db latest=0.15.0 published=2026-10-15T03:46:41.833Z license=MIT deprecated=no modified=2026-10-15T03:46:42.322Z
+jq: parse error: Unfinished string at EOF at line 1, column 9153474
+evolu latest=8.2.0 published=2023-09-23T00:49:25.647Z license=MIT deprecated=Use @evolu/react or @evolu/react-native. modified=2023-09-27T09:46:31.248Z
+@livestore/livestore latest=0.5.0 published=2026-10-15T15:34:26.241Z license=Apache-2.0 deprecated=no modified=2026-10-15T20:09:41.475Z
+@triplit/client latest=1.0.50 published=2025-07-31T02:11:59.466Z license=AGPL-3.0-only deprecated=no modified=2025-07-31T02:11:59.709Z

@@ -1,0 +1,10 @@
+sqlite lib version: 3.53.4 python: 3.14.7
+design A kill_at=before_begin       runs=20 violations=0
+design A kill_at=mid_tx             runs=20 violations=0
+design A kill_at=after_commit       runs=20 violations=0
+design A kill_at=none               runs=20 violations=0
+design B kill_at=before_begin       runs=20 violations=0
+design B kill_at=mid_tx             runs=20 violations=0
+design B kill_at=after_bill_commit  runs=20 violations=20 example={"integrity": true, "bills": ["b1"], "outbox": []}
+design B kill_at=after_commit       runs=20 violations=0
+design B kill_at=none               runs=20 violations=0

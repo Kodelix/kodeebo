@@ -1,0 +1,50 @@
+=== powersync-ja/powersync-service
+license=NOASSERTION archived=false pushed_at=2026-10-15T14:43:11Z stars=394 default=main desc=PowerSync Service is the server-side component of the PowerSync sync engine.
+release v1.27.0 published=2026-10-06T10:03:28Z prerelease=false
+release v1.26.1 published=2026-09-11T13:04:16Z prerelease=false
+release v1.26.0 published=2026-09-04T10:36:04Z prerelease=false
+release v1.25.0 published=2026-08-12T14:55:52Z prerelease=false
+published-advisories: GHSA-6wfp-847m-28x5 high published 2026-09-17 WebSocket DoS
+  GHSA-hfrf-pvrg-5c3h medium published 2026-09-17 Incorrect results synced with certain JOIN conditions
+  GHSA-q6wc-xx4m-92fj medium published 2026-03-06 Some sync filters ignored on 1.20.0 using `config.edition: 3`
+=== powersync-ja/powersync-kotlin
+license=none archived=false pushed_at=2026-10-14T12:04:39Z stars=127 default=main desc=PowerSync client SDK for Kotlin
+release v1.15.2 published=2026-09-28T11:17:16Z prerelease=false
+release v1.15.1 published=2026-09-07T08:13:32Z prerelease=false
+release v1.15.0 published=2026-09-02T15:17:22Z prerelease=false
+release v1.14.1 published=2026-07-29T14:44:57Z prerelease=false
+published-advisories: none
+=== powersync-ja/powersync-js
+license=Apache-2.0 archived=false pushed_at=2026-10-14T12:40:01Z stars=733 default=main desc=PowerSync client SDKs for JavaScript clients
+release tauri-plugin-powersync@0.1.0 published=2026-10-01T10:09:31Z prerelease=false
+release @powersync/web@2.4.2 published=2026-10-01T10:09:34Z prerelease=false
+release @powersync/tanstack-react-query@0.3.5 published=2026-10-01T10:09:29Z prerelease=false
+release @powersync/shared-internals@1.3.1 published=2026-10-01T10:09:17Z prerelease=false
+published-advisories: none
+=== powersync-ja/powersync-sqlite-core
+license=Apache-2.0 archived=false pushed_at=2026-10-14T09:51:23Z stars=47 default=main desc=PowerSync SQLite core extension
+release v0.5.3 published=2026-08-13T15:46:52Z prerelease=false
+release v0.5.2 published=2026-08-03T08:34:28Z prerelease=false
+release v0.5.1 published=2026-07-27T14:12:34Z prerelease=false
+release v0.4.14 published=2026-04-28T10:09:21Z prerelease=false
+published-advisories: none
+=== powersync-ja/powersync-dotnet
+license=Apache-2.0 archived=false pushed_at=2026-10-05T10:45:00Z stars=52 default=main desc=PowerSync client SDK for .NET
+release PowerSync.Maui@0.1.5 published=2026-09-10T10:39:49Z prerelease=false
+release PowerSync.Common@0.1.5 published=2026-09-10T10:39:36Z prerelease=false
+release PowerSync.Maui@0.1.4 published=2026-08-06T15:01:55Z prerelease=false
+release PowerSync.Common@0.1.4 published=2026-08-06T15:02:20Z prerelease=false
+published-advisories: none
+=== powersync-ja/powersync-tauri-plugin
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/repos#get-a-repository","status":"404"}gh: Not Found (HTTP 404)
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}gh: Not Found (HTTP 404)
+published-advisories: {"message":"Not Found","documentation_url":"https://docs.github.com/rest","status":"404"}gh: Not Found (HTTP 404)
+=== electric-sql/electric
+license=Apache-2.0 archived=false pushed_at=2026-10-06T16:09:45Z stars=10399 default=main desc=The agent platform built on sync.
+release agents-desktop-canary published=2026-05-20T14:06:22Z prerelease=true
+release expo-db-electric-starter@1.0.29 published=2026-09-09T11:28:17Z prerelease=false
+release @electric-sql/y-electric@0.1.54 published=2026-09-09T11:28:29Z prerelease=false
+release @electric-sql/react@1.0.57 published=2026-09-09T11:28:20Z prerelease=false
+published-advisories: GHSA-m4f6-p2j8-rq76 high published 2026-09-11 Authentication bypass on /v1/shape via path normalization
+  GHSA-c82q-v86f-c87f low published 2026-06-10 Excluded columns can be inferred via subset where clauses
+  GHSA-h5rg-pxx7-r2hj critical published 2026-04-14 SQL Injection via ORDER BY Parameter in Shape API

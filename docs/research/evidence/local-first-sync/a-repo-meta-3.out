@@ -1,0 +1,31 @@
+=== couchbase/couchbase-lite-C
+license=Apache-2.0 archived=false pushed_at=2026-10-08T22:05:30Z stars=130 default=master desc=C language bindings for the Couchbase Lite embedded NoSQL database engine
+published-advisories: none
+=== couchbase/couchbase-lite-android
+license=Apache-2.0 archived=true pushed_at=2021-05-20T22:07:31Z stars=1165 default=master desc=Lightweight, embedded, syncable NoSQL database engine for Android.
+release 2.5.2 published=2019-07-02T17:31:21Z prerelease=false
+release 2.1.6 published=2019-04-09T00:30:54Z prerelease=false
+release 2.1.2 published=2018-11-20T02:00:06Z prerelease=false
+release 1.4.4 published=2018-10-16T18:20:27Z prerelease=false
+published-advisories: none
+=== couchbase/couchbase-lite-net
+license=Apache-2.0 archived=false pushed_at=2026-10-15T23:48:25Z stars=446 default=master desc=A lightweight, document-oriented (NoSQL), syncable database engine for .NET
+release 2.7.0 published=2020-01-20T23:07:32Z prerelease=false
+release 2.5.0 published=2019-05-07T22:34:21Z prerelease=false
+release 2.1.2 published=2018-11-16T23:54:46Z prerelease=false
+release 1.4.4 published=2018-11-16T23:54:29Z prerelease=false
+published-advisories: none
+=== couchbase/couchbase-lite-java-ce-root
+license=NOASSERTION archived=false pushed_at=2026-09-16T01:02:12Z stars=57 default=master desc=The root workspace for the Community Editions of the Java language family of products (Java Desktop, Java WebService, and Android) 
+published-advisories: none
+=== couchbase/couchbase-lite-java-ce
+license=NOASSERTION archived=false pushed_at=2026-09-16T00:59:56Z stars=5 default=master desc=Code for the Community edition of the Java language family of products (Java Desktop, Java WebService, and Android) 
+published-advisories: none
+=== couchbase/couchbase-lite-java-ee
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/repos#get-a-repository","status":"404"}gh: Not Found (HTTP 404)
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}gh: Not Found (HTTP 404)
+published-advisories: {"message":"Not Found","documentation_url":"https://docs.github.com/rest","status":"404"}gh: Not Found (HTTP 404)
+=== couchbase/couchbase-lite-core
+license=NOASSERTION archived=false pushed_at=2026-10-15T18:47:23Z stars=264 default=master desc=Cross-platform C++ core library for Couchbase Lite
+release CBL2.0.0 published=2018-04-12T16:49:34Z prerelease=false
+published-advisories: none

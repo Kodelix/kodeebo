@@ -97,7 +97,7 @@ port.
 - If the recommendation is PROCEED, production implementation is written from scratch — prototype code is never refactored into a code root
 - Prototypes never touch files outside `prototypes/<name>/` (the checkpoint in `production/session-state/active.md` and the index row in `prototypes/index.md` are the two named exceptions this skill writes after an ask)
 - No real secrets, no real customer data, no real provider live keys; provider sandboxes only; bind local servers to `127.0.0.1`, never a public interface; nothing deployed
-- Total effort is hard-capped at 1 day (a concept prototype tests one question)
+- Total effort is hard-capped at 1 day (a concept prototype tests one question). **One exception:** a spike that a research note plans for a product's top-ranked risk (a `PENDING — S<n>` plan with phases) may run longer only with the user's written waiver recorded in the README — the risk it tests, the planned length, a pass/fail gate per phase and "stop at the first failed gate". No waiver, no exception; the 2-hour reframe rule still applies inside each phase
 - Test ONE question — if scope grows, stop and simplify
 - No polish. No auth, no billing, no tenancy, no settings screens, no marketing copy — unless that IS the thing being tested
 - If stuck after 2 hours, reframe the question or switch paths
