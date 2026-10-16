@@ -1,0 +1,27 @@
+toxiproxy {'version': '2.13.0'}
+case 1: response blackholed: timeout on downstream
+  client saw: error RemoteDisconnected: Remote end closed connection without response
+  server effects for seq 1: 1
+  resend after toxic removed: [{'command_id': 'cmd-probe-1', 'seq': 1, 'result': 'duplicate'}]; server effects now: 1
+  expected: client error and exactly one effect (committed, reply lost) -> AS EXPECTED
+case 2: response truncated: limit_data 20 bytes on downstream
+  client saw: reply None
+  server effects for seq 2: 1
+  resend after toxic removed: [{'command_id': 'cmd-probe-2', 'seq': 2, 'result': 'duplicate'}]; server effects now: 1
+  expected: client error and exactly one effect (committed, reply lost) -> UNEXPECTED
+case 3: request cut mid-body: limit_data 60 bytes on upstream
+  client saw: error RemoteDisconnected: Remote end closed connection without response
+  server effects for seq 3: 0
+  expected: client error and no effect -> AS EXPECTED
+case 4: request blackholed: timeout on upstream
+  client saw: error RemoteDisconnected: Remote end closed connection without response
+  server effects for seq 3: 0
+  expected: client error and no effect -> AS EXPECTED
+
+NOTE (added after the run, 2026-10-16): case 2 is marked UNEXPECTED only because the probe's helper turns an
+empty body into None instead of an error. What the client actually saw: Python http.client reported status 200
+with an empty body, because the 20 bytes delivered were the status line "HTTP/1.1 200 OK" plus the start of a
+header. The server had committed (1 effect) and the resend returned "duplicate" (still 1 effect). Finding P2-F1:
+a cut response can look like "200 OK" at the HTTP layer; the client must acknowledge only commands named in a
+fully parsed result body, never on the status code. The spike client already does (json.loads of an empty body
+raises ValueError, which counts as a failed sync, P0-F2).

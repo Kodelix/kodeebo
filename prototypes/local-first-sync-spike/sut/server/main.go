@@ -4,7 +4,9 @@
 //
 // Server stub: inbox keyed (tenant, device, command_id) with a payload hash,
 // compare-and-set cursor per device, one database transaction per batch.
-// Env: PG_DSN, ADDR (127.0.0.1 only), RESET=1 (recreate schema), MUTANT, FP=name:hit.
+// Env: PG_DSN, ADDR (127.0.0.1 only), RESET=1 (recreate schema), MUTANT, FP=name:hit,
+//
+//	GAP_MS (contact gap that counts as offline, TS-09), BUSINESS_HOURS (1 = alert on gaps, 0 = record only).
 package main
 
 import (
@@ -17,14 +19,16 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const schema = `
-DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags;
+DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -39,6 +43,8 @@ CREATE TABLE minutes (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, tenant
   action_id text NOT NULL, session_id text NOT NULL, minute_idx int NOT NULL);
 CREATE TABLE flags (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, kind text NOT NULL,
   device_id text NOT NULL, command_id text NOT NULL, seq bigint NOT NULL);
+CREATE TABLE offline_periods (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
+  from_ts timestamptz NOT NULL, to_ts timestamptz NOT NULL, owner_alert boolean NOT NULL);
 INSERT INTO cursor_ VALUES (1, 'dev-1', 0);
 `
 
@@ -66,6 +72,29 @@ type result struct {
 	CommandID string `json:"command_id"`
 	Seq       int64  `json:"seq"`
 	Result    string `json:"result"`
+}
+
+// TS-09: the server records every gap in device contact longer than GAP_MS; server time is the fact.
+var (
+	contactMu   sync.Mutex
+	lastContact = map[string]time.Time{}
+)
+
+func contact(ctx context.Context, dev string) {
+	gapMs, _ := strconv.Atoi(os.Getenv("GAP_MS"))
+	if gapMs <= 0 {
+		return
+	}
+	now := time.Now()
+	contactMu.Lock()
+	prev, seen := lastContact[dev]
+	lastContact[dev] = now
+	contactMu.Unlock()
+	if seen && now.Sub(prev) > time.Duration(gapMs)*time.Millisecond {
+		alert := os.Getenv("BUSINESS_HOURS") == "1"
+		pool.Exec(ctx, `INSERT INTO offline_periods (device_id, from_ts, to_ts, owner_alert) VALUES ($1,$2,$3,$4)`,
+			dev, prev, now, alert)
+	}
 }
 
 var (
@@ -159,6 +188,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	contact(ctx, b.DeviceID)
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
@@ -222,6 +252,7 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		"inbox":   "SELECT device_id, command_id, seq, payload_hash, outcome FROM inbox ORDER BY seq",
 		"flags":   "SELECT id, kind, device_id, command_id, seq FROM flags ORDER BY id",
 		"cursor":  "SELECT device_id, last_seq FROM cursor_",
+		"offline": "SELECT device_id, extract(epoch FROM from_ts)::float8 AS from_s, extract(epoch FROM to_ts)::float8 AS to_s, owner_alert FROM offline_periods ORDER BY id",
 	} {
 		rows, err := dumpRows(ctx, q)
 		if err != nil {
@@ -259,6 +290,10 @@ func main() {
 	mux.HandleFunc("POST /batch", handleBatch)
 	mux.HandleFunc("GET /dump", handleDump)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })
+	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
+		contact(r.Context(), r.URL.Query().Get("device"))
+		fmt.Fprint(w, `{"ok":true}`)
+	})
 	log.Printf("server on %s mutant=%q fp=%q:%d", addr, mutant, fpName, fpAt)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }

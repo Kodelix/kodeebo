@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 dev run PASS (10 seeds per cell, 300 campaign runs, uncommitted harness), full run (50 seeds per cell, 3,000 campaign runs) next on the committed harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -72,11 +72,58 @@ bash prototypes/local-first-sync-spike/run.sh replay <seed> [mutant]
 bash prototypes/local-first-sync-spike/run.sh stop
 ```
 
+Phase 1 and 2 commands (they use the `.venv` with `apsw-sqlite3mc`; phase 2 also needs Toxiproxy in `tools/`, see "Tools fetched"):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh phase1
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh phase2 [seeds_per_cell] [campaign_runs]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay2 <seed> <cell|random> [mutant]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh ts09
+```
+
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
+
+## Tools fetched (not committed)
+
+Downloaded binaries live in `tools/`, which git ignores. Only their provenance is recorded here.
+
+**Toxiproxy v2.13.0** (phase 2 network faults), fetched 2026-10-16 into `tools/toxiproxy-2.13.0/`:
+
+| Item | Value |
+|---|---|
+| Release | [Shopify/toxiproxy v2.13.0](https://github.com/Shopify/toxiproxy/releases/tag/v2.13.0), published 2026-10-14T18:26:53Z, not a prerelease |
+| Tarball | `toxiproxy_2.13.0_linux_amd64.tar.gz`, 9,303,933 bytes |
+| Tarball SHA-256 | `08fd7b3d677bd11358d16a5ce8fd9e1a08f69aa24984bc16781c84200d6b3b4d` |
+| Check 1 | matches the line in the release's `checksums.txt` (`sha256sum -c`: OK) |
+| Check 2 | matches the digest the GitHub releases API lists for the tarball |
+| `checksums.txt` SHA-256 | `dc0558603352f0f2f812495ac891852bbfc7e5acdd824fd983d0c189c419541b`, matching its API digest |
+| `toxiproxy-server` SHA-256 | `bf529e8bb9a05cd293f45a3f1d0aa66ff9469680dcdca7e0ebeae21f1b83de89`, matching the release's standalone `toxiproxy-server-linux-amd64` asset |
+| `toxiproxy-cli` SHA-256 | `0cab3a7262ffed75dd4cadfbd69ecc3f0a80e8c10adbc925bac67552b620ced8`, matching `toxiproxy-cli-linux-amd64` |
+| Archive contents | `toxiproxy-server`, `toxiproxy-cli` (static Go ELF x86-64), `README.md`, `LICENSE`, `CHANGELOG.md`; no absolute or `..` paths |
+| Smoke test | `-version` reports 2.13.0; API bound to `127.0.0.1:18474` and a test proxy on `127.0.0.1:18475` only; clean shutdown |
+| Licence | MIT (sync note F410); test-only, never shipped |
+
+To reproduce, download the two files from the release page into an empty folder, then:
+
+```bash
+grep ' toxiproxy_2.13.0_linux_amd64.tar.gz$' checksums.txt | sha256sum -c -
+```
+
+Fallback if v2.13.0 misbehaves: v2.12.0 (2025-03-18), verified the same way.
 
 ## Shortcuts taken
 
-- **Deferred to later phases:** encryption (phase 1); network faults and Toxiproxy (phase 2); concurrent retry and reordering (phase 2–3); Windows (phase 4); real billing and clock rules (phase 5).
+- **Deferred to later phases:** reordering, partial batches, compound faults and server restore (phase 3); Windows (phase 4); real billing and clock rules (phase 5).
+- **TS-09 uses a fake "business hours" switch** (`BUSINESS_HOURS=1|0` on the server) and a 500 ms gap threshold; the real schedule and threshold come from the spec.
 - **Out of the spike entirely:**
   - No authentication or device identity checks.
   - A single tenant and a single device.
@@ -203,3 +250,43 @@ The spike is not concluded; the verdict comes after the last phase. Phase result
 **Conditions:** phase 1 on harness `7309208` plus uncommitted phase 1 changes, on the same host as phase 0, with the encrypted store on NVMe. Kill-matrix speed was about 0.35 s per run, indicative only.
 
 **Conditions (phase 0):** harness commit `72bebbe` for run 3 (`11ace09+dirty` for runs 1–2), seeds 1–300 for the correct stub and seeds 1 to the catching seed for each mutant, one fault per run, 8 actions per run, and a single tenant and device.
+
+### Phase 2 — network faults, resend, concurrent retry, server kill (real PostgreSQL 18.6)
+
+**Setup:** the client talks to the server through Toxiproxy v2.13.0 (proxy `127.0.0.1:18481` in front of the stub on `127.0.0.1:18471`); the oracle reads the server directly. Store: SQLite3MC `chacha20`, rollback journal plus commit marker (OQ28 A + B). Client HTTP timeout 2 s.
+
+**Probe S402 (`evidence/phase2-probe-toxiproxy.*`):** Toxiproxy can cut only the response (`stream=downstream`) or only the request (`stream=upstream`). A lost response leaves exactly one server effect and the resend returns `duplicate`; a cut or blackholed request leaves none.
+
+**Finding P2-F1 — a cut response can look like "200 OK".** When only the first 20 bytes come back, Python's `http.client` reports status 200 with an empty body; the server had committed. **Rule:** acknowledge only the commands named in a fully parsed results body, never on the status code. The client now checks for a `results` list and treats anything else as a failed sync.
+
+**Cells** (one toxic on every sync and replay, no process kill; a cell whose toxic never bit is NOT ASSESSED, never PASS):
+
+| Cell | Toxic | Covers |
+|---|---|---|
+| `resp_blackhole` | downstream `timeout` 300 ms | P9: committed, reply lost |
+| `resp_cut_1`, `resp_cut_20`, `resp_cut_150` | downstream `limit_data` | P9, P2-F1 |
+| `reset_peer` | downstream `reset_peer` | connection reset |
+| `req_cut_10`, `req_cut_120`, `req_cut_400` | upstream `limit_data` | P5: request cut mid-send |
+| `req_blackhole` | upstream `timeout` 300 ms | request never arrives |
+| `down` | proxy disabled | server unreachable |
+| `slow` | `latency` 150 ± 100 ms both ways | slow but working |
+| `slicer` | downstream `slicer` | reply in 4-byte pieces |
+| `concurrent` | `slow`, and every sync sends the same batch twice at once | SC-05 concurrent retry |
+
+**Randomized campaign:** each sync has a 25% chance of being a concurrent double send. Each sync and replay gets a random toxic, or none 35% of the time. Half the runs also get one process kill: client points P1–P4 and P10–P12, server points P6–P9 (before commit, after commit before the reply, reply before commit).
+
+**Mutants** run under the campaign's faults; **TS-09** runs two planned outages (1.2 s and 2.0 s) while the cashier keeps selling. Pass: each outage is recorded once by the server from its own clock, within 0.25 s of what the driver saw, with an owner alert only when business hours are on, and the money invariants hold.
+
+#### Run 1 (dev, uncommitted harness on `b6eb3dd`) — gate PASS at reduced size
+
+`evidence/phase2-run1-dev.log` and `-summary.json`: 10 seeds per cell and 300 campaign runs (393 s).
+- **Cells:** all 13 PASS with 0 violations, and every toxic was shown to bite. In the four response-loss cells and `reset_peer`, the server committed and the client got no reply 80 times per cell, and every resend came back `duplicate` (80 of 80). In the `concurrent` cell both replies parsed 80 times, and the second was `duplicate` every time.
+- **Campaign:** 300 runs, 107 with a process kill, 0 violations.
+- **Mutants:** all four caught. `separate_outbox_txn` after 5 runs, `no_dedupe` after 1, `ack_before_commit` after 147, `double_minute` after 1.
+- **TS-09:** PASS in both modes. Two periods recorded, each within 2 ms of the driver's observation; `owner_alert` true only with business hours on; 16 of 16 sales on the server.
+
+**Finding P2-F2 (harness, not protocol).** The first dev attempt never caught `separate_outbox_txn`. Its only catching point is P3 (`client:after_business_commit`), which exists only in that mutant and was missing from the phase 2 kill list. P3 is now in the list; on the correct client it never fires. Separately, `ack_before_commit` needed 147 runs, close to the 200-run budget, so phase 2 uses a budget of 400. Seeds are deterministic, so the budget changes no outcome.
+
+**Conditions:** same NVMe dev host as phases 0–1, single tenant and device, 8 actions per run, loopback network only. About 0.5 s per campaign run, indicative only.
+
+**Not covered by phase 2:** a real lossy link (Toxiproxy acts at the TCP stream level, not on packet loss or reordering); a server crash during PostgreSQL's own commit (the server failpoints sit before and after `COMMIT`); several devices; reordering and partial batches (phase 3).

@@ -2,7 +2,8 @@
 # PROTOTYPE - NOT FOR PRODUCTION
 # Question: Does local-first sync ever lose or double-count money or session time under faults? (phase 0 runner)
 # Date: 2026-10-16
-#   run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | stop
+#   run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper
+#          | phase2 [seeds_per_cell] [campaign_runs] | replay2 <seed> <cell|random> [mutant] | ts09 | stop
 set -euo pipefail
 cd "$(dirname "$0")"
 PG=lfs-spike-pg
@@ -28,6 +29,9 @@ case "${1:-}" in
   phase1)   start_pg; build_server; .venv/bin/python harness/driver.py phase1 ;;
   replay1)  start_pg; build_server; .venv/bin/python harness/driver.py replay1 "$2" "$3" "$4" "${5:-}" ;;
   tamper)   .venv/bin/python harness/tamper.py ;;
+  phase2)   start_pg; build_server; .venv/bin/python harness/driver.py phase2 "${2:-50}" "${3:-3000}" ;;
+  replay2)  start_pg; build_server; .venv/bin/python harness/driver.py replay2 "$2" "$3" "${4:-}" ;;
+  ts09)     start_pg; build_server; .venv/bin/python harness/driver.py ts09 ;;
   stop)     docker rm -f "$PG" >/dev/null 2>&1 || true ;;
-  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | stop" >&2; exit 2 ;;
+  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | phase2 [seeds] [runs] | replay2 <seed> <cell|random> [mutant] | ts09 | stop" >&2; exit 2 ;;
 esac

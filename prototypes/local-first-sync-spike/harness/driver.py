@@ -42,10 +42,105 @@ PHASE1_POINTS = ["client:before_local_commit", "client:mid_local_txn", "client:a
 CIPHERS = ["chacha20", "sqlcipher"]
 CANARY = b"CANARY"
 
+# --- Phase 2: network faults through Toxiproxy v2.13.0 (tools/, verified, README "Tools fetched") ----------
+TOXI_BIN = os.path.join(ROOT, "tools", "toxiproxy-2.13.0", "extracted", "toxiproxy-server")
+TOXI_API = "http://127.0.0.1:18474"
+PROXY_ADDR = "127.0.0.1:18481"
+PROXY_URL = "http://" + PROXY_ADDR
+# Each fault is a list of toxics (direction per README v2.13.0: downstream = server->client, upstream = client->server),
+# or "down" (proxy disabled = connection refused).
+TOXICS = {
+    "resp_blackhole": [{"type": "timeout", "stream": "downstream", "attributes": {"timeout": 300}}],  # P9
+    "resp_cut_1": [{"type": "limit_data", "stream": "downstream", "attributes": {"bytes": 1}}],
+    "resp_cut_20": [{"type": "limit_data", "stream": "downstream", "attributes": {"bytes": 20}}],  # "200 OK", no body (P2-F1)
+    "resp_cut_150": [{"type": "limit_data", "stream": "downstream", "attributes": {"bytes": 150}}],
+    "req_cut_10": [{"type": "limit_data", "stream": "upstream", "attributes": {"bytes": 10}}],  # P5
+    "req_cut_120": [{"type": "limit_data", "stream": "upstream", "attributes": {"bytes": 120}}],
+    "req_cut_400": [{"type": "limit_data", "stream": "upstream", "attributes": {"bytes": 400}}],
+    "req_blackhole": [{"type": "timeout", "stream": "upstream", "attributes": {"timeout": 300}}],
+    "reset_peer": [{"type": "reset_peer", "stream": "downstream", "attributes": {"timeout": 0}}],
+    "slicer": [{"type": "slicer", "stream": "downstream", "attributes": {"average_size": 4, "size_variation": 2, "delay": 1000}}],
+    "slow": [{"type": "latency", "stream": "downstream", "attributes": {"latency": 150, "jitter": 100}},
+             {"type": "latency", "stream": "upstream", "attributes": {"latency": 150, "jitter": 100}}],
+    "down": "down",
+}
+
+
+class Toxi:
+    """One Toxiproxy process for a phase 2 session; proxy "sync" in front of the server stub, loopback only."""
+
+    def __init__(self, log_dir):
+        os.makedirs(log_dir, exist_ok=True)
+        self.p = subprocess.Popen([TOXI_BIN, "-host", "127.0.0.1", "-port", "18474"], stdout=subprocess.DEVNULL,
+                                  stderr=open(os.path.join(log_dir, "toxiproxy.log"), "a"))
+        for _ in range(100):
+            if self.p.poll() is not None:
+                raise RuntimeError("toxiproxy exited at start (port 18474 in use?); see toxiproxy.log")
+            try:
+                self.api("GET", "/version")
+                break
+            except OSError:
+                time.sleep(0.05)
+        self.api("POST", "/proxies", {"name": "sync", "listen": PROXY_ADDR, "upstream": ADDR})
+        self.active = []
+
+    def api(self, method, path, body=None):
+        req = urllib.request.Request(TOXI_API + path, method=method, headers={"Content-Type": "application/json"},
+                                     data=json.dumps(body).encode() if body is not None else None)
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return r.read()
+
+    def apply(self, name):
+        if not name:
+            return
+        spec = TOXICS[name]
+        if spec == "down":
+            self.api("POST", "/proxies/sync", {"enabled": False})
+            self.active.append("down")
+            return
+        for i, t in enumerate(spec):
+            self.api("POST", "/proxies/sync/toxics", {"name": f"t{i}", **t})
+            self.active.append(f"t{i}")
+
+    def clear(self):
+        for a in self.active:
+            if a == "down":
+                self.api("POST", "/proxies/sync", {"enabled": True})
+            else:
+                self.api("DELETE", f"/proxies/sync/toxics/{a}")
+        self.active = []
+
+    def stop(self):
+        self.p.terminate()
+        self.p.wait()
+
+
+class Net:
+    """Which network fault each sync, concurrent sync or replay gets. mode: a TOXICS name (single-fault cell),
+    "concurrent" (every sync is a concurrent double send under "slow"), or "random" (the randomized campaign)."""
+
+    def __init__(self, toxi, mode):
+        self.toxi, self.mode = toxi, mode
+
+    def pick(self, rng):
+        if self.mode == "concurrent":
+            return "sync_concurrent", "slow"
+        if self.mode == "random":
+            op = "sync_concurrent" if rng.random() < 0.25 else "sync"
+            fault = None if rng.random() < 0.35 else rng.choice(sorted(TOXICS))
+            return op, fault
+        return "sync", self.mode
+
 
 class Run:
-    def __init__(self, seed, mutant, verbose=False, store=None, cipher=None, fault=None, label=None):
+    def __init__(self, seed, mutant, verbose=False, store=None, cipher=None, fault=None, label=None, net=None,
+                 server_env=None):
         self.seed, self.mutant, self.verbose = seed, mutant, verbose
+        self.net, self.server_env = net, server_env or {}
+        self.script = None  # optional replacement for the random action loop (TS-09)
+        # Phase 2 exercise counters: ops sent under a toxic, of those how many failed, and "duplicate" outcomes
+        # on normal syncs (= a command the server committed whose reply the client never got).
+        self.net_stats = {"faulted_ops": 0, "failed_ops": 0, "duplicates_seen": 0, "concurrent_both_parsed": 0}
         self.store, self.cipher = store, cipher
         self.rng = random.Random(seed)
         self.dir = os.path.join(RUNS, label or (mutant or "correct"), f"seed-{seed}")
@@ -117,7 +212,7 @@ class Run:
     # --- process supervision -------------------------------------------------
     def start_server(self, first=False):
         e = self.env("server", first)
-        e.update(PG_DSN=PG_DSN, ADDR=ADDR, RESET="1" if first else "0")
+        e.update(PG_DSN=PG_DSN, ADDR=ADDR, RESET="1" if first else "0", **self.server_env)
         self.server = subprocess.Popen([SERVER_BIN], env=e, stdout=subprocess.DEVNULL,
                                        stderr=open(os.path.join(self.dir, "server.log"), "a"))
         for _ in range(200):
@@ -131,7 +226,10 @@ class Run:
         raise RuntimeError("server did not start")
 
     def start_client(self, first=False):
-        self.client = subprocess.Popen([sys.executable, CLIENT_PY, self.db, SERVER_URL], env=self.env("client", first),
+        e = self.env("client", first)
+        if self.net:
+            e["HTTP_TIMEOUT"] = "2"
+        self.client = subprocess.Popen([sys.executable, CLIENT_PY, self.db, PROXY_URL if self.net else SERVER_URL], env=e,
                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, bufsize=1,
                                        stderr=open(os.path.join(self.dir, "client.log"), "a"))
 
@@ -160,6 +258,29 @@ class Run:
             return None
         return json.loads(line)
 
+    def note(self, op, fault, r):
+        """Count what a phase 2 op did; returns r."""
+        st = self.net_stats
+        if fault:
+            st["faulted_ops"] += 1
+            if not r or not r.get("ok") or any(isinstance(x, str) for x in r.get("replies", [])):
+                st["failed_ops"] += 1
+        if r and op in ("sync", "sync_concurrent"):
+            res = r.get("results") or [x for rep_ in r.get("replies", []) if isinstance(rep_, list) for x in rep_]
+            st["duplicates_seen"] += sum(1 for x in res if x["result"] == "duplicate")
+            if op == "sync_concurrent" and len([x for x in r.get("replies", []) if isinstance(x, list)]) == 2:
+                st["concurrent_both_parsed"] += 1
+        return r
+
+    def net_op(self, op, fault, msg=None):
+        self.net.toxi.apply(fault)
+        try:
+            r = self.note(op, fault, self.send(msg or {"op": op}))
+        finally:
+            self.net.toxi.clear()
+        self.log(op, fault, r)
+        return r
+
     # --- the script ------------------------------------------------------------
     def new_action(self, i):
         start = self.rng.randint(0, 600)
@@ -169,27 +290,42 @@ class Run:
                 "rate_per_hour": self.rng.choice([3000, 4500, 6000, 9000, 12000]),
                 "cafe_piasters": self.rng.choice([0, 1500, 2500, 4000, 7550])}
 
+    def sale(self, i):
+        a = self.new_action(i)
+        self.intent.execute("INSERT INTO actions VALUES (?,?)", (a["action_id"], json.dumps(a)))  # before submit
+        r = self.send(a)
+        if r and r.get("ok"):
+            self.intent.execute("INSERT INTO acks VALUES (?)", (a["action_id"],))
+            self.log(f"sale {a['action_id']} acknowledged")
+        else:
+            self.log(f"sale {a['action_id']} no acknowledgement (client died)")
+
     def go(self):
         self.log(f"seed={self.seed} mutant={self.mutant or 'none'} fault={self.fault}")
         self.start_server(first=True)
         self.start_client(first=True)
-        for i in range(ACTIONS_PER_RUN):
-            a = self.new_action(i)
-            self.intent.execute("INSERT INTO actions VALUES (?,?)", (a["action_id"], json.dumps(a)))  # before submit
-            r = self.send(a)
-            if r and r.get("ok"):
-                self.intent.execute("INSERT INTO acks VALUES (?)", (a["action_id"],))
-                self.log(f"sale {a['action_id']} acknowledged")
-            else:
-                self.log(f"sale {a['action_id']} no acknowledgement (client died)")
+        for i in ([] if self.script else range(ACTIONS_PER_RUN)):
+            self.sale(i)
+            if self.net:  # phase 2: every sync, concurrent sync and replay may cross a network fault
+                if self.net.mode != "random" or self.rng.random() < 0.6:
+                    op, fault = self.net.pick(self.rng)
+                    self.net_op(op, fault)
+                if self.rng.random() < 0.2:
+                    _, fault = self.net.pick(self.rng)
+                    self.net_op("replay", fault, {"op": "replay", "k": self.rng.randint(1, 3)})
+                continue
             if self.rng.random() < 0.5:
                 self.log("sync", self.send({"op": "sync"}))
             if self.rng.random() < 0.2:
                 self.log("replay", self.send({"op": "replay", "k": self.rng.randint(1, 3)}))
+        if self.script:
+            self.script(self)
         # quiescence: faults are one-shot; restart anything dead and drain the outbox
+        if self.net:
+            self.net.toxi.clear()
         quiesced = False
         for _ in range(20):
-            r = self.send({"op": "sync"})
+            r = self.note("sync", None, self.send({"op": "sync"}))
             if r and r.get("ok") and r.get("pending") == 0:
                 quiesced = True
                 break
@@ -213,7 +349,7 @@ class Run:
         result = {"seed": self.seed, "mutant": self.mutant, "store": self.store, "cipher": self.cipher,
                   "fault": self.fault, "fired": self.fired,
                   "actions": len(intent), "acked": len(acked), "server_sales": sum(1 for r in dump["ledger"] if r["kind"] == "sale"),
-                  "violations": violations}
+                  "net": self.net_stats, "offline": dump.get("offline", []), "violations": violations}
         with open(os.path.join(self.dir, "result.json"), "w") as f:
             json.dump({**result, "trace": self.trace}, f, indent=1)
         return result
@@ -316,11 +452,200 @@ def phase1(seeds=50):
     return ok
 
 
+# --- Phase 2: network faults ----------------------------------------------------------------------------------
+# Single-fault cells: one toxic on every sync/replay, no process kill. "Exercised" is checked per cell so a toxic
+# that never bit is reported NOT ASSESSED, never PASS.
+PHASE2_CELLS = sorted(TOXICS) + ["concurrent"]
+RESPONSE_LOSS = {"resp_blackhole", "resp_cut_1", "resp_cut_20", "resp_cut_150"}  # server commits, reply lost (P9)
+DEGRADED_ONLY = {"slow", "slicer"}  # slow but working: must not fail, must not double-count
+
+
+def exercised(cell, st):
+    if cell == "concurrent":
+        return st["concurrent_both_parsed"] > 0 and st["duplicates_seen"] > 0
+    if cell in DEGRADED_ONLY:
+        return st["faulted_ops"] > 0
+    if cell in RESPONSE_LOSS:
+        return st["failed_ops"] > 0 and st["duplicates_seen"] > 0  # the retry met the committed command
+    return st["failed_ops"] > 0
+
+
+# P3 (client:after_business_commit) exists only in the separate_outbox_txn mutant; without it that mutant
+# can never be caught here (found in the phase 2 dev run). On the correct client it never fires.
+PHASE2_KILL_POINTS = PHASE1_POINTS + ["client:after_business_commit"] + SERVER_POINTS
+
+
+def phase2_proc_fault(seed):
+    # Randomized campaign: half the runs also get one process kill (client P1-P12 points or server P6-P9 points),
+    # drawn from its own RNG so the network script of a seed does not shift.
+    r = random.Random(f"{seed}|p2")
+    if r.random() < 0.5:
+        return False
+    return r.choice(PHASE2_KILL_POINTS), r.randint(1, 3)
+
+
+def p2run(seed, mode, label, toxi, mutant=None, fault=False, **kw):
+    return Run(seed, mutant, store="sqlite3mc", cipher="chacha20", fault=fault, label=label,
+               net=Net(toxi, mode), **kw)
+
+
+def phase2(seeds=50, campaign=3000, mutant_budget=400):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "toxiproxy": "v2.13.0", "store": "sqlite3mc chacha20, journal delete + marker (OQ28 A+B)",
+               "seeds_per_cell": seeds, "cells": [], "campaign": {}, "mutants": {}}
+    print(f"phase 2, commit {summary['harness_commit']}, {seeds} seeds per cell, campaign {campaign}")
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        for cell in PHASE2_CELLS:
+            t1 = time.time()
+            bad, tot = [], {"faulted_ops": 0, "failed_ops": 0, "duplicates_seen": 0, "concurrent_both_parsed": 0}
+            for s in range(1, seeds + 1):
+                r = p2run(s, cell, f"phase2-{cell}", toxi).go()
+                for k in tot:
+                    tot[k] += r["net"][k]
+                if r["violations"]:
+                    bad.append({"seed": s, "violations": r["violations"][:3]})
+            ex = exercised(cell, tot)
+            res = "PASS" if ex and not bad else ("FAIL" if bad else "NOT ASSESSED (fault never bit)")
+            ok &= res == "PASS"
+            summary["cells"].append({"cell": cell, "runs": seeds, **tot, "violating_runs": len(bad),
+                                     "first_bad": bad[:3], "seconds": round(time.time() - t1, 1), "result": res})
+            print(f"  {cell:15s} faulted {tot['faulted_ops']:4d} failed {tot['failed_ops']:4d} "
+                  f"dup {tot['duplicates_seen']:4d} both {tot['concurrent_both_parsed']:3d}  violating {len(bad)}  {res}",
+                  flush=True)
+        t1 = time.time()
+        bad, kills, tot = [], 0, {"faulted_ops": 0, "failed_ops": 0, "duplicates_seen": 0, "concurrent_both_parsed": 0}
+        for s in range(1, campaign + 1):
+            r = p2run(s, "random", "phase2-random", toxi, fault=phase2_proc_fault(s)).go()
+            kills += any("rc=-9" in x for x in r["fired"])
+            for k in tot:
+                tot[k] += r["net"][k]
+            if r["violations"]:
+                bad.append({"seed": s, "fault": r["fault"], "violations": r["violations"][:3]})
+                print(f"  CAMPAIGN VIOLATION seed {s}: {r['violations'][:2]}", flush=True)
+            if s % 250 == 0:
+                print(f"  campaign {s}/{campaign}  violating {len(bad)}  ({round(time.time() - t1)} s)", flush=True)
+        res = "PASS" if not bad else "FAIL"
+        ok &= res == "PASS"
+        summary["campaign"] = {"runs": campaign, "process_kills_fired": kills, **tot, "violating_runs": len(bad),
+                               "first_bad": bad[:5], "seconds": round(time.time() - t1, 1), "result": res}
+        print(f"  campaign: {campaign} runs, {kills} with a process kill, violating {len(bad)}  {res}", flush=True)
+        for m in MUTANTS:
+            t1 = time.time()
+            caught = None
+            for s in range(1, mutant_budget + 1):
+                r = p2run(s, "random", f"phase2-mutant-{m}", toxi, mutant=m, fault=phase2_proc_fault(s)).go()
+                if r["violations"]:
+                    caught = r
+                    break
+            summary["mutants"][m] = {"caught": bool(caught), "runs_to_catch": s if caught else None,
+                                     "budget": mutant_budget, "first_violation": caught["violations"][0] if caught else None,
+                                     "fault": caught["fault"] if caught else None, "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {m:22s} {'CAUGHT' if caught else 'SURVIVED'} after {s} runs: "
+                  f"{caught['violations'][0] if caught else '-'}", flush=True)
+        summary["ts09"] = ts09(toxi)
+        ok &= summary["ts09"]["result"] == "PASS"
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "phase2-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"GATE: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
+# TS-09 (offline-alert mechanics): planned outages while the cashier keeps selling. The server, from its own clock,
+# records each contact gap longer than GAP_MS once, with an owner alert only inside business hours.
+TS09_GAPS = [1.2, 2.0]
+TS09_TOLERANCE = 0.25
+
+
+def ts09_script(run):
+    obs, i = [], 0
+
+    def pings(seconds):
+        first = last = None
+        end = time.time() + seconds
+        while time.time() < end:
+            t = time.time()
+            r = run.send({"op": "ping"})
+            if r and r.get("ok"):
+                first = first if first is not None else t
+                last = t
+            time.sleep(0.1)
+        return first, last
+
+    _, last = pings(1.0)
+    for g in TS09_GAPS:
+        run.net.toxi.apply("down")
+        t_down = time.time()
+        while time.time() < t_down + g:  # selling continues offline; each sync attempt fails at the proxy
+            run.sale(i)
+            i += 1
+            run.note("sync", "down", run.send({"op": "sync"}))
+            time.sleep(0.2)
+        run.net.toxi.clear()
+        first, nxt = pings(1.0)
+        obs.append({"planned_s": g, "last_contact_before": last, "first_contact_after": first})
+        last = nxt
+    run.ts09 = obs
+
+
+def ts09(toxi):
+    out = {"gap_ms": 500, "planned_gaps_s": TS09_GAPS, "tolerance_s": TS09_TOLERANCE, "cases": []}
+    ok = True
+    for bh in ("1", "0"):
+        run = p2run(1, "none", f"ts09-business-hours-{bh}", toxi, server_env={"GAP_MS": "500", "BUSINESS_HOURS": bh})
+        run.script = ts09_script
+        r = run.go()
+        rec, problems = r["offline"], []
+        if len(rec) != len(run.ts09):
+            problems.append(f"{len(rec)} offline periods recorded, {len(run.ts09)} planned")
+        for o, p in zip(run.ts09, rec):
+            if abs(p["from_s"] - o["last_contact_before"]) > TS09_TOLERANCE:
+                problems.append(f"from off by {p['from_s'] - o['last_contact_before']:.3f} s")
+            if abs(p["to_s"] - o["first_contact_after"]) > TS09_TOLERANCE:
+                problems.append(f"to off by {p['to_s'] - o['first_contact_after']:.3f} s")
+            if p["owner_alert"] != (bh == "1"):
+                problems.append(f"owner_alert {p['owner_alert']} with business hours {bh}")
+        problems += [f"{v[0]}: {v[1]}" for v in r["violations"]]
+        case = {"business_hours": bh, "sales": r["actions"], "server_sales": r["server_sales"],
+                "observed": run.ts09, "recorded": rec, "problems": problems,
+                "result": "PASS" if not problems else "FAIL"}
+        ok &= not problems
+        out["cases"].append(case)
+        print(f"  TS-09 business_hours={bh}: {len(rec)} periods, sales {r['actions']}/{r['server_sales']} on server, "
+              f"{case['result']} {problems[:3]}", flush=True)
+    out["result"] = "PASS" if ok else "FAIL"
+    return out
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
     if sys.argv[1] == "phase1":
         sys.exit(0 if phase1() else 1)
+    if sys.argv[1] == "phase2":  # phase2 [seeds_per_cell] [campaign_runs]
+        sys.exit(0 if phase2(*(int(x) for x in sys.argv[2:4])) else 1)
+    if sys.argv[1] == "ts09":
+        t = Toxi(RUNS)
+        try:
+            print(json.dumps(ts09(t), indent=1))
+        finally:
+            t.stop()
+    if sys.argv[1] == "replay2":  # replay2 <seed> <cell|random> [mutant]
+        t = Toxi(RUNS)
+        try:
+            s, cell = int(sys.argv[2]), sys.argv[3]
+            r = p2run(s, cell, "replay2", t, mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                      fault=phase2_proc_fault(s) if cell == "random" else False, verbose=True).go()
+            print(json.dumps({k: r[k] for k in ("fault", "fired", "actions", "acked", "server_sales", "net", "violations")}, indent=1))
+        finally:
+            t.stop()
     if sys.argv[1] == "replay1":  # replay1 <seed> <cipher> <point> [mutant]
         s, cipher, point = int(sys.argv[2]), sys.argv[3], sys.argv[4]
         r = Run(s, sys.argv[5] if len(sys.argv) > 5 else None, verbose=True, store="sqlite3mc", cipher=cipher,

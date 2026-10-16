@@ -15,7 +15,8 @@
 # refused and recorded.
 # Env: MUTANT (separate_outbox_txn | double_minute), FP=name:hit (SIGKILL self at that point),
 #      STORE (sqlite3mc), CIPHER (chacha20 | sqlcipher), SPIKE_DB_KEY (64 hex, test key only),
-#      JOURNAL (delete = rollback journal, the OQ28 option A default | wal), CACHE_PAGES (tamper tests only).
+#      JOURNAL (delete = rollback journal, the OQ28 option A default | wal), CACHE_PAGES (tamper tests only),
+#      HTTP_TIMEOUT (seconds, default 10).
 # The spike's binding is not the product decision (README).
 import hashlib
 import hmac
@@ -25,6 +26,7 @@ import os
 import shutil
 import signal
 import sys
+import threading
 import urllib.error
 import urllib.request
 
@@ -225,8 +227,11 @@ def post(cmds):
     req = urllib.request.Request(SERVER + "/batch", method="POST",
                                  data=json.dumps({"device_id": DEVICE, "commands": cmds}).encode(),
                                  headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=10) as r:
-        return json.loads(r.read())
+    with urllib.request.urlopen(req, timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
+        body = json.loads(r.read())  # an empty or cut body raises here: never acknowledge on the status code (P2-F1)
+    if not isinstance(body, dict) or not isinstance(body.get("results"), list):
+        raise ValueError("reply without a results list")
+    return body
 
 
 NET_ERRORS = (urllib.error.URLError, ConnectionError, TimeoutError, OSError, http.client.HTTPException, ValueError)
@@ -260,6 +265,51 @@ def sync():
     q("COMMIT")
     failpoint("client:after_mark")  # P12
     reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count()})
+
+
+def mark(results):
+    q("BEGIN IMMEDIATE")
+    for r in results or []:
+        if r["result"] in ("applied", "duplicate"):
+            q("UPDATE outbox SET status = 'acked' WHERE command_id = ?", (r["command_id"],))
+        elif r["result"] in ("payload_mismatch", "seq_conflict"):
+            q("UPDATE outbox SET status = 'conflict' WHERE command_id = ?", (r["command_id"],))
+    q("COMMIT")
+
+
+def sync_concurrent():
+    # SC-05: the same pending batch sent twice at once (a retry fired while the first is still in flight).
+    rows = q("SELECT seq, command_id, payload, payload_hash FROM outbox WHERE status = 'pending' ORDER BY seq LIMIT 50")
+    if not rows:
+        return reply({"ok": True, "op": "sync_concurrent", "pending": 0})
+    cmds = rows_to_cmds(rows)
+    out = [None, None]
+
+    def worker(i):
+        try:
+            out[i] = post(cmds)
+        except NET_ERRORS as e:
+            out[i] = e
+    threads = [threading.Thread(target=worker, args=(i,)) for i in (0, 1)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    for o in out:  # acknowledge from every reply that parsed; the second is a duplicate
+        if isinstance(o, dict):
+            mark(o["results"])
+    reply({"ok": True, "op": "sync_concurrent",
+           "replies": [o["results"] if isinstance(o, dict) else f"error: {str(o)[:60]}" for o in out],
+           "pending": pending_count()})
+
+
+def ping():
+    try:
+        with urllib.request.urlopen(f"{SERVER}/ping?device={DEVICE}", timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
+            r.read()
+        reply({"ok": True, "op": "ping"})
+    except NET_ERRORS as e:
+        reply({"ok": False, "op": "ping", "error": str(e)[:80]})
 
 
 def replay(k):
@@ -306,6 +356,10 @@ for line in sys.stdin:
             sync()
         elif op == "replay":
             replay(msg["k"])
+        elif op == "sync_concurrent":
+            sync_concurrent()
+        elif op == "ping":
+            ping()
         elif op == "verify":
             verify()
         elif op == "checkpoint":
