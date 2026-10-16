@@ -5,8 +5,8 @@ Written by /brainstorm on 2026-10-16 at workflow: standard, docs.density: balanc
 review: lean (PD-PRODUCT-PRINCIPLES, DD-CONCEPT-VISUAL, CTO-FEASIBILITY, PR-SCOPE
 skipped — none of them is an approval). Labels: **evidence** = the founder observed or
 customers said/paid it; **assumption** = belief not yet tested; **NOT SOURCEABLE** =
-not checked yet, carried into Risks. Competitor facts are deliberately absent:
-/competitor-analysis runs next and updates this brief.
+not checked yet, carried into Risks. Competitor facts: § Market & competitors,
+from /competitor-analysis captures dated 2026-10-16 (business/competitors/).
 -->
 
 **One-sentence pitch:** Kodeebo helps owners of PlayStation lounges and cafés in Egypt stop money leaking from the drawer and unbilled station time, with a counter app that never waits for the internet and an owner view that works from anywhere.
@@ -132,11 +132,28 @@ Not set — `/setup-stack`, after the desktop-client `/research` and the Windows
 ## Market & competitors
 - **Market size:** NOT SOURCEABLE yet — `/market-research`.
 - **Alternatives:** paper and Excel; a few dominant lounge systems (names unknown to the founder; complaints: slow, freezing, not online, very basic, no flexibility — **evidence**: founder's conversations); Glitch (the founder's previous system, used by the 3 founding customers).
-- **Competitors to analyse** — not researched in `/brainstorm`; `/competitor-analysis` runs next and updates this section with dated captures:
-  - https://waqtak.app/#pricing
-  - https://playmasr.com/landing/
-  - https://hsys.io/systems/c/fun
-  - https://hsys.io/sales/39ed46fe-aae6-4ab9-8004-2b3f027d1a8b
+- **Dominant systems still unidentified (gap):** it is unknown whether the three competitors below are the systems customers complained about. If not, the dominant systems are neither named nor captured. Close it: ask the 3 founding customers and the non-referral owners in risk 5 which system they use or left, then `/competitor-analysis` on those names.
+- **Competitors captured 2026-10-16** (`/competitor-analysis`, Egypt, verdict COMPLETE WITH GAPS, horizon 90 days → refresh by 2027-01-14). Files: `business/competitors/waqtak.md`, `playmasr.md`, `hsys.md`; matrix `business/competitors/comparison-matrix.md`. Prices in EGP as published, VAT status not stated by any; capabilities are vendor claims (VERIFIED-ON-SITE = read on their site, not tested).
+
+  | | Waqtak (waqtak.app) | PlayMasr (playmasr.com) | HSYS (hsys.io) |
+  |---|---|---|---|
+  | Price | 200/month · 500/quarter · 1,500/year · 3,000/3 years, per shop, unlimited devices | 150/month · 1,500/year (2 screens vs "unlimited" — page contradicts itself) | PS shop per month: 199 online · 299 offline · 399 online+offline; +99/month per extra branch; annual "save 15%", no figure |
+  | Trial | 14 days, no card | 7 days, no card | 3-hour demo + 7-day trial |
+  | Offline | local DB, up to 5 days, then one connection to check the subscription | "works fully offline", while its own disclaimer says cloud-dependent | offline-only or online+offline plan |
+  | Owner remote view | web dashboard + Android app (Google Play) | PWA on any device | browser; mobile on the hybrid plan; no native app |
+  | Activity log / attendance | not published / not named | claims only / none | audit log of sensitive actions / from login |
+  | Cashier OS | Windows (version not stated); PC-lock client on Windows 10/11 | browser/PWA, OS not stated | desktop program or browser, OS not stated |
+  | ETA e-invoicing | not mentioned | not mentioned | claimed (automatic, QR on receipt) |
+  | Onboarding | self-install, remote help, no fee | self-serve, "no technician needed" | remote same-day setup; affiliates paid 5–25% recurring |
+
+- **Price corridor** (one venue, plan with offline + remote owner view, cheapest commitment ≤ 1 year; n = 3): **EGP 1,500 – 4,788 per year, median 1,500**; billed monthly 1,800 – 4,788, median 2,400. **Kodeebo's 10,000 EGP/year is not like for like:** it covers software + on-site installation + training + ongoing on-site support (**evidence**: founder, 2026-10-16), while all three publish a software subscription with self-serve or remote onboarding. Raw ratio 2.1× the highest, 6.7× the median; the on-site share of the 10,000 is not recorded (NOT SOURCEABLE → `/pricing-strategy`, `/business-case`).
+- **What the captures mean** (evidence for decisions, not decisions):
+  1. **Price pressure on risk 5** — published software prices are far below the anchor; the on-site service is the only published difference. → `/pricing-strategy`.
+  2. **Offline and a remote owner view are table stakes** — all three publish both. The positioning line "unlike the dominant lounge systems (… not online …)" does not hold against these three. **Sent to `product-director` for approval; positioning unchanged until then.**
+  3. **Where Kodeebo can stand apart** (on their published claims): the money trail (Waqtak publishes no audit log, PlayMasr only claims), attendance, on-site install/training/support (none publishes it), and a counter that never stops (Waqtak stops after 5 offline days for a subscription check — the same pattern as N5, now with a published comparison point).
+  4. **Where Kodeebo is behind on paper:** no trial versus 7–14-day trials; HSYS claims ETA e-invoicing (raises risk 7); Waqtak ships a PC-lock client today (Kodeebo: Tier 2).
+  5. **Channel:** HSYS also grows through paid referrers (5–25% recurring).
+- **Gaps:** no reviews or store ratings found for any; VAT status, Windows versions, printer/drawer hardware and hosting region unpublished by all; HSYS annual price, PlayMasr subscription page and screen limit not captured; no USD conversion (CBE rate page blocked). Most close with a 7–14-day trial account per vendor — the founder's action. Full list: matrix § Tally and gaps.
 
 ## Personas
 - **Owner (buyer):** runs one or more lounges or a café; not always on site; Android phone; Egyptian Arabic. Wants: trust in the money, staff accountability, a daily report. Uses: owner Android app, owner web dashboard.
@@ -161,7 +178,7 @@ Ranked by impact if wrong × uncertainty. Top three have their cheapest test in 
 | 2 | A desktop technology runs well, prints and opens the drawer on Windows 10/11 (Windows 7 optional) | feasibility | High — blocks `/setup-stack` | Unverified leads in the idea pool | `/research` + spike on real Windows 10/11 and Windows 7 x64 VMs | Starts, prints, opens the drawer, encrypted store works on 10/11; Windows 7 reported separately |
 | 3 | The 3 customers switch without losing anything | desirability | High — first revenue and references | Praise only | Op-count test on Glitch + a parity checklist each customer signs off | Zero missing-feature blockers in UAT |
 | 4 | Tier 1 (3 clients + backend + sync) fits 2 engineers in acceptable time | viability | High | None; rough estimate ~10–14 months | `/estimate` after `/map-domains` | Tier 1 fits the founder's target date |
-| 5 | Cold, non-referral lounges pay ~10,000 EGP/year | viability | High | 3 referral sales | `/competitor-analysis` prices + 5–8 non-referral owner interviews with a pre-sale ask | ≥ 3 of 8 commit at the hypothesis price |
+| 5 | Cold, non-referral lounges pay ~10,000 EGP/year | viability | High | 3 referral sales (price includes on-site install, training and support); published competitor software prices EGP 1,500–4,788/yr, median 1,500 (n = 3, captured 2026-10-16, `business/competitors/comparison-matrix.md`) | `/competitor-analysis` prices + 5–8 non-referral owner interviews with a pre-sale ask | ≥ 3 of 8 commit at the hypothesis price |
 | 6 | Standalone cafés want it | desirability | Medium | None — assumption | 5 café-owner interviews | ≥ 3 describe the leakage pain and a gap in their tool |
 | 7 | Egyptian VAT / e-receipt rules do not force an integration into Tier 1 | compliance | High — legal blocker | NOT SOURCEABLE | `/research` against Egyptian Tax Authority primary sources | Clear yes/no plus integration scope |
 | 8 | The subscription grace period (N5) resists clock tampering | security | Medium — revenue leakage | None | `/license-design` + `/threat-model` | A tampered clock cannot extend grace in tests |
