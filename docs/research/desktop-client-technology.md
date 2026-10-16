@@ -245,6 +245,12 @@ Merge observations that read across the parts (each rests only on the cited rows
 | F431 | Capacitor Android is a native Android runtime that connects JavaScript to Java/Kotlin code and needs an Android System WebView / Chrome 60+; API 24+; the page does not describe loading an existing Vite build | [Capacitor Android](https://capacitorjs.com/docs/android) fetched 2026-10-16 | 2 | Using a Vite `dist` folder as the web asset directory: NOT SOURCEABLE on this page (other Capacitor pages not fetched); PENDING - S44 |
 | F432 | Not reached or failed this session: Compose Multiplatform web status page (HTTP 404), reactnative.dev platforms page (fetch failed), wails.io (HTTP 403), Flutter exact stable version and Dart version, Qt licence terms, Fyne version, Electron/Tauri/Flutter/Avalonia/Qt Arabic-RTL behaviour, Tauri mobile plugin gaps (which official plugins lack Android) | queries and URLs listed in this row | - | NOT SOURCEABLE - fetch failed or page did not state it; no value filled from memory |
 
+### 3.6 Added after the merge (2026-10-16)
+
+| # | Claim | Source (link) | Tier | Notes |
+|---|-------|---------------|------|-------|
+| F501 | Windows 11 minimum requirements: a compatible 64-bit processor with 2+ cores at 1 GHz or faster; 4 GB RAM; 64 GB storage; UEFI firmware with Secure Boot; **TPM 2.0**; DirectX 12 graphics with a WDDM 2.0 driver; a 720p display larger than 9 inches. Home and Pro (personal use) need internet and a Microsoft account at setup. An upgrade needs Windows 10 version 2004 or later. For a device that misses them, the page says you "may not be able to install Windows 11"; it points to the PC Health Check app, which does not check graphics or display | [Windows 11 specifications](https://www.microsoft.com/en-us/windows/windows-11-specifications) (fetched 2026-10-16; no page date shown) | 2 | The "compatible processor" list is on separate Microsoft pages, not fetched: NOT SOURCEABLE this pass. A venue PC with no TPM 2.0 fails, so it stays on Windows 10 + consumer ESU (§ 5). The reference PC (4 GB, OQ4) is exactly at the RAM floor |
+
 ## 4. Options Considered
 
 ### 4.1 Runtime families against every decision area
@@ -471,6 +477,7 @@ Generated-client note common to all rows: every family has an OpenAPI generator 
   - J (kiosk/PWA): no spooler RAW printing; needs a local helper for the printer (F219).
   - None of these is proven worse on performance: nothing is measured. Any of them can return if phase 1 rules out all of A, B and C.
 - **Windows 7 x64 — not supported in Tier 1 (founder, 2026-10-16)**: the one venue (of 3) still on Windows 7 has its PC or Windows upgraded by Kodelix during the on-site install. Spike phase 3 is not run. The Windows 7 findings (F6, F7, F10, F11, F29, F30, F311, M3, M7) stay on record for a later decision, if a paying customer needs Windows 7.
+- **Windows 10 — supported in Tier 1 (founder, 2026-10-16)**: unlike Windows 7, every shortlisted runtime still supports Windows 10, so the app keeps getting patched there. At the on-site install, a Windows 10 PC moves to Windows 11 when its hardware meets Microsoft's requirements (F501); otherwise it is enrolled in consumer ESU. Windows 11 is never forced. **Reversal trigger:** revisit Windows 10 support before consumer ESU ends on 2027-10-12 (F211). Recorded in the product brief's decision log.
 - **Gap classification (founder confirmed)**: no `NOT SOURCEABLE` gap blocks the spike. OQ8 (JVM store, printing and updater), OQ9 (advisories) and OQ11 (licence texts) block the runtime ADR. OQ10 (ASVS/MASVS IDs) blocks the threat models.
 
 **What the researchers recommend (each on its own slice):**
@@ -606,7 +613,8 @@ Per-option detail is in § 4.1, § 4.3 and § 5.1.
 | OQ17 | Do Ready Print and protected print mode on Windows 11 affect a RAW queue for a non-IPP receipt printer (F209, F210)? | Spooler RAW as the default transport | spike S21 | phase 2 |
 | OQ18 | Confirm whether Room 3 targets desktop JVM (F422). The Compose Multiplatform pin is **resolved**: 1.12.2 was pinned by the studio update on 2026-10-16 | `pins.yaml` accuracy (Room 3 only) | pin owner via `/research refresh kmp` | before implementation |
 | OQ19 | Licensed Windows 11 and Windows 10 22H2 installation media for the spike machines (Windows 7 no longer needed) — founder will download official ISOs from microsoft.com and use own licences; open until then | Spike phase 0 | user | before the spike |
-| OQ20 | Windows 10 Home/Pro has been out of support since 2025-10-14, with consumer ESU to 2027-10-12 (F2, F211), and most venues run Windows 10 or 11 Home/Pro. Are the venue Windows 10 PCs enrolled in ESU, or moved to Windows 11 at install like the Windows 7 venue? | Supported-OS statement; install checklist | user | before the first install |
+| OQ20 | Windows 10 Home/Pro support at venues — **Answered 2026-10-16**: Windows 10 stays supported in Tier 1. At install, move to Windows 11 if the hardware qualifies (F501), else enrol in consumer ESU; never force Windows 11. Revisit before ESU ends 2027-10-12 (§ 5) | — | user | closed |
+| OQ21 | How many venue PCs fail Windows 11's requirements (F501)? Founder reports that many have no TPM. No counts recorded yet; check each PC at the site survey or install with PC Health Check, plus the graphics and display items it skips | Install checklist; ESU enrolment count; the 2027-10-12 review | user + Kodelix install staff | before the first install |
 
 ### Spikes
 
