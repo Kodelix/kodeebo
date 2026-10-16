@@ -205,7 +205,7 @@ First week: cashiers stop asking; first month: the owner trusts the daily report
 | Reference | What We Take From It | What We Do Differently | Which Principle It Validates |
 | ---- | ---- | ---- | ---- |
 | Glitch (founder's previous system) | The capability baseline only | Clean-room design and code | 1, 2 (customers praise log and offline) |
-| Competitors to analyse (see brief) | Pending `/competitor-analysis` | — | — |
+| Waqtak, PlayMasr, HSYS (`business/competitors/`, captured 2026-10-16; vendor claims, untested) | Offline/hybrid counter and a remote owner view are table stakes; trials of 7–14 days; software-only prices EGP 1,500–4,788/yr | Trail depth on every exception (actor + reason, append-only); on-site install, training and support; no fixed offline stop beyond the N5 grace; no competitor named in customer copy | 1, 2 |
 
 ---
 
