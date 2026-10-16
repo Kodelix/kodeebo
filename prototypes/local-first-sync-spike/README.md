@@ -27,9 +27,25 @@ This code is throwaway (`.claude/rules/prototype-code.md`). Nothing here is impo
 | 0 | Can the harness catch planted bugs? | Every mutant caught; the correct stub passes ≥ 300 seeded runs with 0 violations; every failure replays from its seed |
 | 1 | Is "bill closed + outbox row" atomic on the encrypted store under process kill? Tamper TS-03a, TS-04a, TS-05a | 0 violations over every fault cell × ≥ 50 seeds; tamper pass signals |
 | 2 | Exactly one effect per action under network faults, resend, duplicate replay, concurrent retry and server kill (real PostgreSQL 18.6) | 0 violations; ≥ 3,000 randomized runs |
-| 3 | Compound faults, reordering, partial batch, restored backup, cloned disk, re-bootstrap; tamper TS-01, TS-02, TS-03b, TS-06a, TS-07a, TS-09, TS-10 | 0 violations; ≥ 3,000 runs (30,000 stretch) |
-| 4 | Windows 10/11 durability and tamper legs | per § 9.1 / § 9.1.1 |
-| 5 | Day-close totals and tampered clocks | per § 9.1 |
+| 3 | Compound faults, reordering, partial batch, restored backup, cloned disk, re-bootstrap; tamper TS-01, TS-02, TS-03b, TS-06a, TS-07a, TS-09, TS-10; added cases SC-19 (first), SC-20, SC-21a, SC-22, SC-23, SC-25a and SC-25b mechanics (table below) | 0 violations; ≥ 3,000 runs (30,000 stretch); tamper pass signals; each added case's pass signal |
+| 4 | Windows 10/11 durability and tamper legs; added cases SC-21b, SC-24, SC-26, SC-27 | per § 9.1 / § 9.1.1 / § 9.1.2 |
+| 5 | Day-close totals and tampered clocks; SC-25b with the real N5 rules | per § 9.1 / § 9.1.2 |
+
+**Added cases (founder, 2026-10-16; full rows with mechanisms in `docs/research/local-first-sync.md` § 9.1.2).** SC-19 is the highest-risk gap and runs first in phase 3.
+
+| ID | Case | Pass signal (short) | Phase |
+|---|---|---|---|
+| SC-19 | Server restored from backup or PITR after the device holds acknowledged commands and has deleted those outbox rows | Every action acknowledged before the restore is on the server exactly once after reconnect. The server detects the gap itself (device's highest acknowledged sequence above the server cursor), records it and alerts the owner. Resent commands are byte-identical to the originals. A range already pruned from the device is reported exactly, never silently | 3 (first) |
+| SC-20 | Disk full during the "close and pay" transaction and during the marker write | Sale fails visibly with no partial rows (explicit `ROLLBACK`). A failed marker write leaves the store ahead of the marker (safe), with an event recorded and the write retried. Nothing lost or duplicated | 3 |
+| SC-21 | App update with an unsynced outbox and a local schema migration; kill at every step | Store fully old or fully new. Pending commands are sent byte-identical and dedupe across versions. The marker stays valid. The pre-migration copy is kept until verified. A downgrade is refused | 3 (a); 4 (b, Windows updater) |
+| SC-22 | Two app instances started at once on the same store | Second instance refused or kept waiting with a message. No sequence used twice, no lost sale, marker never moves backwards | 3 |
+| SC-23 | Owner changes a price or config on the server while the device is offline with a session running | Billed from the price frozen at session start, with the config version recorded. The server flags it and does not re-price it. Totals agree at day close | 3 |
+| SC-24 | Start-up integrity-check time on a retention-sized store, HDD-throttled VM | Within the start-up budget ("not checked" until `perf-budgets.md` exists). Options if slow: `quick_check`, a partial check of hot tables, a full check only after an unclean shutdown, a smaller live store | 4 |
+| SC-25 | (a) Days-long offline backlog; (b) N5 grace expiring mid-shift | (a) Drains in order with exactly one effect per action; batches shrink instead of looping; the counter keeps selling. (b) Open sessions can still be closed and billed; nothing lost or hidden | 3 (a, b mechanics); 5 (b, real rules) |
+| SC-26 | Counter read latency while sync writes, rollback-journal mode | p95/p99 within the counter budget ("not checked" until it exists); no `SQLITE_BUSY` reaches the cashier | 4 |
+| SC-27 | Windows Defender holding a lock on the database, journal or marker | 0 lost or duplicated sales and 0 false refusals over N commits; failures visible; any needed exclusion listed with its security cost | 4 |
+
+**Device retention rule under test (founder):** an outbox row goes once a fully parsed ack arrives. The business records behind it stay on the device for a bounded window longer than ETA's 30-day late-submission route and the server's backup window, and are pruned only after the server confirms its archive. The window values are open (sync note OQ29); the spike uses placeholders.
 
 ## Phase 0 hypothesis
 
