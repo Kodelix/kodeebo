@@ -1,0 +1,188 @@
+# Product Brief: Kodeebo — by Kodelix
+
+<!--
+Written by /brainstorm on 2026-10-16 at workflow: standard, docs.density: balanced,
+review: lean (PD-PRODUCT-PRINCIPLES, DD-CONCEPT-VISUAL, CTO-FEASIBILITY, PR-SCOPE
+skipped — none of them is an approval). Labels: **evidence** = the founder observed or
+customers said/paid it; **assumption** = belief not yet tested; **NOT SOURCEABLE** =
+not checked yet, carried into Risks. Competitor facts are deliberately absent:
+/competitor-analysis runs next and updates this brief.
+-->
+
+**One-sentence pitch:** Kodeebo helps owners of PlayStation lounges and cafés in Egypt stop money leaking from the drawer and unbilled station time, with a counter app that never waits for the internet and an owner view that works from anywhere.
+
+## Problem
+- Lounges run the floor on paper, Excel or one of a few dominant systems that owners call "slow, freezing, not online, very basic, no flexibility" (**evidence**: founder's conversations).
+- Money leaks: cash leaves the drawer recorded only on paper or not at all; station time goes unbilled; staff attendance is not tracked; there is no detailed daily report (**evidence** of the leak; amounts **assumption** — unknown).
+- The owner can only trust the money by standing at the counter.
+
+## ICP — ideal customer profile
+- **Primary:** owner-operator of a PlayStation or cyber gaming lounge in Egypt, ~5–20 stations (**assumption**), with a café counter; one branch, sometimes 2+; hires cashiers and is not at the counter every shift. The buyer is the owner (sometimes a team lead at a multi-branch operator); the daily user is the cashier.
+- **Trigger events:** cash found missing; the current system freezes or loses a running session; opening a new branch.
+- **Also in scope:** standalone cafés — takeaway and a simple table tab (**assumption**, no customer evidence yet); PC gaming — PCs as a timed station type.
+- **Not for:** restaurants needing floor plans, kitchen display or delivery (Later module); retail (Later module); PC centres that need automatic PC lock — supported in Tier 2; venues unwilling to pay for software.
+
+## Jobs-to-be-done
+1. **(core)** When the floor is busy, I want every station minute and every café item to land on the right bill by itself, so I collect every pound without arguing with customers.
+2. When the internet drops or crawls, I want the counter to keep working at full speed, so no session or sale is lost.
+3. When I am not at the venue, I want to see every action, every cash paid-out and who was on shift, so I can stop leakage and trust my staff.
+4. When the business day ends, I want a detailed report that reconciles the drawer, so I know what I earned and what is missing.
+5. When a customer wants a drink to go or sits at a café table, I want to ring it up in seconds or keep a simple tab, so the counter never queues.
+
+## Positioning
+- For owners of gaming lounges and cafés in Egypt who lose money they cannot see, Kodeebo is a lounge and café POS with an owner control room that **stops money leaking** — every pound and every station minute leaves a trail the owner sees from anywhere.
+- Unlike paper and Excel (free but leaky, no trail) and the dominant lounge systems (slow, freezing, not online, inflexible), Kodeebo keeps the counter fast and working with or without internet — **speed and local-first are the proof, not the headline.**
+- Switching cost to beat: retraining cashiers, leaving history behind, fear of downtime during the switch.
+
+## Pricing model
+- **Model:** subscription, annual or monthly.
+- **Plans / price points (hypothesis):** anchor 10,000 EGP/year per venue (**evidence**: each of the 3 current customers pays this today, via referral). Value metric (per branch / per station / tiers), monthly price and plan names → `/pricing-strategy`.
+- **Trial / free tier:** none self-serve. A guided demo and installation by Kodelix or a referral partner; the customer pays to start.
+- **Billing:** EGP. Provider, invoicing and VAT handling → `/pricing-strategy` + `/research` (**NOT SOURCEABLE** yet).
+- **Subscription control (N5):** each tenant is active or suspended; the cashier app has a bounded, known offline grace period, after which it must reach the server to keep selling. Design → `/license-design` + `/research`.
+
+## Distribution
+- **Delivery:** hosted multi-tenant (Kodelix runs the server and owner dashboard). The cashier app is installed on the venue's Windows PC.
+- **Channels:** Windows cashier app (installed during onboarding) · owner web dashboard · owner Android app (Google Play; iOS later) · direct sales via demo · marketing site later.
+- **Acquisition:** the 3 existing lounges move from Glitch first; then referral partners (friends and contacts paid a commission per sale). Wide marketing only after Kodeebo is built.
+
+## Stack (profile)
+Not set — `/setup-stack`, after the desktop-client `/research` and the Windows 10/11 + Windows 7 x64 VM spike. Delivery is hosted multi-tenant; three client surfaces in Tier 1 (Windows cashier app, owner web dashboard, owner Android app), build approach of each by `/research` + ADR.
+
+## MVP — scope tiers
+
+**Scope rule (founder, 2026-10-16):** Glitch's gaming and café feature set is the **baseline**. All of it is in Kodeebo's scope, rebuilt from scratch with a clean design — never copied. An item leaves scope only when the founder drops it explicitly. Tiers are **ordering only — nothing is cut.** Item IDs refer to `design/glitch-idea-pool.md`. The Tier 1/Tier 2 line is **provisional** until the founder's aggregate operation-count test on the Glitch server (counts per feature type, no customer data) runs before `/map-domains`; anything with real daily use moves to Tier 1.
+
+**Tier 1 — what the 3 customers need to switch from Glitch.** 🔒 = security-sensitive (threat model required).
+1. **Stations and sessions** — station categories → types → units, incl. PlayStation and **PCs as a timed station type** (G1); hourly price per type with named price tiers (G2); **change the price tier during a running session, billed per period** (N4); minimum billable minutes (G5); prices frozen at session start (G12); start/end (S1); move to another station (S3); cancel by permission 🔒 (S4); one open session per station (S5); timer and planned-end alert (S6); live floor view (S12).
+2. **Selling and tabs** — quick takeaway sale (O1); open tab (O2); café items on the session tab (S10); simple café table tab (N3); **open item** — free name and price, by permission, logged with a reason, owner-set maximum price 🔒 (N1); manual discount/surcharge by permission with a reason 🔒 (G10); void with reason 🔒 (O6); daily order numbers per branch (O7).
+3. **Payments and receipts** — several methods on one bill, the method **recorded only** (O3); tax inclusive/exclusive, service charge, minimum charge, rounding (G11 — Egyptian VAT and e-receipt rules via `/research`); receipt printer and cash drawer (D1).
+4. **Shifts, cash and the ledger** — shift open/close with cash count (W1); paid-outs from the drawer against reasons 🔒 (W2); X and Z reports (W3); business day past midnight and end-of-day close (W4); one ledger of every money movement 🔒 (O8).
+5. **Staff** — employees, roles (owner, manager, cashier), permissions, branch assignment 🔒 (W5); passcode sign-in on the device 🔒 (W8); clock in/out (W6 — staff attendance is personal data under PDPL).
+6. **Stock** — café product catalogue; stock per branch deducted by sales, adjustments, transfers between branches (I1).
+7. **Activity log and platform** — one audit record for every change 🔒 (P6); customer-defined reason lists (P5); store → branch → device, one cashier device per branch in the MVP (P3); Arabic first, English complete, RTL first, Egyptian Arabic copy (P4).
+8. **Local-first operation** 🔒 — the cashier app always works from its own encrypted local data and business logic; online it sends its changes to the server; offline it keeps working and queues changes (encrypted) until the connection returns; server changes (prices, settings, dashboard edits) are pushed down (F1 changed to local-first); applied on the server in device order, never twice (F2); a day closed offline whose server totals differ is flagged for review (F3); clear offline/syncing/failed/conflict states (F4).
+9. **Owner web dashboard** (N2) — reports, activity log, live floor, configuration.
+10. **Owner Android app** (D6, changed: Android only, iOS later) — same capabilities as the owner web dashboard (N2). Every current customer asked for it; it carries the positioning.
+11. **Subscription control** 🔒 (N5) — tenant active/suspended; bounded offline grace period.
+
+**Tier 2 — the rest of the baseline.**
+- Pricing: fixed one-time session price (G4); first N minutes free (G6); special price for one unit (G7); automatic time-of-day/day-of-week discounts and surcharges (G9).
+- Sessions: backdated start with an approver 🔒 (S7); extras with charging modes and lost/damaged tracking (S9); station power/network control (S11); **automatic PC lock/unlock when time ends** — a client agent on every PC that resists customer bypass 🔒, own `/research` + `/threat-model`.
+- Selling: move, split and merge orders or lines (O4); partial refund against a payment 🔒 (O5).
+- Customers: customer records and walk-ins 🔒 PII (C1); loyalty points with expiry (C3); customer price groups (C4).
+- Staff: work contracts, attendance summaries, payroll 🔒 (W7).
+- Stock: low-stock alerts (I2); recipes (I3); suppliers, purchase invoices, receiving, supplier payments (I4); expenses against approved reasons (I5).
+- Devices and other: kitchen and bar printers, displays per workstation (D1); coupons and promotions (D2); in-app notifications (D3); webhooks 🔒 (D4); support tickets and complaints (D5).
+- Platform: verticals enabled per tenant by plan (P1); plan tiers switching capabilities with per-tenant overrides (P2).
+
+## Out of scope — not building this
+- **Later:** per-player pricing and player join/leave (G3, G8, S8 — pricing is by tier; single → multi is N4); prepaid hours / customer wallet (C2); restaurant module (V1); retail module (V2); customer app (D7 — Glitch never built it); owner iOS app; **card-terminal and e-wallet API integration** (not in Glitch: its hardware covered printers, displays and cash drawers only, and its "wallet" was an internal customer balance — O3 records the method only); device-to-device sync over the local network; multiple cashier devices per branch (the MVP must not block it).
+- **Not offered:** self-hosted delivery (hosted multi-tenant only).
+- **Not built:** a Glitch → Kodeebo data import — the founder moves the 3 customers' data by hand.
+- **Dropped:** pause and resume (S2); pricing preview simulator (G13).
+- **Never:** Glitch's design, data model, business rules or code carried over.
+
+## Success metric — what "working" looks like
+*Confirmed by the founder on 2026-10-16. Dates are relative to the Tier 1 release until a target date is set.*
+- **Activation:** all 3 founding lounges run Kodeebo as their only system for 14 consecutive business days, within 30 days of the Tier 1 release.
+- **Revenue / retention:** 10 paying venues at ≥ 10,000 EGP/year within 6 months of the Tier 1 release, and all 3 founding lounges renew.
+
+## Build order
+1. **Spikes first:** desktop client technology (`/research` + spike on real Windows 10/11 and Windows 7 x64 VMs) and local-first sync with fault injection (`/research` + `/prototype`) — risks 1 and 2.
+2. Tenancy, identity, roles and passcodes, subscription control (N5).
+3. **Vertical slice:** start a session → add a café item → close and pay → sync → see it on the owner dashboard.
+4. Stations, sessions and pricing core (incl. N4, G12).
+5. Selling, payments, receipts, the ledger.
+6. Shifts, paid-outs, X/Z reports, business day.
+7. Stock.
+8. Owner web dashboard, then the owner Android app.
+9. Tier 1 private beta with the 3 lounges → Tier 1 release → Tier 2.
+
+## Decision log
+| Date | Decision | Why | Rejected alternatives |
+|------|----------|-----|----------------------|
+| 2026-10-14 | Clean-room rebuild: never read or reuse Glitch's code; Glitch informs only as an idea pool | Founder instruction | Port or adapt Glitch |
+| 2026-10-14 | Desktop client technology decided only after its own `/research` + a spike on real Windows 10/11 and Windows 7 x64 VMs, before `/setup-stack` | Windows 7 support is uncertain; the leads in the idea pool are unverified | Pick in `/setup-stack` or here |
+| 2026-10-16 | Concept: lounge-first POS (stations + café on one bill) with owner control features **in** the MVP; Kodeebo as one platform with future venue modules as the long-term vision | Customers praise control (activity log, reports); the losses are leakage | Owner's-Eye-only product; platform-first MVP |
+| 2026-10-16 | Module room in the architecture decided by ADR in `/create-architecture` | An architecture decision, not a product one | Decide here |
+| 2026-10-16 | Scope rule: Glitch's gaming + café feature set is the baseline; Tier 1/Tier 2 are ordering only | The 3 customers move from Glitch and must lose nothing | Lean MVP from praised features only |
+| 2026-10-16 | Local-first, not offline fallback: the cashier app always runs on local encrypted data and logic; sync mechanics by `/research` + ADR | Speed regardless of the internet; principle 2 | Online-first with an offline fallback |
+| 2026-10-16 | One cashier device per branch in the MVP; devices never talk on the LAN; the MVP must not block multi-device | Every current customer has one device per branch | LAN peer sync; multi-device in the MVP |
+| 2026-10-16 | Delivery: hosted multi-tenant only | Founder choice | Self-hosted; hybrid |
+| 2026-10-16 | Pricing: annual/monthly subscription, anchor 10,000 EGP/year; guided demo, no self-serve trial | Current customers pay this; sales run through referral partners | One-time licence; free trial; paid pilot |
+| 2026-10-16 | Owner Android app in Tier 1 (iOS later), same capabilities as the web dashboard; build approach by `/research` + ADR | Every customer asked for it; carries the positioning | Web-only owner view; iOS at launch |
+| 2026-10-16 | Principle 2's one named exception: subscription control may require the server after a long, known offline grace period | Revenue protection without breaking the counter's daily speed | No grace (always online); unlimited offline |
+| 2026-10-16 | PC gaming: PC as a timed station type in Tier 1; automatic PC lock agent in Tier 2 | Same model as G1; the lock agent is a separate security-heavy component | Exclude PC centres |
+| 2026-10-16 | Data migration from Glitch done by hand by the founder | Only 3 customers | Build an import tool |
+| 2026-10-16 | No card-terminal / e-wallet integration (Later); payment method recorded only | Not in the Glitch baseline | Integrate in Tier 1 |
+| 2026-10-16 | Positioning leads with money leakage; speed and local-first are the proof | It is the loss owners name | Lead with speed or offline |
+
+---
+**Who it's for / what they feel:** lounge and café owners who want to stop wondering where tonight's money went — in control from anywhere, without standing at the counter.
+
+**Brand & tone:** Kodeebo, endorsed "by Kodelix"; mascot Kiko the wolf. Branded-house architecture — one master brand, each vertical differs by design theme. Egyptian Arabic first. Visual quality matters: current customers praise the look of what they use today.
+
+**Reference product:** the founder's previous system (Glitch) — as a capability baseline only, never as a design or code source.
+
+**Compliance / data:** Egypt PDPL (Law 151/2020) — staff data (attendance, passcodes) in Tier 1, customer PII in Tier 2. Egyptian VAT and e-receipt obligations — **NOT SOURCEABLE** yet, `/research`. Hosted data residency — open, `/research`. No card data handled.
+
+---
+
+## Market & competitors
+- **Market size:** NOT SOURCEABLE yet — `/market-research`.
+- **Alternatives:** paper and Excel; a few dominant lounge systems (names unknown to the founder; complaints: slow, freezing, not online, very basic, no flexibility — **evidence**: founder's conversations); Glitch (the founder's previous system, used by the 3 founding customers).
+- **Competitors to analyse** — not researched in `/brainstorm`; `/competitor-analysis` runs next and updates this section with dated captures:
+  - https://waqtak.app/#pricing
+  - https://playmasr.com/landing/
+  - https://hsys.io/systems/c/fun
+  - https://hsys.io/sales/39ed46fe-aae6-4ab9-8004-2b3f027d1a8b
+
+## Personas
+- **Owner (buyer):** runs one or more lounges or a café; not always on site; Android phone; Egyptian Arabic. Wants: trust in the money, staff accountability, a daily report. Uses: owner Android app, owner web dashboard.
+- **Cashier (daily user):** works long shifts, often past midnight, on the venue's Windows PC; Egyptian Arabic; often new to the job. Wants: speed, no freezes, no disputes with customers. Uses: the cashier app.
+- **Manager:** runs a shift or branch for the owner; approves exceptions within the owner's permissions.
+- **Referral partner:** sells and introduces Kodeebo for a commission; needs a demo they can give.
+- **Kodelix support:** onboards, installs, supports; manages subscriptions.
+
+## Pricing hypotheses & unit economics
+- **Willingness to pay (evidence):** 3 lounges × 10,000 EGP/year, all reached through referral.
+- **Unknown:** what cold buyers and café-only buyers pay; the value metric; monthly price.
+- **Cost per tenant (infra + support):** NOT SOURCEABLE yet — `/business-case` after `/setup-stack`.
+- **Channel cost:** referral commission per sale (rate not recorded here).
+- Detail → `/pricing-strategy`, then `design/` pricing model by `pricing-billing-designer`.
+
+## Risks & assumptions
+Ranked by impact if wrong × uncertainty. Top three have their cheapest test in the build order.
+
+| # | Assumption | Type | Impact if wrong | Evidence today | Cheapest test | Pass signal |
+|---|---|---|---|---|---|---|
+| 1 | Local-first sync never loses or double-counts money or time | feasibility | Critical — breaks principle 1 and the pitch | Glitch ran offline at 3 sites (different design; not proof) | `/research` + 1–2 week sync spike with fault injection (cut network mid-close, resend, duplicate replays) | Zero lost or duplicated money/time events across N randomized runs |
+| 2 | A desktop technology runs well, prints and opens the drawer on Windows 10/11 (Windows 7 optional) | feasibility | High — blocks `/setup-stack` | Unverified leads in the idea pool | `/research` + spike on real Windows 10/11 and Windows 7 x64 VMs | Starts, prints, opens the drawer, encrypted store works on 10/11; Windows 7 reported separately |
+| 3 | The 3 customers switch without losing anything | desirability | High — first revenue and references | Praise only | Op-count test on Glitch + a parity checklist each customer signs off | Zero missing-feature blockers in UAT |
+| 4 | Tier 1 (3 clients + backend + sync) fits 2 engineers in acceptable time | viability | High | None; rough estimate ~10–14 months | `/estimate` after `/map-domains` | Tier 1 fits the founder's target date |
+| 5 | Cold, non-referral lounges pay ~10,000 EGP/year | viability | High | 3 referral sales | `/competitor-analysis` prices + 5–8 non-referral owner interviews with a pre-sale ask | ≥ 3 of 8 commit at the hypothesis price |
+| 6 | Standalone cafés want it | desirability | Medium | None — assumption | 5 café-owner interviews | ≥ 3 describe the leakage pain and a gap in their tool |
+| 7 | Egyptian VAT / e-receipt rules do not force an integration into Tier 1 | compliance | High — legal blocker | NOT SOURCEABLE | `/research` against Egyptian Tax Authority primary sources | Clear yes/no plus integration scope |
+| 8 | The subscription grace period (N5) resists clock tampering | security | Medium — revenue leakage | None | `/license-design` + `/threat-model` | A tampered clock cannot extend grace in tests |
+| 9 | Multi-device branches can be added later without a redesign | feasibility | Medium — restaurants and cafés may need several devices | None | Settle in `/design-spec` + `/research`: two offline devices starting the same station; duplicate bill numbers; drawer and shift per device or per branch; two devices selling the last stock item | A chosen design (e.g. station owned by one device at a time, or server-side resolution) recorded in an ADR |
+
+**Open questions (local-first):** what happens when the same thing changes on the server and on an offline device; with 2+ cashier devices in one branch, must they see each other's work while the internet is down.
+
+## Success metrics & targets
+See *Success metric* above (confirmed 2026-10-16). Add after `/setup-stack`: sync health (queued changes age, conflict rate), counter action latency against `docs/architecture/perf-budgets.md`, support tickets per venue per month. Tracking plan → `product-analytics-engineer`.
+
+## Roadmap
+- **M0 — Spikes:** desktop client technology; local-first sync. Usage op-count test on Glitch (founder).
+- **M1 — Vertical slice:** session → café item → close and pay → sync → owner dashboard.
+- **M2 — Tier 1 private beta** with the 3 founding lounges; parity checklist signed.
+- **M3 — Tier 1 release**, then referral-partner launch.
+- **M4+ — Tier 2**, then future modules (restaurant, retail) per ADR.
+
+Scope estimate: **Large — Tier 1 ≈ 10–14 months, full baseline ≈ 18–24 months, team of 2** (unvalidated; PR-SCOPE skipped in Lean mode; replaced by `/estimate` after `/map-domains`).
+
+## Visual Identity Anchor
+None yet — DD-CONCEPT-VISUAL skipped (Lean mode) and no direction supplied; set by `/impeccable`. Inputs: Kodeebo master brand endorsed by Kodelix, Kiko the wolf, one theme per vertical, Arabic-first RTL, visual quality is a stated customer value.
+
+## Product principles
+See `design/product-principles.md`: (1) Every pound leaves a trail · (2) The counter never waits · (3) Fast for a tired cashier at 2 a.m. · (4) The owner sets the rules; the counter follows them · (5) Built in Arabic, not translated into it.

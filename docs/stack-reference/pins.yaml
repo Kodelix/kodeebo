@@ -1,0 +1,96 @@
+# Machine-readable recommended pins — the single file scripts read.
+# Derived from docs/stack-reference/<layer>/VERSION.md (the human-readable,
+# sourced record). When a VERSION.md changes, update this file in the same
+# commit; project-coherence.sh compares a product's manifests against it.
+#
+# Values are MINIMUMS for new products unless marked `exact`. A product may be
+# ahead; being behind is reported, never blocked.
+# Last verified: 2026-10-11 (spot-checked against GitHub releases, npm,
+# Docker Hub and go.dev by the orchestrator after subagent research).
+
+go:
+  toolchain: "1.27.2"          # go.dev/dl
+  go_directive: "1.27.0"       # go.mod `go` line for applications
+  pgx: "5.11.0"
+
+tooling:
+  golangci_lint: "2.14.0"
+  govulncheck: "1.8.0"
+  gitleaks: "8.30.1"           # DECIDED T1: keep gitleaks (security patches only upstream); re-evaluate Betterleaks later
+  osv_scanner: "2.6.0"
+
+kotlin:
+  kotlin: "2.4.21"
+  gradle: "9.7"
+  coroutines: "1.11.0"
+  jvm_toolchain: "21"          # 25 where CI/host JDK allows (kotlin/VERSION.md)
+
+ktor:
+  ktor: "3.6.0"
+  exposed: "1.5.1"
+  hikaricp: "7.1.0"
+
+compose:
+  bom: "2026.09.00"
+  agp: "9.4.0"
+  target_sdk: "36"             # Google Play requirement from 2026-08-31
+  compile_sdk: "37"
+
+kmp:
+  compose_multiplatform: "1.12.0"
+  sqldelight: "2.4.1"
+  room: "3.0.3"
+
+swiftui:
+  swift: "6.4"
+  xcode: "27"
+  ios_deployment_target: "17.0"  # framework recommendation; App Store floor is iOS 13
+
+vite-react:
+  node: "24"                   # even-numbered LTS line; local machine runs 26 (non-LTS)
+  react: "19.3.0"
+  vite: "8.3.4"
+  typescript: "6.0.3"          # 7.0.2 only once lint/test toolchain supports TS 7 (no programmatic API)
+  tanstack_router: "1.170.42"
+  tanstack_query: "5.104.1"
+  vitest: "5.0.3"
+  playwright: "1.64.0"
+  pnpm: "12.11.2"
+  eslint: "10.12.0"
+
+astro:
+  astro: "7.3.8"               # security floor 7.2.8
+  sharp: "0.35.5"              # security floor 0.35.4
+
+postgres:
+  image: "postgres:18.6"       # pin exact minor; never a floating major
+
+mongo:
+  image: "mongo:9.0.2"                 # hosted / dev / staging
+  image_self_hosted: "mongo:8.0.32"    # customer bundles until 9.0 has field time (8.0 supported to 2029-10-31; mongo/VERSION.md)
+  bundle_policy: "reference-official-image"   # DECIDED L3: customer pulls the official image; we never ship the binary
+
+redis:
+  image_hosted: "redis:8.2"    # Extended support to 2030-09-01; RSAL/SSPL/AGPL licence choice
+  image_redistributable: "valkey/valkey:9.1.2"   # DECIDED L1 (2026-10-11): Valkey (BSD-3) in customer bundles
+
+dragonfly:
+  image: "docker.dragonflydb.io/dragonflydb/dragonfly:v2.0.2"
+  redistributable: false       # DECIDED L2 (2026-10-11): hosted only — BSL 1.1 excludes in-memory data-store products
+
+opentelemetry:
+  go_sdk: "1.47.0"
+  java_sdk: "1.67.0"
+  java_agent: "2.32.0"
+  semconv: "1.44.0"
+  collector_contrib_image: "otel/opentelemetry-collector-contrib:0.162.0"
+  bundle_policy: "collector-only"   # DECIDED L4: customer bundles ship only the Collector (Apache-2.0), telemetry off by default
+
+bundle:
+  allowlist: [postgres, valkey/valkey, mongo, otel/opentelemetry-collector-contrib, otel/opentelemetry-collector, caddy, traefik]   # L1–L4: images the customer bundle may ship
+
+docker-compose:
+  engine: "29.9.0"
+  compose: "5.6.0"             # Compose is at v5, not v2
+  caddy: "2.11.7"
+  traefik: "3.7.14"

@@ -1,0 +1,56 @@
+# Kotlin Multiplatform (KMP) Stack Reference — VERSION
+
+Layer: `kmp` — Kotlin Multiplatform stability and targets, recommended project structure, Ktor client, SQLDelight vs Room KMP, Swift interop (Swift Export, SKIE), Compose Multiplatform for iOS.
+Last verified: **2026-10-11**. Every claim below was fetched this session; gaps are marked `NOT SOURCEABLE`. The Kotlin compiler, KGP, and kotlinx libraries are in `../kotlin/VERSION.md` and are not repeated here.
+
+| Field | Value |
+|---|---|
+| **KMP overall stability** | **Stable** since Kotlin **1.9.20** (Kotlin Multiplatform and Multiplatform Gradle plugin both Stable) ([components stability](https://kotlinlang.org/docs/components-stability.html)). |
+| **Per-platform stability** | Stable: **Android, iOS, Desktop (JVM), Web (Kotlin/JS)**. Beta: **Web (Kotlin/Wasm), watchOS, tvOS**. Source: [supported platforms](https://kotlinlang.org/docs/multiplatform/supported-platforms.html) (page last modified 2025-09-10). |
+| **Kotlin/Native runtime, klib, CocoaPods** | Stable since 1.9.20. Kotlin/Native C/ObjC interop: Beta since 1.3.0. cinterop klibs: Beta. ([components stability](https://kotlinlang.org/docs/components-stability.html)) |
+| **Swift Export** | **Alpha.** Page says "still incomplete, so breaking changes are expected." Enabled via `swiftExport { }` plus Xcode task `embedSwiftExportForXcode`; direct integration only. Roadmap: "Swift Export: from Alpha to Beta" (KT-86791) is **in focus**, no date ([Swift export](https://kotlinlang.org/docs/native-swift-export.html), [roadmap](https://kotlinlang.org/docs/roadmap.html)). Earlier release notes (2.2.20) called it experimental and on by default: check current status before relying on defaults. |
+| **Swift Export coroutines / Flow interop** | Suspend functions → Swift `async` (`try await`). `Flow` → `AsyncSequence` via `asAsyncSequence()`. Exported suspending code runs on `Dispatchers.Default` by default; change with `withContext()`. Source: Swift export page. |
+| **SKIE (Touchlab)** | **0.10.15**, marked Latest, 25 Sep (year not shown on the page; GitHub). Release notes credit **Kotlin 2.4.20** support. Prior: 0.10.14 (27 Jul), 0.10.13 (24 Jun), 0.10.12 (18 May), 0.10.11 (02 Apr). No stable/pre-release label on the page. Stability label: NOT SOURCEABLE (skie.touchlab.co page gave no version or status). Xcode requirement: NOT SOURCEABLE. ([SKIE releases](https://github.com/touchlab/SKIE/releases)) |
+| **Compose Multiplatform (CMP)** | **1.12.0** released **2026-08-25** ([GitHub release](https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.0), [JetBrains blog](https://blog.jetbrains.com/kotlin/2026/08/compose-multiplatform-1-12-0/)). Blog highlights: MCP server for AI agents inside Compose Hot Reload (experimental), automatic web font fallback, window/dialog API v2 (experimental). CMP 1.12 pulls AndroidX Compose 1.12, which requires compileSdk 37 (search summary of third-party upgrade notes; see `../compose/VERSION.md`). 1.12.1: 2026-09-22 (search summary only; not fetched). 1.13.0-alpha01 out: NOT SOURCEABLE beyond the search summary. |
+| **CMP for iOS** | **Stable** since **CMP 1.8.0** (announced 2025-05; blog: "has become Stable and production-ready in the latest 1.8.0 version"). CMP 1.12.0 iOS changes: LiveRegion semantics, VoiceOver handling for TTS annotations, iOS-style selection handles, "Select" in text-field context menu, `NSLocale.toComposeLocale()`, swipe-back conflict fixes, `ViewModel.onCleared` on Compose container deallocation ([GitHub release](https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.0)). 1.12.0 does not state Xcode or Kotlin minimums: NOT SOURCEABLE. |
+| **Navigation 3 in CMP** | Roadmap item "Stabilize Navigation3" (KT-84571) marked **Completed** ([roadmap](https://kotlinlang.org/docs/roadmap.html)). Official CMP Navigation 3 stability statement: NOT SOURCEABLE beyond that. |
+| **Ktor (client)** | **3.6.0**, marked Latest, published **2026-09-16**; stable line also 3.5.2 (2026-07-31), 3.5.1 (2026-06-25), 3.5.0 (2026-05-14), 3.4.3 (2026-04-22) ([Ktor releases](https://github.com/ktorio/ktor/releases)). 3.6.0 notes include KTOR-8594 (non-optional principal is now nullable): may affect existing code. Multiplatform engines: JVM (Apache5 recommended for new Apache-based projects; older Apache deprecated), Android (Android, OkHttp, CIO), iOS/Apple (Darwin, CIO), JS, WasmJs (CIO only). KMP: `ktor-client-engine-defaults` in `commonMain` selects a curated engine per target; explicit engines optional ([client engines](https://ktor.io/docs/client-engines.html)). |
+| **SQLDelight** | **2.4.1**, latest release, dated **2026-10-06** (GitHub; release notes: docs for Android SQLite transactions, Gradle plugin keeps parsed `.sq` files in memory). Prior: 2.4.0 (18 Sep), 2.3.2 (16 Mar), 2.2.1 (14 Nov), 2.1.0 (2025-05-16); the page shows day and month only for 2.4.x through 2.2.1, so years for those are inferred from the 2.4.1 notes and Renovate PR timing ([SQLDelight releases](https://github.com/cashapp/sqldelight/releases)). 2.5.0 in development (snapshots only). |
+| **Room KMP (`androidx.room3`)** | **Room 3.0.3** stable, **2026-09-09**; 3.0.2 (2026-08-26), 3.0.1 (2026-07-29), 3.0.0 (2026-07-01). Package `androidx.room3`. **KSP-only** (kapt/JavaAP removed). Adds **JavaScript and WasmJs** targets, alongside Android. Native targets not listed explicitly on the fetched page. `room3-paging` gained js, wasmJs, tvOS, watchOS in 3.0.0-alpha02. Migration SupportSQLite wrapper: `room3-sqlite-wrapper`. 3.1.0-alpha01 in flight (search summary only). ([Room 3 release page](https://developer.android.com/jetpack/androidx/releases/room3)) |
+| **Room 2.x (`androidx.room`)** | **2.8.5**, stable, **2026-09-09**. Room 2.7.0 became KMP (iOS, JVM, native Mac, native Linux). Room 2.8.0 added watchOS and tvOS targets. Support/maintenance statement for 2.x: NOT SOURCEABLE on the fetched page. ([Room release page](https://developer.android.com/jetpack/androidx/releases/room)) |
+| **Recommended project structure** | Split entry-point app modules from shared modules. Default for **new projects (May 2026)**: `shared` library module + per-platform app modules (`androidApp`, `desktopApp`, `webApp`). Native-UI variant: `sharedLogic` (no Compose dependencies, used by all apps) + `sharedUI` (Compose only). Server variant: `server`, `core` (shared models/validation), client modules under `app/`. The old single `composeApp` layout is described as "older structure" to migrate from. Source: [recommended structure](https://kotlinlang.org/docs/multiplatform/multiplatform-project-recommended-structure.html), [JetBrains blog, 2026-05](https://blog.jetbrains.com/kotlin/2026/05/new-kmp-default-structure/). |
+| **AGP for KMP Android targets** | AGP 9+: Android entry points must be separated from common code; use `com.android.kotlin.multiplatform.library` (`androidMultiplatformLibrary` / `androidLibrary {}`) instead of `androidTarget {}` in shared modules. Source: recommended structure page. AGP version pin: see `../compose/VERSION.md` (AGP 9.4.x). |
+| **Installed locally** | Linux host. `kotlinc`, `kotlin`, `gradle`, `swift`, `xcodebuild`: **not on PATH**. `~/.gradle` and `~/.konan` directories exist (versions not checked). Java: OpenJDK 21.0.12.1. Android SDK: see `../compose/VERSION.md`. iOS builds require macOS + Xcode: NOT VERIFIED on this host. |
+| **Recommended pin** | Kotlin **2.4.x** (see `../kotlin/VERSION.md`); KMP stable plugins; Ktor **3.6.0**; SQLDelight **2.4.1** **or** Room 3.0.3 (pick one per project; both are KMP-capable; Room 3 is KSP-only); SKIE **0.10.15** if Swift consumers need idiomatic Swift (Kotlin 2.4.20 support stated; re-verify against your Kotlin version); Compose Multiplatform **1.12.0** (iOS stable since 1.8.0). Swift Export: **do not depend on it for production** (Alpha). |
+| Last verified | 2026-10-11 |
+
+## Verified sources
+- Stability: https://kotlinlang.org/docs/components-stability.html , https://kotlinlang.org/docs/multiplatform/supported-platforms.html
+- Swift: https://kotlinlang.org/docs/native-swift-export.html , https://kotlinlang.org/docs/roadmap.html , https://github.com/touchlab/SKIE/releases , https://skie.touchlab.co/ (no status fetched)
+- Compose Multiplatform: https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.0 , https://blog.jetbrains.com/kotlin/2026/08/compose-multiplatform-1-12-0/ , https://blog.jetbrains.com/kotlin/2025/05/kodees-kotlin-roundup-compose-multiplatform-for-ios-is-stable/
+- Ktor: https://github.com/ktorio/ktor/releases , https://ktor.io/docs/client-engines.html , https://ktor.io/docs/client-create-and-configure.html
+- SQLDelight: https://github.com/cashapp/sqldelight/releases
+- Room: https://developer.android.com/jetpack/androidx/releases/room3 , https://developer.android.com/jetpack/androidx/releases/room
+- Structure: https://kotlinlang.org/docs/multiplatform/multiplatform-project-recommended-structure.html , https://blog.jetbrains.com/kotlin/2026/05/new-kmp-default-structure/
+
+## Discrepancies noticed
+- **Swift Export status**: Kotlin 2.2.20 notes said experimental and on by default; the current Swift export page says Alpha and does not say on by default. Use the current page.
+- **Kotlin roadmap vs third-party**: a third-party article said Swift interop targets stability in 2026; official roadmap only says "Alpha to Beta" is in focus.
+- **Platform stability table** page last modified 2025-09-10; treat Stable/Beta labels as dated.
+- **KMM evolution page** (old) still lists Alpha labels; superseded by components-stability page.
+- **Ktor version**: GitHub "Latest" is 3.6.0 (2026-09-16); the docs page header also reads 3.6.0.
+- **Compose Multiplatform 1.12.1 date (2026-09-22)** came only from a search summary.
+- **Kotlin Toolchain 0.13 blog** (search summary) mentions dropping Swift IDE support tied to Swift Export stabilization; not fetched, not used.
+
+## Knowledge gap warning
+LLM training data predates Compose Multiplatform 1.12, Room 3 (2026-07), SKIE 0.10.x, Ktor 3.5–3.6, and Swift Export's current alpha status. Re-fetch the pages above before writing KMP claims. Swift Export and CMP-on-iOS status can change in a single Kotlin release.
+
+| Release | Date | Why it matters |
+|---|---|---|
+| KMP stable | Kotlin 1.9.20 (2023-11) | Core KMP stable; Android/iOS/JVM/JS stable per platform table. |
+| CMP 1.8.0 | 2025-05 | Compose Multiplatform for iOS becomes stable. |
+| Room 3.0.0 | 2026-07-01 | New KMP-first package `androidx.room3`; KSP-only; JS/WasmJs. |
+| Ktor 3.6.0 | 2026-09-16 | Latest Ktor; KTOR-8594 nullable principal change. |
+| SQLDelight 2.4.1 | 2026-10-06 | Latest SQLDelight. |
+| CMP 1.12.0 | 2026-08-25 | Requires compileSdk 37 chain (see compose layer); MCP server (experimental). |
+| SKIE 0.10.15 | 2026-09-25 (year inferred from release list) | Kotlin 2.4.20 support. |

@@ -1,0 +1,59 @@
+# === Claude Code local ===
+.claude/settings.local.json
+CLAUDE.local.md
+project.local.yaml
+production/session-logs/
+production/session-state/
+.scratch/
+.claude/agent-memory/
+
+# === Secrets — never committed ===
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+secrets/
+license-signing/
+
+# === IDE / OS ===
+.idea/
+.vscode/settings.json
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# === Go ===
+backend/bin/
+*.test
+*.out
+coverage.*
+
+# === JVM / Gradle / Android ===
+.gradle/
+build/
+local.properties
+*.apk
+*.aab
+captures/
+
+# === Web ===
+node_modules/
+dist/
+.astro/
+playwright-report/
+test-results/
+
+# === iOS ===
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.build/
+Pods/
+
+# === Runtime artifacts ===
+docs/consistency-failures.md

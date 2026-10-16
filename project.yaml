@@ -1,0 +1,76 @@
+# SaaS Studio project configuration — single source of truth for project settings.
+# Skills read it through `resolve_config` (.claude/hooks/yaml-helper.sh).
+# See .claude/docs/config-resolution.md for precedence.
+#
+# This file ships as a TEMPLATE. Copy the studio into a new product repo, then
+# run /start (concept, modes) and /setup-stack (stack, versions, layout).
+#
+# Per-developer preferences belong in `project.local.yaml` (gitignored).
+#
+# Do NOT seed the six knobs `modes.rigor` fronts: `modes.review_mode`,
+# `modes.workflow`, `docs.density`, `qa.level`, `modes.story_granularity`,
+# `team.size`. Seeding any of them pins that value and shadows the rigor
+# expansion.
+
+schema_version: 1
+
+framework:
+  name: saas-studio
+  version: 0.1.0
+  derived_from: "Claude-Code-Game-Studios 1.1.3 (MIT)"
+
+project:
+  name: ""
+  stage: Discovery
+
+# modes.rigor and modes.automation are written by /start.
+modes:
+  rigor: standard
+  automation: guided
+
+# --- Stack profile (written by /setup-stack) --------------------------------
+# Every layer is validated against the enums in yaml-helper.sh. Unset layers
+# stay unset — skills must not guess a stack.
+stack:
+  backend: ""        # go | ktor | go+ktor
+  web: ""            # vite-react | none        (product app: static SPA, no Node server in prod)
+  site: ""           # astro | none             (marketing site: static output)
+  mobile: ""         # compose | kmp | kmp+swiftui | swiftui | none
+  data: []           # any of: postgres, mongo, redis, dragonfly
+  messaging: ""      # decided by /research + ADR (nats | rabbitmq | kafka | none)
+
+# Pinned versions live in docs/stack-reference/<layer>/VERSION.md, not here.
+
+deploy:
+  target: ""         # compose-vps | kubernetes
+
+distribution:
+  model: ""          # hosted | self-hosted | hybrid
+
+tenancy:
+  model: ""          # shared-schema-rls | schema-per-tenant | db-per-tenant | single-tenant
+
+# --- Monorepo layout ---------------------------------------------------------
+# Hooks that scan source iterate these roots. Empty = detect conventional dirs.
+layout:
+  code_roots: []     # e.g. [backend, web, mobile, contracts]
+
+# --- Shared core ---------------------------------------------------------------
+# Reusable capabilities consumed by every product (identity, observability,
+# otp, notify, storage, billing, licensing, tenancy, audit, ratelimit...).
+# One core per backend track (saas-core-go, saas-core-kotlin); a product uses
+# the core of its track. Products pin a released version and never edit core
+# code in place. The cores are built after the studio itself is finished.
+core:
+  track: ""          # go | kotlin  — follows stack.backend
+  repo: ""           # git URL or local path of the track's core repo
+  version: ""        # pinned release tag, e.g. v0.4.2
+  modules: []        # modules this product consumes
+
+# --- Quality gates -----------------------------------------------------------
+# Unset testing.strict.* = each skill applies its default (see coding-standards).
+performance:
+  enforce: warn      # warn | block | off  — budgets in docs/architecture/perf-budgets.md
+
+accessibility:
+  target: wcag-aa    # none | wcag-a | wcag-aa | wcag-aaa

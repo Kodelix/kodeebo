@@ -1,0 +1,506 @@
+# Workflow Catalog
+# Used by /help and /project-stage-detect to determine where a product is and
+# what comes next. Read by .claude/scripts/artifact-check.sh.
+#
+# Artifact checks:
+#   glob: file glob pattern — complete if ≥1 file matches (or min_count)
+#   pattern: text pattern that must appear in the file (checked after glob)
+#   min_count: minimum matching files required (default: 1)
+#   note: human-readable fallback when completion can't be auto-detected
+#   any_of: list of alternative {glob, pattern} specs — complete if ANY matches
+#
+# required: true → blocks progression to next phase (shown as REQUIRED)
+# required: false → optional enhancement (shown as OPTIONAL)
+# repeatable: true → runs multiple times (one per feature, story, etc.)
+#
+# Phase gates (/gate-check) are ADVISORY: they guide the decision; the user
+# always decides whether to proceed.
+#
+# Workflow tiers scale DOCUMENTS, never engineering: the eight DoD gates apply
+# on every path (.claude/docs/workflow-modes.md). Steps marked required here are
+# the documents/activities each tier needs before moving on.
+#
+# `/studio <goal>` drives these steps automatically; every step remains
+# callable on its own.
+
+paths:
+
+  minimal:
+    label: "Minimal path"
+    description: "Stack, one-page product brief, research per feature, stories, then build — the brief's build order is the plan"
+    steps:
+      - id: stack-setup
+        name: "Stack Setup"
+        command: /setup-stack
+        required: true
+        artifact:
+          glob: "project.yaml"
+          pattern: 'backend:[[:space:]]*"?(go|ktor|go\+ktor)'
+        description: "Configure stack, deploy target, distribution and tenancy; verify the stack reference"
+
+      - id: product-brief
+        name: "Product Brief"
+        command: /brainstorm
+        required: true
+        artifact:
+          glob: "design/product-brief.md"
+        description: "One page: problem, ICP, jobs-to-be-done, pricing model, distribution, build order, decision log"
+
+      - id: research
+        name: "Research per Feature"
+        command: /research
+        required: true
+        repeatable: true
+        artifact:
+          glob: "docs/research/*.md"
+        description: "DoD gate 1 — a research note from primary sources before each feature's code"
+
+      - id: create-stories
+        name: "Stories"
+        command: /create-stories
+        required: true
+        artifact:
+          glob: "production/epics/*/story-*.md"
+        description: "One story per MVP feature in build order, each naming its DoD evidence"
+
+      - id: implement
+        name: "Build the Next Story"
+        command: /dev-story
+        required: true
+        repeatable: true
+        artifact:
+          note: "Each story's Status line (Ready / In Progress / In Review / Complete) is the record"
+        description: "Implement the next story in build order: /dev-story [story-path]"
+
+      - id: story-done
+        name: "Close the Story"
+        command: /story-done
+        required: true
+        repeatable: true
+        description: "Verify acceptance criteria and all eight DoD gates with evidence, then build the next one"
+
+phases:
+
+  discovery:
+    label: "Discovery"
+    description: "Turn the idea into a validated product brief"
+    next_phase: product-design
+    steps:
+      - id: business-context
+        name: "Market and Business Context"
+        command: /business
+        required: false
+        artifact:
+          glob: "business/**/*.md"
+        description: "Market size, competitors, pricing benchmarks for Egypt / GCC — sourced numbers"
+
+      - id: stack-setup
+        name: "Stack Setup"
+        command: /setup-stack
+        required: true
+        artifact:
+          glob: "project.yaml"
+          pattern: 'backend:[[:space:]]*"?(go|ktor|go\+ktor)'
+        description: "Configure stack, deploy, distribution, tenancy; verify the stack reference. Runs before the brief: the brief is written against these choices (same order as /start and the minimal path)"
+
+      - id: brainstorm
+        name: "Brainstorm"
+        command: /brainstorm
+        required: false
+        description: "Ideation with JTBD, Kano, opportunity-solution tree, value vs effort"
+
+      - id: product-brief
+        name: "Product Brief"
+        command: /brainstorm
+        required: true
+        artifact:
+          glob: "design/product-brief.md"
+        description: "Problem, ICP, positioning, pricing model, distribution, riskiest assumptions"
+
+      - id: prototype
+        name: "Prototype the Riskiest Assumption"
+        command: /prototype
+        required: false
+        artifact:
+          glob: "prototypes/*/README.md"
+        description: "Throwaway spike: PROCEED / PIVOT / KILL"
+
+  product-design:
+    label: "Product Design"
+    description: "Domains, feature specs, pricing and UX context"
+    next_phase: architecture
+    steps:
+      - id: map-domains
+        name: "Domain Map"
+        command: /map-domains
+        required: true
+        artifact:
+          glob: "design/specs/domain-map.md"
+        description: "Bounded contexts, features, dependencies, design order, core-module candidates"
+
+      - id: design-spec
+        name: "Feature Specs"
+        command: /design-spec
+        required: true
+        repeatable: true
+        artifact:
+          glob: "design/specs/*.md"
+          min_count: 2
+        description: "One spec per feature at the effective tier (domain-map.md counts as one file)"
+
+      - id: spec-review
+        name: "Spec Review"
+        command: /spec-review
+        required: false
+        repeatable: true
+        description: "Completeness, testable criteria incl. negative and cross-tenant cases, NFRs"
+
+      - id: pricing-model
+        name: "Pricing Model"
+        command: /pricing-strategy
+        required: false
+        artifact:
+          glob: "design/**/pricing-model*.md"
+        description: "Plans, entitlements, quotas, licence terms; then /pricing-check"
+
+      - id: product-context
+        name: "Design Context (impeccable)"
+        command: /impeccable
+        required: false
+        artifact:
+          glob: "PRODUCT.md"
+        description: "impeccable init — product context for every UI agent (required when web or mobile is configured)"
+
+      - id: review-all-specs
+        name: "Cross-Spec Review"
+        command: /review-all-specs
+        required: false
+        description: "Contradictions in permissions, plans, data ownership, tenancy"
+
+  architecture:
+    label: "Architecture"
+    description: "Architecture, ADRs, threat models, contracts, test scaffolding"
+    next_phase: pre-production
+    steps:
+      - id: create-architecture
+        name: "Architecture Document"
+        command: /create-architecture
+        required: true
+        artifact:
+          glob: "docs/architecture/architecture*.md"
+        description: "Contexts, ports, data stores, tenancy, deployment (hosted + self-hosted), core modules"
+
+      - id: architecture-decision
+        name: "ADRs"
+        command: /architecture-decision
+        required: true
+        repeatable: true
+        artifact:
+          glob: "docs/architecture/adr-*.md"
+          min_count: 3
+        description: "Critical decisions: tenancy, identity, data stores, messaging, API style, deployment, licensing"
+
+      - id: threat-model
+        name: "Threat Models"
+        command: /threat-model
+        required: true
+        repeatable: true
+        artifact:
+          glob: "docs/architecture/threat-models/*.md"
+        description: "STRIDE + abuse cases for auth, billing, licensing, uploads, webhooks, PII flows"
+
+      - id: api-contract
+        name: "API Contracts"
+        command: /api-contract
+        required: true
+        artifact:
+          any_of:
+            - glob: "contracts/**/*.y*ml"
+            - glob: "contracts/**/*.proto"
+        description: "OpenAPI first; generated clients for web, KMP, Swift"
+
+      - id: perf-budgets
+        name: "Performance Budgets"
+        command: /perf-profile
+        required: true
+        artifact:
+          glob: "docs/architecture/perf-budgets.md"
+        description: "Budgets per surface (API, DB, web vitals, mobile startup)"
+
+      - id: architecture-review
+        name: "Architecture Review"
+        command: /architecture-review
+        required: true
+        artifact:
+          glob: "docs/architecture/tr-registry.yaml"
+        description: "Traceability specs → ADRs, stack-version and licence risks; writes tr-registry.yaml, which /create-epics, /create-stories and /dev-story (at full) read"
+
+      - id: control-manifest
+        name: "Control Manifest"
+        command: /create-control-manifest
+        required: true
+        artifact:
+          glob: "docs/architecture/control-manifest*.md"
+        description: "Flat must/never rules per context and layer. Required by /create-epics at full and by the Pre-Production gate; at standard it is recommended (see the gate file's tier reduction)"
+
+      - id: test-setup
+        name: "Test Framework"
+        command: /test-setup
+        required: true
+        artifact:
+          note: "Test configuration and CI workflow exist for every configured layer"
+        description: "Testcontainers, Vitest/Playwright, Compose UI, XCTest, contract tests, CI"
+
+  pre-production:
+    label: "Pre-Production"
+    description: "Prove the architecture end to end and plan the build"
+    next_phase: production
+    steps:
+      - id: ux-design
+        name: "UX Specs"
+        command: /ux-design
+        required: false
+        repeatable: true
+        artifact:
+          glob: "design/ux/*.md"
+        description: "Flows and app shell for the MVP screens (when UI layers are configured)"
+
+      - id: vertical-slice
+        name: "Vertical Slice"
+        command: /vertical-slice
+        required: false
+        artifact:
+          glob: "prototypes/*-vertical-slice/REPORT.md"
+        description: "DB → API → client → compose deploy → telemetry visible, through every configured layer. Recommended, not blocking: gate-production.md surfaces its absence as CONCERNS"
+
+      - id: research
+        name: "Research per First-Sprint Feature"
+        command: /research
+        required: true
+        repeatable: true
+        artifact:
+          glob: "docs/research/*.md"
+        description: "DoD gate 1 — a Complete research note from primary sources for every first-sprint feature (the Pre-Production gate checks it)"
+
+      - id: create-epics
+        name: "Epics"
+        command: /create-epics
+        required: true
+        artifact:
+          glob: "production/epics/*/EPIC.md"
+          min_count: 1
+        description: "One epic per bounded context / module"
+
+      - id: create-stories
+        name: "Stories"
+        command: /create-stories
+        required: true
+        repeatable: true
+        artifact:
+          glob: "production/epics/*/story-*.md"
+          min_count: 2
+        description: "Stories with TR-IDs, type, DoD evidence, owner per layer, contract-first order"
+
+      - id: sprint-plan
+        name: "First Sprint"
+        command: /sprint-plan
+        required: true
+        artifact:
+          glob: "production/sprints/*.md"
+          min_count: 1
+        description: "Capacity across backend/web/mobile lanes"
+
+  production:
+    label: "Production"
+    description: "Build stories to the Definition of Done"
+    next_phase: hardening
+    steps:
+      - id: story-readiness
+        name: "Story Readiness"
+        command: /story-readiness
+        required: false
+        repeatable: true
+        description: "Research note, threat model, contract, ADRs in place before a story starts"
+
+      - id: implement
+        name: "Implement"
+        command: /dev-story
+        required: true
+        repeatable: true
+        description: "Route to the stack lead; tests and evidence planned before code"
+
+      - id: code-review
+        name: "Code Review"
+        command: /code-review
+        required: false
+        repeatable: true
+        description: "Eight DoD gates, stack rules, clean architecture, tenancy"
+
+      - id: story-done
+        name: "Story Done"
+        command: /story-done
+        required: true
+        repeatable: true
+        description: "Acceptance criteria + eight gates with evidence + run-and-observe"
+
+      - id: qa-plan
+        name: "QA Plan"
+        command: /qa-plan
+        required: false
+        repeatable: true
+        artifact:
+          glob: "production/qa/plan-*.md"
+        description: "Per sprint, by story type"
+
+      - id: test
+        name: "Test"
+        command: /test
+        required: false
+        repeatable: true
+        description: "Run the relevant suites across layers for a change"
+
+      - id: bug-report
+        name: "Bugs"
+        command: /bug-report
+        required: false
+        repeatable: true
+        description: "Structured bug reports; /debug for root cause"
+
+      - id: retrospective
+        name: "Retrospective"
+        command: /retrospective
+        required: false
+        repeatable: true
+        description: "Per sprint"
+
+      - id: sprint-status
+        name: "Sprint Status"
+        command: /sprint-status
+        required: false
+        repeatable: true
+        description: "Snapshot and risks"
+
+  hardening:
+    label: "Hardening"
+    description: "Security, performance, accessibility, operability and UAT before release"
+    next_phase: release
+    steps:
+      - id: security-audit
+        name: "Security Audit"
+        command: /security-audit
+        required: true
+        artifact:
+          glob: "production/qa/security-audit-*.md"
+        description: "ASVS / MASVS / API Top 10 mapping, scanners, tenant isolation"
+
+      - id: pentest
+        name: "Penetration Test"
+        command: /pentest
+        required: false
+        artifact:
+          any_of:
+            - glob: "production/qa/evidence/pentest-*/pentest-report.md"
+            - glob: "docs/architecture/threat-models/*-pentest.md"
+        description: "Authorised test of our own staging under written scope (required for enterprise/self-hosted releases)"
+
+      - id: perf-profile
+        name: "Performance vs Budgets"
+        command: /perf-profile
+        required: true
+        description: "Measured against perf-budgets.md; load tests on hot paths (/load-test)"
+
+      - id: observability
+        name: "SLOs, Alerts, Runbooks"
+        command: /observability-plan
+        required: true
+        artifact:
+          glob: "docs/architecture/slos.md"
+        description: "SLOs per critical journey, burn-rate alerts, a runbook per alert"
+
+      - id: team-hardening
+        name: "Hardening Pass"
+        command: /team-hardening
+        required: false
+        description: "Performance, appsec, accessibility and QA together"
+
+      - id: localize
+        name: "Localization QA"
+        command: /localize
+        required: false
+        description: "AR/EN, RTL, formats, pseudo-locale"
+
+      - id: uat
+        name: "User Acceptance"
+        command: /uat
+        required: false
+        artifact:
+          glob: "production/qa/evidence/**/uat-signoff.md"
+        description: "Business-user scenarios and sign-off"
+
+      - id: release-checklist
+        name: "Release Checklist"
+        command: /release-checklist
+        required: true
+        description: "Hosted deploy, self-hosted bundle (licence rules), mobile stores"
+
+  release:
+    label: "Release"
+    description: "Ship hosted, self-hosted and mobile releases"
+    next_phase: live
+    steps:
+      - id: launch-checklist
+        name: "Launch Checklist"
+        command: /launch-checklist
+        required: true
+        description: "Legal/privacy, billing live, support, status page, on-call, marketing site"
+
+      - id: team-release
+        name: "Release Execution"
+        command: /team-release
+        required: true
+        description: "Release manager, QA, platform, producer, customer success"
+
+      - id: changelog
+        name: "Changelog"
+        command: /changelog
+        required: false
+        description: "Internal and customer-facing"
+
+      - id: release-notes
+        name: "Release Notes"
+        command: /release-notes
+        required: false
+        description: "Customer-facing, AR/EN, self-hosted upgrade notes"
+
+  live:
+    label: "Live"
+    description: "Operate, learn and grow the product"
+    next_phase: null
+    steps:
+      - id: incident
+        name: "Incident Response"
+        command: /incident
+        required: false
+        repeatable: true
+        description: "Act first, document after; /postmortem follows"
+
+      - id: hotfix
+        name: "Hotfix"
+        command: /hotfix
+        required: false
+        repeatable: true
+        description: "Emergency fix with audit trail and backport"
+
+      - id: team-growth
+        name: "Growth"
+        command: /team-growth
+        required: false
+        repeatable: true
+        description: "Activation, retention, pricing and offers with the business team"
+
+      - id: dependency-audit
+        name: "Dependency Audit"
+        command: /dependency-audit
+        required: false
+        repeatable: true
+        description: "CVEs, deprecated APIs, stack-reference freshness"
