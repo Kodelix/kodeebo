@@ -470,7 +470,7 @@ Generated-client note common to all rows: every family has an OpenAPI generator 
   - H (Go shell): useful only if `stack.backend` is Go, which is undecided; Windows 10 floor (F24).
   - J (kiosk/PWA): no spooler RAW printing; needs a local helper for the printer (F219).
   - None of these is proven worse on performance: nothing is measured. Any of them can return if phase 1 rules out all of A, B and C.
-- **Windows 7 x64**: best-effort. Spike phase 3 runs only if OQ3 shows at least one of the 3 venues on Windows 7. Any route that passes is labelled a legacy build on an unpatched engine (M7). Windows 7 is never a reason to pick the primary runtime.
+- **Windows 7 x64 — not supported in Tier 1 (founder, 2026-10-16)**: the one venue (of 3) still on Windows 7 has its PC or Windows upgraded by Kodelix during the on-site install. Spike phase 3 is not run. The Windows 7 findings (F6, F7, F10, F11, F29, F30, F311, M3, M7) stay on record for a later decision, if a paying customer needs Windows 7.
 - **Gap classification (founder confirmed)**: no `NOT SOURCEABLE` gap blocks the spike. OQ8 (JVM store, printing and updater), OQ9 (advisories) and OQ11 (licence texts) block the runtime ADR. OQ10 (ASVS/MASVS IDs) blocks the threat models.
 
 **What the researchers recommend (each on its own slice):**
@@ -589,9 +589,9 @@ Per-option detail is in § 4.1, § 4.3 and § 5.1.
 |---|----------|--------|-------|-----|
 | OQ1 | Which runtimes go on the spike shortlist? — **Answered 2026-10-16: A, B, C** (§ 5) | — | user (founder) | closed |
 | OQ2 | Is Windows 7 x64 in scope at all? — **Answered 2026-10-16: best-effort; phase 3 only if OQ3 shows a venue on Windows 7** (§ 5) | Spike phase 3 (conditional on OQ3) | user | closed |
-| OQ3 | Which Windows versions and editions run at the 3 venues (counts of 7 / 10 Home-Pro / 10 Enterprise-LTSC / 11; 32-bit; TPM present)? | Spike VM matrix; .NET and WebView2 floors (M1); key option K3 | user, with Kodelix install staff | before the spike |
-| OQ4 | What is the reference low-spec venue PC (CPU, RAM, disk type)? | Spike pass thresholds; perf budgets | user + `performance-engineer` | before the spike |
-| OQ5 | Which receipt printer, paper width, interface and cash drawer models do the 3 venues use? (No published source for Egyptian lounges, F227) | Spike hardware list; printer profile | user | before phase 2 |
+| OQ3 | Which Windows versions, editions and TPM status do the venues run? — **Answered 2026-10-16**: mostly Windows 10 and 11, Home or Pro, 64-bit; 1 of 3 venues on Windows 7, upgraded at install (§ 5); some PCs have a TPM, some do not, so key protection must work without a TPM and use it when present (K1/K2 as the base, K3 when available, § 4.2) | — | user | closed |
+| OQ4 | What is the reference low-spec venue PC? — **Answered 2026-10-16**: Windows 10/11 x64 with **4 GB RAM**, the slowest CPU available and an HDD if available. It is the reference PC for the spike and for `perf-budgets.md` | — | user + `performance-engineer` | closed |
+| OQ5 | Which receipt printer and cash drawer models are in use? — **Answered 2026-10-16**: **U.POS AI-330** and **Xprinter XP-80C**; the cash drawer is wired to the printer and opened through it (assumption, no separate drawer integration). Paper width and interfaces of these models: not yet confirmed — read from their manuals before phase 2 | Phase 2 hardware list; printer profile | user (models); `researcher` (manuals) | before phase 2 |
 | OQ6 | Is the owner Android app (D6) Kotlin/Compose, KMP, Capacitor or Flutter? | Weight of the sharing criterion | user | before the runtime ADR |
 | OQ7 | Backend track Go or Ktor? (A shared Kotlin `core` needs Ktor, F428; option H needs Go) | Sharing value of A and H | user / `cto` | `/setup-stack` |
 | OQ8 | Close the JVM gaps behind option A: encrypted SQLite binding, RAW printing, updater (M4) | Runtime ADR, if A is chosen | `researcher` (follow-up `/research`) | before the ADR |
@@ -600,12 +600,13 @@ Per-option detail is in § 4.1, § 4.3 and § 5.1.
 | OQ11 | Licence texts of the shortlisted runtimes; Qt Community closed-source terms (F22); openapi2ktor GPL-3.0 (F412) | Cost column; generator choice | `researcher`; counsel for Qt/GPL | before the ADR |
 | OQ12 | Can an Egypt-registered company get Artifact Signing (Q-301)? Which CAs issue OV certificates to it, with which documents, at what price (Q-302)? | Signing route; budget | user | before the first signed build |
 | OQ13 | Who holds the signing token or HSM and the update key? Two-person rule; backup (Q-303) | Release pipeline | user + `security-lead` | before the first signed build |
-| OQ14 | Recovery after PC loss: escrow the key on the server (K4) or accept loss of unsynced data? | Key design, backup design | user + `security-lead` | before the storage ADR |
-| OQ15 | N5 grace length; what happens at expiry; how it interacts with updates (Q-305) | Trusted time; update policy | user via `/license-design` | before N5 work |
+| OQ14 | Key recovery after PC loss — **Delegated by the founder 2026-10-16**: research and `/threat-model` propose, an ADR records. Constraints: the server is the source of truth for synced data; a lost or stolen PC is revoked and re-provisioned from the server; only unsynced local records are at risk, so that window is kept as short as possible | Key design, backup design | `security-lead` (proposal) → ADR | before the storage ADR |
+| OQ15 | N5 grace — **Partly answered 2026-10-16**: the length is a per-plan licence parameter decided in `/license-design` (product-director floor: clearly longer than Waqtak's 5 days). Still open: what happens at expiry, and how it interacts with updates (Q-305) | Trusted time; update policy | user via `/license-design` | before N5 work |
 | OQ16 | Installer format comparison (MSI/MSIX/NSIS/Inno) and uninstall data behaviour (F340); local DB migration and rollback at update (F345) | Installer and update design | `researcher` + `data-lead` | before the ADR |
 | OQ17 | Do Ready Print and protected print mode on Windows 11 affect a RAW queue for a non-IPP receipt printer (F209, F210)? | Spooler RAW as the default transport | spike S21 | phase 2 |
 | OQ18 | Confirm whether Room 3 targets desktop JVM (F422). The Compose Multiplatform pin is **resolved**: 1.12.2 was pinned by the studio update on 2026-10-16 | `pins.yaml` accuracy (Room 3 only) | pin owner via `/research refresh kmp` | before implementation |
-| OQ19 | Legitimate, licensed Windows 11, Windows 10 22H2 and Windows 7 SP1 x64 installation media for the spike VMs. Not researched: where a Windows 7 image can still be obtained legally | Spike phase 0 | user | before the spike |
+| OQ19 | Licensed Windows 11 and Windows 10 22H2 installation media for the spike machines (Windows 7 no longer needed) — founder will download official ISOs from microsoft.com and use own licences; open until then | Spike phase 0 | user | before the spike |
+| OQ20 | Windows 10 Home/Pro has been out of support since 2025-10-14, with consumer ESU to 2027-10-12 (F2, F211), and most venues run Windows 10 or 11 Home/Pro. Are the venue Windows 10 PCs enrolled in ESU, or moved to Windows 11 at install like the Windows 7 venue? | Supported-OS statement; install checklist | user | before the first install |
 
 ### Spikes
 
@@ -619,9 +620,9 @@ No spike has run: no researcher had a Windows host. The one machine checked on 2
 |---|---|---|
 | Windows 11 VM | Current supported build (24H2 ends 2026-10-14, F3); Smart App Control on and off (S31); a protected-print-mode snapshot (S21) | user (media, OQ19) |
 | Windows 10 22H2 VM | Home/Pro (the likely venue edition) | user |
-| Windows 7 SP1 x64 VM | **Only if OQ3 shows a venue on Windows 7.** Two snapshots: *unpatched*, and *patched* (KB4490628, KB4474419, KB3140245 + Schannel TLS 1.2, F29, F30, F311) | user |
-| Reference low-spec PC | Physical, matching OQ4; VM numbers do not replace the cold-start and memory measurements | user |
-| Hardware | 80 mm USB thermal receipt printer with a drawer-kick port and its vendor driver; RJ-style cash drawer; a 58 mm printer for S24; a LAN- or serial-capable printer if T3/T4 are tested. Models from OQ5 | user |
+| Windows 7 SP1 x64 VM | **Not needed:** Windows 7 is not supported in Tier 1 (§ 5) | — |
+| Reference low-spec PC | Physical Windows 10/11 x64, **4 GB RAM**, the slowest CPU available, an HDD if available (OQ4); VM numbers do not replace the cold-start and memory measurements | user |
+| Hardware | **U.POS AI-330** and **Xprinter XP-80C** receipt printers with their vendor drivers, and a cash drawer wired to one of them (OQ5); a 58 mm printer for S24 only if one of these is not 80 mm | user |
 | Build host | A Windows build host for jpackage (no cross-compilation, F17/F404) and for test signing with a **self-signed** certificate (no purchase) | engineering |
 | Host decision | Hypervisor on the Linux host and USB passthrough of the printer into the VMs, or bench tests on the physical PC. Confirm in phase 0 (not researched) | engineering |
 
@@ -633,7 +634,7 @@ S1/S40 packaging, cold start, memory · S7/S43 the same screen in every shortlis
 
 Printer and drawer: S21, S22, S23, S24, S29 · Key and time: S11, S13, S12 · Signing and update: S30, S36, S38, S34. **Exit:** each duty passes, or its failure is recorded with the exact error. This feeds the storage, printing and update ADRs.
 
-**Phase 3 — Windows 7 x64 track (only if OQ3 shows a venue on Windows 7; reported apart from 10/11)**
+**Phase 3 — Windows 7 x64 track: not run (Windows 7 not supported in Tier 1, § 5). Kept for a later decision.**
 
 S2 (Electron 22), S3 (Tauri 2.11 vs 2.12.4 and the exact error, M3), S5/S47 (JVM), S4 (not run: D is not shortlisted), S8 + S33 (TLS 1.2 and SHA-2 signature trust, unpatched vs patched), S25 (printing paths), S10 and S11 (Windows 7 legs). **Exit:** a pass/fail table per route, with the unpatched-engine risk stated next to each pass.
 
