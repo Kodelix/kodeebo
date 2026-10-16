@@ -198,6 +198,8 @@ The spike is not concluded; the verdict comes after the last phase. Phase result
 
 **Gate:** process-kill cells, tamper pass signals (TS-03a, TS-04a, TS-05a) and the phase 0 regression all pass. **Phase 1 gate: PASS (run 2).**
 
+**Committed-harness evidence (run 3):** re-run on clean commit `4caabd2` (logs say `commit 4caabd2`, no `+dirty`): kill matrix identical to run 2 cell by cell (342.5 s), tamper 36 of 36 PASS with runtime-random test keys, phase 0 regression identical (`evidence/phase1-run3-*`). Runs 1 and 2 ran on uncommitted code and are kept as history.
+
 **Conditions:** phase 1 on harness `7309208` plus uncommitted phase 1 changes, on the same host as phase 0, with the encrypted store on NVMe. Kill-matrix speed was about 0.35 s per run, indicative only.
 
 **Conditions (phase 0):** harness commit `72bebbe` for run 3 (`11ace09+dirty` for runs 1–2), seeds 1–300 for the correct stub and seeds 1 to the catching seed for each mutant, one fault per run, 8 actions per run, and a single tenant and device.

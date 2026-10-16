@@ -1,0 +1,236 @@
+[
+ {
+  "cipher": "chacha20",
+  "scenario": "db_middle_page",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written",
+  "flipped": "client.db@21257"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "db_page1",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written",
+  "flipped": "client.db@300"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "hot_journal_crash_control",
+  "verdict": "PASS (no loss)",
+  "detail": "opened normally with all 5 expected sales, consistent",
+  "flipped": "journal 40456 bytes"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "hot_journal_crash_flip",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical",
+  "flipped": "journal 40456 bytes, flipped @20228"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "marker_flipped",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "marker_deleted",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "store_older_than_marker",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "db_page_while_running",
+  "verdict": "PASS (at next start)",
+  "detail": "runtime verify reply {'ok': True, 'op': 'verify'}; next start: detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "walmode+marker-wal_header",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the marker makes it visible)"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "walmode+marker-wal_first_frame",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the marker makes it visible)"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "walmode+marker-wal_last_frame",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the marker makes it visible)"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wrong_key",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "truncated_key",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "empty_key",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "right_key_wrong_cipher",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wrong_key_x20",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 20
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "right_key_after_attempts",
+  "verdict": "PASS (no loss)",
+  "detail": "opened normally with all 5 expected sales, consistent"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "ts04a_plaintext_scan",
+  "verdict": "PASS",
+  "detail": "no canary in any store file"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "db_middle_page",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written",
+  "flipped": "client.db@21257"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "db_page1",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written",
+  "flipped": "client.db@300"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "hot_journal_crash_control",
+  "verdict": "PASS (no loss)",
+  "detail": "opened normally with all 5 expected sales, consistent",
+  "flipped": "journal 40456 bytes"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "hot_journal_crash_flip",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical",
+  "flipped": "journal 40456 bytes, flipped @20228"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "marker_flipped",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "marker_deleted",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "store_older_than_marker",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "db_page_while_running",
+  "verdict": "PASS (at next start)",
+  "detail": "runtime verify reply {'ok': True, 'op': 'verify'}; next start: detected, refused, recorded (store_unusable_at_start); file not written"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "walmode+marker-wal_header",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the marker makes it visible)"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "walmode+marker-wal_first_frame",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the marker makes it visible)"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "walmode+marker-wal_last_frame",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the marker makes it visible)"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wrong_key",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "truncated_key",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "empty_key",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "right_key_wrong_cipher",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 1
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wrong_key_x20",
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]",
+  "attempts": 20
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "right_key_after_attempts",
+  "verdict": "PASS (no loss)",
+  "detail": "opened normally with all 5 expected sales, consistent"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "ts04a_plaintext_scan",
+  "verdict": "PASS",
+  "detail": "no canary in any store file"
+ }
+]
