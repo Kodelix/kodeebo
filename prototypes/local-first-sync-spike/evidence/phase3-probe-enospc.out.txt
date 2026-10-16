@@ -1,0 +1,48 @@
+# phase 3 probe for SC-20, run 2026-10-16 on the dev host
+## shim (apsw VFS above multipleciphers-unix), default cache and cache_size=2
+apsw 3.54.0.0 | sqlite 3.54.0 | SQLite3 Multiple Ciphers 2.6.1
+VFS list: ['multipleciphers-unix', 'unix', 'memdb', 'unix-excl']
+persistent=False fail write #1: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #2: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #3: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #4: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #5: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #6: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #7: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #8: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #1: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #2: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #3: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #4: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #5: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #6: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #7: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #8: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+-- cache_size=2: dirty pages spill to disk mid-transaction, so writes happen before COMMIT
+persistent=False fail write #1: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #2: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #3: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #4: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #5: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #6: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #7: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=False fail write #8: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+-- cache_size=2: dirty pages spill to disk mid-transaction, so writes happen before COMMIT
+persistent=True fail write #1: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #2: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #3: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #4: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #5: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #6: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #7: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+persistent=True fail write #8: error=FullError, txn still open=False, after ROLLBACK counts=(1, 1), integrity=ok
+
+## real tmpfs (96 KiB, unshare -r -m)
+apsw 3.54.0.0 | sqlite 3.54.0 | SQLite3 Multiple Ciphers 2.6.1
+real tmpfs: sale 17 failed with FullError: database or disk is full; txn still open=False
+after ROLLBACK counts=(16, 16) (expected 16 each), integrity=ok
+files: ['real.db']
+
+## page-count limit
+apsw 3.54.0.0 | sqlite 3.54.0 | SQLite3 Multiple Ciphers 2.6.1
+pagecap: outbox insert failed with FullError: database or disk is full; txn still open=False; inside the open txn counts=n/a

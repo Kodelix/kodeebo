@@ -144,6 +144,7 @@ class Run:
         self.server_down = False  # a planned outage: do not restart the server (SC-19 restore window)
         self.seq_of = {}  # action id -> device sequence, from the sale replies
         self.day = 0  # simulated day stamped on each sale (SC-19: retention by age)
+        self.sale_replies = {}  # action id -> the client's reply to the sale (SC-20: failed sales must be visible)
         # Phase 2 exercise counters: ops sent under a toxic, of those how many failed, and "duplicate" outcomes
         # on normal syncs (= a command the server committed whose reply the client never got).
         self.net_stats = {"faulted_ops": 0, "failed_ops": 0, "duplicates_seen": 0, "concurrent_both_parsed": 0}
@@ -303,12 +304,13 @@ class Run:
             a["day"] = self.day
         self.intent.execute("INSERT INTO actions VALUES (?,?)", (a["action_id"], json.dumps(a)))  # before submit
         r = self.send(a)
+        self.sale_replies[a["action_id"]] = r
         if r and r.get("ok"):
             self.seq_of[a["action_id"]] = r.get("seq")
             self.intent.execute("INSERT INTO acks VALUES (?)", (a["action_id"],))
             self.log(f"sale {a['action_id']} acknowledged")
         else:
-            self.log(f"sale {a['action_id']} no acknowledgement (client died)")
+            self.log(f"sale {a['action_id']} not acknowledged: {r if r else 'no reply (client died)'}")
 
     def go(self):
         self.log(f"seed={self.seed} mutant={self.mutant or 'none'} fault={self.fault}")
@@ -355,7 +357,7 @@ class Run:
         violations = oracle.check(intent, acked, client, dump, quiesced, integrity, allowed) + extra
         events = self.db + ".events.jsonl"
         if os.path.exists(events):  # no tamper in these runs, so any store refusal is a store failure
-            refusals = [ln for ln in open(events) if '"store_' in ln]
+            refusals = [ln for ln in open(events) if json.loads(ln).get("event", "").startswith("store_")]
             if refusals:
                 violations.append(("I9", f"client refused its store: {refusals[0][:200]}"))
         violations += [("I10", leak) for leak in self.leaks]  # TS-04a: plaintext on disk
@@ -869,6 +871,224 @@ def sc19(seeds=50, mutant_budget=60):
     return ok
 
 
+# --- Phase 3, SC-20: disk full ------------------------------------------------------------------------------------
+# Founder (2026-10-16): the counter keeps selling as soon as space is freed (no restart), the cashier and the owner
+# see a clear "disk full" warning, and a failed marker write never crash-loops the app.
+SC20_CELLS = ["a_txn_transient", "a_txn_persistent", "b_marker_write", "b_marker_fsync", "b_marker_replace",
+              "c_ack_mark"]
+SC20_MUTANTS = ["full_refuses", "marker_crash", "ack_despite_full"]
+SC20_ENV = {**RETENTION_ENV, "FULL_SHIM": "1"}
+SC20_TMPFS = "256k"  # real leg: the client's files live on a tmpfs this small
+
+
+def sc20_script(cell):
+    def script(run):
+        rng, i = run.rng, [0]
+        run.sc20 = {"cell": cell, "resumed": None, "restart_ok": None, "ack_failed": None}
+
+        def sale():
+            aid = f"s{run.seed}-a{i[0]}"
+            run.sale(i[0])
+            i[0] += 1
+            return run.sale_replies.get(aid)
+
+        def drain():
+            for _ in range(10):
+                r = run.send({"op": "sync"})
+                if r and r.get("ok") and r.get("pending") == 0:
+                    return
+
+        sale()
+        sale()
+        drain()
+        if cell.startswith("a_txn"):
+            persistent = cell == "a_txn_persistent"
+            run.send({"op": "arm_full", "n": rng.randint(1, 3), "persistent": persistent})
+            sale()  # fails: disk full
+            if persistent:
+                sale()  # still full
+                run.log("sync while full", run.send({"op": "sync"}))
+                run.send({"op": "free_space"})
+            r = sale()  # space is back (transient: the next write already succeeds)
+            run.sc20["resumed"] = bool(r and r.get("ok"))
+        elif cell.startswith("b_marker"):
+            stage = cell.rsplit("_", 1)[1]
+            run.send({"op": "arm_marker_full", "stage": stage})
+            sale()
+            sale()
+            run.send({"op": "exit"})  # the cashier restarts the app while the disk is still full
+            run.client.wait()
+            run.client_env = {**run.client_env, "MARKER_FAIL": stage}
+            run.start_client()
+            r = run.send({"op": "marker"})
+            run.sc20["restart_ok"] = bool(r and r.get("ok"))
+            sale()
+            run.client_env = {k: v for k, v in run.client_env.items() if k != "MARKER_FAIL"}
+            run.send({"op": "free_space"})
+            r = sale()
+            run.sc20["resumed"] = bool(r and r.get("ok"))
+        elif cell == "d_real_tmpfs":  # real ENOSPC from the kernel: the store, journal, marker and log share a tmpfs
+            sale()  # left pending, so the sync on the full disk must write its acknowledgement
+            filler = os.path.join(os.path.dirname(run.db), "filler")
+            fd = os.open(filler, os.O_WRONLY | os.O_CREAT, 0o600)
+            try:
+                while True:
+                    os.write(fd, b"\0" * 4096)
+            except OSError:  # ENOSPC: the filesystem is full
+                pass
+            finally:
+                os.close(fd)
+            run.sc20["filled_bytes"] = os.path.getsize(filler)
+            sale()
+            sale()
+            r = run.send({"op": "sync"})
+            run.log("sync while full", r)
+            run.sc20["ack_failed"] = bool(r and r.get("error") == "disk_full")
+            os.remove(filler)  # the owner frees space
+            r = sale()
+            run.sc20["resumed"] = bool(r and r.get("ok"))
+        elif cell == "c_ack_mark":
+            sale()
+            sale()  # pending
+            run.send({"op": "arm_full", "n": 1, "persistent": True})
+            r = run.send({"op": "sync"})  # the server applies the batch; the local acknowledgement write fails
+            run.log("sync with full disk", r)
+            run.sc20["ack_failed"] = bool(r and r.get("error") == "disk_full")
+            run.send({"op": "free_space"})
+            r = sale()
+            run.sc20["resumed"] = bool(r and r.get("ok"))
+        drain()
+        run.sc20["marker"] = run.send({"op": "marker"})
+    return script
+
+
+def sc20_extra(run, dump):
+    """SC-20 checks beside the money invariants. R6 selling resumes after space is freed; R7 every failure is
+    visible to the cashier (reply) and the owner (server event with an alert); R8 the client process never died;
+    R9 the marker caught up with the store; R10 a sale answered "not saved" left no trace anywhere."""
+    v, st = [], run.sc20
+    if st["resumed"] is not True:
+        v.append(("R6", "selling did not resume after space was freed"))
+    failed = [aid for aid, r in run.sale_replies.items() if r is not None and not r.get("ok")]
+    for aid in failed:
+        r = run.sale_replies[aid]
+        if r.get("error") != "disk_full" or r.get("warning") != "disk_full":
+            v.append(("R7", f"{aid} failed without a disk-full warning: {r}"))
+    kinds = Counter(e["kind"] for e in dump.get("device_events", []) if e["owner_alert"])
+    want = "marker_behind" if st["cell"].startswith("b_marker") else "disk_full"
+    if st["cell"] == "d_real_tmpfs":  # a real full disk may hit the commit, the marker or both
+        want = "disk_full" if kinds["disk_full"] or not kinds["marker_behind"] else "marker_behind"
+    if not kinds[want]:
+        v.append(("R7", f"no {want} owner alert on the server (events: {dict(kinds)})"))
+    if st["cell"].startswith("b_marker"):
+        warned = [r for r in run.sale_replies.values() if r and r.get("ok") and r.get("warning")]
+        if not warned:
+            v.append(("R7", "sales saved during the marker failure carried no warning"))
+        if st["restart_ok"] is not True:
+            v.append(("R8", "the app did not start while the marker could not be written"))
+    if run.fired:
+        v.append(("R8", f"client or server died: {run.fired}"))
+    m = st.get("marker") or {}
+    if m.get("marker_seq") != m.get("counter"):
+        v.append(("R9", f"marker {m.get('marker_seq')} != store counter {m.get('counter')} after space was freed"))
+    c = run.open_client_store()
+    bills = {r[0] for r in c.execute("SELECT action_id FROM bills").fetchall()}
+    c.close()
+    on_server = {r["action_id"] for r in dump["ledger"]}
+    for aid in failed:
+        if aid in bills or aid in on_server:
+            v.append(("R10", f"{aid} answered 'not saved' but is {'on the device' if aid in bills else 'on the server'}"))
+    exercised = {"a": bool(failed), "b": kinds["marker_behind"] > 0, "c": st["ack_failed"] is True,
+                 "d": bool(failed) and st["ack_failed"] is True}[st["cell"][0]]
+    run.sc20["exercised"] = exercised
+    return v, frozenset()
+
+
+def sc20_run(seed, cell, mutant=None, label=None, verbose=False):
+    env = dict(SC20_ENV)
+    if cell == "d_real_tmpfs":
+        env.pop("FULL_SHIM")  # real ENOSPC, no shim
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc20-{cell}", client_env=env)
+    run.script, run.extra = sc20_script(cell), sc20_extra
+    fs = None
+    if cell == "d_real_tmpfs":  # needs `unshare -r -m` (run.sh sc20real): a fresh size-capped tmpfs per run
+        fs = os.path.join(run.dir, "fs")
+        os.makedirs(fs)
+        subprocess.run(["mount", "-t", "tmpfs", "-o", f"size={SC20_TMPFS}", "tmpfs", fs], check=True)
+        run.db = os.path.join(fs, "client.db")
+    try:
+        r = run.go()
+    finally:
+        if fs:
+            subprocess.run(["umount", fs], check=False)
+    r["sc20"] = {k: v for k, v in run.sc20.items() if k != "marker"}
+    return r
+
+
+def sc20_real(seeds=50):
+    """SC-20 real-filesystem leg; run inside `unshare -r -m` so the driver may mount a tmpfs."""
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "tmpfs": SC20_TMPFS,
+               "seeds": seeds}
+    print(f"phase 3 SC-20 real tmpfs leg, commit {summary['harness_commit']}, {seeds} seeds", flush=True)
+    bad, exercised, failed_sales, marker_behind = [], 0, 0, 0
+    for s in range(1, seeds + 1):
+        r = sc20_run(s, "d_real_tmpfs")
+        exercised += bool(r["sc20"].get("exercised"))
+        if r["violations"]:
+            bad.append({"seed": s, "violations": r["violations"][:3]})
+    res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised} runs never hit ENOSPC)")
+    summary.update({"exercised": exercised, "violating_runs": len(bad), "first_bad": bad[:3], "result": res,
+                    "seconds_total": round(time.time() - t0, 1)})
+    with open(os.path.join(RUNS, "sc20-real-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"  d_real_tmpfs      exercised {exercised}/{seeds}  violating {len(bad)}  {res}  ({summary['seconds_total']} s)")
+    return res == "PASS"
+
+
+def sc20(seeds=50, mutant_budget=60):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "seeds_per_cell": seeds, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-20 (disk full), commit {summary['harness_commit']}, {seeds} seeds per cell", flush=True)
+    ok = True
+    for cell in SC20_CELLS:
+        t1 = time.time()
+        bad, exercised = [], 0
+        for s in range(1, seeds + 1):
+            r = sc20_run(s, cell)
+            exercised += bool(r["sc20"].get("exercised"))
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised} runs never hit the fault)")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:17s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}", flush=True)
+    for m in SC20_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for n in range(mutant_budget):
+            s, cell = n // len(SC20_CELLS) + 1, SC20_CELLS[n % len(SC20_CELLS)]
+            r = sc20_run(s, cell, mutant=m, label=f"sc20-mutant-{m}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][m] = {"caught": bool(caught), "runs_to_catch": n + 1 if caught else None,
+                                 "seed_cell": caught[:2] if caught else None,
+                                 "first_violation": caught[2] if caught else None, "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {m:18s} {'CAUGHT' if caught else 'SURVIVED'} after {n + 1} runs: {caught[2] if caught else '-'}",
+              flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc20-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-20: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -876,6 +1096,14 @@ if __name__ == "__main__":
         sys.exit(0 if phase1() else 1)
     if sys.argv[1] == "sc19":  # sc19 [seeds_per_cell]
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
+        sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc20real":  # sc20real [seeds] - inside unshare -r -m
+        sys.exit(0 if sc20_real(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay20":  # replay20 <seed> <cell> [mutant]
+        r = sc20_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay20", verbose=True)
+        print(json.dumps({k: r[k] for k in ("actions", "acked", "server_sales", "fired", "sc20", "violations")}, indent=1))
     if sys.argv[1] == "replay19":  # replay19 <seed> <cell> [mutant]
         r = sc19_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
                      label="replay19", verbose=True)

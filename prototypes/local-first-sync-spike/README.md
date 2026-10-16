@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) dev run PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -114,6 +114,20 @@ bash prototypes/local-first-sync-spike/run.sh sc19 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay19 <seed> <cell> [mutant]
+```
+
+SC-20 (disk full); `sc20real` runs the driver inside `unshare -r -m` to mount a 256 KiB tmpfs per run (Linux with unprivileged user namespaces):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc20 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc20real [seeds]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay20 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -387,3 +401,63 @@ The spike is not concluded; the verdict comes after the last phase. Phase result
 - **A device that is offline across the whole restore and the backup window.** It reconnects with records the server never had in any backup; they resend normally, which the `c_offline` and backlog cases cover.
 - **Side effects re-sent after a restore** (ETA submissions, alerts): not modelled. ETA's handling of a resubmitted receipt UUID is open (ETA note F310, F325).
 - **Several devices.**
+
+### Phase 3 — SC-20: disk full
+
+**Founder expectation (2026-10-16):**
+- The counter keeps selling as soon as space is freed, with no restart.
+- The cashier and the owner both see a clear "disk full" warning.
+- A failed marker write never crash-loops the app; it fails safe and records the event.
+
+**Probe P3-probe-ENOSPC** (`evidence/phase3-probe-enospc.*`, run before any harness change):
+- **Where it was tested:** an apsw VFS shim above SQLite3MC's cipher VFS failed the n-th write with `SQLITE_FULL` (32 cases, with and without mid-transaction cache spills); a real 96 KiB tmpfs filled up; and the page-count limit was hit.
+- **Result:** SQLite 3.54.0 (SQLite3MC 2.6.1) rolled back the **whole** transaction every time. It never left half a "close and pay" open, the counts were unchanged, and `integrity_check` was ok.
+- **Why the client still issues an explicit `ROLLBACK`:** the docs say such errors "may or may not" roll back (sync note F443), so that rule stays.
+- **Encryption:** the shim does not weaken it; there was no plaintext on disk.
+
+**Finding P3-F3 — before SC-20 the client failed the founder's expectation in two ways (shown by the mutants that keep the old code):**
+- **`full_refuses`:** a disk-full sale made the client refuse its store until restart, so selling did not resume after space was freed.
+- **`marker_crash`:** a failed marker write after COMMIT was not caught, so the client crashed. On restart it tried the marker again and, while the disk was still full, crashed again.
+
+Also, the event log lived on the same full disk, so recording the event could itself fail.
+
+**Fix under test (client):**
+- **Disk full during a sale or an ack write:** explicit `ROLLBACK`, then the reply `{"ok": false, "error": "disk_full", "warning": "disk_full"}`. The event is recorded and sent to the server, which raises an owner alert (`POST /device_event`). The store is not refused, so the next write after space is freed goes through.
+- **Failed marker write after COMMIT:** the sale stays saved and acknowledged, with a warning. The store is ahead of the marker, which is the safe direction, and a `marker_behind` event is recorded. The marker catches up on the next commit or start; a failed catch-up at start is recorded, never fatal.
+- **Events while the disk is full:** if the event log cannot be written, the event is kept in memory and sent to the server at the next chance.
+- **Telling disk full apart from damage:** a store error counts as "disk full" only for `SQLITE_FULL`, or when less than 64 KiB is free. Any other store error still refuses the store, as in phase 1.
+
+**Cells:**
+
+| Cell | Fault | Covers |
+|---|---|---|
+| `a_txn_transient` | `SQLITE_FULL` on write 1–3 of a sale, once | sale fails visibly; the next sale works |
+| `a_txn_persistent` | every write fails from write 1–3 until `free_space`; two sales and a sync while full | resume without restart |
+| `b_marker_write`, `b_marker_fsync`, `b_marker_replace` | ENOSPC at that marker stage; the app is restarted while still full | no crash loop; sale saved with a warning; marker catches up |
+| `c_ack_mark` | disk full while writing the acknowledgement of a batch the server applied | the sync fails visibly; the resend comes back `duplicate` |
+| `d_real_tmpfs` | real ENOSPC: a 256 KiB tmpfs per run holds the store, journal, marker and event log; a filler file fills it, then is deleted | the same signals on a real kernel error, including the ack write |
+
+**Checks added:**
+- **R6:** selling resumes after space is freed.
+- **R7:** every failed sale carries the disk-full warning, the server holds an owner-alert event, and sales saved during a marker failure carry a warning.
+- **R8:** no process died, and the app starts while the marker still cannot be written.
+- **R9:** the marker equals the store counter at the end.
+- **R10:** a sale answered "not saved" is neither on the device nor on the server.
+
+**Mutants:** `full_refuses`, `marker_crash`, `ack_despite_full` (answers "saved" for a sale whose commit failed).
+
+#### Run 1 (dev, uncommitted harness on `4ff3c68`) — PASS
+
+`evidence/phase3-sc20-run1-dev.*` and `evidence/phase3-sc20real-run1-dev.*`.
+- **Shim cells:** all 6 PASS, 50 seeds each, every run hit its fault, 0 violations (89 s).
+- **Mutants:** all three caught. `full_refuses` after 1 run (I7, outbox never drained; R6), `marker_crash` after 3 (R7, no owner alert; R8, client died), `ack_despite_full` after 1 (I1, an acknowledged sale missing on the server).
+- **Real tmpfs leg:** 50 of 50 runs hit real ENOSPC, 0 violations (20 s).
+  - In every run the two sales made on the full disk were answered `disk_full` and left no trace.
+  - The sync hit a real failed ack write: the server had applied the sale, the client could not record the ack, and after space was freed the resend came back `duplicate`, counted once.
+  - The event log could not be written to the full tmpfs, so the events went to the server from memory.
+
+**Not covered by SC-20:**
+- **The marker failing on a real full disk:** a commit needs a journal file, so on a real full disk the commit always failed first. Marker failures are covered by injection only (the `b_marker_*` cells).
+- **First start on an already-full disk:** the initial marker write would fail, and the next start would see "marker missing beside a non-empty store" and refuse. A known limitation of this spike client.
+- **Windows:** whether a full disk reports `ERROR_DISK_FULL` the same way is phase 4.
+- **A cashier-facing message:** the reply carries `warning: disk_full`; the actual UI text and the owner's alert wording belong to the spec.

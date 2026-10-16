@@ -37,7 +37,7 @@ import (
 
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
-  reconcile_events, config;
+  reconcile_events, config, device_events;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -65,6 +65,8 @@ CREATE TABLE reconcile_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KE
   UNIQUE (device_id, epoch, server_cursor, outcome));
 CREATE TABLE config (id int PRIMARY KEY CHECK (id = 1), version int NOT NULL, price int NOT NULL);
 INSERT INTO config VALUES (1, 1, 6000);
+CREATE TABLE device_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
+  kind text NOT NULL, detail jsonb NOT NULL, owner_alert boolean NOT NULL);
 `
 
 type payload struct {
@@ -365,6 +367,29 @@ func handleArchive(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, `{"ok":true}`)
 }
 
+// handleDeviceEvent records device-side events (SC-20: disk_full, marker_behind) and raises an owner alert for
+// each; the detail carries error classes only, never business data.
+func handleDeviceEvent(w http.ResponseWriter, r *http.Request) {
+	var b struct {
+		DeviceID string           `json:"device_id"`
+		Events   []map[string]any `json:"events"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	for _, e := range b.Events {
+		kind, _ := e["event"].(string)
+		detail, _ := json.Marshal(e)
+		if _, err := pool.Exec(r.Context(), `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,$2,$3,true)`,
+			b.DeviceID, kind, detail); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	fmt.Fprint(w, `{"ok":true}`)
+}
+
 // handleConfig: GET returns the current config with the restore epoch; POST ?price= is an owner edit (version+1).
 func handleConfig(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -401,15 +426,16 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	out := map[string]any{}
 	for name, q := range map[string]string{
-		"ledger":    "SELECT id, device_id, command_id, seq, action_id, kind, amount_piasters FROM ledger ORDER BY id",
-		"minutes":   "SELECT id, action_id, session_id, minute_idx FROM minutes ORDER BY id",
-		"inbox":     "SELECT device_id, command_id, seq, payload_hash, outcome FROM inbox ORDER BY seq",
-		"flags":     "SELECT id, kind, device_id, command_id, seq FROM flags ORDER BY id",
-		"cursor":    "SELECT device_id, last_seq FROM cursor_",
-		"offline":   "SELECT device_id, extract(epoch FROM from_ts)::float8 AS from_s, extract(epoch FROM to_ts)::float8 AS to_s, owner_alert FROM offline_periods ORDER BY id",
-		"reconcile": "SELECT device_id, epoch, server_cursor, device_acked, device_low, outcome, lost_from, lost_to, owner_alert FROM reconcile_events ORDER BY id",
-		"meta":      "SELECT epoch FROM meta",
-		"config":    "SELECT version, price FROM config",
+		"ledger":        "SELECT id, device_id, command_id, seq, action_id, kind, amount_piasters FROM ledger ORDER BY id",
+		"minutes":       "SELECT id, action_id, session_id, minute_idx FROM minutes ORDER BY id",
+		"inbox":         "SELECT device_id, command_id, seq, payload_hash, outcome FROM inbox ORDER BY seq",
+		"flags":         "SELECT id, kind, device_id, command_id, seq FROM flags ORDER BY id",
+		"cursor":        "SELECT device_id, last_seq FROM cursor_",
+		"offline":       "SELECT device_id, extract(epoch FROM from_ts)::float8 AS from_s, extract(epoch FROM to_ts)::float8 AS to_s, owner_alert FROM offline_periods ORDER BY id",
+		"reconcile":     "SELECT device_id, epoch, server_cursor, device_acked, device_low, outcome, lost_from, lost_to, owner_alert FROM reconcile_events ORDER BY id",
+		"meta":          "SELECT epoch FROM meta",
+		"config":        "SELECT version, price FROM config",
+		"device_events": "SELECT device_id, kind, detail, owner_alert FROM device_events ORDER BY id",
 	} {
 		rows, err := dumpRows(ctx, q)
 		if err != nil {
@@ -447,6 +473,7 @@ func main() {
 	mux.HandleFunc("POST /batch", handleBatch)
 	mux.HandleFunc("GET /dump", handleDump)
 	mux.HandleFunc("POST /archive", handleArchive)
+	mux.HandleFunc("POST /device_event", handleDeviceEvent)
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })

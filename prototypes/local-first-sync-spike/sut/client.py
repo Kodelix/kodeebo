@@ -24,9 +24,24 @@
 # (highest sequence in a backup whose restore was verified) AND it is older than RETAIN_DAYS (60) days. Days are
 # simulated: each sale carries the driver's day, and "today" is the latest day seen. When the server answers
 # resend_from, the next sync rebuilds those commands from the bills.
+# Phase 3 (SC-20, disk full; founder: keep selling as soon as space is freed, no restart; the cashier and the
+# owner see a "disk full" warning; a failed marker write never crash-loops the app):
+#   - A sale or ack write that hits a full disk is rolled back explicitly, answered {"ok": false, "error":
+#     "disk_full", "warning": "disk_full"}, recorded and reported to the server (owner alert); the store is NOT
+#     refused, so the next write after space is freed goes through.
+#   - A marker write that fails after COMMIT leaves the sale saved and acknowledged ("store ahead of marker", the
+#     safe direction), records "marker_behind", and the marker catches up on the next commit or start.
+#   - Events are kept in memory when the event log itself cannot be written, and reported to the server
+#     (POST /device_event) as soon as possible.
+#   Injection: FULL_SHIM=1 puts an apsw VFS shim above SQLite3MC; ops arm_full {n, persistent} fail the n-th
+#   write with SQLITE_FULL (and every later write if persistent), arm_marker_full {stage} fails the marker write at
+#   write | fsync | replace, free_space clears both. MARKER_FAIL=<stage> arms the marker failure from the start.
+#      MUTANT also: full_refuses (old behaviour: refuse the store on disk full), marker_crash (old behaviour: an
+#      uncaught marker error), ack_despite_full (answers "saved" for a sale whose commit failed).
 #      MUTANT also: prune_unconfirmed (prunes without the archive confirmation), rebuild_new_ids (rebuilt
 #      commands get new command ids), config_version_only (config feed compared by version, epoch ignored).
 # The spike's binding is not the product decision (README).
+import errno
 import hashlib
 import hmac
 import http.client
@@ -51,6 +66,8 @@ JOURNAL = os.environ.get("JOURNAL", "delete")
 RETENTION = os.environ.get("RETENTION") == "1"
 RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
 fp_count = 0
+MARKER_FAIL = os.environ.get("MARKER_FAIL", "")  # SC-20: write | fsync | replace
+unreported = []  # SC-20: events not yet reported to the server (kept in memory when the disk is full)
 
 if STORE == "sqlite3mc":
     import apsw
@@ -76,11 +93,42 @@ def reply(obj):
 
 
 def record_event(kind, err, **extra):
-    # Plain-text event log beside the database: kind and error class only, no business data.
-    with open(EVENTS, "a") as f:
-        f.write(json.dumps({"event": kind, "error": f"{type(err).__name__}: {str(err)[:160]}", **extra}) + "\n")
-        f.flush()
-        os.fsync(f.fileno())
+    # Plain-text event log beside the database: kind and error class only, no business data. On a full disk the
+    # log itself may not be writable: the event is then kept in memory (SC-20); it is always queued for the server.
+    ev = {"event": kind, "error": f"{type(err).__name__}: {str(err)[:160]}", **extra}
+    unreported.append(ev)
+    try:
+        with open(EVENTS, "a") as f:
+            f.write(json.dumps(ev) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+    except OSError:
+        ev["log_write_failed"] = True
+
+
+def report_events():
+    """SC-20: send queued device events to the server (owner alert); best effort, short timeout."""
+    if not unreported:
+        return
+    body = json.dumps({"device_id": DEVICE, "events": unreported}).encode()
+    try:
+        req = urllib.request.Request(SERVER + "/device_event", method="POST", data=body,
+                                     headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=2) as r:
+            r.read()
+        unreported.clear()
+    except (urllib.error.URLError, ConnectionError, TimeoutError, OSError, http.client.HTTPException, ValueError):
+        pass
+
+
+def disk_full(e):
+    """True when a store error means the disk (or its quota) is full rather than a damaged store."""
+    if STORE == "sqlite3mc" and isinstance(e, apsw.FullError):
+        return True
+    try:
+        return shutil.disk_usage(os.path.dirname(os.path.abspath(DB))).free < 64 * 1024
+    except OSError:
+        return False
 
 
 class MarkerError(RuntimeError):
@@ -96,12 +144,20 @@ def _mac(seq):
     return hmac.new(kb, f"kodeebo-spike-hwm:{seq}".encode(), hashlib.sha256).hexdigest()
 
 
+def _marker_fault(stage):
+    if MARKER_FAIL == stage:
+        raise OSError(errno.ENOSPC, f"injected ENOSPC at marker {stage}")
+
+
 def write_marker(seq):
     tmp = MARKER + ".tmp"
     with open(tmp, "w") as f:
+        _marker_fault("write")
         json.dump({"seq": seq, "mac": _mac(seq)}, f)
         f.flush()
+        _marker_fault("fsync")
         os.fsync(f.fileno())
+    _marker_fault("replace")
     os.replace(tmp, MARKER)
     d = os.open(os.path.dirname(os.path.abspath(MARKER)), os.O_RDONLY)
     os.fsync(d)
@@ -124,8 +180,13 @@ def check_marker(c):
         raise MarkerError("commit marker MAC invalid")
     if seq < mseq:
         raise MarkerError(f"committed sales missing: store sequence {seq} < marker {mseq}")
-    if seq > mseq:
-        write_marker(seq)  # crash after a commit, before its marker write: the store is ahead, which is safe
+    if seq > mseq:  # crash or failed marker write after a commit: the store is ahead, which is safe
+        try:
+            write_marker(seq)
+        except OSError as e:
+            if MUTANT == "marker_crash":
+                raise
+            record_event("marker_behind", e, store_seq=seq, marker_seq=mseq, at="start")
 
 
 def key_pragma(hexkey):
@@ -153,12 +214,36 @@ def preserve_before_recovery():
     return dest
 
 
+if STORE == "sqlite3mc" and os.environ.get("FULL_SHIM") == "1":
+    class FullState:  # SC-20 injection: fail the n-th write after arming; persistent = every later write too
+        armed_at, writes, persistent, tripped = 0, 0, False, False
+
+    class FullFile(apsw.VFSFile):
+        def xWrite(self, data, offset):
+            if FullState.armed_at:
+                FullState.writes += 1
+                if (FullState.tripped and FullState.persistent) or FullState.writes == FullState.armed_at:
+                    FullState.tripped = True
+                    raise apsw.FullError("injected SQLITE_FULL")
+            return super().xWrite(data, offset)
+
+    class FullVFS(apsw.VFS):
+        def __init__(self):
+            self.base = apsw.vfs_names()[0]  # SQLite3MC's cipher VFS is the default; the shim sits above it
+            super().__init__("fullshim", self.base)
+
+        def xOpen(self, name, flags):
+            return FullFile(self.base, name, flags)
+
+    full_vfs = FullVFS()
+
+
 def open_store():
     """Open and verify the store. Returns (connection, None, copy) or (None, error, copy)."""
     copy = preserve_before_recovery()
     try:
         if STORE == "sqlite3mc":
-            c = apsw.Connection(DB)
+            c = apsw.Connection(DB, vfs="fullshim") if os.environ.get("FULL_SHIM") == "1" else apsw.Connection(DB)
             c.set_busy_timeout(5000)
             c.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
             c.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()  # answers 'ok' even for a wrong key
@@ -229,19 +314,47 @@ def close_and_pay(a):
         return seq
 
     failpoint("client:before_local_commit")  # P1
-    if MUTANT == "separate_outbox_txn":  # planted defect: two transactions
-        q("BEGIN IMMEDIATE"); business(); q("COMMIT")
-        failpoint("client:after_business_commit")  # P3 exists only here
-        q("BEGIN IMMEDIATE"); seq = outbox(); q("COMMIT")
-    else:
-        q("BEGIN IMMEDIATE")
-        business()
-        seq = outbox()
-        failpoint("client:mid_local_txn")  # P2: before COMMIT
-        q("COMMIT")
+    try:
+        if MUTANT == "separate_outbox_txn":  # planted defect: two transactions
+            q("BEGIN IMMEDIATE"); business(); q("COMMIT")
+            failpoint("client:after_business_commit")  # P3 exists only here
+            q("BEGIN IMMEDIATE"); seq = outbox(); q("COMMIT")
+        else:
+            q("BEGIN IMMEDIATE")
+            business()
+            seq = outbox()
+            failpoint("client:mid_local_txn")  # P2: before COMMIT
+            q("COMMIT")
+    except STORE_ERRORS as e:
+        if MUTANT == "full_refuses" or not disk_full(e):
+            raise  # a damaged store: refuse (old behaviour for disk full in the full_refuses mutant)
+        rollback()
+        record_event("disk_full", e, during="sale")
+        report_events()
+        if MUTANT == "ack_despite_full":  # planted defect: tells the cashier the sale was saved
+            return reply({"ok": True, "op": "sale", "action_id": a["action_id"], "seq": None})
+        return reply({"ok": False, "op": "sale", "action_id": a["action_id"], "error": "disk_full",
+                      "warning": "disk_full"})
     failpoint("client:after_local_commit")  # P4: committed, marker not yet written, not yet acknowledged
-    write_marker(seq)
-    reply({"ok": True, "op": "sale", "action_id": a["action_id"], "seq": seq})
+    warning = None
+    try:
+        write_marker(seq)
+    except OSError as e:  # the sale is committed: it stays saved; the marker catches up later (fail safe)
+        if MUTANT == "marker_crash":
+            raise
+        record_event("marker_behind", e, store_seq=seq, at="sale")
+        report_events()
+        warning = "disk_full" if e.errno == errno.ENOSPC else "marker_behind"
+    reply({"ok": True, "op": "sale", "action_id": a["action_id"], "seq": seq, **({"warning": warning} if warning else {})})
+
+
+def rollback():
+    """Explicit ROLLBACK after a write error: SQLite may have rolled back already (sync note F443, probe P3)."""
+    try:
+        if con.in_transaction:
+            q("ROLLBACK")
+    except STORE_ERRORS:
+        pass
 
 
 def report():
@@ -296,6 +409,7 @@ def select_rows():
 
 
 def sync():
+    report_events()
     rows = select_rows()
     if not rows:
         return reply({"ok": True, "op": "sync", "pending": 0})
@@ -305,10 +419,19 @@ def sync():
     except NET_ERRORS as e:  # a truncated or malformed reply is a failed sync (P0-F2)
         return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": pending_count()})
     failpoint("client:after_response_before_mark")  # P10
-    q("BEGIN IMMEDIATE")
-    apply_reply(resp)
-    failpoint("client:mid_mark")  # P11: inside the acknowledgement write, before COMMIT
-    q("COMMIT")
+    try:
+        q("BEGIN IMMEDIATE")
+        apply_reply(resp)
+        failpoint("client:mid_mark")  # P11: inside the acknowledgement write, before COMMIT
+        q("COMMIT")
+    except STORE_ERRORS as e:
+        if MUTANT == "full_refuses" or not disk_full(e):
+            raise
+        rollback()  # the acks are lost locally; the commands stay pending and come back as "duplicate"
+        record_event("disk_full", e, during="ack_mark")
+        report_events()
+        return reply({"ok": False, "op": "sync", "error": "disk_full", "warning": "disk_full",
+                      "pending": pending_count()})
     failpoint("client:after_mark")  # P12
     reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count()})
 
@@ -366,7 +489,13 @@ def sync_concurrent():
         t.join()
     for o in out:  # acknowledge from every reply that parsed; the second is a duplicate
         if isinstance(o, dict):
-            mark(o)
+            try:
+                mark(o)
+            except STORE_ERRORS as e:
+                if MUTANT == "full_refuses" or not disk_full(e):
+                    raise
+                rollback()
+                record_event("disk_full", e, during="ack_mark")
     reply({"ok": True, "op": "sync_concurrent",
            "replies": [o["results"] if isinstance(o, dict) else f"error: {str(o)[:60]}" for o in out],
            "pending": pending_count()})
@@ -455,6 +584,23 @@ for line in sys.stdin:
             sync_concurrent()
         elif op == "ping":
             ping()
+        elif op == "arm_full":  # SC-20
+            FullState.armed_at, FullState.writes = int(msg["n"]), 0
+            FullState.persistent, FullState.tripped = bool(msg.get("persistent")), False
+            reply({"ok": True, "op": op})
+        elif op == "arm_marker_full":  # SC-20
+            MARKER_FAIL = msg["stage"]
+            reply({"ok": True, "op": op})
+        elif op == "free_space":  # SC-20: space is back
+            if os.environ.get("FULL_SHIM") == "1":
+                FullState.armed_at, FullState.tripped = 0, False
+            MARKER_FAIL = ""
+            report_events()
+            reply({"ok": True, "op": op})
+        elif op == "marker":  # SC-20 view: marker sequence against the store counter
+            m = json.load(open(MARKER)) if os.path.exists(MARKER) else {}
+            reply({"ok": True, "op": op, "marker_seq": m.get("seq"),
+                   "counter": q("SELECT seq FROM counter WHERE id = 1")[0][0], "unreported": len(unreported)})
         elif op == "pull_config":
             pull_config()
         elif op == "state":  # SC-19 view for the driver: retention and config state

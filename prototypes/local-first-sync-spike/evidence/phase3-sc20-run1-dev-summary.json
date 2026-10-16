@@ -1,0 +1,104 @@
+{
+ "harness_commit": "4ff3c68+dirty",
+ "started": "2026-10-16 21:54:43",
+ "seeds_per_cell": 50,
+ "cells": [
+  {
+   "cell": "a_txn_transient",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 11.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "a_txn_persistent",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 11.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_marker_write",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 16.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_marker_fsync",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_marker_replace",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_ack_mark",
+   "runs": 50,
+   "exercised": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 13.5,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "full_refuses": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_txn_transient"
+   ],
+   "first_violation": [
+    "I7",
+    "outbox did not drain after faults stopped"
+   ],
+   "seconds": 0.2
+  },
+  "marker_crash": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "b_marker_write"
+   ],
+   "first_violation": [
+    "R7",
+    "no marker_behind owner alert on the server (events: {})"
+   ],
+   "seconds": 1.0
+  },
+  "ack_despite_full": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_txn_transient"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-a2 acknowledged but missing on the server"
+   ],
+   "seconds": 0.2
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 89.3
+}

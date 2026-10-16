@@ -4,7 +4,7 @@
 # Date: 2026-10-16
 #   run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper
 #          | phase2 [seeds_per_cell] [campaign_runs] | replay2 <seed> <cell|random> [mutant] | ts09
-#          | sc19 [seeds_per_cell] | replay19 <seed> <cell> [mutant] | stop
+#          | sc19 [seeds_per_cell] | replay19 <seed> <cell> [mutant] | sc20 [seeds] | sc20real [seeds] | replay20 <seed> <cell> [mutant] | stop
 set -euo pipefail
 cd "$(dirname "$0")"
 PG=lfs-spike-pg
@@ -35,6 +35,9 @@ case "${1:-}" in
   ts09)     start_pg; build_server; .venv/bin/python harness/driver.py ts09 ;;
   sc19)     start_pg; build_server; .venv/bin/python harness/driver.py sc19 "${2:-50}" ;;
   replay19) start_pg; build_server; .venv/bin/python harness/driver.py replay19 "$2" "$3" "${4:-}" ;;
+  sc20)     start_pg; build_server; .venv/bin/python harness/driver.py sc20 "${2:-50}" ;;
+  sc20real) start_pg; build_server; unshare -r -m .venv/bin/python harness/driver.py sc20real "${2:-50}" ;;
+  replay20) start_pg; build_server; .venv/bin/python harness/driver.py replay20 "$2" "$3" "${4:-}" ;;
   stop)     docker rm -f "$PG" >/dev/null 2>&1 || true ;;
-  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | phase2 [seeds] [runs] | replay2 <seed> <cell|random> [mutant] | ts09 | sc19 [seeds] | replay19 <seed> <cell> [mutant] | stop" >&2; exit 2 ;;
+  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | phase2 [seeds] [runs] | replay2 <seed> <cell|random> [mutant] | ts09 | sc19 [seeds] | replay19 <seed> <cell> [mutant] | sc20 [seeds] | sc20real [seeds] | replay20 <seed> <cell> [mutant] | stop" >&2; exit 2 ;;
 esac
