@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) dev run PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -28,8 +28,13 @@ This code is throwaway (`.claude/rules/prototype-code.md`). Nothing here is impo
 | 1 | Is "bill closed + outbox row" atomic on the encrypted store under process kill? Tamper TS-03a, TS-04a, TS-05a | 0 violations over every fault cell × ≥ 50 seeds; tamper pass signals |
 | 2 | Exactly one effect per action under network faults, resend, duplicate replay, concurrent retry and server kill (real PostgreSQL 18.6) | 0 violations; ≥ 3,000 randomized runs |
 | 3 | Compound faults, reordering, partial batch, restored backup, cloned disk, re-bootstrap; tamper TS-01, TS-02, TS-03b, TS-06a, TS-07a, TS-09, TS-10; added cases SC-19 (first), SC-20, SC-21a, SC-22, SC-23, SC-25a and SC-25b mechanics (table below) | 0 violations; ≥ 3,000 runs (30,000 stretch); tamper pass signals; each added case's pass signal |
-| 4 | Windows 10/11 durability and tamper legs; added cases SC-21b, SC-24, SC-26, SC-27 | per § 9.1 / § 9.1.1 / § 9.1.2 |
+| 4 | Windows 10/11 durability and tamper legs; added cases SC-21b, SC-24, SC-26, SC-27 | per § 9.1 / § 9.1.1 / § 9.1.2; measured against `docs/architecture/perf-budgets.md` (founder ceiling: no counter action over 3 s, worst case, on the 4 GB reference PC) |
 | 5 | Day-close totals and tampered clocks; SC-25b with the real N5 rules | per § 9.1 / § 9.1.2 |
+
+**Phase 4 VM (founder, 2026-10-16):**
+- **Baseline:** the shared Windows VM's baseline is snapshot **`clean-ssh2`**, not `clean`.
+- **What it contains:** Windows 10 22H2 with no cumulative updates; Edge/WebView2 self-updated to 155; OpenSSH with key-only access (the desktop spike's dedicated key in `prototypes/desktop-client-spike/.keys/`, host key pinned); cashier auto-logon; and the 100 IOPS + 80 MiB/s disk throttle.
+- **Rules:** coordinate with the desktop spike before using the VM, and restore `clean-ssh2` after each run.
 
 **Added cases (founder, 2026-10-16; full rows with mechanisms in `docs/research/local-first-sync.md` § 9.1.2).** SC-19 is the highest-risk gap and runs first in phase 3.
 
@@ -455,6 +460,20 @@ Also, the event log lived on the same full disk, so recording the event could it
   - In every run the two sales made on the full disk were answered `disk_full` and left no trace.
   - The sync hit a real failed ack write: the server had applied the sale, the client could not record the ack, and after space was freed the resend came back `duplicate`, counted once.
   - The event log could not be written to the full tmpfs, so the events went to the server from memory.
+
+#### Run 2 (committed harness `daac687`) — SC-20 **PASS**, full regression PASS
+
+`evidence/phase3-sc20-run2-*` (log headers `commit daac687`, no `+dirty`).
+- **SC-20 shim cells and mutants:** identical to run 1, line by line (88 s).
+- **Real tmpfs leg:** 50 of 50 runs exercised, 0 violations.
+- **Regression on the same harness:**
+  - phase 0 self-test: PASS;
+  - phase 1 kill matrix: PASS;
+  - tamper: 36 of 36 PASS;
+  - SC-19: PASS, identical to its run 2;
+  - phase 2 at 10 seeds per cell and 300 runs: PASS, the same as before.
+
+The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `main` during the run; it changes nothing in this folder (`git diff daac687 c0e7fd2 -- prototypes/local-first-sync-spike` is empty), so the harness was byte-identical.
 
 **Not covered by SC-20:**
 - **The marker failing on a real full disk:** a commit needs a journal file, so on a real full disk the commit always failed first. Marker failures are covered by injection only (the `b_marker_*` cells).
