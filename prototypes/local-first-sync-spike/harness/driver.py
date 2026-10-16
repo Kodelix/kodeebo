@@ -1089,6 +1089,193 @@ def sc20(seeds=50, mutant_budget=60):
     return ok
 
 
+# --- Phase 3, SC-21a: app update with an unsynced outbox and a local schema migration ----------------------------
+SC21_KILLS = ["before_copy", "after_copy", "mid_ddl", "after_commit", "before_marker", "before_cleanup"]
+SC21_CELLS = ["none"] + SC21_KILLS + ["downgrade"]
+SC21_MUTANTS = ["nonatomic_migration", "no_premigrate_copy", "reserialize_on_upgrade"]
+SC21_COMMITTED = {"after_commit", "before_marker", "before_cleanup"}  # killed after the migration committed
+
+
+def file_sha(path):
+    import hashlib
+    return hashlib.sha256(open(path, "rb").read()).hexdigest() if os.path.exists(path) else None
+
+
+def sc21_script(cell):
+    def script(run):
+        i = [0]
+        run.sc21 = {"cell": cell, "killed": None, "after_kill": None, "copy_after_kill": None, "final": None,
+                    "downgrade": None}
+
+        def sale():
+            aid = f"s{run.seed}-a{i[0]}"
+            run.sale(i[0])
+            i[0] += 1
+            return run.sale_replies.get(aid)
+
+        def drain():
+            for _ in range(10):
+                r = run.send({"op": "sync"})
+                if r and r.get("ok") and r.get("pending") == 0:
+                    return
+
+        def restart(**env):
+            if run.client.poll() is None:
+                run.send({"op": "exit"})
+                run.client.wait()
+            run.client_env = {k: v for k, v in {**run.client_env, **env}.items() if v is not None}
+            run.start_client()
+
+        # App version 1: synced sales, then pending ones; the ack of two that the server applies is lost
+        for _ in range(3):
+            sale()
+        drain()
+        sale()
+        sale()
+        restart(FP="client:mid_mark:1")
+        run.log("sync with lost ack", run.send({"op": "sync"}))  # the server applies both; the client dies mid-ack
+        run.client.wait()
+        restart(FP=None)
+        sale()  # three pending now, two of them already applied on the server
+        # The update: app version 2 starts, killed at the cell's migration point
+        restart(SCHEMA_VERSION="2", FP=None if cell in ("none", "downgrade") else f"migrate:{cell}:1")
+        r = run.send({"op": "schema"})
+        if r is None:  # died at the failpoint
+            run.client.wait()
+            run.sc21["killed"] = True
+            copy_db = os.path.join(run.db + ".premigrate", os.path.basename(run.db))
+            run.sc21["copy_after_kill"] = sc21_copy_state(run, copy_db)
+            restart(SCHEMA_VERSION="2", FP=None, INSPECT="1")  # look at the store as the kill left it
+            run.sc21["after_kill"] = run.send({"op": "schema"})
+            restart(SCHEMA_VERSION="2", INSPECT=None)  # the app starts again and finishes the migration
+            r = run.send({"op": "schema"})
+        run.sc21["final"] = r
+        sale()
+        sale()
+        drain()
+        if cell == "downgrade":  # the old app is started again on the new store
+            run.send({"op": "exit"})
+            run.client.wait()
+            before = (file_sha(run.db), file_sha(run.db + ".hwm"))
+            run.client_env = {**run.client_env, "SCHEMA_VERSION": "1"}
+            run.start_client()
+            r1 = run.send({"op": "sale", "action_id": f"s{run.seed}-old", "session_id": "x", "start_min": 0,
+                           "end_min": 1, "rate_per_hour": 3000, "cafe_piasters": 0})
+            run.send({"op": "exit"})
+            run.client.wait()
+            after = (file_sha(run.db), file_sha(run.db + ".hwm"))
+            events = open(run.db + ".events.jsonl").read() if os.path.exists(run.db + ".events.jsonl") else ""
+            run.sc21["downgrade"] = {"refused": bool(r1) and r1.get("store") == "refused",
+                                     "unchanged": before == after and not os.path.exists(run.db + "-journal"),
+                                     "event": "downgrade_refused" in events}
+            run.client_env = {**run.client_env, "SCHEMA_VERSION": "2"}
+            run.start_client()
+            sale()
+            drain()
+    return script
+
+
+def sc21_copy_state(run, path):
+    """The pre-migration copy as the kill left it: None, or (user_version, integrity)."""
+    if not os.path.exists(path):
+        return None
+    import apsw
+    c = apsw.Connection(path, flags=apsw.SQLITE_OPEN_READONLY)
+    c.execute("PRAGMA cipher = chacha20").fetchall()
+    c.execute(f"PRAGMA key = 'raw:{run.key}'").fetchall()
+    try:
+        return [c.execute("PRAGMA user_version").fetchall()[0][0], c.execute("PRAGMA integrity_check").fetchall()[0][0]]
+    except apsw.Error as e:
+        return ["unreadable", type(e).__name__]
+    finally:
+        c.close()
+
+
+def sc21_extra(run, dump):
+    """R11 after any kill the store is all schema 1 or all schema 2; R12 the pre-migration copy (a valid schema-1
+    store) exists from before the commit until verification, and is gone at the end; R13 every command on the
+    server carries the canonical payload hash; R14 an older app refuses a newer store without touching it."""
+    v, st = [], run.sc21
+    ak = st["after_kill"]
+    if ak:
+        parts = (ak["bills_tax"], ak["bill_lines"], ak["outbox_envelope"])
+        v1 = ak["user_version"] in (0, 1) and not any(parts)
+        v2 = ak["user_version"] == 2 and all(parts)
+        if not (v1 or v2):
+            v.append(("R11", f"half-migrated store after kill at {st['cell']}: {ak}"))
+        if st["cell"] in SC21_COMMITTED:
+            cs = st["copy_after_kill"]
+            if not cs or cs[0] not in (0, 1) or cs[1] != "ok":
+                v.append(("R12", f"no valid pre-migration copy after a kill at {st['cell']}: {cs}"))
+    fin = st["final"] or {}
+    if fin.get("user_version") != 2 or fin.get("premigrate"):
+        v.append(("R12", f"final state not migrated and clean: {fin}"))
+    intent = {json.loads(b)["action_id"]: json.loads(b) for (b,) in run.intent.execute("SELECT body FROM actions")}
+    by_seq = {s_: aid for aid, s_ in run.seq_of.items() if s_}
+    for row in dump["inbox"]:
+        aid = by_seq.get(row["seq"])
+        if aid in intent and row["payload_hash"] != oracle.expected_hash(intent[aid]):
+            v.append(("R13", f"seq {row['seq']} hash differs from the canonical payload of {aid}"))
+    if st["cell"] == "downgrade":
+        d = st["downgrade"] or {}
+        if not (d.get("refused") and d.get("unchanged") and d.get("event")):
+            v.append(("R14", f"downgrade not refused cleanly: {d}"))
+    killed_ok = st["cell"] in ("none", "downgrade") or st["killed"]
+    run.sc21["exercised"] = bool(killed_ok) and (st["cell"] != "downgrade" or st["downgrade"] is not None)
+    return v, frozenset()
+
+
+def sc21_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc21-{cell}", client_env={**RETENTION_ENV, "SCHEMA_VERSION": "1"})
+    run.script, run.extra = sc21_script(cell), sc21_extra
+    r = run.go()
+    r["sc21"] = run.sc21
+    return r
+
+
+def sc21(seeds=50, mutant_budget=40):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "seeds_per_cell": seeds, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-21a (app update + migration), commit {summary['harness_commit']}, {seeds} seeds per cell", flush=True)
+    ok = True
+    for cell in SC21_CELLS:
+        t1 = time.time()
+        bad, exercised, dups = [], 0, 0
+        for s in range(1, seeds + 1):
+            r = sc21_run(s, cell)
+            exercised += bool(r["sc21"].get("exercised"))
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised} runs not exercised)")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:15s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}", flush=True)
+    for m in SC21_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for n in range(mutant_budget):
+            s, cell = n // len(SC21_CELLS) + 1, SC21_CELLS[n % len(SC21_CELLS)]
+            r = sc21_run(s, cell, mutant=m, label=f"sc21-mutant-{m}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][m] = {"caught": bool(caught), "runs_to_catch": n + 1 if caught else None,
+                                 "seed_cell": caught[:2] if caught else None,
+                                 "first_violation": caught[2] if caught else None, "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {m:22s} {'CAUGHT' if caught else 'SURVIVED'} after {n + 1} runs: {caught[2] if caught else '-'}",
+              flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc21-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-21a: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -1098,6 +1285,12 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc21":  # sc21 [seeds_per_cell]
+        sys.exit(0 if sc21(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay21":  # replay21 <seed> <cell> [mutant]
+        r = sc21_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay21", verbose=True)
+        print(json.dumps({k: r[k] for k in ("actions", "acked", "server_sales", "fired", "sc21", "violations")}, indent=1))
     if sys.argv[1] == "sc20real":  # sc20real [seeds] - inside unshare -r -m
         sys.exit(0 if sc20_real(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay20":  # replay20 <seed> <cell> [mutant]

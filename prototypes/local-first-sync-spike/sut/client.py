@@ -36,6 +36,15 @@
 #   Injection: FULL_SHIM=1 puts an apsw VFS shim above SQLite3MC; ops arm_full {n, persistent} fail the n-th
 #   write with SQLITE_FULL (and every later write if persistent), arm_marker_full {stage} fails the marker write at
 #   write | fsync | replace, free_space clears both. MARKER_FAIL=<stage> arms the marker failure from the start.
+# Phase 3 (SC-21a, app update with an unsynced outbox): SCHEMA_VERSION (1 | 2) is the app's store schema, kept
+#   in PRAGMA user_version. App 2 migrates a version-1 store: copy the store files aside (<db>.premigrate/), run
+#   every DDL step and the version bump in ONE transaction, verify (integrity_check and unchanged row counts),
+#   refresh the marker, then delete the copy. A restart after a kill resumes from whatever the transaction left:
+#   all of version 1 or all of version 2. An app older than the store refuses without writing a byte and records
+#   "downgrade_refused". Pending commands keep their stored payload bytes and hash across the upgrade.
+#   INSPECT=1: open (with normal crash recovery), report the schema state, never migrate (the driver's view).
+#      MUTANT also: nonatomic_migration (each DDL step commits on its own), no_premigrate_copy,
+#      reserialize_on_upgrade (rewrites stored payloads in a new byte form and recomputes their hashes).
 #      MUTANT also: full_refuses (old behaviour: refuse the store on disk full), marker_crash (old behaviour: an
 #      uncaught marker error), ack_despite_full (answers "saved" for a sale whose commit failed).
 #      MUTANT also: prune_unconfirmed (prunes without the archive confirmation), rebuild_new_ids (rebuilt
@@ -64,6 +73,9 @@ EVENTS = DB + ".events.jsonl"
 MARKER = DB + ".hwm"
 JOURNAL = os.environ.get("JOURNAL", "delete")
 RETENTION = os.environ.get("RETENTION") == "1"
+APP_SCHEMA = int(os.environ.get("SCHEMA_VERSION", "1"))
+INSPECT = os.environ.get("INSPECT") == "1"
+PREMIGRATE = DB + ".premigrate"
 RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
 fp_count = 0
 MARKER_FAIL = os.environ.get("MARKER_FAIL", "")  # SC-20: write | fsync | replace
@@ -132,6 +144,10 @@ def disk_full(e):
 
 
 class MarkerError(RuntimeError):
+    pass
+
+
+class DowngradeError(RuntimeError):
     pass
 
 
@@ -238,6 +254,72 @@ if STORE == "sqlite3mc" and os.environ.get("FULL_SHIM") == "1":
     full_vfs = FullVFS()
 
 
+MIGRATION = [  # schema 1 -> 2 (SC-21a): a new column, a new table, and a rebuilt outbox with an envelope column
+    "ALTER TABLE bills ADD COLUMN tax_piasters INTEGER NOT NULL DEFAULT 0",
+    "CREATE TABLE bill_lines (action_id TEXT NOT NULL, item TEXT NOT NULL, piasters INTEGER NOT NULL)",
+    "CREATE TABLE outbox_v2 (seq INTEGER PRIMARY KEY, command_id TEXT UNIQUE, payload TEXT, payload_hash TEXT, "
+    "status TEXT NOT NULL, envelope INTEGER NOT NULL DEFAULT 1)",
+    "INSERT INTO outbox_v2 (seq, command_id, payload, payload_hash, status) "
+    "SELECT seq, command_id, payload, payload_hash, status FROM outbox",
+    "DROP TABLE outbox",
+    "ALTER TABLE outbox_v2 RENAME TO outbox",
+    "PRAGMA user_version = 2",
+]
+COUNTED = ("bills", "payments", "minutes", "outbox")
+
+
+def row_counts(c):
+    return {t: c.execute(f"SELECT count(*) FROM {t}").fetchall()[0][0] for t in COUNTED}
+
+
+def verify_migrated(c, before):
+    result = c.execute("PRAGMA integrity_check").fetchall()
+    if result != [("ok",)]:
+        raise RuntimeError(f"migration verification: integrity_check {result[:3]}")
+    if before is not None and row_counts(c) != before:
+        raise RuntimeError(f"migration verification: row counts {row_counts(c)} != {before}")
+
+
+def migrate(c):
+    """Schema 1 -> 2. The copy aside is kept until the migrated store has been verified."""
+    seq = c.execute("SELECT seq FROM counter WHERE id = 1").fetchall()[0][0]
+    before = row_counts(c)
+    failpoint("migrate:before_copy")
+    if MUTANT != "no_premigrate_copy":
+        if os.path.exists(PREMIGRATE):
+            shutil.rmtree(PREMIGRATE)  # a copy from an attempt that never committed: take a fresh one
+        os.makedirs(PREMIGRATE)
+        for suffix in ("", ".hwm"):
+            if os.path.exists(DB + suffix):
+                shutil.copy2(DB + suffix, os.path.join(PREMIGRATE, os.path.basename(DB) + suffix))
+    failpoint("migrate:after_copy")
+    atomic = MUTANT != "nonatomic_migration"
+    if atomic:
+        c.execute("BEGIN IMMEDIATE").fetchall()
+    for k, stmt in enumerate(MIGRATION):
+        c.execute(stmt).fetchall()
+        if k == 2:
+            failpoint("migrate:mid_ddl")
+    if MUTANT == "reserialize_on_upgrade":  # planted defect: new byte form for stored payloads, new hashes
+        for table, key in (("outbox", "seq"), ("bills", "action_id")):
+            for k_, payload in c.execute(f"SELECT {key}, payload FROM {table} WHERE payload IS NOT NULL").fetchall():
+                body = json.dumps(json.loads(payload))  # default separators, no key sort
+                c.execute(f"UPDATE {table} SET payload = ?, payload_hash = ? WHERE {key} = ?",
+                          (body, hashlib.sha256(body.encode()).hexdigest(), k_)).fetchall()
+    if atomic:
+        c.execute("COMMIT").fetchall()
+    failpoint("migrate:after_commit")
+    verify_migrated(c, before)
+    failpoint("migrate:before_marker")
+    try:
+        write_marker(seq)
+    except OSError as e:
+        record_event("marker_behind", e, store_seq=seq, at="migration")
+    failpoint("migrate:before_cleanup")
+    if os.path.exists(PREMIGRATE):
+        shutil.rmtree(PREMIGRATE)
+
+
 def open_store():
     """Open and verify the store. Returns (connection, None, copy) or (None, error, copy)."""
     copy = preserve_before_recovery()
@@ -253,6 +335,9 @@ def open_store():
         result = c.execute("PRAGMA integrity_check").fetchall()
         if result != [("ok",)]:
             raise RuntimeError(f"integrity_check: {result[:3]}")
+        uv = c.execute("PRAGMA user_version").fetchall()[0][0]
+        if uv > APP_SCHEMA and not INSPECT:  # SC-21a: an older app never touches a newer store
+            raise DowngradeError(f"store schema {uv} is newer than this app ({APP_SCHEMA})")
         c.execute("PRAGMA temp_store=MEMORY").fetchall()
         c.execute(f"PRAGMA journal_mode={JOURNAL.upper()}").fetchall()
         if os.environ.get("CACHE_PAGES"):
@@ -276,13 +361,23 @@ def open_store():
         check_marker(c)
         if copy:
             shutil.rmtree(copy)  # verified: the crash recovery was clean, the copy is not needed
+        if not INSPECT:
+            if c.execute("PRAGMA user_version").fetchall()[0][0] == 0:
+                c.execute("PRAGMA user_version = 1").fetchall()  # a store created by this spike starts at schema 1
+            if APP_SCHEMA >= 2 and c.execute("PRAGMA user_version").fetchall()[0][0] < 2:
+                migrate(c)
+            elif os.path.exists(PREMIGRATE):  # a kill after the migration committed: verify, then finish cleanup
+                verify_migrated(c, None)
+                shutil.rmtree(PREMIGRATE)
         return c, None, None
     except (*STORE_ERRORS, RuntimeError) as e:
         return None, e, copy
 
 
 con, open_error, recovery_copy = open_store()
-if open_error is not None:
+if isinstance(open_error, DowngradeError):
+    record_event("downgrade_refused", open_error)  # refused on purpose: the store was not touched
+elif open_error is not None:
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
 
 
@@ -307,7 +402,8 @@ def close_and_pay(a):
 
     def outbox():
         seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
-        q("INSERT INTO outbox VALUES (?,?,?,?, 'pending')", (seq, cmd_id, body, h))
+        q("INSERT INTO outbox (seq, command_id, payload, payload_hash, status) VALUES (?,?,?,?, 'pending')",
+          (seq, cmd_id, body, h))
         # The command's identity lives on with the business record (retention rule; rebuild for SC-19).
         q("UPDATE bills SET seq = ?, command_id = ?, payload = ?, payload_hash = ? WHERE action_id = ?",
           (seq, cmd_id, body, h, a["action_id"]))
@@ -597,6 +693,11 @@ for line in sys.stdin:
             MARKER_FAIL = ""
             report_events()
             reply({"ok": True, "op": op})
+        elif op == "schema":  # SC-21a view: schema state of the open store
+            cols = {t: [r[1] for r in q(f"PRAGMA table_info({t})")] for t in ("bills", "outbox", "bill_lines")}
+            reply({"ok": True, "op": op, "user_version": q("PRAGMA user_version")[0][0],
+                   "bills_tax": "tax_piasters" in cols["bills"], "bill_lines": bool(cols["bill_lines"]),
+                   "outbox_envelope": "envelope" in cols["outbox"], "premigrate": os.path.exists(PREMIGRATE)})
         elif op == "marker":  # SC-20 view: marker sequence against the store counter
             m = json.load(open(MARKER)) if os.path.exists(MARKER) else {}
             reply({"ok": True, "op": op, "marker_seq": m.get("seq"),

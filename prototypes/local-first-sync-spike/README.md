@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) dev run PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -133,6 +133,16 @@ bash prototypes/local-first-sync-spike/run.sh sc20real [seeds]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay20 <seed> <cell> [mutant]
+```
+
+SC-21a (app update with an unsynced outbox):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc21 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay21 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -480,3 +490,55 @@ The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `
 - **First start on an already-full disk:** the initial marker write would fail, and the next start would see "marker missing beside a non-empty store" and refuse. A known limitation of this spike client.
 - **Windows:** whether a full disk reports `ERROR_DISK_FULL` the same way is phase 4.
 - **A cashier-facing message:** the reply carries `warning: disk_full`; the actual UI text and the owner's alert wording belong to the spec.
+
+### Phase 3 — SC-21a: app update with an unsynced outbox and a local schema migration (Linux leg)
+
+**Design under test (client, `SCHEMA_VERSION` 1 or 2, kept in `PRAGMA user_version`):**
+- **Schema 1 → 2:** a new column on bills, a new table, and the outbox rebuilt with an envelope column (create, copy, drop, rename).
+- **The migration, in order:**
+  1. Copy the store files aside to `<db>.premigrate/`.
+  2. Run every DDL step and the version bump in **one** transaction.
+  3. Verify: `integrity_check` plus unchanged row counts.
+  4. Refresh the marker.
+  5. Delete the copy.
+
+  A restart after a kill finds the store wholly at schema 1 or wholly at schema 2. If the copy still exists beside a schema-2 store, the app verifies the store and then deletes the copy.
+- **Pending commands:** they keep their stored payload bytes and hash across the upgrade, so a command the server applied before the update (its ack lost) dedupes as `duplicate` afterwards.
+- **Downgrade:** an older app refuses a newer store before any write and records `downgrade_refused`.
+
+**Script per run:**
+1. App 1 makes 3 synced sales and 2 pending ones.
+2. A sync is killed inside the ack write (`client:mid_mark`), so the server holds 2 commands whose ack the device lost; one more pending sale follows.
+3. App 2 starts and is killed at the cell's migration point.
+4. An inspect-only start looks at the store exactly as crash recovery leaves it.
+5. App 2 starts again, finishes the migration and sells.
+6. In the `downgrade` cell, app 1 is started on the migrated store, then app 2 again.
+
+**Checks added:**
+- **R11:** after any kill the store is wholly schema 1 or wholly schema 2.
+- **R12:** a valid schema-1 copy exists after any kill that came after the COMMIT, and no copy is left at the end.
+- **R13:** every command on the server carries the canonical payload hash.
+- **R14:** the downgrade is refused, the store and marker are byte-identical afterwards, and the event is recorded.
+- **I8** (existing) catches `payload_mismatch` flags.
+
+**Mutants:** `nonatomic_migration`, `no_premigrate_copy`, `reserialize_on_upgrade`.
+
+#### Run 1 (dev, uncommitted harness on `6faf519`) — PASS
+
+`evidence/phase3-sc21a-run1-dev.*`, 213 s.
+- **Cells:** all 8 PASS (`none`, the six kill points, `downgrade`), 50 seeds each, every kill fired, 0 violations.
+- **Every kill:** a kill before or during the transaction (including mid-DDL) left a store wholly at schema 1, since crash recovery rolled back the hot journal. A kill after COMMIT left schema 2 with a valid schema-1 copy beside it.
+- **Lost acks:** in every run the two commands whose ack was lost before the update came back `duplicate` after it.
+- **Downgrade:** refused in 50 of 50 runs, files unchanged.
+- **Mutants:** all three caught.
+  - `nonatomic_migration` after 4 runs: a half-migrated store that the next start could not finish, so acknowledged sales never synced (I1, I7, R11).
+  - `no_premigrate_copy` after 5 runs (R12).
+  - `reserialize_on_upgrade` after 1 run: the server flagged `payload_mismatch` for the lost-ack commands (I8, R13).
+
+**Finding P3-F4 — an update must never change the bytes of a stored command.** If the new version rewrites stored payloads, even only their JSON layout, a command the server applied before the update (its ack lost) no longer dedupes: the server sees the same command id with a different hash. Under OQ6 that is recorded and flagged for review, never applied twice, but every such sale lands in the owner's review queue. **Rule:** stored command payloads are immutable; the wire format may change only for new commands, behind the envelope version.
+
+**Not covered:**
+- **The real updater on Windows:** files locked by the running app, installer rollback. That is SC-21b in phase 4.
+- **A failed verification after the migration:** there is no automatic restore from the copy yet; the copy is kept and the store refused.
+- **A two-step jump (schema 1 to 3).**
+- **The server rejecting an envelope version it no longer supports:** the stub ignores the envelope.
