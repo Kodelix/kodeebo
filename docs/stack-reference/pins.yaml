@@ -47,7 +47,7 @@ compose:
   compile_sdk: "37"
 
 kmp:
-  compose_multiplatform: "1.12.0"
+  compose_multiplatform: "1.12.2"   # stable 2026-10-15 (kmp/VERSION.md, re-verified 2026-10-16)
   sqldelight: "2.4.1"
   room: "3.0.3"
 

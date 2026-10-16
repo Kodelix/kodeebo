@@ -32,7 +32,7 @@ No stack reference exists for the desktop layer or for any desktop runtime candi
 | Component | Version | Where pinned | Verified on |
 |-----------|---------|--------------|-------------|
 | Kotlin / JVM toolchain | 2.4.21 / 21 | `pins.yaml` kotlin.kotlin, kotlin.jvm_toolchain; `kotlin/VERSION.md` | 2026-10-11 |
-| Compose Multiplatform | 1.12.0 — **behind**: 1.12.2 released 2026-10-15 (F328) and the official docs describe 1.12.2 (F16, F429) | `pins.yaml` kmp.compose_multiplatform; `kmp/VERSION.md` | 2026-10-11 (pin); 2026-10-16 (newer release seen) |
+| Compose Multiplatform | 1.12.2 — the studio update pinned it on 2026-10-16. This matches the release of 2026-10-15 (F328) and the version the official docs describe (F16, F429). The earlier 1.12.0 pin that check C5 flagged is resolved | `pins.yaml` kmp.compose_multiplatform; `kmp/VERSION.md` | 2026-10-16 |
 | SQLDelight / Room 3 | 2.4.1 / 3.0.3 (the Room 3 stack reference does not list a desktop JVM target, F422) | `pins.yaml` kmp.* | 2026-10-11 |
 | Ktor client | 3.6.0 | `pins.yaml` ktor.ktor | 2026-10-11 |
 | Android (Compose BOM / AGP / targetSdk / compileSdk) | 2026.09.00 / 9.4.0 / 36 / 37 | `pins.yaml` compose.* | 2026-10-11 |
@@ -604,7 +604,7 @@ Per-option detail is in § 4.1, § 4.3 and § 5.1.
 | OQ15 | N5 grace length; what happens at expiry; how it interacts with updates (Q-305) | Trusted time; update policy | user via `/license-design` | before N5 work |
 | OQ16 | Installer format comparison (MSI/MSIX/NSIS/Inno) and uninstall data behaviour (F340); local DB migration and rollback at update (F345) | Installer and update design | `researcher` + `data-lead` | before the ADR |
 | OQ17 | Do Ready Print and protected print mode on Windows 11 affect a RAW queue for a non-IPP receipt printer (F209, F210)? | Spooler RAW as the default transport | spike S21 | phase 2 |
-| OQ18 | Refresh the KMP pin (Compose Multiplatform 1.12.0 → 1.12.2 exists, F328); confirm Room 3 desktop JVM (F422) | `pins.yaml` accuracy | pin owner via `/research refresh kmp` | before implementation |
+| OQ18 | Confirm whether Room 3 targets desktop JVM (F422). The Compose Multiplatform pin is **resolved**: 1.12.2 was pinned by the studio update on 2026-10-16 | `pins.yaml` accuracy (Room 3 only) | pin owner via `/research refresh kmp` | before implementation |
 | OQ19 | Legitimate, licensed Windows 11, Windows 10 22H2 and Windows 7 SP1 x64 installation media for the spike VMs. Not researched: where a Windows 7 image can still be obtained legally | Spike phase 0 | user | before the spike |
 
 ### Spikes
@@ -645,7 +645,7 @@ S14 TPM, S15 backup/restore, S26 serial/Bluetooth, S27 TCP 9100, S31 SmartScreen
 
 | ID | Status | Hypothesis | VM / OS | Hardware | Steps | Pass signal |
 |----|--------|------------|---------|----------|-------|-------------|
-| S1 | PENDING - S1 | CMP Desktop (pinned 1.12.0, JDK 21, jpackage MSI) starts quickly and fits memory on a low-spec Windows PC | Windows 10 22H2 and Windows 11 | low-spec PC, ideally with HDD | 1. Build hello POS screen with 200-row list. 2. `packageMsi` on Windows. 3. Install on clean VM. 4. Record installer size, cold start (10 runs), idle RSS after 10 min. | Numbers recorded and below thresholds set with performance-engineer |
+| S1 | PENDING - S1 | CMP Desktop (pinned 1.12.2, JDK 21, jpackage MSI) starts quickly and fits memory on a low-spec Windows PC | Windows 10 22H2 and Windows 11 | low-spec PC, ideally with HDD | 1. Build hello POS screen with 200-row list. 2. `packageMsi` on Windows. 3. Install on clean VM. 4. Record installer size, cold start (10 runs), idle RSS after 10 min. | Numbers recorded and below thresholds set with performance-engineer |
 | S2 | PENDING - S2 | Electron 22 (last Windows 7 major) installs and runs a React screen on real Windows 7 SP1 x64; Electron 44 runs on 10/11 | Windows 7 SP1 x64; Windows 10 22H2 / 11 | 2 GB+ VM; low-spec PC for 10/11 | 1. Package same screen with Electron 22 and 44. 2. Run on Win7 SP1 with and without updates. 3. Record start, memory, errors. | Starts and renders on Win7 (or exact failure recorded); 44 numbers recorded |
 | S3 | PENDING - S3 | Tauri 2.11 with an older WebView2 works on Windows 7; Tauri 2.12.4 does not, and the error is or is not 0x80070032 | Windows 7 SP1 x64; Windows 10 22H2 | VM | 1. Build hello app with tauri 2.11 (Rust 1.77) and 2.12.4. 2. Install with embedBootstrapper and NSIS. 3. Launch; capture exit code and any HRESULT. | Exact error value and version boundary recorded |
 | S4 | PENDING - S4 | A .NET 8 and .NET 10 WPF app, and .NET Framework 4.8, behave as the docs say on Windows 7 SP1 | Windows 7 SP1 x64; Windows 10/11 | VM | 1. Build hello WPF app for net8.0, net10.0 and net48. 2. Install documented prerequisites (F13). 3. Run. | Documented behaviour (unsupported or runs) recorded per target |
