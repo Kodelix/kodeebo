@@ -1,0 +1,36 @@
+chacha20  db_middle_page                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  db_page1                           PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  hot_journal_crash_control          PASS (no loss)   opened normally with all 5 expected sales, consistent
+chacha20  hot_journal_crash_flip             FAIL             refused but recorded=True unchanged=False traceback=False
+chacha20  marker_flipped                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  marker_deleted                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  store_older_than_marker            PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  db_page_while_running              PASS (at next start) runtime verify reply {'ok': True, 'op': 'verify'}; next start: detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  walmode+marker-wal_header          FAIL             refused but recorded=True unchanged=False traceback=False
+chacha20  walmode+marker-wal_first_frame     FAIL             refused but recorded=True unchanged=False traceback=False
+chacha20  walmode+marker-wal_last_frame      FAIL             refused but recorded=True unchanged=False traceback=False
+chacha20  wrong_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+chacha20  truncated_key                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+chacha20  empty_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+chacha20  right_key_wrong_cipher             FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+chacha20  wrong_key_x20                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+chacha20  right_key_after_attempts           PASS (no loss)   opened normally with all 5 expected sales, consistent
+chacha20  ts04a_plaintext_scan               PASS             no canary in any store file
+sqlcipher db_middle_page                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher db_page1                           PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher hot_journal_crash_control          PASS (no loss)   opened normally with all 5 expected sales, consistent
+sqlcipher hot_journal_crash_flip             FAIL             refused but recorded=True unchanged=False traceback=False
+sqlcipher marker_flipped                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher marker_deleted                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher store_older_than_marker            PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher db_page_while_running              PASS (at next start) runtime verify reply {'ok': True, 'op': 'verify'}; next start: detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher walmode+marker-wal_header          FAIL             refused but recorded=True unchanged=False traceback=False
+sqlcipher walmode+marker-wal_first_frame     FAIL             refused but recorded=True unchanged=False traceback=False
+sqlcipher walmode+marker-wal_last_frame      FAIL             refused but recorded=True unchanged=False traceback=False
+sqlcipher wrong_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+sqlcipher truncated_key                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+sqlcipher empty_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+sqlcipher right_key_wrong_cipher             FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+sqlcipher wrong_key_x20                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db.lock']
+sqlcipher right_key_after_attempts           PASS (no loss)   opened normally with all 5 expected sales, consistent
+sqlcipher ts04a_plaintext_scan               PASS             no canary in any store file

@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) dev run PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (offline price change) next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -591,6 +591,19 @@ The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `
 - **Second instance refused:** 400 times in total; in 250 of 250 simultaneous starts exactly one instance served.
 - **Take-over:** in 50 of 50 kills of the holder mid-transaction the hot journal was present, and the restarted instance took over and recovered.
 - **Mutants:** `no_instance_lock` caught after 1 run, `lock_released_early` after 2 (both R16).
+
+#### Run 2 (committed harness `db53f27`) — SC-22 **PASS**; the regression found a tamper-suite gap, fixed in `74fac52`
+
+`evidence/phase3-sc22-run2-*` (log headers `commit db53f27`, no `+dirty`).
+- **SC-22:** PASS, 3 × 50 runs, 0 violations. The cells are identical to run 1; `lock_released_early` was caught after 1 run instead of 2. It is caught in a cell where two processes race to start, so the run that catches it depends on timing, not on the seed. It is caught either way.
+- **Earlier cases:** SC-21a, SC-20 and SC-19 are identical to their previous runs. SC-20's real tmpfs leg had 50 of 50 runs exercised.
+- **Earlier phases:** phase 0, phase 1 and phase 2 (10 seeds per cell, 300 runs) all PASS.
+- **Tamper on `db53f27`: 18 of 36 FAIL** (`-tamper-before-fix.log`). The SC-22 lock file `client.db.lock` was counted as a store file:
+  - in the five wrong-key cases it was an "extra file";
+  - in the crash-recovery cases it was a "missing original", because the pre-recovery copy deliberately leaves it out.
+
+  Nothing about the store's protection changed. **Fix in `74fac52`:** the empty lock file is excluded from the store-file comparisons, and every tamper row now also asserts that the lock file stays empty.
+- **Tamper on `74fac52`: 36 of 36 PASS**, row results identical to the pre-SC-22 run (`-tamper-74fac52.log`). The tamper suite stamps no commit in its output; it ran with the spike tree clean at `74fac52`.
 
 **Finding P3-F5 (harness) — "started first" does not mean "holds the store".** The first `c_kill_holder` attempt spawned the second instance right after the first. The second sometimes reached the lock first, so the intended holder was the one refused, and the driver waited for a process that never died. The cell now confirms the holder serves the store before starting the second. The product consequence: on a simultaneous start, which instance wins is arbitrary, so the loser must say so clearly (R17) rather than assume it is the second.
 

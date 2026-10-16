@@ -1,0 +1,67 @@
+{
+ "harness_commit": "db53f27",
+ "started": "2026-10-16 23:51:43",
+ "seeds_per_cell": 50,
+ "cells": [
+  {
+   "cell": "a_simultaneous",
+   "runs": 50,
+   "exercised": 50,
+   "second_refused": 250,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 31.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_second_later",
+   "runs": 50,
+   "exercised": 50,
+   "second_refused": 100,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 13.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_kill_holder",
+   "runs": 50,
+   "exercised": 50,
+   "second_refused": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 13.6,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "no_instance_lock": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_simultaneous"
+   ],
+   "first_violation": [
+    "R16",
+    "two instances served the store (rounds [2, 2, 2, 2, 2], second accepted [True, True, True, True, True, True, True, True, True, True])"
+   ],
+   "seconds": 0.7
+  },
+  "lock_released_early": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_simultaneous"
+   ],
+   "first_violation": [
+    "R16",
+    "two instances served the store (rounds [1, 2, 1, 1, 2], second accepted [True, True, True, True])"
+   ],
+   "seconds": 0.7
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 60.1
+}

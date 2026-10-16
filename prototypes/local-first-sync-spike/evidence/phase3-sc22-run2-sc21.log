@@ -1,0 +1,13 @@
+phase 3 SC-21a (app update + migration), commit db53f27, 50 seeds per cell
+  none            exercised 50/50  violating 0  PASS
+  before_copy     exercised 50/50  violating 0  PASS
+  after_copy      exercised 50/50  violating 0  PASS
+  mid_ddl         exercised 50/50  violating 0  PASS
+  after_commit    exercised 50/50  violating 0  PASS
+  before_marker   exercised 50/50  violating 0  PASS
+  before_cleanup  exercised 50/50  violating 0  PASS
+  downgrade       exercised 50/50  violating 0  PASS
+  mutant nonatomic_migration    CAUGHT after 4 runs: ('I1', 's1-a5 acknowledged but missing on the server')
+  mutant no_premigrate_copy     CAUGHT after 5 runs: ('R12', 'no valid pre-migration copy after a kill at after_commit: None')
+  mutant reserialize_on_upgrade CAUGHT after 1 runs: ('I8', 'server flag payload_mismatch for cmd-s1-a3 seq 4')
+SC-21a: PASS  (total 221.2 s)
