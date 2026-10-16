@@ -1,0 +1,161 @@
+{
+ "harness_commit": "7309208+dirty",
+ "started": "2026-10-16 13:07:00",
+ "seeds_per_cell": 50,
+ "cells": [
+  {
+   "cipher": "chacha20",
+   "point": "client:before_local_commit",
+   "runs": 50,
+   "fault_fired": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.7,
+   "result": "PASS"
+  },
+  {
+   "cipher": "chacha20",
+   "point": "client:mid_local_txn",
+   "runs": 50,
+   "fault_fired": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 18.2,
+   "result": "PASS"
+  },
+  {
+   "cipher": "chacha20",
+   "point": "client:after_local_commit",
+   "runs": 50,
+   "fault_fired": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 18.0,
+   "result": "PASS"
+  },
+  {
+   "cipher": "chacha20",
+   "point": "client:before_send",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 15.5,
+   "result": "PASS"
+  },
+  {
+   "cipher": "chacha20",
+   "point": "client:after_response_before_mark",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 18.5,
+   "result": "PASS"
+  },
+  {
+   "cipher": "chacha20",
+   "point": "client:mid_mark",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 19.7,
+   "result": "PASS"
+  },
+  {
+   "cipher": "chacha20",
+   "point": "client:after_mark",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 19.3,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:before_local_commit",
+   "runs": 50,
+   "fault_fired": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 16.9,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:mid_local_txn",
+   "runs": 50,
+   "fault_fired": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.1,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:after_local_commit",
+   "runs": 50,
+   "fault_fired": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.4,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:before_send",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 16.5,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:after_response_before_mark",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 18.3,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:mid_mark",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 16.9,
+   "result": "PASS"
+  },
+  {
+   "cipher": "sqlcipher",
+   "point": "client:after_mark",
+   "runs": 50,
+   "fault_fired": 48,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 17.6,
+   "result": "PASS"
+  }
+ ],
+ "mutant": {
+  "chacha20": {
+   "fault_fired": 50,
+   "caught_when_fired": 50,
+   "result": "PASS"
+  },
+  "sqlcipher": {
+   "fault_fired": 50,
+   "caught_when_fired": 50,
+   "result": "PASS"
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 282.4
+}

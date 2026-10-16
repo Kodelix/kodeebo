@@ -1,0 +1,16 @@
+apsw 3.54.0.0 | sqlite 3.54.0 | SQLite3 Multiple Ciphers 2.6.1
+has Connection.execute: True | set_busy_timeout: True | Cursor.fetchone: True
+
+[chacha20] PRAGMA key result rows: [('ok',)]
+[chacha20] read back: ('CANARY-PROBE-1',)
+[chacha20] header is plaintext 'SQLite format 3': False | canary in file: False
+[chacha20] wrong key: PRAGMA key result rows [('ok',)]
+[chacha20] wrong key read raises NotADBError: file is not a database
+[chacha20] file unchanged after wrong-key open: True
+
+[sqlcipher] PRAGMA key result rows: [('ok',)]
+[sqlcipher] read back: ('CANARY-PROBE-1',)
+[sqlcipher] header is plaintext 'SQLite format 3': False | canary in file: False
+[sqlcipher] wrong key: PRAGMA key result rows [('ok',)]
+[sqlcipher] wrong key read raises NotADBError: file is not a database
+[sqlcipher] file unchanged after wrong-key open: True

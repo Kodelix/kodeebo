@@ -1,0 +1,29 @@
+phase 1 tamper run 1 (TS-03a, TS-04a, TS-05a), apsw-sqlite3mc 3.54.0.0 / SQLite3MC 2.6.1, harness commit 7309208 + uncommitted phase 1 changes
+chacha20  db_middle_page             PASS                   detected, refused, recorded; file not written
+chacha20  db_page1                   PASS                   detected, refused, recorded; file not written
+chacha20  wal_header                 FAIL                   SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event
+chacha20  wal_first_frame            FAIL                   SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event
+chacha20  wal_last_frame             FAIL                   SILENT LOSS: opened normally with 4 of 5 acknowledged sales, no event
+chacha20  shm                        NOT DETECTED, no loss  opened normally with all 5 sales (edit had no visible effect)
+chacha20  db_page_while_running      PASS (at next start)   runtime verify reply {'ok': True, 'op': 'verify'}; count while running {'ok': True, 'op': 'count_bills', 'bills': 5}; next start: detected, refused, recorded; file not written
+chacha20  wrong_key                  PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+chacha20  truncated_key              PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+chacha20  empty_key                  PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+chacha20  right_key_wrong_cipher     PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+chacha20  wrong_key_x20              PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+chacha20  right_key_after_attempts   PASS                   bills 5 of 5
+chacha20  ts04a_plaintext_scan       PASS                   no canary in any store file
+sqlcipher db_middle_page             PASS                   detected, refused, recorded; file not written
+sqlcipher db_page1                   PASS                   detected, refused, recorded; file not written
+sqlcipher wal_header                 FAIL                   SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event
+sqlcipher wal_first_frame            FAIL                   SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event
+sqlcipher wal_last_frame             FAIL                   SILENT LOSS: opened normally with 4 of 5 acknowledged sales, no event
+sqlcipher shm                        NOT DETECTED, no loss  opened normally with all 5 sales (edit had no visible effect)
+sqlcipher db_page_while_running      PASS (at next start)   runtime verify reply {'ok': True, 'op': 'verify'}; count while running {'ok': True, 'op': 'count_bills', 'bills': 5}; next start: detected, refused, recorded; file not written
+sqlcipher wrong_key                  PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+sqlcipher truncated_key              PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+sqlcipher empty_key                  PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+sqlcipher right_key_wrong_cipher     PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+sqlcipher wrong_key_x20              PASS                   all refused and recorded=True; file unchanged=True; extra files=[]
+sqlcipher right_key_after_attempts   PASS                   bills 5 of 5
+sqlcipher ts04a_plaintext_scan       PASS                   no canary in any store file

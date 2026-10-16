@@ -36,21 +36,32 @@ SERVER_POINTS = ["server:before_commit", "server:after_commit_before_response",
                  "server:after_response_before_commit"]
 MUTANTS = ["separate_outbox_txn", "no_dedupe", "ack_before_commit", "double_minute"]
 ACTIONS_PER_RUN = 8
+# Phase 1 cells: client fault points on the correct path (P1, P2, P4, before send, P10, P11, P12).
+PHASE1_POINTS = ["client:before_local_commit", "client:mid_local_txn", "client:after_local_commit",
+                 "client:before_send", "client:after_response_before_mark", "client:mid_mark", "client:after_mark"]
+CIPHERS = ["chacha20", "sqlcipher"]
+CANARY = b"CANARY"
 
 
 class Run:
-    def __init__(self, seed, mutant, verbose=False):
+    def __init__(self, seed, mutant, verbose=False, store=None, cipher=None, fault=None, label=None):
         self.seed, self.mutant, self.verbose = seed, mutant, verbose
+        self.store, self.cipher = store, cipher
         self.rng = random.Random(seed)
-        self.dir = os.path.join(RUNS, mutant or "correct", f"seed-{seed}")
+        self.dir = os.path.join(RUNS, label or (mutant or "correct"), f"seed-{seed}")
         shutil.rmtree(self.dir, ignore_errors=True)
         os.makedirs(self.dir)
         self.db = os.path.join(self.dir, "client.db")
+        self.tmp = os.path.join(self.dir, "tmp")
+        os.makedirs(self.tmp)
         self.intent = sqlite3.connect(os.path.join(self.dir, "intent.db"), isolation_level=None)
         self.intent.execute("CREATE TABLE actions (action_id TEXT PRIMARY KEY, body TEXT)")
         self.intent.execute("CREATE TABLE acks (action_id TEXT PRIMARY KEY)")
         self.server = self.client = None
-        self.fault, self.fired = self.pick_fault(), []
+        self.fault, self.fired = (fault if fault is not None else self.pick_fault()), []
+        # Test key only: a fresh random 256-bit key per run, never a real secret.
+        self.key = "%064x" % self.rng.getrandbits(256) if store else ""
+        self.leaks = []
         self.trace = []
 
     def log(self, *a):
@@ -70,7 +81,38 @@ class Run:
         e.pop("FP", None)
         if first and self.fault and self.fault[0].startswith(side):
             e["FP"] = f"{self.fault[0]}:{self.fault[1]}"
+        if side == "client" and self.store:
+            e.update(STORE=self.store, CIPHER=self.cipher, SPIKE_DB_KEY=self.key, SQLITE_TMPDIR=self.tmp, TMPDIR=self.tmp)
         return e
+
+    # --- TS-04a: plaintext scan of the store files and the temp directory --------
+    def scan(self, when):
+        if not self.store:
+            return
+        paths = []
+        for root in (self.dir, self.tmp):
+            for top, _, files in os.walk(root):  # includes <db>.recovery/ copies made before SQLite recovery
+                rel = os.path.relpath(top, self.dir)
+                for n in files:
+                    if (n.startswith("client.db") or root == self.tmp or "recovery" in rel) and not n.endswith(".events.jsonl"):
+                        paths.append(os.path.join(top, n))
+        for p in paths:
+            with open(p, "rb") as f:
+                data = f.read()
+            if CANARY in data:
+                self.leaks.append(f"{when}: canary plaintext in {os.path.basename(p)}")
+            if data.startswith(b"SQLite format 3") and not p.endswith("-shm"):
+                self.leaks.append(f"{when}: plaintext SQLite header in {os.path.basename(p)}")
+
+    def open_client_store(self):
+        if self.store:
+            import apsw
+            c = apsw.Connection(self.db)
+            c.execute(f"PRAGMA cipher = {self.cipher}").fetchall()
+            k = f"PRAGMA key = 'raw:{self.key}'" if self.cipher == "chacha20" else f"PRAGMA key = \"x'{self.key}'\""
+            c.execute(k).fetchall()
+            return c
+        return sqlite3.connect(self.db)
 
     # --- process supervision -------------------------------------------------
     def start_server(self, first=False):
@@ -100,6 +142,7 @@ class Run:
             self.start_server()
         if self.client.poll() is not None:
             self.fired.append(f"client died rc={self.client.returncode}")
+            self.scan("after client death")  # the WAL and temp files are on disk exactly as the kill left them
             self.log("  client died, restarting without fault")
             self.start_client()
 
@@ -120,7 +163,8 @@ class Run:
     # --- the script ------------------------------------------------------------
     def new_action(self, i):
         start = self.rng.randint(0, 600)
-        return {"op": "sale", "action_id": f"s{self.seed}-a{i}", "session_id": f"s{self.seed}-sess{i}",
+        sess = f"{'CANARY-' if self.store else ''}s{self.seed}-sess{i}"  # canary: must never appear on disk in plaintext
+        return {"op": "sale", "action_id": f"s{self.seed}-a{i}", "session_id": sess,
                 "start_min": start, "end_min": start + self.rng.randint(1, 180),
                 "rate_per_hour": self.rng.choice([3000, 4500, 6000, 9000, 12000]),
                 "cafe_piasters": self.rng.choice([0, 1500, 2500, 4000, 7550])}
@@ -154,14 +198,20 @@ class Run:
         dump = json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=10).read())
         self.server.terminate()
         self.server.wait()
-        c = sqlite3.connect(self.db)
-        integrity = c.execute("PRAGMA integrity_check").fetchone()[0]
-        client = {"bills": [r[0] for r in c.execute("SELECT action_id FROM bills")]}
+        self.scan("after clean exit")
+        c = self.open_client_store()
+        integrity = c.execute("PRAGMA integrity_check").fetchall()[0][0]
+        client = {"bills": [r[0] for r in c.execute("SELECT action_id FROM bills").fetchall()]}
         c.close()
         intent = [json.loads(b) for (b,) in self.intent.execute("SELECT body FROM actions")]
         acked = [a for (a,) in self.intent.execute("SELECT action_id FROM acks")]
         violations = oracle.check(intent, acked, client, dump, quiesced, integrity)
-        result = {"seed": self.seed, "mutant": self.mutant, "fault": self.fault, "fired": self.fired,
+        events = self.db + ".events.jsonl"
+        if os.path.exists(events):  # no tamper in these runs, so any refusal is a store failure
+            violations.append(("I9", f"client refused its store: {open(events).read()[:200]}"))
+        violations += [("I10", leak) for leak in self.leaks]  # TS-04a: plaintext on disk
+        result = {"seed": self.seed, "mutant": self.mutant, "store": self.store, "cipher": self.cipher,
+                  "fault": self.fault, "fired": self.fired,
                   "actions": len(intent), "acked": len(acked), "server_sales": sum(1 for r in dump["ledger"] if r["kind"] == "sale"),
                   "violations": violations}
         with open(os.path.join(self.dir, "result.json"), "w") as f:
@@ -214,9 +264,68 @@ def selftest(correct_runs=300, mutant_budget=200):
     return summary["gate"] == "PASS"
 
 
+def phase1_fault(seed, point):
+    # Deterministic hit number per (seed, cell), independent of the run's own RNG stream.
+    return point, random.Random(f"{seed}|{point}").randint(1, 3)
+
+
+def phase1(seeds=50):
+    """Phase 1 gate: encrypted store under process kill. Every cell x seeds x both ciphers."""
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "seeds_per_cell": seeds,
+               "cells": [], "mutant": {}}
+    print(f"phase 1, commit {summary['harness_commit']}, {seeds} seeds per cell")
+    ok = True
+    for cipher in CIPHERS:
+        for point in PHASE1_POINTS:
+            t1 = time.time()
+            bad, fired = [], 0
+            for s in range(1, seeds + 1):
+                r = Run(s, None, store="sqlite3mc", cipher=cipher, fault=phase1_fault(s, point),
+                        label=f"phase1-{cipher}-{point.split(':')[1]}").go()
+                fired += any("rc=-9" in x for x in r["fired"])
+                if r["violations"]:
+                    bad.append({"seed": s, "violations": r["violations"][:3]})
+            exercised = fired > 0
+            cell = {"cipher": cipher, "point": point, "runs": seeds, "fault_fired": fired,
+                    "violating_runs": len(bad), "first_bad": bad[:3], "seconds": round(time.time() - t1, 1),
+                    "result": "PASS" if exercised and not bad else ("FAIL" if bad else "NOT ASSESSED (fault never fired)")}
+            ok &= cell["result"] == "PASS"
+            summary["cells"].append(cell)
+            print(f"  {cipher:9s} {point:36s} fired {fired:2d}/{seeds}  violating {len(bad)}  {cell['result']}")
+        # The outbox mutant on the encrypted store: the oracle must still see it.
+        caught = fired = 0
+        for s in range(1, seeds + 1):
+            r = Run(s, "separate_outbox_txn", store="sqlite3mc", cipher=cipher,
+                    fault=phase1_fault(s, "client:after_business_commit"),
+                    label=f"phase1-{cipher}-mutant-separate_outbox_txn").go()
+            f = any("rc=-9" in x for x in r["fired"])
+            fired += f
+            caught += f and any(v[0] == "I1" for v in r["violations"])
+        m = {"fault_fired": fired, "caught_when_fired": caught,
+             "result": "PASS" if fired and caught == fired else "FAIL"}
+        ok &= m["result"] == "PASS"
+        summary["mutant"][cipher] = m
+        print(f"  {cipher:9s} mutant separate_outbox_txn fired {fired}/{seeds}, caught {caught}  {m['result']}")
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    os.makedirs(RUNS, exist_ok=True)
+    with open(os.path.join(RUNS, "phase1-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"GATE (process-kill part): {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
+    if sys.argv[1] == "phase1":
+        sys.exit(0 if phase1() else 1)
+    if sys.argv[1] == "replay1":  # replay1 <seed> <cipher> <point> [mutant]
+        s, cipher, point = int(sys.argv[2]), sys.argv[3], sys.argv[4]
+        r = Run(s, sys.argv[5] if len(sys.argv) > 5 else None, verbose=True, store="sqlite3mc", cipher=cipher,
+                fault=phase1_fault(s, point), label="replay1").go()
+        print(json.dumps({k: r[k] for k in ("fault", "fired", "actions", "acked", "server_sales", "violations")}, indent=1))
     if sys.argv[1] == "replay":
         r = Run(int(sys.argv[2]), sys.argv[3] if len(sys.argv) > 3 else None, verbose=True).go()
         print(json.dumps({k: r[k] for k in ("fault", "fired", "actions", "acked", "server_sales", "violations")}, indent=1))

@@ -2,7 +2,7 @@
 # PROTOTYPE - NOT FOR PRODUCTION
 # Question: Does local-first sync ever lose or double-count money or session time under faults? (phase 0 runner)
 # Date: 2026-10-16
-#   run.sh selftest | run.sh replay <seed> [mutant] | run.sh stop
+#   run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | stop
 set -euo pipefail
 cd "$(dirname "$0")"
 PG=lfs-spike-pg
@@ -25,6 +25,9 @@ build_server() { (cd sut/server && go build -o server .); }
 case "${1:-}" in
   selftest) start_pg; build_server; python3 harness/driver.py selftest ;;
   replay)   start_pg; build_server; python3 harness/driver.py replay "$2" "${3:-}" ;;
+  phase1)   start_pg; build_server; .venv/bin/python harness/driver.py phase1 ;;
+  replay1)  start_pg; build_server; .venv/bin/python harness/driver.py replay1 "$2" "$3" "$4" "${5:-}" ;;
+  tamper)   .venv/bin/python harness/tamper.py ;;
   stop)     docker rm -f "$PG" >/dev/null 2>&1 || true ;;
-  *) echo "usage: run.sh selftest | replay <seed> [mutant] | stop" >&2; exit 2 ;;
+  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | stop" >&2; exit 2 ;;
 esac

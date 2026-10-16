@@ -1,0 +1,290 @@
+[
+ {
+  "cipher": "chacha20",
+  "scenario": "db_middle_page",
+  "flipped": "client.db@21257",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded; file not written",
+  "events": [
+   "store_unusable_at_start"
+  ],
+  "count_reply": {
+   "ok": false,
+   "op": "count_bills",
+   "store": "refused"
+  },
+  "main_db_unchanged": true
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "db_page1",
+  "flipped": "client.db@300",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded; file not written",
+  "events": [
+   "store_unusable_at_start"
+  ],
+  "count_reply": {
+   "ok": false,
+   "op": "count_bills",
+   "store": "refused"
+  },
+  "main_db_unchanged": true
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wal_header",
+  "flipped": "client.db-wal@20",
+  "verdict": "FAIL",
+  "detail": "SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 0
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wal_first_frame",
+  "flipped": "client.db-wal@156",
+  "verdict": "FAIL",
+  "detail": "SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 0
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wal_last_frame",
+  "flipped": "client.db-wal@206156",
+  "verdict": "FAIL",
+  "detail": "SILENT LOSS: opened normally with 4 of 5 acknowledged sales, no event",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 4
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "shm",
+  "flipped": "client.db-shm@200",
+  "verdict": "NOT DETECTED, no loss",
+  "detail": "opened normally with all 5 sales (edit had no visible effect)",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 5
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "db_page_while_running",
+  "verdict": "PASS (at next start)",
+  "detail": "runtime verify reply {'ok': True, 'op': 'verify'}; count while running {'ok': True, 'op': 'count_bills', 'bills': 5}; next start: detected, refused, recorded; file not written",
+  "events": [
+   "store_unusable_at_start"
+  ]
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wrong_key",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "truncated_key",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "empty_key",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "right_key_wrong_cipher",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "wrong_key_x20",
+  "attempts": 20,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "right_key_after_attempts",
+  "verdict": "PASS",
+  "detail": "bills 5 of 5"
+ },
+ {
+  "cipher": "chacha20",
+  "scenario": "ts04a_plaintext_scan",
+  "verdict": "PASS",
+  "detail": "no canary in any store file"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "db_middle_page",
+  "flipped": "client.db@21257",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded; file not written",
+  "events": [
+   "store_unusable_at_start"
+  ],
+  "count_reply": {
+   "ok": false,
+   "op": "count_bills",
+   "store": "refused"
+  },
+  "main_db_unchanged": true
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "db_page1",
+  "flipped": "client.db@300",
+  "verdict": "PASS",
+  "detail": "detected, refused, recorded; file not written",
+  "events": [
+   "store_unusable_at_start"
+  ],
+  "count_reply": {
+   "ok": false,
+   "op": "count_bills",
+   "store": "refused"
+  },
+  "main_db_unchanged": true
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wal_header",
+  "flipped": "client.db-wal@20",
+  "verdict": "FAIL",
+  "detail": "SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 0
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wal_first_frame",
+  "flipped": "client.db-wal@156",
+  "verdict": "FAIL",
+  "detail": "SILENT LOSS: opened normally with 0 of 5 acknowledged sales, no event",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 0
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wal_last_frame",
+  "flipped": "client.db-wal@206156",
+  "verdict": "FAIL",
+  "detail": "SILENT LOSS: opened normally with 4 of 5 acknowledged sales, no event",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 4
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "shm",
+  "flipped": "client.db-shm@200",
+  "verdict": "NOT DETECTED, no loss",
+  "detail": "opened normally with all 5 sales (edit had no visible effect)",
+  "events": [],
+  "count_reply": {
+   "ok": true,
+   "op": "count_bills",
+   "bills": 5
+  },
+  "main_db_unchanged": false
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "db_page_while_running",
+  "verdict": "PASS (at next start)",
+  "detail": "runtime verify reply {'ok': True, 'op': 'verify'}; count while running {'ok': True, 'op': 'count_bills', 'bills': 5}; next start: detected, refused, recorded; file not written",
+  "events": [
+   "store_unusable_at_start"
+  ]
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wrong_key",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "truncated_key",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "empty_key",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "right_key_wrong_cipher",
+  "attempts": 1,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "wrong_key_x20",
+  "attempts": 20,
+  "verdict": "PASS",
+  "detail": "all refused and recorded=True; file unchanged=True; extra files=[]"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "right_key_after_attempts",
+  "verdict": "PASS",
+  "detail": "bills 5 of 5"
+ },
+ {
+  "cipher": "sqlcipher",
+  "scenario": "ts04a_plaintext_scan",
+  "verdict": "PASS",
+  "detail": "no canary in any store file"
+ }
+]
