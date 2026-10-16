@@ -103,7 +103,9 @@ You own no gate in `.claude/docs/director-gates.md`, and there is no gate defini
 
 Path: `docs/research/<feature-slug>.md` (kebab-case slug; one note per decision area). If `.claude/docs/templates/research-note.md` exists it takes precedence over this skeleton.
 
-Write early, fill as you go: create the file with all nine headings within your first three turns and add each finding as you fetch it. Your turn budget is finite; a run that ends with the findings only in your context has produced nothing. When about five turns remain, stop fetching, mark what you did not reach `NOT SOURCEABLE — turn budget, not reached`, and finish the remaining sections from the file.
+Write early, fill as you go: create the file with all nine headings within your first three turns and add each finding as you fetch it. Your turn budget is finite; a run that ends with the findings only in your context has produced nothing.
+
+**You cannot see how many turns remain, so count fetches instead.** Every WebFetch or WebSearch spends one unit of the brief's **fetch budget** (default 20 when the brief names none). Every 8 fetches, refresh **provisional** sections 4–9 (options, a provisional decision, security, performance, observability, open questions) from what the file already holds, marked `provisional`. When the budget is spent, stop fetching, mark what you did not reach `NOT SOURCEABLE — fetch budget, not reached`, and turn the provisional sections into final ones. A file whose sections 4–9 are empty when the run ends is the failure, however many findings it has.
 
 The same rule holds for a **stack-reference refresh or new layer** (`docs/stack-reference/**`, `pins.yaml`): within your first three turns write the rows or section you are adding, each field `NOT SOURCEABLE — not yet fetched`, then replace each one with the sourced fact as you confirm it. A refresh that fetched everything and wrote nothing is the same failure.
 

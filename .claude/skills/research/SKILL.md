@@ -103,7 +103,12 @@ at most two decision areas (an ADR-sized choice or a named gap each). A larger
 scope is grouped into sets of two or fewer, one researcher per set, even when
 the sets share mechanisms — the merge is cheaper than a note that never gets
 written. (Two Kodeebo runs with three areas per researcher ran out of turns in
-8 of 10 parts before writing sections 4–9.)
+8 of 10 parts before writing sections 4–9.) A researcher cannot see its remaining
+turns, so each brief also sets a **fetch budget** (default 20 WebFetch/WebSearch
+calls; up to 30 for primary-source-heavy areas such as law and regulation): the
+researcher refreshes provisional sections 4–9 every 8 fetches and finalises them
+when the budget is spent. (A third run at 40 turns still ended 4 of 4 parts with
+sections 4–9 empty.)
 
 **Disjoint IDs per part.** Give each parallel researcher its own ID block in the
 brief — part *n* (from 1) owns findings `F{n}01–F{n}99` and spikes

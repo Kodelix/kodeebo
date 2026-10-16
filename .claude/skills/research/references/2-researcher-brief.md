@@ -19,6 +19,8 @@ or the temporary section path when sub-questions run in parallel}
 Mode: {new | re-verify | extend}   Existing note to build on: {path | none}
 ID block (parallel parts only): findings {F n01-F n99}, spikes {S n0-S n9}; use no
 ID outside it; cite IDs from other parts or notes with a prefix (e.g. "desktop-note F117").
+Fetch budget: {20} WebFetch/WebSearch calls. Refresh provisional sections 4-9 every 8
+fetches; when the budget is spent, stop fetching and finalise sections 4-9 from the file.
 
 Decision this informs: {one paragraph from Phase 1}
 Feature / story: {design/specs/<slug>.md | story ID | none}
