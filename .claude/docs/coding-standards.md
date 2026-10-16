@@ -55,6 +55,7 @@ Per-type evidence and defaults are in **Test evidence by story type** below.
 - Conventional Commits: `feat:`, `fix:`, `perf:`, `refactor:`, `test:`, `docs:`, `chore:`, `security:`.
 - The body references the story or task ID (`Story: BILLING-003`).
 - No commit without the user's instruction.
+- Stage in one command, commit in the next. The commit hook's checks (the secret scan included) read the index before the command runs, so it blocks `git add … && git commit` in a single call.
 
 ## Test evidence by story type
 

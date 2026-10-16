@@ -203,6 +203,28 @@ case "$GIT_OPTS" in
 esac
 fi
 
+# A `git add` / `git stage` earlier in the SAME command runs after this hook has
+# read the index, so the secret scans below (gitleaks --staged and the staged
+# diff) would check the old index: a new file holding a key could pass unseen,
+# and an already-fixed file could block. Stage in one command, commit in the
+# next, so every scan reads exactly what will be committed (dogfood #22).
+if printf '%s\n' "$COMMAND" | LC_ALL=C awk '
+    { s = s $0 "\n" }
+    END {
+        # Only an add BEFORE the first commit counts: text after it (a message
+        # that mentions "git add", a later add) is not staged for this commit.
+        G = "(^|[^A-Za-z0-9_.-])git([ \t]+-[A-Za-z-]+([ \t]+[^ \t;&|-][^ \t;&|]*)?)*[ \t]+"
+        if (!match(s, G "commit([ \t]|$)")) exit 1
+        head = substr(s, 1, RSTART)
+        # In command position only (line start or after ; & | ( ), so a quoted
+        # mention such as grep "git add" is not an add.
+        A = "(^|[;&|(\n])[ \t]*git([ \t]+-[A-Za-z-]+([ \t]+[^ \t;&|-][^ \t;&|]*)?)*[ \t]+(add|stage)([ \t]|$)"
+        exit match(head, A) ? 0 : 1
+    }'; then
+    echo "BLOCKED: this command stages files and commits in one call. The commit checks (secret scan included) read the index before the command runs, so they would not see what the add stages. Run the git add in one command, then the git commit in the next." >&2
+    exit 2
+fi
+
 # Resolve a Python interpreter ONCE for every batched check below. Both the
 # blocking JSON scan and the advisory design scan must not spawn one process per
 # item; they spawn one each, and share this lookup.
