@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) dev run PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -143,6 +143,16 @@ bash prototypes/local-first-sync-spike/run.sh sc21 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay21 <seed> <cell> [mutant]
+```
+
+SC-22 (two app instances on one store):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc22 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay22 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -550,3 +560,43 @@ The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `
 - **A failed verification after the migration:** there is no automatic restore from the copy yet; the copy is kept and the store refused.
 - **A two-step jump (schema 1 to 3).**
 - **The server rejecting an envelope version it no longer supports:** the stub ignores the envelope.
+
+### Phase 3 — SC-22: two app instances started on the same store (Linux leg)
+
+**Design under test (client):**
+- **The lock:** before anything touches the store (crash recovery, migration, marker), the client takes an exclusive, non-blocking OS lock (`flock`) on `<db>.lock` and holds it for its whole life.
+- **A second instance** touches nothing. It records `second_instance_refused` and answers every operation `{"ok": false, "error": "another_instance", "warning": "another_instance"}`, so the cashier sees why.
+- **Take-over:** the OS releases the lock when the holder dies, so a restarted instance takes the store over with the normal crash recovery.
+- **Windows:** `LockFileEx` or a named mutex, in phase 4.
+
+**Cells:**
+
+| Cell | What happens | Pass signal |
+|---|---|---|
+| `a_simultaneous` | two instances started back to back, 5 rounds per run; each sells | exactly one serves in every round; the other's sale is refused visibly and leaves no trace |
+| `b_second_later` | a second instance started while the first is selling (a double-click) | the second is refused for every operation; the first keeps selling |
+| `c_kill_holder` | the holder is killed mid-transaction (hot journal), the refused instance is closed, the app is started again | the new instance takes over, recovers and sells; nothing acknowledged is lost |
+
+**Checks added:**
+- **R15:** the commit marker never tears or moves backwards (sampled after every operation).
+- **R16:** at most one instance serves the store at a time, and a restarted instance can take over after the holder dies.
+- **R17:** a sale refused for "another instance" carries the warning and leaves no trace.
+
+**Mutants:** `no_instance_lock`, `lock_released_early` (lock held only while opening).
+
+#### Run 1 (dev, uncommitted harness on `a3edfc6`) — PASS
+
+`evidence/phase3-sc22-run1-dev.*`, 58 s.
+- **Cells:** all 3 PASS, 50 seeds each, 0 violations.
+- **Second instance refused:** 400 times in total; in 250 of 250 simultaneous starts exactly one instance served.
+- **Take-over:** in 50 of 50 kills of the holder mid-transaction the hot journal was present, and the restarted instance took over and recovered.
+- **Mutants:** `no_instance_lock` caught after 1 run, `lock_released_early` after 2 (both R16).
+
+**Finding P3-F5 (harness) — "started first" does not mean "holds the store".** The first `c_kill_holder` attempt spawned the second instance right after the first. The second sometimes reached the lock first, so the intended holder was the one refused, and the driver waited for a process that never died. The cell now confirms the holder serves the store before starting the second. The product consequence: on a simultaneous start, which instance wins is arbitrary, so the loser must say so clearly (R17) rather than assume it is the second.
+
+**Observation:** with the lock removed (`no_instance_lock`) the money invariants still held in these runs, because SQLite serialises the two writers and the driver sends one operation at a time. The lock is what keeps a single counter UI, a single marker writer and a single sync loop. A concurrent two-writer stress run without the lock (marker races) was not run; under the lock it cannot happen.
+
+**Not covered:**
+- **Windows:** `LockFileEx` or a named mutex, and two Windows user sessions on one PC. Phase 4.
+- **A lock file on a network share.** Out of scope: the store is local.
+- **The instance that loses waiting for the lock** instead of refusing; the founder's pass signal allows either.

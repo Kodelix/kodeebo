@@ -1276,6 +1276,214 @@ def sc21(seeds=50, mutant_budget=40):
     return ok
 
 
+# --- Phase 3, SC-22: two app instances started on the same store ----------------------------------------------
+SC22_CELLS = ["a_simultaneous", "b_second_later", "c_kill_holder"]
+SC22_MUTANTS = ["no_instance_lock", "lock_released_early"]
+SC22_ROUNDS = 5  # simultaneous starts per a_simultaneous run
+
+
+def spawn(run):
+    """Start another client process on the same store; run.client is left unchanged."""
+    old = run.client
+    run.start_client()
+    new, run.client = run.client, old
+    return new
+
+
+def talk(proc, msg):
+    try:
+        proc.stdin.write(json.dumps(msg) + "\n")
+        proc.stdin.flush()
+        line = proc.stdout.readline()
+    except BrokenPipeError:
+        line = ""
+    return json.loads(line) if line else None
+
+
+def stop(proc):
+    if proc.poll() is None:
+        talk(proc, {"op": "exit"})
+    proc.wait()
+
+
+def sc22_script(cell):
+    def script(run):
+        i = [0]
+        run.sc22 = {"cell": cell, "both_served": [], "loser_ok": [], "marker": [], "torn_marker": 0,
+                    "refused_seen": 0, "took_over": None, "hot_journal": None}
+
+        def mark_sample():
+            try:
+                m = json.load(open(run.db + ".hwm"))
+                run.sc22["marker"].append(int(m["seq"]))
+            except FileNotFoundError:
+                pass
+            except (ValueError, KeyError, TypeError):
+                run.sc22["torn_marker"] += 1
+
+        def sale_on(proc):
+            a = run.new_action(i[0])
+            i[0] += 1
+            run.intent.execute("INSERT INTO actions VALUES (?,?)", (a["action_id"], json.dumps(a)))
+            r = talk(proc, a)
+            run.sale_replies[a["action_id"]] = r
+            if r and r.get("ok"):
+                run.seq_of[a["action_id"]] = r.get("seq")
+                run.intent.execute("INSERT INTO acks VALUES (?)", (a["action_id"],))
+            run.log(f"sale {a['action_id']} on pid {proc.pid}: {r}")
+            mark_sample()
+            return r
+
+        def drain(proc):
+            for _ in range(10):
+                r = talk(proc, {"op": "sync"})
+                mark_sample()
+                if r and r.get("ok") and r.get("pending") == 0:
+                    return
+
+        if cell == "a_simultaneous":
+            stop(run.client)
+            for _ in range(SC22_ROUNDS):
+                p1, p2 = spawn(run), spawn(run)  # started back to back: they race for the store
+                r1, r2 = talk(p1, {"op": "state"}), talk(p2, {"op": "state"})
+                served = [p for p, r in ((p1, r1), (p2, r2)) if r and r.get("ok")]
+                run.sc22["both_served"].append(len(served))
+                if len(served) == 1:
+                    winner = served[0]
+                    loser = p2 if winner is p1 else p1
+                    sale_on(winner)
+                    r = sale_on(loser)
+                    run.sc22["refused_seen"] += bool(r and r.get("error") == "another_instance")
+                    drain(winner)
+                else:
+                    for p in served:
+                        r = sale_on(p)
+                        run.sc22["loser_ok"].append(bool(r and r.get("ok")))
+                    drain(served[0] if served else p1)
+                stop(p1)
+                stop(p2)
+            run.start_client()
+        elif cell == "b_second_later":
+            sale_on(run.client)  # the first instance has the store before the second starts
+            sale_on(run.client)
+            drain(run.client)
+            b = spawn(run)  # the cashier double-clicks the app while it is running
+            for _ in range(2):
+                r = sale_on(b)
+                run.sc22["refused_seen"] += bool(r and r.get("error") == "another_instance")
+                run.sc22["loser_ok"].append(bool(r and r.get("ok")))
+                sale_on(run.client)
+            drain(run.client)
+            stop(b)
+        elif cell == "c_kill_holder":
+            talk(run.client, {"op": "state"})  # the holder has the store before the second instance starts
+            b = spawn(run)  # started while the holder (killed at its k-th sale, mid-transaction) is alive
+            r = talk(b, {"op": "state"})
+            run.sc22["refused_seen"] += bool(r and r.get("error") == "another_instance")
+            died = False
+            for _ in range(6):
+                if sale_on(run.client) is None:  # the holder died mid-transaction
+                    died = True
+                    break
+            if died:
+                run.client.wait()
+            else:
+                stop(run.client)
+            run.sc22["hot_journal"] = os.path.exists(run.db + "-journal")
+            stop(b)
+            run.start_client()  # the cashier starts the app again: it takes the store over
+            r = talk(run.client, {"op": "state"})
+            run.sc22["took_over"] = bool(r and r.get("ok"))
+            sale_on(run.client)
+            drain(run.client)
+    return script
+
+
+def sc22_extra(run, dump):
+    """R15 the commit marker never tears or moves backwards; R16 at most one instance serves the store at a time;
+    R17 a sale refused because another instance holds the store says so and leaves no trace."""
+    v, st = [], run.sc22
+    if st["torn_marker"]:
+        v.append(("R15", f"marker unreadable {st['torn_marker']} times"))
+    m = st["marker"]
+    if any(b < a for a, b in zip(m, m[1:])):
+        v.append(("R15", f"marker moved backwards: {m}"))
+    if any(n > 1 for n in st["both_served"]) or any(st["loser_ok"]):
+        v.append(("R16", f"two instances served the store (rounds {st['both_served']}, second accepted {st['loser_ok']})"))
+    c = run.open_client_store()
+    bills = {r[0] for r in c.execute("SELECT action_id FROM bills").fetchall()}
+    c.close()
+    on_server = {r["action_id"] for r in dump["ledger"]}
+    for aid, r in run.sale_replies.items():
+        if r and r.get("error") == "another_instance":
+            if r.get("warning") != "another_instance":
+                v.append(("R17", f"{aid} refused without a warning"))
+            if aid in bills or aid in on_server:
+                v.append(("R17", f"{aid} answered 'another instance' but was saved"))
+    if st["cell"] == "c_kill_holder" and st["took_over"] is not True:
+        v.append(("R16", "the restarted instance could not take the store over after the holder died"))
+    ex = {"a_simultaneous": len(st["both_served"]) == SC22_ROUNDS,
+          "b_second_later": st["refused_seen"] > 0 or any(st["loser_ok"]),
+          "c_kill_holder": st["hot_journal"] is True}[st["cell"]]
+    run.sc22["exercised"] = ex
+    return v, frozenset()
+
+
+def sc22_run(seed, cell, mutant=None, label=None, verbose=False):
+    fault = ("client:mid_local_txn", random.Random(f"{seed}|sc22").randint(1, 4)) if cell == "c_kill_holder" else False
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=fault,
+              label=label or f"sc22-{cell}", client_env=dict(RETENTION_ENV))
+    run.script, run.extra = sc22_script(cell), sc22_extra
+    r = run.go()
+    r["sc22"] = {k: v for k, v in run.sc22.items() if k != "marker"}
+    return r
+
+
+def sc22(seeds=50, mutant_budget=30):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "seeds_per_cell": seeds, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-22 (two instances), commit {summary['harness_commit']}, {seeds} seeds per cell", flush=True)
+    ok = True
+    for cell in SC22_CELLS:
+        t1 = time.time()
+        bad, exercised, refused = [], 0, 0
+        for s in range(1, seeds + 1):
+            r = sc22_run(s, cell)
+            exercised += bool(r["sc22"].get("exercised"))
+            refused += r["sc22"]["refused_seen"]
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised} runs not exercised)")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "second_refused": refused,
+                                 "violating_runs": len(bad), "first_bad": bad[:3],
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:15s} exercised {exercised}/{seeds}  second instance refused {refused}x  violating {len(bad)}  {res}",
+              flush=True)
+    for m in SC22_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for n in range(mutant_budget):
+            s, cell = n // len(SC22_CELLS) + 1, SC22_CELLS[n % len(SC22_CELLS)]
+            r = sc22_run(s, cell, mutant=m, label=f"sc22-mutant-{m}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][m] = {"caught": bool(caught), "runs_to_catch": n + 1 if caught else None,
+                                 "seed_cell": caught[:2] if caught else None,
+                                 "first_violation": caught[2] if caught else None, "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {m:20s} {'CAUGHT' if caught else 'SURVIVED'} after {n + 1} runs: {caught[2] if caught else '-'}",
+              flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc22-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-22: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -1285,6 +1493,12 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc22":  # sc22 [seeds_per_cell]
+        sys.exit(0 if sc22(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay22":  # replay22 <seed> <cell> [mutant]
+        r = sc22_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay22", verbose=True)
+        print(json.dumps({k: r[k] for k in ("actions", "acked", "server_sales", "fired", "sc22", "violations")}, indent=1))
     if sys.argv[1] == "sc21":  # sc21 [seeds_per_cell]
         sys.exit(0 if sc21(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay21":  # replay21 <seed> <cell> [mutant]

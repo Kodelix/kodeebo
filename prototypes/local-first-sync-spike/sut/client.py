@@ -43,6 +43,13 @@
 #   all of version 1 or all of version 2. An app older than the store refuses without writing a byte and records
 #   "downgrade_refused". Pending commands keep their stored payload bytes and hash across the upgrade.
 #   INSPECT=1: open (with normal crash recovery), report the schema state, never migrate (the driver's view).
+# Phase 3 (SC-22, two app instances on one store): before anything touches the store (crash recovery, migration,
+#   marker) the client takes an OS lock on <db>.lock (flock, exclusive, non-blocking) and holds it for its whole
+#   life. A second instance takes nothing, records "second_instance_refused" and answers every op
+#   {"ok": false, "error": "another_instance", "warning": "another_instance"}. The OS releases the lock when the
+#   holder dies, so a restarted instance takes over with normal crash recovery. Windows (LockFileEx or a named
+#   mutex) is phase 4.
+#      MUTANT also: no_instance_lock, lock_released_early (lock held only while opening the store).
 #      MUTANT also: nonatomic_migration (each DDL step commits on its own), no_premigrate_copy,
 #      reserialize_on_upgrade (rewrites stored payloads in a new byte form and recomputes their hashes).
 #      MUTANT also: full_refuses (old behaviour: refuse the store on disk full), marker_crash (old behaviour: an
@@ -51,6 +58,7 @@
 #      commands get new command ids), config_version_only (config feed compared by version, epoch ignored).
 # The spike's binding is not the product decision (README).
 import errno
+import fcntl
 import hashlib
 import hmac
 import http.client
@@ -149,6 +157,21 @@ class MarkerError(RuntimeError):
 
 class DowngradeError(RuntimeError):
     pass
+
+
+class InstanceBusy(RuntimeError):
+    pass
+
+
+def take_instance_lock():
+    """SC-22: one app instance per store. Returns the locked descriptor, or None if another instance holds it."""
+    fd = os.open(DB + ".lock", os.O_RDWR | os.O_CREAT, 0o600)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        os.close(fd)
+        return None
+    return fd
 
 
 def _mac(seq):
@@ -374,8 +397,16 @@ def open_store():
         return None, e, copy
 
 
-con, open_error, recovery_copy = open_store()
-if isinstance(open_error, DowngradeError):
+instance_lock = -1 if MUTANT == "no_instance_lock" else take_instance_lock()
+if instance_lock is None:  # another instance holds the store: touch nothing
+    con, open_error, recovery_copy = None, InstanceBusy("another app instance holds this store"), None
+else:
+    con, open_error, recovery_copy = open_store()
+    if MUTANT == "lock_released_early" and instance_lock >= 0:  # planted defect: lock only while opening
+        fcntl.flock(instance_lock, fcntl.LOCK_UN)
+if isinstance(open_error, InstanceBusy):
+    record_event("second_instance_refused", open_error)
+elif isinstance(open_error, DowngradeError):
     record_event("downgrade_refused", open_error)  # refused on purpose: the store was not touched
 elif open_error is not None:
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
@@ -667,7 +698,10 @@ for line in sys.stdin:
         reply({"ok": True, "op": "exit"})
         break
     if refused:
-        reply({"ok": False, "op": op, "store": "refused"})
+        if isinstance(open_error, InstanceBusy):
+            reply({"ok": False, "op": op, "error": "another_instance", "warning": "another_instance"})
+        else:
+            reply({"ok": False, "op": op, "store": "refused"})
         continue
     try:
         if op == "sale":
