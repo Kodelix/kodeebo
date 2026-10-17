@@ -28,6 +28,12 @@
 // the server's publication of the next version to the device's first pull of a newer one (server time); offline
 // periods inside it are context for the owner message. MUTANT=offline_only keeps the first rule (summaries per
 // offline period only, nothing for an online lag).
+//
+// SC-25b (N5 offline lease, founder rule 2026-10-17): every contact (a batch reply, a config pull) issues a lease
+// {server_time, grace_s, warn_s} (LEASE_G_S, LEASE_WARN_S; spike defaults 7 days and 24 h). The owner warning and the
+// expiry are computed from the server's own clock and the last lease issued, so the owner is warned even while the
+// device is offline. The server never refuses a backlog because the lease ran out. POST /test/clock?advance=
+// moves the server clock (spike test hook). MUTANT=reject_after_expiry refuses batches from an expired device.
 package main
 
 import (
@@ -41,6 +47,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -50,7 +57,7 @@ import (
 
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
-  reconcile_events, config, device_events, price_summaries, config_history, device_pulls;
+  reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -82,6 +89,8 @@ INSERT INTO config VALUES (1, 1, 6000, '{"std": 6000, "vip": 9000, "cafe": 1500}
 CREATE TABLE config_history (version int PRIMARY KEY, prices jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
 INSERT INTO config_history (version, prices) SELECT version, prices FROM config;
 CREATE TABLE device_pulls (device_id text NOT NULL, version int NOT NULL, at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE device_leases (device_id text PRIMARY KEY, issued_at double precision NOT NULL, grace_s bigint NOT NULL,
+  warn_s bigint NOT NULL);
 CREATE TABLE price_summaries (device_id text NOT NULL, kind text NOT NULL, period_key bigint NOT NULL,
   n_sales int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, kind, period_key));
 CREATE TABLE device_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
@@ -136,6 +145,36 @@ var (
 	contactMu   sync.Mutex
 	lastContact = map[string]time.Time{}
 )
+
+var clockOffset atomic.Int64 // SC-25b: test hook, nanoseconds added to the server clock for leases
+
+func serverNow() time.Time { return time.Now().Add(time.Duration(clockOffset.Load())) }
+
+func envSeconds(name string, def int64) int64 {
+	if v, err := strconv.ParseInt(os.Getenv(name), 10, 64); err == nil && v > 0 {
+		return v
+	}
+	return def
+}
+
+// issueLease records and returns a fresh lease for the device (SC-25b).
+func issueLease(ctx context.Context, dev string) map[string]any {
+	now := float64(serverNow().UnixNano()) / 1e9
+	g, w := envSeconds("LEASE_G_S", 7*24*3600), envSeconds("LEASE_WARN_S", 24*3600)
+	pool.Exec(ctx, `INSERT INTO device_leases VALUES ($1,$2,$3,$4) ON CONFLICT (device_id)
+		DO UPDATE SET issued_at = $2, grace_s = $3, warn_s = $4`, dev, now, g, w)
+	return map[string]any{"server_time": now, "grace_s": g, "warn_s": w}
+}
+
+// leaseExpired reports whether the device's last lease has run out on the server's clock.
+func leaseExpired(ctx context.Context, dev string) bool {
+	var issued float64
+	var g int64
+	if err := pool.QueryRow(ctx, `SELECT issued_at, grace_s FROM device_leases WHERE device_id = $1`, dev).Scan(&issued, &g); err != nil {
+		return false
+	}
+	return float64(serverNow().UnixNano())/1e9 >= issued+float64(g)
+}
 
 // contact records device contact; it returns the id of the offline period it just closed, or 0.
 func contact(ctx context.Context, dev string) int64 {
@@ -332,6 +371,10 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	period := contact(ctx, b.DeviceID)
+	if mutant == "reject_after_expiry" && leaseExpired(ctx, b.DeviceID) { // planted defect: the backlog is refused
+		http.Error(w, `{"error":"lease_expired"}`, http.StatusForbidden)
+		return
+	}
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
@@ -353,7 +396,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var results []result
+	results := []result{} // always a list, also for an empty batch (an SC-25b lease heartbeat): never JSON null
 	stale := 0
 	lagged := map[int]int{} // old version -> sales (rule 2 widened: online, the device had not pulled the new list)
 	for _, c := range b.Commands {
@@ -424,7 +467,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(ms) * time.Millisecond)
 	}
 	resp, _ := json.Marshal(map[string]any{"results": results, "cursor": cur, "resend_from": resendFrom,
-		"archived_seq": archived})
+		"archived_seq": archived, "lease": issueLease(ctx, b.DeviceID)})
 	w.Header().Set("Content-Type", "application/json")
 	if mutant == "ack_before_commit" {
 		// Planted defect: the client is told "applied" before the commit is durable.
@@ -530,8 +573,12 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	out := map[string]any{"epoch": epoch, "version": version, "price": price, "prices": prices}
+	if dev := r.URL.Query().Get("device"); dev != "" && r.Method == http.MethodGet {
+		out["lease"] = issueLease(ctx, dev)
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"epoch": epoch, "version": version, "price": price, "prices": prices})
+	json.NewEncoder(w).Encode(out)
 }
 
 func dumpRows(ctx context.Context, q string) ([]map[string]any, error) {
@@ -573,6 +620,16 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		}
 		out[name] = rows
 	}
+	// SC-25b: the owner's view of each device's lease, on the server's own clock.
+	now := float64(serverNow().UnixNano()) / 1e9
+	leases, err := dumpRows(ctx, `SELECT device_id, issued_at, grace_s, warn_s FROM device_leases ORDER BY device_id`)
+	if err == nil {
+		for _, l := range leases {
+			issued, g, wn := l["issued_at"].(float64), float64(l["grace_s"].(int64)), float64(l["warn_s"].(int64))
+			l["server_now"], l["owner_warning"], l["expired"] = now, now >= issued+g-wn, now >= issued+g
+		}
+		out["lease_status"] = leases
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(out)
 }
@@ -603,6 +660,15 @@ func main() {
 	mux.HandleFunc("GET /dump", handleDump)
 	mux.HandleFunc("POST /archive", handleArchive)
 	mux.HandleFunc("POST /device_event", handleDeviceEvent)
+	mux.HandleFunc("POST /test/clock", func(w http.ResponseWriter, r *http.Request) { // SC-25b spike test hook
+		sec, err := strconv.ParseFloat(r.URL.Query().Get("advance"), 64)
+		if err != nil {
+			http.Error(w, "advance", http.StatusBadRequest)
+			return
+		}
+		clockOffset.Add(int64(sec * 1e9))
+		fmt.Fprintf(w, `{"server_now":%f}`, float64(serverNow().UnixNano())/1e9)
+	})
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })

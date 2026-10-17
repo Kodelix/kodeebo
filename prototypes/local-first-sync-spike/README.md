@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) dev run PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -174,6 +174,16 @@ bash prototypes/local-first-sync-spike/run.sh sc25 [tenth|full|both]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay25 <seed> <tenth|full> [mutant]
+```
+
+SC-25b (N5 offline lease expiry, injected clocks):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc25b [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay25b <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -810,3 +820,60 @@ Permission revocation while offline (abuse case 3) is **not** in SC-23. It is a 
 - **ETA's 24-hour late-submission route:** the spike has no ETA channel.
 - **Drain time on the HDD reference PC or a real venue link:** phase 4 and S105.
 - **Several devices draining at once:** server load is S201.
+
+### Phase 3 — SC-25b: the N5 offline lease runs out mid-shift (mechanics, injected clocks)
+
+**Founder rule under test (2026-10-17, sync note OQ3):**
+1. The cashier and the owner are warned 24 hours before the offline lease ends (G = 7 days on the base plan, licensing note).
+2. At expiry, open sessions can still be closed and paid; no money is lost.
+3. No new session and no new sale until the device reaches the server.
+4. Local data stays readable and exportable, and the whole backlog is accepted when the device reconnects.
+
+The lease is counted on server time plus the device's monotonic counter, never the Windows clock (founder design input in `docs/research/licensing.md` § 5; one clock with D1-B).
+
+**Design under test (`LEASE=1`):**
+- **Server:** every contact (a batch reply, a config pull) issues a lease `{server_time, grace_s, warn_s}` (7 days and 24 h, from the server's settings). The owner's warning and expiry come from the server's own clock and the last lease issued, so the owner is warned even while the device is offline. The server never refuses a backlog because a lease ran out.
+- **Device:**
+  - Stores the server time and its monotonic reading at each contact, and counts on the monotonic counter only.
+  - Every reply carries the lease status (`ok`, `warning`, `expired`).
+  - After expiry, `start_session` and `sell_items` (and the older `sale`) are refused with `lease_expired`. `close_session`, `export` and `stats` still work.
+  - A wall clock that moves more than 5 minutes against the monotonic counter is recorded and sent to the owner.
+- **Injected clocks (spike test hooks):** the driver moves the device's monotonic counter and the server's clock by the same amount; in one cell it moves the wall clock alone.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_expiry_mid_shift` | sessions open, then offline; day 5, then 6 d 22 h, then 7 d 1 h | day 5: no warning, a sale works. 6 d 22 h: cashier and owner warned. 7 d 1 h: new session and sale refused; both open sessions closed and paid; export works. Reconnect: backlog accepted, lease renewed, new session works |
+| `b_wall_clock_back` | as `a`, with the Windows clock set back 3 days before 6 d 22 h | the same timeline (the wall clock changes nothing); the owner gets a `wall_clock_moved` alert |
+| `c_warning_boundary` | one minute before and one minute after the start of the last 24 h | no warning, then warnings on the device and for the owner; after reconnect the lease is renewed in full |
+
+**Checks added:**
+- **R24:** device and owner warnings exactly in the last 24 hours.
+- **R25:** no new session or sale after expiry; sales work before it.
+- **R26:** open sessions closed and paid after expiry; I1 then checks they reach the server.
+- **R27:** export works after expiry.
+- **R28:** after reconnect the backlog is accepted and the lease renewed in full.
+- **R29:** the wall-clock change reaches the owner.
+
+**Mutants:** `wall_clock_lease`, `expiry_blocks_close`, `no_warning`, `reject_after_expiry` (the server refuses an expired device's backlog), `no_heartbeat`.
+
+#### Run 1 (dev, uncommitted harness on `5352924`) — PASS
+
+`evidence/phase3-sc25b-run1-dev*`, 19 s.
+- **Cells:** all 3 PASS, 20 seeds each, 0 violations.
+- **Mutants:** all five caught.
+  - `wall_clock_lease` after 2 runs: with the wall clock set back 3 days, a sale went through after the real expiry (I8, R25).
+  - `expiry_blocks_close` after 1 (R26).
+  - `no_warning` after 1 (R24).
+  - `reject_after_expiry` after 1: the backlog never reached the server (I1).
+  - `no_heartbeat` after 3 (R28).
+
+**Finding P3-F9 — the lease must be renewed even when there is nothing to upload.** In the first attempt, a device that came back online with an empty outbox kept its old lease: its sync returned early and never contacted the server. A device used only to view data, or one that had already drained, would then run out of lease while connected. The client now sends an empty batch as a heartbeat. The server stub returned `"results": null` for an empty batch, which the client rightly rejected (P2-F1); it now always returns a list.
+
+**Not covered:**
+- **Reboots and powered-off time:** the monotonic counter restarts at boot; this is licensing note part 3.
+- **Restoring an older state file:** the TPM clock question.
+- **A signed lease:** the Ed25519 library is licensing note part 2. The spike's lease is unsigned.
+- **Plan-specific lease lengths and an emergency unlock:** OQ3 is still open on both.
+- **A real Windows clock change:** S304, phase 4.

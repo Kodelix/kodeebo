@@ -1,0 +1,106 @@
+{
+ "harness_commit": "5352924+dirty",
+ "started": "2026-10-17 16:46:39",
+ "lease": {
+  "G_s": 604800,
+  "warn_s": 86400
+ },
+ "cells": [
+  {
+   "cell": "a_expiry_mid_shift",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 6.0,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_wall_clock_back",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 6.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_warning_boundary",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 4.5,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "wall_clock_lease": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_wall_clock_back"
+   ],
+   "first_violation": [
+    "I8",
+    "s1-x1 on the server was never submitted"
+   ],
+   "seconds": 0.7
+  },
+  "expiry_blocks_close": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_expiry_mid_shift"
+   ],
+   "first_violation": [
+    "R26",
+    "an open session could not be closed and paid after expiry: {'ok': False, 'op': 'close_session', 'error': 'lease_expired', 'warning': 'lease_expired', 'lease': {'status': 'expired', 'remaining_s': -3600, 'server_now_estimate': 1792853216.5719748}}"
+   ],
+   "seconds": 0.2
+  },
+  "no_warning": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_expiry_mid_shift"
+   ],
+   "first_violation": [
+    "R24",
+    "6 d 22 h: device lease ok, model warning"
+   ],
+   "seconds": 0.3
+  },
+  "reject_after_expiry": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_expiry_mid_shift"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-a0 acknowledged but missing on the server"
+   ],
+   "seconds": 0.3
+  },
+  "no_heartbeat": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_warning_boundary"
+   ],
+   "first_violation": [
+    "R28",
+    "after reconnect the lease was not renewed in full: {'status': 'warning', 'remaining_s': 86340, 'server_now_estimate': 1792763277.9211767}"
+   ],
+   "seconds": 0.8
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 18.8
+}

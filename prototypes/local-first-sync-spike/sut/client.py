@@ -65,6 +65,17 @@
 #   starts at BATCH_MAX (50); a sync that times out halves it (down to 1), a successful one grows it by a quarter
 #   (additive increase, multiplicative decrease), so a batch too large for the link's HTTP timeout shrinks instead
 #   of retrying the same batch forever, and does not jump straight back to a size that times out again.
+# Phase 3 (SC-25b, the N5 offline lease; founder rule 2026-10-17, sync note OQ3), LEASE=1:
+#   Every server contact (a sync reply, a config pull) carries a lease {server_time, grace_s, warn_s}. The device
+#   counts the lease on server time plus its monotonic counter (D1-B), never the wall clock. Every reply carries the
+#   lease status: ok, warning (the last warn_s seconds: the cashier is warned) or expired. After expiry, open
+#   sessions can still be closed and paid; no new session and no new sale until the device reaches the server;
+#   data stays readable and exportable. A wall clock that moves more than 5 minutes against the monotonic counter
+#   is recorded and reported (owner alert). Test hooks advance_mono / set_wall_offset move the device's clocks.
+#   Not modelled: reboots and powered-off time (licensing note part 3); the lease is unsigned (part 2).
+#      MUTANT also: wall_clock_lease (lease counted on the wall clock), expiry_blocks_close (open sessions cannot
+#      be closed after expiry), no_warning (no warning before expiry), no_heartbeat (a sync with nothing to send
+#      does not contact the server, so the lease is not renewed).
 #      MUTANT also: fixed_batch (never shrinks), drop_on_send (outbox rows deleted when sent, before any reply,
 #      without advancing the acknowledged mark, so a cut request loses them).
 #      MUTANT also: zero_price_default (a missing list or price counts as 0), swallow_store_errors (the session-op
@@ -90,6 +101,7 @@ import shutil
 import signal
 import sys
 import threading
+import time
 import urllib.error
 import urllib.request
 
@@ -129,7 +141,51 @@ def failpoint(name):
         os.kill(os.getpid(), signal.SIGKILL)
 
 
+LEASE_ON = os.environ.get("LEASE") == "1"
+WALL_DRIFT_S = 300  # wall clock against monotonic counter: beyond this the move is reported (spike value)
+clocks = {"mono_offset": 0.0, "wall_offset": 0.0}  # SC-25b test hooks
+lease = {}
+
+
+def device_mono():
+    return time.monotonic() + clocks["mono_offset"]
+
+
+def device_wall():
+    return time.time() + clocks["wall_offset"]
+
+
+def take_lease(l):
+    """A server contact renews the lease: server time now, and the device's clocks at this moment."""
+    if LEASE_ON and isinstance(l, dict):
+        lease.clear()
+        lease.update(server_time=float(l["server_time"]), grace_s=float(l["grace_s"]), warn_s=float(l["warn_s"]),
+                     mono_at=device_mono(), wall_at=device_wall(), drift_reported=False)
+
+
+def lease_status():
+    if not lease:
+        return {"status": "none"}
+    mono_elapsed = device_mono() - lease["mono_at"]
+    wall_elapsed = device_wall() - lease["wall_at"]
+    elapsed = wall_elapsed if MUTANT == "wall_clock_lease" else mono_elapsed  # planted defect: the wall clock
+    remaining = lease["grace_s"] - elapsed
+    if remaining <= 0:
+        status = "expired"
+    elif remaining <= lease["warn_s"] and MUTANT != "no_warning":
+        status = "warning"
+    else:
+        status = "ok"
+    if abs(wall_elapsed - mono_elapsed) > WALL_DRIFT_S and not lease["drift_reported"]:
+        lease["drift_reported"] = True
+        record_event("wall_clock_moved", RuntimeError(f"wall clock moved {wall_elapsed - mono_elapsed:+.0f} s "
+                                                      "against the monotonic counter"))
+    return {"status": status, "remaining_s": round(remaining), "server_now_estimate": lease["server_time"] + mono_elapsed}
+
+
 def reply(obj):
+    if LEASE_ON and "lease" not in obj:
+        obj["lease"] = lease_status()
     sys.stdout.write(json.dumps(obj) + "\n")
     sys.stdout.flush()
 
@@ -531,6 +587,7 @@ def post(cmds):
         body = json.loads(r.read())  # an empty or cut body raises here: never acknowledge on the status code (P2-F1)
     if not isinstance(body, dict) or not isinstance(body.get("results"), list):
         raise ValueError("reply without a results list")
+    take_lease(body.get("lease"))  # a parsed reply from the server renews the lease
     return body
 
 
@@ -579,6 +636,11 @@ def sync():
     report_events()
     rows = select_rows()
     if not rows:
+        if LEASE_ON and MUTANT != "no_heartbeat":  # SC-25b: nothing to send still renews the lease (heartbeat)
+            try:
+                post([])
+            except NET_ERRORS as e:
+                return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": 0})
         return reply({"ok": True, "op": "sync", "pending": 0})
     failpoint("client:before_send")  # P4/P5
     if MUTANT == "drop_on_send":  # planted defect: forget the commands as soon as they are sent
@@ -801,6 +863,7 @@ def pull_config():
             cfg = json.loads(r.read())
         epoch, version, price = str(cfg["epoch"]), int(cfg["version"]), int(cfg["price"])
         prices = json.dumps(cfg.get("prices") or {})
+        take_lease(cfg.get("lease"))
     except (*NET_ERRORS, KeyError) as e:
         return reply({"ok": False, "op": "pull_config", "error": str(e)[:80]})
     le, lv = q("SELECT cfg_epoch, cfg_version FROM sync_state WHERE id = 1")[0]
@@ -843,6 +906,11 @@ for line in sys.stdin:
             reply({"ok": False, "op": op, "error": "another_instance", "warning": "another_instance"})
         else:
             reply({"ok": False, "op": op, "store": "refused"})
+        continue
+    gated = ("sale", "start_session", "sell_items") + (("close_session",) if MUTANT == "expiry_blocks_close" else ())
+    if LEASE_ON and op in gated and lease_status()["status"] in ("expired", "none"):
+        reply({"ok": False, "op": op, "error": "lease_expired", "warning": "lease_expired"})  # until the server is reached
+        report_events()
         continue
     try:
         if op == "sale":
@@ -887,6 +955,16 @@ for line in sys.stdin:
             except handled as e:  # no price list, a price missing, an unknown session: refuse the action, not the store
                 code = getattr(e, "code", "unknown_session" if isinstance(e, (KeyError, IndexError)) else "invalid")
                 reply({"ok": False, "op": op, "error": code, "warning": code, "detail": str(e)[:100]})
+        elif op == "advance_mono":  # SC-25b test hook: time passes on the device's monotonic counter
+            clocks["mono_offset"] += float(msg["seconds"])
+            clocks["wall_offset"] += float(msg["seconds"])  # the wall clock runs too, unless moved separately
+            reply({"ok": True, "op": op})
+        elif op == "set_wall_offset":  # SC-25b test hook: someone changes the Windows clock
+            clocks["wall_offset"] += float(msg["seconds"])
+            reply({"ok": True, "op": op})
+        elif op == "export":  # SC-25b: local data stays readable and exportable, lease or not
+            rows = q("SELECT action_id, sale_piasters FROM bills ORDER BY seq")
+            reply({"ok": True, "op": op, "bills": len(rows), "total_piasters": sum(r[1] for r in rows)})
         elif op == "release_cache":  # test hook (SC-23 f): drop cached pages so the next read comes from disk
             q("PRAGMA shrink_memory")
             reply({"ok": True, "op": op})

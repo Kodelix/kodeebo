@@ -2050,6 +2050,210 @@ def sc25(scales=("tenth", "full"), mutant_budget=6):
     return ok
 
 
+# --- Phase 3, SC-25b: the N5 offline lease runs out mid-shift (mechanics, injected clocks) -------------------------
+# Founder rule (2026-10-17, sync note OQ3): (1) the cashier and the owner are warned 24 hours before the lease (G =
+# 7 days on the base plan) ends; (2) at expiry open sessions can still be closed and paid; (3) no new session and no
+# new sale until the device reaches the server; (4) local data stays readable and exportable, and the whole backlog
+# is accepted on reconnect. The lease is counted on server time plus the device's monotonic counter, never the wall
+# clock. The driver moves both clocks (device monotonic, server) by the same amount; the wall clock is moved alone
+# in b_wall_clock_back.
+SC25B_CELLS = ["a_expiry_mid_shift", "b_wall_clock_back", "c_warning_boundary"]
+SC25B_MUTANTS = ["wall_clock_lease", "expiry_blocks_close", "no_warning", "reject_after_expiry", "no_heartbeat"]
+SC25B_PRICES = {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 1}
+LEASE_G, LEASE_W = 7 * 86400, 86400
+
+
+def sc25b_script(cell):
+    def script(run):
+        toxi = run.net.toxi
+        n = [0]
+        st = run.sc25b = {"cell": cell, "checks": [], "export": None, "after_reconnect": None}
+        tiers = {}
+
+        def advance(seconds):  # time passes for the device (monotonic) and the server alike
+            run.send({"op": "advance_mono", "seconds": seconds})
+            post_json(f"/test/clock?advance={seconds}", {})
+
+        def owner_view():
+            d = json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=60).read())
+            return (d.get("lease_status") or [{}])[0]
+
+        def look(label, elapsed):
+            """What the device and the server say now, against the model (elapsed since the last contact)."""
+            r = run.send({"op": "stats"})
+            dev = (r or {}).get("lease", {})
+            own = owner_view()
+            want = "expired" if elapsed >= LEASE_G else ("warning" if elapsed >= LEASE_G - LEASE_W else "ok")
+            st["checks"].append({"at": label, "elapsed_s": elapsed, "want": want, "device": dev.get("status"),
+                                 "owner_warning": own.get("owner_warning"), "owner_expired": own.get("expired")})
+            return want
+
+        def start(tier="std"):
+            sid = f"s{run.seed}-sess{n[0]}"
+            n[0] += 1
+            r = run.send({"op": "start_session", "session_id": sid, "start_min": 0, "tier": tier})
+            tiers[sid] = tier
+            return sid, r
+
+        def close(sid, end=45):
+            aid = f"s{run.seed}-a{sid.rsplit('sess', 1)[1]}"
+            a = {"op": "close_session", "action_id": aid, "session_id": sid, "start_min": 0, "end_min": end,
+                 "cafe_n": 1, "expected_piasters": None}
+            r = run.send(a)
+            if r and r.get("ok"):
+                p_ = SC25B_PRICES
+                total = (end * p_[tiers[sid]] + 30 * p_["round_piasters"]) // (60 * p_["round_piasters"]) \
+                    * p_["round_piasters"] + p_["cafe"]
+                a["expected_piasters"] = total
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+                run.seq_of[aid] = r.get("seq")
+            return r
+
+        post_json("/config", {"prices": SC25B_PRICES})
+        run.send({"op": "pull_config"})  # contact: the lease starts now (server time T0, device monotonic m0)
+        s1, _ = start()
+        s2, _ = start("vip")
+        s0, _ = start()
+        close(s0)
+        run.send({"op": "sync"})  # contact again: the lease restarts here
+        toxi.apply("down")  # the internet goes; the shift goes on
+        elapsed = 0
+        if cell == "c_warning_boundary":
+            for step in (LEASE_G - LEASE_W - 60, 120):  # one minute before the warning, one minute after
+                advance(step)
+                elapsed += step
+                look(f"{elapsed / 3600:.2f} h", elapsed)
+        else:
+            for step, label in ((5 * 86400, "day 5"), (86400 + 22 * 3600, "6 d 22 h"), (3 * 3600, "7 d 1 h")):
+                if cell == "b_wall_clock_back" and label == "6 d 22 h":
+                    run.send({"op": "set_wall_offset", "seconds": -3 * 86400})  # someone sets the Windows clock back
+                advance(step)
+                elapsed += step
+                want = look(label, elapsed)
+                if want == "expired":  # rule 2, 3, 4 at expiry
+                    st["new_session_after_expiry"] = start()[1]
+                    st["sell_after_expiry"] = run.send({"op": "sell_items", "action_id": f"s{run.seed}-x1", "n": 1})
+                    st["close_after_expiry"] = [close(s1, 120), close(s2, 150)]
+                    st["export"] = run.send({"op": "export"})
+                elif want == "ok":
+                    st["sell_before_expiry"] = run.send({"op": "sell_items", "action_id": f"s{run.seed}-y{elapsed}",
+                                                         "n": 1})
+                    if st["sell_before_expiry"] and st["sell_before_expiry"].get("ok"):
+                        a = {"op": "sell_items", "action_id": f"s{run.seed}-y{elapsed}", "start_min": 0, "end_min": 0,
+                             "expected_piasters": 1500}
+                        run.intent.execute("INSERT INTO actions VALUES (?,?)", (a["action_id"], json.dumps(a)))
+                        run.intent.execute("INSERT INTO acks VALUES (?)", (a["action_id"],))
+        toxi.clear()  # back online: the backlog goes up and the lease is renewed
+        for _ in range(10):
+            r = run.send({"op": "sync"})
+            if r and r.get("ok") and r.get("pending") == 0:
+                break
+        st["after_reconnect"] = {"sync": r, "new_session": start()[1], "lease": (r or {}).get("lease")}
+        if st["after_reconnect"]["new_session"] and st["after_reconnect"]["new_session"].get("ok"):
+            close(f"s{run.seed}-sess{n[0] - 1}")
+        for _ in range(5):
+            r = run.send({"op": "sync"})
+            if r and r.get("ok") and r.get("pending") == 0:
+                break
+    return script
+
+
+def sc25b_extra(run, dump):
+    """R24 warnings (device and owner) exactly in the last 24 h; R25 no new session or sale after expiry, allowed
+    before; R26 open sessions closed and paid after expiry (and on the server: I1); R27 data exportable after
+    expiry; R28 after reconnect the backlog is accepted and the lease renewed; R29 a wall-clock change moves
+    nothing and reaches the owner."""
+    v, st = [], run.sc25b
+    for c in st["checks"]:
+        if c["device"] != c["want"]:
+            v.append(("R24", f"{c['at']}: device lease {c['device']}, model {c['want']}"))
+        if bool(c["owner_warning"]) != (c["want"] in ("warning", "expired")):
+            v.append(("R24", f"{c['at']}: owner warning {c['owner_warning']}, model {c['want']}"))
+    if st["cell"] != "c_warning_boundary":
+        for key in ("new_session_after_expiry", "sell_after_expiry"):
+            r = st.get(key)
+            if not r or r.get("ok") or r.get("error") != "lease_expired":
+                v.append(("R25", f"{key}: {r}"))
+        r = st.get("sell_before_expiry")
+        if not r or not r.get("ok"):
+            v.append(("R25", f"a sale before expiry was refused: {r}"))
+        for r in st.get("close_after_expiry", []):
+            if not r or not r.get("ok"):
+                v.append(("R26", f"an open session could not be closed and paid after expiry: {r}"))
+        e = st.get("export") or {}
+        if not e.get("ok") or not e.get("bills"):
+            v.append(("R27", f"export after expiry: {e}"))
+    ar = st.get("after_reconnect") or {}
+    if not (ar.get("new_session") or {}).get("ok"):
+        v.append(("R28", f"after reconnect a new session was refused: {ar.get('new_session')}"))
+    le = ar.get("lease") or {}
+    if le.get("status") != "ok" or le.get("remaining_s", 0) < LEASE_G - 60:
+        v.append(("R28", f"after reconnect the lease was not renewed in full: {le}"))
+    if st["cell"] == "b_wall_clock_back":
+        if not any(e["kind"] == "wall_clock_moved" and e["owner_alert"] for e in dump.get("device_events", [])):
+            v.append(("R29", "the wall-clock change did not reach the owner"))
+    st["exercised"] = len(st["checks"]) >= 2
+    return v, frozenset()
+
+
+def sc25b_run(seed, cell, toxi, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc25b-{cell}", net=Net(toxi, "none"), client_env={**RETENTION_ENV, "LEASE": "1"},
+              server_env={"LEASE_G_S": str(LEASE_G), "LEASE_WARN_S": str(LEASE_W)})
+    run.script, run.extra = sc25b_script(cell), sc25b_extra
+    r = run.go()
+    r["sc25b"] = run.sc25b
+    return r
+
+
+def sc25b(seeds=20, mutant_budget=12):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "lease": {"G_s": LEASE_G, "warn_s": LEASE_W}, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-25b (N5 lease expiry, injected clocks), commit {summary['harness_commit']}", flush=True)
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        for cell in SC25B_CELLS:
+            t1 = time.time()
+            bad, exercised = [], 0
+            for s in range(1, seeds + 1):
+                r = sc25b_run(s, cell, toxi)
+                exercised += bool(r["sc25b"].get("exercised"))
+                if r["violations"]:
+                    bad.append({"seed": s, "violations": r["violations"][:3]})
+            res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+            ok &= res == "PASS"
+            summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                     "first_bad": bad[:3], "seconds": round(time.time() - t1, 1), "result": res})
+            print(f"  {cell:20s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}", flush=True)
+        for mu in SC25B_MUTANTS:
+            t1 = time.time()
+            caught = None
+            for k in range(mutant_budget):
+                s, cell = k // len(SC25B_CELLS) + 1, SC25B_CELLS[k % len(SC25B_CELLS)]
+                r = sc25b_run(s, cell, toxi, mutant=mu, label=f"sc25b-mutant-{mu}")
+                if r["violations"]:
+                    caught = (s, cell, r["violations"][0])
+                    break
+            summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                      "seed_cell": caught[:2] if caught else None,
+                                      "first_violation": caught[2] if caught else None,
+                                      "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {mu:20s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+                  f"{caught[2] if caught else '-'}", flush=True)
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc25b-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-25b: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -2059,6 +2263,17 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc25b":  # sc25b [seeds_per_cell]
+        sys.exit(0 if sc25b(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay25b":  # replay25b <seed> <cell> [mutant]
+        t = Toxi(RUNS)
+        try:
+            r = sc25b_run(int(sys.argv[2]), sys.argv[3], t, mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                          label="replay25b", verbose=True)
+            print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc25b", "violations")},
+                             indent=1, default=str))
+        finally:
+            t.stop()
     if sys.argv[1] == "sc25":  # sc25 [tenth|full|both]
         which = sys.argv[2] if len(sys.argv) > 2 else "both"
         sys.exit(0 if sc25(("tenth", "full") if which == "both" else (which,)) else 1)
