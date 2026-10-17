@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) dev run PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -784,6 +784,21 @@ Permission revocation while offline (abuse case 3) is **not** in SC-23. It is a 
 - **One-tenth size** (about 3,440 commands): 28 of 30 seeds completed with 0 violations before the session ended. The clean run repeats all 30.
 - **Mutants:** both caught after 1 run. `fixed_batch`: the slow window made no progress (R23). `drop_on_send`: after the first cut every later command was gone, so 3,190 acknowledged sales never reached the server (I1, R23).
 - **Cost:** generating the backlog takes about 9–10 ms per sale (a real commit with rollback journal and marker fsyncs, on NVMe), so 34,500 sales take about 5.5 minutes. On the HDD reference PC this cost is SC-26's concern (phase 4).
+
+#### Run 2 (committed harness `a5900db`, fix `be11ae1`) — SC-25a **PASS**; the regression found a phase 2 gap, fixed and guarded
+
+`evidence/phase3-sc25a-run2-*`.
+- **SC-25a on `a5900db`:** one-tenth size 30 of 30 and full size 3 of 3 (about 34,480 commands each), 0 violations, both mutants caught (3,527 s). Timings are slower than run 1, because other sessions shared the machine; they are indicative only.
+- **Regression on `a5900db`:** everything passes except phase 2.
+  - SC-23, SC-22, SC-21a, SC-20 and SC-19 match their previous runs, except a timestamp in a violation message (SC-23) and the race detail of the SC-22 mutant caught after 1 run.
+  - SC-20's real tmpfs leg: 50 of 50. Phases 0 and 1: PASS. Tamper: 36 of 36.
+  - **Phase 2: gate FAIL** (`-a5900db-p2-FAIL.log`). SC-25a had added its `bandwidth_3k` toxic to the shared `TOXICS` table, from which phase 2 derives its cells and its random campaign. Phase 2 therefore gained a cell whose toxic never bites with its small batches (NOT ASSESSED, so the gate failed), and the campaign's fault choice shifted. No money check failed and all phase 2 mutants were caught; it was a test regression.
+- **Fix `be11ae1`:** the toxic moves to its own table, and a **guard** (`harness/pins.py`, section "Pinned cell lists" above) makes phase 2 and the tamper suite stop at once if their cell lists change (`evidence/phase3-pins-guard-check.txt`: passes for the current lists; a leaked toxic and a dropped tamper row both stop with a clear message).
+- **Re-run on `be11ae1`** (log headers `commit be11ae1`, no `+dirty`):
+  - phase 2 at 10 seeds per cell and 300 runs: PASS, identical to the pre-SC-25a run except TS-09's sale count (15 against 16), which depends on wall-clock outages, not on the seed;
+  - tamper: 36 of 36 with the guard;
+  - SC-25a at one-tenth size: 30 of 30, progress per window identical to `a5900db`, both mutants caught.
+- **Still owed:** the phase 3 gate campaign re-runs phase 2 at full size (section "Pinned cell lists").
 
 **Finding P3-F7 — on a slow link the batch size must grow back slowly.** In the first dev attempt the client doubled its batch after every success. On the 3 KB/s uplink it went 50 → 25 → 12 → 24 → 25: each success jumped straight back to a size that timed out again, so most syncs failed. With additive increase and multiplicative decrease the batch settles at the link's capacity (11–25 commands) and the window keeps draining.
 
