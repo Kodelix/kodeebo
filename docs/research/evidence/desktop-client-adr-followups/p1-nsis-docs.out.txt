@@ -1,0 +1,25 @@
+run at 2026-10-17T06:08:33Z
+tree http=200
+"path": ".changeset/he-nsis-translations.md"
+"path": ".changeset/mac-helper-name-consistency.md"
+"path": ".changeset/migrate-schema-nsis-web-advisory.md"
+"path": ".changeset/nsis-app-archive-decodable-filter.md"
+"path": ".changeset/nsis-custom-bundle-migration-links.md"
+"path": ".changeset/nsis-custom-install-mode-guard.md"
+"path": ".changeset/nsis-flexible-include.md"
+"path": ".changeset/nsis-install-directory-last-arg.md"
+"path": ".changeset/nsis-installer-copy-only-with-updater.md"
+"path": ".changeset/nsis-langstring-references.md"
+"path": ".changeset/nsis-per-machine-update-info.md"
+"path": ".changeset/nsis-permachine-old-install-process-check.md"
+"path": ".changeset/nsis-silent-messagebox-sd.md"
+"path": ".changeset/nsis-store-asar-missing-asar-warn.md"
+"path": ".changeset/nsis-uninstaller-icon-crc.md"
+"path": ".changeset/nsis-updater-copy-skipped-log.md"
+"path": ".changeset/nsis-usezip-payload-format.md"
+"path": ".changeset/nsis-web-package-type-marker.md"
+"path": ".changeset/nsis-web-silent-download-failure.md"
+"path": ".changeset/remove-custom-nsis-binary.md"
+.changeset/he-nsis-translations.md http=200
+.changeset/mac-helper-name-consistency.md http=200
+.changeset/migrate-schema-nsis-web-advisory.md http=200

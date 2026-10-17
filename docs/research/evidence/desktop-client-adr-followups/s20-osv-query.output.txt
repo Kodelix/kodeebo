@@ -1,0 +1,23 @@
+run at 2026-10-17T06:03Z
+vuln record saved: 3030 bytes
+electron-builder 26.17.0 deps: {'chalk': '^4.1.2', 'yargs': '^17.6.2', 'ci-info': '^4.2.0', 'fs-extra': '^10.1.0', 'lazy-val': '^1.0.5', 'dmg-builder': '26.17.0', 'builder-util': '26.16.0', 'app-builder-lib': '26.17.0', 'builder-util-runtime': '9.7.0', 'simple-update-notifier': '2.0.0'}
+app-builder-lib 26.17.0 deps: {'electron-publish': '26.16.0', 'builder-util-runtime': '9.7.0'} MIT
+electron-updater dist-tags: {'latest': '6.8.9', 'next': '7.0.0-alpha.9', 'v26': '6.8.10'}
+latest 8 electron-updater by time: [('2026-06-19T02:09:12.961Z', '7.0.0-alpha.3'), ('2026-06-20T12:49:42.673Z', '7.0.0-alpha.4'), ('2026-07-24T14:15:48.748Z', '7.0.0-alpha.5'), ('2026-08-17T21:02:20.718Z', '7.0.0-alpha.6'), ('2026-09-02T02:39:27.088Z', '7.0.0-alpha.7'), ('2026-09-26T09:18:45.298Z', '7.0.0-alpha.8'), ('2026-09-26T09:54:07.479Z', '6.8.10'), ('2026-10-08T16:54:19.780Z', '7.0.0-alpha.9')]
+license: MIT
+electron npm:electron@44.8.0 -> 0 []
+electron-builder npm:electron-builder@26.17.0 -> 0 []
+app-builder-lib npm:app-builder-lib@26.17.0 -> 0 []
+bs3mc npm:better-sqlite3-multiple-ciphers@13.0.3 -> 0 []
+koffi npm:koffi@2.16.3 -> 0 []
+builder-util-runtime npm:builder-util-runtime@9.5.1 -> 1 ['GHSA-p2f4-r6v6-j797']
+kotlin-stdlib Maven:org.jetbrains.kotlin:kotlin-stdlib@2.4.21 -> 0 []
+coroutines-core Maven:org.jetbrains.kotlinx:kotlinx-coroutines-core@1.9.0 -> 0 []
+willena-sqlite-jdbc Maven:io.github.willena:sqlite-jdbc@3.53.4.0 -> 0 []
+jna Maven:net.java.dev.jna:jna@5.19.1 -> 0 []
+cmp-desktop Maven:org.jetbrains.compose.desktop:desktop@1.12.2 -> 0 []
+cmp-ui Maven:org.jetbrains.compose.ui:ui@1.12.2 -> 0 []
+cmp-foundation Maven:org.jetbrains.compose.foundation:foundation@1.12.2 -> 0 []
+cmp-runtime Maven:org.jetbrains.compose.runtime:runtime@1.12.2 -> 0 []
+xerial-sqlite-jdbc-control Maven:org.xerial:sqlite-jdbc@3.41.2.1 -> 1 ['GHSA-6phf-6h5g-97j2']
+control-electron-old npm:electron@10.0.0 -> 50 ['GHSA-2q4g-w47c-4674', 'GHSA-3c8v-cfp5-9885', 'GHSA-3p22-ghq8-v749', 'GHSA-4f78-qhmw-8j8m', 'GHSA-4p4r-m79c-wq3v', 'GHSA-532v-xpq5-8h95', 'GHSA-56pc-6jqp-xqj8', 'GHSA-5c9j-mhmv-5xgx', 'GHSA-5rqw-r77c-jp79', 'GHSA-6r2x-8pq8-9489', 'GHSA-77xc-hjv8-ww97', 'GHSA-7m48-wc93-9g85', 'GHSA-7x97-j373-85x5', 'GHSA-8337-3p73-46f4', 'GHSA-9899-m83m-qhpj']

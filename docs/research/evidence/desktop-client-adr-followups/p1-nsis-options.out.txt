@@ -1,0 +1,42 @@
+run at 2026-10-17T06:08:50Z
+path: packages/app-builder-lib/src/targets/win/nsis/nsisOptions.ts
+http=200
+12-   * The GUID for the installer. Used to identify the application for upgrade and uninstall operations.
+13-   * If not specified, a deterministic GUID is generated from the app ID (`appId`) — but this means
+14-   * changing your `appId` will break silent upgrades of existing installs.
+15-   *
+16-   * @see [GUID vs Application Name](https://www.electron.build/docs/nsis#guid-vs-application-name)
+17-   */
+18:  readonly guid?: string | null
+--
+32-
+33-export interface NsisOptions extends CommonNsisOptions, CommonWindowsInstallerConfiguration, TargetSpecificOptions {
+34-  /**
+35-   * Whether to create one-click installer or assisted.
+36-   * @default true
+37-   */
+38:  readonly oneClick?: boolean
+--
+56-   *
+57-   * If `oneClick` is `false` and `perMachine` is `true`: no install mode installer page, always install per-machine.
+58-   *
+59-   * If `oneClick` is `false` and `perMachine` is `false` (default): install mode installer page.
+60-   * @default false
+61-   */
+62:  readonly perMachine?: boolean
+--
+69-  readonly selectPerMachineByDefault?: boolean
+70-
+71-  /**
+72-   * *assisted installer only.* Allow requesting for elevation. If false, user will have to restart installer with elevated permissions.
+73-   * @default true
+74-   */
+75:  readonly allowElevation?: boolean
+--
+166-  readonly artifactName?: string | null
+167-
+168-  /**
+169-   * *one-click installer only.* Whether to delete app data on uninstall.
+170-   * @default false
+171-   */
+172:  readonly deleteAppDataOnUninstall?: boolean

@@ -1,0 +1,16 @@
+run at 2026-10-17T06:11Z
+release_notes/jdk-21.0.12.1%2B1 -> HTTP 200, 2032 bytes
+keys: ['id', 'release_name', 'release_notes', 'vendor', 'version_data']
+notes: 6
+release_notes/jdk-21.0.12.1%2B1.1 -> HTTP 404, 0 bytes
+not json: Expecting value: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/usr/lib/python3.14/zipfile/__init__.py", line 1487, in __init__
+    self.fp = io.open(file, filemode)
+              ~~~~~~~^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: ''
+legal entries: 243
+legal module folders: 70 ['java.base', 'java.compiler', 'java.datatransfer', 'java.desktop', 'java.instrument', 'java.logging', 'java.management', 'java.management.rmi', 'java.naming', 'java.net.http', 'java.prefs', 'java.rmi', 'java.scripting', 'java.se', 'java.security.jgss', 'java.security.sasl', 'java.smartcardio', 'java.sql', 'java.sql.rowset', 'java.transaction.xa', 'java.xml', 'java.xml.crypto', 'jdk.accessibility', 'jdk.attach', 'jdk.charsets', 'jdk.compiler', 'jdk.crypto.cryptoki', 'jdk.crypto.ec', 'jdk.crypto.mscapi', 'jdk.dynalink', 'jdk.editpad', 'jdk.hotspot.agent', 'jdk.httpserver', 'jdk.incubator.vector', 'jdk.internal.ed', 'jdk.internal.jvmstat', 'jdk.internal.le', 'jdk.internal.opt', 'jdk.internal.vm.ci', 'jdk.internal.vm.compiler', 'jdk.internal.vm.compiler.management', 'jdk.jartool', 'jdk.javadoc', 'jdk.jcmd', 'jdk.jconsole', 'jdk.jdeps', 'jdk.jdi', 'jdk.jdwp.agent', 'jdk.jfr', 'jdk.jlink', 'jdk.jpackage', 'jdk.jshell', 'jdk.jsobject', 'jdk.jstatd', 'jdk.localedata', 'jdk.management', 'jdk.management.agent', 'jdk.management.jfr', 'jdk.naming.dns', 'jdk.naming.rmi', 'jdk.net', 'jdk.nio.mapmode', 'jdk.random', 'jdk.sctp', 'jdk.security.auth', 'jdk.security.jgss', 'jdk.unsupported', 'jdk.unsupported.desktop', 'jdk.xml.dom', 'jdk.zipfs']
+top-level file: jdk-21.0.12.1+1/NOTICE 2400
+top-level file: jdk-21.0.12.1+1/release 1664

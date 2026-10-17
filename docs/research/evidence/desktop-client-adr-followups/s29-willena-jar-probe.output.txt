@@ -1,0 +1,60 @@
+run at 2026-10-17T06:09Z
+jar HTTP 200 size 16178627
+233a1c6a5178ed3b86a52186c78dcec008c63b50db50c6ee2a21d9a94a7bf51e  fetched/s29-jar-download/sqlite-jdbc-3.53.4.0.jar
+href="../"
+href="sqlite-jdbc-3.53.4.0-javadoc.jar"
+href="sqlite-jdbc-3.53.4.0-javadoc.jar.asc"
+href="sqlite-jdbc-3.53.4.0-javadoc.jar.md5"
+href="sqlite-jdbc-3.53.4.0-javadoc.jar.sha1"
+href="sqlite-jdbc-3.53.4.0-javadoc.jar.sha256"
+href="sqlite-jdbc-3.53.4.0-javadoc.jar.sha512"
+href="sqlite-jdbc-3.53.4.0-natives-all.jar"
+href="sqlite-jdbc-3.53.4.0-natives-all.jar.asc"
+href="sqlite-jdbc-3.53.4.0-natives-all.jar.md5"
+href="sqlite-jdbc-3.53.4.0-natives-all.jar.sha1"
+href="sqlite-jdbc-3.53.4.0-natives-all.jar.sha256"
+href="sqlite-jdbc-3.53.4.0-natives-all.jar.sha512"
+href="sqlite-jdbc-3.53.4.0-natives-android.jar"
+href="sqlite-jdbc-3.53.4.0-natives-android.jar.asc"
+href="sqlite-jdbc-3.53.4.0-natives-android.jar.md5"
+href="sqlite-jdbc-3.53.4.0-natives-android.jar.sha1"
+href="sqlite-jdbc-3.53.4.0-natives-android.jar.sha256"
+href="sqlite-jdbc-3.53.4.0-natives-android.jar.sha512"
+href="sqlite-jdbc-3.53.4.0-natives-freebsd.jar"
+entries: 228
+   META-INF/MANIFEST.MF 1768
+   org/sqlite/native/Windows/aarch64/sqlitejdbc.dll 1438720
+   org/sqlite/native/Windows/x86/sqlitejdbc.dll 1423872
+   org/sqlite/native/Windows/armv7/sqlitejdbc.dll 1147904
+   org/sqlite/native/Windows/x86_64/sqlitejdbc.dll 1374208
+   org/sqlite/native/readme.txt 223
+   org/sqlite/native/Linux/aarch64/libsqlitejdbc.so 1483360
+   org/sqlite/native/Linux/arm/libsqlitejdbc.so 1415056
+   org/sqlite/native/Linux/armv6/libsqlitejdbc.so 1431860
+   org/sqlite/native/Linux/ppc64/libsqlitejdbc.so 1675056
+   org/sqlite/native/Linux/x86/libsqlitejdbc.so 1670064
+   org/sqlite/native/Linux/riscv64/libsqlitejdbc.so 1064136
+   org/sqlite/native/Linux/armv7/libsqlitejdbc.so 1386384
+   org/sqlite/native/Linux/x86_64/libsqlitejdbc.so 1463800
+   org/sqlite/native/FreeBSD/aarch64/libsqlitejdbc.so 1570120
+   org/sqlite/native/FreeBSD/x86/libsqlitejdbc.so 1737900
+   org/sqlite/native/FreeBSD/x86_64/libsqlitejdbc.so 1681128
+   org/sqlite/native/Mac/aarch64/libsqlitejdbc.dylib 1439968
+   org/sqlite/native/Mac/x86_64/libsqlitejdbc.dylib 1673168
+   org/sqlite/native/Linux-Musl/aarch64/libsqlitejdbc.so 1445600
+   org/sqlite/native/Linux-Musl/x86/libsqlitejdbc.so 1624440
+   org/sqlite/native/Linux-Musl/x86_64/libsqlitejdbc.so 1532768
+   org/sqlite/core/NativeDB.class 10145
+   org/sqlite/NativeLibraryNotFoundException.class 404
+   META-INF/maven/io.github.willena/sqlite-jdbc/LICENSE.zentus 1312
+   META-INF/maven/io.github.willena/sqlite-jdbc/LICENSE 11560
+   META-INF/native-image/io.github.willena/sqlite-jdbc/native-image.properties 84
+   META-INF/versions/9/org/sqlite/nativeimage/SqliteJdbcFeature$SqliteJdbcFeatureException.class 1127
+   META-INF/versions/9/org/sqlite/nativeimage/SqliteJdbcFeature.class 8302
+   META-INF/versions/9/org/sqlite/nativeimage/SqliteJdbcFeature$1.class 245
+DLL org/sqlite/native/Windows/x86_64/sqlitejdbc.dll 1374208
+  pattern b'SQLite version 3\\.\\d+\\.\\d+[^\\x00]{0,20}' -> []
+  pattern b'3\\.5\\d\\.\\d+(?:\\.\\d+)?' -> ['3.53.4']
+  pattern b'SQLite3 Multiple Ciphers[^\\x00]{0,60}' -> ['SQLite3 Multiple Ciphers 2.4.0']
+  pattern b'sqlite3mc[^\\x00]{0,40}\\d+\\.\\d+\\.\\d+' -> []
+  pattern b'SQLITE_SOURCE_ID[^\\x00]{0,10}|\\d{4}-\\d\\d' -> ['2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc']

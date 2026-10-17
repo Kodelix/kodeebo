@@ -1,0 +1,130 @@
+run at 2026-10-17T06:10Z
+--- META-INF/maven/io.github.willena/sqlite-jdbc/LICENSE.zentus 1312 bytes
+Copyright (c) 2006, David Crawshaw.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+
+
+--- org/sqlite/native/readme.txt 223 bytes
+Natives libraries must be compiled and added manually to this folder. One folder per platform and one subdir per architecture
+A zip file containing prebuilt binaries for a number of platforms is available with each release.
+NSIS candidate https://nsis.sourceforge.io/License -> HTTP 200, 30699 bytes
+NSIS candidate https://sourceforge.net/p/nsis/code/HEAD/tree/NSIS/trunk/COPYING?format=raw -> HTTP 200, 15488 bytes
+NSIS candidate https://nsis.sourceforge.io/Docs/AppendixI.html -> HTTP 200, 17639 bytes
+--- head of fetched/s29b/nsis-https___nsis_sourceforge_io_Docs_AppendixI_html_.txt
+
+
+License
+
+body{background-image:url(unreleased.png?cache=1791834261)}
+
+
+Previous | Contents | Next
+
+Appendix I: License
+
+Copyright
+Applicable licenses
+zlib/libpng license
+bzip2 license
+Common Public License version 1.0
+Special exception for LZMA compression module
+
+
+Appendix I: License
+I.1 Copyright
+
+Copyright (C) 1999-2026 Contributors
+
+More detailed copyright information can be found in the individual source code files.
+I.2 Applicable licenses
+
+All NSIS source code, plug-ins, documentation, examples, header files and graphics, with the exception of the compression modules and where otherwise noted, are licensed under the zlib/libpng license.The zlib compression module for NSIS is licensed under the zlib/libpng license.The bzip2 compression module for NSIS is licensed under the bzip2 license.The lzma compression module for NSIS is licensed under the Common Public License version 1.0.
+I.3 zlib/libpng license
+
+This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.This notice may not be removed or altered from any source distribution.
+I.4 bzip2 license
+
+Redistribution and use in
+--- head of fetched/s29b/nsis-https___nsis_sourceforge_io_License_.txt
+
+License - NSIS
+document.documentElement.className="client-js";RLCONF={"wgBreakFrames":false,"wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgRequestId":"atMRONoANV@wXBDQCAbJ1wAAACE","wgCSPNonce":false,"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"License","wgTitle":"License","wgCurRevisionId":23142,"wgRevisionId":23142,"wgArticleId":2371,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":[],"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgRelevantPageName":"License","wgRelevantArticleId":2371,"wgIsProbablyEditable":false,"wgRelevantPageIsProbablyEditable":false,"wgRestrictionEdit":["sysop"],"wgRestrictionMove":["sysop"]};RLSTATE={"site.styles":"ready","user.styles":"ready","user":"ready","user.options":"loading","skins.monobook.styles":"ready"};
+RLPAGEMODULES=["site","mediawiki.page.ready","mediawiki.toc","skins.monobook.scripts"];
+(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@12s5i",function($,jQuery,require,module){mw.user.tokens.set({"patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});});});
+	
+		
+			
+			
+			
+			
+			License
+			
+				From NSIS Wiki
+				
+				
+				Jump to navigationJump to search
+				
+				Contents
+1 Copyright
+2 Applicable licenses
+3 zlib/libpng license
+4 bzip2 license
+5 Common Public License version 1.0
+6 Special exception for LZMA compression module
+Copyright
+Copyright (C) 1999-2026 Contributors
+More detailed copyright information can be found in the individual source code files.
+Applicable licenses
+All NSIS source code,
+--- head of fetched/s29b/nsis-https___sourceforge_net_p_nsis_code_HEAD_tree_NSIS_trunk_COPYING_forma.txt
+COPYRIGHT
+---------
+Copyright (C) 1999-2026 Contributors
+More detailed copyright information can be found in the individual source code files.
+APPLICABLE LICENSES
+-------------------
+* All NSIS source code, plug-ins, documentation, examples, header files and graphics, with the exception of the compression modules and where otherwise noted, are licensed under the zlib/libpng license.
+* The zlib compression module for NSIS is licensed under the zlib/libpng license.
+* The bzip2 compression module for NSIS is licensed under the bzip2 license.
+* The LZMA compression module for NSIS is licensed under the Common Public License version 1.0.
+ZLIB/LIBPNG LICENSE
+-------------------
+This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+ 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+ 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+ 3. This notice may not be removed or altered from any source distribution.
+BZIP2 LICENSE
+-------------
+This program, "bzip2" and associated library "libbzip2", are copyright (C) 1996-2000 Julian R Seward. All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ 1. Redistribution
+openjdk 2026-08-18 -> HTTP 200
+in this release. The affected versions are 26.0.2, 25.0.4, 21.0.12,
+available for reference. OpenJDK Risk matrix Affects ... CVE ID Component CVSSv3.1 Vector 8 11 17 21 25 26 CVE-2026-70906 client-libs/ 2d 7.5 NLNNUNNH &#8226; &#8226; CVE-2026-61308 core-libs/ java.net 6.8 NHNNCHNN &#8226; &#8226; &#8226; &#8226; &#8226; &#8226; CVE-2026-70907 security-libs/ javax.net.ssl 5.3 NLNNUNNL &#8226; &#8226; &#8226; &#8226; &#8226; &#8226; CVE-2026-60589 security-libs/ javax.xml.crypto 3.7 NHNNULNN &#8226; &#8226; &#8226; &#8226; &#8226; &#8226; OpenJFX Risk matrix Affects ... CVE ID Component CVSSv3.1 Vector 17 21 25 26 None Acknowledgements We acknowledge the following parties for their reports and
+Updates , JDK 21

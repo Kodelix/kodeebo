@@ -1,0 +1,11 @@
+3.53.4.0 | 2026-07-26T21:29:15Z
+**Full Changelog**: https://github.com/Willena/sqlite-jdbc-crypt/compare/3.53.3.0...3.53.4.0
+
+**Note**: This version adds the following compile time options by default
+
+- `SQLITE_ENABLE_MATH_FUNCTIONS`
+- `SQLITE_LIKE_DOESNT_MATCH_BLOBS`
+- `SQLITE_DEFAULT_FOREIGN_KEYS`
+- `SQLITE_ENABLE_SNAPSHOT`
+- `SQLITE3MC_VLE`
+

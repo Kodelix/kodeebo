@@ -1,0 +1,28 @@
+run at 2026-10-17T06:08:43Z
+packages/app-builder-lib/templates/nsis/README.md
+packages/electron-forge-maker-nsis-web/CHANGELOG.md
+packages/electron-forge-maker-nsis-web/readme.md
+packages/electron-forge-maker-nsis/CHANGELOG.md
+packages/electron-forge-maker-nsis/readme.md
+website/docs/nsis.md
+website/docs/nsis.md http=200
+50:When you provide a custom `script`, electron-builder no longer generates (and signs) the uninstaller for you and skips installer size verification. Prefer `include` unless you really need to replace the whole script.
+53:For `nsis-web`, a custom `script` that copies installSection.nsh should insert `!insertmacro prepareWebPackage` before `uninstallOldVersion`; otherwise the package is prepared in `installApplicationFiles`, after the installed version is removed.
+62:2. Define wanted macro to customise: `customHeader`, `preInit`, `customInit`, `customUnInit`, `customInstall`, `customUnInstall`, `customRemoveFiles`, `customInstallMode`, `customWelcomePage`, `customUnWelcomePage`, `customUnInstallSection`.
+95:  !define MUI_WELCOMEPAGE_TITLE "custom title for uninstaller welcome page"
+96:  !define MUI_WELCOMEPAGE_TEXT "custom text for uninstaller welcome page $\r$\n more"
+100:!macro customUnInstallSection
+102:    ; You can add some uninstall section as component page
+103:    ; If defined, then always run after `customUnInstall`
+116::::note[Uninstaller lifecycle — `customUnInstall` changes take effect one version later]
+117:The uninstaller that runs during an uninstall **or during an update** is the `Uninstall <app>.exe` that was written to disk by the **previously installed** version — not the one embedded in the installer that is currently running. So when you add or change `customUnInstall` (or anything else affecting the uninstaller), the change only becomes active after the _next_ install: version N ships th
+120::::warning[Uninstall registry key — do not hard-code `...\Uninstall\<appId>`]
+121:electron-builder registers the uninstall entry under `Software\Microsoft\Windows\CurrentVersion\Uninstall\${UNINSTALL_APP_KEY}`, where `UNINSTALL_APP_KEY` is the application **GUID** (with each `\` replaced by " - ", i.e. space, hyphen, space) — _not_ the `appId`. In a custom script use the provided defines instead of building the path yourself: `${UNINSTALL_REGISTRY_KEY}` (the full key, see `
+133::::tip[Is there a way to call just when the app is installed (or uninstalled) manually and not on update?]
+146:Windows requires to use registry keys (e.g. INSTALL/UNINSTALL info). Squirrel.Windows simply uses application name as key.
+178:  WriteRegExpandStr HKLM "${INSTALL_REGISTRY_KEY}" InstallLocation "C:\MyApp"
+179:  WriteRegExpandStr HKCU "${INSTALL_REGISTRY_KEY}" InstallLocation "C:\MyApp"
+181:  WriteRegExpandStr HKLM "${INSTALL_REGISTRY_KEY}" InstallLocation "C:\MyApp"
+182:  WriteRegExpandStr HKCU "${INSTALL_REGISTRY_KEY}" InstallLocation "C:\MyApp"
+197:    "oneClick": false
+206:  oneClick: false

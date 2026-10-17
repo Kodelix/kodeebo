@@ -1,0 +1,51 @@
+run at 2026-10-17T06:06Z
+Willena/sqlite-jdbc-crypt | file: LICENSE | spdx: Apache-2.0 | https://github.com/Willena/sqlite-jdbc-crypt/blob/master/LICENSE | bytes 11560
+utelle/SQLite3MultipleCiphers@v2.6.1 | file: LICENSE | spdx: MIT | https://github.com/utelle/SQLite3MultipleCiphers/blob/v2.6.1/LICENSE | bytes 1074
+java-native-access/jna@5.19.1 | file: LICENSE | spdx: NOASSERTION | https://github.com/java-native-access/jna/blob/5.19.1/LICENSE | bytes 797
+JetBrains/skiko | file: LICENSE | spdx: Apache-2.0 | https://github.com/JetBrains/skiko/blob/master/LICENSE | bytes 11357
+JetBrains/compose-multiplatform | file: LICENSE.txt | spdx: Apache-2.0 | https://github.com/JetBrains/compose-multiplatform/blob/master/LICENSE.txt | bytes 11394
+JetBrains/kotlin: FAILED gh: Not Found (HTTP 404)
+Kotlin/kotlinx.coroutines | file: LICENSE.txt | spdx: Apache-2.0 | https://github.com/Kotlin/kotlinx.coroutines/blob/master/LICENSE.txt | bytes 11398
+openjdk/jdk21u | file: LICENSE | spdx: GPL-2.0 | https://github.com/openjdk/jdk21u/blob/master/LICENSE | bytes 19274
+adoptium/temurin-build | file: LICENSE | spdx: Apache-2.0 | https://github.com/adoptium/temurin-build/blob/master/LICENSE | bytes 11360
+wixtoolset/wix3 | file: LICENSE.TXT | spdx: NOASSERTION | https://github.com/wixtoolset/wix3/blob/master/LICENSE.TXT | bytes 3341
+electron-userland/electron-builder | file: LICENSE | spdx: MIT | https://github.com/electron-userland/electron-builder/blob/master/LICENSE | bytes 1084
+electron/electron@v44.8.0 | file: LICENSE | spdx: MIT | https://github.com/electron/electron/blob/v44.8.0/LICENSE | bytes 1096
+nodejs/node@v24.22.0 | file: LICENSE | spdx: NOASSERTION | https://github.com/nodejs/node/blob/v24.22.0/LICENSE | bytes 157609
+m4heshd/better-sqlite3-multiple-ciphers | file: LICENSE | spdx: MIT | https://github.com/m4heshd/better-sqlite3-multiple-ciphers/blob/master/LICENSE | bytes 1165
+Koromix/koffi | file: LICENSE.txt | spdx: MIT | https://github.com/Koromix/koffi/blob/master/LICENSE.txt | bytes 1113
+== repo root listings (licence-related file names)
+-- Willena/sqlite-jdbc-crypt
+LICENSE
+LICENSE.zentus
+NOTICE
+README.adoc
+README_BUILD.md
+-- utelle/SQLite3MultipleCiphers
+LICENSE
+LICENSE.spdx
+readme.md
+-- java-native-access/jna
+LICENSE
+README.md
+-- JetBrains/skiko
+LICENSE
+NOTICE
+README.md
+-- openjdk/jdk21u
+ADDITIONAL_LICENSE_INFO
+ASSEMBLY_EXCEPTION
+LICENSE
+README.md
+-- wixtoolset/wix3
+LICENSE.TXT
+Readme.md
+== sqlite3mc / sqlite-jdbc-crypt READMEs: licence sections
+-- Willena/sqlite-jdbc-crypt README licence lines
+-- utelle/SQLite3MultipleCiphers README licence lines
+41-
+42:[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport) supports this project (and directly dependent projects like [wxSQLite3](https://github.com/utelle/wxsqlite3), [apsw-sqlite3mc](https://github.com/utelle/apsw-sqlite3mc), and [SQLite3MultipleCiphers-NuGet](https://github.com/utelle/SQLite3MultipleCiphers-NuGet)) by providing free [CLion](https://www.jetbrains.com/clion/) licenses. This helps to better maintain the project for different platforms.
+43-
+44-## Support further development
+45-
+46-[![Donate for SQLite3 Multiple Ciphers via PayPal](https://www.paypalobjects.com/de_DE/i/btn/x-click-but04.gif)](https://www.paypal.com/donate/?hosted_button_id=3JC9PMMH8X7UN) If you find **SQLite3 Multiple Ciphers** useful and would like to support the further development of this project, you may make a **donation** by clicking on the button on the left.

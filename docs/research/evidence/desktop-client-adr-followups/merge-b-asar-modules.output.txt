@@ -1,0 +1,41 @@
+# asar listing of B's built app (spike round 1 build tree, electron-builder 26.17.0), 2026-10-17T06:15:41Z
+# command: npx --no-install @electron/asar list dist/win-unpacked/resources/app.asar | per-module counts
+## modules under node_modules in app.asar (entries per module)
+    147 koffi
+     74 better-sqlite3-multiple-ciphers
+     19 node-addon-api
+      1 
+## top-level entries
+index.html
+main.js
+node_modules
+package.json
+preload.js
+receipt.bin
+## asar-unpacked .node files
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/darwin-arm64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/darwin-x64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/linux-arm64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/linux-x64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/linuxmusl-arm64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/linuxmusl-x64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/win32-arm64.node
+node_modules/better-sqlite3-multiple-ciphers/prebuilds/win32-x64.node
+node_modules/koffi/build/koffi/openbsd_ia32/koffi.node
+node_modules/koffi/build/koffi/openbsd_x64/koffi.node
+node_modules/koffi/build/koffi/win32_arm64/koffi.node
+node_modules/koffi/build/koffi/win32_ia32/koffi.node
+node_modules/koffi/build/koffi/win32_x64/koffi.node
+node_modules/koffi/build/koffi/darwin_arm64/koffi.node
+node_modules/koffi/build/koffi/darwin_x64/koffi.node
+node_modules/koffi/build/koffi/freebsd_arm64/koffi.node
+node_modules/koffi/build/koffi/freebsd_ia32/koffi.node
+node_modules/koffi/build/koffi/freebsd_x64/koffi.node
+node_modules/koffi/build/koffi/linux_arm64/koffi.node
+node_modules/koffi/build/koffi/linux_armhf/koffi.node
+node_modules/koffi/build/koffi/linux_ia32/koffi.node
+node_modules/koffi/build/koffi/linux_loong64/koffi.node
+node_modules/koffi/build/koffi/linux_riscv64d/koffi.node
+node_modules/koffi/build/koffi/linux_x64/koffi.node
+node_modules/koffi/build/koffi/musl_arm64/koffi.node
+node_modules/koffi/build/koffi/musl_x64/koffi.node

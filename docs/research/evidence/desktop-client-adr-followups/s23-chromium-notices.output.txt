@@ -1,0 +1,232 @@
+products: 780
+
+== LGPL: 42 entries
+  - Braille Translation Library
+  - Checker Qual
+  - common
+  - core-common
+  - DirectX-Shader-Compiler
+  - feature-delivery
+  - ffmpeg
+  - genai-common
+  - genai-prompt
+  - glibc
+  - googleid
+  - gtk
+  - hunspell dictionaries
+  - hyphenation-patterns
+  - ISimpleDOM COM interfaces for accessibility
+  - libbrlapi
+  - libsecret
+  - libusbx
+  - Mozilla Personal Security Manager
+  - Mozilla Windows Cert code
+  - plasma-wayland-protocols
+  - play-services-auth
+  - play-services-auth-api-phone
+  - play-services-auth-base
+  - play-services-auth-blockstore
+  - play-services-base
+  - play-services-basement
+  - play-services-cast
+  - play-services-cast-framework
+  - play-services-cloud-messaging
+  - play-services-fido
+  - play-services-identity-credentials
+  - play-services-instantapps
+  - play-services-location
+  - play-services-tasks
+  - play-services-time
+  - review
+  - ScreenAI Library
+  - Speech Dispatcher
+  - url_parse
+  - v4l-utils
+  - WebKit
+
+== GPL: 60 entries
+  - Android NDK
+  - AXE-CORE Accessibility Audit
+  - Checker Qual
+  - common
+  - core-common
+  - DirectX-Shader-Compiler
+  - Eigen
+  - feature-delivery
+  - ffmpeg
+  - genai-common
+  - genai-prompt
+  - glibc
+  - googleid
+  - grpc
+  - gtk
+  - hunspell dictionaries
+  - hyphenation-patterns
+  - icu
+  - ISimpleDOM COM interfaces for accessibility
+  - JSZip
+  - libbrlapi
+  - libsecret
+  - libusbx
+  - Mozilla Personal Security Manager
+  - Mozilla Windows Cert code
+  - Netscape Portable Runtime (NSPR)
+  - Node.js
+  - plasma-wayland-protocols
+  - play-services-auth
+  - play-services-auth-api-phone
+  - play-services-auth-base
+  - play-services-auth-blockstore
+  - play-services-base
+  - play-services-basement
+  - play-services-cast
+  - play-services-cast-framework
+  - play-services-clearcut
+  - play-services-cloud-messaging
+  - play-services-fido
+  - play-services-gcm
+  - play-services-identity-credentials
+  - play-services-instantapps
+  - play-services-location
+  - play-services-phenotype
+  - play-services-tasks
+  - play-services-time
+  - review
+  - ScreenAI Library
+  - Speech Dispatcher
+  - symphonia
+  - symphonia-bundle-flac
+  - symphonia-bundle-mp3
+  - symphonia-codec-pcm
+  - symphonia-codec-vorbis
+  - symphonia-common
+  - symphonia-core
+  - symphonia-metadata
+  - url_parse
+  - v4l-utils
+  - WebKit
+
+== AGPL: 18 entries
+  - Android NDK
+  - AXE-CORE Accessibility Audit
+  - Eigen
+  - grpc
+  - hunspell dictionaries
+  - hyphenation-patterns
+  - JSZip
+  - Mozilla Windows Cert code
+  - Netscape Portable Runtime (NSPR)
+  - ScreenAI Library
+  - symphonia
+  - symphonia-bundle-flac
+  - symphonia-bundle-mp3
+  - symphonia-codec-pcm
+  - symphonia-codec-vorbis
+  - symphonia-common
+  - symphonia-core
+  - symphonia-metadata
+
+== MPL: 33 entries
+  - Android NDK
+  - AXE-CORE Accessibility Audit
+  - common
+  - core-common
+  - Eigen
+  - feature-delivery
+  - googleid
+  - grpc
+  - hunspell
+  - hunspell dictionaries
+  - hyphenation-patterns
+  - ISimpleDOM COM interfaces for accessibility
+  - Mozilla Personal Security Manager
+  - Mozilla Windows Cert code
+  - Netscape Portable Runtime (NSPR)
+  - play-services-auth
+  - play-services-auth-base
+  - play-services-auth-blockstore
+  - play-services-cast
+  - play-services-cast-framework
+  - play-services-instantapps
+  - play-services-time
+  - review
+  - ScreenAI Library
+  - symphonia
+  - symphonia-bundle-flac
+  - symphonia-bundle-mp3
+  - symphonia-codec-pcm
+  - symphonia-codec-vorbis
+  - symphonia-common
+  - symphonia-core
+  - symphonia-metadata
+  - url_parse
+
+== EPL/CDDL: 22 entries
+  - common
+  - core-common
+  - feature-delivery
+  - genai-common
+  - genai-prompt
+  - googleid
+  - play-services-auth
+  - play-services-auth-api-phone
+  - play-services-auth-base
+  - play-services-auth-blockstore
+  - play-services-base
+  - play-services-basement
+  - play-services-cast
+  - play-services-cast-framework
+  - play-services-cloud-messaging
+  - play-services-fido
+  - play-services-identity-credentials
+  - play-services-instantapps
+  - play-services-location
+  - play-services-tasks
+  - play-services-time
+  - review
+
+== SSPL/BUSL/proprietary: 0 entries
+
+== LGPL entry excerpts
+* Braille Translation Library :: w.viewplus.com and JJB Software, Inc. www.jjb-software.com liblouis is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. liblouis is distributed in t
+* Checker Qual :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* common :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* core-common :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* DirectX-Shader-Compiler :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Lesser General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Licen
+* feature-delivery :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* ffmpeg ::  homepage # License Most files in FFmpeg are under the GNU Lesser General Public License version 2.1 or later (LGPL v2.1+). Read the file `COPYING.LGPLv2.1` for details. Some other files have MIT/X11/BSD-style licenses. In combination the LGPL v2.1+ applies to FFmpeg. Some optional parts of FFmpeg are licensed under the GNU Gene
+* genai-common :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* genai-prompt :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* glibc ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first releas
+* googleid :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* gtk ::  homepage GNU LIBRARY GENERAL PUBLIC LICENSE Version 2, June 1991 Copyright (C) 1991 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first released version 
+* hunspell dictionaries :: CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA Everyone 
+* hyphenation-patterns :: ernatively, the contents of this file may be used under the terms of % either the GNU General Public License Version 2 or later (the "GPL"), or % the GNU Lesser General Public License Version 2.1 or later (the "LGPL"), % in which case the provisions of the GPL or the LGPL are applicable instead % of those above. If you wish to a
+* ISimpleDOM COM interfaces for accessibility :: ernatively, the contents of this file may be used under the terms of * either the GNU General Public License Version 2 or later (the "GPL"), or * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"), * in which case the provisions of the GPL or the LGPL are applicable instead * of those above. If you wish to a
+* libbrlapi ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first released ve
+* libsecret ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first releas
+* libusbx ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first releas
+* Mozilla Personal Security Manager :: ernatively, the contents of this file may be used under the terms of * either the GNU General Public License Version 2 or later (the "GPL"), or * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"), * in which case the provisions of the GPL or the LGPL are applicable instead * of those above. If you wish to a
+* Mozilla Windows Cert code :: reasons. Note on LGPL Compatibility -------------------------- The above also applies to combining MPLed code in a single library with code under the GNU Lesser General Public License (LGPL) version 2.1, or any later version of that license. If the LGPLed code and the MPLed code are not in the same library, then the copyleft cov
+* plasma-wayland-protocols ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first released v
+* play-services-auth :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-auth-api-phone :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-auth-base :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-auth-blockstore :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-base :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-basement :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-cast :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-cast-framework :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-cloud-messaging :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-fido :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-identity-credentials :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-instantapps :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-location :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-tasks :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* play-services-time :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* review :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* ScreenAI Library :: ware Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Library General Public License instead.) You can apply it to your programs, too. When we speak of free software, we are referring to freedom, not price. Our General Public Lice
+* Speech Dispatcher ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first releas
+* url_parse ::  Alternatively, the contents of this file may be used under the terms of either the GNU General Public License Version 2 or later (the "GPL"), or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"), in which case the provisions of the GPL or the LGPL are applicable instead of those above. If you wish to allow
+* v4l-utils ::  homepage GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999 Copyright (C) 1991, 1999 Free Software Foundation, Inc. 51 Franklin Street, Suite 500, Boston, MA 02110-1335 USA Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed. [This is the first released
+* WebKit :: Y, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. GNU LIBRARY GENERAL PUBLIC LICENSE Version 2, June 1991 Copyright (C) 1991 Free Software Foundation, Inc. 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA Everyone is per

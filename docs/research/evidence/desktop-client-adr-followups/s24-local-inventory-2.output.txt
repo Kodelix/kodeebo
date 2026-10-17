@@ -1,0 +1,68 @@
+run at 2026-10-17T06:05Z
+== electron-dist top files (name size)
+ 
+719654 chrome_100_percent.pak
+1269017 chrome_200_percent.pak
+4741488 d3dcompiler_47.dll
+25745408 dxcompiler.dll
+1509760 dxil.dll
+247033344 electron.exe
+3113472 ffmpeg.dll
+10875024 icudtl.dat
+1096 LICENSE
+20477229 LICENSES.chromium.html
+706 locales
+32 resources
+12436085 resources.pak
+369024 snapshot_blob.bin
+742456 v8_context_snapshot.bin
+6 version
+5520384 vk_swiftshader.dll
+106 vk_swiftshader_icd.json
+939520 vulkan-1.dll
+== Electron LICENSE: key clause present?
+13:included in all copies or substantial portions of the Software.
+15:THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+== node_modules/better-sqlite3-multiple-ciphers/deps (SQLite3MC bundled?)
+common.gypi
+copy.js
+defines.gypi
+sqlite3
+sqlite3.gyp
+test_extension.c
+update-sqlite3mc.sh
+== native files in production tree: .node/.dll
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/darwin-arm64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/darwin-x64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/linux-arm64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/linux-x64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/linuxmusl-arm64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/linuxmusl-x64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/win32-arm64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/better-sqlite3-multiple-ciphers/prebuilds/win32-x64.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/win32_arm64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/win32_ia32/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/win32_x64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/darwin_arm64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/darwin_x64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/freebsd_arm64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/freebsd_ia32/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/freebsd_x64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/linux_arm64/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/linux_armhf/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/linux_ia32/koffi.node
+/home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/node_modules/koffi/build/koffi/linux_loong64/koffi.node
+== a-compose.tar listing (jars, runtime, legal)
+== artifacts dir
+KodeeboSpikeA-1.0.0.msi
+KodeeboSpikeB-Setup-1.0.0.exe
+== FFmpeg and other excerpts from chromium notices
+* Braille Translation Library | homepage: https://github.com/liblouis/liblouis | len 1002 |  homepage (Copied from src/liblouis/liblouis.h.in) /* liblouis Braille Translation and Back-Translation Library Based on the Linux screenreader BRLTTY, copyright (C) 1999-2006 by The BRLTTY Team Copyright (C) 2004, 2005, 2006, 2009 ViewPlus Technologies, Inc. www.viewplus.com and JJB Software, Inc. www.jjb-software.com liblouis is free software: you can redistribute it and/or modify it under the terms of the GNU Less
+* DirectX-Shader-Compiler | homepage: https://github.com/microsoft/DirectX-Shader-Compiler | len 28682 |  homepage ============================================================================== LLVM Release License ============================================================================== University of Illinois/NCSA Open Source License Copyright (c) 2003-2015 University of Illinois at Urbana-Champaign. All rights reserved. Developed by: LLVM Team University of Illinois at Urbana-Champaign http://llvm.org Permission 
+* ffmpeg | homepage: https://git.ffmpeg.org/ffmpeg.git | len 46921 |  homepage # License Most files in FFmpeg are under the GNU Lesser General Public License version 2.1 or later (LGPL v2.1+). Read the file `COPYING.LGPLv2.1` for details. Some other files have MIT/X11/BSD-style licenses. In combination the LGPL v2.1+ applies to FFmpeg. Some optional parts of FFmpeg are licensed under the GNU General Public License version 2 or later (GPL v2+). See the file `COPYING.GPLv2` for details.
+* hunspell | homepage: http://hunspell.sourceforge.net/ | len 23309 |  homepage MOZILLA PUBLIC LICENSE Version 1.1 --------------- 1. Definitions. 1.0.1. "Commercial Use" means distribution or otherwise making the Covered Code available to a third party. 1.1. "Contributor" means each entity that creates or contributes to the creation of Modifications. 1.2. "Contributor Version" means the combination of the Original Code, prior Modifications used by a Contributor, and the Modifications 
+* icu | homepage: https://github.com/unicode-org/icu | len 26895 |  homepage UNICODE LICENSE V3 COPYRIGHT AND PERMISSION NOTICE Copyright © 2016-2025 Unicode, Inc. NOTICE TO USER: Carefully read the following legal agreement. BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, AND/OR SOFTWARE, YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE THE
+* ISimpleDOM COM interfaces for accessibility | homepage: https://github.com/mozilla/gecko-dev | len 1675 |  homepage /* ***** BEGIN LICENSE BLOCK ***** * Version: MPL 1.1/GPL 2.0/LGPL 2.1 * * The contents of this file are subject to the Mozilla Public License Version * 1.1 (the "License"); you may not use this file except in compliance with * the License. You may obtain a copy of the License at * http://www.mozilla.org/MPL/ * * Software distributed under the License is distributed on an "AS IS" basis, * WITHOUT WARRANTY O
+* Mozilla Windows Cert code | homepage: https://searchfox.org/mozilla-central/rev/0fec57c05d3996cc00c55a66f20dd5793a9bfb5d/security/manager/ssl/EnterpriseRoots.cpp | len 16965 |  homepage Mozilla Windows Cert code is available under the Mozilla Public License, version 2, a copy of which is below. Note on GPL Compatibility ------------------------- The MPL 2, section 3.3, permits you to combine NSS with code under the GNU General Public License (GPL) version 2, or any later version of that license, to make a Larger Work, and distribute the result under the GPL. The only condition is that you 
+* Node.js | homepage: https://github.com/nodejs/node | len 140910 |  homepage Node.js is licensed for use as follows: """ Copyright Node.js contributors. All rights reserved. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+* WebKit | homepage: https://webkit.org/ | len 50299 |  homepage (WebKit doesn't distribute an explicit license. This LICENSE is derived from license text in the source.) Copyright (c) 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Alexander Kellett, Alexey Proskuryakov, Alex Mathews, Allan Sandfeld Jensen, Alp Toker, Anders Carlsson, Andrew Wellington, Antti Koivisto, Apple Inc., Arthur Langereis, Baron Schwartz, Bjoern Graf, Brent Fulgham, Cameron Zwa

@@ -1,0 +1,86 @@
+run at 2026-10-17T06:05Z
+== cache top levels
+a-cold-sequence.txt
+a-compose.tar
+a-gui.txt
+artifacts
+a-store-after-reboot.db
+baseline-pre-snapshot.txt
+b-cold-kill-sequence.txt
+bench-notadb.png
+bench-notadb.ppm
+b-gui.txt
+b-io-sequence2.txt
+b-io-sequence.txt
+b-start-mem.txt
+build-a.log
+build-a-run1.txt
+build-a-run2.txt
+build-b
+dl
+eb-cache
+fetch.log
+g0-diskspd-blocksize.txt
+g0-diskspd-throttled.txt
+g0-diskspd-unthrottled.txt
+g1-a-after-install.png
+g1-a-after-install.ppm
+g1-a-smoke.png
+g1-a-smoke.ppm
+g1-a-smoke.txt
+g1-b-after-install.png
+g1-b-after-install.ppm
+== build-b top
+dist
+electron-dist
+index.html
+main.js
+node_modules
+package.json
+package-lock.json
+preload.js
+receipt.bin
+== node_modules count: 223
+== B: licence field of production deps (better-sqlite3-multiple-ciphers, koffi, node-addon-api, bindings, file-uri-to-path, prebuild-install...)
+better-sqlite3-multiple-ciphers 13.0.3 license= MIT None repo= {'type': 'git', 'url': 'git://github.com/m4heshd/better-sqlite3-multiple-ciphers.git'}
+koffi 2.16.3 license= MIT None repo= {'type': 'git', 'url': 'https://github.com/Koromix/koffi'}
+node-addon-api 8.9.2 license= MIT None repo= {'type': 'git', 'url': 'git://github.com/nodejs/node-addon-api.git'}
+bindings: not present
+file-uri-to-path: not present
+prebuild-install: not present
+== B: electron-dist version file and licence heads
+44.8.0
+Copyright (c) Electron contributors
+Copyright (c) 2013-2020 GitHub Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Softwar
+(LICENSES.chromium.html size: 20477229 bytes, <h3> entries: 0)
+copied better-sqlite3-multiple-ciphers/LICENSE (1123 bytes)
+copied koffi/LICENSE.txt (1117 bytes)
+copied node-addon-api/LICENSE.md (1150 bytes)
+copied electron-builder/LICENSE (1084 bytes)
+copied builder-util-runtime/LICENSE (1084 bytes)
+== B: Chromium notices: licence names counted in LICENSES.chromium.html (first 60 distinct <h3> titles)
+== B: GPL/LGPL/MPL/AGPL mentions in LICENSES.chromium.html
+829
+     49 GNU LESSER GENERAL PUBLIC LICENSE
+     35 GNU General Public License along
+     30 GNU GENERAL PUBLIC LICENSE
+     29 GNU General Public License
+     26 GNU General Public License, version 2,
+     26 GNU General Public License has appeared, then you can specify
+     26 GNU General Public License applies to all
+     24 GNU General Public License.  This license, the GNU Lesser
+     23 GNU Library General Public License instead.) You can apply it to
+     23 GNU General Public License is intended to
+     23 GNU General Public License for
+     23 GNU General Public License cover the whole combination.
+     23 GNU General Public License as published by the Free
+     18 GNU General Public License as published by
+     18 GNU General Public License.
+== A: any JDK/legal/gradle caches
+== A: jars in Gradle cache for shipped components (names only)

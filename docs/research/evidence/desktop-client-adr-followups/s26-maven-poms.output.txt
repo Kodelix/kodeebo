@@ -1,0 +1,26 @@
+run at 2026-10-17T06:07Z
+kotlin-stdlib-2.4.21 HTTP 200 <- https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.4.21/kotlin-stdlib-2.4.21.pom
+coroutines-core-jvm-1.9.0 HTTP 200 <- https://repo1.maven.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.9.0/kotlinx-coroutines-core-jvm-1.9.0.pom
+willena-sqlite-jdbc-3.53.4.0 HTTP 200 <- https://repo1.maven.org/maven2/io/github/willena/sqlite-jdbc/3.53.4.0/sqlite-jdbc-3.53.4.0.pom
+jna-5.19.1 HTTP 200 <- https://repo1.maven.org/maven2/net/java/dev/jna/jna/5.19.1/jna-5.19.1.pom
+cmp-desktop-jvm-windows-x64-1.12.2 HTTP 200 <- https://repo1.maven.org/maven2/org/jetbrains/compose/desktop/desktop-jvm-windows-x64/1.12.2/desktop-jvm-windows-x64-1.12.2.pom
+cmp-desktop-jvm-1.12.2 HTTP 200 <- https://repo1.maven.org/maven2/org/jetbrains/compose/desktop/desktop-jvm/1.12.2/desktop-jvm-1.12.2.pom
+cmp-ui-desktop-1.12.2 HTTP 200 <- https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-desktop/1.12.2/ui-desktop-1.12.2.pom
+cmp-ui-graphics-desktop-1.12.2 HTTP 200 <- https://repo1.maven.org/maven2/org/jetbrains/compose/ui/ui-graphics-desktop/1.12.2/ui-graphics-desktop-1.12.2.pom
+cmp-desktop-jvm-1.12.2.pom | licences: [('The Apache Software License, Version 2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+cmp-desktop-jvm-windows-x64-1.12.2.pom | licences: [('The Apache Software License, Version 2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+    dep: org.jetbrains.skiko skiko-awt-runtime-windows-x64 0.150.2
+cmp-ui-desktop-1.12.2.pom | licences: [('The Apache Software License, Version 2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+    dep: org.jetbrains.skiko skiko-awt 0.150.2
+cmp-ui-graphics-desktop-1.12.2.pom | licences: [('The Apache Software License, Version 2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+    dep: org.jetbrains.skiko skiko-awt 0.150.2
+coroutines-core-jvm-1.9.0.pom | licences: [('The Apache Software License, Version 2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+jna-5.19.1.pom | licences: [('LGPL-2.1-or-later', 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1'), ('Apache-2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+kotlin-stdlib-2.4.21.pom | licences: [('Apache-2.0', 'http://www.apache.org/licenses/LICENSE-2.0.txt')]
+willena-sqlite-jdbc-3.53.4.0.pom | licences: [('The Apache Software License, Version 2.0', 'https://www.apache.org/licenses/LICENSE-2.0.txt')]
+skiko deps seen: [('skiko-awt', '0.150.2'), ('skiko-awt-runtime-windows-x64', '0.150.2')]
+== Skiko version via Gradle module metadata if POM carried none
+module HTTP 200
+"version": "9.5.0"
+"module": "skiko"
+"module": "skiko"

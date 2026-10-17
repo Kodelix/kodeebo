@@ -136,7 +136,7 @@ B already covers the web shell the research note asked for (A plus at least one 
 ### Next rounds
 
 - **Real-printer day (founder borrows the printers):** S50 status read from A and B; the hardware legs of S20 (vendor driver and Generic / Text Only queue), S23 (drawer kick on pin 2 / pin 5, including offline and paper-out), S24 (Arabic raster on paper) and S29 (power-off, paper-out and unplug mid-job without losing or duplicating a receipt).
-- **Round 2 (its own prototype, A and B):** G3 Arabic RTL (S6/S46), G4 per-user update (S36), tamper legs TS-03c, TS-05b, TS-06c.
+- **Round 2 (its own prototype, A and B):** G3 Arabic RTL (S6/S46) — **blocks the runtime ADR** (founder, 2026-10-17; note OQ22) — then G4 per-user update (S36) and tamper legs TS-03c, TS-05b, TS-06c.
 - **Physical 4 GB PC:** cold-start and memory numbers that count, with a per-process disk trace for the sequential-read question.
 
 ### Answered from the research evidence, confirmed in G2

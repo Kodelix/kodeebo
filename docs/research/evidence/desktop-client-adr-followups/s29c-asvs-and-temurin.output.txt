@@ -1,0 +1,63 @@
+run at 2026-10-17T06:10Z
+0x00-Header.yaml
+0x01-Frontispiece.md
+0x02-Preface.md
+0x03-What-is-the-ASVS.md
+0x04-Assessment_and_Certification.md
+0x05-For-Users-Of-4.0.md
+0x10-V1-Encoding-and-Sanitization.md
+0x11-V2-Validation-and-Business-Logic.md
+0x12-V3-Web-Frontend-Security.md
+0x13-V4-API-and-Web-Service.md
+0x14-V5-File-Handling.md
+0x15-V6-Authentication.md
+0x16-V7-Session-Management.md
+0x17-V8-Authorization.md
+0x18-V9-Self-contained-Tokens.md
+0x19-V10-OAuth-and-OIDC.md
+0x20-V11-Cryptography.md
+0x21-V12-Secure-Communication.md
+0x22-V13-Configuration.md
+0x23-V14-Data-Protection.md
+0x24-V15-Secure-Coding-and-Architecture.md
+0x25-V16-Security-Logging-and-Error-Handling.md
+0x26-V17-WebRTC.md
+0x90-Appendix-A_Glossary.md
+0x91-Appendix-B_References.md
+0x92-Appendix-C_Cryptography.md
+0x93-Appendix-D_Recommendations.md
+0x94-Appendix-E_Contributors.md
+saved 0x19-V10-OAuth-and-OIDC.md 20669 bytes
+saved 0x20-V11-Cryptography.md 11998 bytes
+saved 0x21-V12-Secure-Communication.md 5245 bytes
+saved 0x22-V13-Configuration.md 7828 bytes
+saved 0x24-V15-Secure-Coding-and-Architecture.md 10222 bytes
+== requirement rows (ID | text) matching keywords
+--- 0x24-V15-Secure-Coding-and-Architecture.md
+| **15.1.1** | Verify that application documentation defines risk based remediation time frames for 3rd party component versions with vulnerabilities and for updating libraries in general, to minimize the risk from these components. | 1 |
+| **15.1.2** | Verify that an inventory catalog, such as software bill of materials (SBOM), is maintained of all third-party libraries in use, including verifying that components come from pre-defined, trusted, and continually maintained repositories. | 2 |
+| **15.1.4** | Verify that application documentation highlights third-party libraries which are considered to be "risky components". | 3 |
+| **15.2.1** | Verify that the application only contains components which have not breached the documented update and remediation time frames. | 1 |
+| **15.2.4** | Verify that third-party components and all of their transitive dependencies are included from the expected repository, whether internally owned or an external source, and that there is no risk of a dependency confusion attack. | 3 |
+| **15.2.5** | Verify that the application implements additional protections around parts of the application which are documented as containing "dangerous functionality" or using third-party libraries considered to be "risky components". This could include techniques such as sandboxing, encapsulation, containerization or network level isolation to delay and deter attackers who compromise one part of an application from pivoting elsewhere in the application. | 3 |
+| **15.3.3** | Verify that the application has countermeasures to protect against mass assignment attacks by limiting allowed fields per controller and action, e.g., it is not possible to insert or update a field value when it was not intended to be part of that action. | 2 |
+| **15.3.4** | Verify that all proxying and middleware components transfer the user's original IP address correctly using trusted data fields that cannot be manipulated by the end user, and the application and web server use this correct value for logging and security decisions such as rate limiting, taking into account that even the original IP address may not be reliable due to dynamic IPs, VPNs, or corporate firewalls. | 2 |
+--- 0x20-V11-Cryptography.md
+| **11.1.2** | Verify that a cryptographic inventory is performed, maintained, regularly updated, and includes all cryptographic keys, algorithms, and certificates used by the application. It must also document where keys can and cannot be used in the system, and the types of data that can and cannot be protected using the keys. | 2 |
+| **11.2.1** | Verify that industry-validated implementations (including libraries and hardware-accelerated implementations) are used for cryptographic operations. | 2 |
+| **11.4.1** | Verify that only approved hash functions are used for general cryptographic use cases, including digital signatures, HMAC, KDF, and random bit generation. Disallowed hash functions, such as MD5, must not be used for any cryptographic purpose. | 1 |
+| **11.4.3** | Verify that hash functions used in digital signatures, as part of data authentication or data integrity are collision resistant and have appropriate bit-lengths. If collision resistance is required, the output length must be at least 256 bits. If only resistance to second pre-image attacks is required, the output length must be at least 128 bits. | 2 |
+| **11.6.1** | Verify that only approved cryptographic algorithms and modes of operation are used for key generation and seeding, and digital signature generation and verification. Key generation algorithms must not generate insecure keys vulnerable to known attacks, for example, RSA keys which are vulnerable to Fermat factorization. | 2 |
+--- 0x22-V13-Configuration.md
+| **13.2.1** | Verify that communications between backend application components that don't support the application's standard user session mechanism, including APIs, middleware, and data layers, are authenticated. Authentication must use individual service accounts, short-term tokens, or certificate-based authentication and not unchanging credentials such as passwords, API keys, or shared accounts with privileged access. | 2 |
+| **13.2.2** | Verify that communications between backend application components, including local or operating system services, APIs, middleware, and data layers, are performed with accounts assigned the least necessary privileges. | 2 |
+| **13.3.1** | Verify that a secrets management solution, such as a key vault, is used to securely create, store, control access to, and destroy backend secrets. These could include passwords, key material, integrations with databases and third-party systems, keys and seeds for time-based tokens, other internal secrets, and API keys. Secrets must not be included in application source code or included in build artifacts. For an L3 application, this must involve a hardware-backed solution such as an HSM. | 2 |
+| **13.4.2** | Verify that debug modes are disabled for all components in production environments to prevent exposure of debugging features and information leakage. | 2 |
+| **13.4.6** | Verify that the application does not expose detailed version information of backend components. | 3 |
+== Temurin releases (latest 5 tags with dates) and body of the 21.0.12.1 one if present
+jdk-21.0.9+10 | 2025-10-23T19:54:37Z | jdk-21.0.9+10
+jdk-21.0.8+9 | 2025-07-17T08:02:15Z | jdk-21.0.8+9
+jdk-21.0.7+6 | 2025-04-16T14:21:40Z | jdk-21.0.7+6
+jdk-21.0.6+7 | 2025-01-22T17:42:31Z | jdk-21.0.6+7
+jdk-21.0.5+11 | 2024-10-16T16:34:23Z | jdk-21.0.5+11
+jdk-21.0.4+7 | 2024-07-17T15:29:34Z | jdk-21.0.4+7

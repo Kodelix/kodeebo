@@ -1,0 +1,63 @@
+run at 2026-10-17T06:07Z
+skiko-awt Maven:org.jetbrains.skiko:skiko-awt@0.150.2 -> 0 []
+skiko-awt-runtime-windows-x64 Maven:org.jetbrains.skiko:skiko-awt-runtime-windows-x64@0.150.2 -> 0 []
+== Willena 3.53.4.0 release body
+3.53.4.0 | 2026-07-26T21:29:15Z
+**Full Changelog**: https://github.com/Willena/sqlite-jdbc-crypt/compare/3.53.3.0...3.53.4.0
+
+**Note**: This version adds the following compile time options by default
+
+- `SQLITE_ENABLE_MATH_FUNCTIONS`
+- `SQLITE_LIKE_DOESNT_MATCH_BLOBS`
+- `SQLITE_DEFAULT_FOREIGN_KEYS`
+- `SQLITE_ENABLE_SNAPSHOT`
+- `SQLITE3MC_VLE`
+
+== SQLite3MC v2.6.1 release body (head)
+v2.6.1 | 2026-10-12T12:25:03Z
+## Changes since previous release
+
+This is a maintenance release. It fixes build problems with some toolchains and
+target platforms that were discovered after the release of version 2.6.0.
+There are no functional changes. For the changes introduced in version 2.6.0
+please refer to the [release notes of version 2.6.0](https://github.com/utelle/SQLite3MultipleCiphers/releases/tag/v2.6.0).
+
+### Fixed
+
+- Fixed build failure with older Emscripten versions (for example, emsdk 2.0.23 as used for .NET 6.0 WebAssembly): `explicit_bzero()` is now only used with Emscripten 3.x or newer. Older versions fall back to the generic implementation in `sqlite3mcSecureZeroMemory()`.
+- Fixed build failure on 32-bit targets (for example, armhf) caused by the 128-bit integer type used in the _poly1305_ code: the 128-bit type (and the 64-bit _poly1305_ implementation based on it) is now only used if the compiler provides `__int128` (`__SIZEOF_INT128__` is defined). Otherwise, the 32-bit implementation is used.
+
+> [!IMPORTANT]
+> :pushpin: The _amalgamation source package_ including `configure` is _still_ **experimental**. :pushpin:
+> Currently, only POSIX compliant systems are supported. Support files for building on Windows are included, but will only be adapted if the need arises.
+Please report any issue you may experience using the [GitHub issue tracker](https://github.com/utelle/SQLite3MultipleCiphers/issues).
+❗ Please share your experiences with this source package. TIA. ❗ 
+
+**Notes**
+This release contains the following precompiled binaries:
+- SQLite3 binaries for Windows (SQLite3 shell and DLLs) _with_ resp. _without_ enabled ICU support in variants for 32-bit and 64-bit Windows. The SQLite3 shell applications support the [SQLite Archive](https://www.sqlite.org/sqlar.html) feature,
+- Source code amalgamation (_amalgamation_) - a single C source file and a single C header file,
+- Source code amalgamation (_autoconf_) - a single C source file and a single C header file - including a `configure` script for POSIX compliant systems,
+- Precompiled SQLite Android library (see [SQLite Android Bindings](https://www.sqlite.org/android/doc/trunk/www/index.wiki)),
+== Electron: npm registry dist-tags and 44.x list
+dist-tags: {'unsupported': '2.1.0-unsupported.20180809', '1-8-x': '1.8.8', '1-7-x': '1.7.16', 'beta-4-0-x': '4.0.0-beta.11', 'beta-3-1-x': '3.1.0-beta.5', '2-0-x': '2.0.18', '3-0-x': '3.0.16', '4-0-x': '4.0.8', 'beta-5-0-x': '5.0.0-beta.9', '4-1-x': '4.1.5', '3-1-x': '3.1.12', 'beta-6-0-x': '6.0.0-beta.15', '6-0-x': '6.0.12', 'beta-7-0-x': '7.0.0-beta.7', '4-2-x': '4.2.12', '7-0-x': '7.0.1', '5-0-x': '5.0.13', 'beta-8-x-y': '8.0.0-beta.9', '7-1-x': '7.1.14', '7-2-x': '7.2.4', 'beta-9-x-y': '9.0.0-beta.24', '6-1-x': '6.1.12', 'beta-10-x-y': '10.0.0-beta.25', '7-3-x': '7.3.3', 'beta-11-x-y': '11.0.0-beta.23', '8-x-y': '8.5.5', 'beta-12-x-y': '12.0.0-beta.31', '9-x-y': '9.4.4', 'origin/11-x-y': '11.4.0', 'beta-13-x-y': '13.0.0-beta.28', '10-x-y': '10.4.7', 'alpha-15-x-y': '15.0.0-alpha.10', 'beta-14-x-y': '14.0.0-beta.25', '11-x-y': '11.5.0', 'beta-15-x-y': '15.0.0-beta.7', 'alpha-16-x-y': '16.0.0-alpha.9', 'beta-16-x-y': '16.0.0-beta.9', '12-x-y': '12.2.3', 'alpha-17-x-y': '17.0.0-alpha.6', 'beta-17-x-y': '17.0.0-beta.9', '13-x-y': '13.6.9', 'alpha-18-x-y': '18.0.0-alpha.5', 'beta-18-x-y': '18.0.0-beta.6', '14-x-y': '14.2.9', 'alpha-19-x-y': '19.0.0-alpha.5', 'beta-19-x-y': '19.0.0-beta.8', '15-x-y': '15.5.7', '16-x-y': '16.2.8', 'alpha-20-x-y': '20.0.0-alpha.7', 'beta-20-x-y': '20.0.0-beta.13', '17-x-y': '17.4.11', 'alpha-21-x-y': '21.0.0-alpha.6', 'beta-21-x-y': '21.0.0-beta.8', '18-x-y': '18.3.15', 'alpha-22-x-y': '22.0.0-alpha.8', 'beta-22-x-y': '22.0.0-beta.8', '19-x-y': '19.1.9', 'alpha-23-x-y': '23.0.0-alpha.3', 'beta-23-x-y': '23.0.0-beta.8', '20-x-y': '20.3.12', 'alpha-24-x-y': '24.0.0-alpha.7', 'beta-24-x-y': '24.0.0-beta.7', '21-x-y': '21.4.4', 'alpha-25-x-y': '25.0.0-alpha.6', 'beta-25-x-y': '25.0.0-beta.8', 'alpha-26-x-y': '26.0.0-alpha.8', 'beta-26-x-y': '26.0.0-beta.12', '23-x-y': '23.3.13', 'alpha-27-x-y': '27.0.0-alpha.6', 'beta-27-x-y': '27.0.0-beta.9', '22-x-y': '22.3.27', '24-x-y': '24.8.8', 'alpha-28-x-y': '28.0.0-alpha.7', 'beta-28-x-y': '28.0.0-beta.11', '25-x-y': '25.9.8', 'alpha-29-x-y': '29.0.0-alpha.11', 'beta-29-x-y': '29.0.0-beta.12', '26-x-y': '26.6.10', 'alpha-30-x-y': '30.0.0-alpha.7', 'beta-30-x-y': '30.0.0-beta.8', '27-x-y': '27.3.11', 'alpha-31-x-y': '31.0.0-alpha.5', '28-x-y': '28.3.3', 'beta-31-x-y': '31.0.0-beta.10', 'alpha-32-x-y': '32.0.0-alpha.10', 'beta-32-x-y': '32.0.0-beta.7', '29-x-y': '29.4.6', '30-x-y': '30.5.1', 'alpha-33-x-y': '33.0.0-alpha.6', 'beta-33-x-y': '33.0.0-beta.11', 'alpha-34-x-y': '34.0.0-alpha.9', 'beta-34-x-y': '34.0.0-beta.16', '31-x-y': '31.7.7', 'alpha-35-x-y': '35.0.0-alpha.5', 'beta-35-x-y': '35.0.0-beta.13', '32-x-y': '32.3.3', 'alpha-36-x-y': '36.0.0-alpha.6', 'beta-36-x-y': '36.0.0-beta.9', '33-x-y': '33.4.11', 'alpha-37-x-y': '37.0.0-alpha.7', '34-x-y': '34.5.8', 'beta-37-x-y': '37.0.0-beta.9', 'alpha-38-x-y': '38.0.0-alpha.13', '35-x-y': '35.7.5', 'beta-38-x-y': '38.0.0-beta.11', 'alpha-39-x-y': '39.0.0-alpha.9', '36-x-y': '36.9.5', 'beta-39-x-y': '39.0.0-beta.5', 'alpha-40-x-y': '40.0.0-alpha.8', '37-x-y': '37.10.3', 'beta-40-x-y': '40.0.0-beta.9', 'alpha-41-x-y': '41.0.0-alpha.6', 'beta-41-x-y': '41.0.0-beta.8', '38-x-y': '38.8.6', 'alpha-42-x-y': '42.0.0-alpha.6', 'beta-42-x-y': '42.0.0-beta.8', '39-x-y': '39.8.10', 'alpha-43-x-y': '43.0.0-alpha.7', 'beta-43-x-y': '43.0.0-beta.8', '40-x-y': '40.10.6', 'alpha-44-x-y': '44.0.0-alpha.9', 'beta-44-x-y': '44.0.0-beta.6', '41-x-y': '41.10.7', 'alpha': '45.0.0-alpha.16', 'alpha-45-x-y': '45.0.0-alpha.16', '42-x-y': '42.11.15', '44-x-y': '44.9.0', 'latest': '44.9.0', 'beta': '45.0.0-beta.5', 'beta-45-x-y': '45.0.0-beta.5', '43-x-y': '43.8.0'}
+44.x stable by time: [('2026-09-29T19:11:31.716Z', '44.5.0'), ('2026-09-30T06:59:15.983Z', '44.5.1'), ('2026-10-06T22:39:14.064Z', '44.6.0'), ('2026-10-07T19:26:00.614Z', '44.7.0'), ('2026-10-13T17:57:54.314Z', '44.7.1'), ('2026-10-14T01:32:13.902Z', '44.7.2'), ('2026-10-16T02:53:46.684Z', '44.8.0'), ('2026-10-17T05:50:07.885Z', '44.9.0')]
+latest overall stable by time: [('2026-10-16T02:53:16.433Z', '42.11.15'), ('2026-10-16T02:53:46.684Z', '44.8.0'), ('2026-10-16T07:06:24.348Z', '43.8.0'), ('2026-10-17T05:50:07.885Z', '44.9.0')]
+== Electron published security advisories (GitHub API), title/severity/vulnerable ranges for npm electron
+count: 69
+GHSA-j84w-jfhq-vhvj CVE-2026-102675 high 2026-08-29 | File and HTTP protocol handlers allow cross-origin reads without corsEnabled | [('electron', '< 41.10.6', '41.10.6'), ('electron', '>= 42.0.0-alpha.1, < 42.9.2', '42.9.2'), ('electron', '>= 43.0.0-alpha.1, < 43.4.1', '43.4.1'), ('electron', '>= 44.0.0-alpha.1, < 44.0.0-beta.5', '44.0.0-beta.5')]
+GHSA-gr2m-v5gq-v685 CVE-2026-102674 high 2026-08-29 | Windows opened from a sandboxed top-level document do not inherit its sandbox restrictions | [('electron', '< 41.10.6', '41.10.6'), ('electron', '>= 42.0.0-alpha.1, < 42.9.2', '42.9.2'), ('electron', '>= 43.0.0-alpha.1, < 43.4.1', '43.4.1'), ('electron', '>= 44.0.0-alpha.1, < 44.0.0-beta.5', '44.0.0-beta.5')]
+GHSA-hq2x-r82h-9wj4 CVE-2026-102673 high 2026-08-29 | Electron drops inherited HTML sandbox restrictions for popups opened through OpenURLFromTa | [('electron', '< 41.10.4', '41.10.4'), ('electron', '>= 42.0.0-alpha.1, < 42.5.2', '42.5.2'), ('electron', '>= 43.0.0-alpha.1, < 43.0.0', '43.0.0')]
+GHSA-vv43-5jgx-7qv8 CVE-2026-102672 medium 2026-08-29 | Local race condition in Squirrel.Mac update installation on macOS | [('electron', '< 39.8.10', '39.8.10'), ('electron', '>= 40.0.0-alpha.1', ''), ('electron', '>= 41.0.0-alpha.1, < 41.10.5', '41.10.5'), ('electron', '>= 42.0.0-alpha.1, < 42.0.0-beta.2', '42.0.0-beta.2')]
+GHSA-fw47-9c62-h3vw None medium 2026-10-15 | HID and USB permission checks can be attributed to the wrong origin | [('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.5', '45.0.0-alpha.5'), ('electron', '>= 44.0.0-alpha.1, < 44.3.0', '44.3.0'), ('electron', '>= 43.0.0-alpha.1, < 43.7.0', '43.7.0'), ('electron', '< 42.11.3', '42.11.3')]
+GHSA-997q-gvvc-jwmx None medium 2026-10-15 | openExternal permission requests can be attributed to the wrong origin | [('electron', '< 42.11.3', '42.11.3'), ('electron', '>= 43.0.0-alpha.1, < 43.7.0', '43.7.0'), ('electron', '>= 44.0.0-alpha.1, < 44.3.0', '44.3.0'), ('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.5', '45.0.0-alpha.5')]
+GHSA-h3v5-h239-pg29 None low 2026-10-15 | Off-screen rendering on macOS trusts GPU-supplied frame geometry | [('electron', '< 42.11.6', '42.11.6'), ('electron', '>= 43.0.0-alpha.1, < 43.7.3', '43.7.3'), ('electron', '>= 44.0.0-alpha.1, < 44.4.3', '44.4.3'), ('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.9', '45.0.0-alpha.9')]
+GHSA-3qxv-5xgr-q7w9 None low 2026-10-15 | Frame subscription trusts GPU-supplied frame geometry | [('electron', '< 42.11.6', '42.11.6'), ('electron', '>= 43.0.0-alpha.1, < 43.7.3', '43.7.3'), ('electron', '>= 44.0.0-alpha.1, < 44.4.3', '44.4.3'), ('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.9', '45.0.0-alpha.9')]
+GHSA-x562-297c-g43g None medium 2026-10-15 | Pointer lock permission requests can be attributed to the wrong frame | [('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.13', '45.0.0-alpha.13'), ('electron', '>= 44.0.0-alpha.1, < 44.5.0', '44.5.0'), ('electron', '>= 43.0.0-alpha.1, < 43.7.6', '43.7.6'), ('electron', '< 42.11.9', '42.11.9')]
+GHSA-98mx-cjp9-gchm None low 2026-10-15 | Extension tabs.query returns tab URLs and titles without the tabs permission | [('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.4', '45.0.0-alpha.4'), ('electron', '>= 44.0.0-alpha.1, < 44.1.1', '44.1.1'), ('electron', '>= 43.0.0-alpha.1, < 43.5.1', '43.5.1'), ('electron', '< 42.11.1', '42.11.1')]
+GHSA-22mq-c535-7vv9 None medium 2026-10-15 | Out-of-package denial-of-service for CommonJS Electron apps packaged with ASAR | [('electron', '>= 36.0.0-alpha.1, < 36.0.0-alpha.5', '36.0.0-alpha.5'), ('electron', '>= 35.0.0-alpha.1, < 35.1.0', '35.1.0')]
+GHSA-2p8c-gr87-2676 None medium 2026-10-15 | SameSite cookie restrictions are not applied to windows opened from links | [('electron', '>= 45.0.0-alpha.1, < 45.0.0-alpha.6', '45.0.0-alpha.6'), ('electron', '>= 44.0.0-alpha.1, < 44.3.0', '44.3.0'), ('electron', '>= 43.0.0-alpha.1, < 43.7.0', '43.7.0'), ('electron', '< 42.11.3', '42.11.3')]
+== Node 24.x latest (nodejs.org dist index)
+[('v24.22.0', '2026-10-14', False), ('v24.21.0', '2026-09-07', False), ('v24.20.0', '2026-08-26', False), ('v24.19.0', '2026-08-03', False)]
+== Adoptium latest JDK 21 (api.adoptium.net)
+jdk-21.0.12.1+1 21.0.12+101.0.LTS 2026-08-21T11:43:24Z OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip

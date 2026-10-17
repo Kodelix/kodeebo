@@ -1,0 +1,60 @@
+{
+    "id": "RE_kwDOI-qQc84WO9Zv",
+    "release_name": "jdk-21.0.12.1+1",
+    "release_notes": [
+        {
+            "component": "infrastructure",
+            "id": "JDK-8388789",
+            "link": "https://bugs.openjdk.java.net/browse/JDK-8388789",
+            "priority": "4",
+            "subcomponent": "infrastructure",
+            "title": "Bump update version for OpenJDK: jdk-21.0.12.1",
+            "type": "Enhancement"
+        },
+        {
+            "backportOf": "JDK-8333743",
+            "component": "infrastructure",
+            "id": "JDK-8389314",
+            "link": "https://bugs.openjdk.java.net/browse/JDK-8389314",
+            "priority": "2",
+            "subcomponent": "infrastructure/build",
+            "title": "Change .jcheck/conf branches property to match valid branches",
+            "type": "Backport"
+        },
+        {
+            "id": "JDK-8382471",
+            "link": "https://bugs.openjdk.java.net/browse/JDK-8382471",
+            "title": "Improve Resource Resolving"
+        },
+        {
+            "id": "JDK-8384708",
+            "link": "https://bugs.openjdk.java.net/browse/JDK-8384708",
+            "title": "Enhance HTTP Connections"
+        },
+        {
+            "id": "JDK-8386205",
+            "link": "https://bugs.openjdk.java.net/browse/JDK-8386205",
+            "title": "Enhance TLS server"
+        },
+        {
+            "component": "infrastructure",
+            "id": "JDK-8389946",
+            "link": "https://bugs.openjdk.java.net/browse/JDK-8389946",
+            "priority": "4",
+            "subcomponent": "infrastructure/release_eng",
+            "title": "[21u] Remove designator DEFAULT_PROMOTED_VERSION_PRE=ea for release 21.0.12.1",
+            "type": "Bug"
+        }
+    ],
+    "vendor": "eclipse",
+    "version_data": {
+        "build": 1,
+        "major": 21,
+        "minor": 0,
+        "openjdk_version": "21.0.12.1+1-LTS",
+        "optional": "LTS",
+        "patch": 1,
+        "security": 12,
+        "semver": "21.0.12+101.0.LTS"
+    }
+}
