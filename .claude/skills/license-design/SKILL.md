@@ -1,6 +1,6 @@
 ---
 name: license-design
-description: "Design the self-hosted licence model: signed claims, Ed25519 verification of exact payload bytes (library chosen via /research), key custody, rotation and revocation, online and offline activation, grace and clock-tamper handling, update eligibility, entitlement parity with billing, mandatory threat model (SL-THREAT-MODEL) and ADR (CTO-ADR)."
+description: "Design the licence model for a self-hosted edition, or for the offline client devices of a hosted product (device seats, offline lease): signed claims, Ed25519 verification of exact payload bytes (library chosen via /research), key custody, rotation and revocation, online and offline activation, grace and clock-tamper handling, update eligibility, entitlement parity with billing, mandatory threat model (SL-THREAT-MODEL) and ADR (CTO-ADR)."
 argument-hint: "[product-slug] [--update] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Skill, Agent, AskUserQuestion, WebFetch, WebSearch, Bash(bash .claude/hooks/yaml-helper.sh log_decision *), Bash(date *), Bash(bash "*/.claude/skills/license-design/../../hooks/yaml-helper.sh" resolve_config *)
@@ -29,7 +29,8 @@ log at `minimal`).
 
 # License Design
 
-Self-hosted software cannot be made tamper-proof. The goal is to make honest use
+Self-hosted software cannot be made tamper-proof, and neither can a client
+device that sells offline for a hosted product (device mode, Phase 1 § 2). The goal is to make honest use
 easy, casual copying inconvenient, and misuse detectable and contractually
 actionable - **without** a forgeable file, a leaked signing key, or an outage that
 locks a paying customer out of their own data. This skill designs the whole
@@ -57,7 +58,8 @@ Implementation is stories (`/create-stories`, Security type) built in
 > `BLOCKED` = a declined write (`BLOCKED — write declined by user`), or a design that violates a non-negotiable: verification over
 > re-serialised bytes; an algorithm field or negotiation; signing key held in the
 > repo, CI or a CI variable; a hard lock-out that blocks data export; a default-on
-> outbound call or phone-home; hardware-fingerprint binding; a licence-server
+> outbound call or phone-home; hardware-fingerprint binding (a fingerprint used only
+> as a change or clone signal that alerts, never deciding validity, is allowed); a licence-server
 > outage that disables a valid unexpired licence; or `SL-THREAT-MODEL` = REJECT.
 > `NOT ASSESSED` = the library choice is `NOT SOURCEABLE` or unresearched, the
 > commercial terms (term, grace, maintenance, security-patch policy) are not
@@ -71,7 +73,8 @@ Implementation is stories (`/create-stories`, Security type) built in
 
 **Read `references/1-scope-and-inputs.md` now and follow it.** It confirms
 the product ships a self-hosted edition (`distribution.model`; unset is asked,
-`hosted` only is `not applicable - hosted only`), records each input as FOUND or
+`hosted` only is `not applicable - hosted only` unless a client device must
+enforce seats or an offline lease, which is **device mode**), records each input as FOUND or
 ABSENT, reads the commercial terms (`design/specs/pricing-model.md` "Licence
 Terms for Self-Hosted") and the billing entitlement catalogue, and runs the
 **core-first check**: licensing is a `saas-core-<track>` module; a product-local
@@ -151,7 +154,7 @@ recorded `NOT ASSESSED - [what was missing]`.
 - **The commercial terms are not this skill's**: term, grace, maintenance, security-patch policy and prices come from `pricing-billing-designer` and the user's decision; an undecided term is `NOT DECIDED` and keeps the verdict at best `NOT ASSESSED`
 - **Honest residual risk**: licence enforcement is not DRM. The model states what a determined customer can do and what contract and audit rights cover
 - **Degrade, never destroy**: no design in which expiry, revocation or an outage blocks a customer's access to export, login or backup of their own data
-- **No default-on outbound traffic** from a self-hosted instance; the only outbound call is the explicit, user-triggered activation or refresh with a documented payload
+- **No default-on outbound traffic** from a self-hosted instance; the only outbound call is the explicit, user-triggered activation or refresh with a documented payload. In device mode the licence traffic rides the product's own sync connection to its hosted service; no extra endpoint or third party
 - **Accepted risk is the user's decision** with an owner and an expiry; this skill, `licensing-specialist` and `security-lead` never accept it on the company's behalf
 - Ask "May I write..." naming every path; no commits unless the user asks
 

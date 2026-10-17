@@ -78,7 +78,7 @@ No commits unless the user asks. Never weaken a test, a rule or a gate to make w
 
 - Licence keys as random strings checked against a database → signed, self-describing files verifiable offline.
 - Parsing JSON first, then verifying a re-serialised copy → verify raw bytes, then parse.
-- Hardware fingerprints that break on every container rebuild → generated installation ID plus per-instance keypair.
+- Hardware fingerprints that break on every container rebuild, hardware swap or TPM clear → generated installation ID plus per-instance keypair (on a client device, a non-exportable device key). A fingerprint may be kept as a change or clone signal that alerts; it never decides validity.
 - Hard lock-out at expiry that blocks data access → graceful degradation with export always available.
 - A separate feature-flag vocabulary for licences → the billing entitlement catalogue keys.
 - Signing from a CI job with the key in a secret variable → issuer service or offline ceremony.

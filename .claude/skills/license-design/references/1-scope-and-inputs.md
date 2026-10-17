@@ -10,14 +10,36 @@
 | `--update` | A model exists (`docs/architecture/licence-model.md`); revise it, keep section numbers, show a diff |
 | `--review` | override `review_mode` (gates only) |
 
-## 2. Scope: does the product ship a self-hosted edition?
+## 2. Scope: self-hosted edition, device mode, or not applicable?
 
 Read `distribution.model` from the resolved `stack` block.
 
 - includes self-hosted (`self-hosted` or `hybrid`): continue.
-- `hosted` only: `not applicable - distribution.model is hosted`. Offer to continue
-  only if the user says a self-hosted edition is being planned; then record the
-  assumption in the model header.
+- `hosted` only, **with a client device that must enforce the licence while
+  offline** (seats counted per device, an offline lease or grace after which it
+  stops selling; look in `design/product-brief.md`, the specs, `stack.desktop` /
+  `stack.mobile` and any local-first research note): **device mode**. Continue, and
+  record `Mode: device licence (hosted)` in the model header. The self-hosted terms
+  map as follows; say so in the model rather than forcing the self-hosted shape:
+
+  | Self-hosted term | Device mode |
+  |---|---|
+  | instance, installation ID | device, the device ID issued at enrolment |
+  | per-instance keypair | non-exportable per-device key (TPM where present, else the OS key store) |
+  | online activation | device enrolment against the hosted service, within the seats the vendor issued |
+  | offline activation files | not needed unless a device is enrolled with no network |
+  | grace after expiry | the offline lease: how long the device sells without reaching the server |
+  | revalidation schedule | lease renewal on the product's own sync connection |
+  | instance move or clone | seat move on replacement; clone detection |
+  | update eligibility | only if releases are sold per version; else `not applicable` |
+
+  Degrade, never destroy still holds: after the lease ends the device stops new
+  sales, but its unsynced backlog is still accepted by the server and local data
+  stays readable and exportable.
+- `hosted` only, no client enforces anything offline: `not applicable -
+  distribution.model is hosted` (entitlements are billing's, server-side). Offer to
+  continue only if the user says a self-hosted edition is being planned; then record
+  the assumption in the model header.
 - **unset:** not a skip. Ask (`AskUserQuestion`: hosted only / self-hosted only /
   hybrid). If unanswerable: verdict at best `NOT ASSESSED - distribution unset (set
   it with /setup-stack)`.
@@ -26,7 +48,7 @@ Read `distribution.model` from the resolved `stack` block.
 
 | Input | Path | Why |
 |---|---|---|
-| Commercial terms | `design/specs/pricing-model.md` section "Licence Terms for Self-Hosted" | licence types, unit of licensing, update eligibility, grace, renewal. Owned by `pricing-billing-designer`. Missing = every term `NOT DECIDED` |
+| Commercial terms | `design/specs/pricing-model.md` section "Licence Terms for Self-Hosted" (device mode: the seat unit, who issues seats, seat moves and the offline lease, wherever the pricing spec or brief records them) | licence types, unit of licensing, update eligibility, grace, renewal. Owned by `pricing-billing-designer`. Missing = every term `NOT DECIDED` |
 | Entitlement catalogue | `design/specs/pricing-model.md` (plans, entitlements, quotas), `design/registry/entities.yaml` | the feature keys the licence claims must reuse |
 | Product brief and specs | `design/product-brief.md`, `design/specs/*.md` naming licensing, seats, editions | scope |
 | Existing model, threat model, ADRs | `docs/architecture/licence-model.md`, `docs/architecture/threat-models/licensing.md`, `docs/architecture/adr-*.md` | `--update` baseline; decisions not to contradict |

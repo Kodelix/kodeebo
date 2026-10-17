@@ -38,7 +38,11 @@ the alternative rejected and why, and these specifically:
   activation (request file: installation_id, per-instance public key, nonce,
   product/version; response signed, bound to that key and nonce, single-use)
 - installation identity: random UUID stored with the data volume + per-instance
-  keypair; no hardware fingerprint; move/clone flow; instance counting
+  keypair (device mode: device ID from enrolment + non-exportable device key); no
+  hardware-fingerprint binding: a fingerprint may be recorded as a change or clone
+  signal that alerts the vendor or owner, never as the check that decides validity
+  and never as an automatic lock-out (hardware swaps, TPM clears and firmware
+  updates change it for honest users); move/clone flow; instance counting
 - time: injected Clock, pure functions, boundary table (not_before, expires_at-1s,
   expires_at, expires_at+grace_days, maintenance_until), persisted high-water mark,
   stated tolerance, audit event on regression, never silently extends
