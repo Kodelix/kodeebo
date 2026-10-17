@@ -188,7 +188,7 @@ function guarded(mode, body) {
 }
 
 const args = process.argv.slice(1).filter((a) => a.startsWith('--') || /^\d+$/.test(a));
-const mode = args.find((a) => ['--close-bench', '--print-once', '--kill-loop', '--check'].includes(a));
+const mode = args.find((a) => ['--close-bench', '--print-once', '--kill-loop', '--check', '--arabic', '--arabic-system'].includes(a));
 if (mode === '--close-bench') {
   const n = Number(args[args.indexOf('--close-bench') + 1]);
   process.exit(guarded('bench', () => bench(n, args.includes('--warmup'))));
@@ -218,11 +218,18 @@ if (mode === '--close-bench') {
     printRaw();
     return now() - t0;
   });
+  // round 2 G3: --arabic (bundled Naskh) / --arabic-system (Segoe UI); ../ARABIC-SHEET.md
+  const arabic = mode === '--arabic' || mode === '--arabic-system';
+  if (arabic) {
+    ipcMain.removeAllListeners('painted');
+    ipcMain.on('painted', (_e, ms) => append('ready.txt', `arabic=${mode === '--arabic' ? 'naskh' : 'system'} pid=${process.pid} shown_ms=${ms}\n`));
+  }
   app.whenReady().then(() => {
-    const win = new BrowserWindow({ width: 1024, height: 700, title: 'Kodeebo spike B',
+    const win = new BrowserWindow({ width: 1024, height: 700, title: arabic ? `Kodeebo spike B — Arabic (${mode === '--arabic' ? 'Naskh' : 'system font'})` : 'Kodeebo spike B',
       webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true } });
     win.setMenuBarVisibility(false);
-    win.loadFile(path.join(__dirname, 'index.html'));
+    if (arabic) { win.maximize(); win.loadFile(path.join(__dirname, 'arabic.html'), { hash: mode === '--arabic' ? 'naskh' : 'system' }); }
+    else win.loadFile(path.join(__dirname, 'index.html'));
   });
   app.on('window-all-closed', () => app.quit());
 }

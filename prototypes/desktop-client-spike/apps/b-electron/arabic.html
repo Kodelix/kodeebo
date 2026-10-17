@@ -1,0 +1,80 @@
+<!-- PROTOTYPE - NOT FOR PRODUCTION -->
+<!-- Question: Do A (Compose Desktop) and B (Electron) render and accept Egyptian Arabic correctly on Windows 10 22H2 (G3, S6/S46, OQ22)? -->
+<!-- Date: 2026-10-17 -->
+<!-- Content and layout: ../ARABIC-SHEET.md (identical in A and B; strings raw, no bidi control marks). -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; font-src 'self' file:">
+  <title>Kodeebo spike B — Arabic</title>
+  <style>
+    @font-face { font-family: "Naskh"; src: url("fonts/NotoNaskhArabic-Regular.ttf"); font-weight: 400; }
+    @font-face { font-family: "Naskh"; src: url("fonts/NotoNaskhArabic-Bold.ttf"); font-weight: 700; }
+    body { margin: 0; padding: 16px; background: #fff; color: #000; font-size: 18px; }
+    body.naskh { font-family: "Naskh"; }
+    body.system { font-family: "Segoe UI", sans-serif; }
+    .bar { display: flex; align-items: center; margin-bottom: 8px; }
+    .bar .title { flex: 1; padding: 0 16px; font-size: 22px; font-weight: 700; }
+    .row { display: flex; align-items: center; padding: 4px 0; border-bottom: 1px solid #ddd; }
+    .row .name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .row .qty { width: 110px; white-space: nowrap; }
+    .row .price { width: 150px; text-align: end; white-space: nowrap; }
+    .sentence { margin: 12px 0; }
+    .field { display: flex; align-items: center; margin-bottom: 8px; }
+    .field label { width: 80px; }
+    .field input { width: 300px; padding: 6px; border: 1px solid gray; font: inherit; }
+    .bottom { display: flex; justify-content: space-between; align-items: flex-start; }
+    .receipt { width: 320px; border: 1px solid gray; padding: 8px; box-sizing: border-box; }
+    .receipt div { padding: 2px 0; }
+  </style>
+</head>
+<body>
+  <div class="bar"><span>‹ رجوع</span><span class="title">كوديبو — الكاشير</span><span>الوردية: صباحي</span></div>
+  <div id="list"></div>
+  <div class="sentence" id="sentence"></div>
+  <!-- fields (start = right) and receipt (end = left) side by side; run 1 had the receipt under the fields (ARABIC-SHEET.md item 4) -->
+  <div class="bottom">
+    <div>
+      <div class="field"><label>الاسم:</label><input id="name" dir="auto" autofocus></div>
+      <div class="field"><label>السعر:</label><input id="price" dir="auto"></div>
+    </div>
+    <div class="receipt" id="receipt"></div>
+  </div>
+  <script>
+    const ROWS = [
+      ['بلايستيشن 5 — جهاز ٣', 'ساعة ونص', '٤٥٫٥٠ ج.م'],
+      ['PS5 VIP Room 2', '02:15', '120.00 EGP'],
+      ['قهوة تركي (Turkish coffee)', '×2', '٣٠٫٠٠ ج.م'],
+      ['شاي بالنعناع', '×3', '15.00 ج.م'],
+      ['FIFA 26 — بطولة الجمعة', '4 لاعبين', '200.00 EGP'],
+      ['عصير مانجو طازة كبير مع آيس كريم فانيليا وقطع فواكه موسمية مشكلة ومكسرات وصوص شوكولاتة بلجيكية وكريمة مخفوقة وبسكويت لوتس مطحون وصوص كراميل مملح مع قطع براونيز', '×1', '٦٥٫٠٠ ج.م'],
+      ['استرداد — جهاز 4', '', '-45.50 ج.م'],
+      ['استرداد — جهاز ٤', '', '-٤٥٫٥٠ ج.م'],
+      ['خصم 10%', '', '-12.00 EGP'],
+      ['خصم ١٠٪ للأعضاء', '', '-١٢٫٠٠ ج.م'],
+    ];
+    const SENTENCE = 'بدأ الساعة 02:30 — للحجز اتصل على 01012345678';
+    const RECEIPT = [
+      ['مقهى الجليتش', 22, 'center'],
+      ['إيصال رقم ١٢٣ / Order 123', 15, 'center'],
+      ['بلايستيشن ٥ - ساعة ونصف', 16, 'right'],
+      ['Latte x2          ٢ × 45.00', 15, 'left'],
+      ['عصير برتقال        ٣٠٫٠٠', 16, 'right'],
+      ['الإجمالي: 120.00 ج.م', 18, 'right'],
+      ['Total EGP 120.00', 16, 'left'],
+    ];
+    // textContent, never innerHTML: the strings are data
+    document.body.className = location.hash === '#system' ? 'system' : 'naskh';
+    const el = (tag, cls, text, style) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; if (style) Object.assign(e.style, style); return e; };
+    const list = document.getElementById('list');
+    for (const [n, q, p] of ROWS) { const r = el('div', 'row'); r.append(el('span', 'name', n), el('span', 'qty', q), el('span', 'price', p)); list.append(r); }
+    document.getElementById('sentence').textContent = SENTENCE;
+    // receipt: white-space pre keeps the spaces of the raster lines; absolute alignment, as on paper
+    const rc = document.getElementById('receipt');
+    for (const [line, size, align] of RECEIPT) rc.append(el('div', '', line, { fontSize: size + 'px', textAlign: align, whiteSpace: 'pre' }));
+    document.getElementById('name').focus();
+    requestAnimationFrame(() => requestAnimationFrame(() => window.api.painted(Date.now())));
+  </script>
+</body>
+</html>

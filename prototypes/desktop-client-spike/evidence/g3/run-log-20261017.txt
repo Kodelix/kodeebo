@@ -1,0 +1,179 @@
+16:09:14 build-a: reverted clean-ssh2, booted unthrottled
+16:09:30 build-a: inputs copied; building (gradle packageMsi)
+unpack: 3 s
+openjdk version "21.0.12.1" 2026-08-18 LTS
+Windows Installer XML Toolset Compiler version 3.14.1.8722
+gradle packageMsi exit 0 in 399 s
+> Task :copyNonXmlValueResourcesForMain NO-SOURCE
+> Task :prepareComposeResourcesTaskForMain NO-SOURCE
+> Task :generateResourceAccessorsForMain SKIPPED
+> Task :generateActualResourceCollectorsForMain SKIPPED
+> Task :generateComposeResClass SKIPPED
+> Task :compileKotlin
+> Task :assembleMainResources
+> Task :processResources
+> Task :createRuntimeImage
+> Task :prepareAppResources NO-SOURCE
+> Task :unpackDefaultComposeDesktopJvmApplicationResources
+
+> Task :downloadWix
+Download https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip
+
+> Task :compileJava NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :unzipWix
+> Task :packageMsi
+The distribution is written to C:\build\a-compose\build\compose\binaries\main\msi\KodeeboSpikeA-1.0.0.msi
+
+BUILD SUCCESSFUL in 6m 39s
+10 actionable tasks: 10 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+MSI: C:\build\a-compose\build\compose\binaries\main\msi\KodeeboSpikeA-1.0.0.msi (72.8 MB)
+Gradle cache size: 297 MB
+16:16:16 build-a: MSI fetched 76386380 bytes sha256 f0d78e282a413397
+16:16:21 build-a: VM shut off (build layer is discarded by the next revert)
+16:16:52 prep: reverted clean-ssh2, booted, throttle 100 IOPS
+16:19:12 install a: task kspike-0ec562e4 started at 16:17:36.979 program exit code: 0 after 93.0 s 
+16:19:23 install b: C:\Users\cashier\run-interactive.ps1 : Cannot process argument transformation on parameter 'timeoutSec'. Cannot  convert value "Setup" to type "System.Int32". Error: "Input string was not in a correct format."     + CategoryInfo          : InvalidData: (:) [run-interactive.ps1], ParentContainsErrorRecordException     + FullyQualifiedErrorId : ParameterArgumentTransformationError,run-interactive.ps1   
+16:19:41 layout: before: en-US[0409:00000409] after: en-US ar-EG[0409:00000409,0C01:00000401] 
+16:25:09 install b: task kspike-58da1412 started at 16:20:05.057 program exit code: 0 after 301.9 s 
+16:25:11 layout: before: en-US ar-EG[0409:00000409,0C01:00000401] after: en-US ar-EG[0409:00000409,0C01:00000401] 
+16:25:38 show a --arabic: task kspike-10add9a3 started at 16:25:36.791
+16:26:09 show a --arabic: ready.txt -> arabic=naskh pid=5456 proc_start_ms=1792279537084 shown_ms=1792279564227
+16:26:13 shot: evidence/g3/a-naskh-01-initial.png
+16:32:47 shot: evidence/g3/a-naskh-01b-recheck.png
+16:34:15 keys: KEY_LEFTALT KEY_LEFTSHIFT
+16:34:16 shot: evidence/g3/a-naskh-02-layout-switched.png
+16:34:21 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G KEY_K KEY_U KEY_K KEY_H KEY_U
+16:34:22 shot: evidence/g3/a-naskh-03-typed.png
+16:34:24 keys: KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT
+16:34:25 shot: evidence/g3/a-naskh-04-selected.png
+16:34:25 keys: KEY_DELETE
+16:34:26 shot: evidence/g3/a-naskh-05-deleted.png
+16:34:27 keys: KEY_HOME KEY_A
+16:34:28 shot: evidence/g3/a-naskh-06-home-insert.png
+16:35:23 shot: evidence/g3/a-naskh-06b-after-toast.png
+16:35:35 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G KEY_K KEY_U KEY_K KEY_H KEY_U
+16:35:36 shot: evidence/g3/a-naskh-07-typed-retry.png
+16:36:07 stop KodeeboSpikeA.exe: SUCCESS: The process with PID 5456 (child process of PID 5300) has been terminated.
+16:36:09 layout: At C:\Users\cashier\g3-layout.ps1:9 char:55 + function Show($label) { $label + ": " + ((foreach ($l in (Get-WinUser ... +                                                       ~~ Unexpected token 'in' in expression or statement. At C:\Users\cashier\g3-layout.ps1:9 char:54 + function Show($label) { $label + ": " + ((foreach ($l in (Get-WinUser ... +                                                      ~ Missing closing ')' in expression. At C:\Users\cashier\g3-layout.ps1:9 char:85 + ... $label + ": " + ((foreach ($l in (Get-WinUserLanguageList)) { "$($l.L ... +                                                                 ~ Unexpected token '{' in expression or statement. At C:\Users\cashier\g3-layout.ps1:9 char:84 + ... { $label + ": " + ((foreach ($l in (Get-WinUserLanguageList)) { "$($l ... +                                                                  ~ Missing closing ')' in expression. At C:\Users\cashier\g3-layout.ps1:9 char:23 + function Show($label) { $label + ": " + ((foreach ($l in (Get-WinUser ... +                       ~ Missing closing '}' in statement block or type definition. At C:\Users\cashier\g3-layout.ps1:9 char:141 + ... t)) { "$($l.LanguageTag)[$($l.InputMethodTips -join ',')]" }) -join ' ... +                                                                 ~ Unexpected token ')' in expression or statement. At C:\Users\cashier\g3-layout.ps1:9 char:152 + ...  "$($l.LanguageTag)[$($l.InputMethodTips -join ',')]" }) -join ' ') } +                                                                       ~ Unexpected token ')' in expression or statement. At C:\Users\cashier\g3-layout.ps1:9 char:154 + ...  "$($l.LanguageTag)[$($l.InputMethodTips -join ',')]" }) -join ' ') } +                                                                         ~ Unexpected token '}' in expression or statement.     + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException     + FullyQualifiedErrorId : UnexpectedToken   
+16:43:44 relogon: cashier Active ~325 s after reboot; throttle 100 IOPS
+16:44:43 layout: before: en-US[0409:00000409] ar-EG[0C01:00000401] after: en-US[0409:00000409] ar-EG[0C01:00000401] default input override: 0C01:00000401 Arabic (Egypt) - Arabic (101) 
+16:50:37 relogon (2nd): cashier logon 16:49 per query user; the step's own log line was lost when the session ended
+16:51:49 show a --arabic: task kspike-be8a807c started at 16:51:29.887
+16:55:31 focus: ﻿AppActivate(''Kodeebo') = False
+16:55:34 shot: evidence/g3/a-naskh-10-start-arabic-default.png
+16:56:23 shot: evidence/g3/a-naskh-10b-recheck.png
+16:56:47 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G KEY_K KEY_U KEY_K KEY_H KEY_U
+16:56:48 shot: evidence/g3/a-naskh-11-typed.png
+16:56:49 keys: KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT
+16:56:50 shot: evidence/g3/a-naskh-12-selected.png
+16:56:51 keys: KEY_DELETE
+16:56:52 shot: evidence/g3/a-naskh-13-deleted.png
+16:56:53 keys: KEY_HOME KEY_A
+16:56:54 shot: evidence/g3/a-naskh-14-home-insert.png
+16:57:14 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G
+16:57:15 shot: evidence/g3/ctrl-notepad-01-typed.png
+16:57:24 keys: KEY_LEFTALT KEY_TAB
+16:57:29 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G
+16:57:31 shot: evidence/g3/ctrl-notepad-02-alttab-typed.png
+16:57:45 keys: KEY_LEFTALT KEY_TAB
+16:57:47 shot: evidence/g3/a-naskh-20-alttab-back.png
+16:57:52 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G KEY_K KEY_U KEY_K KEY_H KEY_U
+16:57:54 shot: evidence/g3/a-naskh-21-typed.png
+16:58:10 keys: KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT
+16:58:11 shot: evidence/g3/a-naskh-22-shift-left.png
+16:58:12 keys: KEY_LEFTSHIFT KEY_RIGHT KEY_LEFTSHIFT KEY_RIGHT KEY_LEFTSHIFT KEY_RIGHT
+16:58:13 shot: evidence/g3/a-naskh-23-shift-right.png
+16:58:14 keys: KEY_DELETE
+16:58:15 shot: evidence/g3/a-naskh-24-deleted.png
+16:58:16 keys: KEY_HOME KEY_A
+16:58:17 shot: evidence/g3/a-naskh-25-home-insert.png
+16:58:17 keys: KEY_TAB
+16:58:20 keys: KEY_KP4 KEY_KP5 KEY_KPDOT KEY_KP5 KEY_KP0
+16:58:22 shot: evidence/g3/a-naskh-26-price-keypad.png
+16:58:41 keys: KEY_BACKSPACE KEY_BACKSPACE KEY_BACKSPACE KEY_BACKSPACE KEY_BACKSPACE KEY_KPMINUS KEY_KP1 KEY_KP2
+16:58:42 shot: evidence/g3/a-naskh-27-price-negative.png
+16:58:43 stop KodeeboSpikeA.exe: SUCCESS: The process with PID 4040 (child process of PID 5524) has been terminated.
+16:58:43 stop notepad.exe: SUCCESS: The process with PID 2092 (child process of PID 1276) has been terminated.
+16:58:45 show a --arabic-system: task kspike-4f0a054e started at 16:58:42.358
+16:58:50 show a --arabic-system: ready.txt -> arabic=system pid=464 proc_start_ms=1792281522408 shown_ms=1792281524000
+16:59:14 shot: evidence/g3/a-system-01-initial.png
+17:01:59 build-a: reverted clean-ssh2, booted unthrottled
+17:02:16 build-a: inputs copied; building (gradle packageMsi)
+unpack: 3 s
+openjdk version "21.0.12.1" 2026-08-18 LTS
+Windows Installer XML Toolset Compiler version 3.14.1.8722
+gradle packageMsi exit 0 in 311 s
+> Task :copyNonXmlValueResourcesForMain NO-SOURCE
+> Task :prepareComposeResourcesTaskForMain NO-SOURCE
+> Task :generateResourceAccessorsForMain SKIPPED
+> Task :generateActualResourceCollectorsForMain SKIPPED
+> Task :generateComposeResClass SKIPPED
+> Task :compileKotlin
+> Task :assembleMainResources
+> Task :processResources
+> Task :createRuntimeImage
+> Task :prepareAppResources NO-SOURCE
+> Task :unpackDefaultComposeDesktopJvmApplicationResources
+
+> Task :downloadWix
+Download https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip
+
+> Task :compileJava NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :unzipWix
+> Task :packageMsi
+The distribution is written to C:\build\a-compose\build\compose\binaries\main\msi\KodeeboSpikeA-1.0.0.msi
+
+BUILD SUCCESSFUL in 5m 10s
+10 actionable tasks: 10 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+MSI: C:\build\a-compose\build\compose\binaries\main\msi\KodeeboSpikeA-1.0.0.msi (72.8 MB)
+Gradle cache size: 297 MB
+17:07:34 build-a: MSI fetched 76386380 bytes sha256 7ff25dc379b83732
+17:07:39 build-a: VM shut off (build layer is discarded by the next revert)
+17:08:18 prep: reverted clean-ssh2, booted, throttle 100 IOPS
+17:10:59 install a: task kspike-a47bae8c started at 17:09:33.337 program exit code: 0 after 85.2 s 
+17:18:25 install b: task kspike-95ac617c started at 17:11:08.556 program exit code: 0 after 435.5 s 
+17:18:41 layout: before: en-US[0409:00000409] after: en-US[0409:00000409] ar-EG[0C01:00000401] default input override: 0C01:00000401 Arabic (Egypt) - Arabic (101) 
+17:26:16 relogon: cashier Active ~325 s after reboot; throttle 100 IOPS
+17:27:10 show b --arabic: task kspike-fd9357fd started at 17:27:08.073
+17:29:47 show b --arabic: ready.txt -> arabic=naskh pid=5412 shown_ms=1792283385085
+17:30:00 shot: evidence/g3/b-naskh-01-initial.png
+17:30:50 keys: KEY_A KEY_H KEY_D
+17:30:51 shot: evidence/g3/b-naskh-02-focus-probe.png
+17:31:08 keys: KEY_LEFTALT KEY_TAB
+17:31:10 keys: KEY_LEFTALT KEY_TAB
+17:31:18 keys: KEY_A KEY_H KEY_D KEY_SPACE KEY_F KEY_H KEY_G KEY_K KEY_U KEY_K KEY_H KEY_U
+17:31:19 shot: evidence/g3/b-naskh-11-typed.png
+17:31:32 keys: KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT KEY_LEFTSHIFT KEY_LEFT
+17:31:33 shot: evidence/g3/b-naskh-12-shift-left.png
+17:31:35 keys: KEY_LEFTSHIFT KEY_RIGHT KEY_LEFTSHIFT KEY_RIGHT KEY_LEFTSHIFT KEY_RIGHT
+17:31:36 shot: evidence/g3/b-naskh-13-shift-right.png
+17:31:36 keys: KEY_DELETE
+17:31:37 shot: evidence/g3/b-naskh-14-deleted.png
+17:31:38 keys: KEY_HOME KEY_A
+17:31:39 shot: evidence/g3/b-naskh-15-home-insert.png
+17:31:40 keys: KEY_TAB
+17:31:43 keys: KEY_KP4 KEY_KP5 KEY_KPDOT KEY_KP5 KEY_KP0
+17:31:44 shot: evidence/g3/b-naskh-16-price-keypad.png
+17:31:47 keys: KEY_BACKSPACE KEY_BACKSPACE KEY_BACKSPACE KEY_BACKSPACE KEY_BACKSPACE KEY_KPMINUS KEY_KP1 KEY_KP2
+17:31:48 shot: evidence/g3/b-naskh-17-price-negative.png
+17:32:03 stop KodeeboSpikeB.exe: SUCCESS: The process with PID 3192 (child process of PID 5412) has been terminated.
+17:32:03 stop notepad.exe: SUCCESS: The process with PID 3612 (child process of PID 1232) has been terminated.
+17:32:06 show b --arabic-system: task kspike-39cd2ab3 started at 17:32:04.638
+17:32:08 show b --arabic-system: ready.txt -> arabic=system pid=4488 shown_ms=1792283525105
+17:32:20 shot: evidence/g3/b-system-01-initial.png
+17:32:20 stop KodeeboSpikeB.exe: SUCCESS: The process with PID 5268 (child process of PID 4488) has been terminated.
+17:32:23 show a --arabic: task kspike-cf0941de started at 17:32:21.325
+17:33:16 show a --arabic: ready.txt -> arabic=naskh pid=2792 proc_start_ms=1792283541735 shown_ms=1792283591429
+17:33:35 shot: evidence/g3/a2-naskh-01-initial.png
+17:33:51 stop KodeeboSpikeA.exe: SUCCESS: The process with PID 2792 (child process of PID 4508) has been terminated.
+17:33:53 show a --arabic-system: task kspike-7e580953 started at 17:33:52.039
+17:33:58 show a --arabic-system: ready.txt -> arabic=system pid=1272 proc_start_ms=1792283632089 shown_ms=1792283633894
+17:34:11 shot: evidence/g3/a2-system-01-initial.png
+17:35:02 stop KodeeboSpikeA.exe: SUCCESS: The process with PID 1272 (child process of PID 5988) has been terminated.
+17:35:38 end of G3: VM shut down and reverted to clean-ssh2 (shut off)

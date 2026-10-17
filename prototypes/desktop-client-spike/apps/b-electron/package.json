@@ -21,7 +21,7 @@
     "npmRebuild": false,
     "asar": true,
     "asarUnpack": ["**/*.node"],
-    "files": ["main.js", "preload.js", "index.html", "receipt.bin", "node_modules/**/*"],
+    "files": ["main.js", "preload.js", "index.html", "arabic.html", "fonts/*.ttf", "receipt.bin", "node_modules/**/*"],
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
       "signAndEditExecutable": false

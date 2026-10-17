@@ -237,6 +237,8 @@ fun main(args: Array<String>) {
             exitProcess(if (r.isSuccess) 0 else 1)
         }
         "--kill-loop" -> guarded("killloop") { killLoop() }
+        "--arabic" -> { arabicSheet(bundledFont = true); return }           // round 2 G3 (ArabicSheet.kt)
+        "--arabic-system" -> { arabicSheet(bundledFont = false); return }
         "--check" -> {
             val line = runCatching { checkStore() }.getOrElse { "open-failed: ${it.message}" }
             File(dataDir, "check.txt").appendText(line + "\n")

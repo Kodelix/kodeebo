@@ -9,6 +9,86 @@
 **Plan:** `docs/research/desktop-client-technology.md` § 9 (Spikes): S1/S40, S7/S43, S10, S20 and the phase 1 text. Round 1 covers the part of them listed under "Gates" below.
 **Path:** code spike (feasibility). Throwaway: nothing here is imported by production code, and if a runtime is chosen, its production code is written from scratch (`.claude/rules/prototype-code.md`). The spike does **not** choose the stack. It feeds the runtime ADR.
 
+## Round 2 (started 2026-10-17): G3 Arabic RTL first
+
+**Status:** G3 concluded 2026-10-17, **PASS for A and B** (founder). G4 (S36; followups S10, S11, S15, S16) and the tamper legs did not fit the 1-day cap (about 11:00 to 17:35): they move to **round 3**, before the runtime ADR. The VM was shut off and reverted to `clean-ssh2` at 17:35.
+**Question:** do A and B render and accept Egyptian Arabic correctly on Windows 10 22H2 (S6/S46, desktop-note OQ22)? It **blocks the runtime ADR** (founder, 2026-10-17).
+**Timebox:** the 1-day cap of `/prototype`, no waiver. Order: G3, then G4 (S36; followups S10, S11, S15, S16) and the tamper legs if the day allows, otherwise round 3.
+
+**Hypothesis.** If the same Arabic test sheet (`apps/ARABIC-SHEET.md`) is built in A and B, then on the Windows 10 22H2 VM both will:
+- shape Egyptian Arabic correctly and mirror the layout right to left;
+- order mixed Arabic and Latin text, Arabic-Indic and Latin digits, negative amounts, percentages, a time and a phone number inside a sentence correctly;
+- truncate a long name with the ellipsis at its logical end;
+- render the receipt preview;
+- accept Arabic 101 keyboard input in the name and price fields (caret, selection, deletion).
+
+**Signal:** the founder reviews the screenshots and finds no shaping, ordering or mirroring defect, and input works. My reading of each screenshot is written down, but the founder's review decides. With no review, the verdict is NOT ASSESSED.
+
+**Riskiest assumption (feasibility):** Compose Desktop's text stack (Skia, HarfBuzz via Skiko) handles RTL layout and bidirectional text input as well as Chromium.
+
+**How to run** (G3):
+- **A:** `apps/a-compose` with `--arabic` (bundled Noto Naskh Arabic 2.021, SIL OFL 1.1, from the host's `noto-fonts` package) or `--arabic-system` (the platform default font). Code: `src/main/kotlin/ArabicSheet.kt`. The MSI is built on the VM with `guest/build-a.ps1` (disposable layer).
+- **B:** `apps/b-electron` with `--arabic` or `--arabic-system`. Code: `arabic.html`, `fonts/`. The installer is built on the host with `npx --no-install electron-builder --win --x64 --publish never` in `.cache/build-b`.
+- The VM is reverted to `clean-ssh2`, the installer installed as `cashier`, the Arabic 101 layout added for `cashier`, the sheet started on the cashier's desktop, keystrokes sent with `virsh send-key`, and screenshots taken with `virsh screenshot`. Evidence goes to `evidence/g3/`.
+
+**Shortcuts taken (G3):**
+- No store, print or update.
+- Only the Arabic 101 layout, no other IME.
+- No high-DPI scaling.
+- No Windows 11 leg (no Windows 11 VM).
+- No accessibility or screen-reader check.
+- Raw strings with no bidi control marks.
+- Synthetic data only.
+- Unsigned installers.
+
+**Verdict (G3): PASS for A and B — founder, 2026-10-17, after reviewing the screenshots.** Both render and accept Egyptian Arabic correctly; OQ22 is closed for the runtime ADR. The differences (G3-F3 price-field direction, G3-F4 smoothing) are notes, not blockers. G3-F2 (how amounts display inside Arabic text) is an **open product rule**: decided in the counter and receipt spec, owner `localization-lead` (founder, 2026-10-17).
+
+**What ran:** Windows 10 22H2 VM, 4 GB, throttled disk, `cashier` desktop, 1280×800 console.
+- **A run 1** used a sheet with my own label setting (see G3-F1).
+- **A run 2 and B** used the sheet as specified.
+- **A's input test** was done on run 1. The input fields are the same code in run 2.
+- Evidence: `evidence/g3/` (screenshots, `cmp-*` comparison crops, `run-log-20261017.txt`).
+- Key screenshots:
+  - A: `a2-naskh-01-initial.png`, `a2-system-01-initial.png`, `cmp-a-input-steps.png`.
+  - B: `b-naskh-01-initial.png`, `b-system-01-initial.png`, `cmp-b-input-steps.png`.
+  - Both: `cmp-rows-a-top-b-bottom.png`, `cmp-back-chevron-a-left-b-right.png`.
+
+| Check | A (Compose Desktop) | B (Electron) |
+|---|---|---|
+| Arabic shaping (joining, lam-alef, bold title) | correct to my eye, Naskh and Windows UI font | correct to my eye, Naskh and Windows UI font |
+| RTL layout mirroring (back at the right, columns reversed) | yes | yes |
+| Bidi-mirrored glyph `‹` in an RTL run | shown as `›` | shown as `›` |
+| Mixed rows (Latin-led names, brackets, `×2`, `4 لاعبين`) | same visual order as B on every row (run 2) | same as A |
+| Arabic-Indic digits and the Arabic decimal separator | rendered | rendered |
+| Long name, one line | truncated, ellipsis at the logical end (left) | truncated, ellipsis at the logical end (left) |
+| Time and phone number in a sentence | `02:30` and `01012345678` in order | same |
+| Receipt preview | rendered; in Naskh the last line falls below the 800 px screen (the sheet does not scroll) | rendered; the page scrolls |
+| Arabic 101 typing in the name field | `شاي بالنعناع` shaped, caret at the logical end | same |
+| Shift+Left at the logical end | no selection (visual caret movement) | same |
+| Shift+Right ×3 | selects `ناع` | same |
+| Delete, then Home + `ش` | `شاي بالنع`, then `ششاي بالنع` | same |
+| Keypad `45.50` in the price field | Latin digits, aligned right | Latin digits, aligned left |
+| Keypad `-12` in the price field | shown `12-` | shown `-12` |
+
+**Findings (G3)** — each is an observation on the VM, indicative only:
+- **G3-F1 (my sheet, not the runtime).** Run 1 set A's labels to follow their content (`TextDirection.Content`). Latin-led names became left-to-right paragraphs and sat at the left of their cell. With Compose's default (run 2), A orders every line exactly like B. Run 1's screenshots are kept (`a-naskh-0*` … `a-naskh-2*`).
+- **G3-F2 (both runtimes, a product rule).** In a right-to-left paragraph, both apply the standard Unicode bidi result:
+  - `120.00 EGP` shows as `EGP 120.00`;
+  - `-45.50 ج.م` shows as `ج.م 45.50-`, with the minus on the right of the number;
+  - `×2` shows as `2×`.
+
+  The two runtimes don't differ here. Whether this is right for the counter and the receipt is the founder's call. If not, amounts need an explicit direction or isolation, or locale formatting: a localization rule for the spec, not a runtime choice.
+- **G3-F3 (runtime default, configurable).** In an input field with no letter in it, A falls back to the layout's right-to-left direction, so `-12` shows as `12-`. B (`dir="auto"`) falls back to left-to-right and shows `-12`. Either can pin a price field's direction explicitly.
+- **G3-F4 (rendering).** A draws text with grayscale antialiasing; B uses ClearType subpixel antialiasing (coloured edges in `cmp-back-chevron-…`). Legibility on a real 4 GB PC screen is for the founder to judge.
+- **G3-F5 (my sheet).** Noto Naskh Arabic has no Latin glyphs. A falls back to a sans font; B falls back to the browser's default serif, because my CSS names no generic family. A product names its Latin font.
+- **G3-F6 (harness).** Three things the harness had to work around:
+  - Apps started from SSH (through `schtasks`) don't get the foreground, so typed keys were lost until a real Alt+Tab (`virsh send-key`) moved the focus. Compose drew a caret anyway, from its own focus state. A Notepad control proved the key path (`ctrl-notepad-02-alttab-typed.png`).
+  - The first Alt+Shift showed a Windows "Input language switching" toast. The Arabic keyboard is now set as the cashier's default and takes effect at logon.
+  - `cashier` cannot run `tasklist` over SSH; the admin account checks processes.
+- **G3-F7 (timing, not gated).** On the first launch after the first re-logon, A took 195 s from process start to its sheet; on the next re-logon, 49.7 s, the same as round 1's cold start. Warm starts: about 1.6–2 s (A), about 5 s (B). B's per-user install took 435.5 s here, against 247 s in round 1, on the same throttled VM. One-off numbers; the physical 4 GB PC remains the measurement that counts.
+
+**Not covered:** Windows 11 (no VM); high-DPI scaling; IMEs other than Arabic 101; screen readers; Arabic-Indic digit input from the keyboard (the keypad gives Latin digits).
+
 ## Timebox (founder decision, 2026-10-16)
 
 The 1-day cap of `/prototype` applies. The studio's waiver exception covers only the top-ranked risk (sync, risk 1), and this spike tests risk 2, so **no waiver was given**. If round 1 is not demonstrable within one working day, the question is too large: stop, report where it stopped and split it. The 2-hour rule applies to each gate: more than 2 hours without a running result means reframe or drop the runtime.
@@ -135,9 +215,16 @@ B already covers the web shell the research note asked for (A plus at least one 
 
 ### Next rounds
 
-- **Real-printer day (founder borrows the printers):** S50 status read from A and B; the hardware legs of S20 (vendor driver and Generic / Text Only queue), S23 (drawer kick on pin 2 / pin 5, including offline and paper-out), S24 (Arabic raster on paper) and S29 (power-off, paper-out and unplug mid-job without losing or duplicating a receipt).
-- **Round 2 (its own prototype, A and B):** G3 Arabic RTL (S6/S46) — **blocks the runtime ADR** (founder, 2026-10-17; note OQ22) — then G4 per-user update (S36) and tamper legs TS-03c, TS-05b, TS-06c.
-- **Physical 4 GB PC:** cold-start and memory numbers that count, with a per-process disk trace for the sequential-read question.
+**Order (founder, 2026-10-17): everything the desktop runtime ADR needs comes first.**
+
+1. **Round 2 (its own prototype run, A and B; 1-day cap; 2026-10-17):** G3 Arabic RTL (S6/S46). **Done: PASS for A and B** (founder, 2026-10-17; note OQ22 closed).
+2. **Updater follow-up** (Advanced Installer, InstallAnywhere): done as part 6 of `docs/research/desktop-client-adr-followups.md`. Its Q-6.1 is open.
+3. **G4 per-user update** (S36; followups S10, S11, S15, S16) and the **tamper legs** TS-03c, TS-05b, TS-06c. They did not fit round 2's day: **round 3**.
+4. **Runtime ADR** (`/architecture-decision`).
+5. **At the very end, but before their first stories:**
+   - **Phone spikes** on the founder's Honor 400 Pro (followups S32, then S33 only after S32 reports). They come before the owner-app stories; `/setup-stack` records the owner app as "PWA, provisional until S32/S33".
+   - **Real-printer day** (the founder borrows the printers), before the printing stories: S50 status read from A and B; the hardware legs of S20 (vendor driver and Generic / Text Only queue), S23 (drawer kick on pin 2 / pin 5, including offline and paper-out), S24 (Arabic raster on paper) and S29 (power-off, paper-out and unplug mid-job without losing or duplicating a receipt).
+- **Physical 4 GB PC** (no date set): cold-start and memory numbers that count, with a per-process disk trace for the sequential-read question.
 
 ### Answered from the research evidence, confirmed in G2
 
