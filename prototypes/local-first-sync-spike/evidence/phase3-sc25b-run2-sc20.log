@@ -1,0 +1,11 @@
+phase 3 SC-20 (disk full), commit 04996e2, 50 seeds per cell
+  a_txn_transient   exercised 50/50  violating 0  PASS
+  a_txn_persistent  exercised 50/50  violating 0  PASS
+  b_marker_write    exercised 50/50  violating 0  PASS
+  b_marker_fsync    exercised 50/50  violating 0  PASS
+  b_marker_replace  exercised 50/50  violating 0  PASS
+  c_ack_mark        exercised 50/50  violating 0  PASS
+  mutant full_refuses       CAUGHT after 1 runs: ('I7', 'outbox did not drain after faults stopped')
+  mutant marker_crash       CAUGHT after 3 runs: ('R7', 'no marker_behind owner alert on the server (events: {})')
+  mutant ack_despite_full   CAUGHT after 1 runs: ('I1', 's1-a2 acknowledged but missing on the server')
+SC-20: PASS  (total 111.6 s)

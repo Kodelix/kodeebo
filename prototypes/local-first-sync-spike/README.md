@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) dev run PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28/29/30 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -868,6 +868,15 @@ The lease is counted on server time plus the device's monotonic counter, never t
   - `no_warning` after 1 (R24).
   - `reject_after_expiry` after 1: the backlog never reached the server (I1).
   - `no_heartbeat` after 3 (R28).
+
+#### Run 2 (committed harness `04996e2`) — SC-25b **PASS**, full regression PASS
+
+`evidence/phase3-sc25b-run2-*` (every log header `commit 04996e2`, no `+dirty`).
+- **SC-25b:** 3 × 20 runs, 0 violations, 5 of 5 mutants caught after the same number of runs as run 1.
+- **SC-25a:** one-tenth size 30 of 30 and full size 3 of 3, 0 violations, both mutants caught. Progress per window matches `a5900db`, except the slow-uplink window, which differs by about ±10 commands: how many batches finish inside the real-time timeouts on a throttled link is timing, not seed.
+- **Earlier cases:** SC-23, SC-22, SC-21a, SC-20 (and its real tmpfs leg, 50 of 50) and SC-19 PASS, matching their previous runs. The only differences are wall-clock timestamps inside violation messages and the race detail of the SC-22 mutant.
+- **Earlier phases:** phase 0, phase 1 and phase 2 (10 seeds, 300 runs) PASS; phase 2's TS-09 sale count is 15 against 16, a wall-clock effect. Tamper: 36 of 36.
+- **The pinned-list guard** passed for phase 2 and tamper.
 
 **Finding P3-F9 — the lease must be renewed even when there is nothing to upload.** In the first attempt, a device that came back online with an empty outbox kept its old lease: its sync returned early and never contacted the server. A device used only to view data, or one that had already drained, would then run out of lease while connected. The client now sends an empty batch as a heartbeat. The server stub returned `"results": null` for an empty batch, which the client rightly rejected (P2-F1); it now always returns a list.
 
