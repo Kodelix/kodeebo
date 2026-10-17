@@ -1,0 +1,61 @@
+# date: 2026-10-17T07:26:18Z
+## query: Authenticode  (repo:NucleusFramework/Nucleus)
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/PeSignature.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/WindowsAppImageSigner.kt
+## query: WinVerifyTrust  (repo:NucleusFramework/Nucleus)
+## query: Ed25519  (repo:NucleusFramework/Nucleus)
+## query: stagingPercentage  (repo:NucleusFramework/Nucleus)
+## query: rollback  (repo:NucleusFramework/Nucleus)
+decorated-window-tao/REFACTOR_VERIFICATION.md
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/LinuxUpdateHelper.kt
+plugin-build/plugin/src/test/kotlin/dev/nucleusframework/desktop/application/internal/LinuxUpdateHelperTest.kt
+## query: minimumSystemVersion  (repo:NucleusFramework/Nucleus)
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/MacDmgLzma.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/tasks/AbstractPatchMacJvmTask.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/MacAssetsTool.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/tasks/AbstractNativeMacApplicationPackageAppDirTask.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/dsl/PlatformSettings.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/dsl/GraalvmSettings.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/configureJvmApplication.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/configureGraalvmApplication.kt
+## updater-runtime source tree (paths containing 'updater')
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/engine/UpdaterContract.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/engine/UpdaterGateway.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/engine/UpdaterProbe.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/engine/UpdaterReducer.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/engine/UpdaterViewModel.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/feed/FeedServerContract.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/feed/FeedServerHost.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/feed/FeedServerProbe.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/feed/FeedServerViewModel.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/network/HttpClientsGateway.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/network/HttpClientsProbe.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/network/HttpClientsViewModel.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/network/TrustStoreGateway.kt
+examples/lab/probes/updater/src/main/kotlin/dev/nucleusframework/lab/probes/updater/network/TrustStoreProbe.kt
+examples/lab/probes/updater/src/test/kotlin/dev/nucleusframework/lab/probes/updater/UpdaterProbesTest.kt
+plugin-build/plugin/src/main/kotlin/dev/nucleusframework/desktop/application/internal/UpdaterLaunchSettings.kt
+plugin-build/plugin/src/test/kotlin/dev/nucleusframework/desktop/application/internal/UpdaterLaunchSettingsTest.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/DownloadProgress.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/NucleusUpdater.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/UpdateEvent.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/UpdateInfo.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/UpdateLevel.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/UpdateResult.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/UpdateSimulation.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/UpdaterConfig.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/Version.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/exception/UpdateException.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/ChecksumVerifier.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/FeedFetcher.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/FeedOverride.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/FileSelector.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/InstalledVersionWatcher.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/LinuxAppImageUpdateScript.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/LinuxPackageUpdateScript.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/MacZipUpdateScript.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/PlatformInfo.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/PlatformInstaller.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/ShellQuoting.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/SimulatedUpdate.kt
+updater-runtime/src/main/kotlin/dev/nucleusframework/updater/internal/UpdateMarker.kt

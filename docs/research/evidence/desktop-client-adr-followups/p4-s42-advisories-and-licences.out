@@ -1,0 +1,75 @@
+# date: 2026-10-17T07:25:38Z
+# curl: curl 8.23.0 (x86_64-pc-linux-gnu) libcurl/8.23.0 OpenSSL/3.6.5 zlib/1.3.1.zlib-ng brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 nghttp2/1.70.0 ngtcp2/1.25.0 nghttp3/1.18.0 mit-krb5/1.22.2
+# gh: gh version 2.102.0 (2026-09-30)
+## OSV Maven dev.nucleusframework:nucleus.updater-runtime 2.5.18
+{}
+## OSV Maven control log4j-core 2.14.1 (must return advisories)
+7
+## Maven Central metadata for nucleus.updater-runtime
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>dev.nucleusframework</groupId>
+  <artifactId>nucleus.updater-runtime</artifactId>
+  <versioning>
+    <latest>3.0.0-dev-202610132318</latest>
+    <release>3.0.0-dev-202610132318</release>
+    <versions>
+      <version>2.0.0-alpha-202605111832</version>
+      <version>2.0.0-alpha-202605122241</version>
+      <version>2.0.0-alpha-202605130436</version>
+      <version>2.0.0-alpha-202605130503</version>
+      <version>2.0.0-alpha-202605130728</version>
+      <version>2.0.0-alpha-202605131052</version>
+      <version>2.0.0-alpha-202605131225</version>
+      <version>2.0.0-alpha-202605131305</version>
+      <version>2.0.0-alpha-202605131316</version>
+      <version>2.0.0-alpha-202605151123</version>
+      <version>2.0.0-alpha-202605151436</version>
+      <version>2.0.0-alpha-202605151637</version>
+      <version>2.0.0-alpha-202605151754</version>
+      <version>2.0.0-alpha-202605151813</version>
+      <version>2.0.0-alpha-202605241801</version>
+      <version>2.0.0-alpha-202605241940</version>
+      <version>2.0.0-alpha-202605242011</version>
+      <version>2.0.0-alpha-202605242012</version>
+      <version>2.0.0-alpha-202605251335</version>
+      <version>2.0.0-alpha-202605251453</version>
+      <version>2.0.0-alpha-202605260424</version>
+      <version>2.0.0-alpha-202605260518</version>
+## npm jdeploy (dist-tags, modified)
+{
+  "tags": {
+    "alpha": "4.1.3-alpha.1",
+    "dev": "6.1.6-dev.2",
+    "latest": "6.1.10"
+  },
+  "modified": "2026-10-03T15:21:59.013Z",
+  "license": "ISC"
+}
+## OSV npm jdeploy (latest)
+latest=6.1.10
+{}
+## repo NucleusFramework/Nucleus
+{"archived":false,"license":"NOASSERTION","pushed_at":"2026-10-13T23:18:21Z","stars":416}
+-- latest release
+{"published":"2026-09-23T05:42:51Z","tag":"v2.5.18"}
+-- published security advisories (count)
+0
+## repo shannah/jdeploy
+{"archived":false,"license":"Apache-2.0","pushed_at":"2026-10-03T16:11:06Z","stars":419}
+-- latest release
+{"published":"2026-10-03T14:36:44Z","tag":"v6.1.10"}
+-- published security advisories (count)
+0
+## repo bekoenig/getdown
+{"archived":false,"license":"NOASSERTION","pushed_at":"2026-02-06T22:14:27Z","stars":27}
+-- latest release
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#get-the-latest-release","status":"404"}gh: Not Found (HTTP 404)
+-- published security advisories (count)
+0
+## repo threerings/getdown
+{"archived":false,"license":"NOASSERTION","pushed_at":"2026-10-12T20:39:23Z","stars":527}
+-- latest release
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#get-the-latest-release","status":"404"}gh: Not Found (HTTP 404)
+-- published security advisories (count)
+0

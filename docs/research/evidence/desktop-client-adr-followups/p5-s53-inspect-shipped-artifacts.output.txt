@@ -1,0 +1,188 @@
+== Electron zip /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/dl/electron-44.8.0/electron-v44.8.0-win32-x64.zip
+entries: 73
+   vk_swiftshader_icd.json 106
+   icudtl.dat 10875024
+   vk_swiftshader.dll 5520384
+   ffmpeg.dll 3113472
+   resources.pak 12436085
+   dxcompiler.dll 25745408
+   LICENSE 1096
+   dxil.dll 1509760
+   vulkan-1.dll 939520
+   chrome_200_percent.pak 1269017
+   LICENSES.chromium.html 20477229
+   chrome_100_percent.pak 719654
+   electron.exe 247033344
+   version 6
+   d3dcompiler_47.dll 4741488
+   snapshot_blob.bin 369024
+   v8_context_snapshot.bin 742456
+  locales/*: 55 files; *.bdic dictionaries in zip: []
+
+-- ffmpeg.dll: 3113472 bytes; sha256 c5d6728608e90550f4de8c97399689f5ae6b6875b8073f74ed2985a68479ae1c
+   hunspell                         count 0
+   Hunspell                         count 0
+   liblouis                         count 0
+   ISimpleDOM                       count 0
+   IAccessible2                     count 0
+   nspr                             count 0
+   avcodec_license                  count 0
+   LGPL version 2.1 or later        count 0
+   GPL version 2 or later           count 0
+   GPL version 3 or later           count 0
+   --enable-gpl                     count 0
+   --enable-nonfree                 count 0
+   --enable-version3                count 0
+   libavcodec                       count 1
+   configuration:                   count 0
+   configure flags found (set): []
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+   string: GPL
+
+-- electron.exe: 247033344 bytes; sha256 35e415b035c9b1e68a390e3162afcfda8e4b4c4262b4824b5aa58f050f233572
+   hunspell                         count 1
+   Hunspell                         count 4
+   liblouis                         count 0
+   ISimpleDOM                       count 0
+   IAccessible2                     count 6
+   nspr                             count 3
+   avcodec_license                  count 0
+   LGPL version 2.1 or later        count 0
+   GPL version 2 or later           count 0
+   GPL version 3 or later           count 0
+   --enable-gpl                     count 0
+   --enable-nonfree                 count 0
+   --enable-version3                count 0
+   libavcodec                       count 0
+   configuration:                   count 2
+
+== Temurin zip /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/dl/temurin-jdk21/OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip
+entries: 577 legal files: 314 legal modules: 70
+  top-level: jdk-21.0.12.1+1/NOTICE 2400
+  top-level: jdk-21.0.12.1+1/release 1664
+  legal/java.base/LICENSE -> ['jdk-21.0.12.1+1/legal/java.base/LICENSE']
+  legal/java.base/ASSEMBLY_EXCEPTION -> ['jdk-21.0.12.1+1/legal/java.base/ASSEMBLY_EXCEPTION']
+  legal/java.base/ADDITIONAL_LICENSE_INFO -> ['jdk-21.0.12.1+1/legal/java.base/ADDITIONAL_LICENSE_INFO']
+shipped Classpath paragraph found: True ; jdk21u paragraph found: True ; identical after whitespace normalisation: True
+shipped paragraph: As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.
+shipped LICENSE sha256: 4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726  upstream jdk21u LICENSE sha256: 4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726  identical text after whitespace normalisation: True
+
+-- top-level NOTICE (verbatim):
+# Notices for Eclipse Temurin
+
+This content is produced and maintained by the Eclipse Temurin project.
+
+ * Project home: https://projects.eclipse.org/projects/adoptium.temurin
+
+## Trademarks
+
+Eclipse Temurin is a trademark of the Eclipse Foundation. Eclipse, and the
+Eclipse Logo are registered trademarks of the Eclipse Foundation.
+
+Java and all Java-based trademarks are trademarks of Oracle Corporation in
+the United States, other countries, or both.
+
+## Copyright
+
+All content is the property of the respective authors or their employers.
+For more information regarding authorship of content, please consult the
+listed source code repository logs.
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the GNU General Public License, version 2, with the Classpath Exception.
+
+Additional information relating to the program and accompanying materials
+license and usage is available as follows.
+ * For Eclipse Temurin version 8 see the LICENSE and ASSEMBLY_EXCEPTION files
+in the top level directory of the installation.
+ * For Eclipse Temurin version 9 or later see the files under the legal/
+directory in the top level directory of the installation.
+
+SPDX-License-Identifier: GPL-2.0 WITH Classpath-exception-2.0
+
+## Source Code
+
+The project maintains the following source code repositories which may be
+relevant to this content:
+
+ * https://github.com/adoptium/temurin-build
+ * https://github.com/adoptium/jdk
+ * https://github.com/adoptium/jdk8u
+ * https://github.com/adoptium/jdk11u
+ * https://github.com/adoptium/jdk17u
+ * https://github.com/adoptium/jdk20
+ * and so on
+
+## Third-party Content
+
+This program and accompanying materials contains third-party content.
+ * For Eclipse Temurin version 8 see the THIRD_PARTY_LICENSE file in the
+top level directory of the installation.
+ * For Eclipse Temurin version 9 or later see the files under the legal/
+directory in the top level directory of the installation.
+
+## Cryptography
+
+Content may contain encryption software. The country in which you are currently
+may have restrictions on the import, possession, and use, and/or re-export to
+another country, of encryption software. BEFORE using any encryption software,
+please check the country's laws, regulations and policies concerning the import,
+possession, or use, and re-export of encryption software, to see if this is
+permitted.
+
+
+== installers
+MSI (A) /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/artifacts/KodeeboSpikeA-1.0.0.msi tool: None
+   could not run: no 7z/7za/7zz/msiextract on PATH
+NSIS setup (B) /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/build-b/dist/KodeeboSpikeB Setup 1.0.0.exe tool: None
+   could not run: no 7z/7za/7zz/msiextract on PATH

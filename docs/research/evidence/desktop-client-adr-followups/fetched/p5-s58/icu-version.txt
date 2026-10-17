@@ -1,0 +1,2 @@
+#define U_ICU_VERSION_MAJOR_NUM 74
+#define U_ICU_VERSION "74.2"

@@ -1,0 +1,48 @@
+run 2026-10-17T07:28Z
+
+== OSV OSV-2026-962 (harfbuzz commit) aliases None published 2026-06-24T00:03:23.338692Z modified 2026-06-24T00:03:23.339152Z
+   summary: Use-of-uninitialized-value in iup_delta_optimize
+   details: OSS-Fuzz report: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=526770452  ``` Crash type: Use-of-uninitialized-value Crash state: iup_delta_optimize OT::tuple_delta_t::optimize OT::TupleVariationData<OT::NumType<true, unsigned short, 2u>>::tuple_variations_ ``` 
+   affected repo/package: {'name': 'harfbuzz', 'ecosystem': 'OSS-Fuzz', 'purl': 'pkg:generic/harfbuzz'} | versions listed: 20 | ranges: [('GIT', 'https://github.com/harfbuzz/harfbuzz.git', [{'introduced': 'fb7af519b5a0e2d72b0621c05ba70fb1b2eaacaf'}, {'fixed': '6c2107ace765f95c67d65a21f94b54a2f12d80dc'}])]
+   severity: None | database_specific: None
+   references: ['https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=526770452']
+
+== OSV CVE-2026-50811 (freetype commit) aliases None published 2026-07-07T00:00:00Z modified 2026-08-14T18:51:54.250909475Z
+   summary: 
+   details: An out-of-bounds read vulnerability exists in FreeType 2.14.3 and versions before commit 5a280ecde6f324de0d226261036e736e0cb49a71 in src/truetype/ttgxvar.c, in the TT_Get_Var_Design implementation used by FT_Get_Var_Design_Coordinates
+   affected repo/package: https://github.com/freetype/freetype | versions listed: 117 | ranges: [('GIT', 'https://github.com/freetype/freetype', [{'introduced': '0'}, {'fixed': '5a280ecde6f324de0d226261036e736e0cb49a71'}])]
+   affected repo/package: https://gitlab.freedesktop.org/freetype/freetype | versions listed: 117 | ranges: [('GIT', 'https://gitlab.freedesktop.org/freetype/freetype', [{'introduced': '0'}, {'fixed': '5a280ecde6f324de0d226261036e736e0cb49a71'}])]
+   severity: [{'type': 'CVSS_V3', 'score': 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:L'}] | database_specific: {'cna_assigner': 'mitre', 'osv_generated_from': 'https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/50xxx/CVE-2026-50811.json'}
+   references: ['https://gist.github.com/junius-sec/6dd0fb25b643f89914083a38e5e57ace', 'https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/50xxx/CVE-2026-50811.json', 'https://nvd.nist.gov/vuln/detail/CVE-2026-50811', 'https://gitlab.freedesktop.org/freetype/freetype/-/issues/1436', 'https://github.com/freetype/freetype/commit/5a280ecde6f324de0d226261036e736e0cb49a71', 'https://gitlab.freedesktop.org/freetype/freetype/-/commit/5a280ecde6f324de0d226261036e736e0cb49a71']
+
+== OSV CVE-2026-95512 (freetype commit) aliases None published 2026-10-02T09:05:11.245Z modified 2026-10-07T07:05:33.175854853Z
+   summary: Freetype: freetype: denial of service via repeated subroutine allocations in cid font loader
+   details: A flaw was found in FreeType, specifically within its CID font loader. A remote attacker could exploit this vulnerability by tricking a user into opening content that embeds or references a specially crafted CID-keyed font. This crafted font can cause repeated allocations and decryptions of subroutine data across multiple font dictionaries, leading to excessive memory and CPU consumption. This can result in a denial of service (DoS) for the application or service processing the font, potentially causing it to hang or terminate.
+   affected repo/package: https://gitlab.freedesktop.org/freetype/freetype | versions listed: 117 | ranges: [('GIT', 'https://gitlab.freedesktop.org/freetype/freetype', [{'introduced': '0'}, {'fixed': 'f3ca71c9900fe860849b3163a6e2c1e765b291d9'}])]
+   severity: [{'type': 'CVSS_V3', 'score': 'CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H'}] | database_specific: {'osv_generated_from': 'https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/95xxx/CVE-2026-95512.json', 'cna_assigner': 'redhat', 'cwe_ids': ['CWE-400']}
+   references: ['https://access.redhat.com/downloads/content/package-browser/', 'https://catalog.redhat.com/software/containers/', 'https://access.redhat.com/errata/RHSA-2026:74952', 'https://access.redhat.com/security/cve/CVE-2026-95512', 'https://github.com/CVEProject/cvelistV5/tree/main/cves/2026/95xxx/CVE-2026-95512.json', 'https://nvd.nist.gov/vuln/detail/CVE-2026-95512']
+
+== harfbuzz/harfbuzz GHSA published: 5
+  GHSA-q4gc-p4hh-3765 None medium 2026-08-18 | Heap Buffer Over-Read in hb_buffer_add_utf* Pre-Context Phase | [('harfbuzz', '< 14.0.0', '14.0.0')]
+  GHSA-xvjr-f2r9-c7ww CVE-2026-22693 medium 2026-01-09 | Null Pointer Dereference in SubtableUnicodesCache::create leading to DoS | [('harfbuzz', '< 12.3.0', '')]
+  GHSA-p965-5rr7-9mhq None medium 2025-07-14 | Buffer overflow when debug messaging is enabled | [('harfbuzz', '<=11.2.1', '')]
+  GHSA-f6q6-4vjq-m6j7 None low 2025-05-27 | Null Pointer Dereference in `hb-shape-fuzzer` via `hb_ft_get_glyph_h_advances` | [('', 'None', '')]
+  GHSA-qmp9-xqm5-jh6m CVE-2024-56732 high 2024-12-27 |  heap-buffer-overflow on hb_cairo_glyphs_from_buffer() | [('', '8.5.0- 10.0.1', '')]
+--- harfbuzz releases page 2 and compare
+13.1.1 2026-03-13T01:12:13Z
+13.1.0 2026-03-11T02:05:55Z
+13.0.1 2026-03-07T18:28:29Z
+13.0.0 2026-03-04T20:38:42Z
+12.3.2 2026-01-24T12:13:40Z
+12.3.1 2026-01-20T22:10:10Z
+12.3.0 2025-12-27T20:36:56Z
+12.2.0 2025-11-05T05:30:47Z
+12.1.0 2025-10-01T05:32:43Z
+12.0.0 2025-09-27T22:08:54Z
+11.5.1 2025-09-22T17:03:37Z
+11.5.0 2025-09-12T19:40:47Z
+13.1.1 ...HB: behind ahead_by 0 behind_by 3
+13.1.0 ...HB: ahead ahead_by 36 behind_by 0
+13.0.1 ...HB: ahead ahead_by 103 behind_by 0
+13.0.0 ...HB: ahead ahead_by 117 behind_by 0
+12.3.2 ...HB: ahead ahead_by 644 behind_by 0

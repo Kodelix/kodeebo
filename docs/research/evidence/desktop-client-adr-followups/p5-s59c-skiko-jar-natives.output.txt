@@ -1,0 +1,30 @@
+jar bytes 10630483 sha256 eebad490c2828198e86e641cbd44958617867ce70f893b21852f07d0be099c0a
+  entry META-INF/ 0
+  entry META-INF/MANIFEST.MF 25
+  entry skiko-windows-x64.dll 14119424
+  entry skiko-windows-x64.dll.sha256 64
+  entry icudtl.dat 10468208
+
+-- skiko-windows-x64.dll 14119424 bytes
+    FreeType[ -~]{0,60} -> []
+    HarfBuzz[ -~]{0,40} -> []
+    harfbuzz[ -~]{0,40} -> ['harfbuzz ', 'harfbuzz.cpp']
+    ICU [ -~]{0,40} -> ['ICU Data header) for break data.', 'ICU data']
+    icudt[0-9]+[a-z]? -> ['icudt74l']
+    \b74\.2\b -> []
+    \b2\.14\.\d\b -> []
+    13\.1\.\d -> ['13.1.0']
+    SkFontMgr_[A-Za-z]+ -> ['SkFontMgr_win']
+    m150[ -~]{0,30} -> []
+
+-- icudtl.dat 10468208 bytes
+    FreeType[ -~]{0,60} -> []
+    HarfBuzz[ -~]{0,40} -> []
+    harfbuzz[ -~]{0,40} -> []
+    ICU [ -~]{0,40} -> []
+    icudt[0-9]+[a-z]? -> ['icudt74l']
+    \b74\.2\b -> []
+    \b2\.14\.\d\b -> []
+    13\.1\.\d -> []
+    SkFontMgr_[A-Za-z]+ -> []
+    m150[ -~]{0,30} -> []

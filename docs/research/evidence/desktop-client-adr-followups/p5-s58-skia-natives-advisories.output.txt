@@ -1,0 +1,42 @@
+run 2026-10-17T07:28Z
+--- HarfBuzz commit 9cb1fee51069b206effb4736e443b038d230789d
+commit date 2026-03-12T15:36:39Z | [meson] Update wraps
+14.6.0 2026-10-05T20:39:14Z
+14.5.1 2026-09-30T23:41:49Z
+14.5.0 2026-09-20T21:46:24Z
+14.4.0 2026-08-26T19:30:27Z
+14.3.1 2026-08-12T22:53:43Z
+14.3.0 2026-07-31T14:53:50Z
+14.2.1 2026-06-02T11:34:02Z
+14.2.0 2026-04-20T03:15:55Z
+14.1.0 2026-04-04T18:36:21Z
+14.0.0 2026-04-01T12:58:36Z
+13.2.1 2026-03-19T14:18:59Z
+13.2.0 2026-03-18T22:49:55Z
+14.6.0...HB: behind ahead_by 0 behind_by 1537
+14.5.1...HB: behind ahead_by 0 behind_by 1394
+14.5.0...HB: behind ahead_by 0 behind_by 1375
+14.4.0...HB: behind ahead_by 0 behind_by 1259
+14.3.1...HB: behind ahead_by 0 behind_by 1065
+14.3.0...HB: behind ahead_by 0 behind_by 1035
+--- FreeType (Chromium mirror) 264b5fbf5b912b39f98d038bf75d39be0a73f21b: header version
+#define FREETYPE_MAJOR  2
+#define FREETYPE_MINOR  14
+#define FREETYPE_PATCH  2
+FT commit Wed Mar 11 16:27:07 2026 | Update all copyright notices.
+--- ICU (Chromium deps/icu) 364118a1d9da24bb5b770ac3d762ac144d6da5a4: version header
+#define U_ICU_VERSION_MAJOR_NUM 74
+#define U_ICU_VERSION "74.2"
+ICU commit Tue Mar 26 20:55:03 2024 | Fix License by removing symlink.
+--- OSV commit queries
+OSV commit harfbuzz HTTP 200 1371 bytes
+  vulns: 1 ['OSV-2026-962']
+OSV commit freetype HTTP 200 13855 bytes
+  vulns: 2 ['CVE-2026-50811', 'CVE-2026-95512']
+OSV commit icu HTTP 200 2 bytes
+  vulns: 0 []
+--- GitHub repository security advisories (published)
+harfbuzz/harfbuzz published advisories: 5
+unicode-org/icu published advisories: 0
+freetype/freetype published advisories: 0
+google/skia published advisories: 0

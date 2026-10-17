@@ -1,0 +1,47 @@
+{
+  "commit": "364118a1d9da24bb5b770ac3d762ac144d6da5a4",
+  "tree": "268d3140262b461fdec9c1fd71f570234f9a740b",
+  "parents": [
+    "5ae60ba128b3d593307a221dc9322e83b0e9647f"
+  ],
+  "author": {
+    "name": "David Yeung",
+    "email": "dayeung@chromium.org",
+    "time": "Tue Mar 26 20:33:22 2024"
+  },
+  "committer": {
+    "name": "David Yeung",
+    "email": "dayeung@chromium.org",
+    "time": "Tue Mar 26 20:55:03 2024"
+  },
+  "message": "Fix License by removing symlink.\n\nICU 74 modified the license as a symlink which inevitable points to nothing. Fix is to update license so its not a symlink. The update script will also just point directly to the license instead of the symlink.\n\nChange-Id: I942fec36ad6dc5c1878a47411e855aeb16794b16\nBug: 331443177\nReviewed-on: https://chromium-review.googlesource.com/c/chromium/deps/icu/+/5397901\nReviewed-by: Shu-yu Guo \u003csyg@chromium.org\u003e\n",
+  "tree_diff": [
+    {
+      "type": "delete",
+      "old_id": "ea5b60640b01f74e295037aa8a6b7d4ea278a739",
+      "old_mode": 40960,
+      "old_path": "LICENSE",
+      "new_id": "0000000000000000000000000000000000000000",
+      "new_mode": 0,
+      "new_path": "/dev/null"
+    },
+    {
+      "type": "add",
+      "old_id": "0000000000000000000000000000000000000000",
+      "old_mode": 0,
+      "old_path": "/dev/null",
+      "new_id": "9f54372febca06e134bbc9d4700a1ebfeda13843",
+      "new_mode": 33188,
+      "new_path": "LICENSE"
+    },
+    {
+      "type": "modify",
+      "old_id": "db17f0f8fa468027c0ba6eb1209f6decf69e4551",
+      "old_mode": 33261,
+      "old_path": "scripts/update.sh",
+      "new_id": "f84d37a74ab48cf20c1a7f305130d9720aed0a7c",
+      "new_mode": 33261,
+      "new_path": "scripts/update.sh"
+    }
+  ]
+}

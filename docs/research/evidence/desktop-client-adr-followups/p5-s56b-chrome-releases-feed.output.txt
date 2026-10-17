@@ -1,0 +1,1506 @@
+run 2026-10-17T07:25Z
+feed HTTP 200 2717149 bytes
+posts: 118
+
+## 2026-10-15 | Extended Stable Update for Desktop | versions ['152.0.7977.169'] | link ['https://chromereleases.googleblog.com/2026/10/extended-stable-update-for-desktop_01598036246.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+    [
+
+
+570638834
+
+
+] Critical CVE-2026-110151
+    [
+
+
+568719351
+
+
+] Critical CVE-2026-110922
+    [
+
+
+565252396
+
+
+] High CVE-2026-110144
+    [
+
+
+564573066
+
+
+] High CVE-2026-110159
+    [
+
+
+566496747
+
+
+] High CVE-2026-110166
+    [
+
+
+568719352
+
+
+] High CVE-2026-110172
+    [
+
+
+567638392
+
+
+] High CVE-2026-110913
+    [
+
+
+568937999
+
+
+] High CVE-2026-110918
+    [
+
+
+568831769
+
+
+] High CVE-2026-110919
+    [
+
+
+569286602
+
+
+] High CVE-2026-110921
+   secfix text: Security Fixes Note: Access to bug details and links may be kept restricted until a majority of users are updated with a fix. We will also retain restrictions if the bug exists in a third party library that other projects similarly depend on, but haven’t yet fixed. There are 10 secu
+
+## 2026-10-13 | Extended Stable Update for Desktop | versions ['152.0.7977.167'] | link ['https://chromereleases.googleblog.com/2026/10/extended-stable-update-for-desktop_0571684596.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+    [
+
+
+567936270
+
+
+] Critical CVE-2026-106347
+    [
+
+
+567160164
+
+
+] Critical CVE-2026-106358
+    [
+
+
+568719364
+
+
+] Critical CVE-2026-110136
+    [
+
+
+570050934
+
+
+] Critical CVE-2026-110148
+    [
+
+
+568826881
+
+
+] Critical CVE-2026-110161
+    [
+
+
+567379988
+
+
+] High CVE-2026-106184
+    [
+
+
+568422505
+
+
+] High CVE-2026-106200
+    [
+
+
+565612897
+
+
+] High CVE-2026-106235
+    [
+
+
+567447106
+
+
+] High CVE-2026-106383
+    [
+
+
+568037533
+
+
+] High CVE-2026-110139
+    [
+
+
+562038980
+
+
+] High CVE-2026-110140
+    [
+
+
+568895734
+
+
+] High CVE-2026-110141
+    [
+
+
+570050928
+
+
+] High CVE-2026-110147
+    [
+
+
+565742182
+
+
+] High CVE-2026-110153
+    [
+
+
+570167922
+
+
+] High CVE-2026-110155
+    [
+
+
+561892119
+
+
+] High CVE-2026-110156
+    [
+
+
+570047270
+
+
+] High CVE-2026-110157
+    [
+
+
+552510359
+
+
+] High CVE-2026-110160
+    [
+
+
+540499008
+
+
+] High CVE-2026-110162
+    [
+
+
+568831102
+
+
+] High CVE-2026-110163
+    [
+
+
+568730794
+
+
+] High CVE-2026-110164
+    [
+
+
+570461696
+
+
+] High CVE-2026-110167
+    [
+
+
+496308073
+
+
+] High CVE-2026-110170
+    [
+
+
+570675082
+
+
+] High CVE-2026-110171
+    [
+
+
+540138836
+
+
+] High CVE-2026-19175
+    [
+
+
+554558968
+
+
+] High CVE-2026-87474
+    [
+
+
+553128689
+
+
+] High CVE-2026-87558
+    [
+
+
+553129531
+
+
+] High CVE-2026-87581
+   secfix text: Security Fixes Note: Access to bug details and links may be kept restricted until a majority of users are updated with a fix. We will also retain restrictions if the bug exists in a third party library that other projects similarly depend on, but haven’t yet fixed. This update includes 28 
+
+## 2026-10-06 | Extended Stable Update for Desktop | versions ['152.0.7977.158'] | link ['https://chromereleases.googleblog.com/2026/10/extended-stable-update-for-desktop_01274589277.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-10-02 | Extended Stable Update for Desktop | versions ['152.0.7977.152'] | link ['https://chromereleases.googleblog.com/2026/10/extended-stable-update-for-desktop.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-09-29 | Extended Stable Update for Desktop | versions ['152.0.7977.149'] | link ['https://chromereleases.googleblog.com/2026/09/extended-stable-update-for-desktop_01748636441.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-09-24 | Stable Channel Update for ChromeOS / ChromeOS Flex | versions ['152.0.7977.132'] | link ['https://chromereleases.googleblog.com/2026/09/stable-channel-update-for-chromeos_01638908712.html']
+   labels: ['ChromeOS', 'ChromeOS Flex', 'Stable updates']
+
+## 2026-09-22 | Extended Stable Update for Desktop | versions ['152.0.7977.140'] | link ['https://chromereleases.googleblog.com/2026/09/extended-stable-update-for-desktop_01917179067.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-09-17 | Extended Stable Update for Desktop | versions ['152.0.7977.134'] | link ['https://chromereleases.googleblog.com/2026/09/extended-stable-update-for-desktop_0130771745.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-09-16 | Stable Channel Update for ChromeOS / ChromeOS Flex | versions ['152.0.7977.129'] | link ['https://chromereleases.googleblog.com/2026/09/stable-channel-update-for-chromeos_01216216096.html']
+   labels: ['ChromeOS', 'ChromeOS Flex', 'Stable updates']
+
+## 2026-09-15 | Extended Stable Update for Desktop | versions ['152.0.7977.130'] | link ['https://chromereleases.googleblog.com/2026/09/extended-stable-update-for-desktop_01936140552.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-09-09 | Early Stable Update for Desktop | versions [] | link ['https://chromereleases.googleblog.com/2026/09/early-stable-update-for-desktop_01157104879.html']
+   labels: ['Desktop Update', 'Early Stable Updates']
+
+## 2026-09-09 | Extended Stable Update for Desktop | versions ['152.0.7977.120'] | link ['https://chromereleases.googleblog.com/2026/09/extended-stable-update-for-desktop.html']
+   labels: ['Desktop Update', 'Extended Stable updates']
+
+## 2026-09-08 | Stable Channel Update for ChromeOS / ChromeOS Flex | versions ['152.0.7977.113'] | link ['https://chromereleases.googleblog.com/2026/09/stable-channel-update-for-chromeos_0586661566.html']
+   labels: ['ChromeOS', 'ChromeOS Flex', 'Stable updates']
+    [548340637
+
+
+] 
+
+High
+
+ CVE-2026-79078 Use after free in FedCM  on  2026-08-18
+    [546670199
+
+
+] 
+
+High
+
+ CVE-2026-79236 Type confusion in V8  on  2026-08-14
+    [545767601
+
+
+] 
+
+High
+
+ CVE-2026-78938 Type confusion in V8  on  2026-08-12
+    [543707066
+
+
+] 
+
+High
+
+ CVE-2026-79274 Information leak in GPU  on  2026-08-07
+    [540870921
+
+
+] 
+
+High
+
+ CVE-2026-78954 Incorrect authorization in Extensions  on  2026-07-30
+    [540430406
+
+
+] 
+
+High
+
+ CVE-2026-78899 Use after free in V8  on  2026-07-29
+    [538969297
+
+
+] 
+
+Medium
+
+ CVE-2026-79141 Incorrect authorization in Browser  on  2026-07-25
+    [537846307
+
+
+] 
+
+Medium
+
+ CVE-2026-79025 Improper input validation in Workers  on  2026-07-22
+    [537835609
+
+
+] 
+
+High
+
+ CVE-2026-78904 Type confusion in ANGLE  on  2026-07-22
+    [537233963
+
+
+] 
+
+High
+
+ CVE-2026-79027 Use after free in WebRTC Reported by [Mozilla] on  2026-07-21
+    [537145191
+
+
+] 
+
+Medium
+
+ CVE-2026-79266 Use after free in DevTools  on  2026-07-20
+    [537109028
+
+
+] 
+
+High
+
+ CVE-2026-79026 Use after free in Extensions  on  2026-07-20
+    [536913431
+
+
+] 
+
+Medium
+
+ CVE-2026-79216 Buffer overflow in Blink Reported by [Found by XBOW and triaged by Andrés Luksenberg] on  2026-07-20
+    [536662911
+
+
+] 
+
+Medium
+
+ CVE-2026-79073 Improper state validation in Parser  on  2026-07-20
+    [536659904
+
+
+] 
+
+High
+
+ CVE-2026-79275 Use after free in ANGLE  on  2026-07-19
+    [536636648
+
+
+] 
+
+High
+
+ CVE-2026-79149 Use after free in ANGLE  on  2026-07-19
+    [536568319
+
+
+] 
+
+High
+
+ CVE-2026-79014 Race condition in Autofill  on  2026-07-19
+    [536606137
+
+
+] 
+
+High
+
+ CVE-2026-79198 Use after free in Platform  on  2026-07-19
+    [536526176
+
+
+] 
+
+Medium
+
+ CVE-2026-79185 Information leak in DOM  on  2026-07-19
+    [536505721
+
+
+] 
+
+High
+
+ CVE-2026-79189 Out of bounds write in ANGLE  on  2026-07-19
+    [536444272
+
+
+] 
+
+High
+
+ CVE-2026-79188 Out of bounds write in ANGLE  on  2026-07-18
+    [536428842
+
+
+] 
+
+Medium
+
+ CVE-2026-78963 Improper input validation in Media  on  2026-07-18
+    [536428615
+
+
+] 
+
+High
+
+ CVE-2026-78900 Improper input validation in Media  on  2026-07-18
+    [536428988
+
+
+] 
+
+Medium
+
+ CVE-2026-79004 Out of bounds read in Media  on  2026-07-18
+    [536166543
+
+
+] 
+
+Low
+
+ CVE-2026-78914 Uninitialized resource in Skia  on  2026-07-17
+    [535876894
+
+
+] 
+
+Medium
+
+ CVE-2026-79174 Incorrect authorization in Extensions Reported by [章鱼哥@aipyaipy.com] on  2026-07-17
+    [535379043
+
+
+] 
+
+High
+
+ CVE-2026-79118 Uninitialized resource in ANGLE  on  2026-07-15
+    [535374213
+
+
+] 
+
+Medium
+
+ CVE-2026-78984 Uninitialized resource in GPU  on  2026-07-15
+    [534591074
+
+
+] 
+
+High
+
+ CVE-2026-79232 Use after free in Aura  on  2026-07-13
+    [534468209
+
+
+] 
+
+High
+
+ CVE-2026-79235 Use after free in WebGL  on  2026-07-13
+    [533917984
+
+
+] 
+
+Medium
+
+ CVE-2026-78960 Information leak in Extensions Reported by [Oran Simhony from Palo Alto Networks] on  2026-07-12
+    [533511967
+
+
+] 
+
+Low
+
+ CVE-2026-79260 Improper input validation in Cookies  on  2026-07-10
+    [533093250
+
+
+] 
+
+Medium
+
+ CVE-2026-79075 Information leak in Geolocation  on  2026-07-09
+    [533079345
+
+
+] 
+
+Low
+
+ CVE-2026-79179 Incorrect authorization in DOM  on  2026-07-09
+    [533075126
+
+
+] 
+
+Low
+
+ CVE-2026-79133 Incorrect authorization in Forms  on  2026-07-09
+    [533060125
+
+
+] 
+
+Low
+
+ CVE-2026-79021 Missing authorization in InterestGroups  on  2026-07-09
+    [533021205
+
+
+] 
+
+Low
+
+ CVE-2026-79017 Race condition in Extensions  on  2026-07-09
+    [533001362
+
+
+] 
+
+Low
+
+ CVE-2026-79125 Information leak in XR  on  2026-07-09
+    [532988552
+
+
+] 
+
+High
+
+ CVE-2026-79043 Out of bounds write in ANGLE  on  2026-07-09
+    [532957785
+
+
+] 
+
+Medium
+
+ CVE-2026-79034 Information leak in CORS  on  2026-07-09
+   secfix text: Security Fixes Included: Medium Fixes Fix for KVM guest-controlled index vulnerability in kvm-cpufreq Medium Fixes virtio-gpu object-creation cleanup double-free/UAF High Fixes CVE-2026-64561 (Zapscape) - KVM VM Escape Medium Fixes Navi: MTK V4L2 decoder exploit Hig
+
+## 2026-09-08 | Chrome for Android Update | versions [] | link ['https://chromereleases.googleblog.com/2026/09/chrome-for-android-update_01729269728.html']
+   labels: ['Chrome for Android', 'Stable updates']
+   secfix text: security fixes as their corresponding Desktop releases (Windows & Mac: 153.0.8010.36/.37 Linux: 153.0.8010.36) unless otherwise noted. Krishna Govind Google Chrome 
+
+## 2026-09-08 | Stable Channel Update for Desktop | versions [] | link ['https://chromereleases.googleblog.com/2026/09/stable-channel-update-for-desktop_0808145027.html']
+   labels: ['Desktop Update', 'Stable updates']
+    [
+
+
+544163112
+
+
+] Critical CVE-2026-87464: Use after free in WebGL.
+    [
+
+
+546252753
+
+
+] Critical CVE-2026-87488: Use after free in WebGL.
+    [
+
+
+548127218
+
+
+] Critical CVE-2026-87438: Out of bounds write in WebGL.
+    [
+
+
+548130125
+
+
+] Critical CVE-2026-87527: Buffer overflow in WebGL.
+    [
+
+
+553770012
+
+
+] Critical CVE-2026-87628: Use after free in Cast.
+    [
+
+
+541715128
+
+
+] High CVE-2026-87512: Use after free in ANGLE.
+    [
+
+
+540817065
+
+
+] High CVE-2026-87585: Double free in PDFium.
+    [
+
+
+489489002
+
+
+] High CVE-2026-87444: Memory corruption in Codecs.
+    [
+
+
+503464711
+
+
+] High CVE-2026-87447: Incorrect authorization in Network.
+    [
+
+
+513458719
+
+
+] High CVE-2026-87440: Out of bounds read in Media.
+    [
+
+
+516996291
+
+
+] High CVE-2026-87633: Use after free in Views.
+    [
+
+
+517336350
+
+
+] High CVE-2026-87525: Out of bounds read in Chromoting.
+    [
+
+
+517371367
+
+
+] High CVE-2026-87578: Use after free in Receiver.
+    [
+
+
+517581661
+
+
+] High CVE-2026-87517: Race condition in Mobile.
+    [
+
+
+522546457
+
+
+] High CVE-2026-87524: Use after free in Core.
+    [
+
+
+523277481
+
+
+] High CVE-2026-87569: Missing authorization in Views.
+    [
+
+
+524423633
+
+
+] High CVE-2026-87554: Race condition in Chromoting.
+    [
+
+
+524453236
+
+
+] High CVE-2026-87467: Race condition in Updater.
+    [
+
+
+529123409
+
+
+] High CVE-2026-87492: Incorrect authorization in DevTools.
+    [
+
+
+529878021
+
+
+] High CVE-2026-87520: Use after free in Dawn.
+    [
+
+
+532916987
+
+
+] High CVE-2026-87514: Use after free in Views.
+    [
+
+
+534912743
+
+
+] High CVE-2026-87650: Out of bounds read in WebGL.
+    [
+
+
+536434693
+
+
+] High CVE-2026-87596: Out of bounds read in ANGLE.
+    [
+
+
+536444790
+
+
+] High CVE-2026-87654: Buffer overflow in ANGLE.
+    [
+
+
+536648007
+
+
+] High CVE-2026-87604: Out of bounds read in ANGLE.
+    [
+
+
+536664909
+
+
+] High CVE-2026-87621: Out of bounds write in ANGLE.
+    [
+
+
+536673946
+
+
+] High CVE-2026-87647: Uninitialized resource in GPU.
+    [
+
+
+539754136
+
+
+] High CVE-2026-87646: Use after free in Web Authentication.
+    [
+
+
+540019091
+
+
+] High CVE-2026-87500: Improper validation of array index in ANGLE.
+    [
+
+
+540021969
+
+
+] High CVE-2026-87572: Injection in DevTools.
+    [
+
+
+540058837
+
+
+] High CVE-2026-87460: Use after free in Platform.
+    [
+
+
+542756749
+
+
+] High CVE-2026-87542: Use after free in Input.
+    [
+
+
+544415098
+
+
+] High CVE-2026-87639: Use after free in WebPackaging.
+    [
+
+
+547426657
+
+
+] High CVE-2026-87552: Missing authorization in TrustedWebActivities.
+    [
+
+
+550141694
+
+
+] High CVE-2026-87651: Incorrect authorization in Paint.
+    [
+
+
+550360762
+
+
+] High CVE-2026-87587: Use after free in V8.
+    [
+
+
+552342545
+
+
+] High CVE-2026-87564: Type confusion in V8.
+    [
+
+
+552413517
+
+
+] High CVE-2026-87498: Missing authorization in WebUI.
+    [
+
+
+553118043
+
+
+] High CVE-2026-87499: Incorrect authorization in Network.
+    [
+
+
+553122131
+
+
+] High CVE-2026-87607: Use after free in Device.
+   secfix text: Security Fixes and Rewards Note: Access to bug details and links may be kept restricted until a majority of users are updated with a fix. We will also retain restrictions if the bug exists in a third party library that other projects similarly depend on, but haven’t yet fixed. This update incl
+
+## 2026-09-03 | Chrome for Android Update | versions ['152.0.7977.82', '152.0.7977.82/83'] | link ['https://chromereleases.googleblog.com/2026/09/chrome-for-android-update.html']
+   labels: ['Chrome for Android', 'Stable updates']
+   secfix text: security fixes as their corresponding Desktop releases (Windows & Mac: 152.0.7977.82/83 Linux: 152.0.7977.82) unless otherwise noted. Krishna Govind Google Chrome 
+
+## 2026-09-03 | Stable Channel Update for Desktop | versions ['152.0.7977.82', '152.0.7977.82/.83'] | link ['https://chromereleases.googleblog.com/2026/09/stable-channel-update-for-desktop_01882797386.html']
+   labels: ['Desktop Update', 'Extended Stable updates', 'Stable updates']
+    [
+
+
+542403045
+
+
+] High CVE-2026-85046: Type confusion in V8.
+    [
+
+
+502304489
+
+
+] High CVE-2026-85052: Out of bounds read in CrashReporting.
+    [
+
+
+533502257
+
+
+] High CVE-2026-85043: Incomplete cleanup in Network.
+    [
+
+
+540357382
+
+
+] High CVE-2026-85048: Use after free in Compositing.
+    [
+
+
+547819997
+
+
+] High CVE-2026-85045: Race condition in V8.
+    [
+
+
+549350408
+
+
+] High CVE-2026-85050: Out of bounds write in WebGL.
+    [
+
+
+552689418
+
+
+] High CVE-2026-85053: Improper resource exposure in CacheStorage.
+    [
+
+
+553119925
+
+
+] High CVE-2026-85042: Use after free in DevTools.
+    [
+
+
+553345874
+
+
+] High CVE-2026-85049: Use after free in Skia.
+    [
+
+
+553449113
+
+
+] High CVE-2026-85051: Type confusion in Compositing.
+    [
+
+
+513790581
+
+
+] Medium CVE-2026-85047: Improper input validation in Transactions Platform.
+    [
+
+
+517482830
+
+
+] Medium CVE-2026-85044: Use of released resource in Mobile.
+   secfix text: Security Fixes and Rewards Note: Access to bug details and links may be kept restricted until a majority of users are updated with a fix. We will also retain restrictions if the bug exists in a third party library that other projects similarly depend on, but haven’t yet fixed. This update
+
+## 2026-09-01 | Chrome for Android | versions ['152.0.7977.75', '152.0.7977.75/76'] | link ['https://chromereleases.googleblog.com/2026/09/chrome-for-android.html']
+   labels: ['Chrome for Android', 'Stable updates']
+   secfix text: security fixes as their corresponding Desktop releases (Windows & Mac: 152.0.7977.75/76 Linux: 152.0.7977.75) unless otherwise noted. Krishna Govind Google Chrome 
+
+## 2026-09-01 | Beta Channel Update for ChromeOS / ChromeOS Flex | versions ['152.0.7977.74'] | link ['https://chromereleases.googleblog.com/2026/09/beta-channel-update-for-chromeos.html']
+   labels: ['Beta updates', 'ChromeOS', 'ChromeOS Flex']
+
+## 2026-09-01 | Stable Channel Update for Desktop | versions ['152.0.7977.75', '152.0.7977.75/.76'] | link ['https://chromereleases.googleblog.com/2026/09/stable-channel-update-for-desktop.html']
+   labels: ['Desktop Update', 'Extended Stable updates', 'Stable updates']
+    [
+
+
+522307103
+
+
+] Critical CVE-2026-84353: Use after free in Shared Tab Groups.
+    [
+
+
+546260492
+
+
+] Critical CVE-2026-84352: Use after free in WebGL.
+    [
+
+
+498839176
+
+
+] High CVE-2026-84354: Incorrect authorization in FileSystem.
+    [
+
+
+514078656
+
+
+] High CVE-2026-84359: Information leak in Skia.
+    [
+
+
+523208474
+
+
+] High CVE-2026-84357: Improper input validation in Omnibox.
+    [
+
+
+533534913
+
+
+] High CVE-2026-84324: Use after free in Proxy.
+    [
+
+
+537105664
+
+
+] High CVE-2026-84349: Use after free in Browser.
+    [
+
+
+547936520
+
+
+] High CVE-2026-84326: Uninitialized resource in V8.
+    [
+
+
+549311485
+
+
+] High CVE-2026-84333: Use after free in Dawn.
+    [
+
+
+551593376
+
+
+] High CVE-2026-84351: Buffer overflow in GPU.
+    [
+
+
+553117928
+
+
+] High CVE-2026-84325: Improper input validation in DataTransfer.
+    [
+
+
+498710886
+
+
+] Medium CVE-2026-84328: Missing authorization in FileSystem.
+    [
+
+
+501679156
+
+
+] Medium CVE-2026-84347: Use after free in WebRTC.
+    [
+
+
+502411391
+
+
+] Medium CVE-2026-84323: Missing authorization in FileSystem.
+    [
+
+
+511774376
+
+
+] Medium CVE-2026-84355: Incorrect authorization in Navigation.
+    [
+
+
+514006886
+
+
+] Medium CVE-2026-84358: Improper privilege management in Downloads.
+    [
+
+
+514489238
+
+
+] Medium CVE-2026-84332: Incorrect authorization in SiteSettings.
+    [
+
+
+517091927
+
+
+] Medium CVE-2026-84330: UI misrepresentation in FullScreen.
+    [
+
+
+517798926
+
+
+] Medium CVE-2026-84334: Incorrect authorization in Chromoting.
+    [
+
+
+518100026
+
+
+] Medium CVE-2026-84348: Information leak in MediaCapture.
+    [
+
+
+522302504
+
+
+] Medium CVE-2026-84335: Incorrect authorization in TabStrip.
+    [
+
+
+498725213
+
+
+] Low CVE-2026-84327: Incorrect authorization in Autofill.
+    [
+
+
+498850269
+
+
+] Low CVE-2026-84329: Confused deputy in CredentialProvider.
+    [
+
+
+503787232
+
+
+] Low CVE-2026-84356: UI misrepresentation in FullScreen.
+    [
+
+
+513713427
+
+
+] Low CVE-2026-84350: Use after free in TabStrip.
+    [
+
+
+521753402
+
+
+] Low CVE-2026-84331: Incorrect authorization in Actor.
+   secfix text: Security Fixes and Rewards Note: Access to bug details and links may be kept restricted until a majority of users are updated with a fix. We will also retain restrictions if the bug exists in a third party library that other projects similarly depend on, but haven’t yet fixed. This update
+
+## 2026-09-01 | Chrome Stable for iOS Update | versions [] | link ['https://chromereleases.googleblog.com/2026/09/chrome-stable-for-ios-update.html']
+   labels: ['Chrome for iOS', 'Stable updates']
+
+## 2026-08-27 | Chrome for Android Update | versions [] | link ['https://chromereleases.googleblog.com/2026/08/chrome-for-android-update_0280487438.html']
+   labels: ['Chrome for Android', 'Early Stable Updates']
+
+## 2026-08-26 | Early Stable Update for Desktop | versions [] | link ['https://chromereleases.googleblog.com/2026/08/early-stable-update-for-desktop_0935803414.html']
+   labels: ['Desktop Update', 'Early Stable Updates']
+
+## 2026-08-26 | Chrome for Android Update | versions ['152.0.7977.64', '152.0.7977.64/65'] | link ['https://chromereleases.googleblog.com/2026/08/chrome-for-android-update_01012845874.html']
+   labels: ['Chrome for Android', 'Stable updates']
+   secfix text: security fixes as their corresponding Desktop releases (Windows & Mac: 152.0.7977.64/65, Linux: 152.0.7977.64) unless otherwise noted. Krishna Govind Google Chrome 
+
+## 2026-08-25 | Beta Channel Update for ChromeOS / ChromeOS Flex | versions ['152.0.7977.63'] | link ['https://chromereleases.googleblog.com/2026/08/beta-channel-update-for-chromeos_01207828433.html']
+   labels: ['Beta updates', 'ChromeOS', 'ChromeOS Flex']
+
+## 2026-08-25 | Stable Channel Update for Desktop | versions ['152.0.7977.64', '152.0.7977.64/.65'] | link ['https://chromereleases.googleblog.com/2026/08/stable-channel-update-for-desktop_0256176589.html']
+   labels: ['Desktop Update', 'Extended Stable updates', 'Stable updates']
+    [
+
+
+496807874
+
+
+] Critical CVE-2026-79282: Use after free in ANGLE.
+    [
+
+
+516427761
+
+
+] Critical CVE-2026-79290: Use after free in Aura.
+    [
+
+
+516764384
+
+
+] Critical CVE-2026-79054: Use after free in Chromecast.
+    [
+
+
+516777082
+
+
+] Critical CVE-2026-79121: Improper input validation in Chromecast.
+    [
+
+
+516988476
+
+
+] Critical CVE-2026-79224: Use after free in Chromecast.
+    [
+
+
+517518019
+
+
+] Critical CVE-2026-79052: Use after free in Aura.
+    [
+
+
+518006007
+
+
+] Critical CVE-2026-79150: Use after free in Views.
+    [
+
+
+522082472
+
+
+] Critical CVE-2026-78935: Use of uninitialized variable in Mobile.
+    [
+
+
+523704817
+
+
+] Critical CVE-2026-79012: Use after free in Safebrowsing.
+    [
+
+
+532921800
+
+
+] Critical CVE-2026-79200: Use after free in Aura.
+    [
+
+
+532617619
+
+
+] High CVE-2026-78989: Out of bounds read in ANGLE.
+    [
+
+
+508638064
+
+
+] High CVE-2026-79069: Memory corruption in Tint.
+    [
+
+
+498885920
+
+
+] High CVE-2026-79175: Type confusion in Accessibility.
+    [
+
+
+500311587
+
+
+] High CVE-2026-79218: Incorrect authorization in Sandbox.
+    [
+
+
+501892500
+
+
+] High CVE-2026-79195: Use after free in Script.
+    [
+
+
+513261751
+
+
+] High CVE-2026-78939: Use after free in Chromecast.
+    [
+
+
+515470739
+
+
+] High CVE-2026-79194: Use after free in Chromoting.
+    [
+
+
+515473074
+
+
+] High CVE-2026-79247: Use after free in Chromoting.
+    [
+
+
+516947491
+
+
+] High CVE-2026-79219: Use after free in Bluetooth.
+    [
+
+
+517515945
+
+
+] High CVE-2026-79047: Use after free in Views.
+    [
+
+
+517519352
+
+
+] High CVE-2026-79292: Integer overflow in Chromecast.
+    [
+
+
+517527943
+
+
+] High CVE-2026-78986: Uninitialized resource in GPU.
+    [
+
+
+517548647
+
+
+] High CVE-2026-79039: Use after free in Mobile.
+    [
+
+
+517550232
+
+
+] High CVE-2026-78934: Race condition in ReadAloud.
+    [
+
+
+517736936
+
+
+] High CVE-2026-79011: UI misrepresentation in Browser.
+    [
+
+
+517742721
+
+
+] High CVE-2026-78911: Incorrect authorization in USB.
+    [
+
+
+517959443
+
+
+] High CVE-2026-79257: Use after free in Views.
+    [
+
+
+521285077
+
+
+] High CVE-2026-79202: Use after free in Chromecast.
+    [
+
+
+521502218
+
+
+] High CVE-2026-79212: Missing authorization in Passwords.
+    [
+
+
+521942358
+
+
+] High CVE-2026-79183: Use after free in Accessibility.
+    [
+
+
+522294538
+
+
+] High CVE-2026-79155: Race condition in FileSystem.
+    [
+
+
+523095011
+
+
+] High CVE-2026-79093: Incorrect authorization in Paint.
+    [
+
+
+523266585
+
+
+] High CVE-2026-79019: Out of bounds write in ANGLE.
+    [
+
+
+523296105
+
+
+] High CVE-2026-79187: Use after free in WebRTC.
+    [
+
+
+523714535
+
+
+] High CVE-2026-79288: Improper input validation in Autofill.
+    [
+
+
+523717796
+
+
+] High CVE-2026-79130: Buffer overflow in ANGLE.
+    [
+
+
+523723064
+
+
+] High CVE-2026-78965: Uninitialized resource in ANGLE.
+    [
+
+
+523738212
+
+
+] High CVE-2026-79117: Race condition in WebAppInstalls.
+    [
+
+
+524698525
+
+
+] High CVE-2026-79082: Incorrect authorization in Transactions Platform.
+    [
+
+
+525683797
+
+
+] High CVE-2026-79111: Improper input validation in Dawn.
+   secfix text: Security Fixes and Rewards Note: Access to bug details and links may be kept restricted until a majority of users are updated with a fix. We will also retain restrictions if the bug exists in a third party library that other projects similarly depend on, but haven’t yet fixed. This update incl
+
+CVE ids seen across these posts: 632

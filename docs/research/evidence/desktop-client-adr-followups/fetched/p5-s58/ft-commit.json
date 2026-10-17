@@ -1,0 +1,5312 @@
+{
+  "commit": "264b5fbf5b912b39f98d038bf75d39be0a73f21b",
+  "tree": "99de7e508fedc1dffba70d9f64554912940c5832",
+  "parents": [
+    "99b479dc34728936b006679a31e12b8cf432fc55"
+  ],
+  "author": {
+    "name": "Werner Lemberg",
+    "email": "wl@gnu.org",
+    "time": "Wed Mar 11 16:27:07 2026"
+  },
+  "committer": {
+    "name": "Werner Lemberg",
+    "email": "wl@gnu.org",
+    "time": "Wed Mar 11 16:27:07 2026"
+  },
+  "message": "Update all copyright notices.\n",
+  "tree_diff": [
+    {
+      "type": "modify",
+      "old_id": "47918124b4b3e480316031d1c649508ca63640f0",
+      "old_mode": 33188,
+      "old_path": "CMakeLists.txt",
+      "new_id": "be98e68ed05f34443e9dbb49221f2d0c5f6e06d1",
+      "new_mode": 33188,
+      "new_path": "CMakeLists.txt"
+    },
+    {
+      "type": "modify",
+      "old_id": "677e526bce71c742a7fd74f9f2a28f2d3dc944b1",
+      "old_mode": 33188,
+      "old_path": "Makefile",
+      "new_id": "03c0429837c77cff9a8092991547ae63448af97b",
+      "new_mode": 33188,
+      "new_path": "Makefile"
+    },
+    {
+      "type": "modify",
+      "old_id": "49dda2abb867e0b4b33e08561971c32af68133f8",
+      "old_mode": 33188,
+      "old_path": "README",
+      "new_id": "209d41bcd43df5967a8ee6b91f43ef45ae537b12",
+      "new_mode": 33188,
+      "new_path": "README"
+    },
+    {
+      "type": "modify",
+      "old_id": "0567ad9ad85556878c1599b6aef6ec304e976fc3",
+      "old_mode": 33188,
+      "old_path": "README.git",
+      "new_id": "16cf434dbf970d1830d0d9fd1881527172b092fc",
+      "new_mode": 33188,
+      "new_path": "README.git"
+    },
+    {
+      "type": "modify",
+      "old_id": "b80769faa7e1cbf622bddd042f546f26a7245179",
+      "old_mode": 33261,
+      "old_path": "autogen.sh",
+      "new_id": "e6f1ebf234af119332b9850b5dda0d78af796f7f",
+      "new_mode": 33261,
+      "new_path": "autogen.sh"
+    },
+    {
+      "type": "modify",
+      "old_id": "b230f925fd0e8d3df939968a2cebf99e28d361f3",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/README",
+      "new_id": "afb06c370809cd161b2c01b1fae9e757779265a8",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/README"
+    },
+    {
+      "type": "modify",
+      "old_id": "9ca248259386776c6f50834c4f64b2fe1ccd1a13",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/include/config/ftconfig.h",
+      "new_id": "90ad5c853ab46f134704fb72bc7c8dc0a228f44f",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/include/config/ftconfig.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a9ea13deee1956abfa2b65a5c6bedf9c2ca2273b",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/include/config/ftmodule.h",
+      "new_id": "9f76b17a01b3194abba0d61554eb96cc866658b3",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/include/config/ftmodule.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d02612a6024bc84b5cdf76cc3f15bb209ff3ae93",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/makefile",
+      "new_id": "8b5a5c0b99a431f9f7b4c426813521c68ecaf996",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/makefile"
+    },
+    {
+      "type": "modify",
+      "old_id": "e1b85750a2332283092fa7fc1bac0c99faaa0ee3",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/makefile.os4",
+      "new_id": "88fe16f19554092f1005f49ee61cee17d1597c9f",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/makefile.os4"
+    },
+    {
+      "type": "modify",
+      "old_id": "b8990f5a0f846106080cfa6443cb78ff0f7dd0d0",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/smakefile",
+      "new_id": "5edf4bec042367704f18ecab9834b97fa8d7b891",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/smakefile"
+    },
+    {
+      "type": "modify",
+      "old_id": "8aa0a84eb9f12060d47cb0d72d8d4b7119a27dbd",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/src/base/ftdebug.c",
+      "new_id": "a458bbad1a503a6bf86a1c61046841701b720e53",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/src/base/ftdebug.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c8403fe19f0f39cf0299ffbfd46c1a815aee0ca8",
+      "old_mode": 33188,
+      "old_path": "builds/amiga/src/base/ftsystem.c",
+      "new_id": "201ef0bde3bb01b049de86e7779a90fd7e1b8742",
+      "new_mode": 33188,
+      "new_path": "builds/amiga/src/base/ftsystem.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "b3dbcc4af08128798a937810df75f7fd82c1e38b",
+      "old_mode": 33188,
+      "old_path": "builds/ansi/ansi-def.mk",
+      "new_id": "7b4564a667320d6e0e37bb0515d7ea705412c4a5",
+      "new_mode": 33188,
+      "new_path": "builds/ansi/ansi-def.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "4d7a010daee150dad00a8fc760c1f23575719d9c",
+      "old_mode": 33188,
+      "old_path": "builds/ansi/ansi.mk",
+      "new_id": "31a60469d811c9e863507a41dbfea48ebb18ca03",
+      "new_mode": 33188,
+      "new_path": "builds/ansi/ansi.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "fc52daab993b65c57d1a3179658b836077c946b2",
+      "old_mode": 33188,
+      "old_path": "builds/beos/beos-def.mk",
+      "new_id": "55e61eb88cdb61137824eef72e0179805366494b",
+      "new_mode": 33188,
+      "new_path": "builds/beos/beos-def.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "9c2be1711857f268a2d738227501eb8c1f707b34",
+      "old_mode": 33188,
+      "old_path": "builds/beos/beos.mk",
+      "new_id": "7579b187d7cef1ab9c909566b1239f38169cd3fb",
+      "new_mode": 33188,
+      "new_path": "builds/beos/beos.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "d0a626d801257b486d02408ab9b460d157a55b03",
+      "old_mode": 33188,
+      "old_path": "builds/beos/detect.mk",
+      "new_id": "a045e5ffe0a60b6fc05c2f922228a046c391bfee",
+      "new_mode": 33188,
+      "new_path": "builds/beos/detect.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "68997a34bbb8402e027a9c3b4579ab5587977cc2",
+      "old_mode": 33188,
+      "old_path": "builds/cmake/FindBrotliDec.cmake",
+      "new_id": "97efb8867c09365d4b8f83f91952ae92d89156ae",
+      "new_mode": 33188,
+      "new_path": "builds/cmake/FindBrotliDec.cmake"
+    },
+    {
+      "type": "modify",
+      "old_id": "d33a1e459013b981d9b8c6483a2fe530769e3155",
+      "old_mode": 33188,
+      "old_path": "builds/cmake/iOS.cmake",
+      "new_id": "8f82d61d34bfb0a69bb64a30a5df8a0a02744ae8",
+      "new_mode": 33188,
+      "new_path": "builds/cmake/iOS.cmake"
+    },
+    {
+      "type": "modify",
+      "old_id": "0eaaef896fb1899077a857a19c86111b3b485049",
+      "old_mode": 33261,
+      "old_path": "builds/cmake/testbuild.sh",
+      "new_id": "6d1661386bf6363ac043c39ff00b40d93e63cc31",
+      "new_mode": 33261,
+      "new_path": "builds/cmake/testbuild.sh"
+    },
+    {
+      "type": "modify",
+      "old_id": "e9d401a911484395b67f9c3c098c6a2a38b5fb60",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/ansi-cc.mk",
+      "new_id": "9fd5b0eb2aa58e697041f6ef5307795bc3a686ab",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/ansi-cc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "0f9de89bb19305b1f9cfd392e3a4003a3931efcf",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/bcc-dev.mk",
+      "new_id": "f03d16c7799a2a6bca6e95044c8bf92099ad3b1c",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/bcc-dev.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "649e8338d20fea0eb5ceeb7acaf744d2d525b312",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/bcc.mk",
+      "new_id": "24d56e0267703cd770a14c214c268bed1bff5f22",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/bcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "a07b3d99b31c68ceadb020939dacc6466bcadc73",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/emx.mk",
+      "new_id": "e5c3fdc70dbc73a8269fe0ea788cdad6c7215f4c",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/emx.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "490de9f46d03bce12d6c17d277606dfb393449bc",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/gcc-dev.mk",
+      "new_id": "691bceb29ed972aa26b9d9c3f219c8e6093f3833",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/gcc-dev.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "59a011eb5a4159ca9f89d4f926b6647c0202fb9d",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/gcc.mk",
+      "new_id": "ab8c55ffabfe2cf10edf5e87ed3a572e0c7bc2fc",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/gcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "5f22fa7c9a6c4b0d09a8a5e43fee73404eacceb2",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/intelc.mk",
+      "new_id": "1fd53c2d88eb6abceab3eec875c017be6e990e51",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/intelc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "b755c7ea6351266cfcb28f5306a10fcc6c6e69d1",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/unix-lcc.mk",
+      "new_id": "b8b1fbc063ed2388aa15b7a2bb4c8523e010b4d4",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/unix-lcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "7d0add5fe09299358039d030feb19b47abfa25f4",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/visualage.mk",
+      "new_id": "8c1dcdb65c9be8f5c1689c5ff8085e33c2de4972",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/visualage.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "10c021c9a81d73da523c5aa1057b46971d6635a1",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/visualc.mk",
+      "new_id": "4754c0e97c812363cdecc94776f8d4e6e56b6c2e",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/visualc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "63c34b1690247340352ff2df72c15216fe1a65cf",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/watcom.mk",
+      "new_id": "d6d24a49f1c3ac3f252c7d4941f24c7588b3980e",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/watcom.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "102afd9a76e8cca5da70ddd8ac02ec4e0b4a0d54",
+      "old_mode": 33188,
+      "old_path": "builds/compiler/win-lcc.mk",
+      "new_id": "06b1644a66534cebbd491d10dd04046102666745",
+      "new_mode": 33188,
+      "new_path": "builds/compiler/win-lcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "9db9d6e1dee2efb15a0fa331c65c9a59e4f30b06",
+      "old_mode": 33188,
+      "old_path": "builds/detect.mk",
+      "new_id": "7c5b97389b1309963211e3f7418155d77e735e27",
+      "new_mode": 33188,
+      "new_path": "builds/detect.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "0a5b27b7c56c5d3a4fb21aa6406bfc61fd9f2f7b",
+      "old_mode": 33188,
+      "old_path": "builds/dos/detect.mk",
+      "new_id": "1d181240aa92f9bd62e336b7284d43fc98e62588",
+      "new_mode": 33188,
+      "new_path": "builds/dos/detect.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "b1619e6f26b7db59a8374fea0df40095b56226bd",
+      "old_mode": 33188,
+      "old_path": "builds/dos/dos-def.mk",
+      "new_id": "88f70167fcdd895dfaadfa4979515d302b2136d7",
+      "new_mode": 33188,
+      "new_path": "builds/dos/dos-def.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "88393522781a1205851d7686bd9181451acc6990",
+      "old_mode": 33188,
+      "old_path": "builds/dos/dos-emx.mk",
+      "new_id": "f1bc35954cc3f577d9fab04b014b3f2b6545c717",
+      "new_mode": 33188,
+      "new_path": "builds/dos/dos-emx.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "4cfceb2029c735fef88769d1e250a0733cc06f25",
+      "old_mode": 33188,
+      "old_path": "builds/dos/dos-gcc.mk",
+      "new_id": "f7bc5551e3a459d7524224cf4f637bce782ee080",
+      "new_mode": 33188,
+      "new_path": "builds/dos/dos-gcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "2e3bd8454a21ee4db79c29116b103ee2074ca45e",
+      "old_mode": 33188,
+      "old_path": "builds/dos/dos-wat.mk",
+      "new_id": "6e096e6493502352ec31ad386edcc326a230d7b4",
+      "new_mode": 33188,
+      "new_path": "builds/dos/dos-wat.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "7e380ea2d8f88ac84983bef5d7319fc0eef87172",
+      "old_mode": 33188,
+      "old_path": "builds/exports.mk",
+      "new_id": "1df4010d28d9021adf932b642bc305aba427c4a8",
+      "new_mode": 33188,
+      "new_path": "builds/exports.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "fd3fad5ab33fa1bd01ddd503f71f6384a14dbade",
+      "old_mode": 33188,
+      "old_path": "builds/freetype.mk",
+      "new_id": "b6ff865b74710df92c5e2fff2b7c3d35c16ee896",
+      "new_mode": 33188,
+      "new_path": "builds/freetype.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "845bef699477a52e83bb55d6a4af858174474d79",
+      "old_mode": 33188,
+      "old_path": "builds/link_dos.mk",
+      "new_id": "923639d489d83816f9e4a3cff881e5fd35117a59",
+      "new_mode": 33188,
+      "new_path": "builds/link_dos.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "f650b3491aec90d8bd2373aa89dedcc44cce8741",
+      "old_mode": 33188,
+      "old_path": "builds/link_std.mk",
+      "new_id": "008de5170c81a79181d771d1585f6a3fec6a4caf",
+      "new_mode": 33188,
+      "new_path": "builds/link_std.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "e39850680cdc0287b44ff00ca16fe9e331dfe833",
+      "old_mode": 33188,
+      "old_path": "builds/mac/ftmac.c",
+      "new_id": "77eb874389dd952d7515cf0c4617bcb0f3ffce41",
+      "new_mode": 33188,
+      "new_path": "builds/mac/ftmac.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "05951af3d0a2a772e0a4aaccafb4cf17abe1e898",
+      "old_mode": 33188,
+      "old_path": "builds/meson/extract_freetype_version.py",
+      "new_id": "23889620390892d50b09f6f370026e7f34324cd5",
+      "new_mode": 33188,
+      "new_path": "builds/meson/extract_freetype_version.py"
+    },
+    {
+      "type": "modify",
+      "old_id": "09bc35829615a6cff72f204f77f4c3f5a653c939",
+      "old_mode": 33188,
+      "old_path": "builds/meson/extract_libtool_version.py",
+      "new_id": "4ffdb1a0b61110983b768b624d80397364f7005b",
+      "new_mode": 33188,
+      "new_path": "builds/meson/extract_libtool_version.py"
+    },
+    {
+      "type": "modify",
+      "old_id": "24669f8ae3b6a6b8e8f7a8f2905d3ba86901e085",
+      "old_mode": 33188,
+      "old_path": "builds/meson/generate_reference_docs.py",
+      "new_id": "3022e0758c7288b23ab647ca2055d477e840a9e6",
+      "new_mode": 33188,
+      "new_path": "builds/meson/generate_reference_docs.py"
+    },
+    {
+      "type": "modify",
+      "old_id": "26ea95055ab8c776e4aec3d8a934b5693b7859a1",
+      "old_mode": 33188,
+      "old_path": "builds/meson/parse_modules_cfg.py",
+      "new_id": "40d30323ba9cbe6d7bc0cb0ebe980af19edbc35d",
+      "new_mode": 33188,
+      "new_path": "builds/meson/parse_modules_cfg.py"
+    },
+    {
+      "type": "modify",
+      "old_id": "96e44b396f561c642b7688d3f06c6effb91d362e",
+      "old_mode": 33188,
+      "old_path": "builds/meson/process_ftoption_h.py",
+      "new_id": "d5a217268f7de613a39be8687a0747d3d9cabc4d",
+      "new_mode": 33188,
+      "new_path": "builds/meson/process_ftoption_h.py"
+    },
+    {
+      "type": "modify",
+      "old_id": "458cbc2e57c4aff3155c34c06bd2a8edecc3b1b2",
+      "old_mode": 33188,
+      "old_path": "builds/modules.mk",
+      "new_id": "bcc61f09f9a093bddb7b2af8aa0bc207cbe9ed98",
+      "new_mode": 33188,
+      "new_path": "builds/modules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "a99014c60de1ce0d6da087592967f79e7ff98047",
+      "old_mode": 33188,
+      "old_path": "builds/os2/detect.mk",
+      "new_id": "dfd15344561572639100e14651ed47287fb87f64",
+      "new_mode": 33188,
+      "new_path": "builds/os2/detect.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "b194b9356320bbe1607db83374b2d36cce286356",
+      "old_mode": 33188,
+      "old_path": "builds/os2/os2-def.mk",
+      "new_id": "8f7b7d49d941c491c6d697fee722f03fe1a79b93",
+      "new_mode": 33188,
+      "new_path": "builds/os2/os2-def.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "11602d7a2dca79131d572ca63bdf3ade1c137340",
+      "old_mode": 33188,
+      "old_path": "builds/os2/os2-dev.mk",
+      "new_id": "de5d4c906770f0425df2dd3183e4f246946c88be",
+      "new_mode": 33188,
+      "new_path": "builds/os2/os2-dev.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "b0f2a09967f1903b307f999568c136d08d63d458",
+      "old_mode": 33188,
+      "old_path": "builds/os2/os2-gcc.mk",
+      "new_id": "db681adbfe25ea9fd45af824dd348f700135a8c4",
+      "new_mode": 33188,
+      "new_path": "builds/os2/os2-gcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "44e533ee7cfec1712d0ce5369bc070c81e511939",
+      "old_mode": 33188,
+      "old_path": "builds/symbian/bld.inf",
+      "new_id": "2f28097e4c4401a4ce1c75e488938c803852a89f",
+      "new_mode": 33188,
+      "new_path": "builds/symbian/bld.inf"
+    },
+    {
+      "type": "modify",
+      "old_id": "aefdc8e0998ce3df14928b51d8a4170b5f329a71",
+      "old_mode": 33188,
+      "old_path": "builds/symbian/freetype.mmp",
+      "new_id": "03490acada538c3b006c0d29f4be51f3392f16f9",
+      "new_mode": 33188,
+      "new_path": "builds/symbian/freetype.mmp"
+    },
+    {
+      "type": "modify",
+      "old_id": "f2586633894ac089842fc755fdbfb52b333ab7e6",
+      "old_mode": 33188,
+      "old_path": "builds/toplevel.mk",
+      "new_id": "aaace59206a201e042b4284abbadb1079f68f560",
+      "new_mode": 33188,
+      "new_path": "builds/toplevel.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "01ef30811f09122546609dcb1eab62a48e8bdf33",
+      "old_mode": 33188,
+      "old_path": "builds/unix/configure.raw",
+      "new_id": "b4673cf24dc3bda674ce51268d27c7ed35e69b82",
+      "new_mode": 33188,
+      "new_path": "builds/unix/configure.raw"
+    },
+    {
+      "type": "modify",
+      "old_id": "e1c85a957edcf034267838836ae9dc61ab1780bd",
+      "old_mode": 33188,
+      "old_path": "builds/unix/detect.mk",
+      "new_id": "2facdf7581c0bd704de7eb5d2fb7032a0a845683",
+      "new_mode": 33188,
+      "new_path": "builds/unix/detect.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "911b5347c715f929924ede8a5d56d9d970c6a607",
+      "old_mode": 33188,
+      "old_path": "builds/unix/freetype-config.in",
+      "new_id": "4e69a06725cdac205f5a968e0cc1c8d2f2f6a76a",
+      "new_mode": 33188,
+      "new_path": "builds/unix/freetype-config.in"
+    },
+    {
+      "type": "modify",
+      "old_id": "ecada6e332dea22642d13e94d9c1ff630ae7f8b8",
+      "old_mode": 33188,
+      "old_path": "builds/unix/freetype2.m4",
+      "new_id": "c08ef9eac870c7b8ad30805c91504573dcc2adef",
+      "new_mode": 33188,
+      "new_path": "builds/unix/freetype2.m4"
+    },
+    {
+      "type": "modify",
+      "old_id": "d4a467c5bd3a0994748fa514e6425e2f3cc4e021",
+      "old_mode": 33188,
+      "old_path": "builds/unix/ft-munmap.m4",
+      "new_id": "f4df34c5b75a2a49f51841de0576cf9f991e67c6",
+      "new_mode": 33188,
+      "new_path": "builds/unix/ft-munmap.m4"
+    },
+    {
+      "type": "modify",
+      "old_id": "15cf3b3c4c6c9a3fd5207f74173533eb18bb1b28",
+      "old_mode": 33188,
+      "old_path": "builds/unix/ftconfig.h.in",
+      "new_id": "1fc1e28fb5283f38d7c37811c819bfb1e01e6d3c",
+      "new_mode": 33188,
+      "new_path": "builds/unix/ftconfig.h.in"
+    },
+    {
+      "type": "modify",
+      "old_id": "5f03f35533f7e27e4fc41e1d46f0d53e03ec0c62",
+      "old_mode": 33188,
+      "old_path": "builds/unix/ftsystem.c",
+      "new_id": "7575da328b89ee9328991c0945185b587a5a2535",
+      "new_mode": 33188,
+      "new_path": "builds/unix/ftsystem.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "512b818ffaebcb4979a79ec19283585750cb4402",
+      "old_mode": 33188,
+      "old_path": "builds/unix/install.mk",
+      "new_id": "1bfdd1daca7c69b61735e2d89cb107a7bcaf065e",
+      "new_mode": 33188,
+      "new_path": "builds/unix/install.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "2a571a35ceae8efd9c573081d1303f1bf7abbd0b",
+      "old_mode": 33188,
+      "old_path": "builds/unix/unix-cc.in",
+      "new_id": "15767cb29898f8692833e242585cdae9bff6719b",
+      "new_mode": 33188,
+      "new_path": "builds/unix/unix-cc.in"
+    },
+    {
+      "type": "modify",
+      "old_id": "fe629272d5fe77aacfb370ec1ac14be0eb49f790",
+      "old_mode": 33188,
+      "old_path": "builds/unix/unix-def.in",
+      "new_id": "9bf2e2b57235b81e38bfb4a8eb5199f24f0efe2b",
+      "new_mode": 33188,
+      "new_path": "builds/unix/unix-def.in"
+    },
+    {
+      "type": "modify",
+      "old_id": "5f313a0fa2b79d2e601913ffc0dd992183f4502f",
+      "old_mode": 33188,
+      "old_path": "builds/unix/unix-dev.mk",
+      "new_id": "347c922f6af6cf6be9324e512c2f73027e4a5b8a",
+      "new_mode": 33188,
+      "new_path": "builds/unix/unix-dev.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "a91088dffde4822205348fac80490396507a6141",
+      "old_mode": 33188,
+      "old_path": "builds/unix/unix-lcc.mk",
+      "new_id": "c0c1978c88eee0946bf4f359e9337a77f2a8947f",
+      "new_mode": 33188,
+      "new_path": "builds/unix/unix-lcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "4e08d5415efec2c09b84488111b84b95800d1574",
+      "old_mode": 33188,
+      "old_path": "builds/unix/unix.mk",
+      "new_id": "97b29473bcf936b304ef8827316b12a3e9f9af62",
+      "new_mode": 33188,
+      "new_path": "builds/unix/unix.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "462304676843473b8008b82260df2c94f5b01275",
+      "old_mode": 33188,
+      "old_path": "builds/unix/unixddef.mk",
+      "new_id": "223593bae73a03d8309efe084f573ed97cf8084e",
+      "new_mode": 33188,
+      "new_path": "builds/unix/unixddef.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "7e6bf126307815987b64f868b7044068426586fe",
+      "old_mode": 33188,
+      "old_path": "builds/vms/ftconfig.h",
+      "new_id": "da4799e3aa63756542538571db1f85b1c0c4ef47",
+      "new_mode": 33188,
+      "new_path": "builds/vms/ftconfig.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ab2a24ec1fe807b02897355cc9a996b1ce8b0504",
+      "old_mode": 33188,
+      "old_path": "builds/vms/ftsystem.c",
+      "new_id": "e325e9c6ed785de85bc4d0b6c8c6b3d0644f8147",
+      "new_mode": 33188,
+      "new_path": "builds/vms/ftsystem.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "28b8dcd86e04238309e39633bd532d1411eff269",
+      "old_mode": 33188,
+      "old_path": "builds/wince/ftdebug.c",
+      "new_id": "221d7c882e872dad8aa7603ff448c078f8d146b2",
+      "new_mode": 33188,
+      "new_path": "builds/wince/ftdebug.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8c3e534994624c7932f0f890de1c03899f3988dd",
+      "old_mode": 33188,
+      "old_path": "builds/windows/detect.mk",
+      "new_id": "6ca3ca1ac58b37e4db06805bf39bde5e4fe975ab",
+      "new_mode": 33188,
+      "new_path": "builds/windows/detect.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "dc9436436fe213195b686e77aac3c1f230f727fe",
+      "old_mode": 33188,
+      "old_path": "builds/windows/ftdebug.c",
+      "new_id": "96bb0688a1b90a37e87533aad5f438083b20fd43",
+      "new_mode": 33188,
+      "new_path": "builds/windows/ftdebug.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "9dc9a7d9efed57eae14a6855966b9043d2e2c654",
+      "old_mode": 33188,
+      "old_path": "builds/windows/ftsystem.c",
+      "new_id": "3d20566a72ba6b69633659bfd4e4dae0984ada6a",
+      "new_mode": 33188,
+      "new_path": "builds/windows/ftsystem.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a435702a951b54ed090d8cf502691725e6338d0c",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-bcc.mk",
+      "new_id": "2532479f6e4b9548dff38d6b20761cd99439af06",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-bcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "39472726da7801c75b5531d2099a6a9b6be34c5f",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-bccd.mk",
+      "new_id": "d63717033679ab942b52ae7b56d8419ef96fb6e5",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-bccd.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "c4030f5e5f75923255695849a0524610fff6b87e",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-dev.mk",
+      "new_id": "905779f68f28a53e667c08446b2a50e4eaa26f63",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-dev.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "dd3e8296444d553a4608968aaef07ab18b9cd2d8",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-gcc.mk",
+      "new_id": "32c2051a065795a668e1a4d9715dd10295bb084d",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-gcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "5db9f7d24dd2ce3260cf76f7e8ce1fc6dfc70f43",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-icc.mk",
+      "new_id": "fa1c6ccacc60ecb76867ca31fa84204cbea45105",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-icc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "6156f9231bbc4cc5577321d4e05deb29db67f2f7",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-intl.mk",
+      "new_id": "6d049412be308116cc2f8fc819806f840121d3d7",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-intl.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "43a6e4b10d67d58a30efe343193ae553c569b5f3",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-lcc.mk",
+      "new_id": "994612b5397a0ed99d95630e88c541cf40b45798",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-lcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "c54a1723c1097146e3b0e7345dbf47d5da5130a3",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-mingw32.mk",
+      "new_id": "d2d8a9e4e29100fa1317290e1cee5b149766cf16",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-mingw32.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "a60afc76fac498e153ded72087feff13ea208e24",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-vcc.mk",
+      "new_id": "bf4b3735f37c7c57afbbf325218789c1eb3b492a",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-vcc.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "28039a16583ffa38067689f31e4d00e35beac0d3",
+      "old_mode": 33188,
+      "old_path": "builds/windows/w32-wat.mk",
+      "new_id": "fe287682f6a335ecfa72dce32d3d9b1509d656f8",
+      "new_mode": 33188,
+      "new_path": "builds/windows/w32-wat.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "fc072e709484716d457b96536a3caac41bfa3463",
+      "old_mode": 33188,
+      "old_path": "builds/windows/win32-def.mk",
+      "new_id": "741422ca782d8c21a88db60e7458e7ccaf91ce76",
+      "new_mode": 33188,
+      "new_path": "builds/windows/win32-def.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "ad17cb121e0f7442ca817ce7fdf08938e7ebe585",
+      "old_mode": 33261,
+      "old_path": "configure",
+      "new_id": "672bd44e4c69b16ef36c98134022342e511685da",
+      "new_mode": 33261,
+      "new_path": "configure"
+    },
+    {
+      "type": "modify",
+      "old_id": "2f6dbdfcca33e5b0d78518cb1ea6e22154d3549c",
+      "old_mode": 33188,
+      "old_path": "devel/ft2build.h",
+      "new_id": "e94e6c52b70f44af880d0a7eab2bcf87dc918b42",
+      "new_mode": 33188,
+      "new_path": "devel/ft2build.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "1d4ad342b58b748e82df358699bc57570ab3f50d",
+      "old_mode": 33188,
+      "old_path": "devel/ftoption.h",
+      "new_id": "c409bd458a5b4f7edec1b84a5e0ab5bc5342e2ca",
+      "new_mode": 33188,
+      "new_path": "devel/ftoption.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "9083dd1ee22fc23b0ec15c09bc0143c1378df31d",
+      "old_mode": 33188,
+      "old_path": "docs/CHANGES",
+      "new_id": "a58230df152ffc01d20d9673d0b973287909b4fe",
+      "new_mode": 33188,
+      "new_path": "docs/CHANGES"
+    },
+    {
+      "type": "modify",
+      "old_id": "291f95eb65d9febb87168cf46fef64307562673e",
+      "old_mode": 33188,
+      "old_path": "docs/CUSTOMIZE",
+      "new_id": "890c8abdd293b99bbea67beaf24d7aeeee299924",
+      "new_mode": 33188,
+      "new_path": "docs/CUSTOMIZE"
+    },
+    {
+      "type": "modify",
+      "old_id": "8a997e3aafc82e562eedecdaae8d67551a9eb819",
+      "old_mode": 33188,
+      "old_path": "docs/DEBUG",
+      "new_id": "408b52fbc26a671c9ec915e77994741941d6461f",
+      "new_mode": 33188,
+      "new_path": "docs/DEBUG"
+    },
+    {
+      "type": "modify",
+      "old_id": "b652b84461c1e4b73cd91fa371b5c49b0a52a5e3",
+      "old_mode": 33188,
+      "old_path": "docs/DOCGUIDE",
+      "new_id": "d031185267d31a8c09e767f4e91a6a47058b2f16",
+      "new_mode": 33188,
+      "new_path": "docs/DOCGUIDE"
+    },
+    {
+      "type": "modify",
+      "old_id": "4f73a33397b574f6fcac4ade6b3efa2cf1f49b16",
+      "old_mode": 33188,
+      "old_path": "docs/INSTALL",
+      "new_id": "f576efec85437687be2c5fc4f93aca31bc450e01",
+      "new_mode": 33188,
+      "new_path": "docs/INSTALL"
+    },
+    {
+      "type": "modify",
+      "old_id": "cef2c256dde2c295fd76623380c971f3c0946104",
+      "old_mode": 33188,
+      "old_path": "docs/INSTALL.ANY",
+      "new_id": "d92b27cb504cad034ece99eca1ef73b52e4669e1",
+      "new_mode": 33188,
+      "new_path": "docs/INSTALL.ANY"
+    },
+    {
+      "type": "modify",
+      "old_id": "1be6fb709c105831b19b0d7354c48fe513fe51f4",
+      "old_mode": 33188,
+      "old_path": "docs/INSTALL.CROSS",
+      "new_id": "d417fbd12f0711faa788ce5e6032082738e70dd7",
+      "new_mode": 33188,
+      "new_path": "docs/INSTALL.CROSS"
+    },
+    {
+      "type": "modify",
+      "old_id": "e9f9daf518ad77d8ccf7db4f88ccdeecdad01755",
+      "old_mode": 33188,
+      "old_path": "docs/INSTALL.GNU",
+      "new_id": "766f6f8a1cccf0650fbd989f9e203cdc4d663347",
+      "new_mode": 33188,
+      "new_path": "docs/INSTALL.GNU"
+    },
+    {
+      "type": "modify",
+      "old_id": "4bb875f11c2d04c5da98168e9de5b8d3955662c6",
+      "old_mode": 33188,
+      "old_path": "docs/INSTALL.UNIX",
+      "new_id": "acbd11e6edba0302a3a10711ac20cc5e2b257771",
+      "new_mode": 33188,
+      "new_path": "docs/INSTALL.UNIX"
+    },
+    {
+      "type": "modify",
+      "old_id": "b06455c8321ed35fa885b90bc3f3ce93b7be101e",
+      "old_mode": 33188,
+      "old_path": "docs/INSTALL.VMS",
+      "new_id": "4c9a97de0b2a363954686896d6a81eed04d176d8",
+      "new_mode": 33188,
+      "new_path": "docs/INSTALL.VMS"
+    },
+    {
+      "type": "modify",
+      "old_id": "0c346c65b3939562f99ac84049e95050a9c85001",
+      "old_mode": 33188,
+      "old_path": "docs/TODO",
+      "new_id": "7c7987d1dc500e5ab52cacf69d43bf37915a2a64",
+      "new_mode": 33188,
+      "new_path": "docs/TODO"
+    },
+    {
+      "type": "modify",
+      "old_id": "dfa583246eaf5f2eaaecb4472d1e98a33cb3b109",
+      "old_mode": 33188,
+      "old_path": "docs/VERSIONS.TXT",
+      "new_id": "4b1c5d7602fcbdbaf527302ca1a9f3b138f50840",
+      "new_mode": 33188,
+      "new_path": "docs/VERSIONS.TXT"
+    },
+    {
+      "type": "modify",
+      "old_id": "db29a046a341a2a8a694c47c85eceb138a42eb8b",
+      "old_mode": 33188,
+      "old_path": "docs/formats.txt",
+      "new_id": "13b3eb2a297b837ccb0b7630d1e3767811bf78e3",
+      "new_mode": 33188,
+      "new_path": "docs/formats.txt"
+    },
+    {
+      "type": "modify",
+      "old_id": "65b25e47519598f9e1e6448c65886ffecc48ae88",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.20",
+      "new_id": "52142ccb218a4985a0f60133a05055089fce4a1a",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.20"
+    },
+    {
+      "type": "modify",
+      "old_id": "25928cfdc66349a465eec8ea6f1438319ddaee6f",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.21",
+      "new_id": "f2c18777392097e640f63d37e299ab40746a19bc",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.21"
+    },
+    {
+      "type": "modify",
+      "old_id": "8f049d9564ee758cf882868aabeb7ec3d4b430ff",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.210",
+      "new_id": "df163d0f7873f450799085484457509e966b7256",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.210"
+    },
+    {
+      "type": "modify",
+      "old_id": "d363aa5c8d84690b4c816541516f1fad75404f36",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.22",
+      "new_id": "5a5598a00b1c810c3937532e80af8bbc7f11ef6d",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.22"
+    },
+    {
+      "type": "modify",
+      "old_id": "7ac796071f44890896f389297579001a561a5b8d",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.23",
+      "new_id": "7a5006ea9a3b062b6a60eff79ad9a38b919238b4",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.23"
+    },
+    {
+      "type": "modify",
+      "old_id": "ed2c6e5d98a1d2e214a80ed5f184d6ad3b9de100",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.24",
+      "new_id": "ba684fc26479c566376dc71cb8ac53643da2a909",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.24"
+    },
+    {
+      "type": "modify",
+      "old_id": "ba1a3ff7efea098682a43246f58964eac563389e",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.25",
+      "new_id": "01d61fced5207a0f453fb369680c34bf7167471c",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.25"
+    },
+    {
+      "type": "modify",
+      "old_id": "c0d83e63bed3051228c11ef4fde5ce6e5555ed11",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.26",
+      "new_id": "02b3f9a680061264ef3781e92fee897c86209663",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.26"
+    },
+    {
+      "type": "modify",
+      "old_id": "c5324f33006d938c76acb93d3c55d3392499a253",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.27",
+      "new_id": "f58f84bc5274bb6aba616604ce66bc8148141740",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.27"
+    },
+    {
+      "type": "modify",
+      "old_id": "46f1abafce72231b3517547eb62aa6562a5b724d",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.28",
+      "new_id": "e3310fb4dea2d888e3b74add0838a331e2b22aa4",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.28"
+    },
+    {
+      "type": "modify",
+      "old_id": "94d655ce9c9b82544a6bb6d4807b459ff425307c",
+      "old_mode": 33188,
+      "old_path": "docs/oldlogs/ChangeLog.29",
+      "new_id": "b6629a48ac13b78ca882278874bd4e79e3c0d943",
+      "new_mode": 33188,
+      "new_path": "docs/oldlogs/ChangeLog.29"
+    },
+    {
+      "type": "modify",
+      "old_id": "5c45289791fa4925cd27417f59af7816f8540cab",
+      "old_mode": 33188,
+      "old_path": "docs/raster.txt",
+      "new_id": "3ba8154fcb79ed87c2e3c359480511c3d76800ab",
+      "new_mode": 33188,
+      "new_path": "docs/raster.txt"
+    },
+    {
+      "type": "modify",
+      "old_id": "03f56d0ffc27d4c1c79bdbacf79ad2983a727ad7",
+      "old_mode": 33188,
+      "old_path": "docs/release",
+      "new_id": "459f54e9e92eb76deec9164939f0ec9c8365d1a8",
+      "new_mode": 33188,
+      "new_path": "docs/release"
+    },
+    {
+      "type": "modify",
+      "old_id": "d66c5df9976f4c2b667b371998395a62df8e44ef",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/ftconfig.h",
+      "new_id": "9800e99adf950bb887e2fba4e851540856c58f3d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/ftconfig.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "16eab9048fce6234d1bea7a6134f3bc343ee5ffa",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/ftheader.h",
+      "new_id": "24a9161e2f113e3eb78afb6ca12719f696da5605",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/ftheader.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fadfb918742e1730d0737475dd545c639d6b6586",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/ftoption.h",
+      "new_id": "b857e0ebbd9a5fed2b088c28ce409d9fbdbfd64e",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/ftoption.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f846b4456c116ceb94f87e21d18ed66cba33a397",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/ftstdlib.h",
+      "new_id": "1c63e8d654c1c0aa2828ed78f8cb6735cd5688c9",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/ftstdlib.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a0b892ece4bce05f6fc188a10ac60afd1ed5a084",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/integer-types.h",
+      "new_id": "4ab4c0c78bd34e3eacc66bb0ac27aa5b9cbc889d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/integer-types.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "bd350851d5600f2076b402e1831e38125a8dcdbd",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/mac-support.h",
+      "new_id": "ac48995320fe9b9e4bd5dad905b2012d0e515ae9",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/mac-support.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "9f28b394737496c99df693af8901eafe2583fef4",
+      "old_mode": 33188,
+      "old_path": "include/freetype/config/public-macros.h",
+      "new_id": "c76509a99f7f784390e7895683779b78d3c3fbb4",
+      "new_mode": 33188,
+      "new_path": "include/freetype/config/public-macros.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e8a1b1e2f3ea9c39f6252497da36cfdd25a857d3",
+      "old_mode": 33188,
+      "old_path": "include/freetype/freetype.h",
+      "new_id": "2960cba634112d1a02e17daf8880be559ca178c6",
+      "new_mode": 33188,
+      "new_path": "include/freetype/freetype.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "62a856ccbd71ec65cf1a09daa8c9efc9cc935228",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftadvanc.h",
+      "new_id": "876a8a55cb9fc233b0807aff69e1a62acee3cc1a",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftadvanc.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "348b4b3a268dd8d156c43c17a957b86b8d4d8226",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftbbox.h",
+      "new_id": "0107d94986bcc137709c27dfc7acb315750b04dc",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftbbox.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ab142249217cd86f8741f42a253623d31908ec93",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftbdf.h",
+      "new_id": "fb1f318648612c4eba7c08e697b8442882d5457a",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftbdf.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a22d43adf14b6b98ca6495783fb939d4c470b524",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftbitmap.h",
+      "new_id": "1df5f29aca1ab769611b4d4c30a64022015a5dcc",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftbitmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "38b5245826ceabc206a8c07500a4bc7b5f699a6f",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftbzip2.h",
+      "new_id": "732931d22714141f32b559bb6d4da7f7373b5555",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftbzip2.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "865b743a60b907e64860fcbb82b5db8975958ef1",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftcache.h",
+      "new_id": "97223e36ec6b3fe99f3d0e77cb305b9d17c46b98",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftcache.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7cda8ff3f39a360851a8ff9b03ad5c04a2e6e19c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftcid.h",
+      "new_id": "f9744716d986da9f510777e3ca2ed116b475205b",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftcid.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "129b1a23fb03abf932ba93b315150ba8ad6792ff",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftcolor.h",
+      "new_id": "1cce747115731210c0f866cc037ad812d70a8961",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftcolor.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "b65a06ab69b0849d6937b2ca3f96b7c4d673c1ee",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftdriver.h",
+      "new_id": "39635f86c3ecce552d76141d9af12a2acd72b155",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftdriver.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3e591bede8d8ec54c89ceffd1e8e0d728ce531c2",
+      "old_mode": 33188,
+      "old_path": "include/freetype/fterrdef.h",
+      "new_id": "ce3817e55df3ac42a72fcb5b5662830294fda97f",
+      "new_mode": 33188,
+      "new_path": "include/freetype/fterrdef.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "eca494f90c086e49308bbcdb56efcdb68685760b",
+      "old_mode": 33188,
+      "old_path": "include/freetype/fterrors.h",
+      "new_id": "218c4610e21800220ef5d7588768eb1d3691e22d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/fterrors.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5df82447d0ee20978ca774843c380e75c4baeae1",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftfntfmt.h",
+      "new_id": "2ea0c5f4d708a2cde24fe3d81f969cd10c04c6da",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftfntfmt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "77e5a7e7bfd30b23dbdb239b16f1a457dbe11436",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftgasp.h",
+      "new_id": "632b536b471a25d84e26f4f816a200b269e0182d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftgasp.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3691781cf523437cf58cd8b774ae5f2709d39a52",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftglyph.h",
+      "new_id": "e967110e81eb7e0c0d1046536611df0dc84b6ce4",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftglyph.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "843e0bc917c5c48f221197468bcbbb7d2a36796a",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftgxval.h",
+      "new_id": "546a4818b6cd641b81a15a92b60dcc9d64e50650",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftgxval.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e26c334c11a10849e3340f005feeab190eded104",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftgzip.h",
+      "new_id": "f0c1550f61d36112612183e6a49912a5f57112c8",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftgzip.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a4dc724f3499e6c4bcefe82e90e1ca79d376fc8b",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftimage.h",
+      "new_id": "1fff76b20d9172c9aca351705754add55800345a",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftimage.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2233044754e6c709665b21f0f0529e1aaac64100",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftincrem.h",
+      "new_id": "32637fe5af02e2ae1b1e5c41124ef72e4fe81baa",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftincrem.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "37bb5e1b8fb14a0222b1c16ddaf0cb2937caa95f",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftlcdfil.h",
+      "new_id": "72dbe2acccbb5df2ee78c51668d70d19f4ee4896",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftlcdfil.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "14958b0ff371c626cb25d6bbe0a86459637b3f19",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftlist.h",
+      "new_id": "74b3ffaee9f14b122a5361bfccf81ffded054995",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftlist.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d155171136c2da6df96ebab0c405a8521b86d779",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftlogging.h",
+      "new_id": "1670b12caf51a2d0f8f7c2954c7b240a68a2492d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftlogging.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "de14bcc67417748e769e07c79e82d05a6204854a",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftlzw.h",
+      "new_id": "ab2a9b7d5a853a19c2ecb349bc0c118c15db7a48",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftlzw.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c5ac49101a47ef4c36570fffb825d18046f0ce67",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftmac.h",
+      "new_id": "a3ed7fba6f735a477816f04f235278b978e43617",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftmac.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ff0bbab59f955b1d4d353f57d2a0068b18bbc66c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftmm.h",
+      "new_id": "fb239bda1223a48bae5f4cf8aa982b426df97adc",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftmm.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2669e4a03b337a9b7498cfc199b1966944fc63df",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftmodapi.h",
+      "new_id": "7af33e33afee787703a7462b6921a9f4bae608ef",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftmodapi.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8e2ef2f01f8726089781d380862020f85bce81b2",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftmoderr.h",
+      "new_id": "7c1b1fd3c040ba8d1b8fbd78085dac8209ff63ad",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftmoderr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f1cd22acc0de317904d6bbcea65ba9fa2b2bef28",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftotval.h",
+      "new_id": "66ac5871dcc832b164756e8b9b15097fd0e461c3",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftotval.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2545ca8486b6cea6ffbd958f327d24c9a87234fd",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftoutln.h",
+      "new_id": "68cf65bae15973c543756f342567d8b2e7d60ec4",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftoutln.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "94dcd6399a6eec8e2354ad86b0d1fd8e9a7aef0e",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftparams.h",
+      "new_id": "3f6af8681f3b64cd9f552f3c63017905bc0445b5",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftparams.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "399b5ca3c26682e7390d6560623ead2f142c41e1",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftpfr.h",
+      "new_id": "abcd3880087350bf05ec23bebd70793dd63318c9",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftpfr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "cc3102073b1d7795c0092ed4b392038c84610d82",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftrender.h",
+      "new_id": "292c797cce587776c5c54b1a3dd1cfc9977765b2",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftrender.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fdb89f24cccabcbca2e164aa908fdaf0614da34e",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftsizes.h",
+      "new_id": "f609eb2d76a705329d6ab1356f227a8766ae8536",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftsizes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "99728574db64e1226eaae6e73f5335048dabef64",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftsnames.h",
+      "new_id": "f5511495f048cdb089bd9f5934e4d40754e4c6e8",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftsnames.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2c4761c768d48c4dee6e94e265e19da1bf821000",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftstroke.h",
+      "new_id": "c7f1d4643f04a2de62869e0061e02ea374f5045e",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftstroke.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "93499a4b4f1052be517fd40f3a0167afcad91b4c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftsynth.h",
+      "new_id": "90b4b19c25f88ba673eb6b6c739fb5b64e2adc72",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftsynth.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "1de9f8e603dd8b408fb0d4b5415c4edcb9944425",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftsystem.h",
+      "new_id": "2ad3d7286dc776518cbd617fdba8fd3800dd6a6e",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftsystem.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ed7bd06a78fc5baca2fe0eb0415204b7690e563c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/fttrigon.h",
+      "new_id": "ebedc3a8d1ebb13c9377716104750727d4e17227",
+      "new_mode": 33188,
+      "new_path": "include/freetype/fttrigon.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e207c5ebe09ae6a15ae33b569bb532a6a1588cfa",
+      "old_mode": 33188,
+      "old_path": "include/freetype/fttypes.h",
+      "new_id": "97ddcde65aa61660303138952ac60deaf37a07b5",
+      "new_mode": 33188,
+      "new_path": "include/freetype/fttypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "78609d578a60ec0de6b21f3b776b926aa3950bd3",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ftwinfnt.h",
+      "new_id": "b95cad0a42209bf8de551e560f01a0ee11080dc1",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ftwinfnt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "987e704e9b0f7a9bdf08656cd1320f27a580159a",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/autohint.h",
+      "new_id": "a22d8af7cd98b61d9aad6f59e08250b3dc3f35d5",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/autohint.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "26ee43bb9a9f6a954888240e7573e289166b4c46",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/cffotypes.h",
+      "new_id": "8d6acbce7acbdb7911fa6bba086e061b0df9c220",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/cffotypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "754122fa64679b76c6b11edfa770d03a9a04ed5c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/cfftypes.h",
+      "new_id": "d474dcf40ea75cc8453e994a050e76af80961c91",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/cfftypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e6d0166d8882456e3b45953cfe233801d8b06b0c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/compiler-macros.h",
+      "new_id": "4863d6de75e89722595ce1ef35234f4788846332",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/compiler-macros.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "16a732224ef6e966cea4002ccdd4fef33d238f5f",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftcalc.h",
+      "new_id": "4c4943164a381ae4852ed0b0fa6bd800a2bf02ef",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftcalc.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d7facf40d12754cdf73a7a17fa54d8812563f110",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftdebug.h",
+      "new_id": "62b9ec2f79c7308f65e0a547d0065ec17410da9b",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftdebug.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "24be4dad36beb16a7008e2401d443425c1442a8a",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftdrv.h",
+      "new_id": "d52fc84f0fd926df3771388c1030dc9fe6c5d795",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftdrv.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8f2a54c015b63537e339b2b67a6b1ea6d662e175",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftgloadr.h",
+      "new_id": "902135e460cde79b973bbd3e3ff967b35dc6ebdd",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftgloadr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c75c33f28959ad5e84cbb04e3b2c472141c2c7ff",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftmemory.h",
+      "new_id": "ca840cb510be169caab470f94586e768cb653e34",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftmemory.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "be3747bbf94aa8682da55a99985e80b1d64e8faa",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftmmtypes.h",
+      "new_id": "a4db9c487b75f323b5585187a52fa60531cee64c",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftmmtypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d4d7bc00fe905d161b9157b8557fd335be8c162b",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftobjs.h",
+      "new_id": "4fa4991dd88c4bf7121b2c7308a3218728cb8510",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "18a954d22f508e4484f16c1c840e2f4fd15bd446",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftpsprop.h",
+      "new_id": "5967199a3bc9026967ec675b098311878c664e0b",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftpsprop.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e077f98bfb9688edc1b4d63fc33ba236e1e59987",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftrfork.h",
+      "new_id": "d0bb6b5bb0022019b5e8d21426363e4ec2acd886",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftrfork.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ce11bba19b26f272702e6cced08a30b62ea5a21b",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftserv.h",
+      "new_id": "9c6406c82d8a642495046b62d2f535a564455e56",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftserv.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "20c1dd7c4b00c1821c4e29e083851dd73107c1d8",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftstream.h",
+      "new_id": "d60cd481c893fe7d3ff7c2b6fa5bf73b2e4f0a77",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftstream.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3fd592800e2a8e10793c273f897cdb0992301dfb",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/fttrace.h",
+      "new_id": "798896cd0c82aca6d5c923cc83a8605e54ecee54",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/fttrace.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "03a726c82cb56c91bed6cad02352ab82dc3471dd",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/ftvalid.h",
+      "new_id": "fbcf2c63efafe8d7de217d86bc517bd226a61446",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/ftvalid.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "344be0f19a70a350dc51ad68ebfffe71f6c502cc",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/psaux.h",
+      "new_id": "ee574fef11b1ad9fba14ae561c97f7f8a7fe9dd4",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/psaux.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "96c5d84f058c2f8fcbe45602b3adf128eac38ac7",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/pshints.h",
+      "new_id": "e7adcd380587d5139c6d8fd0c599b7380f959766",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/pshints.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5bd51da23f4c05c9ccdb8798a0971bbd71e20647",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svbdf.h",
+      "new_id": "52212cc7a2b8d7bee9241ceb42ce07e0bd1a5a2d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svbdf.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c97bf84fb2e08381918b38ac5e0dfa3662d6d207",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svcfftl.h",
+      "new_id": "ab29dede537e9d8833609baa25efd478e7722e53",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svcfftl.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "748a8caf887c5b86c641d02e3a57c4dec51d912d",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svcid.h",
+      "new_id": "9063211ee01773fc57a0103575627d9d4e389030",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svcid.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "690fdc2a24faa30ab3fffb2f1f48435f34a72419",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svfntfmt.h",
+      "new_id": "770381da67a1e93e53b1289fd257809f9205326c",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svfntfmt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7128d6f3d7aaadbb999b512eeb35f6460eca669d",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svgldict.h",
+      "new_id": "6020f9f78a6eb52d563b166e8bc9af4c2252f7de",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svgldict.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "1ca3e0a031b6df9aba42d05941ce34ad4905e5c1",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svgxval.h",
+      "new_id": "056114e6f8cc6f43448d0ff79ca07d85583e4b8f",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svgxval.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8a3d59bec6d6c16248a521191c4574ba631e6f19",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svkern.h",
+      "new_id": "7a06a01e8f019cc3a4fe2b0f97fa9605de9d3373",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svkern.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4dde3a8151afcdf871ce2666e69e6065b893566d",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svmetric.h",
+      "new_id": "b6559d2b1ad33b2bbb368a65c3659791360aec0d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svmetric.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "9be133e2db0bc84e4e86d80f40d505fd3a8057a1",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svmm.h",
+      "new_id": "fd851dba120f7c965bd06c7875d2d47b016de65c",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svmm.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "933e5de98da5b22f67d0f05c4e6d479b61ce759f",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svotval.h",
+      "new_id": "487dca3f04353242a3fb5f8c204c6847621eba4b",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svotval.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c81b6a68a8bceec44ee2ad4baefa48fac44e96e5",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svpfr.h",
+      "new_id": "94cd695eb00f328004b124a31c014cf195663dba",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svpfr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "33864ebc34439bf405952338722ac3175a2fe033",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svpostnm.h",
+      "new_id": "d99f4f681ef43085d5227aaee75a288638766435",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svpostnm.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0eb79c885d8175299fa9dd18ddcf311ecbc8327f",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svprop.h",
+      "new_id": "b6cba4c7f42bbf163d5969cf7b75bd54a17928e0",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svprop.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8f85d12157cc344bc250d04017e242377f65b479",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svpscmap.h",
+      "new_id": "310eb53f33301ce15ebc5b5931ece4a9842c8e82",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svpscmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "83de04478dfc857b77efe75b5c0641f77756d583",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svpsinfo.h",
+      "new_id": "78725a48fa5dab363e5d3daea2b84de821f6795b",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svpsinfo.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "9bf5e3473c45d5066dc1b308de25573107deb19c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svsfnt.h",
+      "new_id": "0ce5aca13761a221386b0b2065440e425213c78c",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svsfnt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fc9b0aeb8e390fb31223778175e2f1667ec25c00",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svttcmap.h",
+      "new_id": "14921304ebfc4aa57c1e8f320c9991d5023089cb",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svttcmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "979e9ea102e21239ef72cfc5d56b5a4d57a470a2",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svtteng.h",
+      "new_id": "d4a9bab6ded8f429a3b893d029a5b3546304e9c9",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svtteng.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e4f54c1003778aa010c47c12e7fa12b8e152d8ed",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svttglyf.h",
+      "new_id": "528238024baa71292ce162ca4b3a5eb5db509038",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svttglyf.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ff887ffdc038925569f4d730bec16180024bef2a",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/services/svwinfnt.h",
+      "new_id": "e5a3a6649b6fbbb684ba3d503bd6d26112f3fdf5",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/services/svwinfnt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "adba2178877e9c4c270c70888513688c54cbee0c",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/sfnt.h",
+      "new_id": "cc1ac7a6e4cf23561b8546f9efcd691eb770b924",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/sfnt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "20c73b2fbd2fdec3f5e1bdd1fc819b4545eb85e5",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/svginterface.h",
+      "new_id": "3a4ca314ddb2ea061e337b46f1ab9eb5657ffdd3",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/svginterface.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5b26e4620d0cfdf485b20ba969941ca31a64017d",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/t1types.h",
+      "new_id": "e39076f19563198b060ff9a3f10fe0f91046f29e",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/t1types.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d0e5eee89bc4025d1097d212c5a42e88cfe0eef7",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/tttypes.h",
+      "new_id": "65341a3a259ec42e967b688f419f39106c83af8e",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/tttypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7d5b7df0fa19bf5c3c35e4e84200e4ebce6d3da8",
+      "old_mode": 33188,
+      "old_path": "include/freetype/internal/wofftypes.h",
+      "new_id": "b8ef95e27aada7a0295f73e688fca736f0a3a05b",
+      "new_mode": 33188,
+      "new_path": "include/freetype/internal/wofftypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "326bbcd01534bfa9195b9a60737bf8d8c13dce23",
+      "old_mode": 33188,
+      "old_path": "include/freetype/otsvg.h",
+      "new_id": "42330a703b0285aad808f4121a7b321fc6092fe1",
+      "new_mode": 33188,
+      "new_path": "include/freetype/otsvg.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fe769f607faa1836f5438a9429792ee6dcb35d19",
+      "old_mode": 33188,
+      "old_path": "include/freetype/t1tables.h",
+      "new_id": "badfdf40762dfafa1d9e86d5515498788cd5d550",
+      "new_mode": 33188,
+      "new_path": "include/freetype/t1tables.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3ef61091cc9683678e4596b941e5365ff0fdffef",
+      "old_mode": 33188,
+      "old_path": "include/freetype/ttnameid.h",
+      "new_id": "3d813ddc0be13641a7c01946650dd912967f17a0",
+      "new_mode": 33188,
+      "new_path": "include/freetype/ttnameid.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "aa4336435d930a2211c05bffaaf4b820da62cefd",
+      "old_mode": 33188,
+      "old_path": "include/freetype/tttables.h",
+      "new_id": "a2ec304483a509926e28192e74bcd77856139b17",
+      "new_mode": 33188,
+      "new_path": "include/freetype/tttables.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "56bb0a3ee5e8547ad55db589437d260725ab0b5f",
+      "old_mode": 33188,
+      "old_path": "include/freetype/tttags.h",
+      "new_id": "3be3e2ff9055b638ae5e1eb46d034e7af81fc20d",
+      "new_mode": 33188,
+      "new_path": "include/freetype/tttags.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3008aea7cf5ade3adecdedb1182574cc1db2a41e",
+      "old_mode": 33188,
+      "old_path": "include/ft2build.h",
+      "new_id": "ffbf4a1e6ad1549b783c4351e42ca8d5ef014bb8",
+      "new_mode": 33188,
+      "new_path": "include/ft2build.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "09382fbefb0fddc969571a2267377704a6a8fe63",
+      "old_mode": 33188,
+      "old_path": "meson.build",
+      "new_id": "d51630cbb28b63f1b1ea089499c8c42f126947b4",
+      "new_mode": 33188,
+      "new_path": "meson.build"
+    },
+    {
+      "type": "modify",
+      "old_id": "c9e48356d8c3fd7c4f63d42f0467fa4c9a96570a",
+      "old_mode": 33188,
+      "old_path": "meson_options.txt",
+      "new_id": "7d44a9991a750e8db4695194906361bf356068b4",
+      "new_mode": 33188,
+      "new_path": "meson_options.txt"
+    },
+    {
+      "type": "modify",
+      "old_id": "fa8592b15171db74ed0f10e92fd42b3b146c2732",
+      "old_mode": 33188,
+      "old_path": "modules.cfg",
+      "new_id": "1f94fc50d34ccbb61155e977d098370611898a9c",
+      "new_mode": 33188,
+      "new_path": "modules.cfg"
+    },
+    {
+      "type": "modify",
+      "old_id": "a1aa45914d073b40e8aa0c2741677792f27010e3",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afadjust.c",
+      "new_id": "6940baf68cc3152c2f0a9f1cae66ea016b194b4c",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afadjust.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "4837451ae4cf75e06b263557167096053bffff5c",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afadjust.h",
+      "new_id": "85dbfaad29e0222792235c0f950853c09e73ce4d",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afadjust.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a6219bdfe41ceeaa14662889d30096e7bb0f2602",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afblue.c",
+      "new_id": "77c8389ec7fe60835777db2a7ba5d1990930c314",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afblue.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "786c6b3b9e6fdf8e3dbdce9569fca5146316c76b",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afblue.cin",
+      "new_id": "70b7e025214d4956f5ba3f8a5771b555c0b3c521",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afblue.cin"
+    },
+    {
+      "type": "modify",
+      "old_id": "f6e96ff8189d06b23348e95b2c8cfcac99f5bff5",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afblue.dat",
+      "new_id": "e62754fc7e06db9ae97a03e01232579649e22595",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afblue.dat"
+    },
+    {
+      "type": "modify",
+      "old_id": "5bb8406dc2b46fb4ee4c0e87be39ec88a249a41a",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afblue.h",
+      "new_id": "f124eedee4d171f8ae10932e5b4c31f60ccdd3b4",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afblue.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "dbac14548d5518750bac920fb43868270e147563",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afblue.hin",
+      "new_id": "931c5010606cf3233e5fe7ee91bfdd7c12a08049",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afblue.hin"
+    },
+    {
+      "type": "modify",
+      "old_id": "7086601838c3330d3ba22b75a515b47f8dddecb0",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afcjk.c",
+      "new_id": "7a1cc32c9d46d7e1d8734698f04815ca2b67f2c2",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afcjk.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "bd1b39358e088fd492076e091c8387051da7271b",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afcjk.h",
+      "new_id": "98681868a85e6f0c3bc97bd5ae30c7b4f60b6c2f",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afcjk.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "b93bcd1a2c54eb729308027e3d5fbc080c0fd567",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afcover.h",
+      "new_id": "d60e0050bece2aa73b5fcfe7308a660029c1dcc5",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afcover.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8613544f913c08c7f1ad54b41a68e4c37a02b4a3",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afdummy.c",
+      "new_id": "f9d1dd38dba42aae0a39414b9731bdf218ca7476",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afdummy.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "78a79439d95a8f2a82bfbaf742f5b8d711b4814e",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afdummy.h",
+      "new_id": "14546b1e50e2775593f959e20d4fe436833014f2",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afdummy.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f3093fc90dfb798e00b2befd0c72c2244bfdf4cb",
+      "old_mode": 33188,
+      "old_path": "src/autofit/aferrors.h",
+      "new_id": "3d7538ba2d885381560279c205e0d25771df4d90",
+      "new_mode": 33188,
+      "new_path": "src/autofit/aferrors.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e74d8141161941522fb65b222f1ade14dc36b933",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afglobal.c",
+      "new_id": "ff6903cc174aa7fe271d7f04bfbc9066613c8576",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afglobal.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "dc061159492ec4c187a1edfb559240d0081180d3",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afglobal.h",
+      "new_id": "c4dd93358398a0474dde9500f6844e891b73fa60",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afglobal.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2adf809dd5ccb6884770645343c5296b421fb27e",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afgsub.c",
+      "new_id": "af7b0f679824932cda46efc8e9fcebf1f18a38a5",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afgsub.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "d57d61475bd76af748f2465d6a812631a983d0ee",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afgsub.h",
+      "new_id": "10884f9236e09f72a4051200d7e4c46d3d567f7b",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afgsub.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "11faa655f62fe132572432ac500fe11779ea55b3",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afhints.c",
+      "new_id": "376912a5d1217e288190b1f9291375a095d805ce",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afhints.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "46b3ed3366f230635b50c71d3d25e668b4f2b581",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afhints.h",
+      "new_id": "84244d6f5c70be9349ab99bd3984df4becbdf2da",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afhints.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a2cd14f8817166328928b0c6d9650bcfacdec236",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afindic.c",
+      "new_id": "29b6d22ed650ab8aaaf82797c7ffc3f622442340",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afindic.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a2e825e9f868b1d9f9dca74429a9323bb6c3cc6b",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afindic.h",
+      "new_id": "df4892a9f1ce28759d4fba36d947152403c6c168",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afindic.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4a42d9194745e774195e21b1727c11bf0de7edea",
+      "old_mode": 33188,
+      "old_path": "src/autofit/aflatin.c",
+      "new_id": "73addf28eb4286c54fd0ac81b0ee7c2101f2c174",
+      "new_mode": 33188,
+      "new_path": "src/autofit/aflatin.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "82b4b0d480d4d7ebc397021afed39f83715d4ae6",
+      "old_mode": 33188,
+      "old_path": "src/autofit/aflatin.h",
+      "new_id": "b6bdc5177f7f987b6fb4ba816cae4eb8a318add5",
+      "new_mode": 33188,
+      "new_path": "src/autofit/aflatin.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4e2ac1f1ce3f564358d8f76c3eb381f7e533ab0e",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afloader.c",
+      "new_id": "8ac7b53856bcfef47fcf0985ca88cc70b3caf6ef",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afloader.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a04b4df0b3bd0696da30805ba7301e3152448f35",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afloader.h",
+      "new_id": "8efd0fd57e9976cb0397ed6c686e867212d06b5b",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afloader.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "22d85a889e80e23423c6bdb1e618868df16ed8a9",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afmodule.c",
+      "new_id": "57d5d47dfbda2ed2b999ac65c8a803e3c2d2f8f2",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afmodule.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c62421ef696ff5682fe04dba5b0017e7ed3aeda6",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afmodule.h",
+      "new_id": "1f8a68122d3bcf121713a1398cb2060fb6eb7c4e",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afmodule.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fd54948f3a5b76c43dcc9e96397fa83993027ebd",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afranges.c",
+      "new_id": "4d0755decb202857794c3c13c98994bdf059d984",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afranges.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "fa00eb750469da1825e803960832a5b5759122c3",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afranges.h",
+      "new_id": "f29369451286be69ad51d9cdaaa7f4bccc3a1a45",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afranges.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5c4cbbcb922aa0168117210d3e021a39a34ac231",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afscript.h",
+      "new_id": "d071ed68b7e5a0f603e7fed288a92fee4ece7f48",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afscript.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f3c0744fd9d64b6551452ec0b0fce333e45bbe52",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afshaper.c",
+      "new_id": "5c9e5376ad054256249c4f873549e40341d8e901",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afshaper.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "757368fc9c0f3a519a46015d024b6059a44fad7c",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afshaper.h",
+      "new_id": "6e73b9fb2ebdfa81d3a27cc5345c8a18127498a4",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afshaper.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "206232efe2505c5e5e1da2dc470a72dbdcf4d8d0",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afstyles.h",
+      "new_id": "e7a7fe531baac95f8c3c14b9215d47ffa92076f0",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afstyles.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "959640a12ec2a8c629c9a2b052d8feeb7940a29a",
+      "old_mode": 33188,
+      "old_path": "src/autofit/aftypes.h",
+      "new_id": "a3a881eedeb0227391ad62a58025736ee6cde42b",
+      "new_mode": 33188,
+      "new_path": "src/autofit/aftypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "12fa7a27a2b560ad6d22fc524de074a183bbe726",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afws-decl.h",
+      "new_id": "ddebdcd1e785dcb799e54240429befa4dc205779",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afws-decl.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "1752697b375aa628a3c1ae09a4bcc589e01a99e5",
+      "old_mode": 33188,
+      "old_path": "src/autofit/afws-iter.h",
+      "new_id": "720c2dc50c907529cf97b231821fef75baa9cd09",
+      "new_mode": 33188,
+      "new_path": "src/autofit/afws-iter.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f3fb1974d1765409f9a053d8585ad4e330985983",
+      "old_mode": 33188,
+      "old_path": "src/autofit/autofit.c",
+      "new_id": "8cd973bf147f28e452556645ffe7086d91693248",
+      "new_mode": 33188,
+      "new_path": "src/autofit/autofit.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "3c145d046403c5967b848f56915e36c0dcbea4d8",
+      "old_mode": 33188,
+      "old_path": "src/autofit/ft-hb.c",
+      "new_id": "ed438da6afe62f7867e35cd3887d0df5e9a4d132",
+      "new_mode": 33188,
+      "new_path": "src/autofit/ft-hb.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "95914deb8d367d3dad5484c31533ea57974671bd",
+      "old_mode": 33188,
+      "old_path": "src/autofit/ft-hb.h",
+      "new_id": "d2cc0482eb6b25c5b1ceb3592e118c0205a30770",
+      "new_mode": 33188,
+      "new_path": "src/autofit/ft-hb.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c4515c5d48e371d33cb6ef943b2918581e4478bd",
+      "old_mode": 33188,
+      "old_path": "src/autofit/module.mk",
+      "new_id": "a82bedb9f2bd672bb3d864b8ab24784d0f7b2ec3",
+      "new_mode": 33188,
+      "new_path": "src/autofit/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "03fb5a5edff9e8b03625b056ab04e3bb8d35e100",
+      "old_mode": 33188,
+      "old_path": "src/autofit/rules.mk",
+      "new_id": "9e39db33c90cc91aec7ec9a63463efe32022e3a6",
+      "new_mode": 33188,
+      "new_path": "src/autofit/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "7b965c62d584ad51bb7ca1d2f79b528083da2abf",
+      "old_mode": 33188,
+      "old_path": "src/base/ftadvanc.c",
+      "new_id": "6485834666624bac9dd9fc2e3085f21440ed19e6",
+      "new_mode": 33188,
+      "new_path": "src/base/ftadvanc.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "72bae31fdc6eba7b503f301572fea5fa84836210",
+      "old_mode": 33188,
+      "old_path": "src/base/ftbase.c",
+      "new_id": "5a5c8515982a1a39784f2c114a2abe6d183e309b",
+      "new_mode": 33188,
+      "new_path": "src/base/ftbase.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "66f091165fe487d32319597c180145e4cdc0e3c7",
+      "old_mode": 33188,
+      "old_path": "src/base/ftbase.h",
+      "new_id": "952ac51d503aac844a883898b2ec67749f185ccb",
+      "new_mode": 33188,
+      "new_path": "src/base/ftbase.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "feccdee5dd7896fa07a24a062b358fa011f3f1f8",
+      "old_mode": 33188,
+      "old_path": "src/base/ftbbox.c",
+      "new_id": "4641ce27e829fe0b57e094bd871c96829e16f782",
+      "new_mode": 33188,
+      "new_path": "src/base/ftbbox.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f15da313d8f2088a870cbbf4801707f08679eb0d",
+      "old_mode": 33188,
+      "old_path": "src/base/ftbdf.c",
+      "new_id": "7ce76d3c48446f67d00f0c996b4c7c437e9f45e2",
+      "new_mode": 33188,
+      "new_path": "src/base/ftbdf.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "364f881e435528830174a7bc56ef51b2b9a3087f",
+      "old_mode": 33188,
+      "old_path": "src/base/ftbitmap.c",
+      "new_id": "f88cbc11e6361a257e6108910f8f6b424815a10c",
+      "new_mode": 33188,
+      "new_path": "src/base/ftbitmap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7d6e12e2543ef6df06ef1b29e1ad7834ca472478",
+      "old_mode": 33188,
+      "old_path": "src/base/ftcalc.c",
+      "new_id": "d233dba3d6bf972835f3ad62cee4f047c1c50750",
+      "new_mode": 33188,
+      "new_path": "src/base/ftcalc.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "35cd0fcd2be7f4f34641533895e78362c9bb92da",
+      "old_mode": 33188,
+      "old_path": "src/base/ftcid.c",
+      "new_id": "878c666e12982584db1caabd901f49bd8c910ff0",
+      "new_mode": 33188,
+      "new_path": "src/base/ftcid.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "90b02b7d2de999c5d6fb459483e71c6a5dd43e48",
+      "old_mode": 33188,
+      "old_path": "src/base/ftcolor.c",
+      "new_id": "ed6b5f0599fc08c85f155dc952a46fc4242a2ce8",
+      "new_mode": 33188,
+      "new_path": "src/base/ftcolor.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7f54e759b162b66e317a9eb6010f085074a6d104",
+      "old_mode": 33188,
+      "old_path": "src/base/ftdbgmem.c",
+      "new_id": "0335f142562a31eb662b5e333e7c2b7d482232b4",
+      "new_mode": 33188,
+      "new_path": "src/base/ftdbgmem.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c615f29e521df1f174e93c9892c95f59639b1a28",
+      "old_mode": 33188,
+      "old_path": "src/base/ftdebug.c",
+      "new_id": "27091a557984d45dd16b7fdba05af843601934e3",
+      "new_mode": 33188,
+      "new_path": "src/base/ftdebug.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "27e9c5134e1fd248b3ae1330f770e59f83447bdb",
+      "old_mode": 33188,
+      "old_path": "src/base/fterrors.c",
+      "new_id": "a140dab860174bd46455715ac35992b36d796d44",
+      "new_mode": 33188,
+      "new_path": "src/base/fterrors.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7f4f14ffdb071c487bc48e9eced71a993c139fb7",
+      "old_mode": 33188,
+      "old_path": "src/base/ftfntfmt.c",
+      "new_id": "99e8c2b17dfe880f115c8411c34d8061a347e9eb",
+      "new_mode": 33188,
+      "new_path": "src/base/ftfntfmt.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "3a95752ffaa86e667ad54bb901ffd1267579efb6",
+      "old_mode": 33188,
+      "old_path": "src/base/ftfstype.c",
+      "new_id": "58d5144a9e02a2893f72f91645ab468c147e11a9",
+      "new_mode": 33188,
+      "new_path": "src/base/ftfstype.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "2202240b57eb1143ab0e3ad7120b1fc19fe6ac4d",
+      "old_mode": 33188,
+      "old_path": "src/base/ftgasp.c",
+      "new_id": "3c13456802e6823eceba9382b1ff009b9d9b3d54",
+      "new_mode": 33188,
+      "new_path": "src/base/ftgasp.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "47781bc4d5cb694a737142c8e5fb3b43433efdf6",
+      "old_mode": 33188,
+      "old_path": "src/base/ftgloadr.c",
+      "new_id": "bd66e61d1c285fa1b68780d5dcacc005950e1b6e",
+      "new_mode": 33188,
+      "new_path": "src/base/ftgloadr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8ad5774510dee790b840e68ebdbd55716f3215ec",
+      "old_mode": 33188,
+      "old_path": "src/base/ftglyph.c",
+      "new_id": "096f4d965e87268e614a0e505b45958fc3d1defa",
+      "new_mode": 33188,
+      "new_path": "src/base/ftglyph.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1961cf4fbedc54e9e83cf4d630a488faaa4fd82d",
+      "old_mode": 33188,
+      "old_path": "src/base/ftgxval.c",
+      "new_id": "e48f582c712a12f5b6dc3812507143e43e051cbd",
+      "new_mode": 33188,
+      "new_path": "src/base/ftgxval.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "37d7f87bcb9572a438fb9e0c2e43e45e103cdfd4",
+      "old_mode": 33188,
+      "old_path": "src/base/ftinit.c",
+      "new_id": "b20289316dc2ff3b6fb1a7f7e1def6e1d6392494",
+      "new_mode": 33188,
+      "new_path": "src/base/ftinit.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "51c6fd48a1b5d789e1d46bd113d5b1f0882fa1ee",
+      "old_mode": 33188,
+      "old_path": "src/base/ftlcdfil.c",
+      "new_id": "9adbf7518f6060163c864f1bfac9b8909dd183e8",
+      "new_mode": 33188,
+      "new_path": "src/base/ftlcdfil.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "37d97be18385cd6aa875687034c16905d1437362",
+      "old_mode": 33188,
+      "old_path": "src/base/ftmac.c",
+      "new_id": "7251a4cb9621a74355425707195bcf7311360fdc",
+      "new_mode": 33188,
+      "new_path": "src/base/ftmac.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "9e67001406ca62d41538825cc15b2732426b800e",
+      "old_mode": 33188,
+      "old_path": "src/base/ftmm.c",
+      "new_id": "0d3bf3b77d847a2d1cab105a509ff2a3f402c50a",
+      "new_mode": 33188,
+      "new_path": "src/base/ftmm.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "cbd30e52317e1c4cac11884ce9c04589e9544614",
+      "old_mode": 33188,
+      "old_path": "src/base/ftobjs.c",
+      "new_id": "f9f64c40fec3118263cf409af8efc3c407c90863",
+      "new_mode": 33188,
+      "new_path": "src/base/ftobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "503126f4b6ee3dd031374348124cce2eba7e6ebf",
+      "old_mode": 33188,
+      "old_path": "src/base/ftotval.c",
+      "new_id": "ae14113612f6ab3d57918f6caaccf6018e4ecb6c",
+      "new_mode": 33188,
+      "new_path": "src/base/ftotval.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8a15b03eb83add6c101b28750e74fb76c60bffee",
+      "old_mode": 33188,
+      "old_path": "src/base/ftoutln.c",
+      "new_id": "a0a1549adaaaa67112eff528b258c793d040caef",
+      "new_mode": 33188,
+      "new_path": "src/base/ftoutln.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "664bc34deea3b807459dc51283b1f075e1c8fe61",
+      "old_mode": 33188,
+      "old_path": "src/base/ftpatent.c",
+      "new_id": "3f149eb607fd52e3205d1d32350e5abec5294cd0",
+      "new_mode": 33188,
+      "new_path": "src/base/ftpatent.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f2af1fecc264beb0db3bab579148d59895765749",
+      "old_mode": 33188,
+      "old_path": "src/base/ftpfr.c",
+      "new_id": "f95808201ab886b0de628d0fd1500e32d5b34a73",
+      "new_mode": 33188,
+      "new_path": "src/base/ftpfr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "0631cd63f62d04c128850192d455bfbc23c98b1f",
+      "old_mode": 33188,
+      "old_path": "src/base/ftpsprop.c",
+      "new_id": "13f6c5102ccddfe7b22169925fc67517b74d5fad",
+      "new_mode": 33188,
+      "new_path": "src/base/ftpsprop.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1e241f4f95bd91e5d288cb6472c845f4c11668af",
+      "old_mode": 33188,
+      "old_path": "src/base/ftrfork.c",
+      "new_id": "fbb8ace7173a0fdbd61ff7221b6eae50633518b5",
+      "new_mode": 33188,
+      "new_path": "src/base/ftrfork.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "34a67a148fc0390cd8cfa698ed2e90c0795194f6",
+      "old_mode": 33188,
+      "old_path": "src/base/ftsnames.c",
+      "new_id": "d8274cccd4063353a64e93d9af8f9b1808ec3c5d",
+      "new_mode": 33188,
+      "new_path": "src/base/ftsnames.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c04a0506def6f0ac3473d581fb165a274894a9bb",
+      "old_mode": 33188,
+      "old_path": "src/base/ftstream.c",
+      "new_id": "b08a1a9b6580545e66334423c4c6f226eec2bb47",
+      "new_mode": 33188,
+      "new_path": "src/base/ftstream.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6197d91d66e355d8cb755d16c1aace891d77383d",
+      "old_mode": 33188,
+      "old_path": "src/base/ftstroke.c",
+      "new_id": "e599ecaf46f5f6deb072cb582b90cd8c30a4b5c5",
+      "new_mode": 33188,
+      "new_path": "src/base/ftstroke.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "08bc1742202127885d22e948939823eded37e587",
+      "old_mode": 33188,
+      "old_path": "src/base/ftsynth.c",
+      "new_id": "23960eda3a96a1ebf524690160118fa9af896a01",
+      "new_mode": 33188,
+      "new_path": "src/base/ftsynth.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "186119d5581df49668ac1d29ec7bb409eeadbe22",
+      "old_mode": 33188,
+      "old_path": "src/base/ftsystem.c",
+      "new_id": "be9159f6141ddb4e53efd019e5730f32da0c1dee",
+      "new_mode": 33188,
+      "new_path": "src/base/ftsystem.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "29eff639c51ca53ae6e43bf9c787b2794442652b",
+      "old_mode": 33188,
+      "old_path": "src/base/fttrigon.c",
+      "new_id": "baa47eba08414b597e7ee5750b0b3f3f970c303d",
+      "new_mode": 33188,
+      "new_path": "src/base/fttrigon.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "77978df674da91be1bddf4f73b2c690569d17448",
+      "old_mode": 33188,
+      "old_path": "src/base/fttype1.c",
+      "new_id": "f9a46801f3ce30ae2139b9fe811fb74cd447237f",
+      "new_mode": 33188,
+      "new_path": "src/base/fttype1.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f83c43948936273f3502cb43e580c13aa7c69e1e",
+      "old_mode": 33188,
+      "old_path": "src/base/ftutil.c",
+      "new_id": "5d8fc7b9bf37f238c8cc461863040bf9bab8179c",
+      "new_mode": 33188,
+      "new_path": "src/base/ftutil.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7f4d2c12e8f388e8fa2d71180f5305458d6753b1",
+      "old_mode": 33188,
+      "old_path": "src/base/ftver.rc",
+      "new_id": "4100dc3b6ba263551979f817c0540ae0ac22702d",
+      "new_mode": 33188,
+      "new_path": "src/base/ftver.rc"
+    },
+    {
+      "type": "modify",
+      "old_id": "256b58005e91722be13a89cfe96b9a5730a5d825",
+      "old_mode": 33188,
+      "old_path": "src/base/ftwinfnt.c",
+      "new_id": "038451ae0954bf5de202844912a6526e5fae46bf",
+      "new_mode": 33188,
+      "new_path": "src/base/ftwinfnt.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a1a95726ad63429283a417e6cbc6377a042e6eb0",
+      "old_mode": 33188,
+      "old_path": "src/base/rules.mk",
+      "new_id": "e806066485f9df01e826e78cc7433622d9253945",
+      "new_mode": 33188,
+      "new_path": "src/base/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "16d158d72d7a02d902b6fea47f7696a4d2241581",
+      "old_mode": 33188,
+      "old_path": "src/bzip2/ftbzip2.c",
+      "new_id": "6326c71ac112bba1c574cca3002ffd8aff613087",
+      "new_mode": 33188,
+      "new_path": "src/bzip2/ftbzip2.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "59fefb227611192b3b08201d9274dacfbc687950",
+      "old_mode": 33188,
+      "old_path": "src/bzip2/rules.mk",
+      "new_id": "3adf30653339ee27ca836cf476ece87b200682ae",
+      "new_mode": 33188,
+      "new_path": "src/bzip2/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "afdf1e4f5bfe3d7afed8d1a3207ec4130cf702d6",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcache.c",
+      "new_id": "95f784370d1477492fd281e8c828f50e7e613e69",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcache.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e7cf2605fe501d13f293a883b1ad010609e60ade",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcbasic.c",
+      "new_id": "81c5ded4737230502755fc3734739f3abe51279c",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcbasic.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "91227147a899b9da39bb7f2063d6624f05c438bb",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftccache.c",
+      "new_id": "28f3f3e7a0147b50f64bd8be00f4897b138f8f55",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftccache.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "20c2638e72aacbb457021dc7f29459f61a367add",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftccache.h",
+      "new_id": "55ecf5e70cb75202822fabbeaae8df2a182f31c7",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftccache.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "1af2f17f97b3fc8b954e58fac68efbc231b1684b",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftccback.h",
+      "new_id": "f013833e66433dccc6159fbebe9a3abb469d6892",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftccback.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e3a4ec242916599587c5d4fcc0a4fdf14bc1e54f",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftccmap.c",
+      "new_id": "758468fb45939d1d37ba5c35a62d37c7a07dbd87",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftccmap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f714491c754275cb2f28e9949518a43702da16ff",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcerror.h",
+      "new_id": "41491c2f46a08f15858e262a12c53e90987ce4b9",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcerror.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "703c69d91f63ad75594b668bcf5f564ce48db27d",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcglyph.c",
+      "new_id": "3c291ce50fb8fa93b54fd7178d8df5ca69a588ca",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcglyph.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "b728b636e49c0e094d3789324069eea5c42635d8",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcglyph.h",
+      "new_id": "1777a17e53f83f201aadc98ba78ab5b52bea15c9",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcglyph.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "05d393dcd95aaa01287bc24b0da8bd8c74913084",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcimage.c",
+      "new_id": "b028bf8e45746e977fe662aaa286dc7ea9fa2aad",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcimage.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8eb14826248b2159a65d8b0567c1257096894595",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcimage.h",
+      "new_id": "d48c54c51b88f1996274cbaf6053f7bf0fc0929f",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcimage.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4bfb389bb77777a7631663c0775ad94f1358a37f",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcmanag.c",
+      "new_id": "4c1d85ab1f0f4ff9819092b560886b67ea726250",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcmanag.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c691aebb3900b852318ccc04e3a8bcadf1e201ec",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcmanag.h",
+      "new_id": "22d56d7eb8477fe168bba27f2559a2b36757eb3d",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcmanag.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2a5f2f3aa5118b7f154aa2bd261c67bf40e5b301",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcmru.c",
+      "new_id": "e8dc9052daa7b4ff5ff639a8743a215319f406c1",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcmru.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "18e7a840ea64423cdaca3b70b519d6d3894dca18",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcmru.h",
+      "new_id": "962d0886875d3ba5deaf8cdf0b4177eeec440fce",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcmru.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "6857f82b4112423d7ec62137d1165688715bd9ec",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcsbits.c",
+      "new_id": "7f6a9b1b4ed6db131c5d9429668011f21c252560",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcsbits.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "20ccb13b73dfc1a3dcf14ad1c835f650528630ff",
+      "old_mode": 33188,
+      "old_path": "src/cache/ftcsbits.h",
+      "new_id": "669e77cb309c4adf47c8878275f7e61d90bc4264",
+      "new_mode": 33188,
+      "new_path": "src/cache/ftcsbits.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ec7b2df507cc5a975023c953b1d35707e2432c9c",
+      "old_mode": 33188,
+      "old_path": "src/cache/rules.mk",
+      "new_id": "6f56da94208c5434313bd77193976e7a014341bd",
+      "new_mode": 33188,
+      "new_path": "src/cache/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "01d641ff98f6dd97603dbf86f57e6b398c5fac1b",
+      "old_mode": 33188,
+      "old_path": "src/cff/cff.c",
+      "new_id": "8125c104d1f2089ad41eee62276e0bc6f16af7d8",
+      "new_mode": 33188,
+      "new_path": "src/cff/cff.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "cb69abdb90ff0f75793cebb830f58666330736ff",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffcmap.c",
+      "new_id": "75e2420d99e9ddedf41be113ff97c4d2425a1821",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffcmap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "60e16d948753c80a89691f08b943d31b1b0cf13f",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffcmap.h",
+      "new_id": "e812e7a89e51d414318c28c48ad8da72140ce839",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffcmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "44ff44aecbd9c220e840883ef6a7e25490c274b7",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffdrivr.c",
+      "new_id": "18c7b879048bb1104f02fab34f01c723674439cd",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffdrivr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "52a1e727a6affa131ba5e74ca83250370465cda1",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffdrivr.h",
+      "new_id": "2f3c58b67d77424823edc590334d40b8717a0682",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffdrivr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7491886c7be8ca3a9a199eea71a5db6a9bb8077e",
+      "old_mode": 33188,
+      "old_path": "src/cff/cfferrs.h",
+      "new_id": "ca1158c0dfdc8aa927a46b136fb14ecbe04156db",
+      "new_mode": 33188,
+      "new_path": "src/cff/cfferrs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e8bab3c1e33486a815fa7e90de3d40c885a5ab8c",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffgload.c",
+      "new_id": "0c986930cee660335fe9ac27eeccaabb95455314",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffgload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "662bb7cff53f6c1a8585c33ee13b2419dd4fbfb0",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffgload.h",
+      "new_id": "eb4b5f30b5ea12caa838813820209427246a62ed",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffgload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "39d662eb4345a8123c7036ba196ce82a34f7a608",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffload.c",
+      "new_id": "9d067cfeeb83b657fc187fc1d12f6ce2a95d54a0",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "fdc132c8f3f9e4b65d5db99c29973cc82c72851d",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffload.h",
+      "new_id": "ab02ca2d7f640a0a7bfe33256c32f027e513c478",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ef9bc0c261f777b8a18d7f5c03559fc23101e954",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffobjs.c",
+      "new_id": "c6ba35e27344c96af0646961260b5fabd44652aa",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "438a7d9f744341c3d319c2771a3bb296f21b8da9",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffobjs.h",
+      "new_id": "c6ab805c5be98f2244ad5a36f41eb659e23a236e",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "864b2490b3b43a3e05702d9bfbad927ec80253f3",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffparse.c",
+      "new_id": "fadc3258c9605216faadcb98a53dacc4c7b57fe6",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffparse.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "47cceb1a4a07495c823e830408f113891c31d99a",
+      "old_mode": 33188,
+      "old_path": "src/cff/cffparse.h",
+      "new_id": "1daf548cbccabfe86bc7dee181b22dca5a4b235b",
+      "new_mode": 33188,
+      "new_path": "src/cff/cffparse.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a7ee1cb3fe762d3a12b818205a6e71d9cd083b70",
+      "old_mode": 33188,
+      "old_path": "src/cff/cfftoken.h",
+      "new_id": "0eadc7118fb1bcfac1edf2c0fe5216b1d16b3416",
+      "new_mode": 33188,
+      "new_path": "src/cff/cfftoken.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e02e5019407c14e4df6fa7d65d29791045dca051",
+      "old_mode": 33188,
+      "old_path": "src/cff/module.mk",
+      "new_id": "14dda50d6669652de04a22bbca962bb21a2a2e37",
+      "new_mode": 33188,
+      "new_path": "src/cff/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "f2b7ce45b4e88e923fa70f6e49af429061b9d2ad",
+      "old_mode": 33188,
+      "old_path": "src/cff/rules.mk",
+      "new_id": "f3a729db5ddccedb73d958ffa21803afbec5f900",
+      "new_mode": 33188,
+      "new_path": "src/cff/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "1591979d370ca7f9b1df2a39b6f5fc9c099f6b32",
+      "old_mode": 33188,
+      "old_path": "src/cid/ciderrs.h",
+      "new_id": "00497b796b385ae47355dff9956621647ee7d199",
+      "new_mode": 33188,
+      "new_path": "src/cid/ciderrs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "55351194933b0266e8b199ce44a4925b091af109",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidgload.c",
+      "new_id": "cc68b4a96009ec533abb47172999407ee9db96fc",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidgload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "cef96073ded4531035862244fb848d08dabfcb74",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidgload.h",
+      "new_id": "51b16c75944b04dfddb619fa7cdc8f9adb1faa50",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidgload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "bb1bf13e221928052161cdfe7e1d71e9c5d99c38",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidload.c",
+      "new_id": "1a0e6b1561e05922251e41ff4ec58ef46c16f127",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "659dd0e378caddf45c14605de9acb3114cc50b14",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidload.h",
+      "new_id": "cef7d1c9a6a184896188aa14ff0d912a9153e88f",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "634bbf2f135e7b5f48a5afef4f1203543d22ff5c",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidobjs.c",
+      "new_id": "2d11609598b8f167c5c647d7df788ebf45f97189",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "800268efa2f33c5c0b6d48e10b907e167159f5f1",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidobjs.h",
+      "new_id": "406646231278bd5d70e5a304cfb5a6f96bc241e8",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4d1ba335960a81b2203b64337f8f55ad2da545be",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidparse.c",
+      "new_id": "fb936bd48d9a946e821259c43ebc7d512f9a9924",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidparse.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6ae2e542394c10ad2909711bbc6bc20b975f5e02",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidparse.h",
+      "new_id": "555245230b92bdffe87b3d2a6eac3379622bf403",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidparse.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a3a587c57bfb5aaf11e7dbd147598e750f804913",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidriver.c",
+      "new_id": "ab188776e2fd8a499b9d326817b6502042d53349",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidriver.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "55d0b8a0d9b56cf6cfffd3690cb5c90d916a8844",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidriver.h",
+      "new_id": "a4ddccec8082b7a108a0fb36c599f05029568038",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidriver.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d40ebfab86df42026daedbc4ee21908473388af6",
+      "old_mode": 33188,
+      "old_path": "src/cid/cidtoken.h",
+      "new_id": "22136310cdf7482b1e096b6244e6e062d55e5088",
+      "new_mode": 33188,
+      "new_path": "src/cid/cidtoken.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7120b8f3c3e960f730076fc22b948cfaccc6f025",
+      "old_mode": 33188,
+      "old_path": "src/cid/module.mk",
+      "new_id": "2994e4777c15841743878d59788ae39eff138ac1",
+      "new_mode": 33188,
+      "new_path": "src/cid/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "bf87ef09a609e93e428a0d68c5b576d78b00dce1",
+      "old_mode": 33188,
+      "old_path": "src/cid/rules.mk",
+      "new_id": "5569c7c5ebc97001529f701d25296425da48cca0",
+      "new_mode": 33188,
+      "new_path": "src/cid/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "1291ba7a2aaeb97a9df3570a32d2fb79c04bf4f0",
+      "old_mode": 33188,
+      "old_path": "src/cid/type1cid.c",
+      "new_id": "fbcce4f70bb271a364c8cdaa70623ec6c75f1b17",
+      "new_mode": 33188,
+      "new_path": "src/cid/type1cid.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8bb5b0011be176a5d47e8313a93c132d286c65de",
+      "old_mode": 33188,
+      "old_path": "src/dlg/dlgwrap.c",
+      "new_id": "159af2d6751f2b51d7a8dc4a95c47834a62bf9f4",
+      "new_mode": 33188,
+      "new_path": "src/dlg/dlgwrap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7aac2433d5f1973b0222538c29af6633ca91a728",
+      "old_mode": 33188,
+      "old_path": "src/dlg/rules.mk",
+      "new_id": "f575a8bd1e2d0a0c92dc7cc88058df26d110c7fa",
+      "new_mode": 33188,
+      "new_path": "src/dlg/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "5eb623b3d4a1dfd683cac3628499359fb62f0d6d",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/README",
+      "new_id": "1bde33300e59a02dd7fe52c2b1a99164afe646e2",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/README"
+    },
+    {
+      "type": "modify",
+      "old_id": "d3f2d12dc9aa10e7a2310315b820e830aa44d3b2",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvalid.c",
+      "new_id": "93c10f127d6adac08f67f182480e1698fcea5767",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvalid.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a9537a15608e7e883de2a0faeca7d22aa4efa08d",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvalid.h",
+      "new_id": "ee76946147cee6f4e48ac935281b2b772fdb88e6",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvalid.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "28f1873b0941bc742a0cfca61e07c2aba3f1b1ee",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvbsln.c",
+      "new_id": "9b9c10b9805f6e026b398193b619b6f769c2376f",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvbsln.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f6664044405d5471bdf19d7cd6130598e080eb95",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvcommn.c",
+      "new_id": "111db5c693de6353f2c36f08dc671df69d39e69e",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvcommn.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1e19ccfb6b0607b6c30232db8269bcc09f2be10b",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvcommn.h",
+      "new_id": "cc95c4cece1077b5133dd5790c3645fccaf92447",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvcommn.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "73acb7fa41f51ecff4c40c5d28e8b197956b8494",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxverror.h",
+      "new_id": "90a6eda03ece81d952f0aa688c8a822b09c6c494",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxverror.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5d4aca04c60a7c5457566043fea8339e5b549805",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvfeat.c",
+      "new_id": "826f3eedf5cbb435d814b253b8b32a92b58406cf",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvfeat.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6a0cbea35a882a39970f9eb71464e4fb62b0aced",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvfeat.h",
+      "new_id": "9d34b701a29512e683d3db573e1d0f4cfa6dcde1",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvfeat.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "13a88826b709ca08a1af2385c9154173211b9214",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvfgen.c",
+      "new_id": "d0c53ca5261c252a41832fbdc744bfd33814a456",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvfgen.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1b3a8b1ac1b1abf90287da468e44770c479bb1f5",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvjust.c",
+      "new_id": "c5177522e3855e46d13cab9565f9c309ce69c772",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvjust.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "222fd038cad4fa23ab7eee50a3685c1502c33e19",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvkern.c",
+      "new_id": "f1f8ce7cd36515d7b64a52c6798f3ab4f3e0d555",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvkern.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "4882df42493b9962ba5042435c348735e42f3539",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvlcar.c",
+      "new_id": "7b90d43a7b3d50cafea766c0198c6bc28fd206cf",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvlcar.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "4f27c5a8a940f8aeddda8aa1ec13a24374192a5b",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmod.c",
+      "new_id": "89e142be5dcbd861b92555797ac2dd8608b9f537",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmod.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "39a375d978c96a927fc1e295b84fbf20f54483f2",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmod.h",
+      "new_id": "51e339e00be4205950de5b46548a4befd182a762",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmod.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "846ac48b99915a8fd5f8d4b601dfd709b1d79c48",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort.c",
+      "new_id": "de03f2e3888518e56de6c8cdf727c3dd7ad978b9",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "66d46a072b8e3f5be82457e150bb858c1745ed33",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort.h",
+      "new_id": "3db0d2a61e015062d3aac5bc5289435cc541bb43",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5817c27d7aa214ea45cf4d88e986d5b3c0e9223e",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort0.c",
+      "new_id": "78b042d5dedec1682ab6e5dfd2b2a72bc571861f",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort0.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "20cccadf17fdd276929e7044b6f043e2d8e18eec",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort1.c",
+      "new_id": "57ee197d4895c1bc847e3bef367fd487c90fb40b",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort1.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "80aabbc9c53c355d1d046496a813e20744a340d2",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort2.c",
+      "new_id": "e982a67bf520e11af5a358c76c66b2ce23e56d73",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort2.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "40ed7300710c1882b99dd7a296abd0ae348511ea",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort4.c",
+      "new_id": "2ad0632fa502085feb24bec1f1f549e19765e61d",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort4.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1b274be3b68ccbe45f7f084d234d62c061db115e",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmort5.c",
+      "new_id": "613debd453750215f11d9e9fdc4b9c623dad51cd",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmort5.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "931e57b00c2928faeb04eb82e55a53f2b4bdfb05",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx.c",
+      "new_id": "9efe182038df1eeb55a89139e03d07a615e18f09",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "2b8bf3575dd9eece9c375eaf3c74cb70d59eb857",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx.h",
+      "new_id": "60b084a8d0b69ce42b6ec7c2c95d1950a482cd56",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0085ac92f13a81d5f539235863a4e1ac439a2e8b",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx0.c",
+      "new_id": "54cded1f6465a1e86d8889a320b9342291b486e2",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx0.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "b495412ffc94ee00d986ee41cdfefe6cd89a027f",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx1.c",
+      "new_id": "56a64c257cf825b684ec03647ab6b81c0b7b9fe6",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx1.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "0527161dc305cd9301fd0af825cebfd9c3e17cb3",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx2.c",
+      "new_id": "be333e0424bcaa83856a95a1db030ddbe9e0f746",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx2.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e6e99fcb74ece44532c534fa96ffd97853cf21b6",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx4.c",
+      "new_id": "9af41f4bf505240f652f15e67432d11d9d712538",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx4.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7dec9a90156efc3a4955907ce7e8d94b4d3248a9",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvmorx5.c",
+      "new_id": "edc3f3bc01905f21bb5337ab0b9e69c554b6e323",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvmorx5.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "65003100ca4041a0fbce6664240a7556c6e1add4",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvopbd.c",
+      "new_id": "265ad39a2ca2177eb76ab9e40291c34e3ca6de07",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvopbd.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "31f2b5eb300d417b05ab4e48eaf8bd1194212fb1",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvprop.c",
+      "new_id": "f27ce103c48be0af285996a67b50432b90f36243",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvprop.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "329f12729d44403c7f74343016b7442271749cd9",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/gxvtrak.c",
+      "new_id": "06300beff342fc3fe19315d44311cd9fcb25cb68",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/gxvtrak.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c222466e8b64632250930acc7dffe919f5e59af3",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/module.mk",
+      "new_id": "d6b58ee922e15aebaece85e9d65dad084b255294",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "78382bef9fd4a6ce729cca2f73c583f1c805a05f",
+      "old_mode": 33188,
+      "old_path": "src/gxvalid/rules.mk",
+      "new_id": "552f64dcc38afb98b8554a24ca25954e963bb356",
+      "new_mode": 33188,
+      "new_path": "src/gxvalid/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "ffa3824d449676340d7b9e560f1e65345a08fb5f",
+      "old_mode": 33188,
+      "old_path": "src/gzip/ftgzip.c",
+      "new_id": "4a5ec87297402602e5f7dda10771726bd71eb688",
+      "new_mode": 33188,
+      "new_path": "src/gzip/ftgzip.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8c1324efd31e6f44cb2b2975064413e4184efc3c",
+      "old_mode": 33188,
+      "old_path": "src/gzip/rules.mk",
+      "new_id": "baefc0b9bad85027ceb5341b447c145b47070497",
+      "new_mode": 33188,
+      "new_path": "src/gzip/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "09de4a10f545683aba769cad70dd21c872c6ad53",
+      "old_mode": 33188,
+      "old_path": "src/lzw/ftlzw.c",
+      "new_id": "ce5070d75fa4ae6329f33b055a20e1d5eaf1dcbf",
+      "new_mode": 33188,
+      "new_path": "src/lzw/ftlzw.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1dffedd03d65548384ca9cb9aaf49c68e92a21a9",
+      "old_mode": 33188,
+      "old_path": "src/lzw/ftzopen.c",
+      "new_id": "3a42824902f425d04527e381ff814bef48b97413",
+      "new_mode": 33188,
+      "new_path": "src/lzw/ftzopen.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e362a5366d25e18737149cc0b0b081eecd779727",
+      "old_mode": 33188,
+      "old_path": "src/lzw/ftzopen.h",
+      "new_id": "9c06b367d86a87d0925ed0a649eb2a1fa81ba72e",
+      "new_mode": 33188,
+      "new_path": "src/lzw/ftzopen.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "9d29b0b60c7a936f069f6410d33904a6cdfca40a",
+      "old_mode": 33188,
+      "old_path": "src/lzw/rules.mk",
+      "new_id": "ec996bb918a262a2d17a68d308044803060d84ba",
+      "new_mode": 33188,
+      "new_path": "src/lzw/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "a025a5418b2a4fa287a07c3e37ccb1d3a78a3f9f",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/module.mk",
+      "new_id": "dadc349f3a74b5dfb85db9f7a4c75d0376832069",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "6ca90581ef3d49ce2e690595c32d4e7cfdade7dc",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvalid.c",
+      "new_id": "e68a0823fe7cca2b808e63e04f945a0443026593",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvalid.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "2b5598e0cd26a100f75e4a9effdb6b00498b832a",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvalid.h",
+      "new_id": "6ab7c65cb42475b79d09536b4c41c652c645111a",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvalid.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "cbaf4c27ce0b8f7c7f2e4dd1fed3cd79b3f8144f",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvbase.c",
+      "new_id": "8cea1319395ef6d94477196ab51773a3d7552222",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvbase.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "167026c2744053023711875d98e51c5f601df577",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvcommn.c",
+      "new_id": "a6771c782658cf1a6b321d8d40bdd516733d8c96",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvcommn.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "20f38b495b8aa971b2565fbad72997508feb1235",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvcommn.h",
+      "new_id": "4648e70dee2bbdc86586fcf01f7252dac430d380",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvcommn.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "17fb5fb840db9eea719fc00b7e0483809f47787b",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otverror.h",
+      "new_id": "d1c2c4b56cf2d65fb87cab30680236aac287eb98",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otverror.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fa523fb325b1dbc21058c68c6671e8846d974653",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvgdef.c",
+      "new_id": "08d0a68d684b448d5a613d24835d2db6468c9b7e",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvgdef.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1d99c80fd1b092523c520369b70c04eef22b59a2",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvgpos.c",
+      "new_id": "b9e36bd833b5ca97c75d086a9e1993ede27fcab1",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvgpos.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "2fc1309e1c2316bf858f57d3c2aa04e881ff4235",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvgpos.h",
+      "new_id": "8539801fd9388fbab90edfd47c2112615b67e662",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvgpos.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0df97d8dbb12f963c9baedadd356a51c1b613a0c",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvgsub.c",
+      "new_id": "2669be37c9fdbb97390481eea300cbbc79d690d2",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvgsub.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8909612d9fc98554c780c8c1affbfc9e6af01cd7",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvjstf.c",
+      "new_id": "6706e1a7f886486da8f94cd863a14525f03c3e6e",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvjstf.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "78e6c6692610d96122e056b68a560a29f89e5e00",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvmath.c",
+      "new_id": "80d78890bee5ab03fab5f399287cd3649addc1b1",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvmath.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "d2456cb58f1a770c88c70f1006e02520c2a94da0",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvmod.c",
+      "new_id": "946c81902fd25bdedd256ab3074c58b58a0b6bf5",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvmod.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "aec6f66574cd31236bddf8b152ff65d2c0eaecac",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/otvmod.h",
+      "new_id": "f00f98f12509507822be1c41bd1df1574d5f6535",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/otvmod.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e2546499757b23d267022a7015c9b6ccf1695794",
+      "old_mode": 33188,
+      "old_path": "src/otvalid/rules.mk",
+      "new_id": "83c426829d657b07f3d9b50b922cb296cfc6c43d",
+      "new_mode": 33188,
+      "new_path": "src/otvalid/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "d08c5cfb99514f6caf59b71a3e12ff6e9f9b9cc6",
+      "old_mode": 33188,
+      "old_path": "src/pfr/module.mk",
+      "new_id": "9d57e36bb5d8ae0ae0de7fb7510e4903b6c36141",
+      "new_mode": 33188,
+      "new_path": "src/pfr/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "ecfc4f22c88140c84baf3ded293f941d82c04143",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfr.c",
+      "new_id": "260c2703cef7b67de64dcd5cdb481b9bfde94955",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "489b1a5ddd3d5b9c62f8f0d0fe4d4c4b2d9fdb7c",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrcmap.c",
+      "new_id": "786aaa1163e59eca40f705591542d941c1ed8641",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrcmap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "acf4b508da215adc8ba74751af495d0bcf65b9ca",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrcmap.h",
+      "new_id": "9ebb3f23daf01e00ac026c32c3f86baa44d69e2d",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrcmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "268924b50625815be4ba08cbfe5c9cb48c09005a",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrdrivr.c",
+      "new_id": "31f3509bb7dbeaa10e2edcd1c81b5456457430bd",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrdrivr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "61aadb97382a91631deddd3ac1e2229bd47c0a10",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrdrivr.h",
+      "new_id": "2c75a14d78981e2660b0c4aae9f0053be7f61ad2",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrdrivr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "479e3728f465c017655aa6b5a66370110ed96c9f",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrerror.h",
+      "new_id": "78cbac32f88c83f0a3ee9d9ddcf1398c2f508c77",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrerror.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a694ba18109be40f671ac897058002a60e578ee6",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrgload.c",
+      "new_id": "68849b4a11315c204dd0b5f2c0d19e766705e083",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrgload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "5886ed364e7e46963befc42a6c33175aafd2d2c3",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrgload.h",
+      "new_id": "81a05327835832367eb99e96f0056744f68dcd43",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrgload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "07867b45da4d35d7af5fecdd75a5a1f51751f9ba",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrload.c",
+      "new_id": "1105ba4812bb5e43fc733c351f4133627d699705",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f530a0a5838fee375b55888b2df58e5f4b390749",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrload.h",
+      "new_id": "a2f3bcc3df92758c79d2a9c79890d3583c12a594",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "39ad3cc7dfd5e15f9a1e5e54abdce1e6aea910a2",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrobjs.c",
+      "new_id": "9fdd84a86d9bd42eeaa748a738af9cddace1c319",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "850bf5b4a68e618f588fd6134a72f69723af04c3",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrobjs.h",
+      "new_id": "3ad74e97d37b7d0beec0e05c5783f66ed1561a22",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ecea71d4fbeac436bcf34a63f2466eabe7ff1c5c",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrsbit.c",
+      "new_id": "515089a65b6345315314903ae46018b052e09633",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrsbit.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c5c27e36b1563fd3120e83f1acf1ff6dd8d6feab",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrsbit.h",
+      "new_id": "639f8c8182aee840927013e43c257975b12bd449",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrsbit.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "83461cb16b7e82bd5a3877daa0894f12a07fb159",
+      "old_mode": 33188,
+      "old_path": "src/pfr/pfrtypes.h",
+      "new_id": "54cc09ca39560ce2e8ef7dc3a5bc464976558c6d",
+      "new_mode": 33188,
+      "new_path": "src/pfr/pfrtypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "56af03bcdffc6b5a8fd7e89a4d57fce39a9c543a",
+      "old_mode": 33188,
+      "old_path": "src/pfr/rules.mk",
+      "new_id": "842d88eac6066d792b1cf318eaf213091157b0f0",
+      "new_mode": 33188,
+      "new_path": "src/pfr/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "b813efde4eb353202f3b889e0db20d3880dba38e",
+      "old_mode": 33188,
+      "old_path": "src/psaux/afmparse.c",
+      "new_id": "1cc8ab29d46a04b309ad71ff314e4cf253e8bfe1",
+      "new_mode": 33188,
+      "new_path": "src/psaux/afmparse.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "add8597717d1fdddc1045cfe4708c6970bdf0f1d",
+      "old_mode": 33188,
+      "old_path": "src/psaux/afmparse.h",
+      "new_id": "02a9617b8dc4881b24ed328e5631e81409474922",
+      "new_mode": 33188,
+      "new_path": "src/psaux/afmparse.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "17bdd23c7d46e7498f215b165f00be8caf1c12c7",
+      "old_mode": 33188,
+      "old_path": "src/psaux/cffdecode.c",
+      "new_id": "908a81126153418c61faecfd56a528f7daee8957",
+      "new_mode": 33188,
+      "new_path": "src/psaux/cffdecode.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e72ec043baaa305666a18faef07e2fae28e1de56",
+      "old_mode": 33188,
+      "old_path": "src/psaux/cffdecode.h",
+      "new_id": "0836a642b2ff2a67e6687c93b97e4b98b5934ecc",
+      "new_mode": 33188,
+      "new_path": "src/psaux/cffdecode.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "b9598f434510f624695b889116489fd9b0b3396e",
+      "old_mode": 33188,
+      "old_path": "src/psaux/module.mk",
+      "new_id": "2c6ddacb96770c1b520c7aa3678d1b2d98f6fde0",
+      "new_mode": 33188,
+      "new_path": "src/psaux/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "37b5f8b2c695321d7ba00cf689a0bd7e25da8968",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psaux.c",
+      "new_id": "f0c3c2ef97b5afa537e5930ffcbf167762e2b6ef",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psaux.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "0d7fe2b6121aae89ebba5948be64dfbc875779fb",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psauxerr.h",
+      "new_id": "5766482d1b708a7b0dc76518112f6673e20cea87",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psauxerr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "942804190c526cd5dbb8e9b5fd24f91b7200912e",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psauxmod.c",
+      "new_id": "2f9eb87484cb7f20431a945e795bbaf3f94aeec6",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psauxmod.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "4a5ebc1b607942fa406be9eed50093e97a5b67fe",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psauxmod.h",
+      "new_id": "e7fa15c34b7979baa0f2011ac6edd36bce84eca4",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psauxmod.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4567d3f3c0694b163f9c42498a79d9e22fd275fb",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psconv.c",
+      "new_id": "3a054cbbf6d885e8371f1d2a8966fc232d351bab",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psconv.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "63735af411f2de5173127ed2fa0bacc800c3b46d",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psconv.h",
+      "new_id": "fc123faea4d775cdac45d675d6c4c51efb3e6a46",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psconv.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8159fd6ef159d25ed5b3fd067a006aee90d1f9c9",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psobjs.c",
+      "new_id": "5019f9925c1eb9644af70afe8165fb46fec781b5",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "277aa1247c50b9048d54f03b23371ea64065e3bc",
+      "old_mode": 33188,
+      "old_path": "src/psaux/psobjs.h",
+      "new_id": "04205f891b17194e2faac5ac76ded4da7571bb57",
+      "new_mode": 33188,
+      "new_path": "src/psaux/psobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "cc4215fc5fe6abb96f9a8f734946c93f79525b9b",
+      "old_mode": 33188,
+      "old_path": "src/psaux/rules.mk",
+      "new_id": "ace45afb4670a98e840091f22064d37393c6810e",
+      "new_mode": 33188,
+      "new_path": "src/psaux/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "66493b68123bee95cd7f81a75d916ca5f7270ca8",
+      "old_mode": 33188,
+      "old_path": "src/psaux/t1cmap.c",
+      "new_id": "686ca7abdfa39210308797e279b83f3747fc1756",
+      "new_mode": 33188,
+      "new_path": "src/psaux/t1cmap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "114bfbb04103ce182f21e591d1b43a72c1886f09",
+      "old_mode": 33188,
+      "old_path": "src/psaux/t1cmap.h",
+      "new_id": "be66a0c7f6f4c31af8931867177793f36abd74f5",
+      "new_mode": 33188,
+      "new_path": "src/psaux/t1cmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c3fb343d4c9b58d00b0d4726ebc099e0fbcc817b",
+      "old_mode": 33188,
+      "old_path": "src/psaux/t1decode.c",
+      "new_id": "f22b32debc79634a12e67c92a46d0d865b5b4a79",
+      "new_mode": 33188,
+      "new_path": "src/psaux/t1decode.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7b913f55dff78941f1ad3d6b41b6a038ec1b4577",
+      "old_mode": 33188,
+      "old_path": "src/psaux/t1decode.h",
+      "new_id": "1b5d5205a865413e134136cd4e51b05d1130e0bd",
+      "new_mode": 33188,
+      "new_path": "src/psaux/t1decode.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0238368a33780077c152aa8f99655d35bae26cd7",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/module.mk",
+      "new_id": "96aa535228a3dd3d6bb170ea6d86886cc1a9ec91",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "e053dba17b2428b35a0f7de550f5ae87eb688fd6",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshalgo.c",
+      "new_id": "f169fc3459df53ec5cda2c6f1e7d0f3c2833df3e",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshalgo.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f4aa85405598163648d02e8c85acc8edf624b03d",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshalgo.h",
+      "new_id": "95d41b49aaf0ce857c426085dc47a8739ce18e71",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshalgo.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a772b66f30976515e2c39fd46e1ccfc4842f76aa",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshglob.c",
+      "new_id": "2e4efea068cec06553942064149229160db1ae7f",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshglob.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "555e99facb2deec93bde237004b9e6dca1f258c6",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshglob.h",
+      "new_id": "0158b92ab9deba9e220354706b8af03e3df39f4a",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshglob.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "140c7b2f92f74148e82f84bdc63b0287e94f345b",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshinter.c",
+      "new_id": "f22de34bd4a126db749e26d36bd7074626faafbc",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshinter.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c9f4a94fe98a4802a057a604012a09f96a0c236e",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshmod.c",
+      "new_id": "f6b2e2df94c0e44d2c5ce1e7c22ea3c9e08430fd",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshmod.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "de9c398e9fb01ba4ddfb8ac832807f6b85474890",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshmod.h",
+      "new_id": "d68ef9a87369f7c23ed5e09987ecae209a6b0ee9",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshmod.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7076664ddde9fd6cba78dc8059f899e3980213cb",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshnterr.h",
+      "new_id": "96bc3a31756f2af57021740100692c94008a9b53",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshnterr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "13754313fbb29492e8ab392507da4cfc911b1db3",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshrec.c",
+      "new_id": "f14c9c7cbda1ba5891f19a86b3784ce22ae8bcbd",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshrec.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a79069f98d2ff70a7e4e7e13f3e0886b81fede9a",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/pshrec.h",
+      "new_id": "0b644f5b964488124923235c953b1d6560fe2463",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/pshrec.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "6c3066b83d856705e4c09ea7e14c08cdd800d304",
+      "old_mode": 33188,
+      "old_path": "src/pshinter/rules.mk",
+      "new_id": "7a3b8f5e33b817c2f5ea41f93610bc10aaf402d4",
+      "new_mode": 33188,
+      "new_path": "src/pshinter/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "9a645532a5e16d4e9d620a90fb87e23cc2b28c94",
+      "old_mode": 33188,
+      "old_path": "src/psnames/module.mk",
+      "new_id": "bcda0067c820d7b42d32e125799a3a7f9a5990b5",
+      "new_mode": 33188,
+      "new_path": "src/psnames/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "c5d71edad881bb2362c245d41b5e0c06933eca7e",
+      "old_mode": 33188,
+      "old_path": "src/psnames/psmodule.c",
+      "new_id": "5409c61fafab4845ede55fc2995d8db4a10d058d",
+      "new_mode": 33188,
+      "new_path": "src/psnames/psmodule.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "482fd0a36d18c25ebba5b18250d76b9feda9e153",
+      "old_mode": 33188,
+      "old_path": "src/psnames/psmodule.h",
+      "new_id": "7a619d83fb39b1614363da7d478f17fac9509fe3",
+      "new_mode": 33188,
+      "new_path": "src/psnames/psmodule.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "17987f9cd4f6bb7331b995cdbe9f5c571030401a",
+      "old_mode": 33188,
+      "old_path": "src/psnames/psnamerr.h",
+      "new_id": "bef9e797c8067446cf3e5db5ef9d56c40f6642bd",
+      "new_mode": 33188,
+      "new_path": "src/psnames/psnamerr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "77ea42c5168015f510c6ca6f214be413b2bcc188",
+      "old_mode": 33188,
+      "old_path": "src/psnames/psnames.c",
+      "new_id": "b0ade9874da6d9e5db3fa60c1a7f6b69298a4232",
+      "new_mode": 33188,
+      "new_path": "src/psnames/psnames.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "65ce6c0b47f17241d8c0fbb8e43f34b87977b196",
+      "old_mode": 33188,
+      "old_path": "src/psnames/pstables.h",
+      "new_id": "8a32aac325f29aa765a39b53125689c8d07c6bb5",
+      "new_mode": 33188,
+      "new_path": "src/psnames/pstables.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "71bfd64e1989edc1bae1750b3170f5a8ef36b930",
+      "old_mode": 33188,
+      "old_path": "src/psnames/rules.mk",
+      "new_id": "7b0f1d6b47f42e7ceb1c4b3c59d0bbc33371fb1e",
+      "new_mode": 33188,
+      "new_path": "src/psnames/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "9d97223e94ee71691f4698babcbcb7c248e26cb5",
+      "old_mode": 33188,
+      "old_path": "src/raster/ftmisc.h",
+      "new_id": "cf96cd09ed5f1149ab5bc609a50f3ab8154f813d",
+      "new_mode": 33188,
+      "new_path": "src/raster/ftmisc.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "24f8683f3744854a690767f254ab88205577d6a1",
+      "old_mode": 33188,
+      "old_path": "src/raster/ftraster.c",
+      "new_id": "4165800a1aac060878093cc7dd419eab02121147",
+      "new_mode": 33188,
+      "new_path": "src/raster/ftraster.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "64499bf955bf2457325890a3fad44be8205abbb1",
+      "old_mode": 33188,
+      "old_path": "src/raster/ftraster.h",
+      "new_id": "e20184ddc8eaf4c72ce4b1e33372fdeb1c728b3d",
+      "new_mode": 33188,
+      "new_path": "src/raster/ftraster.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3fa008704e54ebdd951f4d94a6e5f230d1ec459b",
+      "old_mode": 33188,
+      "old_path": "src/raster/ftrend1.c",
+      "new_id": "6b28cb0bf8d8f4d12a3015859e1decd34ca86b6e",
+      "new_mode": 33188,
+      "new_path": "src/raster/ftrend1.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "d838a942b049975a1a7c0a8971ea6353ac073298",
+      "old_mode": 33188,
+      "old_path": "src/raster/ftrend1.h",
+      "new_id": "92249a0cb9f6c212f45f9b407f9a67a88a99076c",
+      "new_mode": 33188,
+      "new_path": "src/raster/ftrend1.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7292b72d9a8798e08d27b79f1302607cf02114e8",
+      "old_mode": 33188,
+      "old_path": "src/raster/module.mk",
+      "new_id": "7f7567c07ea0809714cb495bc498bf86a92490b0",
+      "new_mode": 33188,
+      "new_path": "src/raster/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "1b1be144a5a93a168d8faba9bf944bb15bf0f6eb",
+      "old_mode": 33188,
+      "old_path": "src/raster/raster.c",
+      "new_id": "df2ec38d42e890e8fb29d406be56f4614448ab1e",
+      "new_mode": 33188,
+      "new_path": "src/raster/raster.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "39d82a8051aaa14e4f5fdb5fb12715bd44dc13e1",
+      "old_mode": 33188,
+      "old_path": "src/raster/rasterrs.h",
+      "new_id": "744d179cd8c2cec94be60496eb37162caaeb50bf",
+      "new_mode": 33188,
+      "new_path": "src/raster/rasterrs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0ae560e8a97a3258e59ba3bd42ccca541207e179",
+      "old_mode": 33188,
+      "old_path": "src/raster/rules.mk",
+      "new_id": "90af6d1852a8d4b6fa91b341221a68a88d77b0bb",
+      "new_mode": 33188,
+      "new_path": "src/raster/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "af0e2950df1aa9aa1d322c33bd2b8ceb76a32745",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftbsdf.c",
+      "new_id": "d70ebbf1732ac95f4f2fc95c7f466d931c9bf4c3",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftbsdf.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "10d572b31990a0d54488ccbccd0b5f3b68e988cd",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdf.c",
+      "new_id": "cdeaa5b53927da0841d5f6dfb5f98ffe62efa890",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdf.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "fb175803623967dd07d357c720ec54f0cc4efb3f",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdf.h",
+      "new_id": "9bf17d1d9116b0b3b7c612221520ae74877d4eb4",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdf.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "fa99944f84e21941e638e09278868f0200dbd113",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdfcommon.c",
+      "new_id": "ffbf7a46a4a300467afb2de82f80947c1620c631",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdfcommon.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "b87e97ed38fbef777ca83582a893a9c9199a8c26",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdfcommon.h",
+      "new_id": "d62e00fa393cf311c50b1143ab652b6d0b981339",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdfcommon.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e28e2e1cad1ca088fd709adefe87a2b5f75df53b",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdferrs.h",
+      "new_id": "5bb8f05bbe2ac3b3eef1e40560b8ce2b35eef9c4",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdferrs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e24b3b614bff0064afc357b28451b5e74bd9add8",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdfrend.c",
+      "new_id": "1f50ec447a27728fcd719978e3f57fa7aa07c676",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdfrend.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "ab98a79632d0aff6aac19ea89542e7e013f0bda5",
+      "old_mode": 33188,
+      "old_path": "src/sdf/ftsdfrend.h",
+      "new_id": "bb362949af670f58d2541256dd64c386187222fc",
+      "new_mode": 33188,
+      "new_path": "src/sdf/ftsdfrend.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2585c7d098f8af77fdedec24ef56d416c1923d4b",
+      "old_mode": 33188,
+      "old_path": "src/sdf/module.mk",
+      "new_id": "d8d0d49f6f998c440dba8d0292a0c2516c068624",
+      "new_mode": 33188,
+      "new_path": "src/sdf/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "689ed8fcfcb688ba1e9c8f72562614d53c33acd5",
+      "old_mode": 33188,
+      "old_path": "src/sdf/rules.mk",
+      "new_id": "92ed750664f0499bf9519a054a313243d8b4a1b3",
+      "new_mode": 33188,
+      "new_path": "src/sdf/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "7f02d9a59d26c29f3bd6a3b92fb2a4dd3661d1d8",
+      "old_mode": 33188,
+      "old_path": "src/sdf/sdf.c",
+      "new_id": "21dfe6650b42afa466704893d688185096002a60",
+      "new_mode": 33188,
+      "new_path": "src/sdf/sdf.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "845fb99971877856bb7ac87355afd14f3445b482",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/module.mk",
+      "new_id": "5ed9ce0aa84c80a0a6487f2c5fe90b81f85bea2d",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "24fb3455598887daa0f8ee92791c3c46f68c6763",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/pngshim.c",
+      "new_id": "e588e6b380b449d5acd513a61a99bdcbde4eef54",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/pngshim.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "c59199e60dfe9b5a9c25663f7c91ba84765cf294",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/pngshim.h",
+      "new_id": "f187b639a113431d8d4f602bde2479f7fba6d047",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/pngshim.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8e353ed2b52b50e070dc6815db2b94c4a512b118",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/rules.mk",
+      "new_id": "791d329a0941a55f6ce45bd7c45d86eb5480c138",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "32291e23e3685569fd7b3b7b237fb63c43a0bbca",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfdriver.c",
+      "new_id": "4046b1a0cdbca7e32d4fbd1540d0c8858a73f8a2",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfdriver.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "be4e33166c1cae873ef8d41312d6c7d433f8d13e",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfdriver.h",
+      "new_id": "e9eed184b7fd52f7599bfbd3a55aeb6963fac33e",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfdriver.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2da4ac776b07ed55a7a0378bcfb6a613af94f01c",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sferrors.h",
+      "new_id": "05b259c1bfcb87397289867fc554de054b689714",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sferrors.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "84f6ad51562798fb9ab36916cb70cc15e43d48cc",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfnt.c",
+      "new_id": "2eab87f2fd3a8c078dc3c2bf434ae40cdeb7a251",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfnt.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6af35787e85ec71c5c86b0005971feb03644f6fe",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfobjs.c",
+      "new_id": "fc855cbb6b957047907cb63052ba9c420b76dd07",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "8c38b727950196d2ec8c97d7c2385d7c7cff7e59",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfobjs.h",
+      "new_id": "a27ad7064acc5507cd696780db8a37cb034ce721",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "015c7b78b4d676d4680cd2bf8ab660e87c7e735f",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfwoff.c",
+      "new_id": "b8a3030d9cb03e0544902ba79e6b8760db51ae9f",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfwoff.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "df7ace5c20946b95881d1a8ebc60a35b84977c7e",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfwoff.h",
+      "new_id": "a563fcc682aee14df26681191724c7ecb22e2b40",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfwoff.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "41c233597b8e419c01f126cc96c852423f66024c",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfwoff2.c",
+      "new_id": "013e30fc520baeb748f91f78bbc57ce5c144541f",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfwoff2.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "588761d0c8ea42e12c7156bad0628b7ec4c41797",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/sfwoff2.h",
+      "new_id": "e0296d82603e15afcf444368ab9e9001a26f0a5c",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/sfwoff2.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4aa1827032a4e7f9eef664f1e4d9c4eda64fe5a6",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttbdf.c",
+      "new_id": "9fa12c099f06b55a75bddeee3f854272a0d0cfa5",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttbdf.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "abcce2cc6e2567090df4600d8cd6633708abb13b",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttbdf.h",
+      "new_id": "87d210e52f795093a85ae5ae311809f65b8d7a47",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttbdf.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "91b02344224ea579a764714b38f6c40ba5c2f365",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcmap.c",
+      "new_id": "f5837e65e86d04ddcb2bfac82dbe80e1a9eb81d5",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcmap.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "645e9e37e0c6f74c88c839e1683cdfef7ccf8b20",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcmap.h",
+      "new_id": "fdb34f525e3cd93e3731076cce6e132b04527de1",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcmap.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "65807bb7378a63f84e97b5cd8893ac700c5f9841",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcmapc.h",
+      "new_id": "c17ac5bba15d0cd42406baae63d229973e40b61e",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcmapc.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0307aae7eb94107c8a01d9842955c2a6604081d1",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcolr.c",
+      "new_id": "2dcab31e6bb4164e34784fdaf60fce05fe313070",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcolr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "3913acc74d59b9c631d86b82dc546950996d45a1",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcolr.h",
+      "new_id": "c7bf1f2a4a78bbf9855158e19ceeb65b7a94fd92",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcolr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "6d1208f6af24fd949cc235df56844d199ec7f3c4",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcpal.c",
+      "new_id": "04e2db1eab587195729a25254006fe024a6faa6c",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcpal.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a0b4c9d927fae3d895067c8359f3cfd88ba241fd",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttcpal.h",
+      "new_id": "5c2e660e13dc0099d19c87963e2d62b7408cf991",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttcpal.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f7a3c4958235ded63dec4855417d40c028253d59",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttgpos.c",
+      "new_id": "6f9bddf34ad2fddf4d7f765c2bf7e14a16096758",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttgpos.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "eebc22e9ecf7c0c680db1f7e70a0a25ba4f836b3",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttgpos.h",
+      "new_id": "3c227445baca2a983376ec40c5e028abf6c6baf8",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttgpos.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "76618b0d3bb7c13ca7b7769bdb9f18e19e83eca0",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttkern.c",
+      "new_id": "65b249ff4cdb72e23c1d8d7c06b8f9f6293f86e6",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttkern.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e0075dce61d638260ebbbb6f5643bede1634d7ed",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttkern.h",
+      "new_id": "8cc912a79e53acf03c88a0175eecdb6aabce52f8",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttkern.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0c257ce4d314f626601eb911a3d278dd33a13981",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttload.c",
+      "new_id": "e17d07a971ce46bf685336338805935583b9b231",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e3666c901b14d408cd95a5f9e8e536a849cc5a21",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttload.h",
+      "new_id": "0a0aab24ce6c0848d5ff39aca451ac37c683a79e",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "541d8447470816516daaf69db32a29d94609de80",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttmtx.c",
+      "new_id": "60dce87d841a14ffd408ca473e85dedb3b7fa496",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttmtx.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1ee84507f1535e8b06c12f81dbd05a13087e3f4e",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttmtx.h",
+      "new_id": "618e04ffd29d8ac820d6b22370b333efa96f856d",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttmtx.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4246b6c8eff1d58673b3ffe27de17bf5e14dbfc9",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttpost.c",
+      "new_id": "98603e115eab7843c3ba9bd2d41104f7b982eea4",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttpost.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "a11b669685473a6256843e1f6984097762fb9866",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttpost.h",
+      "new_id": "896118015e1351d00eae462e2583180d3c9c022f",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttpost.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "34e45619817c8123e4854c63f7dc42062376154e",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttsbit.c",
+      "new_id": "1655e40b6814884c91bce3a822f5d373dbebc476",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttsbit.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "7427149d68f146fed48554cc5cbf2d408e22180c",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttsbit.h",
+      "new_id": "8fd45223264057600ce2c83fedc4f326476f630d",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttsbit.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "c7b83b2b7d360b97cbcfa37aa66a0f80c8218d75",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttsvg.c",
+      "new_id": "79cf531d054aee43fb42172f286b50e858470cb5",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttsvg.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "d2e127d6dfa1bb1c13cf957696db54084ae84bed",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/ttsvg.h",
+      "new_id": "6253ed1d499494959515719a4f42c89b4016f6e9",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/ttsvg.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0f9e3889aabfed3eb5a5c681334e6ed02c7ff647",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/woff2tags.c",
+      "new_id": "1c3779d9f34cf1b4afc7c91e388f0bc273b1f47b",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/woff2tags.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e223022962ea321b2637034039d4d0b0055f4978",
+      "old_mode": 33188,
+      "old_path": "src/sfnt/woff2tags.h",
+      "new_id": "200262d38639f30f4bc5930a3ffacd9ef5967487",
+      "new_mode": 33188,
+      "new_path": "src/sfnt/woff2tags.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3c387aea0ac19b9cf9b1e8732a8e6b273b1778f6",
+      "old_mode": 33188,
+      "old_path": "src/smooth/ftgrays.c",
+      "new_id": "0f7b63937d708f63190d5209c71c05279a6cce24",
+      "new_mode": 33188,
+      "new_path": "src/smooth/ftgrays.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "e463e5b3eb8f4f7b9449b10b4247d92ff3d29540",
+      "old_mode": 33188,
+      "old_path": "src/smooth/ftgrays.h",
+      "new_id": "99c7383e76e82b400991d563dafe71f225ee34a4",
+      "new_mode": 33188,
+      "new_path": "src/smooth/ftgrays.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "8d5068549faa8ad9a7fac01064704e94fdd885f7",
+      "old_mode": 33188,
+      "old_path": "src/smooth/ftsmerrs.h",
+      "new_id": "2f2276bd58c8e37a189b65dc5243a77a7c8e6794",
+      "new_mode": 33188,
+      "new_path": "src/smooth/ftsmerrs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5a7a852a619a8384ed797058ddb7c4f4355be070",
+      "old_mode": 33188,
+      "old_path": "src/smooth/ftsmooth.c",
+      "new_id": "7378e6adc46dd1ae73c33d4bb49a2e51f6e41c9c",
+      "new_mode": 33188,
+      "new_path": "src/smooth/ftsmooth.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f76708ae70106fefc9721aea71761feb74d8275d",
+      "old_mode": 33188,
+      "old_path": "src/smooth/ftsmooth.h",
+      "new_id": "56c7ac70b5c90f9391108ee3b08155fde1dbcff5",
+      "new_mode": 33188,
+      "new_path": "src/smooth/ftsmooth.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4d06c54c3eed933a01d84be25ed83ce353b6c3ba",
+      "old_mode": 33188,
+      "old_path": "src/smooth/module.mk",
+      "new_id": "f09f29423c85c469891275fe1890daf498105fbf",
+      "new_mode": 33188,
+      "new_path": "src/smooth/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "289c0c86ee43f26591ff38844ef8b951f6f50eef",
+      "old_mode": 33188,
+      "old_path": "src/smooth/rules.mk",
+      "new_id": "1cdda6d8397682db7bccf116a04fdd8ec763e48d",
+      "new_mode": 33188,
+      "new_path": "src/smooth/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "23dc7accf98b9cdc906edadcdf74746258abf57f",
+      "old_mode": 33188,
+      "old_path": "src/smooth/smooth.c",
+      "new_id": "4ecd3ccdb9cf45b17c42abe43556716f5f60d302",
+      "new_mode": 33188,
+      "new_path": "src/smooth/smooth.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "0b3f6857d203d14f180433104e25bc114c2cf1d7",
+      "old_mode": 33188,
+      "old_path": "src/svg/ftsvg.c",
+      "new_id": "c98d7f7db90dd99fc8a6f2fa28f00e6b34dd92ef",
+      "new_mode": 33188,
+      "new_path": "src/svg/ftsvg.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "b04c7fef15f28e009b1636d427dbdf02a8d63177",
+      "old_mode": 33188,
+      "old_path": "src/svg/ftsvg.h",
+      "new_id": "6254485c5a50f4337725d203b2d8652f1fe6295c",
+      "new_mode": 33188,
+      "new_path": "src/svg/ftsvg.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "4c7b18b22b445a4a483c05b227252d606f48ba0c",
+      "old_mode": 33188,
+      "old_path": "src/svg/module.mk",
+      "new_id": "5a93e174367c9e2d50d7e5a36ff8fe3ee76ec775",
+      "new_mode": 33188,
+      "new_path": "src/svg/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "65038b73918584f7953a56f2874cd70e022f577d",
+      "old_mode": 33188,
+      "old_path": "src/svg/rules.mk",
+      "new_id": "53f4629f8cbf3bc5ba48dcea59c407e4295de478",
+      "new_mode": 33188,
+      "new_path": "src/svg/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "c64755c0a9de8690388a506436e1dad62b9197cf",
+      "old_mode": 33188,
+      "old_path": "src/svg/svg.c",
+      "new_id": "fff03ee59e8a39083a641ae78bae24f776c6d938",
+      "new_mode": 33188,
+      "new_path": "src/svg/svg.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "65b3eacb6e5e383a2ded90daef27f2b9518fbc74",
+      "old_mode": 33188,
+      "old_path": "src/svg/svgtypes.h",
+      "new_id": "f731bdf111267511938ee0b27ac915388f005ffc",
+      "new_mode": 33188,
+      "new_path": "src/svg/svgtypes.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a9a2fa3b815fe1a711998fef514c4e39d23f91e5",
+      "old_mode": 33188,
+      "old_path": "src/tools/afblue.pl",
+      "new_id": "24d01cd1ff5b9bbe4fc66193054c37c171096934",
+      "new_mode": 33188,
+      "new_path": "src/tools/afblue.pl"
+    },
+    {
+      "type": "modify",
+      "old_id": "c780ac3f370bcf0e98207fb8e8e2bce776eaa171",
+      "old_mode": 33188,
+      "old_path": "src/tools/glnames.py",
+      "new_id": "9dc28dbc86154bb35f45c6f28134d0e20f463ba6",
+      "new_mode": 33188,
+      "new_path": "src/tools/glnames.py"
+    },
+    {
+      "type": "modify",
+      "old_id": "f7a25a58f7a0fdad2973c7e21745ded869f43725",
+      "old_mode": 33261,
+      "old_path": "src/tools/update-copyright-year",
+      "new_id": "2b19d01fa1fb5c97c7121c45998c5dc60206bef3",
+      "new_mode": 33261,
+      "new_path": "src/tools/update-copyright-year"
+    },
+    {
+      "type": "modify",
+      "old_id": "d7ba01b925c675e0e2eea78e04fc1938f4f5ddf3",
+      "old_mode": 33188,
+      "old_path": "src/truetype/module.mk",
+      "new_id": "e4627b669111e31c7e0cf6991fa0f8a3d08147c0",
+      "new_mode": 33188,
+      "new_path": "src/truetype/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "a5e0d4afdd248012f7d8d114ae4ca427ecb7e924",
+      "old_mode": 33188,
+      "old_path": "src/truetype/rules.mk",
+      "new_id": "052f2fef21c13cc554bf363cfb9282a742dec675",
+      "new_mode": 33188,
+      "new_path": "src/truetype/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "bc8048d0f5e1c9971d2d47650afc972f42d8eae7",
+      "old_mode": 33188,
+      "old_path": "src/truetype/truetype.c",
+      "new_id": "accec4597d7f23d09e72e85e52229bc16d93e5ea",
+      "new_mode": 33188,
+      "new_path": "src/truetype/truetype.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6369d83d6d5aac917c25f4052f80fbd1f9fab342",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttdriver.c",
+      "new_id": "90d6e81057876fef971558c3ce28081a195f6519",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttdriver.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "943eaae3482fd4239f1980688c89e8f17cd45a8e",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttdriver.h",
+      "new_id": "c00bba066e30f8d84e24ffdef6761125a341793e",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttdriver.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "631dbf5a80fcb91045766e9c858bd0ad42a9e47a",
+      "old_mode": 33188,
+      "old_path": "src/truetype/tterrors.h",
+      "new_id": "1ae4b087ac8ecbc5645f76242698a98018a13932",
+      "new_mode": 33188,
+      "new_path": "src/truetype/tterrors.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "317f3c79a41c31a980a9927a7f565dab0629b963",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttgload.c",
+      "new_id": "1f61471d0549adfbd6d0598ef9cfe0bfd4c53a40",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttgload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "39d6ae3664caa6c38dde19a868e211295c99eab9",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttgload.h",
+      "new_id": "3d6a762d1f7fe29564b8cb8a1c5fc61ae50bd672",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttgload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "1bfcdc8d9bd9715d5cbcbf39b20ce14466639888",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttgxvar.c",
+      "new_id": "5ab6e17119c12c668384bd838b2b1c70e095e250",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttgxvar.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "568c8027bbf8e0fdd3de0e0b9eb408857f1733e1",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttgxvar.h",
+      "new_id": "8a59c0cd6e60565e5cc2bbe01af17ed176e32964",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttgxvar.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f46cc77fe5f0babec1c3c09a1a54eb321876cb32",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttinterp.c",
+      "new_id": "f850bc418e7b7d7a4953bb43aced88101341d901",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttinterp.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "5cdc8f59f1a26591174bf90eb559f8138abe5069",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttinterp.h",
+      "new_id": "05ac831dfd13c9e966bad9065f8edc382e4481d4",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttinterp.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "11a327bf2f3935d5202118bc62c984e97def88e8",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttobjs.c",
+      "new_id": "dc897688584a7464a206658665210c8289ab6f6a",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttobjs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "28d6c7d855f8c32382c80e0f1065bfcb942c77b5",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttobjs.h",
+      "new_id": "9b2f412ac475cd559e8f8350c007afb297c1f343",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttobjs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "827454d85744c6ece2b7895b1be2556ae8d07442",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttpload.c",
+      "new_id": "5b0a3944d6a70c9e714fa0a929b0693744f8601c",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttpload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "bb4d3c9cc5578825c4a3fa7c1d0ed592769e3734",
+      "old_mode": 33188,
+      "old_path": "src/truetype/ttpload.h",
+      "new_id": "ad0a9eb7a6d5dc440e1274cd7a4eaf266ca39511",
+      "new_mode": 33188,
+      "new_path": "src/truetype/ttpload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "e7c0718de459314de7007b7e8dd0dc26ed4757ae",
+      "old_mode": 33188,
+      "old_path": "src/type1/module.mk",
+      "new_id": "a0aeada3ebb29693ac3edac7e99bf0c0c2a4a03e",
+      "new_mode": 33188,
+      "new_path": "src/type1/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "2cb9c34d143a672a24d02979c0e21659de0e82fe",
+      "old_mode": 33188,
+      "old_path": "src/type1/rules.mk",
+      "new_id": "5d9c2e7e4f3460eb155bffe024daafb3ccf2cb67",
+      "new_mode": 33188,
+      "new_path": "src/type1/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "b1a0d23bed628a75851a524d55403e44f4dc3ee7",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1afm.c",
+      "new_id": "cc94a0d4a4567f3e73bb95740fe03fa2eaa278cd",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1afm.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "92ff627dd0d99f008ede650c96544ccc2446d2cb",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1afm.h",
+      "new_id": "f31c9d100f0acb1e44e5fc1550ebfb35d74bbc2b",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1afm.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "5ded7714021e917c1f526441a16cbf472ff8dc02",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1driver.c",
+      "new_id": "1d7a342708dd78983a7ca1d67c84d5a9de2bcb95",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1driver.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1cc3d24e7dd214ad42f1c716d0aa2edc4c01eac4",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1driver.h",
+      "new_id": "2869adab6e747e371177ade81a7c92b5618fbe61",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1driver.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "46bddbc30fd8fdc21618151c65215c0975144851",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1errors.h",
+      "new_id": "efe53be1f4cdb4ccb8c705c03ce47d0d522d04be",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1errors.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "b9bc0b56ce88f0a4e17550064c61bd945b5da3f3",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1gload.c",
+      "new_id": "dd9b6cd80fc2e2f6634dad71760a43f518ad8522",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1gload.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6bedd132c5fbe159c0d9fb616be87b3071bd692e",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1gload.h",
+      "new_id": "b3de427a2f3d283b094c6d44b63e9c450beec448",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1gload.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "0f11445bef06c677765e906a5ef3f5468f1777db",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1load.c",
+      "new_id": "1d095f8ac1f80b3293ca497bf85cf0a9df54d9cc",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1load.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "2cd8241968d1f65c6011bc3ecd2e1a45c6eec396",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1load.h",
+      "new_id": "39d4b94e9dc8ac8eede58a5a50e8ab47d05333ee",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1load.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "7f25208f875d8fc1e7c01c1caa35889abf31ce0f",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1objs.c",
+      "new_id": "4ee0a591096b6c79f65ff502e78121a4af147574",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1objs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "6c71977c154d64aa062a5ce780b03c667561deab",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1objs.h",
+      "new_id": "f152f630a86ec773cfb305d2505f9d92af10b249",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1objs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ef643e298f42dd5949e33e0fa53a33bb52219265",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1parse.c",
+      "new_id": "a9b8d18a6ff6e4021afb67388fabdf668a8eadff",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1parse.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f4ad426e9e1d603e61d874cc4c51e3a66d729f85",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1parse.h",
+      "new_id": "ebd7c3fb34047e7322bcc400cb4b292f9b408f54",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1parse.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "a526406a411ab50ddfbb96e3953c32ce47e83f46",
+      "old_mode": 33188,
+      "old_path": "src/type1/t1tokens.h",
+      "new_id": "745351a34c9540900be09df00e9fada02474d7bc",
+      "new_mode": 33188,
+      "new_path": "src/type1/t1tokens.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "ba053ebd638f8985d6f41dae7a46d59a9a973cd3",
+      "old_mode": 33188,
+      "old_path": "src/type1/type1.c",
+      "new_id": "b8e88e6eac5ee1e3ac9f2e78a7c101d27d794fe6",
+      "new_mode": 33188,
+      "new_path": "src/type1/type1.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "1cd3d4eaafb58a652628075b971f759d4ddeb93d",
+      "old_mode": 33188,
+      "old_path": "src/type42/module.mk",
+      "new_id": "d87f3a404e5d7bbb1d055198308b834a0e5270a5",
+      "new_mode": 33188,
+      "new_path": "src/type42/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "7f7bb9c06a88b15fa086f99028d8632eccb7ffa3",
+      "old_mode": 33188,
+      "old_path": "src/type42/rules.mk",
+      "new_id": "3c796cee85f04e3ef757376f0d114568319d34ca",
+      "new_mode": 33188,
+      "new_path": "src/type42/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "234fb16f9c2388d6c34b04f4c0615f87029e8f9b",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42drivr.c",
+      "new_id": "a45d13ebd189f979a2e435d93863b9896b3f5b5c",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42drivr.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "d286da02a58db28c634796907d29851f08119c6c",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42drivr.h",
+      "new_id": "1c2bb2029afe3d724da13b0ee945c4ddceda9016",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42drivr.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "f7c9a9403f877ebb2750b791c18e4c07ac42d412",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42error.h",
+      "new_id": "9c386d8c48f8de240d3f3c95eafca1b8c55b3303",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42error.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "d20917aea2ab65c5ee935e5cd8b39dd8c96fe47e",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42objs.c",
+      "new_id": "a01c3129d07b2fcc977c7323de578f624a193469",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42objs.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "69a0fcd2fd0ae2c36e785a70cc28f298c6b77d3f",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42objs.h",
+      "new_id": "15767f871634c2eb75010ef2f1005fcd347c758a",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42objs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "55a29fecb2ef0a338c744ed218ed0829410a242a",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42parse.c",
+      "new_id": "d645be2a01467142fdac8336d20e16e4801111db",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42parse.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "f8d0a8b2652090ea814c3c847004fc86a532109f",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42parse.h",
+      "new_id": "4e61169a8710868782cb565404c0e2d7e8d37051",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42parse.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "72614b17990e248e81426eb390709d405cb17cac",
+      "old_mode": 33188,
+      "old_path": "src/type42/t42types.h",
+      "new_id": "b0bf9e8ecfed4eeeb7d146fef858ad8a73fd000c",
+      "new_mode": 33188,
+      "new_path": "src/type42/t42types.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "82abeed7b83c5e2f37f10b217b813d848ff18c8b",
+      "old_mode": 33188,
+      "old_path": "src/type42/type42.c",
+      "new_id": "da1e6214d32bdbde951bee10e381c9f42c75c698",
+      "new_mode": 33188,
+      "new_path": "src/type42/type42.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "9eae20aaec09c1e60d875d2dd1e2715502a446fd",
+      "old_mode": 33188,
+      "old_path": "src/winfonts/fnterrs.h",
+      "new_id": "b2644edbf3a35c99115724b8b6515660ffe5ab53",
+      "new_mode": 33188,
+      "new_path": "src/winfonts/fnterrs.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "2d6f64a0a6ed823b57fe4dfa83f62c1e24b4b8f2",
+      "old_mode": 33188,
+      "old_path": "src/winfonts/module.mk",
+      "new_id": "d49dc9d3b2ab93cdc3941dbb2cae466cdd76f8c5",
+      "new_mode": 33188,
+      "new_path": "src/winfonts/module.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "3df328299062642fe563733a4bde2d9e8c22746a",
+      "old_mode": 33188,
+      "old_path": "src/winfonts/rules.mk",
+      "new_id": "b65bb4c41af9ccd4a25e538a693c9e23c80aef49",
+      "new_mode": 33188,
+      "new_path": "src/winfonts/rules.mk"
+    },
+    {
+      "type": "modify",
+      "old_id": "2653a2ecc11522608ce737fad9dd603cefd66c5b",
+      "old_mode": 33188,
+      "old_path": "src/winfonts/winfnt.c",
+      "new_id": "264185058ab8c5ab094a0e3d078932b88f0c5eb7",
+      "new_mode": 33188,
+      "new_path": "src/winfonts/winfnt.c"
+    },
+    {
+      "type": "modify",
+      "old_id": "56706450fa25e23dfdc4b9fe6069b81db3872300",
+      "old_mode": 33188,
+      "old_path": "src/winfonts/winfnt.h",
+      "new_id": "420e11e3c6709418c7a582bf59c423b29f888b7f",
+      "new_mode": 33188,
+      "new_path": "src/winfonts/winfnt.h"
+    },
+    {
+      "type": "modify",
+      "old_id": "3edc4004f08ccfed9a94c460f1eccea577d72a2c",
+      "old_mode": 33188,
+      "old_path": "vms_make.com",
+      "new_id": "75bcbd7abf51f95b15c96b55a4ca392d9aa8a2bc",
+      "new_mode": 33188,
+      "new_path": "vms_make.com"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+run 2026-10-17T07:29Z
+nvd-icu-74.2 HTTP 200 146 bytes
+nvd-wix-keyword HTTP 200 14994 bytes
+nvd-nsis-keyword HTTP 200 17007 bytes
+nvd-nsis-short HTTP 200 15087 bytes
+
+== nvd-icu-74.2: totalResults 0, returned 0
+
+== nvd-wix-keyword: totalResults 4, returned 4
+  CVE-2019-16511 2019-09-19 | An issue was discovered in DTF in FireGiant WiX Toolset before 3.11.2. Microsoft.Deployment.Compression.Cab.dll and Microsoft.Deployment.Compression.Zip.dll allow directory traversal during CAB or ZIP archive extraction, because t
+  CVE-2024-24810 2024-02-07 | WiX toolset lets developers create installers for Windows Installer, the Windows installation engine. The .be TEMP folder is vulnerable to DLL redirection attacks that allow the attacker to escalate privileges. This impacts any in
+  CVE-2024-29187 2024-03-24 | WiX toolset lets developers create installers for Windows Installer, the Windows installation engine. When a bundle runs as SYSTEM user, Burn uses GetTempPathW which points to an insecure directory C:\Windows\Temp to drop and load
+  CVE-2024-29188 2024-03-24 | WiX toolset lets developers create installers for Windows Installer, the Windows installation engine. The custom action behind WiX's `RemoveFolderEx` functionality could allow a standard user to delete protected directories. `Remo
+
+== nvd-nsis-keyword: totalResults 5, returned 5
+  CVE-2015-0941 2015-03-22 | The Inetc plugin for Nullsoft Scriptable Install System (NSIS), as used in CERT/CC Failure Observation Engine (FOE) and other products, does not verify X.509 certificates from SSL servers, which allows man-in-the-middle attackers 
+  CVE-2015-9267 2018-10-01 | Nullsoft Scriptable Install System (NSIS) before 2.49 uses temporary folder locations that allow unprivileged local users to overwrite files. This allows a local attack in which either a plugin or the uninstaller can be replaced b
+  CVE-2015-9268 2018-10-01 | Nullsoft Scriptable Install System (NSIS) before 2.49 has unsafe implicit linking against Version.dll. In other words, there is no protection mechanism in which a wrapper function resolves the dependency at an appropriate time dur
+  CVE-2023-37378 2023-07-03 | Nullsoft Scriptable Install System (NSIS) before 3.09 mishandles access control for an uninstaller directory.
+  CVE-2025-43715 2025-04-17 | Nullsoft Scriptable Install System (NSIS) before 3.11 on Windows allows local users to escalate privileges to SYSTEM during an installation, because the temporary plugins directory is created under %WINDIR%\temp and unprivileged u
+
+== nvd-nsis-short: totalResults 4, returned 4
+  CVE-2024-27303 2024-03-06 | electron-builder is a solution to package and build a ready for distribution Electron, Proton Native app for macOS, Windows and Linux. A vulnerability that only affects eletron-builder prior to 24.13.2 in Windows, the NSIS install
+  CVE-2026-82649 2026-08-30 | SiYuan Windows installer before version 3.8.1 (affected versions >= 2.0.14) contains an uncontrolled search path element vulnerability in its NSIS installer, which invokes system executables such as TASKKILL by name rather than by
+  CVE-2026-49450 2026-09-21 | Joplin is an open source note-taking and to-do application that organises notes and lists into notebooks. Prior to 3.7.2, Joplin Desktop for Windows omits publisherName from packages/app-desktop/package.json, so the generated app-
+  CVE-2026-108160 2026-10-09 | AstronRPA through 1.1.6 contains a download of code without integrity check vulnerability that allows network attackers to deliver malicious updates by abusing the desktop client's auto-update mechanism. Attackers positioned betwe
+--- GitHub repo advisories
+wixtoolset/wix3:
+[]
+wixtoolset/wix:
+[]

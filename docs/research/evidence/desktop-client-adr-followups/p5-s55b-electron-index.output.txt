@@ -1,0 +1,106 @@
+run 2026-10-17T07:25Z
+index.json HTTP 200 1385094 bytes final https://artifacts.electronjs.org/headers/dist/index.json
+Electron 44.x entries: 67
+44.0.0 2026-08-24 chrome 152.0.7977.54 node 24.18.1 v8 15.2.124.13-electron.0
+44.0.0-beta.1 2026-08-05 chrome 152.0.7977.8 node 24.18.1 v8 15.2.124.1-electron.0
+44.0.0-alpha.1 2026-07-02 chrome 151.0.7900.0 node 24.18.0 v8 15.1.151-electron.0
+44.0.0-beta.2 2026-08-08 chrome 152.0.7977.30 node 24.18.1 v8 15.2.124.5-electron.0
+44.0.0-alpha.2 2026-07-06 chrome 151.0.7900.0 node 24.18.0 v8 15.1.151-electron.0
+44.0.0-beta.3 2026-08-10 chrome 152.0.7977.30 node 24.18.1 v8 15.2.124.5-electron.0
+44.0.0-alpha.3 2026-07-09 chrome 151.0.7900.0 node 24.18.0 v8 15.1.151-electron.0
+44.0.0-beta.4 2026-08-13 chrome 152.0.7977.30 node 24.18.1 v8 15.2.124.5-electron.0
+44.0.0-alpha.4 2026-07-16 chrome 152.0.7938.0 node 24.18.0 v8 15.2.38-electron.0
+44.0.0-beta.5 2026-08-17 chrome 152.0.7977.30 node 24.18.1 v8 15.2.124.5-electron.0
+44.0.0-alpha.5 2026-07-20 chrome 152.0.7938.0 node 24.18.0 v8 15.2.38-electron.0
+44.0.0-beta.6 2026-08-20 chrome 152.0.7977.30 node 24.18.1 v8 15.2.124.5-electron.0
+44.0.0-alpha.6 2026-07-23 chrome 152.0.7954.0 node 24.18.0 v8 15.2.87-electron.0
+44.0.0-alpha.7 2026-07-27 chrome 152.0.7969.0 node 24.18.0 v8 15.2.116-electron.0
+44.0.0-alpha.8 2026-07-30 chrome 152.0.7977.0 node 24.18.0 v8 15.2.124-electron.0
+44.0.0-alpha.9 2026-08-03 chrome 152.0.7977.8 node 24.18.1 v8 15.2.124.1-electron.0
+44.0.0-nightly.20260507 2026-05-07 chrome 149.0.7827.0 node 24.15.0 v8 14.9.207-electron.0
+44.0.0-nightly.20260508 2026-05-08 chrome 150.0.7830.0 node 24.15.0 v8 15.0.19-electron.0
+44.0.0-nightly.20260511 2026-05-11 chrome 150.0.7832.0 node 24.15.0 v8 15.0.30-electron.0
+44.0.0-nightly.20260512 2026-05-12 chrome 150.0.7832.0 node 24.15.0 v8 15.0.30-electron.0
+44.0.0-nightly.20260513 2026-05-13 chrome 150.0.7832.0 node 24.15.0 v8 15.0.30-electron.0
+44.0.0-nightly.20260514 2026-05-14 chrome 150.0.7834.0 node 24.15.0 v8 15.0.43-electron.0
+44.0.0-nightly.20260515 2026-05-15 chrome 150.0.7834.0 node 24.15.0 v8 15.0.43-electron.0
+44.0.0-nightly.20260518 2026-05-18 chrome 150.0.7834.0 node 24.15.0 v8 15.0.43-electron.0
+44.0.0-nightly.20260519 2026-05-19 chrome 150.0.7834.0 node 24.15.0 v8 15.0.43-electron.0
+44.0.0-nightly.20260520 2026-05-20 chrome 150.0.7834.0 node 24.15.0 v8 15.0.43-electron.0
+44.0.0-nightly.20260521 2026-05-21 chrome 150.0.7844.0 node 24.15.0 v8 15.0.108-electron.0
+44.0.0-nightly.20260522 2026-05-22 chrome 150.0.7847.0 node 24.15.0 v8 15.0.129-electron.0
+44.0.0-nightly.20260525 2026-05-25 chrome 150.0.7849.0 node 24.15.0 v8 15.0.163-electron.0
+44.0.0-nightly.20260527 2026-05-27 chrome 150.0.7849.0 node 24.15.0 v8 15.0.163-electron.0
+44.0.0-nightly.20260528 2026-05-28 chrome 150.0.7849.0 node 24.15.0 v8 15.0.163-electron.0
+44.0.0-nightly.20260529 2026-05-29 chrome 150.0.7857.0 node 24.15.0 v8 15.0.204-electron.0
+44.0.0-nightly.20260601 2026-06-02 chrome 150.0.7863.0 node 24.15.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260603 2026-06-03 chrome 150.0.7863.0 node 24.15.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260604 2026-06-04 chrome 150.0.7863.0 node 24.16.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260605 2026-06-05 chrome 150.0.7863.0 node 24.16.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260608 2026-06-08 chrome 150.0.7863.0 node 24.16.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260609 2026-06-09 chrome 150.0.7863.0 node 24.16.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260610 2026-06-10 chrome 150.0.7863.0 node 24.16.0 v8 15.0.223-electron.0
+44.0.0-nightly.20260612 2026-06-12 chrome 151.0.7873.0 node 24.16.0 v8 15.1.16-electron.0
+44.0.0-nightly.20260615 2026-06-15 chrome 151.0.7873.0 node 24.16.0 v8 15.1.16-electron.0
+44.0.0-nightly.20260616 2026-06-16 chrome 151.0.7873.0 node 24.16.0 v8 15.1.16-electron.0
+44.0.0-nightly.20260617 2026-06-17 chrome 151.0.7873.0 node 24.16.0 v8 15.1.16-electron.0
+44.0.0-nightly.20260624 2026-06-25 chrome 151.0.7894.0 node 24.16.0 v8 15.1.113-electron.0
+44.0.0-nightly.20260625 2026-06-25 chrome 151.0.7894.0 node 24.16.0 v8 15.1.113-electron.0
+44.0.0-nightly.20260626 2026-06-26 chrome 151.0.7894.0 node 24.16.0 v8 15.1.113-electron.0
+44.0.0-nightly.20260629 2026-06-29 chrome 151.0.7894.0 node 24.16.0 v8 15.1.113-electron.0
+44.0.0-nightly.20260630 2026-06-30 chrome 151.0.7894.0 node 24.16.0 v8 15.1.113-electron.0
+44.0.0-nightly.20260701 2026-07-01 chrome 151.0.7894.0 node 24.16.0 v8 15.1.113-electron.0
+44.1.0 2026-08-31 chrome 152.0.7977.65 node 24.19.0 v8 15.2.124.18-electron.0
+44.1.1 2026-09-01 chrome 152.0.7977.65 node 24.19.0 v8 15.2.124.18-electron.0
+44.2.0 2026-09-04 chrome 152.0.7977.76 node 24.20.0 v8 15.2.124.19-electron.0
+44.3.0 2026-09-08 chrome 152.0.7977.78 node 24.20.0 v8 15.2.124.19-electron.0
+44.4.0 2026-09-15 chrome 152.0.7977.78 node 24.21.0 v8 15.2.124.19-electron.0
+44.4.1 2026-09-15 chrome 152.0.7977.78 node 24.21.0 v8 15.2.124.19-electron.0
+44.4.2 2026-09-17 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.4.3 2026-09-18 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.4.4 2026-09-22 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.4.5 2026-09-23 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.5.0 2026-09-29 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.5.1 2026-09-29 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.6.0 2026-10-05 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.7.0 2026-10-07 chrome 152.0.7977.130 node 24.21.0 v8 15.2.124.28-electron.0
+44.7.1 2026-10-13 chrome 152.0.7977.149 node 24.21.0 v8 15.2.124.37-electron.0
+44.7.2 2026-10-13 chrome 152.0.7977.149 node 24.21.0 v8 15.2.124.37-electron.0
+44.8.0 2026-10-15 chrome 152.0.7977.167 node 24.22.0 v8 15.2.124.43-electron.0
+44.9.0 2026-10-17 chrome 152.0.7977.167 node 24.22.0 v8 15.2.124.43-electron.0
+
+== release notes v44.8.0 2026-10-16T01:50:20Z body length 1641 
+ # Release Notes for v44.8.0
+
+## Features
+
+* Added support for `Notification` action buttons on Linux. [#54890](https://github.com/electron/electron/pull/54890) <sup>(Also in [45](https://github.com/electron/electron/pull/54889))</sup>
+
+## Fixes
+
+* Fixed mouse cursor missing over native dialogs in certain scenarios on Windows. [#54987](https://github.com/electron/electron/pull/54987)
+* Fixed `net.fetch` and `session.fetch` failing permanently with `net::ERR_FAILED` after the Network Service process restarts. [#54909](https://github.com/electron/electron/pull/54909) <sup>(Also in [42](https://github.com/electron/electron/pull/54925), [43](https://github.com/electron/electron/pull/54908), [45](https://github.com/electron/electron/pull/54910))</sup>
+* Fixed `utilityProcess` dropping messages posted with `process.parentPort.postMessage()` right before the process exits. [#54960](https://github.com/electron/electron/pull/54960) <sup>(Also in [42](https://github.com/electron/electron/pull/55000), [43](https://github.com/electron/electron/pull/54962), [45](https://github.com/electron/electron/pull/54956))</sup>
+* Fixed `win.isFullScreen()` being stale in fullscreen events on Windows. [#55009](https://github.com/electron/electron/pull/55009) <sup>(Also in [45](https://github.com/electron/electron/pull/55008))</sup>
+
+## Other Changes
+
+* Backported fixes from upstream Chromium and V8. [#55034](https://github.com/electron/electron/pull/55034)
+* Updated Chromium to 152.0.7977.167. [#54928](https://github.com/electron/electron/pull/54928)
+* Updated Node.js to v24.22.0. [#55004](https://github.com/electron/electron/pull/55004)
+
+
+
+== release notes v44.9.0 2026-10-17T04:57:22Z body length 961 
+ # Release Notes for v44.9.0
+
+## Features
+
+* Added app shims on macOS to show windows under another app's Dock icon. [#55073](https://github.com/electron/electron/pull/55073) <sup>(Also in [45](https://github.com/electron/electron/pull/55072))</sup>
+
+## Fixes
+
+* Fixed link-opened windows not using the opener's session and `webPreferences`. [#55048](https://github.com/electron/electron/pull/55048) <sup>(Also in [42](https://github.com/electron/electron/pull/55050), [43](https://github.com/electron/electron/pull/55049), [45](https://github.com/electron/electron/pull/55051))</sup>
+* Fixed `setCertificateVerifyProc` occasionally not being applied to a request issued concurrently with the first request to a host. [#55046](https://github.com/electron/electron/pull/55046) <sup>(Also in [42](https://github.com/electron/electron/pull/55054), [43](https://github.com/electron/electron/pull/55047), [45](https://github.com/electron/electron/pull/55045))</sup>
+
+
