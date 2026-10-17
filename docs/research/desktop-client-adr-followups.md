@@ -76,6 +76,12 @@ No stack reference exists for the desktop layer, any desktop runtime, any update
 | Bubblewrap | needs Node 18.0.0+; version NOT SOURCEABLE | F317 |
 | Google Play target API | API 36 for new apps and updates from 2026-08-31 (matches the pinned targetSdk) | F304 |
 
+**Evidence binaries kept out of git** (`.gitignore`; re-download and compare the hash):
+
+| File | Source URL | Retrieved | SHA-256 | Size |
+|------|------------|-----------|---------|------|
+| `evidence/desktop-client-adr-followups/fetched/s29-jar-download/sqlite-jdbc-3.53.4.0.jar` | https://repo1.maven.org/maven2/io/github/willena/sqlite-jdbc/3.53.4.0/sqlite-jdbc-3.53.4.0.jar (downloaded by `scripts/s29-willena-jar-probe.sh`) | 2026-10-17 | `233a1c6a5178ed3b86a52186c78dcec008c63b50db50c6ee2a21d9a94a7bf51e` | 16,178,627 bytes |
+
 ## 3. Findings
 
 Merge observations that read across the parts (each rests only on the cited rows):

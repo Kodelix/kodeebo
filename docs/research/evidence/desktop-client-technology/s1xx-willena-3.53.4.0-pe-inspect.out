@@ -1,0 +1,12 @@
+# command: s1xx-pe-inspect.sh /tmp/res-w1/ex org/sqlite/native/Windows/{x86_64,x86}/sqlitejdbc.dll
+# host: Linux 7.2.9-2-cachyos; objdump: GNU objdump (GNU Binutils) 2.47.20260726; date: 2026-10-16; artefact: Willena/sqlite-jdbc-crypt 3.53.4.0 natives-windows.jar
+=== org/sqlite/native/Windows/x86_64/sqlitejdbc.dll
+ce00f26c31fbff8ef27f934ec088467b7a5ab973dc6b859e1469b295ad49e33b
+Magic			020b	(PE32+);MajorOSystemVersion	4;MinorOSystemVersion	0;MajorSubsystemVersion	5;MinorSubsystemVersion	2;Subsystem		00000003	(Windows CUI);
+	DLL Name: KERNEL32.dll;	DLL Name: msvcrt.dll;
+
+=== org/sqlite/native/Windows/x86/sqlitejdbc.dll
+152728b9736dd18ad1cfb5b94eb5a0acb173621b7278d698a722db2e5b328e79
+Magic			010b	(PE32);MajorOSystemVersion	4;MinorOSystemVersion	0;MajorSubsystemVersion	4;MinorSubsystemVersion	0;Subsystem		00000003	(Windows CUI);
+	DLL Name: KERNEL32.dll;	DLL Name: msvcrt.dll;
+

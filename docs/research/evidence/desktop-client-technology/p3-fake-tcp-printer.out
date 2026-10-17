@@ -1,0 +1,4 @@
+port 53503 sent 20256 recorded 20256 status n=1 -> 12 n=4 -> 12
+recorded stream starts with ESC @: True | contains ESC p 00 19 fa: True
+Python 3.14.7
+2026-10-16

@@ -1,0 +1,3 @@
+python-pillow 12.3.0 raqm True fribidi True harfbuzz True
+80mm_test_576dots image (576, 323) stream bytes 23274 decoded: ['ESC @ (init)', 'GS v 0 m=0 width_bytes=72 height=323', 'LF', 'LF', 'LF', 'ESC p m=0 t1=25 t2=250']
+58mm_test_384dots image (384, 323) stream bytes 15522 decoded: ['ESC @ (init)', 'GS v 0 m=0 width_bytes=48 height=323', 'LF', 'LF', 'LF', 'ESC p m=0 t1=25 t2=250']
