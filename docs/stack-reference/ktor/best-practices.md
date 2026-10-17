@@ -52,6 +52,7 @@ Every factual claim cites a fetched page unless marked otherwise. Lines marked *
 | HikariCP | **7.1.0** (Maven, 2026-06-14) | JDK 11+ for 7.x per Baeldung tutorial (third-party). Official JDK requirement: NOT SOURCEABLE (GitHub releases page is empty). | [Maven metadata](https://repo1.maven.org/maven2/com/zaxxer/HikariCP/maven-metadata.xml), [Baeldung](https://www.baeldung.com/hikaricp) |
 
 - Ktor docs connect Exposed with `Database.connect(url, user=..., password=...)` and run queries in `inTopLevelSuspendTransaction` on `Dispatchers.IO`. The docs example pins `exposed = 1.3.0` (stale) and does not show HikariCP. Use 1.5.x and wire a HikariCP `DataSource` yourself **(analysis)**. Source: [Ktor database integration](https://ktor.io/docs/server-integrate-database.html).
+- Exposed's own docs and its 1.5.1 source make `suspendTransaction` the supported entry point for suspend code (`newSuspendedTransaction` is `@Deprecated`); a nested block shares the outer transaction, so a second tenant context set inside it overwrites the outer one. Sources: [Exposed transactions](https://www.jetbrains.com/help/exposed/transactions.html) (fetched 2026-10-17); Exposed 1.5.1 sources jar (Kodeebo `docs/research/tenant-isolation.md` F237-F239).
 - Sizing the pool, timeouts, and lifecycle: NOT SOURCEABLE from fetched pages.
 
 ## Ktor-level checklist

@@ -77,7 +77,7 @@ No commits unless the user asks. Never weaken a test, a rule or a gate to make w
 - A cache as the only copy of anything → source of truth in Postgres, cache is derived.
 - Hard-coded retention or tenant limits → config or catalogue with typed defaults.
 - "Backups are configured" without a restore drill → scheduled restore with evidence.
-- Cross-tenant admin queries run as the application role → audited `admin_batch` role only.
+- Cross-tenant admin queries run as the application role → per tenant with the tenant context set, or an ADR-accepted audited `admin_batch` role; never the app role.
 - Floating image tags (`postgres:18`, `mongo:latest`) → exact pinned tags.
 - Shipping Dragonfly or a Mongo binary in a customer bundle → Valkey and the official Mongo image reference.
 

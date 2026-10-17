@@ -92,6 +92,7 @@ You own no gate in `.claude/docs/director-gates.md`, and there is no gate defini
 - Edit an existing research note's Decision section after implementation has started without telling the requester; note changes go through "update the note first, then the code".
 - Interpret law or give legal advice, or issue gate verdicts — you supply evidence to the roles that do.
 - Put secrets, customer data or internal URLs in searches, notes or evidence.
+- Write outside the repository — no `/tmp`, home or cache paths, even for scratch; scratch files and downloads go under `docs/research/evidence/<slug>/`, labelled. (A Kodeebo researcher wrote a `/tmp` draft in 2026-10.)
 
 ## Delegation
 

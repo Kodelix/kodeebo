@@ -57,10 +57,11 @@ Verify the reply names every check ID assigned; a missing ID is `not run`.
 ## 2. The checks
 
 ### T1 - Database roles (Postgres)
-`postgres/best-practices.md` §1. Three roles: `migrator` owns tables and runs
-DDL; `app` is `LOGIN NOBYPASSRLS`, **not owner**, DML grants only; `admin_batch`
-has `BYPASSRLS` and is used only by audited cross-tenant jobs. The app never
-connects as superuser or owner.
+`postgres/best-practices.md` §1. At least two roles: `migrator` owns tables and
+runs DDL; `app` is `LOGIN NOBYPASSRLS`, **not owner**, DML grants only. An
+`admin_batch` role (`BYPASSRLS`, audited cross-tenant jobs only) exists only if an
+ADR accepts it; its absence is not a finding. The app never connects as
+superuser or owner.
 - Probe: deploy/compose/env examples, migrations that `CREATE ROLE`/`ALTER ROLE`/`GRANT`, the connection configuration per service (which secret/role the API and workers use), the migration job's role.
 - With a named non-production database, read-only: role attributes and table owners (catalogue; see `2-catalogue-and-tests.md`). Without one: `static only`, and T1 cannot be `met` for the live roles - `NOT ASSESSED - roles not queried`.
 - `statement_timeout` / `idle_in_transaction_session_timeout` set per role (T11).
@@ -134,8 +135,9 @@ code, search query builders.
 ### T9 - Background jobs, consumers, events, outbox
 The tenant is in the message/outbox envelope; the consumer re-establishes
 tenant context (and the DB setting of T3) before touching data. Scheduled tasks
-iterate tenants in context. Cross-tenant batch work runs as `admin_batch` and
-writes an audit record. Probe: job entry points, consumer handlers, the outbox
+iterate tenants in context. Cross-tenant batch work iterates tenants in context
+or, where an ADR accepts it, runs as `admin_batch`; either way it writes an
+audit record. Probe: job entry points, consumer handlers, the outbox
 dispatcher, scheduled-task registrations.
 
 ### T10 - Telemetry

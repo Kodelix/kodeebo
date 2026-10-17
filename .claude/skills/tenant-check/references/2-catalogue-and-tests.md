@@ -83,7 +83,7 @@ FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE c.relkind IN ('r', 'p') AND n.nspname NOT IN ('pg_catalog', 'information_schema');
 ```
 Expected: the role the application connects as has `rolsuper = false`,
-`rolbypassrls = false`, and owns no tenant table; only `admin_batch` (and
+`rolbypassrls = false`, and owns no tenant table; only an ADR-accepted `admin_batch` (and
 superuser/migrator roles outside the app path) bypass RLS. The role the app uses
 comes from the deploy/connection config (T1); if it cannot be established from
 config, T1 is `NOT ASSESSED - app role unknown`.

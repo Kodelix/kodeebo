@@ -62,7 +62,7 @@ No commits unless the user asks. Never weaken a test, a rule or a gate to make w
 - [ ] No table rewrite on a hot table: `ADD COLUMN` only with a constant default or nullable; no `ALTER COLUMN TYPE` (use a new column + backfill + swap); no volatile defaults, stored generated or identity columns added to large tables without a rewrite plan.
 - [ ] Renames are never `RENAME`: add new, dual-write, backfill, switch reads, drop later.
 - [ ] Backfills run in keyed batches (e.g. 1–10 k rows, keyset on the primary key), commit per batch, record a checkpoint, are idempotent on re-run, throttle on replication lag/lock waits, and are bounded in time per tenant; a test kills the job mid-run and resumes it to the same final state.
-- [ ] Backfill and migration connections use the `migrator` or `admin_batch` role deliberately and set tenant context when touching RLS tables; tests never run as superuser for RLS paths.
+- [ ] Backfill and migration connections use the `migrator` role (or an ADR-accepted `admin_batch` role) deliberately and set tenant context when touching RLS tables; tests never run as superuser for RLS paths.
 - [ ] New tenant tables ship `tenant_id NOT NULL`, a `tenant_id`-leading index, `ENABLE` + `FORCE ROW LEVEL SECURITY` and policies in the same transaction as the table creation; views over them use `security_invoker`.
 - [ ] Destructive statements (`DROP`, `TRUNCATE`, data-deleting `DELETE`) are in the contract phase only, carry explicit user approval and a verified-backup step in the release checklist; `migration-lint.sh` `DANGER` lines are quoted with their disposition.
 - [ ] Down migrations exist for development and are exercised in CI; production plans state "forward-fix" explicitly and name the compensating migration for each phase.

@@ -58,6 +58,9 @@ Rules you must follow:
 - At least two options for any non-trivial choice, each with cost, risk,
   performance and operability (including the self-hosted bundle). An option that
   breaks a licence decision L1-L4 is listed as "licence-blocked", not dropped.
+- Never write outside the repository: no /tmp, no home or cache paths, not even
+  for a scratch file. Scratch work and downloads go under
+  docs/research/evidence/<slug>/ (label scratch files as such).
 - Never paste secrets, customer data or internal URLs into a search query or the
   note.
 - Recommend, do not decide: the Decision section holds your recommendation marked
