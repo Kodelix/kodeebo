@@ -1,0 +1,86 @@
+# Architecture registry — binding stances from ADRs, read by /architecture-decision
+# (Step 3a) before any new ADR. Append only; a changing stance gets
+# `status: superseded_by: ADR-NNNN` and a new entry. Never edit an entry's text.
+# `adr_status` mirrors the ADR's Status at the time the entry was written.
+
+data_ownership: []
+
+tenancy_rules:
+  - id: TR-RLS-SHARED-SCHEMA
+    rule: "Every table holding tenant data has tenant_id uuid NOT NULL, ENABLE + FORCE ROW LEVEL SECURITY and a permissive policy tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid per command; unique keys and PKs lead with tenant_id; FKs between tenant tables are composite with tenant_id."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-TENANT-UNIT
+    rule: "Tenant = owner organisation; branch = venue, keyed (tenant_id, id); device = cashier PC, keyed (tenant_id, branch_id, id). Seats, pricing and device binding: docs/research/licensing.md Part 1 and the licensing ADR."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-SCOPE-ONCE-PER-TX
+    rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets app.tenant_id (and branch list, device, plan timeout) with set_config(..., true) exactly once, first, from a server-side source (session lookup or verified device credential)."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: TR-BRANCH-SCOPE
+    rule: "Branch-scoped tables carry branch_id with a composite FK to branches and a RESTRICTIVE policy on app.branch_ids / app.branch_all; app.branch_all = 'on' only for a verified owner role; application-layer function permissions through one deny-by-default Authorizer."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+
+interface_contracts:
+  - id: IC-TENANT-CONNECTION-RESOLVER
+    contract: "TenantConnectionResolver.resolve(TenantId) -> TenantDataSource; the only way app code reaches tenant data; today returns the shared pool."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: IC-SCOPE-HELPER
+    contract: "WithScope (Go) / withScope (Ktor) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: IC-SESSION-AUTHORIZER
+    contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}, read from the database per request; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+
+performance_budgets: []
+
+api_decisions: []
+
+forbidden_patterns:
+  - id: FP-BYPASSRLS-RUNTIME-ROLE
+    pattern: "BYPASSRLS or superuser on any runtime, job or support role; runtime roles owning tables."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: FP-MATVIEW-TENANT-DATA
+    pattern: "A materialized view over tenant or branch data readable by a runtime role."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: FP-VIEW-WITHOUT-SECURITY-INVOKER
+    pattern: "A view over tenant tables created without security_invoker = true."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: FP-SESSION-LEVEL-SCOPE
+    pattern: "set_config(..., false) or plain SET for a scope setting; setting scope outside the helper or twice in one transaction."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: FP-THREADLOCAL-TENANT
+    pattern: "Carrying the tenant in a bare ThreadLocal or MDC value; nested tenant transactions (Exposed)."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: FP-SCOPE-FROM-REQUEST
+    pattern: "Taking tenant, branch or device ids from a request body, query string or header as scope."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: FP-SCOPE-CLAIMS-IN-TOKEN
+    pattern: "Tenant, role or branch claims inside the dashboard session token."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
