@@ -69,7 +69,8 @@ def check(intent, acked, client, server, quiesced, integrity, allowed_missing=fr
             if p["amount_piasters"] != want:
                 v.append(("I3", f"{aid} payment {p['amount_piasters']} != expected {want}"))
     for aid in must_exist & set(sales):
-        want_sum += expected_total(actions[aid])
+        if aid in actions:  # an action the driver never logged is reported by I8 (never submitted), not summed here
+            want_sum += expected_total(actions[aid])
     if got_sum != want_sum:
         v.append(("I3", f"server sales total {got_sum} != expected {want_sum}"))
 

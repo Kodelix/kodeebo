@@ -22,6 +22,12 @@
 // older version than the server's current one are counted into ONE owner summary per offline period (the period
 // the device just came back from, from the TS-09 contact-gap record); no per-sale flag. MUTANT=reprice_on_server
 // recomputes the amount with current prices; MUTANT=per_sale_flag flags every such sale for review.
+// Rule 2 widened (founder, 2026-10-17): one summary per period in which the device lacked the current price list,
+// offline or simply not yet pulled. A sale is judged only by its cfg_version against the list in force on the
+// server at upload, never by device time. The period is keyed by the old version the device was on: it runs from
+// the server's publication of the next version to the device's first pull of a newer one (server time); offline
+// periods inside it are context for the owner message. MUTANT=offline_only keeps the first rule (summaries per
+// offline period only, nothing for an online lag).
 package main
 
 import (
@@ -44,7 +50,7 @@ import (
 
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
-  reconcile_events, config, device_events, price_summaries;
+  reconcile_events, config, device_events, price_summaries, config_history, device_pulls;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -73,8 +79,11 @@ CREATE TABLE reconcile_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KE
 CREATE TABLE config (id int PRIMARY KEY CHECK (id = 1), version int NOT NULL, price int NOT NULL,
   prices jsonb NOT NULL);
 INSERT INTO config VALUES (1, 1, 6000, '{"std": 6000, "vip": 9000, "cafe": 1500}');
-CREATE TABLE price_summaries (device_id text NOT NULL, period_key bigint NOT NULL, n_sales int NOT NULL,
-  owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, period_key));
+CREATE TABLE config_history (version int PRIMARY KEY, prices jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
+INSERT INTO config_history (version, prices) SELECT version, prices FROM config;
+CREATE TABLE device_pulls (device_id text NOT NULL, version int NOT NULL, at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE price_summaries (device_id text NOT NULL, kind text NOT NULL, period_key bigint NOT NULL,
+  n_sales int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, kind, period_key));
 CREATE TABLE device_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   kind text NOT NULL, detail jsonb NOT NULL, owner_alert boolean NOT NULL);
 `
@@ -177,10 +186,11 @@ func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error 
 		if err := tx.QueryRow(ctx, `SELECT prices FROM config WHERE id = 1`).Scan(&prices); err != nil {
 			return err
 		}
-		var amount int64
+		var units int64
 		for _, sg := range p.Segments {
-			amount += (sg.Mins*prices[sg.Tier] + 30) / 60
+			units += sg.Mins * prices[sg.Tier]
 		}
+		amount := (units + 30) / 60
 		if p.Cafe != nil {
 			amount += p.Cafe.N * prices["cafe"]
 		}
@@ -345,6 +355,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 	}
 	var results []result
 	stale := 0
+	lagged := map[int]int{} // old version -> sales (rule 2 widened: online, the device had not pulled the new list)
 	for _, c := range b.Commands {
 		out, err := applyOne(ctx, tx, b.DeviceID, c)
 		if err != nil {
@@ -354,6 +365,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		results = append(results, result{c.CommandID, c.Seq, out})
 		if out == "applied" && c.Payload.CfgVersion > 0 && c.Payload.CfgVersion < curVersion {
 			stale++ // billed at a previous price: a valid fact (SC-23 rule 2)
+			lagged[c.Payload.CfgVersion]++
 			if mutant == "per_sale_flag" {
 				if err := flag(ctx, tx, "needs_review_price", b.DeviceID, c); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -366,17 +378,29 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if stale > 0 {
-		// One summary per offline period: the period this contact closed, or the one a continuation batch follows.
-		key := period
-		if key == 0 {
-			tx.QueryRow(ctx, `SELECT coalesce(max(id), 0) FROM offline_periods WHERE device_id = $1
-				AND to_ts > now() - interval '30 seconds'`, b.DeviceID).Scan(&key)
+		rows := map[int64]int{}
+		kind := "lacking"
+		for v, n := range lagged { // one summary per old version the device was still on
+			rows[int64(v)] = n
 		}
-		if _, err := tx.Exec(ctx, `INSERT INTO price_summaries (device_id, period_key, n_sales) VALUES ($1,$2,$3)
-			ON CONFLICT (device_id, period_key) DO UPDATE SET n_sales = price_summaries.n_sales + EXCLUDED.n_sales`,
-			b.DeviceID, key, stale); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		if mutant == "offline_only" { // the first rule: per offline period, nothing for an online lag
+			kind, rows = "offline", map[int64]int{}
+			key := period
+			if key == 0 {
+				tx.QueryRow(ctx, `SELECT coalesce(max(id), 0) FROM offline_periods WHERE device_id = $1
+					AND to_ts > now() - interval '30 seconds'`, b.DeviceID).Scan(&key)
+			}
+			if key > 0 {
+				rows[key] = stale
+			}
+		}
+		for k, n := range rows {
+			if _, err := tx.Exec(ctx, `INSERT INTO price_summaries (device_id, kind, period_key, n_sales) VALUES ($1,$2,$3,$4)
+				ON CONFLICT (device_id, kind, period_key) DO UPDATE SET n_sales = price_summaries.n_sales + EXCLUDED.n_sales`,
+				b.DeviceID, kind, k, n); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 	}
 	var cur int64
@@ -487,12 +511,17 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 			_, err = pool.Exec(ctx, `UPDATE config SET version = version + 1, price = coalesce(($1::jsonb->>'std')::int, price),
 				prices = $1::jsonb WHERE id = 1`, string(pj))
 		}
+		if err == nil {
+			_, err = pool.Exec(ctx, `INSERT INTO config_history (version, prices) SELECT version, prices FROM config
+				ON CONFLICT (version) DO NOTHING`)
+		}
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	} else if dev := r.URL.Query().Get("device"); dev != "" {
 		contact(ctx, dev) // a device pulling its config is in contact
+		defer pool.Exec(context.Background(), `INSERT INTO device_pulls (device_id, version) SELECT $1, version FROM config`, dev)
 	}
 	var epoch string
 	var version, price int
@@ -527,9 +556,15 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		"meta":          "SELECT epoch FROM meta",
 		"config":        "SELECT version, price FROM config",
 		"device_events": "SELECT device_id, kind, detail, owner_alert FROM device_events ORDER BY id",
-		"price_summaries": `SELECT s.device_id, s.period_key, s.n_sales, s.owner_alert,
-			extract(epoch FROM o.from_ts)::float8 AS from_s, extract(epoch FROM o.to_ts)::float8 AS to_s
-			FROM price_summaries s LEFT JOIN offline_periods o ON o.id = s.period_key ORDER BY s.period_key`,
+		"price_summaries": `WITH b AS (SELECT s.*,
+			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,
+			  (SELECT min(p.at) FROM device_pulls p WHERE p.device_id = s.device_id AND p.version > s.period_key) AS to_ts
+			  FROM price_summaries s)
+			SELECT b.device_id, b.kind, b.period_key, b.n_sales, b.owner_alert,
+			  extract(epoch FROM b.from_ts)::float8 AS from_s, extract(epoch FROM b.to_ts)::float8 AS to_s,
+			  (SELECT count(*) FROM offline_periods o WHERE o.device_id = b.device_id
+			     AND o.to_ts > b.from_ts AND o.from_ts < coalesce(b.to_ts, now())) AS offline_periods
+			FROM b ORDER BY b.kind, b.period_key`,
 	} {
 		rows, err := dumpRows(ctx, q)
 		if err != nil {

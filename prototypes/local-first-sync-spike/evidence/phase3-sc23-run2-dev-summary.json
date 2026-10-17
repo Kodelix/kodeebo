@@ -1,0 +1,176 @@
+{
+ "harness_commit": "89510c2+dirty",
+ "started": "2026-10-17 01:49:34",
+ "seeds_per_cell": 50,
+ "gap_s": 0.8,
+ "cells": [
+  {
+   "cell": "a_offline_session",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 52.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_tier_change",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 50,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 52.7,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_two_periods",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 100,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 135.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_online_lag",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 100,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 56.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "e_no_price_list",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 10.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "f_corrupt_session_op",
+   "runs": 50,
+   "exercised": 50,
+   "summaries_expected": 0,
+   "violating_runs": 0,
+   "first_bad": [],
+   "seconds": 9.6,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "reprice_on_server": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_offline_session"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 10181 != expected 15925"
+   ],
+   "seconds": 1.1
+  },
+  "per_sale_flag": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_offline_session"
+   ],
+   "first_violation": [
+    "I8",
+    "server flag needs_review_price for cmd-s1-a0 seq 1"
+   ],
+   "seconds": 1.1
+  },
+  "retroactive_price": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_tier_change"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 10616 != expected 11998"
+   ],
+   "seconds": 2.1
+  },
+  "tier_uses_start_price": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_tier_change"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 12955 != expected 11998"
+   ],
+   "seconds": 2.1
+  },
+  "offline_only": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_offline_session"
+   ],
+   "first_violation": [
+    "R19",
+    "summaries per lacking period {} (other kinds [{'device_id': 'dev-1', 'from_s': 1792191298.074133, 'kind': 'offline', 'n_sales': 2, 'offline_periods': 1, 'owner_alert': True, 'period_key': 1, 'to_s': 1792191298.15694}]), expected {2: 2}"
+   ],
+   "seconds": 1.1
+  },
+  "zero_price_default": {
+   "caught": true,
+   "runs_to_catch": 5,
+   "seed_cell": [
+    1,
+    "e_no_price_list"
+   ],
+   "first_violation": [
+    "I8",
+    "s1-x1 on the server was never submitted"
+   ],
+   "seconds": 6.2
+  },
+  "swallow_store_errors": {
+   "caught": true,
+   "runs_to_catch": 6,
+   "seed_cell": [
+    1,
+    "f_corrupt_session_op"
+   ],
+   "first_violation": [
+    "R22",
+    "the session op did not refuse the damaged store: {'ok': False, 'op': 'start_session', 'error': 'invalid', 'warning': 'invalid', 'detail': 'database disk image is malformed'}"
+   ],
+   "seconds": 6.5
+  },
+  "round_per_segment": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_tier_change"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a1 sale 6980 != expected 6979"
+   ],
+   "seconds": 2.1
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 339.8
+}

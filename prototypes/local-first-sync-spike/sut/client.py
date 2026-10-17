@@ -55,6 +55,14 @@
 #   (N4); close_session bills each segment at its frozen rate (half-up per segment, a placeholder until OQ8) and
 #   the cafe items at the current list. The payload carries cfg_version (newest list version used), the segments
 #   and the cafe line. A new list takes effect when it is pulled, never retroactively.
+#   No price list yet, or a tier/cafe price missing from it: the op is refused with a clear error code
+#   ("no_price_list" / "price_missing") and nothing is billed - never a zero bill. sell_items is a cafe-only sale.
+#   Only lookup errors are answered this way; a store error still refuses the store (as everywhere else).
+#   OQ8 (founder, 2026-10-17): a session with several segments is rounded ONCE on its total, to the owner's
+#   rounding step (round_piasters in the price list, the list held at close); never per segment.
+#      MUTANT also: round_per_segment.
+#      MUTANT also: zero_price_default (a missing list or price counts as 0), swallow_store_errors (the session-op
+#      handler also swallows store errors instead of refusing the store).
 #      MUTANT also: retroactive_price (re-prices the whole session with the list at close),
 #      tier_uses_start_price (a tier change uses the list the session started with).
 #      MUTANT also: no_instance_lock, lock_released_early (lock held only while opening the store).
@@ -670,18 +678,42 @@ def replay(k):
     reply({"ok": True, "op": "replay", "sent": len(rows), "results": resp["results"]})
 
 
+class PriceError(ValueError):
+    """A counter action that cannot be priced from the device's price list; carries the reply error code."""
+
+    def __init__(self, code, detail):
+        super().__init__(detail)
+        self.code = code
+
+
+class ZeroPrices(dict):  # zero_price_default mutant only
+    def __missing__(self, key):
+        return 0
+
+
 def device_prices():
     v, p = q("SELECT cfg_version, cfg_prices FROM sync_state WHERE id = 1")[0]
-    if p is None:
-        raise ValueError("no price list on this device yet")
-    return v, json.loads(p)
+    prices = json.loads(p) if p else None
+    if MUTANT == "zero_price_default":  # planted defect: bill at zero rather than refuse
+        return v or 0, ZeroPrices(prices or {})
+    if not prices:
+        raise PriceError("no_price_list", "this device has not received a price list yet")
+    return v, prices
+
+
+def price_of(prices, key):
+    if MUTANT == "zero_price_default":  # planted defect: a missing price is billed at zero
+        return prices.get(key, 0) if isinstance(prices, dict) else 0
+    if key not in prices:
+        raise PriceError("price_missing", f"the device's price list has no price for {key!r}")
+    return prices[key]
 
 
 def start_session(m):
     v, prices = device_prices()
-    seg = [{"from": m["start_min"], "tier": m["tier"], "rate": prices[m["tier"]], "v": v}]
+    seg = [{"from": m["start_min"], "tier": m["tier"], "rate": price_of(prices, m["tier"]), "v": v}]
     q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], m["start_min"], json.dumps(prices), v, json.dumps(seg)))
-    reply({"ok": True, "op": "start_session", "rate": prices[m["tier"]], "v": v})
+    reply({"ok": True, "op": "start_session", "rate": seg[0]["rate"], "v": v})
 
 
 def change_tier(m):
@@ -690,9 +722,15 @@ def change_tier(m):
                                     (m["session_id"],))[0]
     if MUTANT == "tier_uses_start_price":  # planted defect: the list the session started with
         v, prices = start_v, json.loads(start_prices)
-    segs = json.loads(segs) + [{"from": m["at_min"], "tier": m["tier"], "rate": prices[m["tier"]], "v": v}]
+    rate = price_of(prices, m["tier"])
+    segs = json.loads(segs) + [{"from": m["at_min"], "tier": m["tier"], "rate": rate, "v": v}]
     q("UPDATE sessions SET segments = ? WHERE session_id = ?", (json.dumps(segs), m["session_id"]))
-    reply({"ok": True, "op": "change_tier", "rate": prices[m["tier"]], "v": v})
+    reply({"ok": True, "op": "change_tier", "rate": rate, "v": v})
+
+
+def round_half_up(units, step):
+    """units / 60 piasters, rounded half-up to a multiple of step piasters (the owner's rounding setting)."""
+    return (units + 30 * step) // (60 * step) * step
 
 
 def close_session(m):
@@ -701,18 +739,34 @@ def close_session(m):
     segs = json.loads(segs)
     if MUTANT == "retroactive_price":  # planted defect: today's list applied to the whole session
         segs = [{**sg, "rate": prices[sg["tier"]], "v": v} for sg in segs]
-    lines, total = [], 0
+    lines, units = [], 0
     for k, sg in enumerate(segs):
         until = segs[k + 1]["from"] if k + 1 < len(segs) else m["end_min"]
         n = until - sg["from"]
-        total += (n * sg["rate"] + 30) // 60  # per segment, half-up (placeholder until OQ8)
+        units += n * sg["rate"]  # piaster-minutes per hour-rate; rounded once on the total (OQ8)
         lines.append({"tier": sg["tier"], "mins": n, "rate": sg["rate"], "v": sg["v"]})
+    step = price_of(prices, "round_piasters")  # owner setting (OQ8): never a value fixed in code
+    if MUTANT == "round_per_segment":  # planted defect: each segment rounded on its own
+        total = sum(round_half_up(ln["mins"] * ln["rate"], step) for ln in lines)
+    else:
+        total = round_half_up(units, step)
     cafe_n = int(m.get("cafe_n", 0))
-    total += cafe_n * prices["cafe"]
+    cafe_price = price_of(prices, "cafe") if cafe_n else prices.get("cafe", 0)
+    total += cafe_n * cafe_price
     used = [sg["v"] for sg in segs] + ([v] if cafe_n else [])
-    extra = {"cfg_version": max(used), "segments": lines, "cafe": {"n": cafe_n, "price": prices["cafe"]}}
+    extra = {"cfg_version": max(used), "segments": lines, "cafe": {"n": cafe_n, "price": cafe_price}}
     a = {"action_id": m["action_id"], "session_id": m["session_id"], "day": m.get("day", 0)}
     close_and_pay(a, priced=(list(range(start, m["end_min"])), total, extra))
+
+
+def sell_items(m):
+    """A cafe-only sale (no station session), priced from the device's current list."""
+    v, prices = device_prices()
+    n = int(m["n"])
+    price = price_of(prices, "cafe")
+    extra = {"cfg_version": v, "segments": [], "cafe": {"n": n, "price": price}}
+    a = {"action_id": m["action_id"], "session_id": m["action_id"], "day": m.get("day", 0)}
+    close_and_pay(a, priced=([], n * price, extra))
 
 
 def pull_config():
@@ -801,11 +855,17 @@ for line in sys.stdin:
                    "counter": q("SELECT seq FROM counter WHERE id = 1")[0][0], "unreported": len(unreported)})
         elif op == "pull_config":
             pull_config()
-        elif op in ("start_session", "change_tier", "close_session"):  # SC-23
+        elif op in ("start_session", "change_tier", "close_session", "sell_items"):  # SC-23
+            handled = (Exception,) if MUTANT == "swallow_store_errors" else (ValueError, KeyError, IndexError)
             try:
-                {"start_session": start_session, "change_tier": change_tier, "close_session": close_session}[op](msg)
-            except (ValueError, KeyError, IndexError) as e:  # no price list yet, unknown session: not a store fault
-                reply({"ok": False, "op": op, "error": f"{type(e).__name__}: {str(e)[:80]}"})
+                {"start_session": start_session, "change_tier": change_tier, "close_session": close_session,
+                 "sell_items": sell_items}[op](msg)
+            except handled as e:  # no price list, a price missing, an unknown session: refuse the action, not the store
+                code = getattr(e, "code", "unknown_session" if isinstance(e, (KeyError, IndexError)) else "invalid")
+                reply({"ok": False, "op": op, "error": code, "warning": code, "detail": str(e)[:100]})
+        elif op == "release_cache":  # test hook (SC-23 f): drop cached pages so the next read comes from disk
+            q("PRAGMA shrink_memory")
+            reply({"ok": True, "op": op})
         elif op == "state":  # SC-19 view for the driver: retention and config state
             st = q("SELECT acked_seq, archived_seq, resend_from, cfg_epoch, cfg_version, cfg_price FROM sync_state WHERE id = 1")[0]
             reply({"ok": True, "op": op, "acked_seq": st[0], "archived_seq": st[1], "resend_from": st[2],

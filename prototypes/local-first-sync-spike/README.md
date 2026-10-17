@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (offline price change) dev run PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) dev run 2 PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -682,8 +682,36 @@ Permission revocation while offline (abuse case 3) is **not** in SC-23. It is a 
   The last two need a new list to arrive while a session is open, which happens in `b_tier_change`. In `a_offline_session` re-pricing at close changes nothing, because the device holds the same list.
 - **Spot checks after the config change:** SC-19 `d_config` PASS (13 of 13); tamper 36 of 36. The full regression follows on the committed harness.
 
+#### Run 2 (dev, uncommitted harness on `89510c2`) — founder follow-ups (2026-10-17): PASS
+
+`evidence/phase3-sc23-run2-dev*`, 340 s. Changes since run 1:
+- **Rule 2 widened:** one owner summary per period in which the device lacked the current list, offline or simply not yet pulled. The server judges a sale only by its `cfg_version` against the list in force at upload, and keys the summary by the old version the device was on. The period runs from the server's publication of the next version to the device's first pull of a newer one, both in server time. Offline periods inside it are context (`offline_periods` count) for the owner's message. The first implementation of the online case attached an online sale to the preceding offline period, through a 30-second "continuation" heuristic; cell `d` caught it, and the heuristic is gone.
+- **Rule 4:** a device with no price list, or with a price missing, refuses with `no_price_list` / `price_missing` and bills nothing. There is a café-only `sell_items` operation; the spike's older `sale` operation takes its rate from the driver and is harness scaffolding only.
+- **OQ8:** a multi-segment session is rounded once on its total, to the owner's `round_piasters` step from the price list (the list held at close; the billing spec confirms which). No default lives in code.
+- **Oracle fix:** a bill for an action the driver never logged used to crash the oracle; now it is reported (I8 "never submitted").
+
+| New cell | Script | Result (50 seeds) |
+|---|---|---|
+| `d_online_lag` | sales online before the device pulls a new list; then an offline period followed by an online sale before the pull | one summary per old version (v2: 2 sales, no offline period inside; v3: 2 sales, with an offline period inside), bounds within 0.5 s of the publication and pull times |
+| `e_no_price_list` | `start_session`, `sell_items` and `close_session` before any list arrives; then a list without a vip price | every action refused with `no_price_list`; 0 bills and 0 outbox rows before the list; vip refused with `price_missing`; std billed normally |
+| `f_corrupt_session_op` | tiny page cache, cache dropped, one byte flipped in every data page, then `start_session` | the store is refused by the session operation (`store: refused`) and for the next operation, `store_error_during_operation` is recorded, and the file is not written after detection |
+
+**Checks added:** R21 (no price list or no price: refused clearly, nothing billed, no zero bill on the server) and R22 (a store error reached first by a session operation still refuses the store).
+
+**Mutants (8, all caught):** the four of run 1, plus:
+- `offline_only` (the first rule's per-offline-period summaries) after 1 run (R19);
+- `zero_price_default` after 5 (I8 and R21: a session "started" at rate 0 and zero bills reached the server);
+- `swallow_store_errors` after 6 (R22: the damaged store came back as a plain action error);
+- `round_per_segment` after 2 (I3).
+
+**Tamper suite on the changed client:** 36 of 36.
+
+**Finding P3-F6 — judging by version alone counts some current-price sales as "previous price".** A sale made while its version was still current, but uploaded after the next version was published, also lands in that version's summary. The server cannot tell the two apart without trusting device time, which the founder's rule excludes. **Decision (founder, 2026-10-17):** keep judging by `cfg_version` only. The owner summary may show the device's sale time as context, labelled unverified, and never uses it to decide. Wording: "N sales billed at a price list that was no longer current when they reached the server (device times, unverified: …)".
+
+**For the billing and config spec (founder, 2026-10-17):** the dashboard refuses to publish a price list that lacks a required setting (a tier price, the rounding step, the minimum minutes) and names what is missing. The device's `no_price_list` / `price_missing` refusal is the last defence, not the normal path. The spike's server stub accepts any list, so cell `e` tests only that last defence.
+
 **Not covered:**
-- **Previous-price sales made while online**, before the device pulls a new list. They would land in an "online" summary (`period_key 0`). The model treats any as a violation and none occurred; the founder's rule speaks only of offline periods, so the online case needs a rule.
+- **Rounding settings beyond the step:** minimum billable minutes and the billing increment are owner settings (OQ8) but not exercised; they belong to the billing spec.
 - **The billing rules themselves** (rounding, minimum minutes, per-segment or total rounding): placeholders until OQ8.
 - **The owner's summary wording and dashboard view:** belong to the spec.
 - **Permission revocation:** a later cell, as above.
