@@ -4,7 +4,7 @@
 > **From:** Kodelix — [FOUNDER TO FILL: legal form], an Egyptian company; contact [FOUNDER TO FILL]
 > **Date:** 2026-10-17 · **Status:** Draft for the founder to review and send
 > **Prepared by:** Kodelix engineering (privacy-compliance-specialist role). The authors are not lawyers.
-> **Answered by founder decision, not counsel (2026-10-17):** Q1, Q2, Q4, Q5 and Q6 — see the marked block under each question. Source: founder statement, until the founder adds counsel's written answer and the licence numbers. **Still open for counsel:** Q3 (the exact end of the compliance period) and the written confirmation of the founder-recorded answers.
+> **Answered by founder decision, not counsel (2026-10-17):** Q1, Q4, Q5 and Q6 — see the marked block under each question. Source: founder statement, until the founder adds counsel's written answer. **Answered by counsel (2026-10-17):** Q2 — counsel told the founder that no PDPL licence is needed now (marked block under Q2). **Still open for counsel:** Q3 (the exact end of the compliance period) and the written confirmation of the founder-recorded answers.
 
 ## How to read this brief
 
@@ -106,9 +106,9 @@ erasure and export.
 
 ### Q2. Licence or permit from the Centre, and a Data Protection Officer
 
-> **Answered by founder decision, not counsel (2026-10-17).** The required PDPL licences have been
-> obtained. Source: founder statement, until the founder adds counsel's written answer and the licence
-> numbers: [FOUNDER TO FILL: licence / permit numbers, DPO registration].
+> **Answered by counsel (2026-10-17).** Counsel told the founder that no PDPL licence is needed now.
+> This replaces the earlier founder-decision line "the required PDPL licences have been obtained".
+> Source: counsel's advice as reported by the founder; the written advice is to be added by the founder.
 
 **Reading [S1], [S2] (Law Arts. 4, 5, 8, 12; Regulation Arts. 3, 4, 7, 8, 36).** Controllers and processors
 hold a **licence (3 years) or permit (up to 1 year)** from the Personal Data Protection Centre. A legal
@@ -127,6 +127,7 @@ data has its own licence route (Law Art. 12; Regulation Art. 14).
 - **Q2.5** Our reading: passcodes are credentials and attendance is not in the "sensitive data" definition (health, biometric, financial, children). Is that correct? Is a till activity log that links an employee to cash handling "financial" data? Would fingerprint or face clock-in (not planned for Kodeebo) make it sensitive?
 
 **Working assumption.** Kodelix needs a licence or permit and a DPO. Nothing is filed yet.
+*Superseded by counsel's answer above (2026-10-17).*
 
 ### Q3. Does the one-year compliance period end on 2026-11-01?
 
@@ -212,7 +213,7 @@ included, and records are kept longer during a dispute.
 ### Q6. Hosting location: cross-border licence or permit if the server is in Germany
 
 > **Answered by founder decision, not counsel (2026-10-17).** Counsel cleared hosting outside Egypt, and
-> the required licences have been obtained (Q2). No staff consent screen for storage abroad in the current
+> counsel told the founder that no PDPL licence is needed now (Q2). No staff consent screen for storage abroad in the current
 > release. Source: founder statement, until counsel's written answer is added.
 
 **Facts.** Staff personal data is collected in Egypt on the venue's PC and stored on Kodelix's hosted
@@ -268,7 +269,7 @@ much more after launch.
 
 | Your answer to | Decides | Default until answered |
 |---|---|---|
-| Q1, Q2 — **answered by founder decision, not counsel (2026-10-17)** | Customer contract terms; incident runbook (72-hour clock) | Venue owner = controller, Kodelix = processor on the owner's written instruction; licences obtained (numbers to add) |
+| Q1 — **answered by founder decision, not counsel (2026-10-17)**; Q2 — **answered by counsel (2026-10-17)** | Customer contract terms; incident runbook (72-hour clock) | Venue owner = controller, Kodelix = processor on the owner's written instruction; no PDPL licence needed now (counsel) |
 | Q3 | What Kodelix must have done by 2026-11-01 | Open for counsel |
 | Q4, Q5 — **answered by founder decision, not counsel (2026-10-17)** | Retention and deletion design; backup policy; key destruction | Staged deletion; backups expire under 60 days; key destruction counts as erasure (escalation, not built); staff records exported to the owner, then deleted. Open: which archive fields stay identifiable |
 | Q6 — **answered by founder decision, not counsel (2026-10-17)** | Hosting location in our hosting decision record | Hosting outside Egypt cleared; Germany (current plan) or Egypt decided in the hosting ADR |

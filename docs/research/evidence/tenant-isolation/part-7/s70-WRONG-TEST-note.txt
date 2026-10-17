@@ -1,0 +1,14 @@
+S70 first run (run-s70.sh -> s70-output.txt, 2026-10-17): partly a WRONG TEST. Kept, not deleted.
+What is wrong, and which lines of s70-output.txt must not be cited:
+ - T2a put the owner's valid INSERT and a deliberately failing cross-tenant INSERT in ONE transaction. The failure aborted it,
+   COMMIT became ROLLBACK, so the grant for op1 never existed. Therefore T2b ("0 rows with a grant"), T3b ("grants visible 0") and
+   T4b ("0 rows after revoke") are CONFOUNDED: they prove nothing about grants. T4b also mixed a forbidden UPDATE (expires_at) with the
+   allowed one, which aborted that transaction too.
+ - T5c: the NOT NULL error on support_audit.tenant_id came from the audit insert, not from RLS (a fail-closed side effect, not the planned test).
+ - The T6 \echo line contained an apostrophe ("tenant's"), psql reported "unterminated quoted string" and the owner's audit listing is mangled.
+Lines of s70-output.txt that remain VALID and citeable (they do not depend on the lost op1 grant): T1 (no grant -> 0), T3a (write denied),
+T4a (forged operator id, grant inserted by the superuser -> 2 rows), T4c (expired grant -> 0), T5a/T5b (function rows), T5d (EXECUTE denied),
+T6 tamper detection (the verify/tamper statements, not the mangled owner listing), T7, T8, T8b, T9, T10.
+Re-confirmed or replaced by the corrected run s71-output.txt: T1, T2a/T2a2/T2a3, T2b, T3b, T4a, T4b, T5a-T5d, T6, T10, and the new T11.
+(Correction 2026-10-17: the first version of this note said S71 re-ran T3a, T4c, T7, T8, T9 as well; it did not. Those stay cited from s70-output.txt.)
+Corrected run: run-s71.sh / s71-tests.sql / t10.sh / s71-output.txt.

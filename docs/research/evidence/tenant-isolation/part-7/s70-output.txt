@@ -1,0 +1,526 @@
+# date: 2026-10-17T20:08:06Z  image: postgres:18.6  container IP (scram path): 172.17.0.2
+postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)
+##### SETUP
+-- S70 setup: operator-access mechanisms at PostgreSQL 18.6 (tier E). Run as the bootstrap superuser against database postgres.
+-- Test fixtures only: every credential here is a throw-away fixture inside a throw-away container.
+\set ON_ERROR_STOP off
+SELECT version();
+                                                      version                                                       
+--------------------------------------------------------------------------------------------------------------------
+ PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+(1 row)
+
+CREATE ROLE migrator NOLOGIN;
+CREATE ROLE
+CREATE ROLE audit_writer NOLOGIN;
+CREATE ROLE
+CREATE ROLE support_fn NOLOGIN;
+CREATE ROLE
+CREATE ROLE app_rt LOGIN PASSWORD 'fixture' NOSUPERUSER NOBYPASSRLS;
+CREATE ROLE
+CREATE ROLE support_rt LOGIN PASSWORD 'fixture' NOSUPERUSER NOBYPASSRLS;
+CREATE ROLE
+CREATE ROLE support_ro LOGIN PASSWORD 'fixture' NOSUPERUSER NOBYPASSRLS;
+CREATE ROLE
+GRANT pg_read_all_data TO support_ro;
+GRANT ROLE
+CREATE ROLE support_exp LOGIN PASSWORD 'fixture' VALID UNTIL '2020-01-01';
+CREATE ROLE
+CREATE ROLE backup_rt LOGIN PASSWORD 'fixture' REPLICATION NOSUPERUSER NOBYPASSRLS;
+CREATE ROLE
+CREATE DATABASE p7 OWNER migrator;
+CREATE DATABASE
+\c p7 postgres
+You are now connected to database "p7" as user "postgres".
+SET ROLE migrator;
+SET
+CREATE TABLE orders(tenant_id uuid NOT NULL, id int NOT NULL, total int, note text, PRIMARY KEY (tenant_id, id));
+CREATE TABLE
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY; ALTER TABLE orders FORCE ROW LEVEL SECURITY;
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE global_ref(code text PRIMARY KEY);
+CREATE TABLE
+CREATE TABLE support_grants(id serial PRIMARY KEY, tenant_id uuid NOT NULL, operator_id text NOT NULL,
+  scope text NOT NULL CHECK (scope IN ('read','write')), granted_by text NOT NULL,
+  expires_at timestamptz NOT NULL, revoked_at timestamptz);
+CREATE TABLE
+ALTER TABLE support_grants ENABLE ROW LEVEL SECURITY; ALTER TABLE support_grants FORCE ROW LEVEL SECURITY;
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE support_audit(seq bigserial PRIMARY KEY, at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  operator_id text, tenant_id uuid NOT NULL, grant_id int, action text, detail text, prev_hash bytea, hash bytea);
+CREATE TABLE
+ALTER TABLE support_audit ENABLE ROW LEVEL SECURITY; ALTER TABLE support_audit FORCE ROW LEVEL SECURITY;
+ALTER TABLE
+ALTER TABLE
+RESET ROLE;
+RESET
+-- tenant policy for the runtime role
+CREATE POLICY app_tenant ON orders FOR ALL TO app_rt
+  USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid)
+  WITH CHECK (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+CREATE POLICY
+-- support read policy: tenant context AND a live grant for (tenant, operator)
+CREATE POLICY support_read ON orders FOR SELECT TO support_rt, support_fn
+  USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid
+         AND EXISTS (SELECT 1 FROM support_grants g
+                     WHERE g.tenant_id = orders.tenant_id
+                       AND g.operator_id = NULLIF(current_setting('app.operator_id', true), '')
+                       AND g.scope IN ('read','write') AND g.expires_at > now() AND g.revoked_at IS NULL));
+CREATE POLICY
+-- grants: owner side (app_rt, tenant context) creates and revokes; support side sees only its own rows
+CREATE POLICY grants_owner_sel ON support_grants FOR SELECT TO app_rt USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+CREATE POLICY
+CREATE POLICY grants_owner_ins ON support_grants FOR INSERT TO app_rt WITH CHECK (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+CREATE POLICY
+CREATE POLICY grants_owner_upd ON support_grants FOR UPDATE TO app_rt USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+CREATE POLICY
+CREATE POLICY grants_support_sel ON support_grants FOR SELECT TO support_rt, support_fn USING (operator_id = NULLIF(current_setting('app.operator_id', true), ''));
+CREATE POLICY
+-- audit: support appends, owner reads its own tenant's rows, nobody updates or deletes
+CREATE POLICY audit_ins ON support_audit FOR INSERT TO support_rt, support_fn WITH CHECK (true);
+CREATE POLICY
+CREATE POLICY audit_owner_sel ON support_audit FOR SELECT TO app_rt USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+CREATE POLICY
+CREATE POLICY audit_chain_sel ON support_audit FOR SELECT TO audit_writer USING (true);
+CREATE POLICY
+GRANT SELECT, INSERT, UPDATE, DELETE ON orders TO app_rt;
+GRANT
+GRANT SELECT ON orders TO support_rt, support_fn;
+GRANT
+GRANT SELECT, INSERT ON support_grants TO app_rt; GRANT UPDATE (revoked_at) ON support_grants TO app_rt;
+GRANT
+GRANT
+GRANT USAGE ON SEQUENCE support_grants_id_seq TO app_rt;
+GRANT
+GRANT SELECT ON support_grants TO support_rt, support_fn;
+GRANT
+GRANT INSERT ON support_audit TO support_rt, support_fn; GRANT USAGE ON SEQUENCE support_audit_seq_seq TO support_rt, support_fn;
+GRANT
+GRANT
+GRANT SELECT ON support_audit TO app_rt, audit_writer;
+GRANT
+GRANT SELECT ON global_ref TO PUBLIC;
+GRANT
+-- hash-chain trigger: per-tenant chain, written by a SECURITY DEFINER function owned by audit_writer
+CREATE FUNCTION audit_chain() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public, pg_temp AS $$
+DECLARE ph bytea;
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtext(NEW.tenant_id::text));
+  SELECT hash INTO ph FROM public.support_audit WHERE tenant_id = NEW.tenant_id ORDER BY seq DESC LIMIT 1;
+  NEW.prev_hash := ph;
+  NEW.hash := sha256(convert_to(coalesce(encode(ph,'hex'),'') || '|' || NEW.seq || '|' || NEW.at::text || '|' ||
+      coalesce(NEW.operator_id,'') || '|' || NEW.tenant_id::text || '|' || coalesce(NEW.action,'') || '|' || coalesce(NEW.detail,''), 'UTF8'));
+  RETURN NEW;
+END $$;
+CREATE FUNCTION
+ALTER FUNCTION audit_chain() OWNER TO audit_writer;
+ALTER FUNCTION
+CREATE TRIGGER support_audit_chain BEFORE INSERT ON support_audit FOR EACH ROW EXECUTE FUNCTION audit_chain();
+CREATE TRIGGER
+CREATE FUNCTION audit_verify(p_tenant uuid) RETURNS bigint LANGUAGE plpgsql AS $$
+DECLARE r record; ph bytea := NULL; h bytea;
+BEGIN
+  FOR r IN SELECT * FROM public.support_audit WHERE tenant_id = p_tenant ORDER BY seq LOOP
+    h := sha256(convert_to(coalesce(encode(ph,'hex'),'') || '|' || r.seq || '|' || r.at::text || '|' ||
+      coalesce(r.operator_id,'') || '|' || r.tenant_id::text || '|' || coalesce(r.action,'') || '|' || coalesce(r.detail,''), 'UTF8'));
+    IF r.prev_hash IS DISTINCT FROM ph OR r.hash IS DISTINCT FROM h THEN RETURN r.seq; END IF;
+    ph := r.hash;
+  END LOOP;
+  RETURN NULL;  -- NULL = chain intact
+END $$;
+CREATE FUNCTION
+-- one definer function per support action: read orders + append an audit row in the same transaction
+CREATE FUNCTION support_orders_read(p_reason text) RETURNS SETOF orders LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public, pg_temp AS $$
+BEGIN
+  INSERT INTO public.support_audit(operator_id, tenant_id, action, detail)
+    VALUES (current_setting('app.operator_id', true), NULLIF(current_setting('app.tenant_id', true), '')::uuid, 'orders.read', p_reason);
+  RETURN QUERY SELECT * FROM public.orders;
+END $$;
+CREATE FUNCTION
+ALTER FUNCTION support_orders_read(text) OWNER TO support_fn;
+ALTER FUNCTION
+-- data (inserted by the superuser; FORCE RLS does not apply to superusers)
+INSERT INTO orders VALUES ('aaaaaaaa-0000-0000-0000-000000000001', 1, 100, 'SECRET-A-ROW-1'), ('aaaaaaaa-0000-0000-0000-000000000001', 2, 200, 'SECRET-A-ROW-2'),
+                          ('bbbbbbbb-0000-0000-0000-000000000002', 1, 300, 'SECRET-B-ROW-1');
+INSERT 0 3
+INSERT INTO global_ref VALUES ('g1'),('g2');
+INSERT 0 2
+SELECT rolname, rolsuper, rolbypassrls, rolreplication, rolvaliduntil FROM pg_roles WHERE rolname IN ('app_rt','support_rt','support_ro','support_exp','backup_rt','support_fn','audit_writer','migrator') ORDER BY 1;
+   rolname    | rolsuper | rolbypassrls | rolreplication |     rolvaliduntil      
+--------------+----------+--------------+----------------+------------------------
+ app_rt       | f        | f            | f              | 
+ audit_writer | f        | f            | f              | 
+ backup_rt    | f        | f            | t              | 
+ migrator     | f        | f            | f              | 
+ support_exp  | f        | f            | f              | 2020-01-01 00:00:00+00
+ support_fn   | f        | f            | f              | 
+ support_ro   | f        | f            | f              | 
+ support_rt   | f        | f            | f              | 
+(8 rows)
+
+SELECT has_function_privilege('app_rt', 'support_orders_read(text)', 'EXECUTE') AS app_rt_can_execute_before_revoke;
+ app_rt_can_execute_before_revoke 
+----------------------------------
+ t
+(1 row)
+
+REVOKE ALL ON FUNCTION support_orders_read(text) FROM PUBLIC;
+REVOKE
+GRANT EXECUTE ON FUNCTION support_orders_read(text) TO support_rt;
+GRANT
+SELECT has_function_privilege('app_rt', 'support_orders_read(text)', 'EXECUTE') AS app_rt_can_execute_after_revoke,
+       has_function_privilege('support_rt', 'support_orders_read(text)', 'EXECUTE') AS support_rt_can_execute;
+ app_rt_can_execute_after_revoke | support_rt_can_execute 
+---------------------------------+------------------------
+ f                               | t
+(1 row)
+
+##### TESTS
+-- S70 tests (tier E). Each \c is a REAL login (SCRAM over TCP, not SET ROLE). PGPASSWORD is the fixture value.
+\set ON_ERROR_STOP off
+\set A '\'aaaaaaaa-0000-0000-0000-000000000001\''
+\set B '\'bbbbbbbb-0000-0000-0000-000000000002\''
+\echo === T0 identity checks
+=== T0 identity checks
+\c p7 support_rt
+You are now connected to database "p7" as user "support_rt".
+SELECT current_user, session_user;
+ current_user | session_user 
+--------------+--------------
+ support_rt   | support_rt
+(1 row)
+
+\echo === T1 support_rt, tenant A context, operator op1, NO grant -> expect 0 rows
+=== T1 support_rt, tenant A context, operator op1, NO grant -> expect 0 rows
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op1',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op1
+(1 row)
+
+SELECT count(*) AS rows_visible FROM orders; COMMIT;
+ rows_visible 
+--------------
+            0
+(1 row)
+
+COMMIT
+\echo === T2a owner (app_rt, ctx A) creates a 1-hour read grant for op1 on A
+=== T2a owner (app_rt, ctx A) creates a 1-hour read grant for op1 on A
+\c p7 app_rt
+You are now connected to database "p7" as user "app_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true);
+BEGIN
+              set_config              
+--------------------------------------
+ aaaaaaaa-0000-0000-0000-000000000001
+(1 row)
+
+INSERT INTO support_grants(tenant_id, operator_id, scope, granted_by, expires_at) VALUES (:A, 'op1', 'read', 'ownerA', now() + interval '1 hour');
+INSERT 0 1
+\echo --- owner tries to create a grant for tenant B while in ctx A -> expect RLS error
+--- owner tries to create a grant for tenant B while in ctx A -> expect RLS error
+INSERT INTO support_grants(tenant_id, operator_id, scope, granted_by, expires_at) VALUES (:B, 'op1', 'read', 'ownerA', now() + interval '1 hour');
+ERROR:  new row violates row-level security policy for table "support_grants"
+COMMIT;
+ROLLBACK
+\echo === T2b support_rt with the grant: ctx A -> expect 2 rows; ctx B (grant is for A only) -> expect 0 rows
+=== T2b support_rt with the grant: ctx A -> expect 2 rows; ctx B (grant is for A only) -> expect 0 rows
+\c p7 support_rt
+You are now connected to database "p7" as user "support_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op1',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op1
+(1 row)
+
+SELECT count(*) AS rows_ctx_A_with_grant, string_agg(note, ',') FROM orders; COMMIT;
+ rows_ctx_a_with_grant | string_agg 
+-----------------------+------------
+                     0 | 
+(1 row)
+
+COMMIT
+BEGIN; SELECT set_config('app.tenant_id', :B, true), set_config('app.operator_id','op1',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ bbbbbbbb-0000-0000-0000-000000000002 | op1
+(1 row)
+
+SELECT count(*) AS rows_ctx_B_grant_is_for_A FROM orders; COMMIT;
+ rows_ctx_b_grant_is_for_a 
+---------------------------
+                         0
+(1 row)
+
+COMMIT
+\echo === T3a write attempts by support_rt (read-only role) -> expect permission denied
+=== T3a write attempts by support_rt (read-only role) -> expect permission denied
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op1',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op1
+(1 row)
+
+UPDATE orders SET total = 0; DELETE FROM orders; INSERT INTO orders VALUES (:A, 9, 1, 'x'); ROLLBACK;
+ERROR:  permission denied for table orders
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+\echo === T3b support_rt cannot read grants of others, cannot change grants, cannot touch audit
+=== T3b support_rt cannot read grants of others, cannot change grants, cannot touch audit
+BEGIN; SELECT set_config('app.operator_id','op1',true);
+BEGIN
+ set_config 
+------------
+ op1
+(1 row)
+
+SELECT count(*) AS grants_visible_to_op1 FROM support_grants;
+ grants_visible_to_op1 
+-----------------------
+                     0
+(1 row)
+
+UPDATE support_grants SET expires_at = now() + interval '10 years'; ROLLBACK;
+ERROR:  permission denied for table support_grants
+ROLLBACK
+SELECT * FROM support_audit; UPDATE support_audit SET detail='x'; DELETE FROM support_audit; TRUNCATE support_audit;
+ERROR:  permission denied for table support_audit
+ERROR:  permission denied for table support_audit
+ERROR:  permission denied for table support_audit
+\echo === T4a forged operator id: support_rt acting as 'op2' who holds a grant for A
+=== T4a forged operator id: support_rt acting as op2 who holds a grant for A
+\c p7 postgres
+ERROR:  permission denied for table support_audit
+You are now connected to database "p7" as user "postgres".
+INSERT INTO support_grants(tenant_id, operator_id, scope, granted_by, expires_at) VALUES ('aaaaaaaa-0000-0000-0000-000000000001', 'op2', 'read', 'ownerA', now() + interval '1 hour');
+INSERT 0 1
+\c p7 support_rt
+You are now connected to database "p7" as user "support_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op2',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op2
+(1 row)
+
+SELECT count(*) AS rows_when_support_rt_claims_op2 FROM orders; COMMIT;
+ rows_when_support_rt_claims_op2 
+---------------------------------
+                               2
+(1 row)
+
+COMMIT
+\echo === T4b owner revokes op1 (UPDATE revoked_at) -> op1 sees 0 on the next transaction
+=== T4b owner revokes op1 (UPDATE revoked_at) -> op1 sees 0 on the next transaction
+\c p7 app_rt
+You are now connected to database "p7" as user "app_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true);
+BEGIN
+              set_config              
+--------------------------------------
+ aaaaaaaa-0000-0000-0000-000000000001
+(1 row)
+
+UPDATE support_grants SET revoked_at = now() WHERE operator_id = 'op1' AND tenant_id = :A; UPDATE support_grants SET expires_at = now() WHERE operator_id='op1'; COMMIT;
+UPDATE 0
+ERROR:  permission denied for table support_grants
+ROLLBACK
+\c p7 support_rt
+You are now connected to database "p7" as user "support_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op1',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op1
+(1 row)
+
+SELECT count(*) AS rows_after_revoke FROM orders; COMMIT;
+ rows_after_revoke 
+-------------------
+                 0
+(1 row)
+
+COMMIT
+\echo === T4c expired grant (expires_at in the past) for op3 -> 0 rows
+=== T4c expired grant (expires_at in the past) for op3 -> 0 rows
+\c p7 postgres
+You are now connected to database "p7" as user "postgres".
+INSERT INTO support_grants(tenant_id, operator_id, scope, granted_by, expires_at) VALUES ('aaaaaaaa-0000-0000-0000-000000000001', 'op3', 'read', 'ownerA', now() - interval '1 minute');
+INSERT 0 1
+\c p7 support_rt
+You are now connected to database "p7" as user "support_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op3',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op3
+(1 row)
+
+SELECT count(*) AS rows_with_expired_grant FROM orders; COMMIT;
+ rows_with_expired_grant 
+-------------------------
+                       0
+(1 row)
+
+COMMIT
+\echo === T5 SECURITY DEFINER function owned by support_fn (a role that has a gated policy)
+=== T5 SECURITY DEFINER function owned by support_fn (a role that has a gated policy)
+\echo --- T5a op2 (valid grant on A), ctx A: rows returned and one audit row appended
+--- T5a op2 (valid grant on A), ctx A: rows returned and one audit row appended
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op2',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op2
+(1 row)
+
+SELECT count(*) AS rows_from_function FROM support_orders_read('ticket-1'); COMMIT;
+ rows_from_function 
+--------------------
+                  2
+(1 row)
+
+COMMIT
+\echo --- T5b same call but the client ROLLS BACK: is the audit row kept?
+--- T5b same call but the client ROLLS BACK: is the audit row kept?
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op2',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op2
+(1 row)
+
+SELECT count(*) AS rows_from_function FROM support_orders_read('ticket-2-rolled-back'); ROLLBACK;
+ rows_from_function 
+--------------------
+                  2
+(1 row)
+
+ROLLBACK
+\echo --- T5c ctx unset (no tenant): the definer-owner policy is evaluated -> expect 0 rows
+--- T5c ctx unset (no tenant): the definer-owner policy is evaluated -> expect 0 rows
+BEGIN; SELECT set_config('app.operator_id','op2',true);
+BEGIN
+ set_config 
+------------
+ op2
+(1 row)
+
+SELECT count(*) AS rows_no_tenant_ctx FROM support_orders_read('ticket-3-no-ctx'); ROLLBACK;
+ERROR:  null value in column "tenant_id" of relation "support_audit" violates not-null constraint
+CONTEXT:  SQL statement "INSERT INTO public.support_audit(operator_id, tenant_id, action, detail)
+    VALUES (current_setting('app.operator_id', true), NULLIF(current_setting('app.tenant_id', true), '')::uuid, 'orders.read', p_reason)"
+PL/pgSQL function support_orders_read(text) line 3 at SQL statement
+ROLLBACK
+\echo --- T5d app_rt (no EXECUTE) calls the function -> expect permission denied
+--- T5d app_rt (no EXECUTE) calls the function -> expect permission denied
+\c p7 app_rt
+You are now connected to database "p7" as user "app_rt".
+SELECT * FROM support_orders_read('x');
+\echo === T6 owner reads its own tenant's audit rows; hash chain verify; then tamper as superuser
+=== T6 owner reads its own
+\c p7 app_rt
+ERROR:  permission denied for function support_orders_read
+unterminated quoted string
+You are now connected to database "p7" as user "app_rt".
+BEGIN; SELECT set_config('app.tenant_id', :A, true);
+BEGIN
+              set_config              
+--------------------------------------
+ aaaaaaaa-0000-0000-0000-000000000001
+(1 row)
+
+SELECT seq, operator_id, action, detail, left(encode(hash,'hex'),12) AS hash12 FROM support_audit ORDER BY seq; COMMIT;
+ seq | operator_id |   action    |  detail  |    hash12    
+-----+-------------+-------------+----------+--------------
+   1 | op2         | orders.read | ticket-1 | d9b84f93cd51
+(1 row)
+
+COMMIT
+BEGIN; SELECT set_config('app.tenant_id', :B, true); SELECT count(*) AS tenant_B_sees_audit_rows FROM support_audit; COMMIT;
+BEGIN
+              set_config              
+--------------------------------------
+ bbbbbbbb-0000-0000-0000-000000000002
+(1 row)
+
+ tenant_b_sees_audit_rows 
+--------------------------
+                        0
+(1 row)
+
+COMMIT
+\c p7 postgres
+You are now connected to database "p7" as user "postgres".
+SELECT audit_verify('aaaaaaaa-0000-0000-0000-000000000001') AS first_bad_seq_before_tamper;
+ first_bad_seq_before_tamper 
+-----------------------------
+                            
+(1 row)
+
+UPDATE support_audit SET detail = 'edited-by-superuser' WHERE seq = (SELECT min(seq) FROM support_audit);
+UPDATE 1
+SELECT audit_verify('aaaaaaaa-0000-0000-0000-000000000001') AS first_bad_seq_after_tamper;
+ first_bad_seq_after_tamper 
+----------------------------
+                          1
+(1 row)
+
+\echo --- deleting the LAST row is not detected by the chain alone (no later row points at it)
+--- deleting the LAST row is not detected by the chain alone (no later row points at it)
+INSERT INTO support_audit(operator_id, tenant_id, action, detail) VALUES ('op9','aaaaaaaa-0000-0000-0000-000000000001','probe','tail');
+INSERT 0 1
+DELETE FROM support_audit WHERE detail = 'tail';
+DELETE 1
+SELECT audit_verify('aaaaaaaa-0000-0000-0000-000000000001') AS first_bad_seq_after_tail_delete_still_reports_older_tamper;
+ first_bad_seq_after_tail_delete_still_reports_older_tamper 
+------------------------------------------------------------
+                                                          1
+(1 row)
+
+\echo === T7 pg_read_all_data member (support_ro, NOBYPASSRLS): RLS still applies; a non-RLS table is read in full
+=== T7 pg_read_all_data member (support_ro, NOBYPASSRLS): RLS still applies; a non-RLS table is read in full
+\c p7 support_ro
+You are now connected to database "p7" as user "support_ro".
+BEGIN; SELECT set_config('app.tenant_id', :A, true), set_config('app.operator_id','op2',true);
+BEGIN
+              set_config              | set_config 
+--------------------------------------+------------
+ aaaaaaaa-0000-0000-0000-000000000001 | op2
+(1 row)
+
+SELECT count(*) AS orders_rows_for_support_ro FROM orders; SELECT count(*) AS global_ref_rows FROM global_ref; COMMIT;
+ orders_rows_for_support_ro 
+----------------------------
+                          0
+(1 row)
+
+ global_ref_rows 
+-----------------
+               2
+(1 row)
+
+COMMIT
+##### T8 login of a role whose VALID UNTIL is in the past (SCRAM over TCP) -> expect failure
+psql: error: connection to server at "172.17.0.2", port 5432 failed: FATAL:  password authentication failed for user "support_exp"
+##### T8b same role over the local socket (image pg_hba: local = trust, so no password is checked)
+ current_user 
+--------------
+ support_exp
+(1 row)
+
+##### T9 REPLICATION-only role (not superuser, not BYPASSRLS) takes a base backup; do the files hold tenant rows in clear?
+exit=0
+/tmp/bk/base/16393/16394
+/tmp/bk/base/16393/16394
+##### T10 pgaudit available in the image?
+(rows above; empty = none)
+ls-grep exit=1

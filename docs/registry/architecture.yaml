@@ -26,6 +26,11 @@ tenancy_rules:
     adr: ADR-0003
     adr_status: Proposed
     status: active
+  - id: TR-SUPPORT-GRANT-GATE
+    rule: "Kodelix support reads tenant data only as support_rt (NOSUPERUSER, NOBYPASSRLS, owns nothing, SELECT only on tenant tables) whose policies TO support_rt require the tenant context AND a live owner grant (approved, revoked_at IS NULL, expires_at > clock_timestamp()); the grant carries an explicit branch list and never sets app.branch_all; support writes only through SECURITY DEFINER verbs gated by a grant naming the verb; the helper commits the access record before the read."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
 
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
@@ -41,6 +46,11 @@ interface_contracts:
   - id: IC-SESSION-AUTHORIZER
     contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}, read from the database per request; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
     adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: IC-SUPPORT-GRANT
+    contract: "SupportGrant {id, tenant_id, branch_ids (explicit), scope read | verb:<name>, operator_id, reason, requested_at, approved_by, approved_at, expires_at (default 24 h, max 7 d, from config), revoked_at?}; owner inserts and updates revoked_at only. ADR-0002 Scope gains kind Support {grantId, operatorId}; helper errors NoLiveGrant, ScopeAlreadySet, InvalidScope."
+    adr: ADR-0004
     adr_status: Proposed
     status: active
 
@@ -82,5 +92,35 @@ forbidden_patterns:
   - id: FP-SCOPE-CLAIMS-IN-TOKEN
     pattern: "Tenant, role or branch claims inside the dashboard session token."
     adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: FP-USING-TRUE-TENANT-TABLE
+    pattern: "A USING (true) policy on a table that holds tenant data (allowed only on allow-listed control-plane tables, each listed by a catalogue test)."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-OPERATOR-ID-FROM-REQUEST
+    pattern: "Taking the operator id from a request rather than the authenticated operator session (per-operator database identity required before a second operator)."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-AUDIT-IN-READ-TX-ONLY
+    pattern: "A support access record written only inside the reading transaction (lost on client rollback); it must be committed before the read."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-OWNER-IMPERSONATION
+    pattern: "The operator signing in as the owner, using the owner's credential, or minting an owner session ('log in as')."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-TENANT-READ-WITHOUT-GRANT
+    pattern: "Kodelix reading tenant data without a live owner grant, including break-glass, a superuser read or a per-grant database login."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-CACHED-GRANT-STATE
+    pattern: "Caching support-grant state (a cached grant outlives the owner's revoke)."
+    adr: ADR-0004
     adr_status: Proposed
     status: active
