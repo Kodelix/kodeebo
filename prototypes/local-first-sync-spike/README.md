@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) dev run 2 PASS on uncommitted harness
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -705,6 +705,18 @@ Permission revocation while offline (abuse case 3) is **not** in SC-23. It is a 
 - `round_per_segment` after 2 (I3).
 
 **Tamper suite on the changed client:** 36 of 36.
+
+#### Run 3 (committed harness `8cc8df6`) — SC-23 **PASS**, full regression PASS
+
+`evidence/phase3-sc23-run3-*`.
+- **SC-23:** 6 × 50 runs, 0 violations, 8 of 8 mutants caught. Identical to run 2 except a wall-clock timestamp inside one violation message.
+- **Regression:**
+  - SC-22: PASS (the race-cell mutant caught after 1 run, as before);
+  - SC-21a, SC-20 and SC-19: identical to their previous runs;
+  - SC-20 real tmpfs leg: 50 of 50;
+  - phases 0, 1 and 2 (10 seeds, 300 runs): PASS;
+  - tamper: 36 of 36.
+- **Provenance:** the SC-23 to SC-21a logs say `commit 8cc8df6`. Later logs say `e50aac3` or `cf2bcd1`: three commits from other sessions (the desktop spike decisions, the tenant-isolation note, a studio update) landed during the run. None changes this folder (`git diff 8cc8df6 cf2bcd1 -- prototypes/local-first-sync-spike` is empty), and the tamper suite ran with the folder clean.
 
 **Finding P3-F6 — judging by version alone counts some current-price sales as "previous price".** A sale made while its version was still current, but uploaded after the next version was published, also lands in that version's summary. The server cannot tell the two apart without trusting device time, which the founder's rule excludes. **Decision (founder, 2026-10-17):** keep judging by `cfg_version` only. The owner summary may show the device's sale time as context, labelled unverified, and never uses it to decide. Wording: "N sales billed at a price list that was no longer current when they reached the server (device times, unverified: …)".
 
