@@ -19,8 +19,10 @@ or the temporary section path when sub-questions run in parallel}
 Mode: {new | re-verify | extend}   Existing note to build on: {path | none}
 ID block (parallel parts only): findings {F n01-F n99}, spikes {S n0-S n9}; use no
 ID outside it; cite IDs from other parts or notes with a prefix (e.g. "desktop-note F117").
-Fetch budget: {20} WebFetch/WebSearch calls. Refresh provisional sections 4-9 every 8
-fetches; when the budget is spent, stop fetching and finalise sections 4-9 from the file.
+Budget: {20} units. Each WebFetch, WebSearch or spike command you run (Bash) spends one
+unit: runs take turns too. Write each finding into the file before the next fetch or
+run. Refresh provisional sections 4-9 every 8 units; when the budget is spent, stop
+fetching and running and finalise sections 4-9 from the file.
 
 Decision this informs: {one paragraph from Phase 1}
 Feature / story: {design/specs/<slug>.md | story ID | none}
@@ -67,12 +69,13 @@ Rules you must follow:
 - Open Questions: each with an owner and what it blocks.
 - Set the note's `Status:` to `Draft`. Only the caller sets `Complete`, after its
   checks and the user's approved write.
-- You have a limited turn budget. Create the destination file within your first
-  three turns (all nine headings, the Question, the pinned Versions baseline),
-  then add each finding to it as you fetch it - never hold findings for one
-  final write. When about five turns remain, stop fetching: mark every unread
-  item "NOT SOURCEABLE - turn budget, not reached", and complete Options,
-  Decision and Open questions from what the file holds.
+- You cannot see your remaining turns; the budget above is your only stop rule.
+  Create the destination file within your first three turns (all nine headings,
+  the Question, the pinned Versions baseline), then add each finding to it as you
+  fetch or run it - never hold findings for one final write. When the budget is
+  spent, mark every unread item "NOT SOURCEABLE - budget, not reached" and every
+  unrun spike "PENDING - <spike id>", and complete sections 4-9 from what the
+  file holds.
 
 Return (text, under 200 words): the written path; the count of findings by tier;
 the list of NOT SOURCEABLE items; the licence-blocked options; the open
@@ -86,14 +89,18 @@ could not write the file, say so - a reply without the file is a failed phase.
 |---|---|
 | The named file exists | `Read` it; a reply with no file is a FAILED PHASE (error-recovery Trigger 0) |
 | The summary matches the file | counts and the NOT SOURCEABLE list agree with the note |
+| Sections 4-9 have content | count the non-heading lines under each of sections 4-9; a section that holds only a placeholder fails, whatever word the placeholder uses. Never check by searching one marker word |
 | Nothing was written elsewhere | `git status` / `Glob` for stray files under `docs/` (tier-E evidence under `docs/research/evidence/<slug>/` is expected) |
 
 When sub-questions ran in parallel, merge the section files into the single
-destination note by section (Versions and Findings are concatenated — the
+destination note **with the Write tool** (a script that builds the note was
+declined in two products; do not offer one), by section (Versions and Findings are concatenated — the
 disjoint ID blocks make the `F` and `S` numbers unique; check for duplicates
 before writing; Options, Decision and the rest are written once by you from the
 sections returned), then delete the temporary files **only after** the user
-approved the merged note.
+approved the merged note. Before asking for that approval, check the merged file
+by content: its finding rows equal the sum of the parts' rows, no ID appears
+twice, and sections 4-9 are non-empty in the synthesis and in every per-part copy.
 
 ## Brief template (`refresh` mode)
 

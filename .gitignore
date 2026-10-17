@@ -31,6 +31,10 @@ Thumbs.db
 backend/bin/
 *.test
 *.out
+# research and QA evidence keeps its command output (tier E: research-protocol.md)
+!docs/research/evidence/**/*.out
+!production/qa/evidence/**/*.out
+!prototypes/**/evidence/**/*.out
 coverage.*
 
 # === JVM / Gradle / Android ===
