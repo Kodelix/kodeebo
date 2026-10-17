@@ -34,6 +34,19 @@
 // expiry are computed from the server's own clock and the last lease issued, so the owner is warned even while the
 // device is offline. The server never refuses a backlog because the lease ran out. POST /test/clock?advance=
 // moves the server clock (spike test hook). MUTANT=reject_after_expiry refuses batches from an expired device.
+//
+// SC-28 (dashboard edit of an open bill, founder rule 2026-10-17, sync note OQ9 (2)): POST /edit is the owner's
+// edit (add n cafe items to an open session), idempotent on edit_id. It is refused, and nothing is stored, when the
+// device is not connected (no contact within PRESENCE_S seconds of server time). It is rejected visibly at once when
+// the server already holds the closed bill. Otherwise it is stored "pending" with a deadline (EDIT_TTL_S). Every
+// batch reply carries the device's pending edits and the server time, and records the first delivery. The device
+// decides; its edit_result command (an ordinary command in its sequence) ends the edit "applied" or "rejected".
+// An edit never delivered by its deadline is rejected ("device_unreachable") by the server; it will never be sent.
+// An edit delivered once can only be ended by the device (the reply may have arrived): it stays "pending, sent at
+// X" until the device's next contact. POST /correction records a correction of a closed bill as a new record; the
+// original sale is never rewritten (OQ9 (3), OQ6). MUTANT=queue_when_offline stores edits for an offline device;
+// MUTANT=expire_delivered rejects delivered edits at the deadline too; MUTANT=correction_rewrites changes the
+// original sale row.
 package main
 
 import (
@@ -52,12 +65,14 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
-  reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases;
+  reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
+  corrections;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -95,6 +110,11 @@ CREATE TABLE price_summaries (device_id text NOT NULL, kind text NOT NULL, perio
   n_sales int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, kind, period_key));
 CREATE TABLE device_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   kind text NOT NULL, detail jsonb NOT NULL, owner_alert boolean NOT NULL);
+CREATE TABLE edits (edit_id text PRIMARY KEY, device_id text NOT NULL, session_id text NOT NULL, n int NOT NULL,
+  state text NOT NULL, reason text, created_at double precision NOT NULL, deadline double precision NOT NULL,
+  delivered_at double precision, deliveries int NOT NULL DEFAULT 0, resolved_at double precision, resolved_by text);
+CREATE TABLE corrections (correction_id text PRIMARY KEY, action_id text NOT NULL, delta_piasters bigint NOT NULL,
+  original_piasters bigint NOT NULL);
 `
 
 type payload struct {
@@ -106,6 +126,10 @@ type payload struct {
 	CfgVersion      int       `json:"cfg_version"` // SC-23: newest price-list version the bill used (0 = not priced from the feed)
 	Segments        []segment `json:"segments"`
 	Cafe            *cafe     `json:"cafe"`
+	Kind            string    `json:"kind"` // SC-28: "" = a bill, "edit_result" = the device's decision on an edit
+	EditID          string    `json:"edit_id"`
+	Result          string    `json:"result"`
+	Reason          *string   `json:"reason"`
 }
 
 type segment struct {
@@ -147,6 +171,45 @@ var (
 )
 
 var clockOffset atomic.Int64 // SC-25b: test hook, nanoseconds added to the server clock for leases
+
+// SC-28: last contact per device on the server clock (presence for dashboard edits).
+var (
+	seenMu   sync.Mutex
+	lastSeen = map[string]float64{}
+)
+
+func nowS() float64 { return float64(serverNow().UnixNano()) / 1e9 }
+
+func seen(dev string) {
+	if dev == "" {
+		return
+	}
+	seenMu.Lock()
+	lastSeen[dev] = nowS()
+	seenMu.Unlock()
+}
+
+func connected(dev string) bool {
+	seenMu.Lock()
+	t, ok := lastSeen[dev]
+	seenMu.Unlock()
+	return ok && nowS()-t <= float64(envSeconds("PRESENCE_S", 15))
+}
+
+type execer interface {
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
+}
+
+// expireEdits rejects every pending edit whose deadline has passed and that was never delivered (SC-28).
+func expireEdits(ctx context.Context, db execer) error {
+	cond := "delivered_at IS NULL"
+	if mutant == "expire_delivered" { // planted defect: a delivered edit may already be applied on the device
+		cond = "true"
+	}
+	_, err := db.Exec(ctx, `UPDATE edits SET state = 'rejected', reason = 'device_unreachable', resolved_at = $1,
+		resolved_by = 'server' WHERE state = 'pending' AND deadline <= $1 AND `+cond, nowS())
+	return err
+}
 
 func serverNow() time.Time { return time.Now().Add(time.Duration(clockOffset.Load())) }
 
@@ -220,6 +283,18 @@ func failpoint(name string) {
 
 func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error {
 	p := c.Payload
+	if p.Kind == "edit_result" { // SC-28: the device decided; the edit ends here
+		tag, err := tx.Exec(ctx, `UPDATE edits SET state = $2, reason = $3, resolved_at = $4, resolved_by = 'device'
+			WHERE edit_id = $1 AND device_id = $5 AND state = 'pending'`, p.EditID, p.Result, p.Reason, nowS(), dev)
+		if err != nil || tag.RowsAffected() == 1 {
+			return err
+		}
+		var state string
+		if err := tx.QueryRow(ctx, `SELECT state FROM edits WHERE edit_id = $1`, p.EditID).Scan(&state); err != nil || state != p.Result {
+			return flag(ctx, tx, "edit_conflict", dev, c) // the server ended it otherwise, or never sent it
+		}
+		return nil
+	}
 	if mutant == "reprice_on_server" && len(p.Segments) > 0 { // planted defect: re-prices with today's list
 		var prices map[string]int64
 		if err := tx.QueryRow(ctx, `SELECT prices FROM config WHERE id = 1`).Scan(&prices); err != nil {
@@ -371,6 +446,7 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	period := contact(ctx, b.DeviceID)
+	seen(b.DeviceID)
 	if mutant == "reject_after_expiry" && leaseExpired(ctx, b.DeviceID) { // planted defect: the backlog is refused
 		http.Error(w, `{"error":"lease_expired"}`, http.StatusForbidden)
 		return
@@ -462,12 +538,31 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	// SC-28: after this batch's edit results are applied, offer the device every edit still pending for it: those
+	// not yet past their deadline, and those already delivered once (only the device can end them).
+	if err := expireEdits(ctx, tx); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	now := nowS()
+	edits, err := tx.Query(ctx, `UPDATE edits SET delivered_at = coalesce(delivered_at, $2), deliveries = deliveries + 1
+		WHERE device_id = $1 AND state = 'pending' AND (delivered_at IS NOT NULL OR deadline > $2)
+		RETURNING edit_id, session_id, n, deadline`, b.DeviceID, now)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	offered, err := pgx.CollectRows(edits, pgx.RowToMap)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	failpoint("server:before_commit")
 	if ms, _ := strconv.Atoi(os.Getenv("SLOW_COMMIT_MS")); ms > 0 {
 		time.Sleep(time.Duration(ms) * time.Millisecond)
 	}
 	resp, _ := json.Marshal(map[string]any{"results": results, "cursor": cur, "resend_from": resendFrom,
-		"archived_seq": archived, "lease": issueLease(ctx, b.DeviceID)})
+		"archived_seq": archived, "lease": issueLease(ctx, b.DeviceID), "edits": offered, "server_time": now})
 	w.Header().Set("Content-Type", "application/json")
 	if mutant == "ack_before_commit" {
 		// Planted defect: the client is told "applied" before the commit is durable.
@@ -564,6 +659,7 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if dev := r.URL.Query().Get("device"); dev != "" {
 		contact(ctx, dev) // a device pulling its config is in contact
+		seen(dev)
 		defer pool.Exec(context.Background(), `INSERT INTO device_pulls (device_id, version) SELECT $1, version FROM config`, dev)
 	}
 	var epoch string
@@ -579,6 +675,99 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(out)
+}
+
+// handleEdit: POST is the owner's dashboard edit of an open bill (SC-28), GET ?id= its state as the dashboard shows it.
+func handleEdit(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	w.Header().Set("Content-Type", "application/json")
+	if err := expireEdits(ctx, pool); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	id := r.URL.Query().Get("id")
+	if r.Method == http.MethodPost {
+		var e struct {
+			EditID    string `json:"edit_id"`
+			DeviceID  string `json:"device_id"`
+			SessionID string `json:"session_id"`
+			N         int    `json:"n"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&e); err != nil || e.EditID == "" || e.N <= 0 {
+			http.Error(w, "edit", http.StatusBadRequest)
+			return
+		}
+		id = e.EditID
+		var known bool
+		pool.QueryRow(ctx, `SELECT true FROM edits WHERE edit_id = $1`, id).Scan(&known)
+		if !known { // a repeated POST of the same edit id only reads its state
+			var closed bool
+			// The session's billed minutes arrive with its closing bill (spike: single tenant, sessions of >= 1 minute).
+			pool.QueryRow(ctx, `SELECT true FROM minutes WHERE session_id = $1 LIMIT 1`, e.SessionID).Scan(&closed)
+			now := nowS()
+			switch {
+			case closed: // the server already holds the closed bill: rejected visibly, at once
+				_, err := pool.Exec(ctx, `INSERT INTO edits (edit_id, device_id, session_id, n, state, reason, created_at,
+					deadline, resolved_at, resolved_by) VALUES ($1,$2,$3,$4,'rejected','bill_closed',$5,$5,$5,'server')
+					ON CONFLICT DO NOTHING`, id, e.DeviceID, e.SessionID, e.N, now)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			case !connected(e.DeviceID) && mutant != "queue_when_offline": // refused; nothing is queued
+				w.WriteHeader(http.StatusConflict)
+				fmt.Fprintf(w, `{"edit_id":%q,"state":"refused","reason":"device_offline"}`, id)
+				return
+			default:
+				_, err := pool.Exec(ctx, `INSERT INTO edits (edit_id, device_id, session_id, n, state, created_at, deadline)
+					VALUES ($1,$2,$3,$4,'pending',$5,$6) ON CONFLICT DO NOTHING`,
+					id, e.DeviceID, e.SessionID, e.N, now, now+float64(envSeconds("EDIT_TTL_S", 120)))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			}
+		}
+	}
+	rows, err := dumpRows(ctx, fmt.Sprintf(`SELECT edit_id, session_id, n, state, reason, created_at, deadline,
+		delivered_at, deliveries, resolved_at, resolved_by FROM edits WHERE edit_id = '%s'`, strings.ReplaceAll(id, "'", "''")))
+	if err != nil || len(rows) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, `{"edit_id":%q,"state":"unknown"}`, id)
+		return
+	}
+	json.NewEncoder(w).Encode(rows[0])
+}
+
+// handleCorrection records a correction of a closed bill as a new record, idempotent on correction_id (SC-28, OQ9 (3)).
+func handleCorrection(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var c struct {
+		CorrectionID string `json:"correction_id"`
+		ActionID     string `json:"action_id"`
+		Delta        int64  `json:"delta_piasters"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&c); err != nil || c.CorrectionID == "" {
+		http.Error(w, "correction", http.StatusBadRequest)
+		return
+	}
+	var original int64
+	if err := pool.QueryRow(ctx, `SELECT amount_piasters FROM ledger WHERE action_id = $1 AND kind = 'sale' ORDER BY id LIMIT 1`,
+		c.ActionID).Scan(&original); err != nil {
+		http.Error(w, `{"error":"no closed bill"}`, http.StatusNotFound)
+		return
+	}
+	tag, err := pool.Exec(ctx, `INSERT INTO corrections VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING`,
+		c.CorrectionID, c.ActionID, c.Delta, original)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if mutant == "correction_rewrites" && tag.RowsAffected() == 1 { // planted defect: the original is changed
+		pool.Exec(ctx, `UPDATE ledger SET amount_piasters = amount_piasters + $2 WHERE action_id = $1`, c.ActionID, c.Delta)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"ok":true,"recorded":%t}`, tag.RowsAffected() == 1)
 }
 
 func dumpRows(ctx context.Context, q string) ([]map[string]any, error) {
@@ -603,6 +792,8 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		"meta":          "SELECT epoch FROM meta",
 		"config":        "SELECT version, price FROM config",
 		"device_events": "SELECT device_id, kind, detail, owner_alert FROM device_events ORDER BY id",
+		"edits":         "SELECT edit_id, session_id, n, state, reason, created_at, deadline, delivered_at, deliveries, resolved_at, resolved_by FROM edits ORDER BY created_at",
+		"corrections":   "SELECT correction_id, action_id, delta_piasters, original_piasters FROM corrections ORDER BY correction_id",
 		"price_summaries": `WITH b AS (SELECT s.*,
 			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,
 			  (SELECT min(p.at) FROM device_pulls p WHERE p.device_id = s.device_id AND p.version > s.period_key) AS to_ts
@@ -669,11 +860,15 @@ func main() {
 		clockOffset.Add(int64(sec * 1e9))
 		fmt.Fprintf(w, `{"server_now":%f}`, float64(serverNow().UnixNano())/1e9)
 	})
+	mux.HandleFunc("POST /edit", handleEdit)
+	mux.HandleFunc("GET /edit", handleEdit)
+	mux.HandleFunc("POST /correction", handleCorrection)
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })
 	mux.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
 		contact(r.Context(), r.URL.Query().Get("device"))
+		seen(r.URL.Query().Get("device"))
 		fmt.Fprint(w, `{"ok":true}`)
 	})
 	log.Printf("server on %s mutant=%q fp=%q:%d", addr, mutant, fpName, fpAt)

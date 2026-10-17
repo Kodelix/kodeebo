@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28/29/30 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on the dev run, finding P3-F10; SC-29, SC-30, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -27,15 +27,22 @@ This code is throwaway (`.claude/rules/prototype-code.md`). Nothing here is impo
 | 0 | Can the harness catch planted bugs? | Every mutant caught; the correct stub passes ≥ 300 seeded runs with 0 violations; every failure replays from its seed |
 | 1 | Is "bill closed + outbox row" atomic on the encrypted store under process kill? Tamper TS-03a, TS-04a, TS-05a | 0 violations over every fault cell × ≥ 50 seeds; tamper pass signals |
 | 2 | Exactly one effect per action under network faults, resend, duplicate replay, concurrent retry and server kill (real PostgreSQL 18.6) | 0 violations; ≥ 3,000 randomized runs |
-| 3 | Compound faults, reordering, partial batch, restored backup, cloned disk, re-bootstrap; tamper TS-01, TS-02, TS-03b, TS-06a, TS-07a, TS-09, TS-10; added cases SC-19 (first), SC-20, SC-21a, SC-22, SC-23, SC-25a and SC-25b mechanics (table below) | 0 violations; ≥ 3,000 runs (30,000 stretch); tamper pass signals; each added case's pass signal |
+| 3 | Compound faults, reordering, partial batch, restored backup, cloned disk, re-bootstrap; tamper TS-01, TS-02, TS-03b, TS-06a/b, TS-07a, TS-09, TS-10; added cases SC-19 (first), SC-20, SC-21a, SC-22, SC-23, SC-25a and SC-25b mechanics (table below) | 0 violations; ≥ 3,000 runs (30,000 stretch); tamper pass signals; each added case's pass signal |
 | 4 | Windows 10/11 durability and tamper legs; added cases SC-21b, SC-24, SC-26, SC-27 | per § 9.1 / § 9.1.1 / § 9.1.2; measured against `docs/architecture/perf-budgets.md` (founder ceiling: no counter action over 3 s, worst case, on the 4 GB reference PC) |
-| 5 | Day-close totals and tampered clocks; SC-25b with the real N5 rules | per § 9.1 / § 9.1.2 |
+| 5 | Day-close totals and tampered clocks; SC-25b with the real N5 rules. Runs without S308 (server billing parity): **PARKED, trigger: the backend-track decision** (founder, 2026-10-18). The tax order is a configurable inclusive/exclusive setting until ETA answers | per § 9.1 / § 9.1.2 |
 | PowerSync track | Does PowerSync fit (sync note Part A, S1–S4)? **Order (founder, 2026-10-17):** after the phase 3 gate passes, not in parallel. S2–S4 on Linux right after the gate; S1 on Windows inside phase 4. No adoption before counsel reads the FSL licence (sync note OQ2: the tech/IP counsel brief, drafted after the PowerSync track reports) | Part A's pass conditions |
+
+**Order (founder, 2026-10-18):** close the sync spike before anything else starts. Everything in phases 3, 4 and 5 runs before the sync ADR, except S308 (parked), in this order:
+1. the phase 3 gate (≥ 3,000 runs, phase 2 at full size in the same campaign);
+2. PowerSync S2–S4 on Linux;
+3. phase 4 on the Windows VM;
+4. phase 5.
 
 **Phase 4 VM (founder, 2026-10-16):**
 - **Baseline:** the shared Windows VM's baseline is snapshot **`clean-ssh2`**, not `clean`.
 - **What it contains:** Windows 10 22H2 with no cumulative updates; Edge/WebView2 self-updated to 155; OpenSSH with key-only access (the desktop spike's dedicated key in `prototypes/desktop-client-spike/.keys/`, host key pinned); cashier auto-logon; and the 100 IOPS + 80 MiB/s disk throttle.
 - **Rules:** coordinate with the desktop spike before using the VM, and restore `clean-ssh2` after each run.
+- **Shared with the desktop spike's round 4 (founder, 2026-10-18):** claim the VM in the checkpoint (`production/session-state/active.md`) before use and release it there afterwards. Run each tamper leg both spikes need once, on the shared store, and cite that run from both READMEs.
 
 **Added cases (founder, 2026-10-16; full rows with mechanisms in `docs/research/local-first-sync.md` § 9.1.2).** SC-19 is the highest-risk gap and runs first in phase 3.
 
@@ -184,6 +191,16 @@ bash prototypes/local-first-sync-spike/run.sh sc25b [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay25b <seed> <cell> [mutant]
+```
+
+SC-28 (dashboard edit of an open bill):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc28 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay28 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -886,3 +903,83 @@ The lease is counted on server time plus the device's monotonic counter, never t
 - **A signed lease:** the Ed25519 library is licensing note part 2. The spike's lease is unsigned.
 - **Plan-specific lease lengths and an emergency unlock:** OQ3 is still open on both.
 - **A real Windows clock change:** S304, phase 4.
+
+### Phase 3 — SC-28: the owner edits an open bill from the dashboard
+
+**Founder rule under test (2026-10-17, sync note OQ9 (2) and (3)):**
+1. The owner may edit an open bill or session from the dashboard **only while the device is connected**.
+2. The edit goes to the device as a command. The device applies it and confirms, and the dashboard shows "pending" until then.
+3. If the device is offline, the dashboard refuses the edit.
+4. If the bill closed first, the edit is rejected visibly.
+5. A closed bill is changed only by a correction (void or adjustment) that keeps the original.
+
+**Design under test (`EDITS=1`; the edit is "add n cafe items to session S"):**
+- **Who writes what:** the server is the writer of the edit request, the device of the bill.
+- **Server:**
+  - `POST /edit` is idempotent on the edit id.
+  - It is **refused, and nothing is stored**, when the device has not been in contact within the presence window (spike: 15 s of server time).
+  - It is **rejected at once** (`bill_closed`) when the server already holds the closing bill.
+  - Otherwise it is stored as `pending`, with a deadline (spike: 120 s).
+  - Every batch reply carries the device's pending edits and the server's time, and records the delivery.
+- **Device:**
+  - It decides each edit **once, at receipt**, in the same transaction as the acknowledgement. The edit is `applied` if the session is still open and the reply's server time is before the deadline. Otherwise it is `rejected` with `bill_closed`, `unknown_session` or `expired`.
+  - The decision and its result command are written together. The result is an ordinary command in the device sequence (same outbox, same dedupe).
+  - An edit id already decided is never decided again.
+  - A sync with nothing to send still contacts the server (heartbeat), so a connected device receives edits.
+  - `close_session` adds the applied edits' items at the price list held at close.
+  - Edit results are retained like bills, so a server restore (SC-19) can rebuild them.
+- **Deadline:**
+  - An edit **never delivered** by its deadline is rejected by the server (`device_unreachable`) and is never sent afterwards.
+  - An edit **delivered once** can be ended only by the device, because the reply may have reached it. It stays pending until the device's next contact.
+- **Correction:** `POST /correction` records a new row, idempotent on its id. The original sale row is never rewritten.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_connected` | Session open and device in contact. The owner adds 2 items (and presses again); then sync, sync, close | Dashboard: `pending` right after the edit, still `pending` until the result arrives, then `applied`. The repeated press is the same edit. The bill includes the items once |
+| `b_offline` | Device cut and no contact for longer than the presence window; the owner edits | Answer 409 `refused / device_offline`. No edit row on the server. After reconnect the bill closes without the items |
+| `c_race` | Seeds cycle through three orders: `edit_first` (edit applied, then close); `close_unsynced` (bill closed on the device, not yet uploaded, then edit); `close_synced` (closing bill already on the server, then edit) | `edit_first`: applied, included. `close_unsynced`: the device rejects `bill_closed`. `close_synced`: the server rejects `bill_closed` at once, nothing delivered. In both rejections the closed bill is unchanged, and a correction posted twice gives one correction row while the original sale keeps its amount |
+| `d_cut` | Seeds cycle through four cuts: `reply_cut` (the reply carrying the edit is cut); `confirm_cut` (the upload of the device's result is cut by `resp_cut_20`, `req_cut_120` or `reset_peer`); `backlog` (3 offline sales queued, batch size 1, so the edit is offered with each batch until its result arrives); `deadline` (one edit delivered and applied, then the device is cut; a second edit accepted just before the cut; the server clock passes the deadline) | Applied at most once (the device's decision count is 1). Every edit ends `applied` or `rejected`, matching the device. `deadline`: at the deadline the undelivered edit reads `rejected / device_unreachable` and is never delivered; the delivered one still reads `pending` and ends `applied` when the device comes back |
+
+**Checks added:**
+- **R30:** each edit ends as the model says; it is decided once on the device; the dashboard shows `pending` before the confirmation and `applied` after it.
+- **R31:** an edit to an offline device is refused, and nothing is queued.
+- **R32:** an edit that loses the race to the close is rejected visibly (at once if the server holds the bill). A correction is one new record carrying the original amount.
+- **R33:** no edit is still pending after quiescence, and the server's state matches the device's decision both ways.
+- **R34:** an undelivered edit expires on the server and is never delivered. A delivered one is left to the device.
+- **I3** checks every bill's amount against the driver's model, edits included. **I8** reports an `edit_conflict` flag (a device result that contradicts the server's state).
+
+**Mutants:**
+- `edit_apply_twice` (client): no dedupe on the edit id.
+- `edit_after_close` (client): answers "applied" for a closed bill.
+- `queue_when_offline` (server): stores edits for an offline device.
+- `expire_delivered` (server): rejects delivered edits at the deadline too.
+- `correction_rewrites` (server): changes the original sale.
+
+#### Run 1 (dev, uncommitted harness on `daeb489`) — PASS
+
+`evidence/phase3-sc28-run1-dev*`, 33 s.
+- **Cells:** all 4 PASS, 24 seeds each, 0 violations. `c_race` ran each order 8 times; `d_cut` ran each cut 6 times (`confirm_cut` used each of its three faults twice).
+- **Exercised:** `reply_cut` and `backlog` count only when the server delivered the edit at least twice. The samples in the summary show 2 deliveries after a cut reply and 3 during the backlog, each applied once. In `close_synced` the edit was rejected by the server with 0 deliveries. In `deadline` the undelivered edit ended `rejected / device_unreachable` with 0 deliveries.
+- **Mutants:** all five caught.
+  - `edit_apply_twice` after 12 runs, in the `backlog` cut: the re-offered edit was applied three times (bill 15,000 against 9,000, I3).
+  - `edit_after_close` after 7 (R30).
+  - `queue_when_offline` after 2 (I3: the queued edit reached the device after reconnect).
+  - `expire_delivered` after 16, in the `deadline` cut: the device's "applied" contradicted the server's expiry (I8 `edit_conflict`).
+  - `correction_rewrites` after 7 (I3: the original sale changed).
+- **Smoke on the changed client and server:** SC-19 (3 seeds), SC-25b (3) and SC-23 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Finding P3-F10 — once an edit has been sent, only the device can end it.** A reply carrying the edit may or may not have arrived, so after delivery the server cannot safely declare it rejected. If it did and the device had applied it, the dashboard would say "rejected" while the bill includes the items (`expire_delivered` shows exactly this). The rule "pending ends in applied or rejected, never stuck" therefore holds in two parts:
+- **Never delivered:** the server ends the edit at its deadline and never sends it afterwards.
+- **Delivered:** the device ends it at its next contact. Until then the dashboard must say "sent to the device at X, waiting for it", not just "pending".
+
+A device that goes offline right after receiving an edit keeps that edit open on the dashboard until it reconnects. This is a UX requirement for the dashboard spec and needs the founder's eye: "never stuck" cannot hold without the device.
+
+**Not covered:**
+- **Real presence:** a live channel (WebSocket or SSE) instead of "contact within 15 s". The window, the deadline (120 s) and the dashboard wording are spike values, for the dashboard and billing specs.
+- **Edits other than "add items":** remove an item, change a tier, move a station.
+- **Several dashboard users editing one bill at once.**
+- **Corrections reaching the device and the ETA Return Receipt** (OQ9 (3); ETA note).
+- **Authorisation:** who may edit, and the audit record.
+

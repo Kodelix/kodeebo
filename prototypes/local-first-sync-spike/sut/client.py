@@ -89,6 +89,17 @@
 #      uncaught marker error), ack_despite_full (answers "saved" for a sale whose commit failed).
 #      MUTANT also: prune_unconfirmed (prunes without the archive confirmation), rebuild_new_ids (rebuilt
 #      commands get new command ids), config_version_only (config feed compared by version, epoch ignored).
+# Phase 3 (SC-28, dashboard edit of an open bill; founder rule 2026-10-17, sync note OQ9 (2)), EDITS=1:
+#   The server is the writer of an edit request, the device of the bill. Every batch reply carries the edits the
+#   server holds for this device, with the server's time. The device decides each edit once, at receipt, in the
+#   same transaction as the acknowledgement: "applied" if the session is still open and the reply's server time is
+#   before the edit's deadline, otherwise "rejected" (bill_closed | unknown_session | expired). The decision and its
+#   result command (kind edit_result, an ordinary command in the device sequence: same outbox, same dedupe) are
+#   written together; an edit id already decided is never decided again. close_session adds the applied edits'
+#   cafe items at the list held at close. A sync with nothing to send still contacts the server (heartbeat), so a
+#   connected device receives edits. Edit results are retained like bills, so a server restore can rebuild them.
+#      MUTANT also: edit_apply_twice (no dedupe on the edit id: a re-delivered edit is applied again),
+#      edit_after_close (an edit for a closed bill is answered "applied" without changing the bill).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -119,6 +130,7 @@ APP_SCHEMA = int(os.environ.get("SCHEMA_VERSION", "1"))
 INSPECT = os.environ.get("INSPECT") == "1"
 PREMIGRATE = DB + ".premigrate"
 RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
+EDITS_ON = os.environ.get("EDITS") == "1"  # SC-28
 fp_count = 0
 MARKER_FAIL = os.environ.get("MARKER_FAIL", "")  # SC-20: write | fsync | replace
 unreported = []  # SC-20: events not yet reported to the server (kept in memory when the disk is full)
@@ -459,6 +471,8 @@ def open_store():
             "INSERT OR IGNORE INTO counter VALUES (1, 0)",
             "CREATE TABLE IF NOT EXISTS outbox (seq INTEGER PRIMARY KEY, command_id TEXT UNIQUE, payload TEXT, "
             "payload_hash TEXT, status TEXT NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS edits (edit_id TEXT PRIMARY KEY, session_id TEXT, n INTEGER, result TEXT, "
+            "reason TEXT, seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",  # SC-28
         ]:
             c.execute(stmt).fetchall()
         check_marker(c)
@@ -570,12 +584,17 @@ def rollback():
         pass
 
 
+# Every retained command, bills and SC-28 edit results alike: a server restore can ask for any of them again.
+RETAINED = ("SELECT seq, command_id, payload, payload_hash FROM bills WHERE seq IS NOT NULL "
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM edits WHERE seq IS NOT NULL")
+
+
 def report():
     """SC-19: what the device tells the server on every batch (retention mode only)."""
     if not RETENTION:
         return {}
     h = q("SELECT acked_seq FROM sync_state WHERE id = 1")[0][0]
-    low = q("SELECT min(seq) FROM bills WHERE seq IS NOT NULL")[0][0]
+    low = q(f"SELECT min(seq) FROM ({RETAINED})")[0][0]
     return {"acked_seq": h, "low_seq": low if low is not None else h + 1}
 
 
@@ -622,8 +641,7 @@ def select_rows():
     if RETENTION:
         rf, h = q("SELECT resend_from, acked_seq FROM sync_state WHERE id = 1")[0]
         if rf:
-            rebuilt = q("SELECT seq, command_id, payload, payload_hash FROM bills WHERE seq >= ? AND seq <= ? ORDER BY seq",
-                        (rf, h))
+            rebuilt = q(f"SELECT * FROM ({RETAINED}) WHERE seq >= ? AND seq <= ? ORDER BY seq", (rf, h))
             if MUTANT == "rebuild_new_ids":  # planted defect: a rebuilt command gets a new identity
                 rebuilt = [(s_, "cmd-r-" + c[4:], p, ph) for s_, c, p, ph in rebuilt]
             have = {r[0] for r in rebuilt}
@@ -636,11 +654,13 @@ def sync():
     report_events()
     rows = select_rows()
     if not rows:
-        if LEASE_ON and MUTANT != "no_heartbeat":  # SC-25b: nothing to send still renews the lease (heartbeat)
+        if (LEASE_ON or EDITS_ON) and MUTANT != "no_heartbeat":  # SC-25b/SC-28: a contact with nothing to send
             try:
-                post([])
+                resp = post([])
             except NET_ERRORS as e:
                 return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": 0})
+            if EDITS_ON and resp.get("edits"):  # SC-28: edits arrive on the heartbeat too
+                return finish_sync(resp)
         return reply({"ok": True, "op": "sync", "pending": 0})
     failpoint("client:before_send")  # P4/P5
     if MUTANT == "drop_on_send":  # planted defect: forget the commands as soon as they are sent
@@ -655,10 +675,15 @@ def sync():
             batch = max(1, batch // 2)  # too big for this link: shrink, never retry the same batch forever
         return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": pending_count(), "batch": batch})
     batch = min(BATCH_MAX, batch + max(1, batch // 4))
+    return finish_sync(resp)
+
+
+def finish_sync(resp):
     failpoint("client:after_response_before_mark")  # P10
     try:
         q("BEGIN IMMEDIATE")
         apply_reply(resp)
+        decided = apply_edits(resp) if EDITS_ON else []
         failpoint("client:mid_mark")  # P11: inside the acknowledgement write, before COMMIT
         q("COMMIT")
     except STORE_ERRORS as e:
@@ -670,7 +695,45 @@ def sync():
         return reply({"ok": False, "op": "sync", "error": "disk_full", "warning": "disk_full",
                       "pending": pending_count()})
     failpoint("client:after_mark")  # P12
-    reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count(), "batch": batch})
+    if decided:  # the edit results advanced the device sequence: the marker follows (fail safe, as for a sale)
+        try:
+            write_marker(q("SELECT seq FROM counter WHERE id = 1")[0][0])
+        except OSError as e:
+            record_event("marker_behind", e, at="edit")
+    reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count(), "batch": batch,
+           **({"edits": decided} if decided else {})})
+
+
+def apply_edits(resp):
+    """SC-28, inside the caller's transaction: decide each edit the server sent, once, and queue its result."""
+    decided = []
+    server_time = float(resp.get("server_time") or 0)
+    for e in resp.get("edits") or []:
+        key = e["edit_id"]
+        if MUTANT == "edit_apply_twice":  # planted defect: no dedupe on the edit id
+            key = f"{key}#{q('SELECT count(*) FROM edits')[0][0]}"
+        elif q("SELECT 1 FROM edits WHERE edit_id = ?", (key,)):
+            continue  # decided before (a re-delivery): its result is already queued or acknowledged
+        open_ = bool(q("SELECT 1 FROM sessions WHERE session_id = ?", (e["session_id"],)))
+        if server_time >= float(e["deadline"]):
+            result, reason = "rejected", "expired"
+        elif open_ or MUTANT == "edit_after_close":
+            result, reason = "applied", None
+        else:
+            closed = q("SELECT 1 FROM bills WHERE session_id = ?", (e["session_id"],))
+            result, reason = "rejected", "bill_closed" if closed else "unknown_session"
+        payload = {"kind": "edit_result", "edit_id": e["edit_id"], "session_id": e["session_id"], "result": result,
+                   "reason": reason}
+        body = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+        h = hashlib.sha256(body.encode()).hexdigest()
+        seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
+        cmd_id = f"cmd-edit-{e['edit_id']}-{seq}" if MUTANT == "edit_apply_twice" else f"cmd-edit-{e['edit_id']}"
+        q("INSERT INTO outbox (seq, command_id, payload, payload_hash, status) VALUES (?,?,?,?, 'pending')",
+          (seq, cmd_id, body, h))
+        q("INSERT INTO edits VALUES (?,?,?,?,?,?,?,?,?)",
+          (key, e["session_id"], int(e["n"]) if result == "applied" else 0, result, reason, seq, cmd_id, body, h))
+        decided.append({"edit_id": e["edit_id"], "result": result, "reason": reason})
+    return decided
 
 
 def apply_reply(resp):
@@ -750,7 +813,7 @@ def ping():
 def replay(k):
     # Duplicate resend (SC-04): send the last k acknowledged commands again, unchanged.
     if RETENTION:  # acknowledged outbox rows are gone; resend from the retained business records
-        rows = q("SELECT seq, command_id, payload, payload_hash FROM bills WHERE seq IS NOT NULL AND seq <= "
+        rows = q(f"SELECT * FROM ({RETAINED}) WHERE seq <= "
                  "(SELECT acked_seq FROM sync_state WHERE id = 1) ORDER BY seq DESC LIMIT ?", (k,))[::-1]
     else:
         rows = q("SELECT seq, command_id, payload, payload_hash FROM outbox WHERE status = 'acked' "
@@ -837,10 +900,14 @@ def close_session(m):
     else:
         total = round_half_up(units, step)
     cafe_n = int(m.get("cafe_n", 0))
+    edits = q("SELECT edit_id, n FROM edits WHERE session_id = ? AND result = 'applied' ORDER BY edit_id",
+              (m["session_id"],)) if EDITS_ON else []
+    cafe_n += sum(n for _, n in edits)  # SC-28: items the owner added from the dashboard, at the list held at close
     cafe_price = price_of(prices, "cafe") if cafe_n else prices.get("cafe", 0)
     total += cafe_n * cafe_price
     used = [sg["v"] for sg in segs] + ([v] if cafe_n else [])
-    extra = {"cfg_version": max(used), "segments": lines, "cafe": {"n": cafe_n, "price": cafe_price}}
+    extra = {"cfg_version": max(used), "segments": lines, "cafe": {"n": cafe_n, "price": cafe_price},
+             **({"edits": [k for k, _ in edits]} if edits else {})}
     a = {"action_id": m["action_id"], "session_id": m["session_id"], "day": m.get("day", 0)}
     close_and_pay(a, priced=(list(range(start, m["end_min"])), total, extra))
 

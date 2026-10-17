@@ -1,0 +1,439 @@
+{
+ "harness_commit": "daeb489+dirty",
+ "started": "2026-10-18 00:19:54",
+ "presence_s": 15,
+ "edit_ttl_s": 120,
+ "cells": [
+  {
+   "cell": "a_connected",
+   "runs": 24,
+   "variants": {
+    "a_connected": 24
+   },
+   "exercised": 24,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "variant": "a_connected",
+     "server_edits": [
+      {
+       "edit_id": "s1-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "after_post": "pending",
+      "device": [
+       {
+        "edit_id": "s1-e1",
+        "result": "applied",
+        "reason": null
+       }
+      ],
+      "before_confirm": "pending",
+      "after_confirm": "applied"
+     }
+    },
+    {
+     "seed": 2,
+     "variant": "a_connected",
+     "server_edits": [
+      {
+       "edit_id": "s2-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "after_post": "pending",
+      "device": [
+       {
+        "edit_id": "s2-e1",
+        "result": "applied",
+        "reason": null
+       }
+      ],
+      "before_confirm": "pending",
+      "after_confirm": "applied"
+     }
+    },
+    {
+     "seed": 3,
+     "variant": "a_connected",
+     "server_edits": [
+      {
+       "edit_id": "s3-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "after_post": "pending",
+      "device": [
+       {
+        "edit_id": "s3-e1",
+        "result": "applied",
+        "reason": null
+       }
+      ],
+      "before_confirm": "pending",
+      "after_confirm": "applied"
+     }
+    },
+    {
+     "seed": 4,
+     "variant": "a_connected",
+     "server_edits": [
+      {
+       "edit_id": "s4-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "after_post": "pending",
+      "device": [
+       {
+        "edit_id": "s4-e1",
+        "result": "applied",
+        "reason": null
+       }
+      ],
+      "before_confirm": "pending",
+      "after_confirm": "applied"
+     }
+    }
+   ],
+   "seconds": 5.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_offline",
+   "runs": 24,
+   "variants": {
+    "b_offline": 24
+   },
+   "exercised": 24,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "variant": "b_offline",
+     "server_edits": [],
+     "observed": {
+      "refusal": [
+       409,
+       "refused",
+       "device_offline"
+      ],
+      "state_after": "unknown"
+     }
+    },
+    {
+     "seed": 2,
+     "variant": "b_offline",
+     "server_edits": [],
+     "observed": {
+      "refusal": [
+       409,
+       "refused",
+       "device_offline"
+      ],
+      "state_after": "unknown"
+     }
+    },
+    {
+     "seed": 3,
+     "variant": "b_offline",
+     "server_edits": [],
+     "observed": {
+      "refusal": [
+       409,
+       "refused",
+       "device_offline"
+      ],
+      "state_after": "unknown"
+     }
+    },
+    {
+     "seed": 4,
+     "variant": "b_offline",
+     "server_edits": [],
+     "observed": {
+      "refusal": [
+       409,
+       "refused",
+       "device_offline"
+      ],
+      "state_after": "unknown"
+     }
+    }
+   ],
+   "seconds": 4.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_race",
+   "runs": 24,
+   "variants": {
+    "edit_first": 8,
+    "close_unsynced": 8,
+    "close_synced": 8
+   },
+   "exercised": 24,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "variant": "edit_first",
+     "server_edits": [
+      {
+       "edit_id": "s1-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {}
+    },
+    {
+     "seed": 2,
+     "variant": "close_unsynced",
+     "server_edits": [
+      {
+       "edit_id": "s2-e1",
+       "state": "rejected",
+       "reason": "bill_closed",
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "after_post": "pending"
+     }
+    },
+    {
+     "seed": 3,
+     "variant": "close_synced",
+     "server_edits": [
+      {
+       "edit_id": "s3-e1",
+       "state": "rejected",
+       "reason": "bill_closed",
+       "deliveries": 0,
+       "resolved_by": "server"
+      }
+     ],
+     "observed": {
+      "after_post": "rejected"
+     }
+    },
+    {
+     "seed": 4,
+     "variant": "edit_first",
+     "server_edits": [
+      {
+       "edit_id": "s4-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {}
+    }
+   ],
+   "seconds": 5.3,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_cut",
+   "runs": 24,
+   "variants": {
+    "reply_cut": 6,
+    "confirm_cut": 6,
+    "backlog": 6,
+    "deadline": 6
+   },
+   "exercised": 24,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "variant": "reply_cut",
+     "server_edits": [
+      {
+       "edit_id": "s1-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 2,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "cut": {
+       "ok": false,
+       "op": "sync",
+       "error": "Expecting value: line 1 column 1 (char 0)",
+       "pending": 0
+      }
+     }
+    },
+    {
+     "seed": 2,
+     "variant": "confirm_cut",
+     "server_edits": [
+      {
+       "edit_id": "s2-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {
+      "cut": [
+       "resp_cut_20",
+       {
+        "ok": false,
+        "op": "sync",
+        "error": "Expecting value: line 1 column 1 (char 0)",
+        "pending": 1,
+        "batch": 50
+       }
+      ]
+     }
+    },
+    {
+     "seed": 3,
+     "variant": "backlog",
+     "server_edits": [
+      {
+       "edit_id": "s3-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 3,
+       "resolved_by": "device"
+      }
+     ],
+     "observed": {}
+    },
+    {
+     "seed": 4,
+     "variant": "deadline",
+     "server_edits": [
+      {
+       "edit_id": "s4-e1",
+       "state": "applied",
+       "reason": null,
+       "deliveries": 1,
+       "resolved_by": "device"
+      },
+      {
+       "edit_id": "s4-e2",
+       "state": "rejected",
+       "reason": "device_unreachable",
+       "deliveries": 0,
+       "resolved_by": "server"
+      }
+     ],
+     "observed": {
+      "at_deadline": {
+       "s4-e1": "pending",
+       "s4-e2": [
+        "rejected",
+        "device_unreachable"
+       ]
+      }
+     }
+    }
+   ],
+   "seconds": 6.5,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "edit_apply_twice": {
+   "caught": true,
+   "runs_to_catch": 12,
+   "seed_cell": [
+    3,
+    "d_cut"
+   ],
+   "first_violation": [
+    "I3",
+    "s3-a0 sale 15000 != expected 9000"
+   ],
+   "seconds": 3.1
+  },
+  "edit_after_close": {
+   "caught": true,
+   "runs_to_catch": 7,
+   "seed_cell": [
+    2,
+    "c_race"
+   ],
+   "first_violation": [
+    "R30",
+    "s2-e1: server applied/None, model rejected/bill_closed"
+   ],
+   "seconds": 1.6
+  },
+  "queue_when_offline": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_offline"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 9000 != expected 6000"
+   ],
+   "seconds": 0.5
+  },
+  "expire_delivered": {
+   "caught": true,
+   "runs_to_catch": 16,
+   "seed_cell": [
+    4,
+    "d_cut"
+   ],
+   "first_violation": [
+    "I8",
+    "server flag edit_conflict for cmd-edit-s4-e1 seq 1"
+   ],
+   "seconds": 4.1
+  },
+  "correction_rewrites": {
+   "caught": true,
+   "runs_to_catch": 7,
+   "seed_cell": [
+    2,
+    "c_race"
+   ],
+   "first_violation": [
+    "I3",
+    "s2-a0 sale 9000 != expected 6000"
+   ],
+   "seconds": 1.6
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 32.9
+}

@@ -2254,6 +2254,316 @@ def sc25b(seeds=20, mutant_budget=12):
     return ok
 
 
+SC28_CELLS = ["a_connected", "b_offline", "c_race", "d_cut"]
+SC28_MUTANTS = ["edit_apply_twice", "edit_after_close", "queue_when_offline", "expire_delivered", "correction_rewrites"]
+SC28_PRICES = {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 1}
+SC28_PRESENCE_S, SC28_TTL_S = 15, 120
+SC28_RACE = ["edit_first", "close_unsynced", "close_synced"]
+SC28_CUT = ["reply_cut", "confirm_cut", "backlog", "deadline"]
+SC28_CONFIRM_FAULTS = ["resp_cut_20", "req_cut_120", "reset_peer"]
+
+
+def dash(method, path, body=None):
+    """The owner's dashboard: (HTTP status, JSON body); a refusal is an answer, not an error."""
+    req = urllib.request.Request(SERVER_URL + path, method=method, headers={"Content-Type": "application/json"},
+                                 data=json.dumps(body).encode() if body is not None else None)
+    try:
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return r.status, json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return e.code, json.loads(e.read() or b"{}")
+
+
+def sc28_variant(cell, seed):
+    return {"c_race": SC28_RACE, "d_cut": SC28_CUT}.get(cell, [None])[(seed - 1) % {"c_race": 3, "d_cut": 4}.get(cell, 1)]
+
+
+def sc28_script(cell):
+    def script(run):
+        toxi = run.net.toxi
+        variant = sc28_variant(cell, run.seed)
+        st = run.sc28 = {"cell": cell, "variant": variant, "expect": {}, "observed": {}, "posts": {},
+                         "corrections": {}, "exercised": False}
+        sid = f"s{run.seed}-sess0"
+        aid = f"s{run.seed}-a0"
+        applied_n = [0]
+
+        def edit(eid, n=2):
+            r = dash("POST", "/edit", {"edit_id": eid, "device_id": "dev-1", "session_id": sid, "n": n})
+            st["posts"].setdefault(eid, []).append(r)
+            return r
+
+        def state(eid):
+            return dash("GET", f"/edit?id={eid}")[1]
+
+        def sync(fault=None):
+            toxi.apply(fault)
+            try:
+                return run.send({"op": "sync"})
+            finally:
+                toxi.clear()
+
+        def advance(seconds):
+            post_json(f"/test/clock?advance={seconds}", {})
+
+        def close(cafe_n=1):
+            a = {"op": "close_session", "action_id": aid, "session_id": sid, "start_min": 0, "end_min": 45,
+                 "cafe_n": cafe_n}
+            r = run.send(a)
+            if r and r.get("ok"):
+                p_ = SC28_PRICES
+                a["expected_piasters"] = 45 * p_["std"] // 60 + (cafe_n + applied_n[0]) * p_["cafe"]
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+                run.seq_of[aid] = r.get("seq")
+                st["expected_sale"] = a["expected_piasters"]
+            st["close"] = r
+            return r
+
+        def expect(eid, final, reason=None, n=2):
+            st["expect"][eid] = [final, reason]
+            if final == "applied":
+                applied_n[0] += n
+
+        post_json("/config", {"prices": SC28_PRICES})
+        run.send({"op": "pull_config"})
+        run.send({"op": "start_session", "session_id": sid, "start_min": 0, "tier": "std"})
+        sync()  # the device is in contact: the dashboard may edit
+        e1 = f"s{run.seed}-e1"
+        if cell == "a_connected":
+            code, body = edit(e1)
+            st["observed"]["after_post"] = state(e1).get("state")  # the dashboard shows "pending" until confirmed
+            edit(e1)  # the owner presses again (or the dashboard resends): the same edit, not a second one
+            r = sync()
+            st["observed"]["device"] = (r or {}).get("edits")
+            st["observed"]["before_confirm"] = state(e1).get("state")
+            sync()
+            st["observed"]["after_confirm"] = state(e1).get("state")
+            expect(e1, "applied")
+            close()
+            st["exercised"] = st["observed"]["after_post"] == "pending"
+        elif cell == "b_offline":
+            toxi.apply("down")
+            advance(SC28_PRESENCE_S + 1)  # no contact for longer than the presence window
+            code, body = edit(e1)
+            st["observed"]["refusal"] = [code, body.get("state"), body.get("reason")]
+            st["observed"]["state_after"] = state(e1).get("state")
+            toxi.clear()
+            sync()
+            close()
+            st["exercised"] = code == 409 or body.get("state") == "pending"
+        elif variant == "edit_first":
+            edit(e1)
+            sync()
+            expect(e1, "applied")
+            close()
+            sync()
+            st["exercised"] = True
+        elif variant in ("close_unsynced", "close_synced"):
+            close()
+            if variant == "close_synced":
+                sync()
+            edit(e1)
+            st["observed"]["after_post"] = state(e1).get("state")
+            sync()
+            sync()
+            expect(e1, "rejected", "bill_closed")
+            c = f"s{run.seed}-c1"  # any change now is a correction that keeps the original
+            st["corrections"][c] = [dash("POST", "/correction", {"correction_id": c, "action_id": aid,
+                                                                 "delta_piasters": 2 * SC28_PRICES["cafe"]})
+                                    for _ in range(2)]
+            st["exercised"] = True
+        elif variant == "reply_cut":
+            edit(e1)
+            r = sync("resp_cut_20")  # the reply carrying the edit is lost; the server recorded the delivery
+            st["observed"]["cut"] = r
+            for _ in range(3):
+                sync()
+            expect(e1, "applied")
+            close()
+            st["exercised"] = not (r or {}).get("ok")
+        elif variant == "confirm_cut":
+            edit(e1)
+            sync()  # applied on the device; its result is queued
+            fault = SC28_CONFIRM_FAULTS[(run.seed - 1) // 4 % len(SC28_CONFIRM_FAULTS)]
+            r = sync(fault)  # the upload of the result is cut
+            st["observed"]["cut"] = [fault, r]
+            for _ in range(3):
+                sync()
+            expect(e1, "applied")
+            close()
+            st["exercised"] = not (r or {}).get("ok")
+        elif variant == "backlog":
+            toxi.apply("down")
+            for k in range(3):  # cafe sales queued while offline; the batch size is 1 (BATCH_MAX=1)
+                x = f"s{run.seed}-x{k}"
+                r = run.send({"op": "sell_items", "action_id": x, "n": 1})
+                if r and r.get("ok"):
+                    a = {"op": "sell_items", "action_id": x, "start_min": 0, "end_min": 0,
+                         "expected_piasters": SC28_PRICES["cafe"]}
+                    run.intent.execute("INSERT INTO actions VALUES (?,?)", (x, json.dumps(a)))
+                    run.intent.execute("INSERT INTO acks VALUES (?)", (x,))
+            toxi.clear()
+            edit(e1)
+            for _ in range(6):  # each reply offers the edit again until its result arrives
+                sync()
+            expect(e1, "applied")
+            close()
+            st["exercised"] = True
+        elif variant == "deadline":
+            e2 = f"s{run.seed}-e2"
+            edit(e1)
+            sync()  # e1 delivered and applied on the device; its result is not yet uploaded
+            toxi.apply("down")
+            edit(e2)  # still inside the presence window: accepted, then the device is gone
+            advance(SC28_TTL_S + 1)
+            st["observed"]["at_deadline"] = {e1: state(e1).get("state"), e2: [state(e2).get("state"),
+                                                                              state(e2).get("reason")]}
+            toxi.clear()
+            for _ in range(3):
+                sync()
+            expect(e1, "applied")
+            expect(e2, "rejected", "device_unreachable")
+            close()
+            st["exercised"] = True
+        for _ in range(5):
+            r = sync()
+            if r and r.get("ok") and r.get("pending") == 0:
+                break
+    return script
+
+
+def sc28_extra(run, dump):
+    """R30 an edit to a connected device shows "pending", then ends as the model says, applied exactly once; R31 an
+    edit to an offline device is refused and nothing is queued; R32 an edit that loses the race to the close is
+    rejected visibly, and a correction is one new record that keeps the original; R33 no edit stays pending, and the
+    server's state matches the device's decision; R34 an undelivered edit expires on the server, a delivered one is
+    ended by the device."""
+    v, st = [], run.sc28
+    srv = {e["edit_id"]: e for e in dump.get("edits", [])}
+    c = run.open_client_store()
+    dev_rows = c.execute("SELECT edit_id, result, n FROM edits").fetchall()
+    c.close()
+    dev = {}
+    for k, res, n in dev_rows:
+        dev.setdefault(k.split("#")[0], []).append((res, n))
+    for eid, (final, reason) in st["expect"].items():
+        e = srv.get(eid)
+        if not e:
+            v.append(("R30", f"{eid}: not on the server"))
+            continue
+        if [e["state"], e["reason"]] != [final, reason]:
+            v.append(("R30", f"{eid}: server {e['state']}/{e['reason']}, model {final}/{reason}"))
+        if len(dev.get(eid, [])) > 1:
+            v.append(("R30", f"{eid}: decided {len(dev[eid])} times on the device"))
+    for eid, e in srv.items():
+        if e["state"] == "pending":
+            v.append(("R33", f"{eid}: still pending after quiescence"))
+        d = dev.get(eid)
+        if e["state"] == "applied" and not (d and d[0][0] == "applied"):
+            v.append(("R33", f"{eid}: applied on the server, device says {d}"))
+        if d and d[0][0] == "applied" and e["state"] != "applied":
+            v.append(("R33", f"{eid}: applied on the device, server says {e['state']}/{e['reason']}"))
+    obs = st["observed"]
+    if st["cell"] == "a_connected":
+        if obs.get("after_post") != "pending":
+            v.append(("R30", f"dashboard right after the edit: {obs.get('after_post')}, not pending"))
+        if obs.get("after_confirm") != "applied":
+            v.append(("R30", f"dashboard after the device confirmed: {obs.get('after_confirm')}"))
+    if st["cell"] == "b_offline":
+        if obs.get("refusal") != [409, "refused", "device_offline"]:
+            v.append(("R31", f"edit to an offline device answered {obs.get('refusal')}"))
+        if srv:
+            v.append(("R31", f"an edit to an offline device was queued: {sorted(srv)}"))
+    if st["variant"] in ("close_unsynced", "close_synced"):
+        for cid, replies in st["corrections"].items():
+            rows = [r for r in dump.get("corrections", []) if r["correction_id"] == cid]
+            if len(rows) != 1 or rows[0]["original_piasters"] != st.get("expected_sale"):
+                v.append(("R32", f"{cid}: {len(rows)} correction rows {rows[:1]}, original {st.get('expected_sale')}"))
+        if st["variant"] == "close_synced" and obs.get("after_post") != "rejected":
+            v.append(("R32", f"edit after the server holds the closed bill: {obs.get('after_post')}, not rejected at once"))
+    st["server_edits"] = [{k: e[k] for k in ("edit_id", "state", "reason", "deliveries", "resolved_by")}
+                          for e in srv.values()]
+    if st["variant"] in ("reply_cut", "backlog"):  # exercised only if the edit really was offered again
+        st["exercised"] = st["exercised"] and (srv.get(f"s{run.seed}-e1") or {}).get("deliveries", 0) >= 2
+    if st["variant"] == "deadline":
+        at = obs.get("at_deadline", {})
+        e1, e2 = f"s{run.seed}-e1", f"s{run.seed}-e2"
+        if at.get(e2) != ["rejected", "device_unreachable"]:
+            v.append(("R34", f"undelivered edit at its deadline: {at.get(e2)}"))
+        if at.get(e1) != "pending":
+            v.append(("R34", f"delivered edit at its deadline: {at.get(e1)}, not left to the device"))
+        if (srv.get(e2) or {}).get("deliveries"):
+            v.append(("R34", f"an expired edit was delivered after its deadline: {srv.get(e2)}"))
+    return v, frozenset()
+
+
+def sc28_run(seed, cell, toxi, mutant=None, label=None, verbose=False):
+    env = {**RETENTION_ENV, "EDITS": "1"}
+    if sc28_variant(cell, seed) == "backlog":
+        env["BATCH_MAX"] = "1"
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc28-{cell}", net=Net(toxi, "none"), client_env=env,
+              server_env={"PRESENCE_S": str(SC28_PRESENCE_S), "EDIT_TTL_S": str(SC28_TTL_S)})
+    run.script, run.extra = sc28_script(cell), sc28_extra
+    r = run.go()
+    r["sc28"] = run.sc28
+    return r
+
+
+def sc28(seeds=24, mutant_budget=24):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "presence_s": SC28_PRESENCE_S, "edit_ttl_s": SC28_TTL_S, "cells": [], "mutants": {}}
+    print(f"phase 3 SC-28 (dashboard edit of an open bill), commit {summary['harness_commit']}", flush=True)
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        for cell in SC28_CELLS:
+            t1 = time.time()
+            bad, exercised, variants, samples = [], 0, {}, []
+            for s in range(1, seeds + 1):
+                r = sc28_run(s, cell, toxi)
+                exercised += bool(r["sc28"].get("exercised"))
+                vn = r["sc28"]["variant"] or cell
+                variants[vn] = variants.get(vn, 0) + 1
+                if r["violations"]:
+                    bad.append({"seed": s, "variant": vn, "violations": r["violations"][:3]})
+                if s <= 4:  # a sample of what the server held, per variant, for the evidence
+                    samples.append({"seed": s, "variant": vn, "server_edits": r["sc28"].get("server_edits"),
+                                    "observed": r["sc28"].get("observed")})
+            res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+            ok &= res == "PASS"
+            summary["cells"].append({"cell": cell, "runs": seeds, "variants": variants, "exercised": exercised,
+                                     "violating_runs": len(bad), "first_bad": bad[:3], "samples": samples,
+                                     "seconds": round(time.time() - t1, 1), "result": res})
+            print(f"  {cell:14s} {variants}  exercised {exercised}/{seeds}  violating {len(bad)}  {res}", flush=True)
+        for mu in SC28_MUTANTS:
+            t1 = time.time()
+            caught = None
+            for k in range(mutant_budget):
+                s, cell = k // len(SC28_CELLS) + 1, SC28_CELLS[k % len(SC28_CELLS)]
+                r = sc28_run(s, cell, toxi, mutant=mu, label=f"sc28-mutant-{mu}")
+                if r["violations"]:
+                    caught = (s, cell, r["violations"][0])
+                    break
+            summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                      "seed_cell": caught[:2] if caught else None,
+                                      "first_violation": caught[2] if caught else None,
+                                      "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {mu:20s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+                  f"{caught[2] if caught else '-'}", flush=True)
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc28-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-28: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -2263,6 +2573,17 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc28":  # sc28 [seeds_per_cell]
+        sys.exit(0 if sc28(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay28":  # replay28 <seed> <cell> [mutant]
+        t = Toxi(RUNS)
+        try:
+            r = sc28_run(int(sys.argv[2]), sys.argv[3], t, mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                         label="replay28", verbose=True)
+            print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc28", "violations")},
+                             indent=1, default=str))
+        finally:
+            t.stop()
     if sys.argv[1] == "sc25b":  # sc25b [seeds_per_cell]
         sys.exit(0 if sc25b(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay25b":  # replay25b <seed> <cell> [mutant]
