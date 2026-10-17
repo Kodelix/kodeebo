@@ -4,7 +4,7 @@
 
 # Prototype: desktop client spike (round 1)
 
-**Status:** round 1 for A and B concluded 2026-10-17: **G0 PASS; A and B both PASS G1 and G2** (Findings below). C (Tauri 2) not run: round 1b only if the founder decides it still adds something (founder, 2026-10-17). Round 2 (G3 Arabic, G4 update, tamper legs) not started. Indicative only: VM, not the physical 4 GB PC.
+**Status:** round 1 for A and B concluded 2026-10-17: **G0 PASS; A and B both PASS G1 and G2** (Findings below). **C (Tauri 2) not run — founder decision, 2026-10-17** (see below). Round 2 (G3 Arabic, G4 update, tamper legs) not started. Indicative only: VM, not the physical 4 GB PC.
 **Risk tested:** `design/product-brief.md` risk 2: "A desktop technology runs well, prints and opens the drawer on Windows 10/11."
 **Plan:** `docs/research/desktop-client-technology.md` § 9 (Spikes): S1/S40, S7/S43, S10, S20 and the phase 1 text. Round 1 covers the part of them listed under "Gates" below.
 **Path:** code spike (feasibility). Throwaway: nothing here is imported by production code, and if a runtime is chosen, its production code is written from scratch (`.claude/rules/prototype-code.md`). The spike does **not** choose the stack. It feeds the runtime ADR.
@@ -128,6 +128,16 @@ The cold GUI starts (49 s and 57 s) are **upper bounds**: the throttle pages the
 - **Warm-up (founder question 2):** it moves native loading and store opening (2.6–3.2 s) into the start-up budget. What it does not move: the **first print job after boot** still costs 0.3–0.8 s (`StartDocPrinter` 330–540 ms, B's first `ClosePrinter` 789 ms without warm-up), because `OpenPrinter` alone does not warm the spooler. A production warm-up would need a dummy job or an earlier first print.
 - **Sequential reading (founder question 1): not answerable cleanly here.** Inside the app, the first close reads 29–53 KB (≈ 2–4 ms at 12 MiB/s): **the sale itself is not disk-bound.** The multi-second start-up phases happen before in-app counters exist, and process counters miss memory-mapped EXE/DLL paging (B showed 1 MB "read"). The disk-level counter saw ~61 MB read while B started and ran, arriving at ~2 MB/s, i.e. **bound by the 100 IOPS cap, not by sequential speed**, and mixed with Windows' own post-reboot reads (prefetch, Defender), which carry on past the 120 s settle. Separating the app's paging from that needs a per-process disk trace (Windows Performance Recorder) on the physical 4 GB PC: not researched or downloaded yet.
 - **Harness findings:** an SSH session is not an interactive logon (msiexec returns 1601; GUI apps get no desktop), so everything on `cashier`'s desktop runs through `schtasks /IT` (`guest/run-interactive.ps1`); for a standard user the ScheduledTasks cmdlets fail with "Access denied" over WMI; `echo %ERRORLEVEL%> f` writes nothing (redirection of handle 0); PowerShell progress bars and stderr version banners abort scripts over SSH.
+
+### Round 1b (C, Tauri 2): not run — founder decision, 2026-10-17
+
+B already covers the web shell the research note asked for (A plus at least one of B or C), and C's main advantage, a smaller install using the PC's WebView2, matters less with A installing at 136 MB. Printer status reading (paper out, cover open) is a runtime-neutral requirement, so instead of building C, the next round adds **S50: a `DLE EOT` status-read test for A and B** on the real-printer day, when the founder borrows the U.POS AI-330 and Xprinter XP-80C (full row in `docs/research/desktop-client-technology.md` § 9 Spikes). The harness is runtime-neutral (`apps/SPEC.md`, `tools/g2.sh`), so C can still be added later if A and B both fail a later gate.
+
+### Next rounds
+
+- **Real-printer day (founder borrows the printers):** S50 status read from A and B; the hardware legs of S20 (vendor driver and Generic / Text Only queue), S23 (drawer kick on pin 2 / pin 5, including offline and paper-out), S24 (Arabic raster on paper) and S29 (power-off, paper-out and unplug mid-job without losing or duplicating a receipt).
+- **Round 2 (its own prototype, A and B):** G3 Arabic RTL (S6/S46), G4 per-user update (S36), tamper legs TS-03c, TS-05b, TS-06c.
+- **Physical 4 GB PC:** cold-start and memory numbers that count, with a per-process disk trace for the sequential-read question.
 
 ### Answered from the research evidence, confirmed in G2
 
