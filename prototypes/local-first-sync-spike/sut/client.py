@@ -61,6 +61,12 @@
 #   OQ8 (founder, 2026-10-17): a session with several segments is rounded ONCE on its total, to the owner's
 #   rounding step (round_piasters in the price list, the list held at close); never per segment.
 #      MUTANT also: round_per_segment.
+# Phase 3 (SC-25a, a 7-day backlog drained over short online windows cut mid-drain): the batch size adapts. It
+#   starts at BATCH_MAX (50); a sync that times out halves it (down to 1), a successful one grows it by a quarter
+#   (additive increase, multiplicative decrease), so a batch too large for the link's HTTP timeout shrinks instead
+#   of retrying the same batch forever, and does not jump straight back to a size that times out again.
+#      MUTANT also: fixed_batch (never shrinks), drop_on_send (outbox rows deleted when sent, before any reply,
+#      without advancing the acknowledged mark, so a cut request loses them).
 #      MUTANT also: zero_price_default (a missing list or price counts as 0), swallow_store_errors (the session-op
 #      handler also swallows store errors instead of refusing the store).
 #      MUTANT also: retroactive_price (re-prices the whole session with the list at close),
@@ -528,6 +534,15 @@ def post(cmds):
     return body
 
 
+BATCH_MAX = int(os.environ.get("BATCH_MAX", "50"))
+batch = BATCH_MAX  # SC-25a: adaptive batch size
+
+
+def timed_out(e):
+    return isinstance(e, TimeoutError) or "timed out" in str(e).lower() or isinstance(
+        getattr(e, "reason", None), TimeoutError)
+
+
 NET_ERRORS = (urllib.error.URLError, ConnectionError, TimeoutError, OSError, http.client.HTTPException, ValueError)
 
 
@@ -556,19 +571,28 @@ def select_rows():
                 rebuilt = [(s_, "cmd-r-" + c[4:], p, ph) for s_, c, p, ph in rebuilt]
             have = {r[0] for r in rebuilt}
             rows = rebuilt + [r for r in rows if r[0] not in have]
-    return sorted(rows)[:50]
+    return sorted(rows)[:batch]
 
 
 def sync():
+    global batch
     report_events()
     rows = select_rows()
     if not rows:
         return reply({"ok": True, "op": "sync", "pending": 0})
     failpoint("client:before_send")  # P4/P5
+    if MUTANT == "drop_on_send":  # planted defect: forget the commands as soon as they are sent
+        q("BEGIN IMMEDIATE")
+        for r in rows:
+            q("DELETE FROM outbox WHERE command_id = ?", (r[1],))
+        q("COMMIT")
     try:
         resp = post(rows_to_cmds(rows))
     except NET_ERRORS as e:  # a truncated or malformed reply is a failed sync (P0-F2)
-        return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": pending_count()})
+        if timed_out(e) and MUTANT != "fixed_batch":
+            batch = max(1, batch // 2)  # too big for this link: shrink, never retry the same batch forever
+        return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": pending_count(), "batch": batch})
+    batch = min(BATCH_MAX, batch + max(1, batch // 4))
     failpoint("client:after_response_before_mark")  # P10
     try:
         q("BEGIN IMMEDIATE")
@@ -584,7 +608,7 @@ def sync():
         return reply({"ok": False, "op": "sync", "error": "disk_full", "warning": "disk_full",
                       "pending": pending_count()})
     failpoint("client:after_mark")  # P12
-    reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count()})
+    reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count(), "batch": batch})
 
 
 def apply_reply(resp):

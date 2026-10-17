@@ -1,0 +1,8 @@
+phase 3 SC-25a (7-day backlog, cut windows), commit 15f1943+dirty
+    full seed 1: 34479 commands, 509.0 s (generate 342.3 s), acked per window [4100, 3700, 5200, 656, 4311, 16512], violations []
+    full seed 2: 34482 commands, 554.1 s (generate 321.1 s), acked per window [3650, 5250, 1154, 4827, 3200, 16401], violations []
+    full seed 3: 34476 commands, 518.4 s (generate 352.9 s), acked per window [4400, 3050, 2900, 5500, 679, 17947], violations []
+  full   exercised 3/3  violating 0  PASS
+  mutant fixed_batch    CAUGHT after 1 runs: ('R23', 'window 3 (slow uplink) made no progress: device acked 850 -> 850, cursor 900 -> 900')
+  mutant drop_on_send   CAUGHT after 1 runs: ('I1', 's1-a1000 acknowledged but missing on the server')
+SC-25a: PASS  (total 1673.9 s)

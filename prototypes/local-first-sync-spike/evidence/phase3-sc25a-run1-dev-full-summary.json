@@ -1,0 +1,278 @@
+{
+ "harness_commit": "15f1943+dirty",
+ "started": "2026-10-17 10:03:41",
+ "load": "OQ16 bound, derived from capacity, not measured",
+ "cells": [
+  {
+   "cell": "full",
+   "runs": 3,
+   "exercised": 3,
+   "violating_runs": 0,
+   "first_bad": [],
+   "per_run": [
+    {
+     "seed": 1,
+     "commands": 34479,
+     "seconds": 509.0,
+     "generate_s": 342.3,
+     "dups": 170,
+     "windows": [
+      {
+       "acked": 4100,
+       "cursor": 4150,
+       "s": 9.2,
+       "slow": false,
+       "cut": "resp_cut_150",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 3700,
+       "cursor": 3700,
+       "s": 6.8,
+       "slow": false,
+       "cut": "resp_cut_150",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 5200,
+       "cursor": 5200,
+       "s": 9.1,
+       "slow": false,
+       "cut": "resp_cut_150",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 656,
+       "cursor": 626,
+       "s": 103.0,
+       "slow": true,
+       "cut": "resp_cut_150",
+       "batches": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        18,
+        20,
+        22,
+        25
+       ]
+      },
+      {
+       "acked": 4311,
+       "cursor": 4291,
+       "s": 6.5,
+       "slow": false,
+       "cut": "req_cut_120",
+       "batches": [
+        25,
+        31,
+        38,
+        47,
+        50
+       ]
+      },
+      {
+       "acked": 16512,
+       "cursor": 16512,
+       "s": 23.1,
+       "slow": false,
+       "cut": null,
+       "batches": []
+      }
+     ]
+    },
+    {
+     "seed": 2,
+     "commands": 34482,
+     "seconds": 554.1,
+     "generate_s": 321.1,
+     "dups": 170,
+     "windows": [
+      {
+       "acked": 3650,
+       "cursor": 3700,
+       "s": 6.9,
+       "slow": false,
+       "cut": "resp_cut_150",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 5250,
+       "cursor": 5200,
+       "s": 8.9,
+       "slow": false,
+       "cut": "req_cut_120",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 1154,
+       "cursor": 1154,
+       "s": 175.7,
+       "slow": true,
+       "cut": "req_cut_120",
+       "batches": [
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        18,
+        20,
+        22,
+        25
+       ]
+      },
+      {
+       "acked": 4827,
+       "cursor": 4877,
+       "s": 6.8,
+       "slow": false,
+       "cut": "reset_peer",
+       "batches": [
+        20,
+        25,
+        31,
+        38,
+        47,
+        50
+       ]
+      },
+      {
+       "acked": 3200,
+       "cursor": 3200,
+       "s": 4.7,
+       "slow": false,
+       "cut": "reset_peer",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 16401,
+       "cursor": 16351,
+       "s": 22.0,
+       "slow": false,
+       "cut": null,
+       "batches": []
+      }
+     ]
+    },
+    {
+     "seed": 3,
+     "commands": 34476,
+     "seconds": 518.4,
+     "generate_s": 352.9,
+     "dups": 236,
+     "windows": [
+      {
+       "acked": 4400,
+       "cursor": 4450,
+       "s": 8.4,
+       "slow": false,
+       "cut": "reset_peer",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 3050,
+       "cursor": 3050,
+       "s": 5.2,
+       "slow": false,
+       "cut": "resp_cut_150",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 2900,
+       "cursor": 2900,
+       "s": 4.3,
+       "slow": false,
+       "cut": "reset_peer",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 5500,
+       "cursor": 5500,
+       "s": 8.9,
+       "slow": false,
+       "cut": "resp_cut_150",
+       "batches": [
+        50
+       ]
+      },
+      {
+       "acked": 679,
+       "cursor": 645,
+       "s": 104.4,
+       "slow": true,
+       "cut": "reset_peer",
+       "batches": [
+        10,
+        11,
+        12,
+        13,
+        15,
+        16,
+        18,
+        20,
+        22,
+        25
+       ]
+      },
+      {
+       "acked": 17947,
+       "cursor": 17931,
+       "s": 25.2,
+       "slow": false,
+       "cut": null,
+       "batches": []
+      }
+     ]
+    }
+   ],
+   "seconds": 1581.5,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "fixed_batch": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "first_violation": [
+    "R23",
+    "window 3 (slow uplink) made no progress: device acked 850 -> 850, cursor 900 -> 900"
+   ],
+   "seconds": 50.6
+  },
+  "drop_on_send": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "first_violation": [
+    "I1",
+    "s1-a1000 acknowledged but missing on the server"
+   ],
+   "seconds": 41.8
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 1673.9
+}

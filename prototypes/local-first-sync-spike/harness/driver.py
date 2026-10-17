@@ -64,6 +64,8 @@ TOXICS = {
     "slow": [{"type": "latency", "stream": "downstream", "attributes": {"latency": 150, "jitter": 100}},
              {"type": "latency", "stream": "upstream", "attributes": {"latency": 150, "jitter": 100}}],
     "down": "down",
+    # SC-25a: a slow uplink; a 50-command batch takes longer than the 2 s HTTP timeout, a small one does not
+    "bandwidth_3k": [{"type": "bandwidth", "stream": "upstream", "attributes": {"rate": 3}}],
 }
 
 
@@ -343,7 +345,7 @@ class Run:
                 break
         self.send({"op": "exit"})
         self.client.wait()
-        dump = json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=10).read())
+        dump = json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=180).read())  # SC-25a: large dumps
         self.server.terminate()
         self.server.wait()
         self.scan("after clean exit")
@@ -1839,6 +1841,208 @@ def sc23(seeds=50, mutant_budget=30):
     return ok
 
 
+# --- Phase 3, SC-25a: a 7-day offline backlog drained over short online windows, each cut mid-drain --------------
+# OQ16 (founder 2026-10-17), "derived from capacity, not measured": 25 stations, 24 h, one session per station every
+# 30 minutes (1,200 sessions/day), 3 cafe orders per session (3,600/day), about 5,000 money commands/day; the longest
+# offline period is 7 days (about 35,000 commands), drained over online windows of a few minutes at shift changes,
+# which can end mid-drain.
+SC25_SCALES = {"tenth": 0.1, "full": 1.0}
+SC25_SEEDS = {"tenth": 30, "full": 3}
+SC25_DAYS = 7
+SC25_SESSIONS_PER_DAY, SC25_CAFE_PER_DAY = 1200, 3600
+SC25_WINDOWS = 6  # online windows; the first five are cut, the last one drains to the end
+SC25_MUTANTS = ["fixed_batch", "drop_on_send"]
+SC25_CUTS = ["resp_cut_150", "req_cut_120", "reset_peer"]  # reply lost after commit / request cut / connection reset
+
+
+def sc25_script(scale):
+    def script(run):
+        rng, toxi = run.rng, run.net.toxi
+        i = [0]
+        st = run.sc25 = {"scale": scale, "windows": [], "commands": 0, "dups": 0}
+        pending_intents, pending_acks = [], []
+
+        def flush_intents():
+            # The driver is never killed in SC-25, so its log is written in large batches (it must be complete before
+            # the oracle runs, not durable per sale).
+            run.intent.execute("BEGIN")
+            run.intent.executemany("INSERT INTO actions VALUES (?,?)", pending_intents)
+            run.intent.executemany("INSERT INTO acks VALUES (?)", pending_acks)
+            run.intent.execute("COMMIT")
+            pending_intents.clear()
+            pending_acks.clear()
+
+        def sell(day):
+            k = i[0]
+            i[0] += 1
+            cafe = rng.random() < SC25_CAFE_PER_DAY / (SC25_CAFE_PER_DAY + SC25_SESSIONS_PER_DAY)
+            start = rng.randint(0, 1400)
+            a = {"op": "sale", "action_id": f"s{run.seed}-a{k}", "session_id": f"s{run.seed}-sess{k}",
+                 "start_min": start, "end_min": start if cafe else start + rng.randint(10, 40),
+                 "rate_per_hour": rng.choice([3000, 4500, 6000, 9000]),
+                 "cafe_piasters": rng.choice([1500, 2500, 4000]) * rng.randint(1, 3) if cafe else 0, "day": day}
+            pending_intents.append((a["action_id"], json.dumps(a)))
+            r = run.send(a)
+            if r and r.get("ok"):
+                run.seq_of[a["action_id"]] = r.get("seq")
+                pending_acks.append((a["action_id"],))
+            if len(pending_intents) >= 5000:
+                flush_intents()
+            st["commands"] += 1
+
+        def cursor():
+            return int(psql("SELECT last_seq FROM cursor_ WHERE device_id = 'dev-1'"))
+
+        def acked():  # drain progress on the device: its acknowledged high mark (duplicates count as progress)
+            return run.send({"op": "state"})["acked_seq"]
+
+        def sync():
+            r = run.send({"op": "sync"})
+            if r and r.get("results"):
+                st["dups"] += sum(1 for x in r["results"] if x["result"] == "duplicate")
+            return r
+
+        # Seven days offline at the OQ16 bound (scaled).
+        toxi.apply("down")
+        per_day = round((SC25_SESSIONS_PER_DAY + SC25_CAFE_PER_DAY) * scale)
+        t0 = time.time()
+        for day in range(1, SC25_DAYS + 1):
+            run.day = day
+            for _ in range(per_day):
+                sell(day)
+        flush_intents()
+        st["generate_seconds"] = round(time.time() - t0, 1)
+        toxi.clear()
+        backlog = st["commands"]
+        slow_window = rng.randrange(SC25_WINDOWS - 1)
+        for w in range(SC25_WINDOWS):
+            last = w == SC25_WINDOWS - 1
+            before, acked_before, t1 = cursor(), acked(), time.time()
+            if w == slow_window:
+                toxi.apply("bandwidth_3k")  # a slow uplink for this whole window
+            syncs, batches = 0, []
+            if last:  # the final window drains everything
+                for _ in range(backlog // 5 + 100):
+                    r = sync()
+                    syncs += 1
+                    if r and r.get("ok") and r.get("pending") == 0:
+                        break
+            else:
+                budget = rng.randint(max(2, backlog // 50 // 12), max(3, backlog // 50 // 6))  # 8-17 % of the backlog
+                for n in range(budget):
+                    r = sync()
+                    syncs += 1
+                    batches.append(r.get("batch") if r else None)
+                    if n % 10 == 9:
+                        sell(SC25_DAYS + 1)  # the cashier keeps selling during the drain
+                cut = rng.choice(SC25_CUTS)
+                toxi.clear()
+                toxi.apply(cut)
+                sync()  # the window ends in the middle of this batch
+                toxi.clear()
+            toxi.clear()
+            after = cursor()
+            st["windows"].append({"window": w, "slow": w == slow_window, "cut": None if last else cut,
+                                  "syncs": syncs, "cursor_before": before, "cursor_after": after,
+                                  "acked_before": acked_before, "acked_after": acked(),
+                                  "seconds": round(time.time() - t1, 1), "batch_sizes_seen": sorted(
+                                      {b for b in batches if b})})
+            if not last:
+                toxi.apply("down")  # offline until the next shift change; the cashier keeps selling
+                for _ in range(max(1, backlog // 200)):
+                    sell(SC25_DAYS + 1)
+                toxi.clear()
+        st["final_cursor"] = cursor()
+        flush_intents()
+    return script
+
+
+def sc25_extra(run, dump):
+    """R23 every online window advances the server cursor (none makes zero progress or starts over) and the last
+    one drains everything; duplicates stay within one batch per cut."""
+    v, st = [], run.sc25
+    for w in st["windows"]:  # progress = the device's acknowledged mark moved (a window after a lost reply may only
+        # collect "duplicate" acks, which moves the device and not the server cursor)
+        if w["acked_after"] <= w["acked_before"]:
+            v.append(("R23", f"window {w['window']} ({'slow uplink' if w['slow'] else 'normal'}) made no progress: "
+                             f"device acked {w['acked_before']} -> {w['acked_after']}, cursor {w['cursor_before']} -> "
+                             f"{w['cursor_after']}"))
+    if st["final_cursor"] != st["commands"]:
+        v.append(("R23", f"final cursor {st['final_cursor']} != {st['commands']} commands"))
+    if st["dups"] > (SC25_WINDOWS - 1) * 50:
+        v.append(("R23", f"{st['dups']} duplicate results: more than one batch per cut was re-sent"))
+    st["exercised"] = any(w["slow"] for w in st["windows"]) and len(st["windows"]) == SC25_WINDOWS
+    return v, frozenset()
+
+
+def sc25_run(seed, scale_name, toxi, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc25-{scale_name}", net=Net(toxi, "none"), client_env=dict(RETENTION_ENV))
+    run.script, run.extra = sc25_script(SC25_SCALES[scale_name]), sc25_extra
+    t0 = time.time()
+    r = run.go()
+    r["sc25"] = {**run.sc25, "seconds": round(time.time() - t0, 1)}
+    return r
+
+
+def sc25(scales=("tenth", "full"), mutant_budget=6):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "load": "OQ16 bound, derived from capacity, not measured", "cells": [], "mutants": {}}
+    print(f"phase 3 SC-25a (7-day backlog, cut windows), commit {summary['harness_commit']}", flush=True)
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        for sc in scales:
+            t1 = time.time()
+            bad, exercised, runs = [], 0, []
+            for s in range(1, SC25_SEEDS[sc] + 1):
+                r = sc25_run(s, sc, toxi)
+                exercised += bool(r["sc25"].get("exercised"))
+                w = r["sc25"]["windows"]
+                runs.append({"seed": s, "commands": r["sc25"]["commands"], "seconds": r["sc25"]["seconds"],
+                             "generate_s": r["sc25"]["generate_seconds"], "dups": r["sc25"]["dups"],
+                             "windows": [{"acked": x["acked_after"] - x["acked_before"],
+                                          "cursor": x["cursor_after"] - x["cursor_before"], "s": x["seconds"],
+                                          "slow": x["slow"], "cut": x["cut"], "batches": x["batch_sizes_seen"]}
+                                         for x in w]})
+                if r["violations"]:
+                    bad.append({"seed": s, "violations": r["violations"][:3]})
+                print(f"    {sc} seed {s}: {r['sc25']['commands']} commands, {r['sc25']['seconds']} s "
+                      f"(generate {r['sc25']['generate_seconds']} s), acked per window "
+                      f"{[x['acked_after'] - x['acked_before'] for x in w]}, "
+                      f"violations {r['violations'][:2]}", flush=True)
+            n = SC25_SEEDS[sc]
+            res = "FAIL" if bad else ("PASS" if exercised == n else f"NOT ASSESSED ({n - exercised} runs not exercised)")
+            ok &= res == "PASS"
+            summary["cells"].append({"cell": sc, "runs": n, "exercised": exercised, "violating_runs": len(bad),
+                                     "first_bad": bad[:3], "per_run": runs, "seconds": round(time.time() - t1, 1),
+                                     "result": res})
+            print(f"  {sc:6s} exercised {exercised}/{n}  violating {len(bad)}  {res}", flush=True)
+        for mu in SC25_MUTANTS:
+            t1 = time.time()
+            caught = None
+            for s in range(1, mutant_budget + 1):
+                r = sc25_run(s, "tenth", toxi, mutant=mu, label=f"sc25-mutant-{mu}")
+                if r["violations"]:
+                    caught = (s, r["violations"][0])
+                    break
+            summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": s if caught else None,
+                                      "first_violation": caught[1] if caught else None,
+                                      "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {mu:14s} {'CAUGHT' if caught else 'SURVIVED'} after {s} runs: {caught[1] if caught else '-'}",
+                  flush=True)
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc25-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-25a: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -1848,6 +2052,18 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc25":  # sc25 [tenth|full|both]
+        which = sys.argv[2] if len(sys.argv) > 2 else "both"
+        sys.exit(0 if sc25(("tenth", "full") if which == "both" else (which,)) else 1)
+    if sys.argv[1] == "replay25":  # replay25 <seed> <tenth|full> [mutant]
+        t = Toxi(RUNS)
+        try:
+            r = sc25_run(int(sys.argv[2]), sys.argv[3], t, mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                         label="replay25")
+            print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc25", "violations")},
+                             indent=1, default=str))
+        finally:
+            t.stop()
     if sys.argv[1] == "sc23":  # sc23 [seeds_per_cell]
         sys.exit(0 if sc23(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay23":  # replay23 <seed> <cell> [mutant]

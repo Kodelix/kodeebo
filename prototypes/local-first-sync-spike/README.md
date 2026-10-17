@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) dev run PASS on uncommitted harness
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -30,6 +30,7 @@ This code is throwaway (`.claude/rules/prototype-code.md`). Nothing here is impo
 | 3 | Compound faults, reordering, partial batch, restored backup, cloned disk, re-bootstrap; tamper TS-01, TS-02, TS-03b, TS-06a, TS-07a, TS-09, TS-10; added cases SC-19 (first), SC-20, SC-21a, SC-22, SC-23, SC-25a and SC-25b mechanics (table below) | 0 violations; ≥ 3,000 runs (30,000 stretch); tamper pass signals; each added case's pass signal |
 | 4 | Windows 10/11 durability and tamper legs; added cases SC-21b, SC-24, SC-26, SC-27 | per § 9.1 / § 9.1.1 / § 9.1.2; measured against `docs/architecture/perf-budgets.md` (founder ceiling: no counter action over 3 s, worst case, on the 4 GB reference PC) |
 | 5 | Day-close totals and tampered clocks; SC-25b with the real N5 rules | per § 9.1 / § 9.1.2 |
+| PowerSync track | Does PowerSync fit (sync note Part A, S1–S4)? **Order (founder, 2026-10-17):** after the phase 3 gate passes, not in parallel. S2–S4 on Linux right after the gate; S1 on Windows inside phase 4. No adoption before counsel reads the FSL licence (sync note OQ2: the tech/IP counsel brief, drafted after the PowerSync track reports) | Part A's pass conditions |
 
 **Phase 4 VM (founder, 2026-10-16):**
 - **Baseline:** the shared Windows VM's baseline is snapshot **`clean-ssh2`**, not `clean`.
@@ -163,6 +164,16 @@ bash prototypes/local-first-sync-spike/run.sh sc23 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay23 <seed> <cell> [mutant]
+```
+
+SC-25a (7-day backlog drained over cut windows; `full` takes about 9 minutes per run):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc25 [tenth|full|both]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay25 <seed> <tenth|full> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -727,3 +738,50 @@ Permission revocation while offline (abuse case 3) is **not** in SC-23. It is a 
 - **The billing rules themselves** (rounding, minimum minutes, per-segment or total rounding): placeholders until OQ8.
 - **The owner's summary wording and dashboard view:** belong to the spec.
 - **Permission revocation:** a later cell, as above.
+
+### Phase 3 — SC-25a: a 7-day offline backlog drained over short online windows, each cut mid-drain
+
+**Load (sync note OQ16, founder 2026-10-17), labelled "derived from capacity, not measured":**
+- **The bound:** 25 stations, 24 h, one session per station every 30 minutes (1,200 sessions/day), 3 café orders per session (3,600/day): about 5,000 money commands/day.
+- **The longest offline period:** 7 days, about 35,000 commands. It drains over online windows of a few minutes at shift changes, which can end mid-drain.
+- **Replace** the bound with a measured busy day when the founder supplies one.
+
+**Design under test:**
+- **Client (`RETENTION=1`), adaptive batch size:** start at 50; a sync that times out halves the batch, down to 1; a successful one grows it by a quarter (additive increase, multiplicative decrease).
+- **Driver:**
+  - Generates the 7 days offline as real committed sales: sessions of 10–40 minutes and café orders, in the OQ16 mix.
+  - Opens 6 online windows through Toxiproxy. The first 5 end with a seeded cut on the last batch: request cut (the server does not commit), reply cut after the commit (the reply is lost) or connection reset. The 6th drains to the end.
+  - Throttles one window's uplink to 3 KB/s, where a 50-command batch exceeds the 2 s HTTP timeout.
+  - Has the cashier keep selling during and between windows.
+
+**Checks:**
+- **R23:** every window advances the device's acknowledged mark. That is the drain progress: after a lost reply the next window may collect only "duplicate" acknowledgements, which move the device and not the server cursor. The final cursor equals all commands, and duplicates stay within one batch per cut.
+- **I1, I2, I4, I7** apply at the end over every command.
+
+**Mutants:** `fixed_batch` (never shrinks), `drop_on_send` (outbox rows deleted when sent, before any reply).
+
+#### Run 1 (dev, uncommitted harness on `15f1943`) — PASS
+
+`evidence/phase3-sc25a-run1-dev-*`.
+- **Full size** (3 seeds), 0 violations. Acked commands per window, slow window marked:
+
+| Seed | Commands | Generate s | Total s | Acked per window | Duplicates |
+|---|---|---|---|---|---|
+| 1 | 34,479 | 342.3 | 509.0 | 4100, 3700, 5200, 656 (slow), 4311, 16512 | 170 |
+| 2 | 34,482 | 321.1 | 554.1 | 3650, 5250, 1154 (slow), 4827, 3200, 16401 | 170 |
+| 3 | 34,476 | 352.9 | 518.4 | 4400, 3050, 2900, 5500, 679 (slow), 17947 | 236 |
+
+- **One-tenth size** (about 3,440 commands): 28 of 30 seeds completed with 0 violations before the session ended. The clean run repeats all 30.
+- **Mutants:** both caught after 1 run. `fixed_batch`: the slow window made no progress (R23). `drop_on_send`: after the first cut every later command was gone, so 3,190 acknowledged sales never reached the server (I1, R23).
+- **Cost:** generating the backlog takes about 9–10 ms per sale (a real commit with rollback journal and marker fsyncs, on NVMe), so 34,500 sales take about 5.5 minutes. On the HDD reference PC this cost is SC-26's concern (phase 4).
+
+**Finding P3-F7 — on a slow link the batch size must grow back slowly.** In the first dev attempt the client doubled its batch after every success. On the 3 KB/s uplink it went 50 → 25 → 12 → 24 → 25: each success jumped straight back to a size that timed out again, so most syncs failed. With additive increase and multiplicative decrease the batch settles at the link's capacity (11–25 commands) and the window keeps draining.
+
+**Finding P3-F8 (harness) — after a lost reply, drain progress is on the device, not on the server cursor.** The first version of R23 measured the server cursor and flagged the slow window as stuck. It was not: it followed a cut where the server had committed a batch whose reply was lost, so its first successful batches were all `duplicate`. The device advanced and the server cursor did not. R23 now measures the device's acknowledged mark.
+
+**Observation:** a variant of `drop_on_send` that also advanced the acknowledged mark would be healed by SC-19's reconciliation: the server, behind the device, asks for a resend from the retained bills. That is why the planted defect deletes the outbox rows without moving the mark.
+
+**Not covered:**
+- **ETA's 24-hour late-submission route:** the spike has no ETA channel.
+- **Drain time on the HDD reference PC or a real venue link:** phase 4 and S105.
+- **Several devices draining at once:** server load is S201.
