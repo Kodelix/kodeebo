@@ -1,0 +1,226 @@
+ 
+ Key types, algorithms, and operations - Azure Key Vault | Microsoft Learn
+ Skip to main content
+ Skip to Ask Learn chat experience
+This browser is no longer supported.
+ Upgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.
+ Download Microsoft Edge
+ More info about Internet Explorer and Microsoft Edge
+ Table of contents 
+ Exit editor mode
+ Ask Learn
+ Ask Learn
+ Reading mode
+ Table of contents
+ Read in English
+ Add
+ Add to Plans
+ Edit
+ Copy Markdown
+ Print
+ Note
+ Access to this page requires authorization. You can try signing in or changing directories.
+ Access to this page requires authorization. You can try changing directories.
+Key types, algorithms, and operations
+ Feedback
+ Summarize this article for me
+ In this article
+This article describes key types, algorithms, attributes, and operations for Azure Key Vault (vaults). For the equivalent reference for Managed HSM, see Key types, algorithms, and operations (Managed HSM). For a summary of supported key types by resource, see About keys.
+The following table shows a summary of key types and supported algorithms in Key Vault. For full details on symmetric (oct-HSM / AES) algorithms and HMAC sign/verify, see Symmetric key algorithms.
+ | Key types/sizes/curves
+ | Encrypt/Decrypt
+(Wrap/Unwrap)
+ | Sign/Verify
+ | EC-P256, EC-P256K, EC-P384, EC-P521
+ | NA
+ | ES256
+ES256K
+ES384
+ES512
+ | RSA 2K, 3K, 4K
+ | RSA-OAEP-256
+[Not recommended] RSA1_5
+[Not recommended] RSA-OAEP
+ | PS256
+PS384
+PS512
+RS256
+RS384
+RS512
+RSNULL
+ | oct-HSM 128, 192, 256 (Premium; preview)
+ | AES-KW
+AES-GCM
+AES-CBC
+ | HS256
+HS384
+HS512
+EC algorithms
+The following algorithm identifiers are supported with EC-HSM keys.
+Curve types
+P-256 - The NIST curve P-256, defined at DSS FIPS PUB 186-4.
+P-256K - The SEC curve SECP256K1, defined at SEC 2: Recommended Elliptic Curve Domain Parameters.
+P-384 - The NIST curve P-384, defined at DSS FIPS PUB 186-4.
+P-521 - The NIST curve P-521, defined at DSS FIPS PUB 186-4.
+SIGN/VERIFY
+ES256 - ECDSA for SHA-256 digests and keys created with curve P-256. This algorithm is described at RFC7518.
+ES256K - ECDSA for SHA-256 digests and keys created with curve P-256K. This algorithm is pending standardization.
+ES384 - ECDSA for SHA-384 digests and keys created with curve P-384. This algorithm is described at RFC7518.
+ES512 - ECDSA for SHA-512 digests and keys created with curve P-521. This algorithm is described at RFC7518.
+RSA algorithms
+The following algorithm identifiers are supported with RSA and RSA-HSM keys.
+WRAPKEY/UNWRAPKEY, ENCRYPT/DECRYPT
+RSA-OAEP-256 - RSAES that uses Optimal Asymmetric Encryption Padding with a hash function of SHA-256 and a mask generation function of MGF1 with SHA-256.
+[Not recommended] RSA1_5 - RSAES-PKCS1-V1_5 [RFC3447] key encryption.
+[Not recommended] RSA-OAEP - RSAES using Optimal Asymmetric Encryption Padding (OAEP) [RFC3447], with the default parameters specified by RFC 3447 in Section A.2.1. Those default parameters are using a hash function of SHA-1 and a mask generation function of MGF1 with SHA-1.
+Warning
+Microsoft recommends using RSA_OAEP_256 or stronger algorithms for enhanced security.
+Microsoft doesn't recommend RSA_1_5 and RSA_OAEP. These algorithms are included only for backward compatibility. Cryptographic standards no longer consider RSA with the PKCS#1 v1.5 padding scheme secure for encryption. RSA_OAEP uses SHA1, which has known collision problems.
+SIGN/VERIFY
+PS256 - RSASSA-PSS using SHA-256 and MGF1 with SHA-256, as described in RFC7518.
+PS384 - RSASSA-PSS using SHA-384 and MGF1 with SHA-384, as described in RFC7518.
+PS512 - RSASSA-PSS using SHA-512 and MGF1 with SHA-512, as described in RFC7518.
+RS256 - RSASSA-PKCS-v1_5 using SHA-256. The application supplied digest value must be computed using SHA-256 and must be 32 bytes in length.
+RS384 - RSASSA-PKCS-v1_5 using SHA-384. The application supplied digest value must be computed using SHA-384 and must be 48 bytes in length.
+RS512 - RSASSA-PKCS-v1_5 using SHA-512. The application supplied digest value must be computed using SHA-512 and must be 64 bytes in length.
+RSNULL - See RFC2437, a specialized use-case to enable certain TLS scenarios.
+Note
+For better performance, use the RSA-PSS padding mode. The server constructs the DigestInfo for Sign operations that algorithms RS256, RS384, and RS512 generate.
+Symmetric key algorithms
+Important
+Symmetric (oct-HSM / AES) key support in Azure Key Vault Premium is currently in public preview. Supported key sizes are 128-bit, 192-bit, and 256-bit. Preview features are provided as-is, with no service-level agreement, and aren't recommended for production workloads. For more information, see Supplemental Terms of Use for Microsoft Azure Previews.
+The following algorithm identifiers are supported with oct-HSM (symmetric/AES) keys in Azure Key Vault Premium.
+WRAPKEY/UNWRAPKEY, ENCRYPT/DECRYPT
+AES-KW - AES key wrap, as described in RFC3394.
+AES-GCM - AES encryption in Galois Counter Mode (NIST SP 800-38d).
+AES-CBC - AES encryption in Cipher Block Chaining Mode (NIST SP 800-38a).
+When used with 256-bit keys, these algorithms are quantum-resistant according to the Commercial National Security Algorithm Suite 2.0 and Quantum Computing FAQ.
+SIGN/VERIFY (HMAC)
+HS256 - HMAC using SHA-256, as described in RFC7518.
+HS384 - HMAC using SHA-384, as described in RFC7518.
+HS512 - HMAC using SHA-512, as described in RFC7518.
+Note
+The sign and verify algorithm must match the key type and size. Otherwise, the service returns a key-size-incorrect error.
+For symmetric (oct-HSM) key algorithm support in Managed HSM, see Key types, algorithms, and operations (Managed HSM).
+Key operations
+The following operations are supported on key objects:
+Create: A client creates a key in the service. The service generates and stores the value of the key and doesn't release it to the client.
+Import: A client imports an existing key to the service. Asymmetric keys can be imported by using several different packaging methods within a JWK construct.
+Update: A client with sufficient permissions modifies the metadata (key attributes) associated with a previously stored key.
+Delete: A client with sufficient permissions deletes a key.
+List: A client lists all keys in the service.
+List versions: A client lists all versions of a given key.
+Get: A client retrieves the public parts of a given key. The get operation doesn't return the private portion of an asymmetric key, nor the key material of a symmetric key.
+Backup: Exports a key in a protected form.
+Restore: Imports a previously backed-up key.
+Release: Securely releases a key to authorized code running within a confidential compute environment. Requires an attestation that the Trusted Execution Environment (TEE) meets the requirements of the key's release_policy.
+After a key is created, you can perform the following cryptographic operations with it:
+Sign and Verify: Strictly, this operation is "sign hash" or "verify hash", as the service doesn't hash content as part of signature creation. Applications should hash the data to be signed locally, then request that the service sign the hash. Verification of signed hashes is supported as a convenience for applications that might not have access to public key material; for best performance, verify operations should be performed locally.
+Key Encryption / Wrapping: A key stored in the service can protect another key, typically a symmetric content encryption key (CEK). When the key in the service is asymmetric, use key encryption (for example, RSA-OAEP; WRAPKEY/UNWRAPKEY are equivalent to ENCRYPT/DECRYPT). When the key in the service is symmetric, use key wrapping (for example, AES-KW). WRAPKEY is supported as a convenience for applications that might not have access to public key material; for best performance, wrap operations should be performed locally.
+Encrypt and Decrypt: A key stored in the service can encrypt or decrypt a single block of data. The size of the block is determined by the key type and the selected encryption algorithm. Encrypt is provided for convenience; for best performance, encrypt operations should be performed locally.
+The use of distinct WRAPKEY/UNWRAPKEY operations (rather than always using ENCRYPT/DECRYPT) provides semantic and authorization separation, and consistency across key types.
+The service doesn't support EXPORT operations. Once a key is provisioned, you can't extract it or modify its key material. To move a key, use the BACKUP and RESTORE operations to export or import the key in a protected form. Keys produced by BACKUP can't be used outside the service.
+You can restrict any of the cryptographic operations on a per-key basis by using the key_ops property of the JWK object.
+For more information about JWK objects, see JSON Web Key (JWK).
+In addition to the operations listed above, Key Vault (vaults) supports:
+Rotate: Rotates an existing key by generating a new version of the key. This operation is available only on Key Vault resources (not on Managed HSM).
+For more information, see Key operations in the Key Vault REST API reference.
+Key rotation policy operations
+Set key auto-rotation by configuring the key auto-rotation policy. This feature is only available on Key Vault resources.
+Get Rotation Policy: Retrieve the rotation policy configuration.
+Set Rotation Policy: Set the rotation policy configuration.
+Key attributes
+In addition to the key material, you can specify the following attributes. In a JSON request, you must include the attributes keyword and braces ({ }) even if you don't specify any attributes.
+enabled: boolean, optional, default is true. Specifies whether the key is enabled and usable for cryptographic operations. Use the enabled attribute with nbf and exp. When an operation occurs between nbf and exp, the operation is permitted only if enabled is set to true. Operations outside the nbf / exp window are automatically disallowed, except for decrypt, release, unwrap, and verify.
+nbf: IntDate, optional, default is now. The nbf (not before) attribute identifies the time before which the key MUST NOT be used for cryptographic operations, except for decrypt, release, unwrap, and verify. The processing of the nbf attribute requires that the current date/time MUST be after or equal to the not-before date/time listed in the nbf attribute. Some small leeway (normally no more than a few minutes) may be provided to account for clock skew. Its value MUST be a number containing an IntDate value.
+exp: IntDate, optional, default is "forever". The exp (expiration time) attribute identifies the expiration time on or after which the key MUST NOT be used for cryptographic operations, except for decrypt, release, unwrap, and verify. The processing of the exp attribute requires that the current date/time MUST be before the expiration date/time listed in the exp attribute. Some small leeway (typically no more than a few minutes) may be provided to account for clock skew. Its value MUST be a number containing an IntDate value.
+The following read-only attributes are included in any response that includes key attributes:
+created: IntDate, optional. The created attribute indicates when this version of the key was created. The value is null for keys created before the addition of this attribute. Its value MUST be a number containing an IntDate value.
+updated: IntDate, optional. The updated attribute indicates when this version of the key was updated. The value is null for keys that were last updated before the addition of this attribute. Its value MUST be a number containing an IntDate value.
+Date-time controlled operations
+Not-yet-valid and expired keys, outside the nbf / exp window, work for decrypt, release, unwrap, and verify operations (they don't return 403, Forbidden). The rationale for using the not-yet-valid state is to allow a key to be tested before production use. The rationale for using the expired state is to allow recovery operations on data that was created when the key was valid. You can also disable access to a key by updating the enabled attribute to false.
+For more information about other possible attributes, see the JSON Web Key (JWK) specification.
+In addition to the attributes listed above, Key Vault keys expose:
+hsmPlatform: string, optional. The underlying HSM platform that protects a key.
+A hsmPlatform value of 2 means the key is protected by the latest FIPS 140-3 Level 3 validated HSM platform.
+A hsmPlatform value of 1 means the key is protected by the previous FIPS 140-2 Level 2 validated HSM platform.
+A hsmPlatform value of 0 means the key is protected by a FIPS 140-2 Level 1 software cryptographic module.
+Keys are bound to the HSM in which you created them. Azure Key Vault automatically creates new keys and key versions on the latest HSM platform. You can't migrate or transfer existing keys between platforms. For guidance on moving workloads to a new key, see How to migrate key workloads.
+For more information about IntDate and other data types, see Data types.
+Key tags
+You can specify more application-specific metadata in the form of tags. Key Vault supports up to 15 tags, each of which can have a 256-character name and a 256-character value.
+Note
+If a caller has the list or get permission to a key, they can read the tags.
+Key access control
+Key Vault provides access control for keys at the Key Vault level, which acts as the container for keys. You can control access to keys by using either Key Vault Azure role-based access control (recommended) or the legacy vault access policy permission model. Azure RBAC is the default and recommended authorization model. It has three predefined roles to manage keys: Key Vault Crypto Officer, Key Vault Crypto User, and Key Vault Service Encryption User. You can scope these roles to the subscription, resource group, or vault level. For more information, see Azure RBAC vs. access policies.
+Vault access policy permission model permissions (legacy):
+Permissions for key management operations
+get: Read the public part of a key, plus its attributes
+list: List the keys or versions of a key stored in a key vault
+update: Update the attributes for a key
+create: Create new keys
+import: Import a key to a key vault
+delete: Delete the key object
+recover: Recover a deleted key
+backup: Back up a key in a key vault
+restore: Restore a backed up key to a key vault
+Permissions for cryptographic operations
+decrypt: Use the key to unprotect a sequence of bytes
+encrypt: Use the key to protect an arbitrary sequence of bytes
+unwrapKey: Use the key to unprotect wrapped symmetric keys
+wrapKey: Use the key to protect a symmetric key
+verify: Use the key to verify digests
+sign: Use the key to sign digests
+Permissions for privileged operations
+purge: Purge (permanently delete) a deleted key
+release: Release a key to a confidential compute environment, which matches the release_policy of the key
+Permissions for rotation policy operations
+rotate: Rotate an existing key by generating a new version of the key (Key Vault only)
+get rotation policy: Retrieve rotation policy configuration
+set rotation policy: Set rotation policy configuration
+For more information about working with keys, see Key operations in the Key Vault REST API reference.
+Next steps
+About Key Vault
+About keys in Managed HSM
+Key types, algorithms, and operations (Managed HSM)
+About secrets
+About certificates
+Key Vault REST API overview
+Authentication, requests, and responses
+Key Vault Developer's Guide
+Feedback
+ Was this page helpful?
+ Yes
+ No
+ No
+ Need help with this topic?
+ Want to try using Ask Learn to clarify or guide you through this topic?
+ Ask Learn
+ Ask Learn
+ Suggest a fix? 
+ Additional resources
+ Last updated on 
+ 2026-07-30
+In this article
+ Was this page helpful?
+ Need help with this topic?
+ Want to try using Ask Learn to clarify or guide you through this topic?
+ Ask Learn
+ Ask Learn
+ Suggest a fix? 
+ en-us
+ Your Privacy Choices
+ Theme
+ Light 
+ Dark 
+ High contrast 
+ AI Disclaimer
+ Previous Versions
+ Blog
+ Contribute
+ Privacy
+ Consumer Health Privacy
+ Terms of Use
+ Trademarks
+© Microsoft 2026
+ 

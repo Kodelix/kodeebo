@@ -1,0 +1,34 @@
+
+ Keys in AWS CloudHSM - AWS CloudHSM 
+View a markdown version of this page
+Keys in AWS CloudHSM - AWS CloudHSM
+DocumentationAWS CloudHSMUser Guide
+Keys in AWS CloudHSM
+Before you can use your AWS CloudHSM cluster for cryptoprocessing, you must create users and keys
+ on the hardware security modules (HSM) in your cluster. 
+In AWS CloudHSM, use any of the following to manage keys on the HSMs in your cluster: 
+PKCS #11 library
+JCE provider
+CNG and KSP providers
+CloudHSM CLI
+Before you can manage keys, you must log in to the HSM with the user name and password of a
+ crypto user (CU). Only a CU can create a key. The CU who creates a key owns and manages that
+ key.
+See the following topics for more information about managing keys
+ in AWS CloudHSM.
+Topics
+Key sync and durability
+AES key wrapping
+Trusted keys
+Key management with CloudHSM CLI
+Key management with KMU
+Document Conventions
+Change
+ the minimum value
+Key sync and durability
+Did this page help you? - Yes
+Thanks for letting us know we're doing a good job!
+If you've got a moment, please tell us what we did right so we can do more of it.
+Did this page help you? - No
+Thanks for letting us know this page needs work. We're sorry we let you down.
+If you've got a moment, please tell us how we can make the documentation better.

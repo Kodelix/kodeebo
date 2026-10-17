@@ -1,0 +1,1360 @@
+
+ Core Concepts — YubiHSM 2 User Guide documentation
+ YubiHSM 2 User Guide
+Contents
+Introduction
+YubiHSM 2 Product Overview
+Core Concepts
+Objects
+Object Type
+Object Type Protocol Details
+Object ID
+Object ID Protocol Details
+Capabilities
+Object Capabilities
+Delegated Capabilities
+Capability Protocol Details
+Domains
+Domain Protocol Details
+Session
+Session Protocol Details
+Label
+Label Protocol Details
+Algorithms
+Algorithm Protocol Details
+Origin
+Origin and Attestation
+Origin Protocol Details
+Sequence
+Sequence Protocol Details
+Options
+Force Audit
+Command Audit
+Algorithm Toggle
+FIPS Mode
+Logs
+Error Codes
+Attestation
+Details
+Certificate Extensions
+Pre-Loaded Certificates
+Intermediates
+Libyubihsm Backend
+Access Control and Role Definition
+YubiHSM 2 SDK Tools And Libraries
+YubiHSM Quick Start Tutorial
+YubiHSM 2 Management Tasks
+Third Party Integration Deployment Guides
+YubiHSM 2 References
+Glossary
+Copyright
+ YubiHSM 2 User Guide
+Introduction
+Core Concepts
+ View page source
+Core Concepts
+The concepts presented here are required knowledge to successfully operate the YubiHSM 2.
+Objects
+The first concept to be aware of is the Object. Any persistently stored and self-contained piece of information present
+in a YubiHSM 2 is an Object. This is intentionally a very generic and broad definition which can be easily rephrased as
+everything is an Object. Objects have associated properties that characterize them and give them different meanings.
+Regardless of the kind and the specific properties, any YubiHSM 2 device can store up to 256 Objects. Their
+combined size cannot exceed 126 KB.
+Object Type
+To identify what an Object can and cannot do, we define an attribute called Object Type, or simply Type. A Type is not
+enough to uniquely identify an Object, but it defines the set of operations that can be performed with or on it.
+With the exception of Opaque Object, Public Wrap Key Object and Template Object,
+objects stored on the YubiHSM 2 are not extractable in plain text and can only exported in encrypted form.
+The following types are defined:
+Asymmetric Key Object
+Authentication Key Object
+HMAC Key Object
+Opaque Object
+OTP AEAD Key Object
+Public Wrap Key Object
+Symmetric Key Object
+Template Object
+Wrap Key Object
+Authentication Key Object
+An Authentication Key is one of the most fundamental Objects there are. Authentication Keys are used to establish an
+encrypted Session with the device. See CREATE SESSION Command. An Authentication Key is basically two
+long-lived AES keys: an encryption key and a MAC key. When establishing a Session, the long-lived keys are used to
+generate three session keys:
+An encryption key used to encrypt the messages exchanged with the device
+A MAC key used to create an authentication tag for each message sent to the device
+A response MAC key used to create an authentication tag for each response message sent by the device
+The session keys are temporary and are destroyed when the Session is no longer in use.
+Asymmetric Key Object
+An Asymmetric Key object is what the YubiHSM 2 uses to represent an asymmetric key-pair where the private key can be
+used to perform cryptographic operations.
+HMAC Key Object
+An HMAC Key is a secret key used when computing and verifying HMAC signatures.
+Opaque Object
+An Opaque object is an unchecked kind of Object, normally used to store raw data in the device. No specific
+restrictions (besides size limitations) are imposed to this type of Object, however, if the algorithm associated with
+this type of object is opaque-x509-certificate, the object is parsed as an X.509 certificate.
+OTP AEAD Key Object
+An OTP AEAD Key object is a secret key used to decrypt Yubico OTP values for further verification by a validation process.
+Symmetric Key Object
+Requires firmware version 2.3.1 or later.
+A Symmetric Key object is an AES key that can be used to perform encryption and decryption of data in ECB or CBC mode.
+Template Object
+A Template object is a binary template used to validate SSH certificate requests.
+Wrap Key Object
+A Wrap Key Object is a secret key used to wrap and unwrap Objects during the export and import process.
+In firmware version 2.4 or later, a Wrap Key can also be an RSA private key used to unwrap objects and (a)symmetric
+keys during the import process.
+Public Wrap Key Object
+Requires firmware version 2.4 or later.
+A Public Wrap Key object is an RSA public key used to wrap objects and (a)symmetric keys during the export process.
+Object Type Protocol Details
+Object Types are encoded as an 8-bit value.
+ | Name
+ | Value
+ | yubihsm-shell name
+ | Opaque Object
+ | 0x01
+ | opaque
+ | Authentication Key Object
+ | 0x02
+ | authentication-key
+ | Asymmetric Key Object
+ | 0x03
+ | asymmetric-key
+ | Wrap Key Object
+ | 0x04
+ | wrap-key
+ | HMAC Key Object
+ | 0x05
+ | hmac-key
+ | Template Object
+ | 0x06
+ | template
+ | OTP AEAD Key Object
+ | 0x07
+ | otp-aead-key
+ | Symmetric Key Object
+ | 0x08
+ | symmetric-key
+ | Public Wrap Key Object
+ | 0x09
+ | public-wrap-key
+Object ID
+The ID property is used to identify an Object of a given Type. This means that to uniquely identify an Object stored on a YubiHSM 2, the couple (Type, ID) is required. There can be more than one Object with a given ID and more than one Object with a given Type, but only one Object with a specific ID and Type. This is so that logical connections between Objects can be established by giving a set of connected Objects of different Types the same ID.
+An Object ID can have values in the range [0-65535] or [0x0000-0xffff] in hexadecimal. Note that this range is larger than the maximum number of Objects that can be stored in the device (256). Regardless of the type, ID 0x0000 and 0xffff are reserved for internal Objects.
+Object ID Protocol Details
+Object IDs are encoded as 16-bit values.
+Capabilities
+Capabilities are a set of permissions that control what operations can be performed on or with objects stored inside
+the YubiHSM 2. They are a fundamental part of the device’s security model and are used to enforce the principle of
+least privilege, ensuring that keys and sessions are only authorized to do exactly what they need to do. Further below
+is the list of existing Capabilities.
+Object Capabilities
+Each object stored on the YubiHSM 2 (such as an asymmetric key, an HMAC key, or a wrap key) has an associated set of
+capabilities. These are discrete, named permissions — for example:
+sign-ecdsa — allows the object to be used to produce ECDSA signatures
+decrypt-pkcs — allows RSA decryption using PKCS#1v1.5 padding
+export-wrapped — allows the object to be exported under a wrap key
+exportable-under-wrap — marks an object as eligible to be wrapped and exported
+get-log-entries — allows reading the device’s audit log
+Capabilities are defined at the time an object is created or imported. They cannot be added to or removed from an
+existing object; instead, a new object with the desired capabilities must be created. Lack of Capabilities required for
+a specific operation causes a command requiring that Capability to fail.
+It is important to know that there are no restrictions on which Capabilities can be set on an Object. Specifically,
+this means that it is possible to assign meaningless Capabilities to Objects that will never be able to use them, for
+example it is possible to have an Asymmetric Object with the Capability verify-hmac. Such a Capability only makes
+sense for HMAC Key objects, but the device allows defining a superset.
+Delegated Capabilities
+Authentication Keys and Wrap Keys have an additional property: Delegated Capabilities. These define the maximum set of
+capabilities that can be granted to objects created or imported through that key. For example, if an Authentication Key
+has sign-ecdsa in its Delegated Capabilities, sessions opened with it can create signing keys — but only with up to
+that set of permissions. A session cannot create objects with capabilities it doesn’t have delegated authority to
+grant. This mechanism allows administrators to precisely control what each operator or application can provision on the
+device.
+For Authentication Keys, Delegated Capabilities define the set of Capabilities that can be set or “bestowed” onto an Object created by the Authentication Key. Any operation attempting to create Objects with a Capability outside of this set fails.
+For Wrap Keys, Delegated Capabilities define the set of Capabilities that an Object can have when imported or exported using the Wrap Key. A larger set of Capabilities causes the import operation to fail.
+Capability Protocol Details
+A Set of Capabilities is an 8-byte value. Each Capability is identified by a specific bit, as shown in the Hex Mask column below.
+ | 
+Name
+ | 
+Hex Mask
+ | 
+Applicable
+Objects
+ | 
+Description
+ | —————————Asymmetric Keys——————————–
+ | 
+delete-asymmetric
+-key
+ | 0x0000020000000000
+ | 
+authentication
+-key
+ | 
+Delete
+Asymmetric
+Key Objects
+ | 
+generate-asymmetric
+-key
+ | 0x0000000000000010
+ | 
+authentication
+-key
+ | 
+Generate
+Asymmetric Key
+Objects
+ | 
+put-asymmetric-key
+ | 0x0000000000000008
+ | 
+authentication
+-key
+ | 
+Write
+Asymmetric Key
+Objects
+ | —————————Authentication Keys—————————-
+ | 
+delete-authen-
+tication-key
+ | 0x0000010000000000
+ | 
+authentication
+-key
+ | 
+Delete
+Authentication
+Key Objects
+ | 
+put-authentication
+-key
+ | 0x0000000000000004
+ | 
+authentication
+-key
+ | 
+Write
+Authentication
+Key Objects
+ | 
+change-
+authentication-key
+ | 0x0000400000000000
+ | 
+authentication
+-key
+ | 
+Replace
+Authentication
+Key Objects
+ | ——————————–Certificate——————————-
+ | 
+sign-attestation-
+certificate
+ | 0x0000000400000000
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Attest
+properties of
+Asymmetric
+Key Objects
+ | sign-ssh-certificate
+ | 0x0000000002000000
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Sign SSH
+certificates
+ | ———————————–Data———————————–
+ | decrypt-cbc
+ | 0x0010000000000000
+ | 
+authentication
+-key,
+symmetric-key
+ | 
+Decrypt data
+using AES CBC
+mode. Available
+with firmware
+version 2.3.1
+or later.
+ | decrypt-ecb
+ | 0x0004000000000000
+ | 
+authentication
+-key,
+symmetric-key
+ | 
+Decrypt data
+using AES ECB
+mode. Available
+with firmware
+version 2.3.1
+or later.
+ | decrypt-oaep
+ | 0x0000000000000400
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Decrypt
+data using
+RSA-OAEP
+ | decrypt-pkcs
+ | 0x0000000000000200
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Decrypt
+data using
+RSA-PKCS1v1.5
+ | encrypt-cbc
+ | 0x0020000000000000
+ | 
+authentication
+-key,
+symmetric-key
+ | 
+Encrypt data
+using AES CBC
+mode. Available
+with firmware
+version 2.3.1
+or later.
+ | encrypt-ecb
+ | 0x0008000000000000
+ | 
+authentication
+-key,
+symmetric-key
+ | 
+Encrypt data
+using AES ECB
+mode. Available
+with firmware
+version 2.3.1
+or later.
+ | ———————————–ECDH———————————–
+ | derive-ecdh
+ | 0x0000000000000800
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Perform
+ECDH
+ | ———————————–Global———————————
+ | get-option
+ | 0x0000000000040000
+ | 
+authentication
+-key
+ | 
+Read device-
+global options
+ | set-option
+ | 0x0000000000020000
+ | 
+authentication
+-key
+ | 
+Write device-
+global options
+ | ———————————–HMAC———————————–
+ | delete-hmac-key
+ | 0x0000080000000000
+ | 
+authentication
+-key
+ | 
+Delete HMAC
+Key Objects
+ | generate-hmac-key
+ | 0x0000000000200000
+ | 
+authentication
+-key
+ | 
+Generate HMAC
+Key Objects
+ | put-mac-key
+ | 0x0000000000100000
+ | 
+authentication
+-key
+ | 
+Write HMAC
+Key Objects
+ | sign-hmac
+ | 0x0000000000400000
+ | 
+authentication
+-key, hmac-key
+ | 
+Compute HMAC
+of data
+ | verify-hmac
+ | 0x0000000000800000
+ | 
+authentication
+-key, hmac-key
+ | 
+Verify HMAC
+of data
+ | —————————————Log——————————–
+ | get-log-entries
+ | 0x0000000001000000
+ | 
+authentication
+-key
+ | 
+Read the Log
+Store
+ | ———————————–Opaque———————————
+ | delete-opaque
+ | 0x0000008000000000
+ | 
+authentication
+-key
+ | 
+Delete Opaque
+Objects
+ | get-opaque
+ | 0x0000000000000001
+ | 
+authentication
+-key
+ | 
+Read Opaque
+Objects
+ | put-opaque
+ | 0x0000000000000002
+ | 
+authentication
+-key
+ | 
+Write Opaque
+Objects
+ | ———————————–OTP————————————
+ | create-otp-aead
+ | 0x0000000040000000
+ | 
+authentication
+-key,
+otp-aead-key
+ | 
+Create OTP
+AEAD
+ | decrypt-otp
+ | 0x0000000020000000
+ | 
+authentication
+-key,
+otp-aead-key
+ | 
+Decrypt OTP
+ | delete-otp-aead-key
+ | 0x0000200000000000
+ | 
+authentication
+-key
+ | 
+Delete OTP
+AEAD Key
+Objects
+ | 
+generate-otp-aead
+-key
+ | 0x0000001000000000
+ | 
+authentication
+-key
+ | 
+Generate OTP
+AEAD Key
+Objects
+ | 
+put-otp-aead-key
+ | 0x0000000800000000
+ | 
+authentication
+-key
+ | 
+Write OTP AEAD
+Key Objects
+ | randomize-otp-aead
+ | 0x0000000080000000
+ | 
+authentication
+-key,
+otp-aead-key
+ | 
+Create OTP
+AEAD from
+random data
+ | 
+rewrap-from-otp-
+aead-key
+ | 0x0000000100000000
+ | 
+authentication
+-key,
+otp-aead-key
+ | 
+Rewrap AEADs
+from one OTP
+AEAD Key
+Object to
+another
+ | 
+rewrap-to-otp-
+aead-key
+ | 0x0000000200000000
+ | 
+authentication
+-key,
+otp-aead-key
+ | 
+Rewrap AEADs
+to one OTP
+AEAD Key
+Object from
+another
+ | ———————————–Random———————————
+ | get-pseudo-random
+ | 0x0000000000080000
+ | 
+authentication
+-key
+ | 
+Extract
+random bytes
+ | ————————————–Reset——————————-
+ | reset-device
+ | 0x0000000010000000
+ | 
+authentication
+-key
+ | 
+Perform a
+factory reset
+on the device
+ | ———————————–Signatures—————————–
+ | sign-ecdsa
+ | 0x0000000000000080
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Compute
+digital
+signatures
+using ECDSA
+ | sign-eddsa
+ | 0x0000000000000100
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Compute
+digital
+signatures
+using EDDSA
+ | sign-pkcs
+ | 0x0000000000000020
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Compute
+signatures
+using RSA-
+PKCS1v1.5
+ | sign-pss
+ | 0x0000000000000040
+ | 
+authentication
+-key,
+asymmetric-key
+ | 
+Compute
+digital
+signatures
+using using
+RSA-PSS
+ | ———————————–Template——————————-
+ | delete-template
+ | 0x0000100000000000
+ | 
+authentication
+-key
+ | 
+Delete
+Template
+Objects
+ | get-template
+ | 0x0000000004000000
+ | 
+authentication
+-key
+ | 
+Read Template
+Objects
+ | put-template
+ | 0x0000000008000000
+ | 
+authentication
+-key
+ | 
+Write Template
+Objects
+ | ———————————–Wrap ———————————-
+ | delete-wrap-key
+ | 0x0000040000000000
+ | 
+authentication
+-key
+ | 
+Delete Wrap
+Key Objects
+ | export-wrapped
+ | 0x0000000000001000
+ | 
+authentication
+-key, wrap-key
+ | 
+Export other
+Objects under
+wrap
+ | 
+exportable-under
+-wrap
+ | 0x0000000000010000
+ | all
+ | 
+Mark an Object
+as exportable
+under wrap
+ | generate-wrap-key
+ | 0x0000000000008000
+ | 
+authentication
+-key
+ | 
+Generate Wrap
+Key Objects
+ | import-wrapped
+ | 0x0000000000002000
+ | 
+authentication
+-key, wrap-key
+ | 
+Import wrapped
+Objects
+ | put-wrap-key
+ | 0x0000000000004000
+ | 
+authentication
+-key
+ | 
+Write Wrap Key
+Objects
+ | unwrap-data
+ | 0x0000004000000000
+ | 
+authentication
+-key, wrap-key
+ | 
+Unwrap user-
+provided data
+ | wrap-data
+ | 0x0000002000000000
+ | 
+authentication
+-key, wrap-key
+ | 
+Wrap user-
+provided data
+ | —————————–Public Key Wrap —————————–
+ | 
+put-public-wrap
+-key
+ | 0x0040000000000000
+ | 
+authentication
+-key, wrap-key
+ | 
+Write RSA
+Public Wrap Key
+ | 
+delete-public-wrap
+-key
+ | 0x0080000000000000
+ | 
+authentication
+-key, wrap-key
+ | 
+Delete RSA
+Public Wrap Key
+ | ——————————Symmetric Keys —————————–
+ | 
+generate-symmetric
+-key
+ | 0x0001000000000000
+ | 
+authentication
+-key
+ | 
+Generate AES
+key. Available
+with firmware
+version 2.3.1
+or later.
+ | put-symmetric-key
+ | 0x0000800000000000
+ | 
+authentication
+-key
+ | 
+Import AES key.
+Available with
+firmware
+version 2.3.1
+or later.
+ | delete-symmetric-key
+ | 0x0002000000000000
+ | 
+authentication
+-key
+ | 
+Delete AES key.
+Available with
+firmware
+version 2.3.1
+or later.
+Domains
+A Domain is a logical partition that can be conceptually mapped to a container. In a YubiHSM 2 there are 16 independent Domains; an Object can belong to one or more Domains.
+Note
+Authentication Keys are Objects and thus can belong to multiple Domains.
+Domains serve as a means to secure Objects so that they cannot be addressed by independent applications running on the same device. This is achieved by specifying the Object’s Domain. Only users or applications that belong to the same Domain as an Object can access it or use it.
+The details involved in accessing an Object are explained in the Access Control and Role Definition page.
+Domain Protocol Details
+Domains are encoded as 16-bit values, where each Domain is represented by a bit
+ | Domain Number
+ | Hex Mask
+ | 1
+ | 0x0001
+ | 2
+ | 0x0002
+ | 3
+ | 0x0004
+ | 4
+ | 0x0008
+ | 5
+ | 0x0010
+ | 6
+ | 0x0020
+ | 7
+ | 0x0040
+ | 8
+ | 0x0080
+ | 9
+ | 0x0100
+ | 10
+ | 0x0200
+ | 11
+ | 0x0400
+ | 12
+ | 0x0800
+ | 13
+ | 0x1000
+ | 14
+ | 0x2000
+ | 15
+ | 0x4000
+ | 16
+ | 0x8000
+Session
+A Session is not a property of a specific Object, but rather it is used to describe a logical connection between an
+application and a device. Sessions are end-to-end encrypted and authenticated using Session Keys. Those keys are
+derived from long-lived Authentication Key Objects as part of the sessions authentication process. The Session creation
+and authentication protocol is based on Global Platform SCP03.
+On a single YubiHSM 2 it is possible to establish up to 16 independent and concurrent Sessions. Note that while
+multiple concurrent Sessions can be active at a given time, the device still serves as a rendezvous point. This means
+that time-consuming operations, like generating a long RSA key, will block commands in other Sessions. Sessions are
+addressed with a number in the range [0-15].
+Sessions have an expiration period of 30 seconds of inactivity in order to prevent resource starvation. After such a
+period, the device will consider a Session inactive and will move it to the pool of re-usable Sessions. Whenever a
+command is executed on a given Session, the inactivity timer is reset, meaning that if a Session is being constantly
+used then it will not expire.
+Some of the operations that can be performed on a YubiHSM 2 do not require a Session. The implications are that the
+command and its response will travel unencrypted to and from the device. These commands are only generic status
+commands, making Sessions effectively required for any meaningful operation.
+Sessions are created by authenticating with an Authentication Key stored on the device. There are two supported
+authentication modes:
+Symmetric authentication where long-lived, raw key material is explicitly used in the relevant commands. There are however built-in functionalities to derive those keys from a password using 10,000 iterations of PBKDF2 with the salt Yubico, making the process more human-friendly.
+Asymmetric authentication where an EC-P256 key pair is used. The client holds a private key and the device holds the corresponding public key, providing authentication without a shared secret.
+Every new or factory-reset YubiHSM 2 has a default Authentication Key with Object ID 1 and all Capabilities and all Domains set. This is equivalent to a superuser or an administrator. The long-lived keys for this Object are derived for symmetric authentication using the password password.
+Warning
+It is crucial to delete this well-known Authentication Key before deployment.
+Session Protocol Details
+Sessions are encoded as 8-bit values.
+Label
+A Label is a sequence of bytes that can be used to add a mnemonic reference to Objects.
+Label Protocol Details
+Labels are 40 bytes long. As far as the YubiHSM is concerned, the label is only a string of raw bytes and is not restricted to printable characters or valid UTF-8 glyphs.
+Algorithms
+Following table describes algorithm names to be used with YubiHSM Shell for the algorithms supported by YubiHSM 2. The table includes the externally common name, YubiHSM shell name, and common usage.
+:class: longtable
+ | Name
+ | yubihsm-shell name
+ | EC Curve
+ | Value
+ | Usage
+ | AES 128
+ | aes128
+ |  
+ |  
+ |  
+ | AES 192
+ | aes192
+ |  
+ |  
+ |  
+ | AES 256
+ | aes256
+ |  
+ |  
+ |  
+ | AES CBC
+ | aes-cbc
+ |  
+ |  
+ |  
+ | AES ECB
+ | aes-ecb
+ |  
+ |  
+ |  
+ | AES128 CCM WRAP
+ | aes128-ccm-wrap
+ |  
+ | 29
+ | Generate Wrap key
+ | AES192 CCM WRAP
+ | aes192-ccm-wrap
+ |  
+ | 41
+ | 
+Generate and
+store wrap key
+ | AES256 CCM WRAP
+ | aes256-ccm-wrap
+ |  
+ | 43
+ | 
+Generate and
+store wrap key
+ | AES KWP
+ | aes-kwp
+ |  
+ | 55
+ | Internal use only
+ | EC BP256
+ | ecbp256
+ | brainpool256r1
+ | 15
+ | Generate EC key
+ | EC BP384
+ | ecbp384
+ | brainpool384r1
+ | 16
+ | Generate EC key
+ | EC BP512
+ | ecbp512
+ | brainpool512r1
+ | 17
+ | Generate EC key
+ | EC ECDH
+ | ecdh
+ |  
+ | 24
+ |  
+ | EC K256 (1)
+ | eck256
+ | secp256k1
+ | 15
+ | Generate EC key
+ | EC P224
+ | ecp224
+ | secp224r1
+ | 12
+ | Generate EC key
+ | EC P256
+ | ecp256
+ | secp256r1
+ | 13
+ | Generate EC key
+ | EC P384
+ | ecp384
+ | secp384r1
+ | 14
+ | Generate EC key
+ | EC P521
+ | ecp521
+ | secp521r1
+ | 47
+ | Generate EC key
+ | ECDSA SHA1 (1)
+ | ecdsa-sha1
+ |  
+ | 23
+ | ECDSA sign
+ | ECDSA SHA256
+ | ecdsa-sha256
+ |  
+ | 43
+ | ECDSA sign
+ | ECDSA SHA384
+ | ecdsa-sha384
+ |  
+ | 44
+ | ECDSA sign
+ | ECDSA SHA512
+ | ecdsa-sha512
+ |  
+ | 45
+ | ECDSA sign
+ | ED25519
+ | ed25519
+ |  
+ | 46
+ | Generate ED key
+ | HMAC SHA1
+ | hmac-sha1
+ |  
+ | 19
+ | Generate HMAC key
+ | HMAC SHA256
+ | hmac-sha256
+ |  
+ | 20
+ | Generate HMAC key
+ | HMAC SHA384
+ | hmac-sha384
+ |  
+ | 21
+ | Generate HMAC key
+ | HMAC SHA512
+ | hmac-sha512
+ |  
+ | 22
+ | Generate HMAC key
+ | MGF1 SHA1
+ | mgf1-sha1
+ |  
+ | 32
+ | 
+RSA sign with
+PSS and RSA
+decrypt with OAEP
+ | MGF1 SHA256
+ | mgf1-sha256
+ |  
+ | 33
+ | 
+RSA sign with
+PSS and RSA
+decrypt with OAEP
+ | MGF1 SHA384
+ | mgf1-sha384
+ |  
+ | 34
+ | 
+RSA sign with
+PSS and RSA
+decrypt with OAEP
+ | MGF1 SHA512
+ | mgf1-sha512
+ |  
+ | 35
+ | 
+RSA sign with
+PSS and RSA
+decrypt with OAEP
+ | Opaque Data
+ | opaque-data
+ |  
+ | 30
+ | 
+Store raw data
+as an opaque
+object
+ | Opaque X509 Certificate
+ | opaque-x509-certificate
+ |  
+ | 31
+ | 
+Store
+X509Certificate
+as an opaque
+object
+ | RSA 2048
+ | rsa2048
+ |  
+ | 9
+ | Generate RSA key
+ | RSA 3072
+ | rsa3072
+ |  
+ | 10
+ | Generate RSA key
+ | RSA 4096
+ | rsa4096
+ |  
+ | 11
+ | Generate RSA key
+ | RSA OAEP SHA1
+ | rsa-oaep-sha1
+ |  
+ | 25
+ | 
+RSA decrypt with
+OAEP
+ | RSA OAEP SHA256
+ | rsa-oaep-sha256
+ |  
+ | 26
+ | 
+RSA decrypt with
+OAEP
+ | RSA OAEP SHA384
+ | rsa-oaep-sha384
+ |  
+ | 27
+ | 
+RSA decrypt with
+OAEP
+ | RSA OAEP SHA512
+ | rsa-oaep-sha512
+ |  
+ | 28
+ | 
+RSA decrypt with
+OAEP
+ | RSA PKCS1 SHA1 (1)
+ | rsa-pkcs1-sha1
+ |  
+ | 1
+ | 
+RSA sign with
+PKCS1.5
+ | RSA PKCS1 SHA256
+ | rsa-pkcs1-sha256
+ |  
+ | 2
+ | 
+RSA sign with
+PKCS1.5
+ | RSA PKCS1 SHA384
+ | rsa-pkcs1-sha384
+ |  
+ | 3
+ | 
+RSA sign with
+PKCS1.5
+ | RSA PKCS1 SHA512
+ | rsa-pkcs1-sha512
+ |  
+ | 4
+ | 
+RSA sign with
+PKCS1.5
+ | RSA PSS SHA1 (1)
+ | rsa-pss-sha1
+ |  
+ | 5
+ | RSA sign with PSS
+ | RSA PSS SHA256
+ | rsa-pss-sha256
+ |  
+ | 6
+ | RSA sign with PSS
+ | RSA PSS SHA384
+ | rsa-pss-sha384
+ |  
+ | 7
+ | RSA sign with PSS
+ | RSA PSS SHA512
+ | rsa-pss-sha512
+ |  
+ | 8
+ | RSA sign with PSS
+ | SSH Template
+ | template-ssh
+ |  
+ | 36
+ | 
+Store an SSH
+template (a
+binary object
+used to restrict
+how and when an
+SSH CA private
+key should be
+used)
+ | Yubico AES Authentication
+ | aes128-yubico-authentication
+ |  
+ | 38
+ | 
+Store
+authentication
+key
+ | 
+Yubico Asymmetric
+Authentication
+ | ecp256-yubico-authentication
+ |  
+ |  
+ |  
+ | Yubico OTP AES128
+ | aes128-yubico-otp
+ |  
+ | 37
+ | 
+Generate OTP AEAD
+key
+ | Yubico OTP AES192
+ | aes192-yubico-otp
+ |  
+ | 39
+ | 
+Generate OTP AEAD
+key
+ | Yubico OTP AES256
+ | aes256-yubico-otp
+ |  
+ | 40
+ | 
+Generate OTP AEAD
+key
+Note
+Algorithm disabled in FIPS mode with FIPS 140-3 Level 3.
+Algorithm Protocol Details
+Algorithms are encoded as 8-bit values.
+Origin
+Origin is a read-only property recorded on every object stored in the YubiHSM 2. It describes how and by what means
+that object came to exist on the device. This metadata is permanently set at the time an object is created or imported
+and cannot be changed afterwards.
+Origin and Attestation
+Origin is closely related to the attestation feature of the YubiHSM 2. For example, when an attestation certificate is
+requester for an asymmetric key, the device produces a signed statement that includes the object’s origin. This allows
+for cryptographically proving to third parties — for example, auditors or relying parties — that a key was genuinely
+generated inside hardware rather than having been imported from an external source. See Attestation.
+Origin Protocol Details
+Origins are encoded as 8-bit values, where each defined origin is represented by a bit according to the following table:
+ | Name
+ | Hex Mask
+ | generated
+ | 0x0001
+ | imported
+ | 0x0002
+ | imported_wrapped
+ | 0x0010
+Note that not all combinations of these bits are valid; however, in practice, only the combinations 0x0011 and 0x0012
+can occur, corresponding to objects that were generated or imported, respectively, then wrapped and subsequently imported again as wrapped objects.
+Sequence
+The Sequence is a one-byte value that is part of the metadata associated with an Object. The Sequence describes how many times an Object with a given ID and Type has been written. This is mostly useful for caching to determine if new data needs to be fetched from the device.
+Sequence Protocol Details
+Sequence is 8 bits long and will wrap.
+Options
+Options are device-global settings. The following Options are defined:
+ | Option Name
+ | Hex Value
+ | Notes
+ | force-audit
+ | 0x01
+ |  
+ | command-audit
+ | 0x03
+ |  
+ | algorithm-toggle
+ | 0x04
+ | Requires firmware version 2.2 and higher
+ | fips-mode
+ | 0x05
+ | Only on FIPS certified YubiHSM 2 devices
+The data payload is Option-specific.
+Force Audit
+This Option is used to enable Force Audit mode which prevents the device from performing additional operations when the Logs is full.
+The Option accepts three different values:
+0x00: Force Audit disabled
+0x01: Force Audit enabled
+0x02: Force Audit permanently enabled (only possible to turn off through factory reset)
+Command Audit
+This Option is used to enable or disable logging of specific commands. Logging commands impacts performance. Prior to firmware 2.4, logging is enabled for all operations by default. In firmware version 2.4 and higher, all log operations are disabled by default.
+The Option for each command accepts three different values:
+0x00: Command Log disabled
+0x01: Command Log enabled
+0x02: Command Log permanently enabled (only possible to turn off through factory reset)
+Multiple commands can be specified at once with the syntax C1 V1, C2 V2, ..., Cn Vn where Ci is the Command Code and Vi is the Option Value. An example of this syntax can be found at Set Command Audit Option.
+Algorithm Toggle
+This Option is used to enable and disable algorithms. On non-FIPS YubiHSMs, all algorithms are enabled by default but
+can be disabled individually by setting the algorithm-toggle option.
+The Option for each algorithm accepts three different values:
+0x00: Algorithm disabled
+0x01: Algorithm enabled
+0x02: Algorithm permanently enabled (only possible to turn off through factory reset)
+Multiple algorithms can be specified at once with the syntax C1 V1, C2 V2, ..., Cn Vn where Ci is the Algorithm
+Value and Vi is the Option Value. An example of this syntax can be found at Set Algorithm Toggle Option.
+FIPS Mode
+This Option is used to turn FIPS mode On or Off. Enabling and disabling FIPS mode can only be done on an empty
+YubiHSM 2, for example, after a factory reset.
+The Option accepts two different values:
+0x00: FIPS mode Off
+0x01: FIPS mode On
+An example of how to turn FIPS mode On or Off can be found at Set FIPS Mode.
+Logs
+A YubiHSM 2 device maintains a list of recently executed commands in a portion of non-volatile memory known as the Log Store. This allows logging commands across different power cycles. Specific commands are used to extract logs from the device. Since the Log Store uses non-volatile memory, it can only store up to 62 different entries. By default, when the Log Store is full, it is used as a circular buffer, meaning that the least recently used entry is overwritten.
+It is possible to set the device in Force Audit mode. When this is done entries from the Log Store must be retrieved or commands that cannot be logged will fail. Together with individual commands, power-on and reboot events are also logged.
+The establishment of a session is logged like any other operation; however those commands are always allowed, independent of the current status of the Log Store. This is so that it is always possible to retrieve logs and free up the Log Store, even when the device is in Force Audit mode and the Log Store is full. However, the number of unlogged authentication and power-up events is stored in a counter that is retrieved as part of the log retrieval.
+Entries in the Log Store are organized to form a chain of hashes. This enables auditors to verify that a given set of entries has not been tampered with after extraction, and that all entries are present. More details on the format of log entries can be found in the protocol description document for GET LOG ENTRIES Command.
+Error Codes
+Below are error codes returned by a YubiHSM device.
+ | Value
+ | Name
+ | Description
+ | 0x00
+ | OK
+ | Success
+ | 0x01
+ | INVALID COMMAND
+ | Unknown command
+ | 0x02
+ | INVALID DATA
+ | Malformed data for the command
+ | 0x03
+ | INVALID SESSION
+ | The session has expired or does not exist
+ | 0x04
+ | AUTHENTICATION FAILED
+ | Wrong Authentication Key
+ | 0x05
+ | SESSIONS FULL
+ | No more available sessions
+ | 0x06
+ | SESSION FAILED
+ | Session setup failed
+ | 0x07
+ | STORAGE FAILED
+ | Storage full
+ | 0x08
+ | WRONG LENGTH
+ | Wrong data length for the command
+ | 0x09
+ | INSUFFICIENT PERMISSIONS
+ | Insufficient permissions for the command
+ | 0x10
+ | DEMO MODE
+ | Demo device must be power-cycled
+ | 0x11
+ | OBJECT EXISTS
+ | Unable to overwrite object
+ | 0x0a
+ | LOG FULL
+ | The log is full and force audit is enabled
+ | 0x0b
+ | OBJECT NOT FOUND
+ | No object found matching given ID and Type
+ | 0x0c
+ | INVALID ID
+ | Invalid ID
+ | 0x0e
+ | 
+SSH CA CONSTRAINT
+VIOLATION
+ | Constraints in SSH Template not met
+ | 0x0f
+ | INVALID OTP
+ | OTP decryption failed
+Attestation
+Asymmetric keys generated in the YubiHSM can be attested by another Asymmetric key. The attestation process creates a new x509 certificate for the attested key.
+The device comes pre-loaded with an attestation key and certificate referenced by Object ID 0. It is possible to use another asymmetric key and certificate for attestation, these then must have the same Object ID and the key has to have the sign-attestation-certificate Capability set.
+Details
+Serial is a random 16 byte integer
+Issuer is the subject of the attesting certificate
+Dates is copied from the attesting certificate
+Subject is the string YubiHSM Attestation id 0x with the attested ID appended
+If the attesting key is RSA the signature is SHA256-PKCS#1v1.5
+If the attesting key is EC the signature is ECDSA-SHA256
+Certificate Extensions
+Some certificate extensions are added in the generated certificate and/or the pre-loaded certificate:
+ | OID
+ | Description
+ | Data Type
+ | Generated/Pre-loaded
+ | 1.3.6.1.4.1.41482.4.1
+ | Firmware version
+ | Octet String
+ | Both
+ | 1.3.6.1.4.1.41482.4.2
+ | Serial number
+ | Integer
+ | Both
+ | 1.3.6.1.4.1.41482.4.3
+ | Origin
+ | Bit String
+ | Generated
+ | 1.3.6.1.4.1.41482.4.4
+ | Domains
+ | Bit String
+ | Generated
+ | 1.3.6.1.4.1.41482.4.5
+ | Capabilities
+ | Bit String
+ | Generated
+ | 1.3.6.1.4.1.41482.4.6
+ | Object ID
+ | Integer
+ | Generated
+ | 1.3.6.1.4.1.41482.4.9
+ | Label
+ | Utf8String
+ | Generated
+ | 1.3.6.1.4.1.41482.4.10
+ | FIPS Certified
+ | Integer
+ | Pre-loaded
+ | 1.3.6.1.4.1.41482.4.12
+ | FIPS Certified
+ | Boolean
+ | Generated
+See also, Yubico OID Reference Guide.
+Pre-Loaded Certificates
+The pre-loaded certificate can be fetched as an opaque object with ID 0. This will in turn be signed by an intermediate CA which is signed by a Yubico root CA.
+Intermediates
+E45DA5F361B091B30D8F2C6FA040DB6FEF57918E.pem
+ Previous
+ Next 
+© Copyright 2026, Yubico AB.
+ Cookies
+ |
+ Privacy Policy

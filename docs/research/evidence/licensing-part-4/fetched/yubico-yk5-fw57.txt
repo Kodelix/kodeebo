@@ -1,0 +1,423 @@
+
+ 5.7 - 5.6 Firmware Specifics — YubiKey Technical Manual documentation
+ YubiKey Technical Manual
+Contents
+Introduction to the YubiKey Series
+Physical Attributes
+Protocols and Applications
+YubiKey 5 Firmware
+Firmware Overview
+5.8 Firmware Specifics
+5.7 - 5.6 Firmware Specifics
+5.7.4, 5.7.x, 5.6.x Firmware
+5.7.4 Firmware - FIPS Series
+5.7 and 5.6 Firmware Prior to 5.7.4
+CTAP 2.1 Features
+FIDO2 Extensions
+Enterprise Attestation
+Minimum PIN Length and Minimum PIN Length Extension
+Always Require User Verification
+Blob Storage
+FIDO Level 2
+PIV Enhancements
+Additional Key Types Supported
+PIV Management Key (AES)
+Advanced Key Management Functions
+YubiKey PIV Metadata
+PIN Complexity
+When PIN complexity is enabled
+Unicode characters
+Blocked PINs
+Expanded Storage (FIDO2 and OATH)
+Restricted NFC
+Yubico Crypto Library
+Yubico Root Certificate Authority (CA)
+Pre-5.6 Firmware Specifics
+YubiKey 5 FIPS Series Specifics
+YubiKey Bio Series Specifics
+NFC ID Calculation Technical Description
+Tools and Troubleshooting
+YubiKey 5 CSPN Series Specifics
+Acronyms
+Copyright
+ YubiKey Technical Manual
+YubiKey 5 Firmware
+5.7 - 5.6 Firmware Specifics
+ View page source
+5.7 - 5.6 Firmware Specifics
+This section provides detailed descriptions of the features enabled by the 5.7 firmware. Also referenced are features included firmware version 5.6.x.
+CTAP 2.1 Features
+FIDO2 Extensions
+Enterprise Attestation with FIDO 2
+Minimum PIN Length
+ForceChangePIN
+Always Require User Verification
+Blob Storage
+FIDO Level 2
+PIV Enhancements
+PIN Complexity
+Expanded Storage (FIDO2 and OATH)
+Restricted NFC
+Yubico Crypto Library
+5.7.4, 5.7.x, 5.6.x Firmware
+Capabilities Available per YubiKey 5 Series Firmware 5.7.x
+ | 
+CTAP 2.1 Capabilities
+FW 5.7, unless noted
+ | 
+YubiKey 5
+(Std, CCN)
+ | 
+YubiKey 5
+FIPS Series
+ | 
+YubiKey 5
+Enhanced PIN
+ | 
+Security Key
+Series
+ | 
+YubiKey Bio
+Series
+ | PIN Management Flexibility
+ | 
+Set temporary FIDO2 PIN
+User must change on next use
+ | Yes
+ | Yes
+ | Yes
+ | 
+Enterprise,
+non-enterprise
+ | 
+Multi-protocol,
+FIDO
+ | 
+Configure FIDO2 minimum
+PIN length
+ | Yes
+ | Yes
+ | Yes
+ | 
+Enterprise,
+non-enterprise
+ | 
+Multi-protocol,
+FIDO
+ | Enhanced PIN complexity
+ | 
+Custom
+configured
+keys only
+ | Yes
+ | Yes
+ | Enterprise
+ | 
+Custom
+configured
+keys only
+ | Default minimum PIN length
+ | 4
+ | 
+8 FW 5.7.4
+6 FW 5.4.x
+ | 6
+ | 
+6 Enterprise,
+4 non-enterprise
+ | 
+6 Multi-protocol
+4 FIDO
+ | Enhanced Asset Tracking
+ | 
+Enterprise Attestation capable
+Requires custom configuration
+ | Yes
+ | Yes
+ | Yes
+ | Enterprise
+ | 
+Multi-protocol,
+FIDO
+ | 
+Serial number retrievable by
+client software in Windows
+without Admin rights
+ | 
+Yes
+Also earlier
+firmware
+ | Yes
+ | Yes
+ | Enterprise
+ | 
+Multi-protocol,
+FIDO
+ | Enhanced Smart Card Capabilities (PIV)
+ | RSA-3072 and RSA-4096 support
+ | Yes
+ | Yes
+ | Yes
+ |  
+ | 
+Multi-protocol,
+FIDO
+ | Ed25519 and X25519 key types
+ | Yes
+ | Yes
+ | Yes
+ |  
+ | 
+Multi-protocol,
+FIDO
+ | Enhanced Credential Storage
+ | Supports 100 passkeys
+ | Yes
+ | Yes
+ | Yes
+ | 
+Enterprise,
+non-enterprise
+ | 
+Multi-protocol,
+FIDO
+ | Supports 24 PIV certificates
+ | Yes
+ | Yes
+ | Yes
+ |  
+ | Multi-protocol
+ | Supports 64 OATH credentials
+ | Yes
+ | Yes
+ | Yes
+ |  
+ |  
+ | Supports 2 OTP seeds
+ | Yes
+ | Yes
+ | Yes
+ |  
+ |  
+Note
+FIPS series is NIST certified with YubiKey version 5.7.4 firmware.
+5.7.4 Firmware - FIPS Series
+YubiKeys 5 FIPS Series with firmware 5.7.4 is validated and certified for FIPS 140-3 Security Level 2, Physical Level 3 by the Cryptographic Module Validation Program (CMVP) of the National Institute of Standards and Technology (NIST). See Cryptographic Module Validation Program (CMVP) Certificate #5291 and YubiKey Firmware 5.7.x Changes for FIPS 140-3.
+Yubico’s aim in releasing this new firmware is to bring the new enterprise-focused features to users that require FIPS-certified authenticators.
+The FIPS 140-3 requirements are very different from those of FIPS 140-2. For a detailed description of those requirements, see YubiKey Firmware 5.7.x Changes for FIPS 140-3 and YubiKey 5 FIPS Series Features.
+5.7 and 5.6 Firmware Prior to 5.7.4
+The features, capabilities, and enhancements of the YubiKey 5 Series that are dependent on firmware version are listed in the Firmware Capability Matrices.
+In addition to the features that are directly accessible, there are a number of features that require partner support.
+A couple examples of a feature made available by firmware:
+The NFC function with firmware 5.7 and later is disabled during shipping to prevent tampering. Plugging the YubiKey into the device in activates the NFC function. For more detail on this specific feature, see Restricted NFC.
+The 5.7 and later firmware for the YubiKey 5 Series has a number of features that are available for the multi-protocol YubiKey 5.
+CTAP 2.1 Features
+CTAP 2.1 is the evolution - and first update - of CTAP 2.0, which was introduced for FIDO2/WebAuthn several years ago. The new features enabled by CTAP 2.1 are primarily enterprise-focused, but also support new FIDO2 use cases. Yubico supported CTAP 2.1 features even before that standard was approved, for example, credential management introduced in 5.2.1 (see Managing Credentials to Sites or Services) and uvRetries introduced in 5.5.0.
+In firmware 5.7 and later the PIV and OpenPGP applications both support unicode PINs, as well as counting each unicode code point as a single character.
+These CTAP 2.1 features are also available in the Security Key series for FIDO-only deployments (see Security Key Series).
+CTAP 2.1 support gives organizations:
+Improved control of the CTAP 2.1 authenticators they have deployed
+Ability to list compliance requirements such as:
+Permissible authenticators
+PIN requirements
+More granular control of the end user experience
+Additional capabilities for CMS vendors through the storage of additional data, etc.:
+To configure authenticators
+To manage the authenticator lifecycle
+Management beyond the scope of FIDO2, through the ability to associate the FIDO2 credentials on the authenticator with other credentials on other protocols, such as certificates on the PIV module.
+FIDO2 Extensions
+Enterprise Attestation
+As of YubiKey Firmware 5.7.4, Enterprise Attestation (EA) enables Identity Providers (IdPs) to read the serial number (or other unique identifier specific to the organization) on custom-programmed keys during FIDO2 registration.
+See Enterprise Attestation with FIDO 2.
+Minimum PIN Length and Minimum PIN Length Extension
+In YubiKey firmware version 5.7.4, the minPINLength extension resolves compliance requirements for organizations that need to enforce use of specific PIN lengths.
+Prior to 5.7, enforcing PIN length was only possible with:
+YubiKey 5 FIPS Series authenticators certified for FIPS 140-2, which have a minimum PIN length of 6.
+YubiKey 5 FIPS Series Enhanced PIN and Security Key Series have minimum PIN length set to 6 by default.
+Custom configuration, which RPs could do when the authenticator had a custom AAGUID.
+See Minimum PIN Length.
+Always Require User Verification
+Always Require User Verification (UV), alwaysuv was introduced to prompt users for user verification (UV) each time. This ensures consistent behavior between different platforms and RPs.
+This feature is enabled by default for:
+YubiKey Bio Series
+YubiKey Series 5 Enhanced PIN
+See Always Require User Verification.
+Blob Storage
+There are two blob storage options available on the YubiKey 5.7 and later. Both Credential Blobs and Large Blobs require support on the platform as well as from the RP.
+Large blob storage is:
+4096 bytes on firmware 5.7.0 and later
+1024 bytes on firmware 5.5.x and 5.6.x
+See Blob Storage, Credential Blob, Large Blob.
+FIDO Level 2
+As of YubiKey Firmware 5.7.4, all YubiKeys with firmware version 5.7 and later have achieved FIDO Level 2 certification for assurance of attestable hardware-bound credentials. Certification enables YubiKeys for use with e-government use cases (citizen-facing) and corporate compliance mandates that require FIDO L2 certification.
+To check the FIDO certification status for all keys and firmware versions see YubiKey hardware FIDO2 AAGUIDs.
+PIV Enhancements
+Additional Key Types Supported
+In accordance with the August 2023 Department of Defense memo on stronger public key algorithms, the 5.7.x and later firmware supports RSA-3072 and RSA-4096.
+In addition, the 5.7.x and later firmware also supports the Ed25519 and X25519 key types.
+PIV Management Key (AES)
+Given that after December 31, 2023, three-key TDEA is disallowed for encryption unless specifically allowed by other NIST guidance (decryption using three-key TDEA is allowed for legacy use) the default management key with the 5.7.x and later firmware uses AES-192 instead of TDES. The management key uses the same default value as previous keys (TDES and AES-192 keys are the same length). If you need to know what these values actually are, go to the “General Information” section in the Yubico PIV Tool guide on our developers site.
+Beginning with firmware 5.4.x, the management key type held in PIV slot 9b expanded to include AES keys (128, 192 and 256) as defined in SP 800-78-4 Cryptographic Algorithms and Key Sizes for Personal Identity Verification SP800-78-4, section 5. The PIV management key in AES format enables current and future FIPS-compliant CMS services.
+To summarize, standard YubiKey 5 Series keys with firmware 5.7.x and later use AES-192 for the management key by default. TDES, along with AES-128 and AES-256, are supported as options. YubiKey 5 FIPS Series keys with firmware 5.7.x and later allow AES only, with AES-192 as the default.
+YubiKeys with firmware 5.4.x through 5.6.x use TDES for the management key by default, and AES-128, AES-192, and AES-256 are supported as options.
+YubiKeys with firmware 5.3.x and older support TDES only.
+For additional technical information, see PIV AES Management Key in Smart Card - PIV Compatible Specifics.
+Advanced Key Management Functions
+With the 5.7.x and later firmware, the PIV application supports advanced key management functions such as moving and deleting keys:
+The ability to move keys enables retaining retired encryption keys on the device to decrypt older messages.
+The ability to delete keys enables destroying key material without overwriting with bogus data or resetting the PIV application.
+Generate a New Key Pair
+As of YubiKey Firmware 5.7.4, four new algorithms (alg) that can be used for key generation are:
+RSA-3072 (0x05)
+RSA-4096 (0x16)
+Ed25519 (0xE0)
+X25519 (0xE1)
+For more information, see Generate asymmetric key pair.
+Import a Key
+As of YubiKey Firmware 5.7.4, four new algorithms (alg) that can be used for key import are:
+RSA-3072 (0x05)
+RSA-4096 (0x16)
+Ed25519 (0xE0)
+X25519 (0xE1)
+For more information, see Import asymmetric key pair.
+Below is the updated list of tags for the import data. Values followed by an asterisk (*) are new for firmware 5.7 and are also supported for 5.7 and later firmware.
+List of Tags for Import Data
+ | Algorithms
+ | Key Element
+ | Tag
+ | 
+RSA-1024 (0x06)
+RSA-2048 (0x07)
+RSA-3072 (0x05)*
+RSA-4096 (0x16)*
+ | prime P
+ | 0x01
+ | prime Q
+ | 0x02
+ | prime p exponent dP
+ | 0x03
+ | prime q exponent dQ
+ | 0x04
+ | CRT coefficient QInv
+ | 0x05
+ | 
+ECC-P-256 (0x11)
+ECC-P-384 (0x14)
+ | private value s
+ | 0x06
+ | Ed25519 (0xE0)*
+ | seed
+ | 0x07*
+ | X25519 (0xE1)*
+ | seed
+ | 0x08*
+Move a Key
+As of YubiKey Firmware 5.7.4, keys can be moved from any slot except F9 (attestation) to any other slot except F9 using the instruction 0xF6.
+Moving a Key
+ | CLA
+ | 00
+ | INS
+ | F6
+ | P1
+ | Destination slot
+ |  
+ | 9A, 9C, 9D, 9E,
+ |  
+ | 82, 93, 84, 85, 86, 87, 88, 89, 8A, 8B, 8C, 8D, 8E, 8F,
+ |  
+ | 90, 91, 92, 93, 94, 95
+ | P2
+ | Source slot
+ |  
+ | 9A, 9C, 9D, 9E,
+ |  
+ | 82, 93, 84, 85, 86, 87, 88, 89, 8A, 8B, 8C, 8D, 8E, 8F,
+ |  
+ | 90, 91, 92, 93, 94, 95
+ |  
+ | P2
+Delete a Key
+As of YubiKey Firmware 5.7.4, any key can be deleted from any slot, including F9 (Attestation) using the instruction 0xF6 with a value of 0xFF for P1.
+Deleting a Key
+ | CLA
+ | 00
+ | INS
+ | F6
+ | P1
+ | FF
+ | P2
+ | Source slot
+ |  
+ | 9A, 9C, 9D, 9E,
+ |  
+ | 82, 93, 84, 85, 86, 87, 88, 89, 8A, 8B, 8C, 8D, 8E, 8F,
+ |  
+ | 90, 91, 92, 93, 94, 95
+ |  
+ | F9
+YubiKey PIV Metadata
+YubiKey 5 PIV metadata enables services and client software to obtain information about PIV keys from a central location, which means, as of YubiKey Firmware 5.7.4, it is no longer necessary to query PIV attestation. The YubiKey PIV application can therefore report on characteristics of cryptographic keys in the specified PIV slot. Integration with CMS vendors is thus facilitated by YubiKey PIV metadata.
+PIV metadata was already available starting with the 5.3.0 firmware. For details, see the Get Metadata section of the PIV extensions.
+PIN Complexity
+PIN complexity enforces common PIN rules. It has to have a minimum 6 characters. It cannot use repeated sequential characters. It cannot be one of the commonly used and therefore easily guessed PINs. See the list below, Blocked PINs.
+As of YubiKey Firmware 5.7.4, the PIN complexity feature prevents users from adopting simple patterns or common PINs. Blocking these type of PINs significantly reduces the risk of users setting easily guessable PINs on their devices.
+PIN complexity is available on some YubiKeys with firmware version 5.7.0 and later. For more details on feature support across the various YubiKey series, see the Capabilities Available per YubiKey 5 Series Firmware 5.7.x.
+PIN complexity is enabled by default and cannot be disabled on the following series:
+Security Key Series - Enterprise Edition. Requires subscription with YubiKey as a Service. See Security Key Series.
+YubiKey 5 Enhanced PIN Series. Requires subscription with YubiKey as a Service. See YubiKey 5 Enhanced PIN Series.
+When PIN complexity is enabled
+It applies to all the applications on the YubiKey that process PINs.
+The PINs for the different applications are all still separate and distinct, but they all follow the same set of rules.
+For the protocols on the YubiKey, PIN complexity is applied to the listed PIN type:
+FIDO2 - PIN
+PIV - PIN and PUK
+OpenPGP - user PIN, admin PIN, and reset code
+yubihsm-auth - credential PINs
+YubiKey - access codes
+Unicode characters
+In firmware 5.7 and later, the support for Unicode PINs has been extended to include the PIV and OpenPGP applications. Each unicode code point is counted as a single character.
+Blocked PINs
+PINs are blocked, that is cannot be used, if they have any of the following:
+Are less than 6 characters
+Contain only one unicode character, for example: 111111
+Are on the blocklist (commonly used PINs that are easily guessed):
+123456
+123123
+654321
+123321
+112233
+121212
+123456789
+password
+qwerty
+12345678
+1234567
+520520
+123654
+1234567890
+159753
+qwerty123
+abc123
+password1
+iloveyou
+1q2w3e4r
+Expanded Storage (FIDO2 and OATH)
+As of YubiKey Firmware 5.7.4, the FIDO2 and OATH applications both have increased storage capacity. FIDO2 has been increased to 100 discoverable credentials (aka Passkeys), and OATH storage has been increased to 64 seeds. As before, all storage limits are per-application, so users can store data up to the maximum for each application simultaneously for a potential total of 190 credentials:
+Up to 100 passkeys
+24 PIV certificates (limited by overall memory used)
+64 OATH seeds
+2 OTP seeds
+Restricted NFC
+Restricted NFC mode prevents wireless device manipulation before a YubiKey NFC with the 5.7 and later firmware is taken out of its blister pack or other packaging such as a tray. To ensure that these keys cannot be tampered with during shipping, this mode is enabled by default on new NFC keys with the 5.7 and later firmware.
+When these keys are taken out of their packaging, the only permitted action via the NFC connection is reading the URL configured by Yubico on the NDEF tag set by Yubico. Because both major mobile OSs read NDEF tags and open URLs by default, users immediately learn how to disable Restricted NFC mode. The NDEF tag is set to https://www.yubico.com/getting-started/.
+When tapped against a mobile device, a YubiKey 5.7 and later NFC causes the browser to open to the configured URL with the instructions for enabling full NFC operation. The end user is instructed to plug the key into USB power such as a USB charger or computer USB port for 3 seconds. This action is sufficient to disable Restricted NFC mode. The user can re-enable the restriction as often as they desire using ykman config nfc.
+Yubico Crypto Library
+As of YubiKey Firmware 5.7.4, and now available, is a library Yubico has developed over the past few years in-house that performs the underlying cryptographic operations (encryption, signing, etc.) for RSA and ECC.
+Yubico Root Certificate Authority (CA)
+Yubico’s root certificate authority (CA) was updated in early 2025. Starting with firmware 5.7.4, all YubiKeys will be signed by the new root CA.
+ Previous
+ Next 
+© Copyright 2026, Yubico AB.
+ Cookies
+ |
+ Privacy Policy

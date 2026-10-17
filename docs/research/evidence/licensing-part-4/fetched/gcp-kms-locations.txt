@@ -1,0 +1,1011 @@
+
+ Cloud KMS locations  |  Cloud Key Management Service  |  Google Cloud Documentation
+ Skip to main content
+ Documentation
+ close
+Get Started
+ Get Started with Google Cloud
+ Product List
+ Cloud Customer Care
+Featured Products
+ Agent Platform
+ Apigee API Management
+ BigQuery
+ Compute Engine
+ Cloud CDN
+ Cloud Run
+ Cloud Storage
+ Cloud SQL
+ Gemini Enterprise
+ Google Kubernetes Engine
+ Looker
+Cross-product Tools
+ Access and resources management
+ Costs and usage management
+ Infrastructure as code
+ SDK, languages, frameworks, and tools
+Technology Areas
+ AI and ML
+ Application development
+ Application hosting
+ Compute
+ Data analytics and pipelines
+ Databases
+ Distributed, hybrid, and multicloud
+ Industry solutions
+ Migration
+ Networking
+ Observability and monitoring
+ Security
+ Storage
+ /
+ Console
+ English
+ Deutsch
+ Español
+ Español – América Latina
+ Français
+ Indonesia
+ Italiano
+ Português
+ Português – Brasil
+ עברית
+ 中文 – 简体
+ 中文 – 繁體
+ 日本語
+ 한국어
+ Sign in
+ Cloud KMS
+ Start free
+ Overview
+ Guides
+ Reference
+ Samples
+ Resources
+ Documentation
+ More
+ Overview
+ Guides
+ Reference
+ Samples
+ Resources
+ Console
+ Discover
+Product overview
+ Protection levels
+Overview
+Cloud HSM overview
+Single-tenant Cloud HSM overview
+Cloud EKM overview
+Reference architectures for Cloud EKM
+CMEK overview
+Cloud KMS with Autokey
+Compatible services
+Cloud HSM for Google Workspace
+Locations
+ Get started
+Cloud KMS resources
+Key purposes and algorithms
+Separation of duties
+Create and use encryption keys
+CMEK recommended practices
+CMEK key rotation
+Create and manage Single-tenant Cloud HSM instances
+ Create keys
+ Automate key creation
+Autokey overview
+Enable Autokey
+Create a resource with Autokey
+Create a key ring
+Create a key
+ Import keys
+About key import
+Key wrapping
+Format a key for import
+ Manually wrap a key for import
+Configure OpenSSL for manual key wrapping
+Wrap a key using OpenSSL
+Quantum-safe key import
+Set up automatic key wrapping
+Import a key version
+Verify an imported key version
+ Create external keys
+Set up Cloud EKM over the internet
+Create an EKM connection
+Create an external Key
+ Control access
+Manage IAM roles
+Use Organization Policy Contraints
+Create custom organization policy constraints for Cloud KMS
+CMEK organization policies
+Control Autokey usage
+Control key destruction
+ Secure data using keys
+ Key APIs
+Use gRPC
+Access the API
+Sort and filter API list results
+Generate random bytes
+Use Cloud KMS keys in Google Cloud
+ Encrypt and decrypt data
+Envelope encryption
+Additional authenticated data
+Asymmetric encryption
+Encrypt and decrypt data with a symmetric key
+Encrypt and decrypt data with a raw symmetric key
+Encrypt and decrypt data with an asymmetric key
+Verify end-to-end data integrity
+Encrypt application data
+Set up client-side encryption with Tink
+Onboard to Cloud HSM for Google Workspace
+ Sign and validate data
+Digital signatures
+Create and validate signatures
+MAC signatures
+Create and validate MAC signatures
+ Share secrets using key encapsulation mechanisms
+Key encapsulation mechanisms
+Encapsulate and decapsulate using KEMs
+ Manage keys
+Resource consistency
+Key version states
+ View keys and key details
+View keys by project
+View encryption metrics
+View key usage
+Get a Cloud KMS resource ID
+Retrieve a public key
+Attest a Cloud HSM key
+View post-quantum cryptography (PQC) insights
+Label a key
+Create and manage tags
+Migrate external keys
+Enable and disable a key version
+Destroy and restore a key version
+Delete Cloud KMS resources
+ Rotate keys
+About key rotation
+Rotate a key
+Re-encrypt data
+Update external key reference
+ Monitor
+Using Cloud Audit Logging
+Cloud KMS Inventory Service audit logging
+Monitor state changes
+Monitor and adjust quotas
+Use Cloud Monitoring
+Monitor EKM usage
+ Troubleshoot
+Troubleshoot failed imports
+Troubleshoot EKM via VPC errors
+ Get Started
+ Get Started with Google Cloud
+ Product List
+ Cloud Customer Care
+ Featured Products
+ Agent Platform
+ Apigee API Management
+ BigQuery
+ Compute Engine
+ Cloud CDN
+ Cloud Run
+ Cloud Storage
+ Cloud SQL
+ Gemini Enterprise
+ Google Kubernetes Engine
+ Looker
+ Cross-product Tools
+ Access and resources management
+ Costs and usage management
+ Infrastructure as code
+ SDK, languages, frameworks, and tools
+ Technology Areas
+ AI and ML
+ Application development
+ Application hosting
+ Compute
+ Data analytics and pipelines
+ Databases
+ Distributed, hybrid, and multicloud
+ Industry solutions
+ Migration
+ Networking
+ Observability and monitoring
+ Security
+ Storage
+ Home
+ Documentation
+ Security
+ Cloud KMS
+ Guides
+ Send feedback
+ Cloud KMS locations
+ Stay organized with collections
+ Save and categorize content based on your preferences.
+Within a project, Cloud Key Management Service resources can be created in one of many
+locations. These represent the
+geographical regions where a Cloud KMS resource is stored and can
+be accessed. A key's location impacts the performance of applications using the
+key.
+Key material for Cloud KMS and Cloud HSM keys is confined
+to the selected region for the entire lifecycle of the key, both at rest and in
+use. Cloud KMS resources can't be moved to a different location after
+creation.
+Support for different protection levels varies by region:
+SOFTWARE: Software keys can be created in all
+Cloud KMS locations.
+HSM: Multi-tenant Cloud HSM keys can be created in most
+Cloud KMS locations. To view locations where you can create
+multi-tenant Cloud HSM keys, select Supports multi-tenant HSM
+in the HSM support filter.
+HSM_SINGLE_TENANT: Single-tenant Cloud HSM keys can be
+created in select Cloud KMS locations. To view locations where you
+can create single-tenant Cloud HSM keys, select Supports
+single-tenant HSM in the HSM support filter.
+EXTERNAL: Cloud EKM keys where your EKM is
+accessed over the internet can be created in most Cloud KMS
+locations. To view locations where you can create Cloud EKM keys
+over the internet, select EKM by internet in the EKM support filter.
+EXTERNAL_VPC: Cloud EKM keys where your EKM is
+accessed over a VPC can be created in most Cloud KMS locations. To
+view locations where you can create Cloud EKM keys over a VPC,
+select EKM by VPC in the EKM support filter.
+The following tables list locations available for use in Cloud KMS
+for different parts of the world. You can filter these locations by
+location type, Cloud HSM support, and
+Cloud EKM support:
+ Filter by:
+ Location type
+ Show all
+ Region
+ Multi-region
+ HSM support
+ Show all
+ Supports multi-tenant HSM
+ Supports single-tenant HSM
+ EKM support
+ Show all
+ Supports EKM
+ EKM by internet
+ EKM by VPC
+ Clear all
+Americas
+ | Location name
+ | Location type
+ | Location description
+ | Cloud HSM available
+ | Cloud EKM available
+ | ca
+ | 
+ Multi-region
+ | All regions in Canada
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam3
+ | 
+ Multi-region
+ | Northern Virginia and South Carolina
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam4
+ | 
+ Multi-region
+ | Iowa, South Carolina, and Oklahoma
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam6
+ | 
+ Multi-region
+ | Iowa and South Carolina
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam7
+ | 
+ Multi-region
+ | Iowa, Northern Virginia, and Oklahoma
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam8
+ | 
+ Multi-region
+ | Los Angeles, Oregon, and Salt Lake City
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam9
+ | 
+ Multi-region
+ | Northern Virginia and Iowa
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam10
+ | 
+ Multi-region
+ | Iowa, Salt Lake City, and Oklahoma
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam11
+ | 
+ Multi-region
+ | Iowa, South Carolina, and Oklahoma
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | nam12
+ | 
+ Multi-region
+ | Iowa, Northern Virginia, Oklahoma, and Oregon
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | northamerica-northeast1
+ | 
+ Region 
+ | Montréal
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | northamerica-northeast2
+ | 
+ Region 
+ | Toronto
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | northamerica-south1
+ | 
+ Region 
+ | Mexico
+ | 
+ Multi-tenant only 
+ | 
+ No
+ | southamerica-east1
+ | 
+ Region 
+ | São Paulo
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | southamerica-west1
+ | 
+ Region 
+ | Santiago
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us
+ | 
+ Multi-region
+ | Multiple regions in the United States
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us-central1
+ | 
+ Region 
+ | Iowa
+ | 
+ Yes 
+ | 
+ Yes 
+ | us-east1
+ | 
+ Region 
+ | South Carolina
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us-east4
+ | 
+ Region 
+ | Northern Virginia
+ | 
+ Yes 
+ | 
+ Yes 
+ | us-east5
+ | 
+ Region 
+ | Columbus
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us-west1
+ | 
+ Region 
+ | Oregon
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us-west2
+ | 
+ Region 
+ | Los Angeles
+ | 
+ Yes 
+ | 
+ Yes 
+ | us-west3
+ | 
+ Region 
+ | Salt Lake City
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us-west4
+ | 
+ Region 
+ | Las Vegas
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | us-south1
+ | 
+ Region 
+ | Dallas
+ | 
+ Yes 
+ | 
+ Yes 
+Asia-Pacific
+ | Location name
+ | Location type
+ | Location description
+ | Cloud HSM available
+ | Cloud EKM available
+ | asia
+ | 
+ Multi-region
+ | Taiwan, Mumbai, and Singapore
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia1
+ | 
+ Multi-region
+ | Tokyo, Osaka, and Seoul
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-east1
+ | 
+ Region 
+ | Taiwan
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-east2
+ | 
+ Region 
+ | Hong Kong
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-northeast1
+ | 
+ Region 
+ | Tokyo
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-northeast2
+ | 
+ Region 
+ | Osaka
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-northeast3
+ | 
+ Region 
+ | Seoul
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-south1
+ | 
+ Region 
+ | Mumbai
+ | 
+ Yes 
+ | 
+ Yes 
+ | asia-south2
+ | 
+ Region 
+ | Delhi
+ | 
+ Yes 
+ | 
+ Yes 
+ | asia-southeast1
+ | 
+ Region 
+ | Singapore
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-southeast2
+ | 
+ Region 
+ | Jakarta
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | asia-southeast3
+ | 
+ Region 
+ | Bangkok
+ | 
+ Multi-tenant only 
+ | 
+ No
+ | au
+ | 
+ Multi-region
+ | All regions in Australia
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | australia-southeast1
+ | 
+ Region 
+ | Sydney
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | australia-southeast2
+ | 
+ Region 
+ | Melbourne
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | in
+ | 
+ Multi-region
+ | All regions in India
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | jp
+ | 
+ Multi-region
+ | All regions in Japan
+ | 
+ No
+ | 
+ No
+Europe, Middle East,
+and Africa
+ | Location name
+ | Location type
+ | Location description
+ | Cloud HSM available
+ | Cloud EKM available
+ | africa-south1
+ | 
+ Region 
+ | Johannesburg
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | de
+ | 
+ Multi-region
+ | All regions in Germany
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | eur3
+ | 
+ Multi-region
+ | Belgium and Netherlands
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | eur4
+ | 
+ Multi-region
+ | Finland, Netherlands, and Belgium
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | eur5
+ | 
+ Multi-region
+ | London, Netherlands, and Belgium
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | eur6
+ | 
+ Multi-region
+ | Netherlands, Frankfurt, and Zürich
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | eur7
+ | 
+ Multi-region
+ | London, Frankfurt, and Berlin
+ | 
+ No
+ | 
+ Yes 
+ | eur8
+ | 
+ Multi-region
+ | Zürich, Frankfurt, and Berlin
+ | 
+ No
+ | 
+ Yes 
+ | europe
+ | 
+ Multi-region
+ | All regions in the European Union1
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-central2
+ | 
+ Region 
+ | Warsaw
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-north1
+ | 
+ Region 
+ | Finland
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-north2
+ | 
+ Region 
+ | Stockholm
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-southwest1
+ | 
+ Region 
+ | Madrid
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-west1
+ | 
+ Region 
+ | Belgium
+ | 
+ Yes 
+ | 
+ Yes 
+ | europe-west2
+ | 
+ Region 
+ | London
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-west3
+ | 
+ Region 
+ | Frankfurt
+ | 
+ Yes 
+ | 
+ Yes 
+ | europe-west4
+ | 
+ Region 
+ | Netherlands
+ | 
+ Yes 
+ | 
+ Yes 
+ | europe-west6
+ | 
+ Region 
+ | Zürich
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-west8
+ | 
+ Region 
+ | Milan
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | europe-west9
+ | 
+ Region 
+ | Paris
+ | 
+ Yes 
+ | 
+ Yes 
+ | europe-west10
+ | 
+ Region 
+ | Berlin
+ | 
+ Yes 
+ | 
+ Yes 
+ | europe-west12
+ | 
+ Region 
+ | Turin
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | it
+ | 
+ Multi-region
+ | All regions in Italy
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | me-central1
+ | 
+ Region 
+ | Doha
+ | 
+ Multi-tenant only 
+ | 
+ Yes 
+ | me-central2
+ | 
+ Region 
+ | Dammam
+ | 
+ Yes 
+ | 
+ Yes 
+ | me-west1
+ | 
+ Region 
+ | Tel Aviv
+ | 
+ Yes 
+ | 
+ Yes 
+1 Resources created in the europe multi-region are not
+stored in the europe-west2 (London) or europe-west6
+(Zürich) data centers.
+Worldwide
+ | Location name
+ | Location type
+ | Location description
+ | Cloud HSM available
+ | Cloud EKM available
+ | global
+ | 
+ Multi-region
+ | Global
+ | 
+ Multi-tenant only 
+ | 
+ No
+ | nam-eur-asia1
+ | 
+ Multi-region
+ | North America, Europe, and Asia
+ (Iowa, Oklahoma, Belgium, and Taiwan)
+ | 
+ Multi-tenant only 
+ | 
+ No
+Types of locations for Cloud KMS
+You can create Cloud KMS, Cloud HSM, and Cloud EKM
+resources in different types of locations in Google Cloud, depending on
+your availability requirements. Locations are added regularly. For specific
+information about each location, see Locations.
+You can learn more about choosing the best type of location.
+The following location types are available to Cloud KMS:
+Regional locations: A regional location's data centers exist in a
+specific geographical place. For example, a resource created in the
+us-central1 region is located in the central United States.
+Multi-regional locations: Logically distinct from regional keys,
+multi-regional location keys are physically stored in and served from
+multiple regional data centers. For example, a resource created in the
+europe multi-region persists in all the data centers within the European
+Union. Your keys are stored in all the data centers of the multi-region.
+You cannot choose a subset of the multi-region.
+The global location: The global location is a special multi-region.
+Its datacenters are spread throughout the world. You can't
+choose which data centers within the global multi-region contain your
+data.
+Choosing the best type of location
+As a rule, design your application so that all of its components are
+geographically near each other and near your application's clients. The location
+of your keys is an important aspect of your application's design. After creation,
+key rings and keys can't be moved or exported.
+When using a multi-regional location, such as the europe multi-region,
+resources persist in multiple datacenters spread across the multi-region.
+Creating and updating keys in multi-regional locations, including the global
+location, might be less efficient than using a single-region location. For more
+information, see Reading from and writing to multi-region locations.
+Use the global location if all of the following are true:
+Your application's components are distributed globally.
+You have infrequent reads or writes but use other cryptographic operations
+frequently.
+Your keys have no geographic residency requirements.
+You aren't using external keys.
+ For Customer-Managed
+Encryption Keys (CMEK) integrations, you must use the same exact location as
+other resources related to the integration. Some CMEK integrations don't support
+the global location. For more information about CMEK integrations, see
+Customer-managed encryption keys (CMEK).
+Cloud EKM resources rely on connectivity between Google Cloud and
+an external key management service, outside of Google Cloud. For
+Cloud External Key Manager resources, select a location geographically as near as possible to
+the location where keys are stored on the external key management service.
+Cloud HSM depends on availability of physical hardware in a location's
+datacenters. For Cloud HSM resources, select a location that supports
+Cloud HSM.
+Cloud HSM resources have location-specific quotas.
+Cloud KMS quotas are global.
+Multi-regional locations have separate quotas, independent of the
+quotas for single-region locations. For example, to create Cloud HSM
+resources in the eur5 multi-region, you must have HSM quota in eur5, even if
+you already have quota in the single regions that participate in eur5, such as
+europe-west2.
+Reading from and writing to multi-region locations
+Reading and writing resources or associated metadata in multi-regional
+locations, including the global location, may be slower than reading or
+writing from a single region.
+When you create or read key versions, consensus is always required among the
+datacenters storing the key material. Reads and writes to a single region
+are often more efficient than those to a multi-regional location.
+When you perform cryptographic operations, such as when encrypting or
+decrypting data, consensus is not required. For cryptographic operations,
+multi-regional locations perform similarly to single-region locations.
+When you store your keys in a location or locations geographically near the
+data they protect or validate, cryptographic operations are usually more
+efficient.
+The trade-offs between performance and availability are unique to each
+application. Multi-region locations, including global, are best suited for
+read-heavy workloads.
+Determining available regions
+You can use the Google Cloud CLI or Cloud Key Management Service API to get a list of available regions.
+ gcloud 
+gcloud kms locations list
+In the output from the command, the HSM_AVAILABLE column indicates whether
+the location supports Cloud HSM. The EKM_AVAILABLE column indicates
+whether the location supports Cloud External Key Manager. Note that EKM via VPC keys
+are currently only available in regional locations.
+ REST 
+Use the
+Locations.get and
+Locations.list
+methods.
+The responses from both of these methods include boolean fields related to
+a location's capabilities:
+If a location supports multi-tenant Cloud HSM keys,
+hsmAvailable
+is true.
+If a location supports Cloud EKM keys,
+ekmAvailable
+is true.
+What's next
+Learn more about
+Geography and regions in Google Cloud.
+See the full list of
+Cloud locations.
+ Send feedback
+Except as otherwise noted, the content of this page is licensed under the Creative Commons Attribution 4.0 License, and code samples are licensed under the Apache 2.0 License. For details, see the Google Developers Site Policies. Java is a registered trademark of Oracle and/or its affiliates.
+Last updated 2026-10-13 UTC.
+ Need to tell us more?
+ [[["Easy to understand","easyToUnderstand","thumb-up"],["Solved my problem","solvedMyProblem","thumb-up"],["Other","otherUp","thumb-up"]],[["Hard to understand","hardToUnderstand","thumb-down"],["Incorrect information or sample code","incorrectInformationOrSampleCode","thumb-down"],["Missing the information/samples I need","missingTheInformationSamplesINeed","thumb-down"],["Other","otherDown","thumb-down"]],["Last updated 2026-10-13 UTC."],[],[]]
+Products and pricing
+ See all products
+ Google Cloud pricing
+ Google Cloud Marketplace
+ Contact sales
+Support
+ Community forums
+ Support
+ Release Notes
+ System status
+Resources
+ GitHub
+ Getting Started with Google Cloud
+ Code samples
+ Cloud Architecture Center
+ Training and Certification
+ Builders Hub
+Engage
+ Blog
+ Events
+ X (Twitter)
+ Google Cloud on YouTube
+ Google Cloud Tech on YouTube
+ Android
+ Chrome
+ Firebase
+ Google AI
+ About Google
+ Privacy
+ Site terms
+ Google Cloud terms
+ Manage cookies
+ Our third decade of climate action: join us
+ Sign up for the Google Cloud newsletter
+ Subscribe
+ English
+ Deutsch
+ Español
+ Español – América Latina
+ Français
+ Indonesia
+ Italiano
+ Português
+ Português – Brasil
+ עברית
+ 中文 – 简体
+ 中文 – 繁體
+ 日本語
+ 한국어

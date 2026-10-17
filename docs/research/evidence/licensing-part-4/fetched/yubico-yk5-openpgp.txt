@@ -1,0 +1,69 @@
+
+ OpenPGP Specifics — YubiKey Technical Manual documentation
+ YubiKey Technical Manual
+Contents
+Introduction to the YubiKey Series
+Physical Attributes
+Protocols and Applications
+FIDO Specifics
+Smart Card - PIV Compatible Specifics
+OATH Specifics
+OpenPGP Specifics
+Elliptic Curve Cryptographic (ECC) Algorithms
+RSA Algorithms
+Default Values
+OTP Specifics
+Secure Channel Protocol (SCP03 and SCP11) Specifics
+YubiHSM Auth Specifics
+YubiKey 5 Firmware
+YubiKey 5 FIPS Series Specifics
+YubiKey Bio Series Specifics
+NFC ID Calculation Technical Description
+Tools and Troubleshooting
+YubiKey 5 CSPN Series Specifics
+Acronyms
+Copyright
+ YubiKey Technical Manual
+Protocols and Applications
+OpenPGP Specifics
+ View page source
+OpenPGP Specifics
+For an overview of the OpenPGP features that became available with the 5.7.x and later firmware, see 5.7 - 5.6 Firmware Specifics.
+The OpenPGP application provides an OpenPGP-compatible smart card in compliance with version 3.4 of the specification if the YubiKey firmware is 5.2.3 and later. If the firmware is an earlier version, the OpenPGP-compatible smart card is in compliance with version 2.0 of the specification.
+OpenPGP-compatible smart card can be used with compatible PGP software such as GnuPG (GPG) and can store one PGP key each for authentication, signing, and encryption. Similar to the PIV / Smart Card touch policy, the OpenPGP application can also be set to require the YubiKey’s metal contact be touched to authorize an operation.
+Note
+Developers: Using the OpenPGP functions on iOS requires the Yubico iOS SDK.
+YubiKey firmware 5.2.3 and later in combination with OpenPGP 3.4:
+Extends existing RSA support for OpenPGP operations to ECC algorithms
+Provides the Yubico Attestation feature for verifying keys generated on a YubiKey device
+Utilizes separate x.509 cardholder certificates alongside the existing OpenPGP certificates for authentication, signature and encryption/decipher
+Bring attestation functionality to OpenPGP keys and certificates generated on a YubiKey
+Improves security by supporting Key Derivation Function (KDF) PINs. With KDF enabled, the PIN is stored as a hash on the YubiKey. The OpenPGP client will only pass the hashed value, never the PIN directly.
+Elliptic Curve Cryptographic (ECC) Algorithms
+The YubiKey 5.2.3 firmware added support for ECC algorithms. These can be used for Signature, Authentication and Decipher keys. The full list of curves supported by OpenPGP 3.4 can be found in section 4.4.3.10 of the OpenPGP Smart Card 3.4 spec (page 35).
+In addition to the algorithms listed below in RSA Algorithms, YubiKeys support the following ECC algorithms:
+secp256r1
+secp256k1
+secp384r1
+secp521r1
+brainpoolP256r1
+brainpoolP384r1
+brainpoolP512r1
+curve25519
+x25519 (decipher only)
+ed25519 (sign / auth only)
+For further details on the new features, including key attestation, expanded encryption algorithms and additional cardholder certificates, refer to YubiKey 5.2 enhancements to OpenPGP 3.4 support.
+RSA Algorithms
+RSA-1024 (removed in firmware 5.3.2 and later)
+RSA-2048
+RSA-3072 (requires GnuPG version 2.0 or higher)
+RSA-4096 (requires GnuPG version 2.0 or higher)
+Default Values
+PIN: 123456
+Admin PIN: 12345678
+ Previous
+ Next 
+© Copyright 2026, Yubico AB.
+ Cookies
+ |
+ Privacy Policy

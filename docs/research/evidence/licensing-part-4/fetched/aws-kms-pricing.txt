@@ -1,0 +1,304 @@
+
+ Pricing - AWS Key Management Service (KMS)
+ Skip to main content
+ Filter: All
+ English
+Contact us
+AWS Marketplace
+Support 
+My account 
+ re:Invent
+ Discover AWS
+ Products
+ Solutions
+ Pricing
+ Resources
+ Search
+ Filter: All
+ Sign in to console
+Create account
+ Explore topics
+ re:Invent 2026
+ The sessions are set and your seat is waiting. Register now
+ Build & Deploy AI Agents
+ 88% of agent pilots stall. Learn what the rest do differently
+ Get started
+ Sign up free, connect your coding agent, and start building
+ Data for agentic AI
+ The 7 essential data capabilities to scale agentic AI
+ Analyst Report
+ AWS named a Leader in the 2026 Gartner Magic Quadrant for SCPS
+ AI for Small Businesses
+ Solutions designed for your business. Delivered by AWS Partners
+ News & announcements
+ AWS blog
+ About AWS
+AWS is the world's most comprehensive cloud, enabling organizations to accelerate innovation, reduce costs, and scale more efficiently
+Why AWS
+Getting Started
+Security
+Compliance
+Trust Center
+Sustainability
+Global Infrastructure
+Careers
+Featured Products
+Analytics
+Application Integration
+Artificial Intelligence
+Business Applications
+Compute
+Customer Experience
+Databases
+Developer Tools
+End User Computing
+Game Tech
+Management Tools
+Media Services
+Migration & Modernization
+Multicloud & Hybrid
+Networking & Content Delivery
+Operations
+Security & Identity
+Storage
+Supply Chain
+ Browse all products
+ Transformation Hubs
+Migrate to modernize → Modernize to unlock data → unlock data to run AI
+ Migrate & Modernize
+ Clear technical debt, modernize infrastructure, and move to the cloud
+ Data & Analytics
+ Future proof your data foundation for agentic AI
+ Artificial Intelligence
+ Get production-ready AI that automates, builds, creates, decides, and engages at scale
+ Featured Products
+Get started with one of these featured services or browse allBrowse all products
+ Amazon Quick
+ AI-powered assistant for work with research, business insights, automation, and no-code app building
+ Transform
+ Eliminate tech debt with agentic AI to modernize legacy systems and code
+ Aurora
+ Serverless relational database service for PostgreSQL, MySQL, and DSQL
+ Amazon Bedrock
+ The end-to-end platform for building generative AI applications and agents
+ Amazon Connect Customer
+ AI-native solution for delivering exceptional experiences across customer interactions
+ EC2
+ Secure and resizable compute capacity for virtually any workload
+ What’s new
+ Explore new capabilities and the latest technologies
+ Customer success stories
+ Learn how customers around the world accelerate their cloud
+Featured
+By industry
+By organization type
+Solutions Library
+ Solutions for any organization
+From startups to enterprises, find AWS solutions scaled to your needs. Access tailored resources, pricing models, and support levels.
+ Analytics Solutions
+ Discover curated Solutions that address varied analytics use cases
+ AI Solutions
+ Discover curated Solutions that address varied artificial intelligence use cases
+ Migration & Modernization Solutions
+ Discover curated Solutions that address varied migration and modernization use cases
+ What's new
+ Explore new capabilities and the latest technologies
+ Customer success stories
+ Learn how customers around the world accelerate their cloud
+ Pricing overview & tools
+ AWS Pricing
+ Learn about pricing and plans in one place
+ AWS Pricing Calculator
+ Estimate the cost for your architecture solution
+ AWS Free Tier
+ Get free, hands-on experience with AWS products and services
+ AWS Offers
+ Explore different offer programs to gain hands-on experience
+ AWS Savings Plans
+ Flexible pricing model offering lower prices
+ Single-product pricing
+ Amazon S3
+ Amazon Bedrock
+ Amazon RDS
+ Amazon EC2
+ Amazon SageMaker
+ Browse all product pricing
+ Learn
+ Documentation
+ Get detailed technical guides and references for all AWS services and tools
+ Training & Certification
+ Build and validate your AWS cloud skills and technical expertise
+ Cloud term glossary
+ Learn more about key cloud computing concepts
+ Whitepapers
+ Expand your knowledge of the cloud with expert guides and diagrams
+ Cloud fundamentals
+ Step-by-step instructions for common AWS tasks
+ Tutorials
+ Get started with step-by-step instructions
+ Connect & Support
+ Builder Center
+ Learn, build, and connect with builders in the AWS community
+ Events and webinars
+ Connect, collaborate, and learn from AWS experts in the cloud computing community
+ Partner Network
+ Collaborate with AWS partners to grow your business
+ Marketplace
+ Find, test, buy, and deploy third-party software
+ Support
+ Access proactive guidance, issue resolution, and helpful tools
+ Professional services
+ Accelerate business transformation with expert guidance and packaged solutions
+AWS Key Management Service
+Overview
+Features
+Pricing
+Getting Started
+Resources
+FAQs
+Security, Identity and Compliance
+AWS Key Management Service
+Pricing
+AWS Key Management Service pricing
+ Get started for free
+ Request a pricing quote
+Key storage
+ Each AWS KMS key that you create in AWS KMS costs $1/month (prorated hourly). The $1/month charge is the same for symmetric keys, asymmetric keys, HMAC keys, multi-Region keys (each primary and each replica multi-Region key), keys with imported key material, and KMS keys with a key origin of either AWS CloudHSM or an external key store (XKS).
+For KMS keys that you rotate automatically or on demand, the first and second rotation of the key adds $1/month (prorated hourly) in cost. This price increase is capped at the second rotation, and any subsequent rotations will not be billed.
+You are not charged for the following:
+Creation and storage of AWS managed or AWS owned KMS keys. These keys are automatically created on your behalf when you first attempt to encrypt a resource in an AWS service that integrates with AWS KMS. You can neither manage the lifecycle nor access permissions on AWS managed keys.
+There is no charge for customer managed KMS keys that you manage and are scheduled for deletion. If you cancel the deletion during the waiting period, the customer managed KMS key will incur charges as though it was never scheduled for deletion.
+There is no monthly charge for data keys or data key pairs that AWS KMS generates beyond the charge for the API call.
+AWS pricing calculator
+Calculate your AWS KMS and architecture cost in a single estimate. 
+Create your custom estimate now »
+Key usage
+Note 1: While you are not charged for creation and storage of AWS-managed keys, you will be charged on any API request made to AWS-managed keys. 
+ Note 2: When you use a KMS key in a different AWS account, the AWS account that makes the API request is charged for the key use. 
+Using CloudHSM or external key store (XKS)
+You have the option of using an AWS CloudHSM cluster or an external key manager to generate and store your KMS keys. These keys will also cost $1/month (prorated hourly). If using AWS CloudHSM, standard AWS CloudHSM charges apply. See this pricing example.
+Free tier
+AWS KMS provides a free tier of 20,000 requests/month calculated across all Regions that the service is available.
+*Requests to the GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext API operations and requests to API operations such as Sign, Verify, Encrypt, Decrypt, and GetPublicKey that reference asymmetric KMS keys are excluded from the free tier. 
+Pricing examples
+Amazon EBS example
+1 KMS key used as a root key when creating 250 encrypted EBS volumes per month through the AWS KMS CLI or API operations.
+Cost Dimensions:
+1 KMS key
+3 X 250 API requests to create and provision a unique data encryption key for each of 250 volumes
+ Monthly cost:
+ | $1.00
+ | 1 KMS key
+ | $0.00
+ | 0 requests (750 requests - 20,000 free tier requests)
+ | Total:
+ |  
+ | $1/month
+ |  
+Amazon S3 example
+1 KMS key used to encrypt 10,000 unique files that are collectively decrypted for access 2,000,000 times per month.
+Cost Dimensions:
+1 KMS key
+10,000 encrypt requests (1 request x 10,000 objects)
+2,000,000 decrypt requests to access the objects
+Monthly Cost:
+ | $1.00
+ | 1 KMS key
+ | $5.97
+ | 1,990,000 requests (2,010,000 total requests - 20,000 free tier requests) x $0.03 / 10,000 requests
+ | Total:
+ |  
+ | $6.97/month
+ |  
+Amazon S3 example: Using a custom key store with CloudHSM
+1 KMS key used to encrypt 10,000 unique files that are collectively decrypted for access 2,000,000 times per month. A CloudHSM cluster containing 2 HSMs is maintained in US East (N. Virginia) for the entire month.
+Cost Dimensions:
+1 KMS key
+10,000 encrypt requests (1 request x 10,000 objects)
+2,000,000 decrypt requests to access the objects
+2 CloudHSM instances
+Monthly Cost:
+ | $1.00
+ | 1 KMS key
+ | $5.97
+ | 1,990,000 requests (2,010,000 total requests - 20,000 free tier requests) x $0.03 / 10,000 requests
+ | $2,380.80
+ | 31 days for 2 HSMs x $1.60 / HSM / hour
+ | Total:
+ |  
+ | $2,387.77/month
+ |  
+File signing application example
+1 ECC 256 KMS key used to sign 100,000 files through the AWS KMS CLI or APIs operations. 
+Cost Dimensions:
+1 KMS key
+100,000 signing requests 
+Monthly Cost:
+ | $1.00
+ | 1 KMS key
+ | $1.50
+ | 100,000 requests at $0.15 per 10,000 requests
+ | Total:
+ |  
+ | $2.50/month
+ |  
+AWS CloudTrail logging
+If you enable AWS CloudTrail on your account, you can obtain logs of API calls made to or by AWS KMS. See the AWS CloudTrail pricing page for more information. 
+Additional pricing resources
+ AWS Pricing Calculator
+Easily calculate your monthly costs with AWS. 
+ Get pricing assistance
+Contact AWS specialists to get a personalized quote. 
+How to get started
+ Guide
+Learn more about AWS KMS
+ Explore the AWS KMS developer guide
+ Console
+Start using AWS KMS
+ Create, manage, and control cryptographic keys with AWS KMS
+ Create an AWS account
+Learn
+What Is AWS?
+What Is Cloud Computing?
+What Is Agentic AI?
+Cloud Computing Concepts Hub
+AWS Cloud Security
+What's New
+Blogs
+Press Releases
+Careers
+Resources
+Getting Started
+Training
+AWS Trust Center
+AWS Solutions Library
+Architecture Center
+Product and Technical FAQs
+Analyst Reports
+AWS Partners
+Developers
+Builder Center
+SDKs & Tools
+.NET on AWS
+Python on AWS
+Java on AWS
+PHP on AWS
+JavaScript on AWS
+Help
+Contact Us
+File a Support Ticket
+AWS re:Post
+Knowledge Center
+AWS Support Overview
+AWS Accessibility
+Legal
+Event Code of Conduct
+Event Terms & Conditions
+ English
+ Back to top
+ Amazon is an equal opportunity employer and does not discriminate on the basis of protected veteran status, disability or other legally protected status. Veterans, military spouses, and people with disabilities are encouraged to apply.
+Privacy
+Site terms
+Your Privacy Choices 
+Cookie Preferences
+ © 2026, Amazon Web Services, Inc. or its affiliates. All rights reserved.

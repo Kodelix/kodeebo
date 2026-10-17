@@ -1,0 +1,575 @@
+
+ Secure Element SE05x - Nitrokey Documentation
+Hide navigation sidebar
+Hide table of contents sidebar
+Toggle site navigation sidebar
+Nitrokey Documentation
+ en
+ de
+ fr
+ es
+ nl
+ it
+ ja
+ ru
+ zh_CN
+ el
+ da
+ bg
+ et
+ fi
+ lv
+ lt
+ pl
+ pt
+ ro
+ sv
+ sk
+ sl
+ cs
+ hu
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+ Nitrokey Documentation
+Nitrokeys
+Toggle navigation of Nitrokeys
+Features
+Toggle navigation of Features
+FIDO2
+Toggle navigation of FIDO2
+Website Login
+Nextcloud Login
+Passwordless Microsoft Login (Windows only)
+Android / NitroPhone
+SSH Keys
+Nitrokey Provisioning for Entra ID
+U2F
+Toggle navigation of U2F
+Desktop Login (Linux only)
+Odoo Login
+Two Factor Authentication
+TOTP
+Toggle navigation of TOTP
+General Instructions
+Microsoft
+Google
+Nextcloud
+OpenPGP card
+Toggle navigation of OpenPGP card
+Overview
+Keygen with GPA
+Keygen with Backup
+Keygen on device
+Windows Login and S/MIME Email Encryption with Active Directory
+Thunderbird
+Outlook
+Touch Confirmation (Nitrokey 3 only)
+OpenVPN
+Toggle navigation of OpenVPN
+EasyRSA
+Viscosity
+Claws Mail, an email client (and news reader) for Linux and Windows
+Evolution, an email client for the Gnome Desktop on Linux systems
+GPGTools on macOS
+Desktop Login
+Toggle navigation of Desktop Login
+PAM (Linux)
+Smart Policy (Windows)
+SSH
+Toggle navigation of SSH
+Putty
+Hard Disk Encryption
+Toggle navigation of Hard Disk Encryption
+Full-Disk Encryption With cryptsetup/LUKS
+Gnu Privacy Assistant (GPA)
+EID
+GnuPG with Fedora
+Change Pins
+Additional Decryption Subkeys (ADSK) with GnuPG
+Password Safe
+Encrypted Mobile Storage
+Hidden Storage
+HSM
+Toggle navigation of HSM
+S/MIME
+Toggle navigation of S/MIME
+S/MIME encryption on Thunderbird
+S/MIME encryption on Outlook
+Evolution, an email client for the Gnome Desktop on Linux systems
+DNSSEC (Linux only)
+Import Keys Certs
+stunnel (Linux only)
+Certificate Authority
+IPSec (Linux only)
+N-of-m Schemes
+PKCS11-URL
+Apache 2 TLS
+PKI Proxy
+PIV (Windows only)
+Toggle navigation of PIV (Windows only)
+Access Control
+Certificate Management
+Factory Reset
+Key Management
+Guides
+Toggle navigation of Guides
+Client Logon with Active Directory
+TLS Client Authentication with Windows Internet Information Services (IIS) and Active Directory
+TLS Client Authentication with Internet Information Services (IIS)
+MacOS Login with local user
+Miscellaneous
+Toggle navigation of Miscellaneous
+Automatic Screen Lock
+Elliptic Curves (ECC) Support
+Nitrokey 3
+Toggle navigation of Nitrokey 3
+Getting Started
+Frequently Asked Questions
+Overview
+Firmware Update
+Firmware Update Qubes
+Set Pins
+LED and Touch Button
+nitropy
+Reset
+Secure Element
+Troubleshooting
+USBGuard
+Nitrokey Passkey
+Toggle navigation of Nitrokey Passkey
+Getting Started
+Frequently Asked Questions
+Troubleshooting
+LED and Touch Button
+Management
+Nitrokey FIDO2
+Toggle navigation of Nitrokey FIDO2
+Getting Started
+Frequently Asked Questions
+Firmware update
+Reset
+Nitrokey U2F
+Nitrokey HSM 2
+Toggle navigation of Nitrokey HSM 2
+Getting Started
+Frequently Asked Questions
+Nitrokey Pro 2
+Toggle navigation of Nitrokey Pro 2
+Getting Started
+Frequently Asked Questions
+ Update
+ Factory Reset
+Nitrokey Start
+Toggle navigation of Nitrokey Start
+Getting Started
+Frequently Asked Questions
+Multiple Identities
+Setting KDF-DO
+Factory Reset
+Firmware Update
+Nitrokey Storage 2
+Toggle navigation of Nitrokey Storage 2
+Getting Started
+Frequently Asked Questions
+Firmware-Update
+Manual Firmware-Update
+Factory Reset
+NitroPad, NitroPC
+Toggle navigation of NitroPad, NitroPC
+Ubuntu
+Toggle navigation of Ubuntu
+Change Disk Encryption Passphrase
+Nitrokey App Installation
+QubesOS
+Toggle navigation of QubesOS
+NitroPC Pro 2 With External GPU
+Enable Network Settings, e.g. WiFi
+Nitrokey App Installation
+User Password Reset
+Heads
+Toggle navigation of Heads
+Default Boot
+Factory Reset Heads v1.4+
+Factory Reset Heads v2.0+
+Firmware Update v2.0+
+Firmware Update v1.4+
+System Update
+Frequently Asked Questions
+Operating System Reinstallation
+Verify Sealed Hardware
+Secure Starting Procedure
+Change User and Admin PIN
+Disabling Intel Management Engine
+Troubleshooting
+NitroPhone, NitroTablet
+Toggle navigation of NitroPhone, NitroTablet
+Apps
+Background Images
+Frequently Asked Questions
+Headwind MDM (HMDM)
+Toggle navigation of Headwind MDM (HMDM)
+Server Installation
+Server Update
+Launcher App Installation
+Launcher App Update
+Installation and Update of Plugins
+FIDO2 on Android / NitroPhone
+NextBox
+Toggle navigation of NextBox
+Getting Started
+Hardware Overview
+Connect External Storage
+Desktop And Mobile Synchronization
+Toggle navigation of Desktop And Mobile Synchronization
+Android/iOS
+Windows
+Mac OS X
+Linux
+Backup and Restore
+Managing Remote Access
+Toggle navigation of Managing Remote Access
+Walkthrough
+Method comparison
+Backwards Proxy
+Dynamic DNS
+Static Domain
+DNS Rebind
+Port Forwarding
+IPv6 Settings
+Technical Documentation
+Toggle navigation of Technical Documentation
+LED Colors and Patterns
+Factory Reset
+Soft Reset
+Replace Internal Hard-Drive
+NextBox FAQ
+Toggle navigation of NextBox FAQ
+Generic
+Hardware
+Software
+Nextcloud
+Remote Access
+NetHSM
+Toggle navigation of NetHSM
+Getting Started
+Administration
+Operation
+Integration
+Clustering
+Frequently Asked Questions (FAQ)
+PKCS#11 Setup
+pkcs11-tool
+System Recovery
+Windows KSP and PKCS#11 with PKI Proxy
+Windows Active Directory Certificate Services (ADCS) with PKI Proxy
+Container
+Toggle navigation of Container
+Production Image
+Test Image
+Compatible Software
+Toggle navigation of Compatible Software
+Apache
+Cascade
+EJBCA
+Knot DNS
+Nginx
+OpenBao
+OpenDNSSEC
+OpenSSL
+SSH
+Hashicorp Vault
+NitroWall
+Toggle navigation of NitroWall
+Verify Sealed Hardware
+FAQ OPNSense
+NitroWall NW750
+Toggle navigation of NitroWall NW750
+Factory Reset
+Changing IMEI
+Firmware Update
+Frequently Asked Questions
+Software
+Toggle navigation of Software
+Nitrokey App 2
+Toggle navigation of Nitrokey App 2
+Linux Install
+macOS Install
+Windows Install
+KeePassXC
+Passwords
+PIN Management
+Firmware Update
+Nitrokey App 1
+nitropy
+Toggle navigation of nitropy
+All Platforms
+Toggle navigation of All Platforms
+Installing nitropy With pipx
+Test Nitrokey 3
+Windows
+Toggle navigation of Windows
+Installing nitropy on Windows
+Linux
+Toggle navigation of Linux
+Setting up the udev Rules
+Nitrokey Python SDK v0.4.1
+Toggle navigation of Nitrokey Python SDK v0.4.1
+Guides
+Toggle navigation of Guides
+Usage Guide
+API Reference
+Toggle navigation of API Reference
+nitrokey.nk3
+Toggle navigation of nitrokey.nk3
+nitrokey.nk3.secrets_app
+nitrokey.nkpk
+nitrokey.trussed
+Toggle navigation of nitrokey.trussed
+nitrokey.trussed.admin_app
+nitrokey.trussed.provisioner_app
+nitrokey.trussed.updates
+nitrokey.updates
+ Back to top
+ English (en)
+ de
+ fr
+ es
+ nl
+ it
+ ja
+ ru
+ zh_CN
+ el
+ da
+ bg
+ et
+ fi
+ lv
+ lt
+ pl
+ pt
+ ro
+ sv
+ sk
+ sl
+ cs
+ hu
+Toggle Light / Dark / Auto color theme
+Toggle table of contents sidebar
+Secure Element SE05x¶
+Activation/Deactivation for OpenPGP
+Algorithms
+The Secure Element SE050 is a tamper-resistant chip by NXP Semiconductors that provides advanced security features. It offers hardware-based security functions including cryptographic operations, secure key storage, and protection against physical and logical attacks. The SE05X Secure Element is certified to Common Criteria EAL 6+ security level and implements algorithms like RSA, ECC, AES, and SHA, making it ideal for the Nitrokey 3.
+Cryptographic keys of PIV are stored in the Secure Element. OpenPGP Card can be configured to store cryptographic keys in the Secure Element or not in which case a software-only implementation is used. Password Safe and FIDO2 don’t use the Secure Element except for additional randomness.
+Activation/Deactivation for OpenPGP¶
+The Secure Element is enabled by default if no cryptographic key in OpenPGP Card and PIV is already saved on the device.
+This is automatically the case after resetting the OpenPGP Card or the entire Nitrokey.
+Warning
+Manually activating the Secure Element for the OpenPGP Card will delete all existing keys.
+To check whether the Secure Element for OpenPGP is activated run:
+nitropy nk3 get-config opcard.use_se050_backend
+To enable the Secure Element:
+nitropy nk3 set-config opcard.use_se050_backend true
+To disable the Secure Element:
+nitropy nk3 set-config opcard.use_se050_backend false
+Algorithms¶
+ | 
+Algorithm
+ | 
+With Secure Element
+ | 
+Without Secure Element
+ | 
+RSA 2048 bit
+ | 
+✓
+ | 
+✓
+ | 
+RSA 3072 bit
+ | 
+✓
+ | 
+⨯
+ | 
+RSA 4096 bit
+ | 
+✓
+ | 
+⨯
+ | 
+AES 128/256 bit
+ | 
+✓
+ | 
+✓
+ | 
+SHA 256/384/512 bit
+ | 
+✓
+ | 
+✓
+ | 
+NIST P-256 (secp256r1/prime256v1)
+ | 
+✓
+ | 
+✓
+ | 
+NIST P-384 (secp384r1/prime384v1)
+ | 
+✓
+ | 
+⨯
+ | 
+NIST P-521 (secp521r1/prime521v1)
+ | 
+✓
+ | 
+⨯
+ | 
+Ed25519/Curve25519
+ | 
+✓
+ | 
+✓
+ | 
+brainpoolP256r1
+ | 
+✓
+ | 
+⨯
+ | 
+brainpoolP384r1
+ | 
+✓
+ | 
+⨯
+ | 
+brainpoolP512r1
+ | 
+✓
+ | 
+⨯
+ | 
+HOTP (RFC 4226)
+ | 
+✓
+ | 
+✓
+ | 
+TOTP (RFC 6238)
+ | 
+✓
+ | 
+✓
+ | 
+Physical random number generator (TRNG)
+ | 
+✓
+ | 
+✓
+Diese Seite ist auf Deutsch verfügbar.
+Cette page est disponible en français
+Esta página está disponible en español.
+Deze pagina is beschikbaar in het Nederlands.
+Questa pagina è disponibile in italiano.
+このページは日本語でご覧いただけます。
+Эта страница доступна на русском языке.
+本页有中文版本。
+Αυτή η σελίδα είναι διαθέσιμη στα ελληνικά.
+Denne side er tilgængelig på dansk.
+Тази страница е достъпна на български език.
+See lehekülg on saadaval eesti keeles.
+Tämä sivu on saatavilla suomeksi.
+Šī lapa ir pieejama latviešu valodā.
+Šis puslapis pateikiamas lietuvių kalba.
+Ta strona jest dostępna w języku polskim.
+Esta página está disponível em português.
+Această pagină este disponibilă în limba română.
+Den här sidan finns på svenska.
+Táto stránka je k dispozícii v slovenčine.
+Ta stran je na voljo v slovenščini.
+Tato stránka je k dispozici v češtině.
+Ez az oldal magyar nyelven érhető el.
+Auf Deutsch ansehen
+Ausblenden
+Passer au français
+Cacher
+Cambia al español.
+Ocultar
+Schakel over op Nederlands.
+Verberg
+Passa all`italiano.
+Nascondi
+日本語に切り替えます。
+隠す
+Переключитесь на русский язык.
+Скрыть
+换成中文。
+隐藏
+Αλλαγή σε ελληνικά.
+Απόκρυψη
+Skift til dansk.
+Skjul
+Преминете на български език.
+Скрий
+Vahetage eesti keelele.
+Peida
+Vaihda suomeksi.
+Piilota
+Pārslēgties uz latviešu valodu.
+Paslēpt
+Perjunkite į lietuvių kalbą.
+Paslėpti
+Przełącz się na język polski.
+Ukryj
+Mudar para português.
+Esconder
+Treceți la limba română.
+Ascundeți
+Växla till svenska.
+Dölj
+Prepnite na slovenčinu.
+Skryť
+Preklopite na slovenščino.
+Skrij
+Přepněte na češtinu.
+Skrýt
+Váltson magyarra.
+Rejtsd el
+ Next
+Troubleshooting
+ Previous
+Factory Reset
+ Copyright © Nitrokey
+ Edit this Page |
+ Request docs change
+ English (en)
+ de
+ fr
+ es
+ nl
+ it
+ ja
+ ru
+ zh_CN
+ el
+ da
+ bg
+ et
+ fi
+ lv
+ lt
+ pl
+ pt
+ ro
+ sv
+ sk
+ sl
+ cs
+ hu
+ Contents
+Secure Element SE05x
+Activation/Deactivation for OpenPGP
+Algorithms

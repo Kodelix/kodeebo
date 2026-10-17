@@ -1,0 +1,4350 @@
+
+ YubiHSM Command Reference — YubiHSM 2 User Guide documentation
+ YubiHSM 2 User Guide
+Contents
+Introduction
+YubiHSM 2 SDK Tools And Libraries
+YubiHSM Quick Start Tutorial
+YubiHSM 2 Management Tasks
+Third Party Integration Deployment Guides
+YubiHSM 2 References
+YubiHSM Command Reference
+OPEN SESSION Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+AUTHENTICATE SESSION Command
+Required Capabilities
+Shell Example
+Protocol Details
+OPEN SESSION ASYMMETRIC Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+BLINK DEVICE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+CHANGE ASYMMETRIC AUTHENTICATION KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+CHANGE AUTHENTICATION KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+CLOSE SESSION Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+CREATE OTP AEAD Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+CREATE SESSION Command
+Required Capabilities
+Shell Example
+Protocol Details
+DECRYPT AES CBC Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+DECRYPT AES ECB Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+DECRYPT OAEP Command
+Required Capabilities
+Interactive Mode
+CommandL Line Mode
+Example
+Protocol Details
+DECRYPT OTP Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+DECRYPT PKCS1 Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+DELETE OBJECT Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+DERIVE ECDH Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+ECHO Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+ENCRYPT AES CBC Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+ENCRYPT AES ECB Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+EXPORT WRAPPED Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+EXPORT RSA WRAPPED Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+EXPORT RSA WRAPPED KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GENERATE ASYMMETRIC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GENERATE HMAC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GENERATE OTP AEAD KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GENERATE SYMMETRIC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GENERATE WRAP KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET DEVICE INFO Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET DEVICE PUBLIC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Example
+Protocol Details
+GET LOG ENTRIES Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET OBJECT INFO Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET OPAQUE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET OPTION Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET PSEUDO RANDOM Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET PUBLIC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET STORAGE INFO Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+GET TEMPLATE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+IMPORT WRAPPED Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+IMPORT RSA WRAPPED Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+IMPORT RSA WRAPPED KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+LIST OBJECTS Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT ASYMMETRIC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT ASYMMETRIC AUTHENTICATION KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT AUTHENTICATION KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT HMAC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT OPAQUE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT OTP AEAD KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT SYMMETRIC KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT TEMPLATE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT WRAP KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+PUT PUBLIC WRAP KEY Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+RANDOMIZE OTP AEAD Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+RESET DEVICE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+REWRAP OTP AEAD Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SESSION MESSAGE Command
+Protocol Details
+SET INFORMAT Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+SET LOG INDEX Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SET OPTION Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SET OUTFORMAT Command
+Interactive Mode
+Command Line Mode
+SIGN ATTESTATION CERTIFICATE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SIGN ECDSA Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SIGN EDDSA Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SIGN HMAC Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SIGN PKCS1 Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SIGN PSS Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+SIGN SSH CERTIFICATE Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+UNWRAP DATA Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+VERIFY HMAC Command
+Required Capabilities
+Protocol Details
+WRAP DATA Command
+Required Capabilities
+Interactive Mode
+Command Line Mode
+Protocol Details
+Glossary
+Copyright
+ YubiHSM 2 User Guide
+YubiHSM 2 References
+YubiHSM Command Reference
+ View page source
+YubiHSM Command Reference
+This section contains a list of the commands supported by the YubiHSM 2.
+Important
+The YubiHSM 2 is certified at FIPS 140-2 Level 3 .
+The low-level format for each command message and the relative response is provided, together with an example of how that command can be used within the yubihsm-shell.
+—————————————————————————————————————————-
+OPEN SESSION Command
+Opens an authenticated session to the device. Subsequent commands can be communicated to the device over this authenticated session.
+This command is the combination of sending two commands in sequence to the YubiHSM:
+The command to create a session
+The command to authenticate the session
+The user of yubihsm-shell does not need to run these commands separately as that is taken care of by the session open command that uses those two commands behind the scenes.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can be used to open a session.
+Interactive Mode
+yubihsm> session open w:authkey,i:password=-
+Parameters
+authkey Required.
+Authentication key object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+password
+The password used to authenticate the session. The password is prompted for if not specified.
+Example
+Create a new session with Authentication Key 1 using the password password. This does both the session creation and authentication steps.
+yubihsm> session open 1 password
+Created session 0
+Command Line Mode
+A session is automatically created when executing yubihsm-shell commands on the command line.
+—————————————————————————————————————————-
+AUTHENTICATE SESSION Command
+Complete the mutual authentication process started with CREATE SESSION Command.
+Finish the Session negotiation and authenticate the Session to the device. After this command completes successfully the Session is authenticated and can be used.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can be used to authenticate a session.
+Shell Example
+Create a new Session with Authentication Key 1 using the password password, this performs both the creation and authentication steps.
+yubihsm> session open 1 password
+Created session 0
+Protocol Details
+Command
+Tc = 0x04
+Lc = 9
+Vc = S || B
+where –
+S = Session ID (1 byte)
+B = Host Cryptogram (8 bytes)
+This is the first authenticated message in the chain.
+The device verifies B, using S-MAC.
+Response
+Tr = 0x84
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+OPEN SESSION ASYMMETRIC Command
+Available with firmware version 2.3.1 or later.
+Opens an authenticated session to the device using an asymmetric key. The YubiHSM2 and a client should have exchanged public keys earlier. The asymmetric keys are created from the curve EC-P256.
+A session opened with an asymmetric authentication key does not need to be authenticated separately. The command is immediately usable if the CREATE SESSION command is successful.
+Subsequent commands can be communicated to the device over this authenticated session.
+Required Capabilities
+No specific capabilities are required. Any EC-P256 Authentication Key can be used to open an asymmetric session.
+Interactive Mode
+yubihsm> session open_asym w:authkey,i:privkey=-
+Parameters
+authkey Required.
+ObjectID of the asymmetric authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+privkey Required.
+The private key to open the session with
+Possible Values: Password, path to file or - for stdin
+Default format: PEM
+Example
+Create a new session with Authentication Key 100 using a private key stored in priv.key. This does both the session creation and authentication steps.
+yubihsm> session open_asym 100 priv.key
+Created session 0
+Command Line Mode
+Asymmetric authentication keys cannot be used in command line mode.
+Protocol Details
+Command
+Tc = 0x03
+Lc = 67
+Vc = I || K
+where –
+I = Key ID of an asymmetric authentication key (2 bytes)
+K = Ephemeral client public key (65 bytes)
+On success, the device generates a Session ID S (1 byte) and sets the message counter for the current Session to 1.
+On error, ERROR_INV_DATA is returned if K is not a valid EC-P256 key.
+Response
+Tr = 0x83
+Lr = 82
+Vr = S || Kd || R
+where –
+S = Session ID (1 bytes)
+Kd = Ephemeral device public key (65 bytes)
+R = Recipient (16 bytes)
+—————————————————————————————————————————-
+BLINK DEVICE Command
+Blink the LED of the device to identify it.
+This command must be sent over an authenticated session.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> blink e:session,b:seconds=10
+Parameters
+seconds Optional.
+Number of seconds to blink.
+Default Value: 10
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Blink the device for 15 seconds.
+yubihsm> blink 0 15
+Command Line Mode
+$ yubihsm-shell -a blink-device [ --authkey <authKeyID> -p <password> --duration <seconds=10> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+--duration=INT
+Number of seconds to blink.
+Default Value: 10
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+Example
+Blink the device for 15 seconds.
+$ yubihsm-shell -a blink-device --duration 15
+Protocol Details
+Command
+Tc = 0x6b
+Lc = 1
+Vc = S
+where –
+S = Seconds to blink for (1 byte)
+Response
+Tr = 0xeb
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+CHANGE ASYMMETRIC AUTHENTICATION KEY Command
+Available with firmware version 2.3.1 or later.
+Replace the Asymmetric Authentication Key used to establish the current Session. It is not possible to modify any of the metadata connected to the Object such as Domains or Capabilities. Only the public key will be modified.
+This command must be sent over an authenticated session.
+Required Capabilities
+Authentication Key must have the change-authentication-key capability.
+Interactive Mode
+yubihsm> change authkey_asym e:session,w:key_id,i:pubkey=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+ObjectID of the authentication key used to open the current session and whose public key will be changed. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+pubkey
+The new public key.
+When using stdin, click CTRL-D to mark end of input.
+Input format for a password string is password.
+If password format is used, the tool will derive an EC-P256 private key from the input string and calculate the public key from that. The private key is not used for anything else.
+Possible Values: File containing the client’s public key as an uncompressed EC-P256 public key, password or - for stdin
+Default Value: stdin
+Possible Format for public key file: PEM, HEX, binary
+Default format: PEM
+Example
+Change the current Asymmetric Authentication Key to newkey.pub:
+yubihsm> change authkey_asym 0 100 newkey.pub
+Changed Authentication key 0x0064
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x6c
+Lc = 2 + 1 + 16 + 16
+Vc = I || A || Key
+Replace the currently used Authentication Key with a new set of keys.
+where –
+I = Object ID of the Authentication Key (2 bytes)
+A = Algorithms (1 byte) (ec-p256-yubico-authentication = 0x31)
+Key = Uncompressed EC-P256 public key (64 bytes)
+Response
+Tr = 0xec
+Lr = 2
+Vr = I
+where –
+I = Object ID of the changed Object (2 bytes)
+Note
+This command returns ERROR_INV_DATA if Key is not a valid EC-P256 key.
+—————————————————————————————————————————-
+CHANGE AUTHENTICATION KEY Command
+Available with firmware version 2.2.0 or later.
+Replace the Authentication Key used to establish the current Session. It is not possible to modify any of the metadata connected to the Object such as Domains or Capabilities. Only the payload data of the Object (for example, the long-lived symmetric keys) will be modified.
+The same PBKDF2 derivation scheme described in Session is available.
+This command must be sent over an authenticated session.
+Required Capabilities
+Authentication Key must have the change-authentication-key capability.
+Interactive Mode
+yubihsm> change authkey e:session,w:key_id,i:password=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+The ObjectID of the authentication key used to open the current session and whose password will be changed. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+password
+The new password for key_id. The password is prompted for if not specified.
+Example
+Change the current Authentication Key deriving it from the password newpassword.
+yubihsm> change authkey 0 1 newpassword
+Changed Authentication key 0x0001
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x6c
+Lc = 2 + 1 + 16 + 16
+Vc = I || A || Ke || Km
+Replace the currently used Authentication Key with a new set of keys.
+where –
+I = Object ID of the Authentication Key (2 bytes)
+A = Algorithms (1 byte)
+Ke = Encryption Key (16 bytes)
+Km = Mac Key (16 bytes)
+Response
+Tr = 0xec
+Lr = 2
+Vr = I
+where –
+I = Object ID of the changed Object (2 bytes)
+—————————————————————————————————————————-
+CLOSE SESSION Command
+Close the current Session and release it for re-use. This command must be sent over an authenticated session.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> session close e:session
+Parameters
+session Required.
+The ID of the session to close.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Close Session 0.
+yubihsm> session close 0
+Command Line Mode
+This command does not need to be run separately on the command line. The session will automatically close after the command has been executed.
+Protocol Details
+Command
+Tc = 0x40
+Lc = 0
+Vc = Ø
+Response
+Tr = 0xc0
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+CREATE OTP AEAD Command
+Create a Yubico OTP AEAD using the provided data.
+This command must be sent over an authenticated session.
+Required Capabilities
+Authentication Key used to open the session must have the create-otp-aead capability.
+OTP AEAD Key must have the create-otp-aead capability.
+Interactive Mode
+yubihsm> otp aead_create e:session,w:key_id,i:key,i:private_id,F:aead
+Parameters
+aead Required.
+The file to store the Yubico OTP AEAD.
+Default input format: hex
+key Required.
+The key used to create the Yubico OTP AEAD.
+key_id Required.
+OTP AEAD key object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+private_id Required.
+The private ID used to create the Yubico OTP AEAD.
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Create a new AEAD using Otp-aead Key 0x027c with the key 000102030405060708090a0b0c0d0e0f and private ID 010203040506. Store the result in the file aead.
+yubihsm> otp aead_create 0 0x027c 000102030405060708090a0b0c0d0e0f 010203040506 aead
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x61
+Lc = 24
+Vc = I || K || P
+where –
+I = Object ID of the OTP AEAD Key (2 bytes)
+K = OTP Key (16 bytes)
+P = OTP Private ID (6 bytes)
+Response
+Tr = 0xe1
+Lr = LA
+Vr = A
+where –
+A = Nonce concatenated with AEAD (36 bytes)
+—————————————————————————————————————————-
+CREATE SESSION Command
+Begin the mutual authentication process for establishing a Session.
+Start negotiating a Session with the device. This command tells the device which Authentication Key to use and sends the host challenge part. The response contains the device challenge and device authentication part. To establish the session continue with AUTHENTICATE SESSION Command.
+When using yubihsm-shell the user does not need to run these commands separately as that is taken care of by the session open command that uses those two commands behind the scenes. See :ref:hsm2-cmd-open-session-label.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can be used to create a session.
+Shell Example
+Create a new session with Authentication Key 1 using the password password. This does both the session creation and authentication steps.
+yubihsm> session open 1 password
+Created session 0
+Protocol Details
+Command
+Tc = 0x03
+Lc = 10
+Vc = I || H
+where –
+I = Authentication Key ID (2 bytes)
+H = Host Challenge (8 bytes)
+The device generates a random Card Challenge C (8 bytes).
+The device derives three Session Keys (S-ENC, S-MAC and S-RMAC) starting from the set of two static keys identified by I (K-ENC and K-MAC) and the two challenges H and C, using the same procedure described in SCP03.
+The device uses S-MAC together with H and C to compute the Card Cryptogram A. The host will compute the Host Cryptogram B after having received C and derived S-MAC.
+On success the device generates a Session ID S (1 byte) and sets the message counter for the current Session to 1.
+Response
+Tr = 0x83
+Lr = 17
+Vr = S || C || A
+where –
+S = Session ID (1 byte)
+C = Card Challenge (8 bytes)
+A = Card Cryptogram (8 bytes if Authentication Key is AES-128, 16 bytes if Authentication Key is EC-P256)
+—————————————————————————————————————————-
+DECRYPT AES CBC Command
+Available with firmware version 2.3.1 or later.
+Decrypt data in AES CBC mode.
+Required Capabilities
+Authentication Key used to open the session must have the decrypt-cbc capability.
+Symmetric Key must have the decrypt-cbc capability.
+Interactive Mode
+yubihsm> decrypt aescbc e:session,w:key_id,s:iv,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the symmetric key to decrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+iv Required.
+Encryption initialization vector. 16 bytes in HEX format.
+data
+Data to decrypt. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: Data or - for stdin
+Default Value: stdin
+Input format: PEM
+Output format: HEX
+Example
+Decrypt data using key 0x0064:
+yubihsm> decrypt aescbc 0 0x0064 00000000000000000000000000000000 SG0OU4CT2pH2dnd967KyTU5OgdJ8edxJjOf3Yt52gGQ=
+c5cffa1c2333fd824a86951cf602bca1
+Command Line Mode
+$ yubihsm-shell -a decrypt-aescbc -i <key_id> --iv <iv> [--in <data> --out <out=-> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password will be prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the symmetric key to decrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--iv=STRING Required.
+Encryption initialization vector. 16 bytes in HEX format.
+--in=STRING
+Data to decrypt. Multiple of 16 bytes. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: data or stdin
+Default Value: stdin
+Input format: Base64
+--out=STRING
+Decrypted data.
+Possible Valued: Path to file or stdout
+Default Value: stdout
+Output format: HEX
+Example
+Decrypt data using key 0x0064:
+$ yubihsm-shell -a decrypt-aescbc -i 0x0064 --iv 00000000000000000000000000000000 --in data.enc
+c5cffa1c2333fd824a86951cf602bca1
+Protocol Details
+Command
+Tc = 0x71
+Lc = 2 + 16 + LE
+Vc = I || V || E
+where –
+I = Object ID of the symmetric key (2 bytes)
+V = Encryption initialization vector (IV) in HEX (16 bytes)
+E = Data to decrypt
+Response
+Tr = 0xf1
+Lr = LD
+Vr = D
+where –
+D = Decrypted data
+—————————————————————————————————————————-
+DECRYPT AES ECB Command
+Available with firmware version 2.3.1 or later.
+Decrypt data in AES ECB mode.
+Required Capabilities
+Authentication Key used to open the session must have the decrypt-ecb capability.
+Symmetric Key must have the decrypt-ecb capability.
+Interactive Mode
+yubihsm> decrypt aesecb e:session,w:key_id,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the symmetric key to decrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+data
+Data to decrypt. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: Data to sign or - for stdin
+Default Value: stdin
+Input format: PEM
+Output format: HEX
+Example
+Decrypt data using key 0x0064:
+yubihsm> decrypt aesecb 0 0x0064 SG0OU4CT2pH2dnd967KyTQSIdJILAhWsmhdFIkHAZMQ=
+c5cffa1c2333fd824a86951cf602bca1
+Command Line Mode
+$ yubihsm-shell -a decrypt-aesecb -i <key_id> --in <data>
+$ yubihsm-shell -a decrypt-aesecb -i <key_id> [--in <data> --out <out> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password will be prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the symmetric key to decrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+--in=STRING
+Data to decrypt. Multiple of 16 bytes. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: data or stdin
+Default Value: stdin
+Input format: Binary
+--out=STRING
+Decrypted dat.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Output format: HEX
+Example
+Decrypt data using key 0x0064:
+$ yubihsm-shell -a decrypt-aesecb -i 0x0064 --in data.enc
+c5cffa1c2333fd824a86951cf602bca1
+Protocol Details
+Command
+Tc = 0x6f
+Lc = 2 + LE
+Vc = I || E
+where –
+I = Object ID of the symmetric key (2 bytes)
+D = Data to decrypt
+Response
+Tr = 0xef
+Lr = LD
+Vr = D
+where –
+D = Decrypted data
+—————————————————————————————————————————-
+DECRYPT OAEP Command
+Decrypt data encrypted with RSA-OAEP.
+Required Capabilities
+Authentication Key used to open the session must have the decrypt-oaep capability.
+Asymmetric Key must have the decrypt-oaep capability.
+Interactive Mode
+$ decrypt oaep e:session,w:key_id,a:algorithm,i:data=-,s:label=
+CommandL Line Mode
+$ yubihsm-shell -a decrypt-oaep -i <key_id> -A <decrypt_algorithm> [--in <in_data> -l <oaep_label>]
+Example
+Decrypt data stored in file enc using key 0x79c3:
+yubihsm> decrypt oaep 0 0x79c3 rsa-oaep-sha1 enc
+xlwIc7yQf/KkV5v4Y87Q9ZSqLReoNAxlCmmMPA4W08U=
+Protocol Details
+Command
+Tc = 0x59
+Lc = 2 + 1 + LD + LH
+Vc = I || M || D || Hl
+where –
+I = link:../Concepts/Object_ID.adoc[Object ID] of the Asymmetric Key (2 bytes)
+M = Hash link:../Concepts/Algorithms.adoc[Algorithm] to use for MGF1 (1 byte)
+D = Decryption data (256, 384 or 512 bytes)
+Hl = Hash of OAEP Label (20, 32, 48 or 64 bytes)
+Response
+Tr = 0xc9
+Lr = Lr
+Vr = R
+where –
+R = Decrypted data with OAEP padding removed
+—————————————————————————————————————————-
+DECRYPT OTP Command
+Decrypts a Yubico OTP with an AEAD and returns counters and timer information Default input format in binary.
+Required Capabilities
+Authentication Key used to open the session must have the decrypt-otp capability.
+OTP AEAD Key must have the decrypt-otp capability.
+Interactive Mode
+yubihsm> otp decrypt e:session,w:key_id,s:otp,i:aead
+Parameters
+aead Required.
+Nonce concatenated with AEAD (36 bytes).
+Possible Values: Path to file containing the AEAD
+Default format: binary
+key_id Required.
+OTP AEAD key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+otp Required.
+OTP to decrypt.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384, rsa-oaep-sha512
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Decrypt a (hex encoded) Yubico OTP using key ID 0x027c.
+yubihsm> otp decrypt 0 0x027c 2f5d71a4915dec304aa13ccf97bb0dbb aead
+OTP decoded, useCtr:1, sessionCtr:1, tstph:1, tstpl:1
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x60
+Lc = 2 + 36 + 16
+Vc = K || A || O
+where –
+I = Object ID of the OTP AEAD Key (2 bytes)
+A = Nonce concatenated with AEAD (36 bytes)
+O = OTP (16 bytes)
+Response
+Tr = 0xe0
+Lr = 6
+Vr = S || U || Th || Tl
+where –
+S = Session counter (2 bytes)
+U = Usage counter (1 byte)
+Th = Timestamp high (1 byte)
+Tl = Timestamp low (2 bytes)
+—————————————————————————————————————————-
+DECRYPT PKCS1 Command
+Decrypt data encrypted with RSA-PKCS#1v1.5.
+Required Capabilities
+Authentication Key used to open the session must have the decrypt-pkcs capability.
+Asymmetric Key must have the decrypt-pkcs capability.
+Interactive Mode
+yubihsm> decrypt pkcs1v1_5 e:session,w:key_id,i:data=-
+Parameters
+data
+Input data to decrypt.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default data format: binary
+key_id Required.
+RSA key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Decrypt the file enc using key 0xa930.
+yubihsm> decrypt pkcs1v1_5 0 0xa930 enc xlwIc7yQf/KkV5v4Y87Q9ZSqLReoNAxlCmmMPA4W08U=
+Command Line Mode
+$ yubihsm-shell -a decrypt-pkcs1v15 -i <key_id> [--in <data>]
+$ yubihsm-shell -a decrypt-pkcs1v15 -i <key_id> [ --authkey <authKeyID> -p <password> --in <data> --out <out_data> --informat <data_format> --outformat <outdata_format> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-i, --object-id=SHORT Required.
+Object ID or an RSA key. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--in=STRING
+Data to decrypt.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default data format: binary
+--informat=ENUM
+Input data format.
+Possible Values: base64, binary, PEM, hex
+--out=STRING
+Decrypted data.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default data format: binary
+--outformat=ENUM
+Output data format.
+Possible Values: base64, binary, PEM, hex
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+Example
+Decrypt data stored in file enc using key 0x79c3.
+$ yubihsm-shell -a decrypt-pkcs1v15 -i 0x79c3 --in enc xlwIc7yQf/KkV5v4Y87Q9ZSqLReoNAxlCmmMPA4W08U=
+Protocol Details
+Command
+Tc = 0x49
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+D = Decryption data (256, 384 or 512 bytes)
+The data is padded using the PKCS#1v1.5 scheme with Block Type 2. The data is decrypted and conformance to the padding scheme must be checked. Padding is then removed and the contained message is returned.
+Response
+Tr = 0xc9
+Lr = LR
+Vr = R
+where –
+R = Decrypted data with padding removed.
+—————————————————————————————————————————-
+DELETE OBJECT Command
+Delete an Object in the device.
+Required Capabilities
+Authentication Key must have the capability to delete the specific type of Object being deleted. For example, to delete an Asymmetric Key the Authentication Key must have the delete-asymmetric-key capability. See Capabilities for the specific capabilities.
+Interactive Mode
+yubihsm> delete e:session,w:id,t:type
+Parameters
+id Required.
+Object ID of the object to delete. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+type Required.
+Type of the object to delete.
+Possible Values: asymmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key
+Example
+Delete Asymmetric Key 0x52b6.
+yubihsm> delete 0 0x52b6 asymmetric-key
+Command Line Mode
+$ yubihsm-shell -a delete-object -i <id> -t <type> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-i, --object-id=SHORT Required.
+Object ID of the object to delete. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-t, --object-type=STRING Required.
+Type of the object to delete.
+Possible Values: asymmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key
+Example
+Delete Asymmetric Key 0x52b6.
+$ yubihsm-shell -a delete-object -i 0x52b6 -t asymmetric-key
+Protocol Details
+Command
+Tc = 0x58
+Lc = 2 + 1
+Vc = I || T
+where –
+I = Object ID (2 bytes)
+T = Type, Objects (1 byte)
+Response
+Tr = 0xd8
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+DERIVE ECDH Command
+Perform an ECDH key exchange with the private key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the derive-ecdh capability.
+Asymmetric Key must have the derive-ecdh capability.
+Interactive Mode
+yubihsm> derive ecdh e:session,w:key_id,i:pubkey=-
+Parameters
+key_id Required.
+Object ID of an EC key. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+pubkey
+The public key of another EC key.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default data format: PEM
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Perform an ECDH operation with key 0x52b6 and a public key in the file pubkey.pem.
+yubihsm> derive ecdh 0 0x52b6 pubkey.pem
+5898516bcb0cb3db89d53471137c2d1c741b8ba6ebf2bb01f4a62d97342e97b2
+Command Line Mode
+$ yubihsm-shell -a derive-ecdh -i <key_id> [ --in <public_key> --authkey <authKeyID> -p <password> --out <ecdh> --informat <pubkey_format> --outformat <ecdh_format> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-i, --object-id=SHORT Required.
+EC key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--in=STRING
+The public key of another EC key.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Data Format: PEM
+--informat=ENUM
+Format of public key.
+Possible Values: base64, binary, PEM, hex
+Default Value: PEM
+--out=STRING
+ECDH key.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default Data Format: PEM
+--outformat=ENUM
+Format of ECDH key.
+Possible Values: base64, binary, PEM, hex
+Default Value: PEM
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+Example
+Perform an ECDH operation with key 0x52b6 and a public key in the file pubkey.pem.
+$ yubihsm-shell -a derive-ecdh -i 0x52b6 --in pubkey.pem
+5898516bcb0cb3db89d53471137c2d1c741b8ba6ebf2bb01f4a62d97342e97b2
+Protocol Details
+Command
+Tc = 0x57
+Lc = 2 + LD
+Vc = K || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+D = Uncompressed public key to perform the exchange with (57, 65, 97, 129 or 133 bytes)
+Response
+Tc = 0xd7
+Lc = LX
+Vc = X
+where –
+X = X coordinate of the completed key exchange
+—————————————————————————————————————————-
+ECHO Command
+Return the byte sequence present within the data field, without any modification. Can be sent over an encrypted Session or as a bare command.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+Over Encrypted Session
+yubihsm> echo e:session,b:byte,w:count
+Bare Command
+yubihsm> plain echo b:byte,w:count
+Parameters
+byte Required.
+The byte to be echoed.
+count Required.
+How many times the byte will be echoed.
+session
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Echo over session 0
+yubihsm> echo 0 0x3c 10
+Response (10 bytes):
+33c3c3c3c3c3c3c3c 3c3c
+Plain echo
+yubihsm> plain echo 0x3c 10
+Response (10 bytes):
+3c3c3c3c3c3c3c3c 3c3c
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x01
+Lc = LE
+Vc = E
+where –
+E = Data to echo (1-2021 bytes)
+Response
+Tr = 0x81
+Lr = LE
+Vr = E
+where –
+E = Data to echo (1-2021 bytes)
+—————————————————————————————————————————-
+ENCRYPT AES CBC Command
+Available with firmware version 2.3.1 or later.
+Encrypt data in AES CBC mode.
+Required Capabilities
+Authentication Key used to open the session must have the encrypt-cbc capability.
+Symmetric Key must have the encrypt-cbc capability.
+Interactive Mode
+yubihsm> encrypt aescbc e:session,w:key_id,s:iv,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the symmetric key to encrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+iv Required.
+Encryption initialization vector. 16 bytes in HEX format.
+data
+Data to encrypt. Multiple of 16 bytes. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: Data or - for stdin
+Default Value: stdin
+Input format: HEX
+Output format: PEM
+Example
+Encrypt data using key 0x008c:
+yubihsm> encrypt aescbc 0 0x008c 00000000000000000000000000000000 c5cffa1c2333fd824a86951cf602bca1
+SG0OU4CT2pH2dnd967KyTU5OgdJ8edxJjOf3Yt52gGQ=
+Command Line Mode
+$ yubihsm-shell -a encrypt-aescbc -i <key_id> --iv <iv> [--in <data> --out <out> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password will be prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the symmetric key to encrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--iv=STRING Required.
+Encryption initialization vector. 16 bytes in HEX format
+--in=STRING
+Data to encrypt. Multiple of 16 bytes. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: data or stdin
+Default Value: stdin
+Input format: HEX
+--out=STRING
+Encrypted data.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Output format: Binary
+Example
+Encrypt data using key 0x008c:
+$ yubihsm-shell -a encrypt-aescbc -i 0x008c --in c5cffa1c2333fd824a86951cf602bca1 --out data.enc
+Protocol Details
+Command
+Tc = 0x72
+Lc = 2 + 16 + LD
+Vc = I || IV || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+IV = Encryption initialization vector (IV) in HEX (16 bytes)
+D = Data to encrypt (multiple of 16 bytes)
+Response
+Tr = 0xf2
+Lr = LE
+Vr = E
+where —
+E = Encrypted data
+—————————————————————————————————————————-
+ENCRYPT AES ECB Command
+Available with firmware version 2.3.1 or later.
+Encrypt data in AES ECB mode.
+Required Capabilities
+Authentication Key used to open the session must have the encrypt-ecb capability.
+Symmetric Key must have the encrypt-ecb capability.
+Interactive Mode
+yubihsm> encrypt aesecb e:session,w:key_id,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the symmetric key to encrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+data
+Data to encrypt. Multiple of 16 bytes. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: Data to sign or - for stdin
+Default Value: stdin
+Input format: HEX
+Output format: PEM
+Example
+Encrypt data using key 0x0064:
+yubihsm> encrypt aesecb 0 0x0064 c5cffa1c2333fd824a86951cf602bca1 SG0OU4CT2pH2dnd967KyTQSIdJILAhWsmhdFIkHAZMQ=
+Command Line Mode
+$ yubihsm-shell -a encrypt-aesecb -i <key_id> [--in <data> --out <out> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password will be prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the symmetric key to encrypt with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--in=STRING
+Data to encrypt. Multiple of 16 bytes. When using stdin, the end of input is marked with CTRL-D.
+Possible Values: data or stdin
+Default Value: stdin
+Input format: HEX
+--out=STRING
+Encrypted data.
+Possible Value: Path to file or stdout
+Default Value: stdout
+Output format: Binary
+Example
+Encrypt data using key 0x0064:
+$ yubihsm-shell -a encrypt-aesecb -i 0x0064 --in c5cffa1c2333fd824a86951cf602bca1 --out data.enc
+Protocol Details
+Command
+Tc = 0x70
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the symmetric Key (2 bytes)
+D = Data to encrypt (multiple of 16 bytes)
+Response
+Tr = 0xf0
+Lr = LE
+Vr = E
+where –
+E = Encrypted data
+—————————————————————————————————————————-
+EXPORT WRAPPED Command
+Retrieves an Object under wrap from the device. The Object is encrypted using AES-CCM with a 16 bytes MAC and a 13 bytes nonce.
+For YubiHSM devices with firmware version 2.4 or later, this command has been extended to enable exporting ed25519 keys with the seed for a private key. To ensure backward compatibility with older versions of the HSM, the default is to not export the seed. Importing such a legacy format results in an all-zero seed if such a key is exported in the future.
+Required Capabilities
+Authentication Key must have the export-wrapped capability.
+Wrap Key must have the export-wrapped capability.
+Target object must have the exportable-under-wrapped capability.
+Target object capabilities must all be part of the Wrap Key delegated capabilities.
+Interactive Mode
+yubihsm> get wrapped e:session,w:wrapkey_id,t:type,w:id,b:include_seed=0,F:file=-
+Parameters
+file
+Encrypted/wrapped object.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+id Required.
+Object ID of the object to be wrapped. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+include_seed
+Export ED25519 key with its seed. Default is 0, which does not export the seed for a privacy key.
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+type Required.
+Type of the object to be wrapped.
+Possible Values: asymmetric-key, symmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key, public-wrap-key
+wrapkey_id Required.
+Wrap key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+Example
+Fetch the Asymmetric Key 0x997e encrypted with Wrap Key 0xcf94 and store the result in the file key.enc.
+yubihsm> get wrapped 0 0xcf94 asymmetric-key 0x997e 0 key.enc
+Command Line Mode
+$ yubihsm-shell -a get-wrapped --wrap-id <wrapkey_id> -t <type> -i <object_id> [ --include-seed --authkey <authKeyID> -p <password> --out <out_data> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-i, --object-id=SHORT Required.
+Object ID of the object to be wrapped. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--include_seed
+Export ED25519 key with its seed. Default is not to.
+--out=STRING
+Encrypted/wrapped object.
+Possible Values: Path to file or stdout
+Default Value: stdout
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified
+-t, --object-type=STRING Required.
+Type of the object to be wrapped.
+Possible Values: symmetric-key, symmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key, public-wrap-key
+--wrap-id=INT Required.
+Wrap key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Example
+Fetch the Asymmetric Key 0x997e encrypted with Wrap Key 0xcf94 and store the result in the file key.enc.
+$ yubihsm-shell -a get-wrapped --wrap-id 0xcf94 -t symmetric-key -i 0x997e --out key.enc
+Protocol Details
+Command
+Tc = 0x4a
+Lc = 2 + 1 + 2 { + 1 }
+Vc = Iw || T || Io { || S }
+where –
+Iw = Object ID of Wrap Key to use (2 bytes)
+T = Type, Objects of Object to wrap (1 byte)
+Io = Object ID of Object to wrap (2 bytes)
+S = 1 to include seed when exporting ED25519 key, 0 otherwise. Optional with firmware 2.4 or higher (1 byte)
+Response
+Tr = 0xca
+Lr = 13 + LR
+Vr = N || R
+where –
+N = Nonce used for this wrap (13 bytes)
+R = Wrapped data (Length dependent on object)
+—————————————————————————————————————————-
+EXPORT RSA WRAPPED Command
+Available on YubiHSM devices with firmware version 2.4 or higher.
+Retrieves an Object under RSA wrap from the device. The wrapped object is serialized using the YubiHSM-internal format.
+Required Capabilities
+Authentication Key must have the export-wrapped capability.
+Wrap Key must have the export-wrapped capability.
+Target object must have the exportable-under-wrapped capability.
+Target object capabilities must all be part of the Wrap Key delegated capabilities.
+Interactive Mode
+yubihsm> get rsa_wrapped e:session,w:wrapkey_id,t:type,w:id,a:aes=aes256,a:hash=rsa-oaep-sha256,a:mgf1=mgf1-sha256,F:file=-
+Parameters
+aes
+Algorithm of the ephemeral AES key
+Possible Values: aes128, aes192 or aes256
+Default Value: aes256
+file
+Encrypted/wrapped object.
+Possible Values: Path to file or - for stdin
+Default Value: stdout
+Format: Binary
+hash
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+id Required.
+Object ID of the object to be wrapped. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+mgf1
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+type Required.
+Type of the object to be wrapped.
+Possible Values: asymmetric-key, symmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key, public-wrap-key
+wrapkey_id Required.
+Public Wrap Key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+Example
+Fetch the Asymmetric Key 0x997e encrypted with RSA Public Wrap Key 0xcf94 and store the result in the file object.enc.
+yubihsm> get rsa_wrapped 0 0xcf94 asymmetric-key 0x997e aes192 rsa-oaep-sha384 mgf1-sha1 object.enc
+Command Line Mode
+$ yubihsm-shell -a get-rsa-wrapped --wrap-id <wrapkey_id> -t <type> -i <object_id> [ -A <aes> --oaep <oaep> --mgf1 <mgf1> --authkey <authKeyID> -p <password> --out <out_data> ]
+Parameters
+-A, --algorithm=STRING
+Algorithm of the ephemeral AES key
+Possible Values: aes128, aes192 or aes256
+Default Value: aes256
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-i, --object-id=SHORT Required.
+Object ID of the object to be wrapped. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--mgf1=STRING
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+--oaep=STRING
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+--out=STRING
+Encrypted/wrapped object.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Format: Binary
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified
+-t, --object-type=STRING Required.
+Type of the object to be wrapped.
+Possible Values: symmetric-key, symmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key, public-wrap-key
+--wrap-id=INT Required.
+Wrap key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Example
+Fetch the Asymmetric Key 0x997e encrypted with Wrap Key 0xcf94 and store the result in the file object.enc.
+$ yubihsm-shell -a get-rsa-wrapped --wrap-id 0xcf94 -t symmetric-key -i 0x997e -A aes192 --oaep rsa-oaep-sha384 --mgf1 mgf1-sha1 --out object.enc
+Protocol Details
+Command
+Tc = 0x76
+Lc = 2 + 1 + 2 + 1 + 1 + 1 + LHL
+Vc = Iw || To || Ti || Ae || H || M || LH
+where –
+Iw = Object ID of Wrap Key to use (2 bytes)
+To = Type, Objects of Object to wrap (1 byte)
+Ti = Object ID of Object to wrap (2 bytes)
+Ae = Algorithms of the ephemeral AES key (1 byte)
+H = Algorithms to use for OAEP label (1 byte)
+M = Algorithms to use for MGF1 (1 byte)
+LH = The label digest (Length dependent on OAEP algorithm)
+Response
+Tr = 0xf6
+Lr = LR
+Vr = R
+where –
+R = RSA wrapped data (Length dependent on object)
+—————————————————————————————————————————-
+EXPORT RSA WRAPPED KEY Command
+Available on YubiHSM devices with firmware version 2.4 or higher.
+Wrap an (a)symmetric key data (aka, not the whole object) using a Public Wrap Key Object. Only asymmetric and symmetric key objects are valid targets. Asymmetric keys are serialized as PKCS#8
+Required Capabilities
+Authentication Key must have the export-wrapped capability.
+Public Wrap Key must have the export-wrapped capability.
+Target object must have the exportable-under-wrapped capability.
+Interactive Mode
+yubihsm> get rsa_wrapped_key e:session,w:wrapkey_id,t:type,w:id,a:aes=aes256,a:hash=rsa-oaep-sha256,a:mgf1=mgf1-sha256,F:file=-
+Parameters
+aes
+Algorithm of the ephemeral AES key
+Possible Values: aes128, aes192 or aes256
+Default Value: aes256
+file
+Encrypted/wrapped object.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Format: Binary
+hash
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+id Required.
+Object ID of the object to be wrapped. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+mgf1
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+type Required.
+Type of the object to be wrapped.
+Possible Values: asymmetric-key, symmetric-key
+wrapkey_id Required.
+Wrap key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+Example
+Fetch the Asymmetric Key 0x997e encrypted with RSA Public Wrap Key 0xcf94 and store the result in the file key.enc.
+yubihsm> get rsa_wrapped_key 0 0xcf94 asymmetric-key 0x997e aes192 rsa-oaep-sha384 mgf1-sha1 key.enc
+Command Line Mode
+$ yubihsm-shell -a get-rsa-wrapped-key --wrap-id <wrapkey_id> -t <type> -i <object_id> [ -A <aes> --oaep <oaep> --mgf1 <mgf1> --authkey <authKeyID> -p <password> --out <out_data> ]
+Parameters
+-A, --algorithm=STRING
+Algorithm of the ephemeral AES key
+Possible Values: aes128, aes192 or aes256
+Default Value: aes256
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-i, --object-id=SHORT Required.
+Object ID of the object to be wrapped. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--mgf1=STRING
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+--oaep=STRING
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+--out=STRING
+Encrypted/wrapped object.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Format: Binary
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified
+-t, --object-type=STRING Required.
+Type of the object to be wrapped.
+Possible Values: symmetric-key, symmetric-key
+--wrap-id=INT Required.
+Wrap key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Example
+Fetch the Asymmetric Key 0x997e encrypted with Wrap Key 0xcf94 and store the result in the file key.enc.
+$ yubihsm-shell -a get-rsa-wrapped-key --wrap-id 0xcf94 -t symmetric-key -i 0x997e -A aes192 --oaep rsa-oaep-sha384 --mgf1 mgf1-sha1 --out key.enc
+Protocol Details
+Command
+Tc = 0x74
+Lc = 2 + 1 + 2 + 1 + 1 + 1 + LHL
+Vc = Iw || To || Ti || Ae || H || M || LH
+where –
+Iw = Object ID of Wrap Key to use (2 bytes)
+To = Type, Objects of Object to wrap (1 byte)
+Ti = Object ID of Object to wrap (2 bytes)
+Ae = Algorithms of the ephemeral AES key (1 byte)
+H = Algorithms to use for OAEP label (1 byte)
+M = Algorithms to use for MGF1 (1 byte)
+LH = The label digest (Length dependent on OAEP algorithm)
+Response
+Tr = 0xf4
+Lr = LR
+Vr = R
+where –
+R = RSA wrapped key (Length dependent on key)
+—————————————————————————————————————————-
+GENERATE ASYMMETRIC KEY Command
+Generate an Asymmetric Key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the generate-asymmetric-key capability.
+The asymmetric key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> generate asymmetric e:session,w:key_id,s:label,d:domains,c:capabilities,a:algorithm
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Value: Maximum of 40 characters string.
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, sign-pkcs, sign-pss, sign-ecdsa, sign-eddsa, decrypt-pkcs, decrypt-oaep, derive-ecdh, exportable-under-wrap, sign-ssh-certificate, sign-attestation-certificate
+algorithm Required.
+Key algorithm.
+Possible Values: rsa2048, rsa3072, rsa4096, ecp256, ecp384, ecp521, eck256, ecbp256, ecbp384, ecbp512, ed25519, ecp224
+Example
+Generate a new key using secp256r1 in the device.
+yubihsm> generate asymmetric 0 0 eckey 1 sign-ecdsa ecp256
+Generated Asymmetric key 0x2846
+Command Line Mode
+$ yubihsm-shell -a generate-asymmetric-key -i <object_id> -l <label> -d <domains> -c <capabilities> -A <algorithm> [--authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING
+Required. The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT
+Required. Object ID of the asymmetric key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Maximum of 40 characters string. Can be empty.
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, sign-pkcs, sign-pss, sign-ecdsa, sign-eddsa, decrypt-pkcs, decrypt-oaep, derive-ecdh, exportable-under-wrap, sign-ssh-certificate, sign-attestation-certificate
+-A, --algorithm=STRING Required.
+Key algorithm.
+Possible Values: rsa2048, rsa3072, rsa4096, ecp256, ecp384, ecp521, eck256, ecbp256, ecbp384, ecbp512, ed25519, ecp224
+Example
+Generate a new key using secp256r1 in the device.
+$ yubihsm-shell -a generate-asymmetric-key -i 0 -l eckey -d 1 -c sign-ecdsa -A ecp256
+Generated Asymmetric key 0x2846
+Protocol Details
+Command
+Tc = 0x46
+Lc = 2 + 40 + 2 + 8 + 1
+Vc = I || L || D || C || A
+Generate an Asymmetric key-pair with a given ID. Each parameter has a fixed length and the order is compulsory.
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Access Control and Role Definition (8 bytes)
+A = Algorithms (1 byte)
+Response
+Tr = 0xc6
+Lr = 2
+Vr = I
+where –
+I = Object ID of the created Asymmetric Key (2 bytes)
+—————————————————————————————————————————-
+GENERATE HMAC KEY Command
+Generate an HMAC Key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the generate-hmac-key capability.
+The HMAC key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> generate hmackey e:session,w:key_id,s:label,d:domains,c:capabilities,a:algorithm
+Parameters
+session Required.
+The ID of the authenticated session to send the command over. 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string.
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key.Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, sign-hmac, verify-hmac, exportable-under-wrap
+algorithm Required.
+Key algorithm.
+Possible Values: hmac-sha1, hmac-sha256, hmac-sha384, hmac-sha512
+Example
+Generate an HMAC-SHA512 key.
+yubihsm> generate hmackey 0 0 hmackey 1 sign-hmac:verify-hmac hmac-sha512
+Generated HMAC key 0xa9bf
+Command Line Mode
+$ yubihsm-shell -a generate-hmac-key -i <key_id> -l <label> -d <domains> -c <capabilities> -A <algorithm> [--authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, sign-hmac, verify-hmac, exportable-under-wrap
+-A, --algorithm=STRING Required.
+Key algorithm.
+Possible Values: hmac-sha1, hmac-sha256, hmac-sha384, hmac-sha512
+Example
+Generate a new key using secp256r1 in the device:
+$ yubihsm-shell -a generate-hmac-key -i 0 -l hmackey -d 1 -c sign-hmac,verify-hmac -A hmac-sha512
+Generated HMAC key 0xa9bf
+Protocol Details
+Command
+Tc = 0x5a
+Lc = 2 + 40 + 2 + 8 + 1
+Vr = I || L || D || C || A
+where –
+I = Object ID of the HMAC Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+Response
+Tr = 0xda
+Lr = 2
+Vr = I
+where –
+I = Object ID
+—————————————————————————————————————————-
+GENERATE OTP AEAD KEY Command
+Generate an OTP AEAD Key for Yubico OTP decryption.
+Required Capabilities
+Authentication Key used to open the session must have the generate-otp-aead-key capability.
+The OTP AEAD key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> generate otpaeadkey e:session,w:key_id,s:label,d:domains,c:capabilities,a:algorithm,u:nonce_id
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Posible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Maximum of 40 characters string. Can be empty
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16.
+capabilities Required.
+Capabilities of the key. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, create-otp-aead, decrypt-otp, randomize-otp-aead, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, exportable-under-wrap Use none to include no capability.
+algorithm Required.
+Key algorithm. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possble Values: aes128-yubico-otp, aes192-yubico-otp, aes256-yubico-otp
+nonce_id Required.
+OTP nonce. 4 bytes
+Example
+Generate a new AES-256 OTP AEAD Key that can decrypt Yubico OTPs and create new AEADs.
+yubihsm> generate otpaeadkey 0 0 otpaeadkey 1 decrypt-otp,create-otp-aead aes256-yubico-otp 0x01020304
+Generated OTP AEAD key 0x027c
+Command Line Mode
+$ yubihsm-shell -a generate-otp-aead-key -i <key_id> -l <label> -d <domains> -c <capabilities> -A <algorithm> --nonce <nonce_id> [--authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty
+Possible Values: Maximum of 40 characters string.
+-d, --domains=STRING Required.
+Domains where the key will be accessible.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability.Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, create-otp-aead, decrypt-otp, randomize-otp-aead, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, exportable-under-wrap
+-A, --algorithm=STRING Required.
+Key lgorithm
+Possible Values: aes128-yubico-otp, aes192-yubico-otp, aes256-yubico-otp
+--nonce=INT Required.
+OTP nonce
+Example
+Generate a new AES-256 OTP AEAD Key that can decrypt Yubico OTPs and create new AEADs.
+$ yubihsm-shell -a generate-otp-aead-key -i 0 -l otpaeadkey -d 1 -c decrypt-otp,create-otp-aead -A aes256-yubico-otp --nonce 0x01020304
+Generated OTP AEAD key 0x027c
+Protocol Details
+Command
+Tc = 0x66
+Lc = 2 + 40 + 2 + 8 + 1 + 4
+Vc = I || L || D || C || A || N
+where –
+I = Object ID of the OTP AEAD Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+N = Nonce ID (4 bytes)
+Response
+Tr = 0xe6
+Lr = 2
+Vr = I
+where –
+I = Object ID of the created OTP AEAD Key (2 bytes)
+—————————————————————————————————————————-
+GENERATE SYMMETRIC KEY Command
+Available with firmware version 2.3.1 or later.
+Generate a symmetric Key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the generate-symmetric-key capability.
+The symmetric key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> generate symmetric e:session,w:key_id,s:label,d:domains,c:capabilities,a:algorithm
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between
+Possible Values: none, decrypt-ecb, encrypt-ecb, decrypt-cbc, encrypt-cbc, exportable-under-wrap
+algorithm Required.
+Key algorithm
+Possible Values: aes128, aes192, aes256
+Example
+Generate a new key using aes256 in the device:
+yubihsm> generate symmetric 0 0 aeskey 1 encrypt-ecb,decrypt-ecb aes256
+Generated symmetric key 0xc040
+Command Line Mode
+$ yubihsm-shell -a generate-symmetric-key -i <key_id> -l <label> -d <domains> -c <capabilities> -A <algorithm> [--authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password will be prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key. Use ‘0’ to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between
+Possible Values: none, encrypt-ecb, decrypt-ecb, encrypt-cbc, decrypt-cbc, exportable-under-wrap
+-A, --algorithm=STRING Required.
+Key algorithm
+Possible Values: aes128, aes192, aes256
+Example
+Generate a new key using secp256r1 in the device:
+$ yubihsm-shell -a generate-symmetric-key -l aeskey -d 1 -c encrypt-ecb,decrypt-ecb -A aes256
+Generated symmetric key 0xc040
+Protocol Details
+Command
+Tc = 0x6e
+Lc = 2 + 40 + 2 + 8 + 1
+Vc = I || L || D || C || A
+Generate a symmetric key with a given ID. Each parameter has a fixed length and the order is compulsory.
+where –
+I = Object ID of the symmetric Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+Response
+Tr = 0xee
+Lr = 2
+Vr = I
+where –
+I = Object ID of the created symmetric Key (2 bytes)
+—————————————————————————————————————————-
+GENERATE WRAP KEY Command
+Generate a Wrap Key that can be used for export, import, wrap data, and unwrap data.
+Required Capabilities
+Authentication Key used to open the session must have the generate-wrap-key capability.
+The wrap key capabilities and delegated capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> generate wrapkey e:session,w:key_id,s:label,d:domains,c:capabilities,c:delegated_capabilities,a:algorithm
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string.
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, wrap-data, unwrap-data, export-wrapped, import-wrapped, exportable-under-wrap
+delegated_capabilities Required.
+Delegated capabilities. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+algorithm Required.
+Key algorithm.
+Possible Values: aes128-ccm-wrap, aes192-ccm-wrap, aes256-ccm-wrap, rsa2048, rsa3072, rsa4096
+Example
+Generate a new Wrap Key that can be used for wrap and unwrap.
+yubihsm> generate wrapkey 0 0 wrapkey 1 wrap-data:unwrap-data none aes256-ccm-wrap
+Generated Wrap key 0x5b3a
+Command Line Mode
+$ yubihsm-shell -a generate-wrap-key -i <key_id> -l <label> -d <domains> -c <capabilities> --delegated <delegated_capabilities> -A <algorithm> [--authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified
+-i, --object-id=SHORT Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, wrap-data, unwrap-data, export-wrapped, import-wrapped, exportable-under-wrap
+--delegated=STRING
+Delegated capabilities of kry. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+Default Value: none
+-A, --algorithm=STRING Required.
+Key algorithm.
+Possible Values: aes128-ccm-wrap, aes192-ccm-wrap, aes256-ccm-wrap
+Example
+Generate a new Wrap Key that can be used for wrap and unwrap.
+$ yubihsm-shell -a generate-wrap-key -i 0 -l wrapkey -d 1 -c wrap-data:unwrap-data -A aes256-ccm-wrap
+Generated Wrap key 0x5b3a
+Protocol Details
+Command
+Tc = 0x5b
+Lc = 2 + 40 + 2 + 8 + 1 + 8
+Vc = I || L || D || C || A || DC
+where –
+I = Object ID of the Wrap Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+DC = Delegated Capabilities (8 bytes)
+Response
+Tr = 0xdb
+Lr = 2
+Vr = I
+where –
+I = Object ID of created Wrap Key (2 bytes)
+—————————————————————————————————————————-
+GET DEVICE INFO Command
+Gets device version, device serial, supported Algorithms, and the number of available log entries. This is run as a bare command and not over an encrypted session.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+$ get deviceinfo
+yubihsm> get deviceinfo
+Example
+Fetch device info for currently connected device.
+yubihsm> get deviceinfo
+Version number: 2.0.0
+Serial number: 2000000
+Log used: 2/62
+Supported algorithms: rsa-pkcs1-sha1, rsa-pkcs1-sha256, rsa-pkcs1-sha384,
+ rsa-pkcs1-sha512, rsa-pss-sha1, rsa-pss-sha256,
+ rsa-pss-sha384, rsa-pss-sha512, rsa2048, rsa3072,
+ rsa4096, ecp256, ecp384, ecp521, eck256, ecbp256,
+ ecbp384, ecbp512, hmac-sha1, hmac-sha256, hmac-sha384,
+ hmac-sha512, ecdsa-sha1, ecdh, rsa-oaep-sha1,
+ rsa-oaep-sha256, rsa-oaep-sha384, rsa-oaep-sha512,
+ aes128-ccm-wrap, opaque-data, opaque-x509-certificate,
+ mgf1-sha1, mgf1-sha256, mgf1-sha384, mgf1-sha512,
+ template-ssh, aes128-yubico-otp,
+ aes128-yubico-authentication, aes192-yubico-otp,
+ aes256-yubico-otp, aes192-ccm-wrap, aes256-ccm-wrap,
+ ecdsa-sha256, ecdsa-sha384, ecdsa-sha512, ed25519,
+ ecp224
+Command Line Mode
+$ yubihsm-shell -a get-device-info
+Example
+Fetch device info for currently connected device.
+$ yubihsm-shell -a get-device-info
+Version number: 2.4.0
+Serial number: 123456
+Log used: 14/62
+Supported algorithms: rsa-pkcs1-sha1, rsa-pkcs1-sha256, rsa-pkcs1-sha384,
+ rsa-pkcs1-sha512, rsa-pss-sha1, rsa-pss-sha256,
+ rsa-pss-sha384, rsa-pss-sha512, rsa2048,
+ rsa3072, rsa4096, ecp256,
+ ecp384, ecp521, eck256,
+ ecbp256, ecbp384, ecbp512,
+ hmac-sha1, hmac-sha256, hmac-sha384,
+ hmac-sha512, ecdsa-sha1, ecdh,
+ rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384,
+ rsa-oaep-sha512, aes128-ccm-wrap, opaque-data,
+ opaque-x509-certificate, mgf1-sha1, mgf1-sha256,
+ mgf1-sha384, mgf1-sha512, template-ssh,
+ aes128-yubico-otp, aes128-yubico-authentication, aes192-yubico-otp,
+ aes256-yubico-otp, aes192-ccm-wrap, aes256-ccm-wrap,
+ ecdsa-sha256, ecdsa-sha384, ecdsa-sha512,
+ ed25519, ecp224, rsa-pkcs1-decrypt,
+ ecp256-yubico-authentication, aes128, aes192,
+ aes256, aes-ecb, aes-cbc,
+ aes-kwp,
+Part number: 78CLUFX5000P
+Protocol Details
+Command
+Tc = 0x06
+Lc = { LI }
+Vc = { I }
+where –
+I = Page index, can only be 0 = general device info or 1 = part number. Optional and is only available with firmware 2.4 or higher (1 byte)
+Response
+Unspecified or page index 0:
+Tr = 0x86
+Lr = 9 + algorithms
+Vr = VMajor || VMinor || VBuild || S || Ltotal || Lused || A
+where –
+VMajor = Major version number (1 byte)
+VMinor = Minor version number (1 byte)
+VBuild = Build version number (1 byte)
+S = Serial number (4 bytes)
+Ltotal = Log Store size expressed in number of log entries (1 byte)
+Lused = Log lines used (1 byte)
+A = List of supported Algorithms
+Page index 1:
+Tr = 0x86
+Lr = 13
+Vr = P
+where –
+P = Part number (13 byte)
+—————————————————————————————————————————-
+GET DEVICE PUBLIC KEY Command
+Available with firmware version 2.3.1 or later.
+Fetch the device public key to use with asymmetric authentication to the device. This is run as a bare command and not over an encrypted session.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> get devicepubkey
+Command Line Mode
+$ yubihsm-shell -a get-public-key
+Example
+Get device public key:
+yubihsm> get devicepubkey
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEfSE6zN59ONnsOf
+9C8VGNym+oBgnWO5mjJZJ5Z9kkbpMIhLwkjsqKOhgKI+Slfv3o
+XmrcwVzUstLAkQe1HdC/uA==
+-----END PUBLIC KEY-----
+Protocol Details
+Command
+Tc = 0x0a
+Lc = 0
+Vc = Ø
+Response
+Tr = 0x8a
+Lr = 1 + 64
+Vr = A | | K
+where –
+A = Algorithms (1 byte)
+K = Uncompressed EC-P256 public key (64 bytes)
+The algorithm will currently always be ec-p256-yubico-authentication.
+The uncompressed EC key marker is omitted (hence the 64 bytes), similarly to how other EC keys are handled.
+—————————————————————————————————————————-
+GET LOG ENTRIES Command
+Fetch device audit log. Fetch all current entries from the device Log Store.
+Required Capabilities
+Authentication Key used to open the session must have the get-log-entries capability.
+Interactive Mode
+yubihsm> audit get e:session,F:file=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+file
+Log entries. Default output format: ASCII.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Example
+yubihsm> audit get 0
+0 unlogged boots found
+0 unlogged authentications found
+Found 6 items
+item: 46 -- cmd: 0x4b -- length: 234 -- session key: 0x0001 -- target key: 0xcf94 -- second key: 0x997e -- result: 0xcb -- tick: 335725 -- hash: 415f51f1f035a1b713e730e4464e4033
+item: 47 -- cmd: 0x4c -- length: 77 -- session key: 0x0001 -- target key: 0xaff7 -- second key: 0xffff -- result: 0xcc -- tick: 351714 -- hash: 5496a60d478c2b9c801d8d32ca66b554
+item: 48 -- cmd: 0x00 -- length: 0 -- session key: 0xffff -- target key: 0x0000 -- second key: 0x0000 -- result: 0x00 -- tick: 0 -- hash: 14ac7747ba9bbb243cfc70befeb5349b
+item: 49 -- cmd: 0x03 -- length: 10 -- session key: 0xffff -- target key: 0x0001 -- second key: 0xffff -- result: 0x83 -- tick: 139 -- hash: b20a8f25c025e693a8e869b433294a20
+item: 50 -- cmd: 0x04 -- length: 17 -- session key: 0xffff -- target key: 0x0001 -- second key: 0xffff -- result: 0x84 -- tick: 139 -- hash: ebfae425c319ac7a0afbb8b92597de7c
+item: 51 -- cmd: 0x67 -- length: 2 -- session key: 0x0001 -- target key: 0xffff -- second key: 0xffff -- result: 0xe7 -- tick: 697 -- hash: 2e395d1b706668737e1d2215813db47e
+Command Line Mode
+$ yubihsm-shell -a get-logs [ --out <file> --authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--out=STRING
+Log entries.
+Possible Values: Path to file or stdout
+Default Value: stdout
+--outformat=ENUM
+Output data format.
+Possible Values: default, base64, binary, PEM, hex, ASCII
+Default Format: ASCII A
+Example
+$ yubihsm-shell -a get-logs
+0 unlogged boots found
+0 unlogged authentications found
+Found 6 items
+item: 46 -- cmd: 0x4b -- length: 234 -- session key: 0x0001 -- target key: 0xcf94 -- second key: 0x997e -- result: 0xcb -- tick: 335725 -- hash: 415f51f1f035a1b713e730e4464e4033
+item: 47 -- cmd: 0x4c -- length: 77 -- session key: 0x0001 -- target key: 0xaff7 -- second key: 0xffff -- result: 0xcc -- tick: 351714 -- hash: 5496a60d478c2b9c801d8d32ca66b554
+item: 48 -- cmd: 0x00 -- length: 0 -- session key: 0xffff -- target key: 0x0000 -- second key: 0x0000 -- result: 0x00 -- tick: 0 -- hash: 14ac7747ba9bbb243cfc70befeb5349b
+item: 49 -- cmd: 0x03 -- length: 10 -- session key: 0xffff -- target key: 0x0001 -- second key: 0xffff -- result: 0x83 -- tick: 139 -- hash: b20a8f25c025e693a8e869b433294a20
+item: 50 -- cmd: 0x04 -- length: 17 -- session key: 0xffff -- target key: 0x0001 -- second key: 0xffff -- result: 0x84 -- tick: 139 -- hash: ebfae425c319ac7a0afbb8b92597de7c
+item: 51 -- cmd: 0x67 -- length: 2 -- session key: 0x0001 -- target key: 0xffff -- second key: 0xffff -- result: 0xe7 -- tick: 697 -- hash: 2e395d1b706668737e1d2215813db47e
+Protocol Details
+Command
+Tc = 0x4d
+Lc = 0
+Vc = Ø
+Response
+Tr = 0xcd
+Lr = 2 + 2 + 1 + (N * 32)
+Vr = B || O || N || E1 || E2 || … || EN
+where –
+B = Number of unlogged boot events (if the log buffer is full and audit enforce is set) (2 bytes)
+O = Number of unlogged authentication events (if the log buffer is full and audit enforce is set) (2 bytes)
+N = Number of elements in the list (1 byte)
+Ei = Generic log entry composed of:
+Command number (two bytes)
+Command ID (one byte)
+Command length (two bytes)
+ID of the originating session’s authentication key (two bytes)
+Target key affected by the command (two bytes)
+Secondary key if the command affected more than one key (two bytes)
+Result of the command on success or an error code if unsuccessful (one byte)
+Systick when the command was processed (4 bytes)
+Digest (16 bytes)
+The digest is computed as trunc(16, SHA256(Ei.Data || trunc(16, Ei-1.Digest))). For the initial log entry, a random string of 32 bytes is used, instead of the digest of the previous message.
+When the device initializes after a reset, a log entry with all fields set to 0xff is logged.
+When the device boots up, a log entry with all fields set to 0x00 is logged.
+—————————————————————————————————————————-
+GET OBJECT INFO Command
+Fetch all metadata about an Objects.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> get objectinfo e:session,w:id,t:type
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Value: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+id Required.
+Object ID of the object to delete. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+type Required.
+Type of the object to delete.
+Possible Values: asymmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key
+Example
+Get Object info for Asymmetric Key with ID 0x1e15.
+yubihsm> get objectinfo 0 0x1e15 asymmetric-key
+id: 0x1e15, type: asymmetric-key, algorithm: rsa2048, label: "rsakey", length: 896, domains: 1, sequence: 0, origin: imported, capabilities: sign-pkcs
+Command Line Mode
+$ yubihsm-shell -a get-object-info -i <object_id> -t <type> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the object to delete. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-t, --object-type=STRING Required.
+Type of the object to delete.
+Possible Values: asymmetric-key, authentication-key, hmac-key, opaque, otp-aead-key, template, wrap-key
+Example
+Get Object info for Asymmetric Key with ID 0x1e15.
+$ yubihsm-shell -a get-object-info -i 0x1e15 -t asymmetric-key
+Protocol Details
+Command
+Tc = 0x4e
+Lc = 2 + 1
+Vc = I || T
+where –
+I = Object ID (2 bytes)
+T = Type, Objects (1 byte)
+Response
+Tr = 0xce
+Lr = 8 + 2 + 2 + 2 + 1 + 1 + 1 + 1 + 40 + 8
+Vr = C || I || N || D || T || A || S || O || L || DC
+where –
+C = Capabilities (8 bytes)
+I = Object ID (2 bytes)
+N = Object Length (2 bytes)
+D = Domains (2 bytes)
+T = Type, Objects (1 byte)
+A = Algorithms (1 byte)
+S = Sequence (1 byte)
+O = Origin (1 byte)
+L = Label (40 bytes)
+DC = Delegated Capabilities (8 bytes)
+—————————————————————————————————————————-
+GET OPAQUE Command
+Retrieve an Opaque Object (like an X.509 certificate) from the device.
+If an opaque object with algorithm opaque-x509-certificate is stored after being compressed, the certificate data is decompressed after it has been retrieved from the device.
+Required Capabilities
+Authentication Key used to open the session must have the get-opaque capability.
+Interactive Mode
+yubihsm> get opaque e:session,w:object_id,F:file=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+object_id Required.
+Opaque Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+file
+Value of Opaque object. Default output format: binary (DER). If object algorithm is opaque-x509-certificate, the output will be an X509Certificate.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Example
+Fetch Opaque Object 0xe255 and store in the file cert.der.
+yubihsm> get opaque 0 0xe255 cert.der
+Command Line Mode
+$ yubihsm-shell -a get-opaque -i <object_id> [--out <file> --outformat <format> --authkey <authKeyID> -p <password>]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Opaque Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--out=STRING
+Value of Opaque object. Default output format: binary (DER). If object algorithm is opaque-x509-certificate, the output will be an X509Certificate.
+Possible Values: Path to file or stdout
+Default Value: stdout
+--outformat=ENUM
+Output data format.
+Possible Values: binary, PEM
+Example
+Fetch Opaque Object 0xe255 and store in the file cert.pem.
+$ yubihsm-shell -a get-opaque -i 0xe255 --out cert.pem
+Protocol Details
+Command
+Tc = 0x43
+Lc = 2
+Vc = I
+where –
+I = Object ID (2 bytes)
+Response
+Tr = 0xc3
+Lr = LD
+Vr = D
+where –
+D = Data
+—————————————————————————————————————————-
+GET OPTION Command
+Get device-global Options. Each invocation of this command retrieves a single Option, which
+is selected by its represented TAG. More specific examples can be found in Set FIPS Mode,
+Set Command Audit Option and Set Algorithm Toggle Option.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can retrieve an Option’s value.
+Interactive Mode
+yubihsm> get option e:session,o:option
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+option Required.
+Device option. fips-mode option is only applicable in FIPS compatible YubiHSMs.
+Possible Values: algorithm-toggle, command-audit, force-audit, fips-mode
+Example
+yubihsm> get option 0 force-audit
+2Option value is: 00
+Command Line Mode
+$ yubihsm-shell -a get-option --opt-name <option> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--opt-name=STRING Required.
+Device option name. fips-mode option is only applicable in FIPS compatible YubiHSMs.
+Possible Values: algorithm-toggle, command-audit, force-audit, fips-mode
+Example
+$ yubihsm-shell -a get-option --opt-name force-audit
+Option value is: 00
+Protocol Details
+Command
+Tc = 0x50
+Lc = 1
+Vc = T
+where –
+T = The tag of the selected option (1 byte)
+Response
+Tr = 0xd0
+Lr = LO
+Vr = O
+where –
+O = The option-specific value (LO bytes)
+—————————————————————————————————————————-
+GET PSEUDO RANDOM Command
+Extract a fixed number of pseudo-random bytes from the device, using the internal PRNG.
+Required Capabilities
+Authentication Key used to open the session must have the get-pseudo-random capability.
+Interactive Mode
+yubihsm> get random e:session,w:count,F:out=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+count Required.
+Number of bytes to request.
+out
+Pseudo random number.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Default Output Format: hex
+Example
+yubihsm> get random 0 16
+bd50979da2d1bca13d8d735abf419556
+Command Line Mode
+$ yubihsm-shell -a get-pseudo-random [--count <count=256> --out <file> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+--p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--count=INT
+Number of bytes to request
+Default Value: 256
+--out=STRING
+Pseudo random number.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default Output Format: hex
+--outformat=ENUM
+Output data format
+Possible Values: base64, binary, PEM, hex
+Example
+$ yubihsm-shell -a get-pseudo-random --count=16
+81a0060782bc2386cdf7df597035c6d1
+Protocol Details
+Command
+Tc = 0x51
+Lc = 2
+Vc = B
+where –
+B = Number of pseudo-random bytes to extract (2 bytes)
+Response
+Tr = 0xd1
+Lr = B
+Vr = R
+where –
+R = Random data (B bytes)
+—————————————————————————————————————————-
+GET PUBLIC KEY Command
+Fetch the public key of an object. With YubiHSM firmware version prior to 2.4, only public key of Asymmetric Key are returned. With firmware version 2.4 or later, public keys of RSA Wrap Keys can also be returned.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can be used to retrieve a public key.
+Interactive Mode
+yubihsm> get pubkey :session,w:key_id,t:key_type=asymmetric-key,F:file=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Asymmetric key Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+key_type
+Object type.
+Possible Values: asymmetric-key or wrap-key
+Default Value: asymmetric-key
+file
+Public key.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Default Format: PEM
+Example
+Fetch the public key of RSA Wrap Key 0x2846.
+yubihsm> get pubkey 0 0x2846 wrap-key
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE85fayPHTvCrv0RRcyCsHv0hTKAM7
+xHiU2I3NgO61RTRQumGDeBnQZIITykK/0PWKLGDANfBVrmKkWWxB47ze9A==
+-----END PUBLIC KEY-----
+Command Line Mode
+$ yubihsm-shell -a get-public-key -i <object_id> [ -t <key_type> --out <file> --outformat <format> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of an asymmetric key. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-t, --object-type=STRING
+Object type.
+Possible Values: asymmetric-key or wrap-key
+Default Value: asymmetric-key
+--out=STRING
+Public key.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default Format: PEM
+--outformat=ENUM
+Output data format.
+Possible Values: binary, PEM
+Example
+Fetch the public key of RSA Wrap Key 0x2846.
+$ yubihsm-shell -a get-public-key -i 0x2846 -t wrap-key
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE85fayPHTvCrv0RRcyCsHv0hTKAM7
+xHiU2I3NgO61RTRQumGDeBnQZIITykK/0PWKLGDANfBVrmKkWWxB47ze9A==
+-----END PUBLIC KEY-----
+Protocol Details
+Command
+Tc = 0x54
+Lc = 2 | { + 1 }
+Vc = I { || T }
+where –
+I = Object ID (2 bytes)
+T = Type, Objects (1 byte)
+Response
+Tr = 0xd4
+Lr = 1 + LP1 { + LP2 }
+Vr = A || P1 { || P2 }
+where –
+AA = Algorithms
+P1 =
+For RSA: Public modulus N (256, 384 or 512 bytes)
+For ECC: Public point X (32, 48, 64 or 66 bytes)
+For EDC: Public point A, compressed (32 bytes)
+P2 =
+For RSA: NOT DEFINED
+For ECC: Public point Y (32, 48, 64 or 66 bytes)
+For EDC: NOT DEFINED
+—————————————————————————————————————————-
+GET STORAGE INFO Command
+Report currently free storage. This is reported as currently free records, free pages and page size. Each object takes a record slot and will use as many pages as needed.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can be used to retrieve storage info.
+Interactive Mode
+yubihsm> get storage e:session
+Parameters
+session Required,
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+yubihsm> get storage 0
+free records: 255/256, free pages: 1023/1024 page size: 126 bytes
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x41
+Lc = 0
+Vc = Ø
+Response
+Tr = 0xc1
+Lr = 10
+Vr = Rtotal || Rfree || Ptotal || Pfree || S
+where –
+Rtotal = Total number of records (2 bytes)
+Rfree = Currently free storage records (2 bytes)
+Ptotal = Total number of pages (2 bytes)
+Pfree = Currently free storage pages (2 bytes)
+S = Page size in bytes (2 bytes)
+—————————————————————————————————————————-
+GET TEMPLATE Command
+Retrieve a Template Object from the device.
+Required Capabilities
+Authentication Key used to open the session must have the get-template capability.
+Interactive Mode
+yubihsm> get template e:session,w:object_id,F:out=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+object_id Required.
+Object ID of a template object. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+out
+Template value.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Example
+Fetch Template Object 0x7b19 and store in the file template.dat.
+yubihsm> get template 0 0x7b19 template.dat
+Command Line Mode
+$ yubihsm-shell -a get-template -i <object_id> [--out <file> --outformat <format> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of a template object. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--out=STRING
+Template value.
+Possible Values: Path to file or stdout
+Default Value: stdout
+--outformat=ENUM
+Output data format.
+Possible Values: base64, hex, PEM
+Example
+Fetch the public key of Asymmetric Key 0x2846.
+$ yubihsm-shell -a get-template -i 0x7b19 --out template.dat
+Protocol Details
+Command
+Tc = 0x5f
+Lc = 2
+Vc = I
+where –
+I = Object ID of the Template to retrieve (2 bytes)
+Response
+Tr = 0xdf
+Lr = LD
+Vr = D
+where –
+D = Data
+—————————————————————————————————————————-
+IMPORT WRAPPED Command
+Import a wrapped/encrypted Object that was previously exported by an YubiHSM 2 device into the device using an AES CCM wrap algorithm. The imported object retains its metadata (Object ID, Domains, Capabilities, etc), however, the object’s origin is marked as imported instead of generated.
+Required Capabilities
+Authentication Key must have the import-wrapped capability.
+Wrap Key must have the import-wrapped capability.
+Target object capabilities must all be part of the Wrap Key delegated capabilities.
+Interactive Mode
+yubihsm> put wrapped e:session,w:wrapkey_id,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+wrapkey_id Required.
+Object ID of the wrap key to decrypt/unwrap the data. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+data
+Encrypted/wrapped object.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default Format: base64
+Example
+Import the Object stored in key.enc and unwrap it using Wrap Key 0xcf94.
+yubihsm> put wrapped 0 0xcf94 key.enc
+Object imported as 0x997e of type asymmetric
+Command Line Mode
+$ yubihsm-shell -a put-wrapped --wrap-id <wrapkey_id> [--in <file> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-p, --password=STRING
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--wrap-id=INT Required.
+Object ID of the wrap key to decrypt/unwrap the data. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--in=STRING
+Encrypted/wrapped object.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Format: base64
+Example
+Import the Object stored in key.enc and unwrap it using Wrap Key 0xcf94.
+$ yubihsm-shell -a put-wrapped --wrap-id 0xcf94 --in key.enc
+Protocol Details
+Command
+Tc = 0x4b
+Lc = 2 + 13 + LO
+Vc = I || N || O
+where –
+I = Object ID of the Wrap Key (2 bytes)
+N = Nonce associated with this wrapped Object (13 bytes)
+O = Wrapped Objects (Length dependant on Object)
+Response
+Tc = 0xcb
+Lc = 3
+Vc = T || I
+where –
+T = Type, Objects of imported Object (1 byte)
+I = Object ID of imported Object (2 bytes)
+—————————————————————————————————————————-
+IMPORT RSA WRAPPED Command
+Available on YubiHSM devices with firmware version 2.4 or higher.
+Import a wrapped/encrypted Object that was previously exported by an YubiHSM 2 device into the device using an RSA Wrap Key. The imported object retains its metadata (Object ID, Domains, Capabilities, etc), however, the object’s origin is marked as imported instead of generated.
+Required Capabilities
+Authentication Key must have the import-wrapped capability.
+Wrap Key must have the import-wrapped capability.
+Target object capabilities must all be part of the Wrap Key delegated capabilities.
+Interactive Mode
+yubihsm> put rsa_wrapped e:session,w:wrapkey_id,a:hash=rsa-oaep-sha256,a:mgf1=mgf1-sha256,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+wrapkey_id Required.
+Object ID of the wrap key to decrypt/unwrap the data. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+data
+Encrypted/wrapped object.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Format: Binary
+hash
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+mgf1
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+Example
+Import the Object stored in object.enc and unwrap it using Wrap Key 0xcf94.
+yubihsm> put rsa_wrapped 0 0xcf94 rsa-oaep-sha384 mgf1-sha1 object.enc
+Object imported as 0x997e of type asymmetric
+Command Line Mode
+$ yubihsm-shell -a put-rsa-wrapped --wrap-id <wrapkey_id> [ --oaep <oaep> --mgf1 <mgf1> --in <file> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-p, --password=STRING
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--wrap-id=INT Required.
+Object ID of the wrap key to decrypt/unwrap the data. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--in=STRING
+Encrypted/wrapped object.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Format: Binary
+--oaep=STRING
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+--mgf1=STRING
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+Example
+Import the Object stored in object.enc and unwrap it using Wrap Key 0xcf94.
+$ yubihsm-shell -a put-rsa-wrapped --wrap-id 0xcf94 --oaep rsa-oaep-sha384 --mgf1 mgf1-sha1 --in object.enc
+Protocol Details
+Command
+Tc = 0x77
+Lc = 2 + 1 + 1 + Lw + LHL
+Vc = I || H || M || W || HL
+where –
+I = Object ID of the Wrap Key (2 bytes)
+H = Algorithms to use for OAEP label (1 byte)
+M = Algorithms to use for MGF1 (1 byte)
+W = The wrapped object (Length dependent on object)
+LH = The label digest (Length dependent on OAEP algorithm)
+Response
+Tc = 0xf7
+Lc = 3
+Vc = T || I
+where –
+T = Type, Objects of imported Object (1 byte)
+I = Object ID of imported Object (2 bytes)
+—————————————————————————————————————————-
+IMPORT RSA WRAPPED KEY Command
+Available on YubiHSM devices with firmware version 2.4 or higher.
+Import a wrapped/encrypted an (a)symmetric key data using an RSA Wrap Key. Only asymmetric and symmetric keys are valid targets. Asymmetric keys are expected to have been serialized as PKCS#8. Since the object properties are not part of the wrapped object, they must be provided separately.
+Required Capabilities
+Authentication Key must have the import-wrapped capability.
+Wrap Key must have the import-wrapped capability.
+Target object capabilities must all be part of the Wrap Key delegated capabilities.
+Interactive Mode
+yubihsm> put rsa_wrapped_key e:session,w:wrapkey_id,t:type,w:key_id,a:algorithm,s:label,d:domains,c:capabilities,a:hash=rsa-oaep-sha256,a:mgf1=mgf1-sha256,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+wrapkey_id Required.
+Object ID of the wrap key to decrypt/unwrap the data. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+type Required.
+Type of the object to import.
+Possible Values: asymmetric-key or symmetric-key
+key_id Required.
+Object ID of the imported key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+algorithm Required.
+Algorithm of the imported key.
+Possible values:
+For RSA keys: rsa2048, rsa3072, rsa4096
+For EC keys: eck256, ecp224, ecp256, ecp384, ecp521, ecbp256, ecbp384, ecbp512
+For ED keys: ed25519
+For AES keys: aes128, aes192, aes256
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+data
+Encrypted/wrapped object.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Format: Binary
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between.
+Possible Values: none, all, decrypt-oaep, decrypt-pkcs, derive-ecdh, exportable-under-wrap, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-pkcs, sign-pss, sign-ssh-certificate
+hash
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+mgf1
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+Example
+Import the Object stored in key.enc and unwrap it using Wrap Key 0xcf94.
+yubihsm> put rsa_wrapped_key 0xcf94 asymmetric-key 0 rsa2048 "" 1,2,3 sign-pkcs,exportable-under-wrap rsa-oaep-sha384 mgf1-sha1 key.enc
+Object imported as 0x97df of type asymmetric
+Command Line Mode
+$ yubihsm-shell -a put-rsa-wrapped-key --wrap-id <wrapkey_id> -t <key_type> -A <key_algorithm> -d <domains> [ -i <key_id> -l <key_label> -c <capabilities> --oaep <oaep> --mgf1 <mgf1> --in <file> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-p, --password=STRING
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--wrap-id=INT Required.
+Object ID of the wrap key to decrypt/unwrap the data. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--in=STRING
+Encrypted/wrapped object.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Format: Binary
+-t, --object-type=STRING Required.
+Type of the object to import.
+Possible Values: asymmetric-key or symmetric-key
+-i, --object-id=SHORT
+Object ID of the imported key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-A, --algorithm=STRING Required.
+Algorithm of the imported key.
+Possible values:
+For RSA keys: rsa2048, rsa3072, rsa4096
+For EC keys: eck256, ecp224, ecp256, ecp384, ecp521, ecbp256, ecbp384, ecbp512
+For ED keys: ed25519
+For AES keys: aes128, aes192, aes256
+-l, --label=STRING
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING
+Capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between.
+Possible Values: none, all, decrypt-oaep, decrypt-pkcs, derive-ecdh, exportable-under-wrap, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-pkcs, sign-pss, sign-ssh-certificate
+--oaep=STRING
+Hash algorithm to use for OAEP label.
+Possible Values: rsa-oaep-sha1, rsa-oaep-sha256, rsa-oaep-sha384 or rsa-oaep-sha512
+Default Value: rsa-oaep-sha256
+--mgf1=STRING
+Hash algorithm to use for MGF1.
+Possible Values: mgf1-sha1, mgf1-sha256, mgf1-sha384 or mgf1-sha512
+Default Value: mgf1-sha256
+Example
+Import the Object stored in key.enc and unwrap it using Wrap Key 0xcf94.
+$ yubihsm-shell -a put-rsa-wrapped-key --wrap-id 0xcf94 -t asymmetric-key -d 1,2,3 -A rsa2048 --oaep rsa-oaep-sha384 --mgf1 mgf1-sha1 --in key.enc
+Protocol Details
+Command
+Tc = 0x75
+Lc = 2 + 1 + 2 + 40 + 2 + 8 + 1 + 1 + 1 + Lw + LHL
+Vc = I || To || Ti || L || D || C || A || H || M || W || HL
+where –
+I = Object ID of the Wrap Key (2 bytes)
+To = Objects of the imported key (1 byte)
+Ti = Object ID of the imported key (2 bytes)
+L = Label of the imported key (40 bytes)
+D = Domains of the imported key (2 bytes)
+C = Capabilities of the imported key (8 bytes)
+A = Algorithms of the imported key (1 byte)
+H = Algorithms to use for OAEP label (1 byte)
+M = Algorithms to use for MGF1 (1 byte)
+W = The wrapped object (Length dependent on object)
+LH = The label digest (Length dependent on OAEP algorithm)
+Response
+Tc = 0xf5
+Lc = 3
+Vc = T || I
+where –
+T = Type, Objects of imported Object (1 byte)
+I = Object ID of imported Object (2 bytes)
+—————————————————————————————————————————-
+LIST OBJECTS Command
+Get a filtered list of Objects from the device.
+Required Capabilities
+No specific capabilities are required. Any Authentication Key can be used to open list existing objects.
+Interactive Mode
+yubihsm> list objects e:session,w:id=0,t:type=any,d:domains=0,c:capabilities=0,a:algorithm=any,b:with-compression=0,s:label=
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+id
+Object ID. 0 returns all Object IDs. Object ID is a 2 bytes integer.
+Can be specified in hex or decimal.
+Default Value: 0
+type
+Object type. any returns all types>
+Possible Values: any, opaque, authentication-key, asymmetric-key, wrap-key, hmac-key, template, otp-aead-key
+Default Value; any
+domains
+Domains where the key will be accessible. all returns all domains.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+Default Value: all
+capabilities
+Capabilities of the key. all returns all capabilities.
+Possible Values: all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+Default Value: all
+algorithm
+Key algorithm. any returns all algorithms.
+Possible Values: any, rsa2048, rsa3072, rsa4096, ecp256, ecp384, ecp521, eck256, ecbp256, ecbp384, ecbp512, ed25519, ecp224, hmac-sha1, hmac-sha256, hmac-sha384, hmac-sha512, aes128-ccm-wrap, opaque-data, opaque-x509-certificate, aes128-yubico-otp, aes128-yubico-authentication, aes192-yubico-otp, aes256-yubico-otp, aes192-ccm-wrap, aes256-ccm-wrap
+Default Value: any
+with-compression
+Detect X509Certificates that are stored as compressed certificate. Default is 0.
+Possible Values:
+0 - (Default) Do not differentiate between compressed and non-compressed X509Certificate.
+1 - Detect compressed X509Certificate.
+Default Value: 0
+label
+Object label. Empty value matches all labels.
+Possible Values: Maximum of 40 characters string.
+Default Value: Empty
+Example
+Get a list of all Asymmetric Keys for Session 0.
+yubihsm> list objects 0 0 asymmetric-key
+Found 4 object(s)
+id: 0x3479, type: asymmetric-key, sequence: 0
+id: 0x7df6, type: asymmetric-key, sequence: 0
+id: 0x9602, type: asymmetric-key, sequence: 0
+id: 0xd6cd, type: asymmetric-key, sequence: 0
+Command Line Mode
+$ yubihsm-shell -a list-objects -t <type> -A <algorithm> [-i <object_id> -l <label> -d <domains> -c <capabilities> --with-compression --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT
+Object ID. 0 returns all Object IDs. Object ID is a 2 bytes integer.
+Can be specified in hex or decimal.
+Default Value: 0
+-t, --object-type=STRING Required.
+Object type. Use any to return all types.
+Possible Values: any, opaque, authentication-key, asymmetric-key, wrap-key, hmac-key, template, otp-aead-key
+-l, --label=STRING
+Object label.
+Possible Values: Maximum of 40 characters string
+Default Value: Empty
+-d, --domains=STRING
+Domains where the key will be accessible.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+Default Value: all
+-c, --capabilities=STRING
+Capabilities of the key.
+Possible Values: all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+Default Value: all
+-A, --algorithm=STRING Required.
+Key algorithm. Use any to return all algorithms.
+Possible Values: any, rsa2048, rsa3072, rsa4096, ecp256, ecp384, ecp521, eck256, ecbp256, ecbp384, ecbp512, ed25519, ecp224, hmac-sha1, hmac-sha256, hmac-sha384, hmac-sha512, aes128-ccm-wrap, opaque-data, opaque-x509-certificate, aes128-yubico-otp, aes128-yubico-authentication, aes192-yubico-otp, aes256-yubico-otp, aes192-ccm-wrap, aes256-ccm-wrap
+--with-compression
+Detect X509Certificates that are stored as compressed certificate. Default is not to.
+Example
+Generate a new key using secp256r1 in the device.
+$ yubihsm-shell -a list-objects -t any -A any
+Found 4 object(s)
+id: 0x3479, type: asymmetric-key, sequence: 0
+id: 0x7df6, type: asymmetric-key, sequence: 0
+id: 0x9602, type: asymmetric-key, sequence: 0
+id: 0xd6cd, type: asymmetric-key, sequence: 0
+Protocol Details
+Command
+Tc = 0x48
+Lc = LF
+Vc = F
+where –
+F = List of Tag-Value pairs describing a filter to apply. Possible tags to use for filtering are described in the table below.
+ | Name
+ | Identifier
+ | Length
+ | ID, Object ID
+ | 0x01
+ | 2 bytes
+ | TYPE, Objects
+ | 0x02
+ | 1 byte
+ | Domains
+ | 0x03
+ | 2 bytes
+ | Capabilities
+ | 0x04
+ | 8 bytes
+ | Algorithms
+ | 0x05
+ | 1 byte
+ | Label
+ | 0x06
+ | 40 bytes
+Response
+Tr = 0xc8
+Lr = 4 * N
+Vr = R1 || R2 || … || RN
+where –
+Ri = Object ID (2 bytes), Type, Objects (1 byte) and Sequence (1 byte).
+—————————————————————————————————————————-
+PUT ASYMMETRIC KEY Command
+Import an Asymmetric Key into the device.
+Required Capabilities
+Authentication Key used to open the session must have the put-asymmetric-key capability.
+The Asymmetric Key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put asymmetric e:session,w:key_id,s:label,d:domains,c:capabilities,i:key=-
+Command Line Mode
+$ yubihsm-shell -a put-asymmetric-key -i <object_id> -l <label> -d <domains> -c <capabilities> [--in <key>]
+Protocol Details
+Command
+Tc = 0x45
+Lc = 2 + 40 + 2 + 8 + 1 + LP1 { + LP2 }
+Vc = I || L || D || C || A || P1 { || P2 }
+The key parameters vary according to the chosen algorithm. Each parameter has a fixed length and the order is compulsory.
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+P1 =
+For RSA: secret prime p (128, 192 or 256 bytes)
+For ECC: private key integer d (32, 48, 64 or 66 bytes)
+For EDC: private key integer k (32 bytes)
+P2 =
+For RSA: secret prime q (128, 192 or 256 bytes)
+For ECC: NOT DEFINED
+For EDC: NOT DEFINED
+Response
+Tr = 0xc5
+Lr = 2
+Vr = I
+where –
+I = ID of created Object (2 bytes)
+—————————————————————————————————————————-
+PUT ASYMMETRIC AUTHENTICATION KEY Command
+Available with firmware version 2.3.1 or later.
+Store an Asymmetric Authentication Key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the put-authentication-key capability.
+The new Authentication Key capabilities and delegated capabilities must all be part of the delegated capabilities of the Authentication Key used to open the session.
+Interactive Mode
+yubihsm> put authkey_asym e:session,w:key_id,s:label,d:domains,c:capabilities,c:delegated_capabilities,i:pubkey=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use ‘0’ to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+delegated_capabilities Required.
+Delegated capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data. Use all to include all capabilities.
+pubkey
+The public key of the clien. When using stdin, click CTRL-D to mark end of input. Input format for a password string is password. If password format is used, the tool will derive an ec-p256 private key from the input string and calculate the public key from that. The private key is not used for anything else.
+Possible Values: File containing the client’s public key as an uncompressed ec-p256 public key, password or - for stdin
+Default Value: stdin
+Default format: PEM
+Possible format for public key file: PEM, HEX, binary.
+Example
+Store a new Asymmetric Authentication Key using a client’s public key:
+yubihsm> put authkey_asym 0 0 asym_authkey 1,2,3 generate-asymmetric-key,sign-pkcs sign-pkcs
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKIfzuX9uJ2gsNgXcFYtNkP30aBp+
+e0f9mhpy+lQbvbbD72y5HiMIkbNkqBXHOwSPu/suD/f1BoN8xcP4FHk4iw==
+-----END PUBLIC KEY-----
+Stored Authentication key 0xe599
+Command Line Mode
+Asymmetric authentication keys cannot be added using the command line.
+Protocol Details
+Command
+Tc = 0x44
+Lc = 2 + 40 + 2 + 8 + 1 + 8 + 64
+Vc = I || L || D || C || A || DC || Key
+where –
+I = Object ID of the Authentication Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithm (1 bytes)
+DC = Delegated Capabilities (8 bytes)
+Key = Uncompressed EC-P256 public key (64 bytes)
+Response
+Tr = 0xc4
+Lr = 2
+Vr = I
+where –
+I = Object ID of created Authentication Key (2 bytes)
+Note
+This command will return ERROR_INV_DATA if Key is not a valid EC-P256 key.
+—————————————————————————————————————————-
+PUT AUTHENTICATION KEY Command
+Stores an Authentication Key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the put-authentication-key capability.
+The new Authentication Key capabilities and delegated capabilities must all be part of the delegated capabilities of the Authentication Key used to open the session.
+Interactive Mode
+yubihsm> put authkey e:session,w:key_id,s:label,d:domains,c:capabilities,c:delegated_capabilities,i:password=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data Use all to include all capabilities.
+delegated_capabilities Required.
+Delegated capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data. Use all to include all capabilities.
+password
+The password used to derive the session keys from this authentication key.
+Possible Values: The password or - for stdin
+Default Value: stdin
+Input Format: password
+Example
+Store a new Authentication Key derived from the password newpassword.
+yubihsm> put authkey 0 0 authkey 1 generate-asymmetric-key,sign-pkcs sign-pkcs newpassword
+Stored Authentication key 0xbb72
+Command Line Mode
+$ yubihsm-shell -a put-authentication-key -i <object_id> -l <label> -d <domains> -c <capabilities> --delegated <delegated_capabilities> [--new-password <new_authkey_password> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string.
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Value: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+--delegated=STRING Required.
+Delegated capabilities of the key. Use all to include all delegated capabilities. Use none to include no delegated capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+--new-password=STRING
+The password used to derive the session keys from this authentication key.
+Possible Values: The password or stdin
+Default ValueL: stdin
+Input Format: password
+Example
+Fetch the public key of Asymmetric Key 0x2846.
+$ yubihsm-shell -a put-authentication-key -i 0 -l authkey -d 1 -c generate-asymmetric-key,sign-pkcs --delegated sign-pkcs --new-password newpassword
+Stored Authentication key 0xbb72
+Protocol Details
+Command
+Tc = 0x44
+Lc = 2 + 40 + 2 + 8 + 1 + 8 + 16 + 16
+Vc = I || L || D || C || A || DC || Ke || Km
+where –
+I = Object ID of the Authentication Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+DC = Delegated Capabilities (8 bytes)
+Ke = Encryption Key (16 bytes)
+Km = Mac Key (16 bytes)
+Response
+Tr = 0xc4
+Lr = 2
+Vr = I
+where –
+I = Object ID of created Authentication Key (2 bytes)
+—————————————————————————————————————————-
+PUT HMAC KEY Command
+Store an HMAC Key in the device.
+Required Capabilities
+Authentication Key used to open the session must have the put-hamc-key capability.
+HMAC Key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put hmackey e:session,w:key_id,s:label,d:domains,c:capabilities,a:algorithm,i:key
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, sign-hmac, verify-hmac, exportable-under-wrap
+algorithm Required.
+Key algorithm.
+Possible Values: hmac-sha1, hmac-sha256, hmac-sha384, hmac-sha512
+key Required.
+The HMAC key.
+Format: hex
+Example
+Store an HMAC Key with the binary value 666f6f in the device.
+yubihsm> put hmackey 0 0 hmackey 1 sign-hmac, verify-hmac hmac-sha256 666f6f
+Stored HMAC key 0x7cf2
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x52
+Lc = 2 + 40 + 2 + 8 + 1 + LP
+Vc = I || L || D || C || A || P
+where –
+I = Object ID of the HMAC Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+P = Key (Minimum 1 byte)
+For HMAC-SHA1 and HMAC-SHA256: maximum 64 bytes
+For HMAC-SHA384 and HMAC-SHA512: maximum 128 bytes
+Response
+Tr = 0xd2
+Lr = 2
+Vr = I
+where –
+I = Object ID of created HMAC Key (2 bytes)
+—————————————————————————————————————————-
+PUT OPAQUE Command
+Stores Opaque data (like an X.509 certificate) in the device. The size of the object is currently limited to what will fit into one message to the YubiHSM 2 (2028 bytes, including the headers).
+Required Capabilities
+Authentication Key used to open the session must have the put-opaque-key capability.
+Opaque object capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put opaque e:session,w:object_id,s:label,d:domains,c:capabilities,a:algorithm,b:with-compression=0,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Object label. Can be empty.
+Possible Values: Maximum of 40 characters string.
+domains Required.
+Domains where the object will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the data
+Possible Values: none, exportable-under-wrap
+algorithm Required.
+Key algorithm. If opaque-x509-certificate, the value of the object will be treated as an X509Certificate.
+Possible Values: opaque-data, opaque-x509-certificate
+with-compression Required.
+Compress certificate data before importing it into the YubiHSM2. Only applicable for opaque objects with algorithm opaque-x509-certificate. Default is 0, which does not apply compression.
+Possible Values:
+0 - Do not compress.
+1 - Do compress.
+data
+Opaque data value (e.g. X509Certificate).
+Possible Values: Path to file or - for stdin
+Defaul Value: stdin
+Default Format: binary (DER).
+Example
+Store the certificate in file cert.pem in the device.
+yubihsm> put opaque 0 0 certificate 1 none opaque-x509-certificate 0 cert.pem
+Stored Opaque object 0xe255
+Command Line Mode
+$ yubihsm-shell -a put-opaque -i <object-id> -l <label> -d <domains> -c <capabilities> -A <algorithm> [--in <data>]
+$ yubihsm-shell -a put-opaque -i <object_id> -l <label> -d <domains> -c <capabilities> [ -A <algorithm> --in <data> --informat <informat> --with-compression --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-A,--Algorithm=STRING Required.
+The data algorithm. If opaque-x509-certificate, the value of the object is treated as an X509Certificate.
+Possible Values: opaque-data, opaque-x509-certificate
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Object label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING
+Domains where the opaque object will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING
+Capabilities of the key.
+Possible Values: none, exportable-under-wrap
+Default Value: none
+--in=STRING
+Opaque data value (e.g. X509Certificate).
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Format: binary (DER)
+--informat=ENUM
+Input data format
+Possible Values: PEM, binary
+--with-compression
+Compress certificate data before importing it into the YubiHSM2. Only applicable for opaque objects with algorithm opaque-x509-certificate. Default is no compression.
+Example
+Store the certificate in file cert.der in the device.
+$ yubihsm-shell -a put-opaque -i 0 -l certificate -d 1 -A opaque-x509-certificate --in cert.der
+Protocol Details
+Command
+Tc = 0x42
+Lc = 2 + 40 + 2 + 8 + 1 + LO
+Vc = I || L || D || C || A || O
+where –
+I = Object ID (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+O = Opaque data
+Response
+Tr = 0xc2
+Lr = 2
+Vr = I
+where –
+I = Object ID of created Opaque Object (2 bytes)
+—————————————————————————————————————————-
+PUT OTP AEAD KEY Command
+Import an OTP AEAD Key used for Yubico OTP Decryption.
+Required Capabilities
+Authentication Key used to open the session must have the put-otp-aead-key capability.
+OTP AEAD key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put otpaeadkey e:session,w:key_id,s:label,d:domains,c:capabilities,u:nonce_id,i:key
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, decrypt-otp, create-otp-aead, randomize-otp-aead, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, exportable-under-wrap
+nonce_id Required.
+OTP nonce. 4 bytes.
+key Required.
+The AEAD key.
+Format: hex
+Example
+Import OTP AEAD Key with Nonce ID 0x01020304 and key value 000102030405060708090a0b0c0d0e0f (AES-128).
+yubihsm> put otpaeadkey 0 0 otpaeadkey 1 decrypt-otp 0x01020304 000102030405060708090a0b0c0d0e0f
+Stored OTP AEAD key 0xe34f
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x65
+Lc = 2 + 40 + 2 + 8 + 1 + 4 + LK
+Vc = I || L || D || C || A || N || K
+where –
+I = Object ID (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+N = Nonce ID (4 bytes)
+K = Key (16, 24 or 32 bytes depending on algorithm)
+Response
+Tr = 0xe5
+Lr = 2
+Vr = I
+where –
+I = ID of created OTP AEAD Key (2 bytes)
+—————————————————————————————————————————-
+PUT SYMMETRIC KEY Command
+Available with firmware version 2.3.1 or later.
+Import a symmetric Key into the device.
+Required Capabilities
+Authentication Key used to open the session must have the put-symmetric-key capability.
+Symmetric key capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put symmetric e:session,w:key_id,s:label,d:domains,c:capabilities,a:algorithm,i:key
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use ‘0’ to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between.
+Possible Values: none, encrypt-ecb, decrypt-ecb, encrypt-cbc, decrypt-cbc, exportable-under-wrap
+algorithm Required.
+Key algorithm.
+Possible Values: aes128, aes192,aes256
+key Required.
+Symmetric key.
+Possible Values: Value of the symmetric key
+Input format: HEX
+Example
+Store an AES128 key into the device:
+yubihsm> put symmetric 0 0 aeskey 1 encrypt-cbc,decrypt-cbc aes128 0a8a7ecc862b3d42b5dc127c111da0f4
+Stored symmetric key 0x71c9
+Command Line Mode
+$ yubihsm-shell -a put-symmetric-key -i <key_id> -l <label> -d <domains> -c <capabilities> -A <algorithm> --in <key> [--authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password will be prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the symmetric key. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string.
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by , or : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by , or : with no spaces between.
+Possible Values: none, encrypt-ecb, decrypt-ecb, encrypt-cbc, decrypt-cbc,exportable-under-wrap
+-A, --algorithm=STRING Required.
+Key algorithm.
+Possible Values: aes128, aes192, aes256
+--in=STRING
+Symmetric key.
+Possible Values: Value of the symmetric key
+Input format: HEX
+Example
+Store an AES128 key into the device:
+$ yubihsm-shell -a put-symmetric-key -l aeskey -d 1 -c encrypt-cbc, decrypt-cbc -A aes128 --in 0a8a7ecc862b3d42b5dc127c111da0f4
+Protocol Details
+Command
+Tc = 0x6d
+Lc = 2 + 40 + 2 + 8 + 1 + Lk
+Vc = I || L || D || C || A || K
+The key parameters vary according to the chosen algorithm. Each parameter has a fixed length and the order is compulsory.
+where –
+I = Object ID of the symmetric Key (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+K = The key value (16, 24 or 32 bytes)
+Response
+Tr = 0xed
+Lr = 2
+Vr = I
+where –
+I = ID of created Object (2 bytes)
+—————————————————————————————————————————-
+PUT TEMPLATE Command
+Stores a Template in the device (like the template used when signing SSH certificate). The size of the object is currently limited to what will fit into one message to the YubiHSM (2021 bytes, including the headers).
+Required Capabilities
+Authentication Key used to open the session must have the put-template-key capability.
+Template object capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put template e:session,w:object_id,s:label,d:domains,c:capabilities,a:algorithm,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Object label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the object will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the data.
+Possible Values: none, exportable-under-wrap
+algorithm Required.
+Object algorithm.
+Possible Values: template-ssh
+data
+Template value.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default Format: base64
+Example
+Store the SSH Template in file template.dat in the device.
+yubihsm> put template 0 0 ssh_template 1 none template-ssh template.dat
+Stored Template object 0x7b19
+Command Line Mode
+$ yubihsm-shell -a put-template -i <object_id> -l <label> -d <domains> -c <capabilities> -A <algorithm> [--in <data> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-A, --algorithm=STRING Required.
+Object algorithm.
+Possible Values: template-ssh
+-p, --password=STRING Required.
+The password to authentication key used to open a session.The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Object label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the opaque object will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING
+Capabilities of the key.
+Possible Values: none, exportable-under-wrap
+Default Value: none
+--in=STRING
+Template value.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Format: base64
+Example
+Store the SSH Template in file template.dat in the device.
+$ yubihsm-shell -a put-template -i 0 -l ssh_template -d 1 -c none -A template-ssh --in template.dat
+Protocol Details
+Command
+Tc = 0x5e
+Lc = 2 + 40 + 2 + 8 + 1 + LD
+Vc = I || L || D || C || A || D
+where –
+I = Object ID of the Template (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+D = Template data
+Response
+Tr = 0xde
+Lr = 2
+Vr = I
+where –
+I = Object ID of created Template (2 bytes)
+—————————————————————————————————————————-
+PUT WRAP KEY Command
+Import a key for wrapping into the device.
+Required Capabilities
+Authentication Key used to open the session must have the put-wrap-key capability.
+Wrap Key capabilities and delegated capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+Use put wrapkey command to import AES Wrap Key and put rsa_wrapkey command to import RSA Wrap Key
+yubihsm> put wrapkey e:session,w:key_id,s:label,d:domains,c:capabilities,c:delegated_capabilities,i:key
+yubihsm> put rsa_wrapkey e:session,w:key_id,s:label,d:domains,c:capabilities,c:delegated_capabilities,i:key=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, wrap-data, unwrap-data, export-wrapped, import-wrapped, exportable-under-wrap
+delegated_capabilities Required.
+Delegated capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+key Required.
+The wrap key.
+Default Format: HEX if AES key and PEM if RSA key
+Example
+Import an AES-128 Wrap Key able to export and import, with some Delegated Capabilities set.
+yubihsm> put wrapkey 0 0 wrapkey 1 export-wrapped,import-wrapped exportable-under-wrap,sign-pkcs,sign-pss 000102030405060708090a0b0c0d0e0f
+Stored Wrap key 0xaff7
+Command Line Mode
+Use put-wrap-key subcommand to import AES Wrap Key and put-rsa-wrapkey subcommand to import RSA Wrap Key
+$ yubihsm-shell -a put-wrap-key -i <key_id> -l <label> -d <domains> -c <capabilities> --delegated <delegated_capabilities> --in <key> [ --authkey <authKeyID> -p <password> ]
+$ yubihsm-shell -a put-rsa-wrapkey -i <key_id> -l <label> -d <domains> -c <capabilities> --delegated <delegated_capabilities> --in <key> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, wrap-data, unwrap-data, export-wrapped, import-wrapped, exportable-under-wrap
+--delegated=STRING Required.
+Delegated capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+--in=STRING Required.
+The wrap key.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Format: hex
+Example
+Import an AES-128 Wrap Key able to export and import, with some Delegated Capabilities set.
+$ yubihsm-shell -a generate-wrap-key -i 0 -l wrapkey -d 1 -c export-wrapped,import-wrapped --delegated exportable-under-wrap,sign-pkcs,sign-pss --in wrap.key
+Stored Wrap key 0xaff7
+Protocol Details
+Command
+Tc = 0x4c
+Lc = 2 + 40 + 2 + 8 + 1 + 8 + LW
+Vc = I || L || D || C || A || DC || W
+where –
+I = Object ID (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+DC = Delegated Capabilities (8 bytes)
+W = Wrap Key (16, 24 or 32, 256, 384, 512 bytes)
+For AES128_CCM_WRAP: 16 bytes
+For AES192_CCM_WRAP: 24 bytes
+For AES256_CCM_WRAP: 32 bytes
+For RSA2048: 256 bytes
+For RSA3072: 384 bytes
+For RSA4096: 512 bytes
+Response
+Tc = 0xcc
+Lc = 2
+Vc = I
+where –
+I = ID of created Wrap Key (2 bytes)
+—————————————————————————————————————————-
+PUT PUBLIC WRAP KEY Command
+Import a public RSA Wrap Key exporting wrapped objects.
+Required Capabilities
+Authentication Key used to open the session must have the put-public-wrap-key capability.
+Public Wrap Key capabilities and delegated capabilities must all be part of the Authentication Key delegated capabilities.
+Interactive Mode
+yubihsm> put pub_wrapkey e:session,w:key_id,s:label,d:domains,c:capabilities,c:delegated_capabilities,i:key=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+label Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+domains Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+capabilities Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, wrap-data, unwrap-data, export-wrapped, import-wrapped, exportable-under-wrap
+delegated_capabilities Required.
+Delegated capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+key Required.
+A Public RSA key.
+Default Format: PEM
+Example
+Import the public RSA key from rsa2048_pubkey.pem as a Public Wrap Key able to export and import, with some Delegated Capabilities set.
+yubihsm> put pub_wrapkey 0 0 rsa_wrapkey 1 export-wrapped,import-wrapped exportable-under-wrap,sign-pkcs,sign-pss rsa2048_pubkey.pem
+Stored Wrap key 0xadf8
+Command Line Mode
+$ yubihsm-shell -a put-public-wrapkey -i <key_id> -l <label> -d <domains> -c <capabilities> --delegated <delegated_capabilities> --in <key> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID. Use 0 to generate Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-l, --label=STRING Required.
+Key label. Can be empty.
+Possible Values: Maximum of 40 characters string
+-d, --domains=STRING Required.
+Domains where the key will be accessible. Use all to indicate all domains. Multiple domains can be separated by comma , or colon : with no spaces between.
+Possible Values: all,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
+-c, --capabilities=STRING Required.
+Capabilities of the key. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, wrap-data, unwrap-data, export-wrapped, import-wrapped, exportable-under-wrap
+--delegated=STRING Required.
+Delegated capabilities of the key. Use all to include all capabilities. Use none to include no capability. Multiple capabilities can be separated by comma , or colon : with no spaces between.
+Possible Values: none, all, change-authentication-key, create-otp-aead, decrypt-oaep, decrypt-otp, decrypt-pkcs, delete-asymmetric-key, delete-authentication-key, delete-hmac-key, delete-opaque, delete-otp-aead-key, delete-template, delete-wrap-key, derive-ecdh, export-wrapped, exportable-under-wrap, generate-asymmetric-key, generate-hmac-key, generate-otp-aead-key, generate-wrap-key, get-log-entries, get-opaque, get-option, get-pseudo-random, get-template, import-wrapped, put-asymmetric-key, put-authentication-key, put-mac-key, put-opaque, put-otp-aead-key, put-template, put-wrap-key, randomize-otp-aead, reset-device, rewrap-from-otp-aead-key, rewrap-to-otp-aead-key, set-option, sign-attestation-certificate, sign-ecdsa, sign-eddsa, sign-hmac, sign-pkcs, sign-pss, sign-ssh-certificate, unwrap-data, verify-hmac, wrap-data
+--in=STRING Required.
+The file containing an RSA public key.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Format: PEM
+Example
+Import the public RSA key from rsa2048_pubkey.pem as a Public Wrap Key able to export and import, with some Delegated Capabilities set.
+$ yubihsm-shell -a put-public-wrapkey -i 0 -l wrapkey -d 1 -c export-wrapped,import-wrapped --delegated exportable-under-wrap,sign-pkcs,sign-pss --in rsa2048_pubkey.pem
+Stored Wrap key 0xadf8
+Protocol Details
+Command
+Tc = 0x73
+Lc = 2 + 40 + 2 + 8 + 1 + 8 + LN
+Vc = I || L || D || C || A || DC || N
+where –
+I = Object ID (2 bytes)
+L = Label (40 bytes)
+D = Domains (2 bytes)
+C = Capabilities (8 bytes)
+A = Algorithms (1 byte)
+DC = Delegated Capabilities (8 bytes)
+N = RSA public key (256, 384 or 512 bytes)
+For RSA2048: 256 bytes
+For RSA3072: 384 bytes
+For RSA4096: 512 bytes
+Response
+Tc = 0xf3
+Lc = 2
+Vc = I
+where –
+I = ID of created Public Wrap Key (2 bytes)
+—————————————————————————————————————————-
+RANDOMIZE OTP AEAD Command
+Create a new OTP AEAD using random data for key and private ID.
+Required Capabilities
+Authentication Key used to open the session must have the randomize-otp-aead capability.
+OTP AEAD Key must have the randomize-otp-aead capability.
+Interactive Mode
+yubihsm> otp aead_random e:session,w:key_id,F:aead
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of an OTP AEAD key. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+aead Required.
+The generated OTP AEAD.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Example
+Generate a new OTP AEAD using OTP AEAD Key 0xc5f4 and put the result in file aead.
+yubihsm> otp aead_random 0 0xc5f4 aead
+Command Line Mode
+$ yubihsm-shell -a randomize-otp-aead -i <key_id> [ --in <aead> --out <aead> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of an OTP AEAD key. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--out=STRING
+The generated OTP AEAD.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Example
+Generate a new OTP AEAD using OTP AEAD Key 0xc5f4 and put the result in file aead.
+$ yubihsm-shell -a randomize-otp-aead -i 0xc5f4 --out aead
+Protocol Details
+Command
+Tc = 0x62
+Lc = 2
+Vc = I
+where –
+I = Object ID for the OTP AEAD Key (2 bytes)
+Response
+Tr = 0xe2
+Lr = 36
+Vr = A
+where –
+A = Nonce concatenated with AEAD (36 bytes)
+—————————————————————————————————————————-
+RESET DEVICE Command
+Resets and reboots the device, deletes all Objects and restores the default Options and Authentication Key. If the device attestation certificate had been replaced, the original certificate is not restored.
+Required Capabilities
+The Authentication Key performing the reset must have the capability reset-device to perform a factory reset on the device. Any Authentication Key can be used to reset the device. See Capabilities.
+Interactive Mode
+yubihsm> reset e:session
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+Example
+Send reset over Session 0.
+yubihsm> reset 0
+Device successfully reset
+Command Line Mode
+$ yubihsm-shell -a reset [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+Example
+Send reset over Session 0.
+$ yubihsm-shell -a reset
+Device successfully reset
+Protocol Details
+Command
+Tc = 0x08
+Lc = 0
+Vc = Ø
+Response
+Tr = 0x88
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+REWRAP OTP AEAD Command
+Re-encrypt a Yubico OTP AEAD from one OTP AEAD Key to another OTP AEAD Key.
+Required Capabilities
+Authentication Key used to open the session must have the rewrap-from-otp-aead-key and rewrap-to-otp-aead-key capabilities.
+OTP AEAD Key must have the rewrap-from-otp-aead-key and rewrap-to-otp-aead-key capabilities.
+Interactive Mode
+yubihsm> otp rewrap e:session,w:id_from,w:id_to,i:aead_in,F:aead_out
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+id_from Required.
+Object ID of the OTP AEAD used to unwrap. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+id_to Required.
+Object ID of the OTP AEAD used to wrap. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+aead_in Required.
+OTP AEAD to unwrap.
+Default Format: binary
+aead_out Required.
+OTP AEAD to wrap
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x63
+Lc = 2 + 2 + 36
+Vc = I1 || I2 || A
+where –
+I1 = Key ID from (2 bytes)
+I2 = Key ID to (2 bytes)
+A = Nonce concatenated with AEAD (36 bytes)
+Response
+Tr = 0xe3
+Lr = 36
+Vr = A
+where –
+A = Nonce concatenated with AEAD (36 bytes)
+—————————————————————————————————————————-
+SESSION MESSAGE Command
+Sends a wrapped command for a previously established session. The command is encrypted and authenticated.
+Protocol Details
+Command
+Tc = 0x05
+Lc = 1 + Linner_c + 8
+Vc = S | | Ic | | Mc
+where –
+S = Session ID (1 byte)
+Linner_c = Length of the encrypted inner command (2 bytes)
+Mc = CMAC of the outer command (8 bytes)
+Response
+Tr = 0x85
+Lr = 1 + Linner_r + 8
+Vr = S | | Ir | | Mr
+where –
+S = Session ID (1 byte)
+Linner_r = Length of the encrypted inner response (2 bytes)
+Mr = CMAC of the outer response (8 bytes)
+—————————————————————————————————————————-
+SET INFORMAT Command
+Set global input format. When set to something other than default, all future input is expected to have the set format. This is run as a bare command and not over an encrypted session.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> set informat I:format
+Parameters
+format Required.
+Input format. default resets the default expected input format, which can be different for different commands.
+Possible Values: default, base64, binary, PEM, password, hex, ASCII
+Example
+Set input format to PEM.
+yubihsm> set informat PEM
+Command Line Mode
+Setting global input format is not possible in command line mode. However, individual commands can be set to expect a certain input format by using the --informat=ENUM flag.
+—————————————————————————————————————————-
+SET LOG INDEX Command
+Inform the device what the last extracted log entry is so logs can be reused. Mostly of practical use when forced auditing is enabled.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> audit set e:session,w:index
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+index Required.
+Log index.
+Possible Values: 1-60
+Example
+Set log index 41 as the last extracted entry.
+yubihsm> audit set 0 41
+Command Line Mode
+$ yubihsm-shell -a set-log-index --log-index <index> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--log-index=INT Required.
+Log index.
+Possible Values: 1-60
+Example
+Set log index 41 as the last extracted entry.
+$ yubihsm-shell -a set-log-index --log-index 41
+Protocol Details
+Command
+Tc = 0x67
+Lc = 2
+Vc = I
+where –
+I = Index to set as last read log (2 bytes)
+Response
+Tr = 0xe7
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+SET OPTION Command
+Set device-global options that affect general behavior. Each invocation of this command sets a single option, which is
+represented as a TAG-LENGTH-VALUE (TLV). More specific examples can be found in Set FIPS Mode,
+Set Command Audit Option and Set Algorithm Toggle Option.
+Required Capabilities
+No specific capabilities are required.
+Interactive Mode
+yubihsm> put option e:session,o:option,i:data
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+option Required.
+Device option name. fips-mode option is only applicable in FIPS compatible YubiHSMs.
+Possible Value: algorithm-toggle, command-audit, fips-mode, force-audit
+data Required.
+Value of option.
+Default Input Format: hex
+Example
+Turn off audit logging for Sign HMAC (command 53) and Verify HMAC (command 5c).
+yubihsm> put option 0 command-audit 53005c00
+Command Line Mode
+$ yubihsm-shell -a put-option --opt-name <option> --opt-value <value> [ --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+--opt-name=STRING Required.
+Device option name. fips-mode option is only applicable in FIPS compatible YubiHSMs.
+Possible Values: algorithm-toggle, command-audit, fips-mode, force-audit
+--opt-value=STRING Required.
+Device option value.
+Default input format: hex
+Example
+Set log index 41 as the last extracted entry.
+$ yubihsm-shell -a put-option --opt-name command-audit --opt-value 53005c00
+Protocol Details
+Command
+Tc = 0x4f
+Lc = 3 + Lo
+Vc = TO
+where –
+To = The TLV encoding of the selected option
+Lo = The option-specific length in bytes
+The options currently supported are the following:
+TAG is 1 byte
+LENGTH is 2 bytes
+VALUE is Lo bytes
+Tags.
+force-audit = 0x01
+command-audit = 0x03
+algorithm-toggle = 0x4 (>=2.2.0)
+fips-mode = 0x05 (>=2.2.0)
+Values.
+OFF = 0x00 (Disabled)
+ON = 0x01 (Enabled)
+FIX = 0x02 (Enabled, only possible to turn off through factory reset)
+The defined options are as follows:
+With Force audit set, the device will refuse operations as long as the Logs Store is full. It takes a 1 byte value option.
+Command audit can be used to toggle whether a specific command should be logged, this takes tuples of command number and option value.
+Algorithm toggle allows the user to selectively disable individual algorithms for the whole device. This option can only be toggled on a freshly reset device, i.e. one with only the default Authentication Key. This takes a tuple of algorithm number and option value.
+FIPS mode is only available on FIPS devices and can only be toggled on a freshly reset device, i.e. one with only the default Authentication Key present. It disables algorithms that are not allowed by FIPS 140. This step is required as part of setting the device in the approved mode of operation, together with deleting the default Authentication Key (see Section 3.2 of the YubiHSM FIPS Security Policy).
+Response
+Tr = 0xcf
+Lr = 0
+Vr = Ø
+—————————————————————————————————————————-
+SET OUTFORMAT Command
+Set global output format. When set to something other than default, all future output will be in the set format. This is run as a bare command and not over an encrypted session.
+Interactive Mode
+yubihsm> set outformat I:format
+Parameters
+format Required.
+Output format. default resets the default output format, which can be different for different commands
+Possible Values: default, base64, binary, PEM, password, hex, ASCII
+Example
+Set output format to PEM.
+yubihsm> set outformat PEM
+Command Line Mode
+Setting global output format is not possible in command line mode. However, individual commands can be set to output in a certain format by using the --outformat=ENUM flag.
+—————————————————————————————————————————-
+SIGN ATTESTATION CERTIFICATE Command
+Gets attestation of an Asymmetric Key generated on the YubiHSM2, output is an X.509 certificate. The attesting key can be either a built-in attestation key (ID 0) or an Asymmetric Key stored in the YubiHSM.
+Required Capabilities
+Authentication Key used to open the session must have the sign-attestation-certificate capability.
+Attesting Asymmetric Key must have the sign-attestation-certificate capability.
+Attested Asymmetric Key must be generated on the device.
+Interactive Mode
+yubihsm> attest asymmetric e:session,w:key_id,w:attest_id=0,F:file=-
+Example
+Attest Asymmetric Key 0x79c3 using attestation key 0 (builtin).
+yubihsm> attest asymmetric 0 0x79c3 0
+-----BEGIN CERTIFICATE-----
+MIIDeTCCAmGgAwIBAgIQaa8FkvRhqntp5HjyyCfilzANBgkqhkiG9w0BAQsFADAn
+MSUwIwYDVQQDDBxZdWJpSFNNIEF0dGVzdGF0aW9uICgxMjM0NTYpMCAXDTE3MDEw
+MTAwMDAwMFoYDzIwNzExMDA1MDAwMDAwWjAoMSYwJAYDVQQDDB1ZdWJpSFNNIEF0
+dGVzdGF0aW9uIGlkOjB4NzljMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAMYpAzHar0syanQEiRqWy8WDO5qETjDulo2txNBDwyMCNgeEYzo/uglUXLEm
+Zj6Dd8EcdY9upHoqVpLduB+GIt+UEq5DeMN5Rzj2QZ/lQMELMdaD9ODc707aPvKT
+/oAuj1aZ89vfg7jEVWBTPWquyFaxaCBoz8WWta9j5JxRppQpR27ub43950fX3wpW
+btvlNLMx0QAQdDqEm2V3TEhnbo6T5XsgC78OdOikyJw2TP062rQXSY7GRuXob/Qa
+INsJRXbbydqUXDHFNq8GnSkL8dHsNdf7bOSdAV6Vlw30JFbJ2uoW2EkGmF9qYWnt
+EVyyPMMQwF09r9HVpLF83TBaYoMCAwEAAaOBnTCBmjATBgorBgEEAYLECgQBBAUE
+AwIAADATBgorBgEEAYLECgQCBAUCAx6EgDASBgorBgEEAYLECgQDBAQDAgABMBMG
+CisGAQQBgsQKBAQEBQMDAAABMBkGCisGAQQBgsQKBAUECwMJAAAAAAAAAARAMBIG
+CisGAQQBgsQKBAYEBAICecMwFgYKKwYBBAGCxAoECQQIDAZyc2FrZXkwDQYJKoZI
+hvcNAQELBQADggEBABRReYze+KRfevrgyI3C2aLAWSiQRjJ6vvaP1Fh4bOw4X2HC
+rLAI150h4O5eH/aXVNv+368FWlQhcY68jKDgDoeckrlt9thFxaphasd/Wt1Pbqzj
+trnEillYjjP6rddyCR1yitmnQ3Qnsk3w1mTE/AtzmDOi7V/wNymilB79OFDGmB6P
+d1VI7zGUHtLlj1qeyY4/ETqKuPDzZY5RUPYrO8/iPzy64AdtDXt1e39n9pTcohp2
+PSQQe36gU7vt9+5SebEj0CF/qTk317L1R42TfeHFSJlgBTHSWcuvDORNJxDHTcco
+bI+wE2dCcnjyLU9dr5tkNsD3k5pscuTmpBGFDlg=
+-----END CERTIFICATE-----
+Command Line Mode
+$ yubihsm-shell -a sign-attestation-certificate -i <key_id> --attestation-id <attest_id> [--out <file>]
+Protocol Details
+Command
+Tc = 0x64
+Lc = 2 + 2
+Vc = I || A
+where –
+I = Object ID of the Asymmetric Key to attest (2 bytes)
+A = Object ID of the Asymmetric Key used for attestation (2 bytes)
+If A is 0 the internal attestation key is used.
+Response
+Tr = 0xe4
+Lr = LX
+Vr = X
+where –
+X = DER encoded X.509 attestation
+—————————————————————————————————————————-
+SIGN ECDSA Command
+Computes a digital signature using ECDSA on the provided data.
+Required Capabilities
+Authentication Key used to open the session must have the sign-ecdsa capability.
+Asymmetric Key must have the sign-ecdsa capability.
+Interactive Mode
+yubihsm> sign ecdsa e:session,w:key_id,a:algorithm,i:data=-,F:out=-
+Command Line Mode
+$ yubihsm-shell -a sign-ecdsa -i <key_id> -A <signing_algorithm> [--in <in_data> --out <out_data>]
+Example
+Sign data in file data using key 0x52b6 and put the result in file sig.
+yubihsm> sign ecdsa 0 0x52b6 ecdsa-sha256 data sig
+Protocol Details
+Command
+Tc = 0x56
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+D = H
+The DSI for ECDSA is a possibly zero-left-padded hash of the data, H.
+Response
+Tr = 0xd6
+Lr = LDS
+Vr = DS
+where –
+DS = Resulting signature
+The length of DS, LDS, depends on the Algorithms used and equals the length of the signature plus its DER encoding.
+—————————————————————————————————————————-
+SIGN EDDSA Command
+Computes a digital signature using EdDSA on the provided data.
+Required Capabilities
+Authentication Key used to open the session must have the sign-eddsa capability.
+Asymmetric Key must have the sign-eddsa capability.
+Interactive Mode
+yubihsm> sign eddsa e:session,w:key_id,a:algorithm,i:data=-,F:out=-
+Command Line Mode
+$ yubihsm-shell -a sign-eddsa -i <key_id> -A <algorithm> [--in <data> --out <out>]
+Example
+Perform an EdDSA signature with key 0xddf6 of the content of file data:
+yubihsm> sign eddsa 0 0xddf6 ed25519 data
+wZljrOstOLPuMHGrXDnpAb5Wxo79+wX/vQkb/6K34tOd8se
+QfLNRVTonfErttkWUAz/UlNtaG4XJYnY8vabCQ==
+Protocol Details
+Command
+Tc = 0x6a
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+The DSI for EdDSA is the raw data D.
+DSI = D
+For a given DSI, the command will generate a digital signature DS. The length of DS, LDS, depends on the Algorithm used. At this time only Ed25519 is implemented.
+DS = EdDSA(DSI). Key is omitted
+LDS = 0x0040 bytes
+Response
+Tr = 0xea
+Lr = LDS
+Vr = DS
+where –
+DS = Resulting signature
+—————————————————————————————————————————-
+SIGN HMAC Command
+Performs an HMAC operation in the device and returns the result.
+Required Capabilities
+Authentication Key used to open the session must have the sign-hmac capability.
+HMAC Key must have the sign-hmac capability.
+Interactive Mode
+yubihsm> hmac e:session,w:key_id,i:data=-,F:out=-
+Command Line Mode
+$ yubihsm-shell -a sign-hmac -i <object_id> [--in <data_to_sign_in_hex> --out <out_data>]
+Example
+Perform an HMAC operation using the HMAC Key 0x7cf2.
+yubihsm> hmac 0 0x7cf2 666f6f626172
+4c17e17300a51a3f8aeeba131e9c680e4e40b429aa1d547807efd8e3d95ccd39
+Protocol Details
+Command
+Tc = 0x53
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the HMAC Key (2 bytes)
+D = Data to HMAC
+Response
+Tr = 0xd3
+Lr = LR
+Vr = R
+where –
+R = HMAC Response, 20, 32, 48 or 64 bytes depending on the Algorithm.
+—————————————————————————————————————————-
+SIGN PKCS1 Command
+Computes a digital signature using RSA-PKCS1v1.5 on the provided data.
+Required Capabilities
+Authentication Key used to open the session must have the sign-pkcs capability.
+Asymmetric Key must have the sign-pkcs capability.
+Interactive Mode
+yubihsm> sign pkcs1v1_5 e:session,w:key_id,a:algorithm,i:data=-,F:out=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the asymmetric key to sign with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+algorithm Required.
+Signing algorithm.
+Possible Values: rsa-pkcs1-sha1, rsa-pkcs1-sha256, rsa-pkcs1-sha384, rsa-pkcs1-sha512
+data
+Data to sign.
+Possible Values:Path to file or - for stdin
+Default Value: stdin
+Default Input Format: binary
+out
+Signed data.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Default Input Format: PEM
+Example
+Sign the data in the file test using rsa-pkcs1-sha256.
+yubihsm> sign pkcs1v1_5 0 0x1e15 rsa-pkcs1-sha256 test
+eu9HQceSs0zsUogVloovRRcDGtkBj5AIp2Nnk6LWT4KbQZX8ac+vmFtVotjDIF9PkQ9MA8K
+sfUGvXAxpnvUyin3BjGvzENu5XRi+ZOGP4m8777zbDi1v7FKQSx8/KdZf4tulIsL4rM4M+uH
+/QoQ83vWty4c63QjcSlZJQDsdHn9r3E5or3QgBo06yK2Rd8W3WYGloSPvDaGu7L87CDFy
+MniAQB//Sw7bYr4hbVpKIWi6q4VPhBKdaB6+FzTmYrqsSv1vwek0V4LbvyelTHlh9PpFuSF
+ZeGJ/i1gkIeSO2XlKNLa4+AO+H+TYUOP3b6Qlhs3f7e4AFFWKE6lPpDHJAA==
+Command Line Mode
+$ yubihsm-shell -a sign-pkcs1v15 -i <key_id> -A <algorithm> [--in <data> --informat <informat> --out <out> --outformat <outformat> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key to sign with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-A, --algorithm=STRING Required.
+Signing algorithm.
+Possible Values: rsa-pkcs1-sha1, rsa-pkcs1-sha256, rsa-pkcs1-sha384, rsa-pkcs1-sha512
+--in=STRING
+Data to sign.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Input Format: binary
+--informat=ENUM
+Input data format.
+Possible Values: binary, base64, hex, PEM
+--out=STRING
+Signed data.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default Output Format: PEM
+--outformat=ENUM
+Output data format.
+Possible Values: binary, base64, hex, PEM
+Example
+Sign the data in the file test using rsa-pkcs1-sha256.
+$ yubihsm-shell -a sign-pkcs1v15 -i 0x1e15 -A rsa-pkcs1-sha256 --in test
+eu9HQceSs0zsUogVloovRRcDGtkBj5AIp2Nnk6LWT4KbQZX8ac+vmFtVotjDIF9PkQ9MA8KlsfUGvXAxpnvUyin 3BjGvzENu5XRi+ZOGP4m8777zbDi1v7FKQSx8/KdZf4tulIsL4rM4M+uH/QoQ83vWty4c63QjcSlZJQDsdHn9r3E5or3QgBo06yK2Rd8W3WYGloSPv DaGu7L87CDFyMniAQB//Sw7bYr4hbVpKIWi6q4VPhBKdaB6+FzTmYrqsSv1vwek0V4LbvyelTHlh9PpFuSFZeGJ/i1gkIeSO2XlKNLa4+AO+H+TYUOP3b6Qlhs3f7e4AFFWKE6lPpDHJA==
+Protocol Details
+Command
+Tc = 0x47
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+D = Digest
+The Digest can be either a raw hash of data, where DigestInfo will be applied in the device, or DigestInfo + hash. Hashes supported are SHA-1, SHA-256, SHA-384 and SHA-512.
+Response
+Tr = 0xc7
+Lr = LDS
+Vr = DS
+where –
+DS = Resulting signature
+—————————————————————————————————————————-
+SIGN PSS Command
+Computes a digital signature using RSA-PSS on the provided data.
+Required Capabilities
+Authentication Key used to open the session must have the sign-pss capability.
+Asymmetric Key must have the sign-pss capability.
+Interactive Mode
+$ sign pss <session> <key_id> <signing_algorithm> <in_data=-> <out_file=->
+yubihsm> sign pss e:session,w:key_id,a:algorithm,i:data=-,F:out=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the asymmetric key to sign with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+algorithm Required.
+Signing algorithm.
+Possible Values: rsa-pss-sha1, rsa-pss-sha256, rsa-pss-sha384, rsa-pss-sha512
+data
+Data to sign.
+Possible Values: Path to file or - for stdin
+Devault Value: stdin
+Default Input Format: binary
+out
+Signed data.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Default Input Format: PEM
+Example
+Sign what is in file data using key 0x79c3 and put the resulting signature in sig.
+yubihsm> sign pss 0 0x79c3 rsa-pss-sha256 data sig
+Command Line Mode
+$ yubihsm-shell -a sign-pss -i <key_id> -A <signing_algorithm> [--in <data> --informat <informat> --out <out> --outformat <outformat> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key to sign with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-A, --algorithm=STRING Required.
+Signing algorithm.
+Possible Values: rsa-pss-sha1, rsa-pss-sha256, rsa-pss-sha384, rsa-pss-sha512
+--in=STRING
+Data to sign.
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Input Format: binary
+--informat=ENUM
+Input format.
+Possible Values: binary, base64, hex, PEM
+--out=STRIN
+Signed data.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default Output Format: PEM
+--outformat=ENUM
+Output format.
+Possible Values: binary, base64, hex, PEM
+Example
+Sign what is in file data using key 0x79c3 and put the resulting signature in sig.
+$ yubihsm-shell -a sign-pss -i 0x79c3 -A rsa-pss-sha256 --in data --out sig
+Protocol Details
+Command
+Tc = 0x55
+Lc = 2 + 1 + 2 + LD
+Vc = I || M || S || D
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+M = Hash Algorithms to use for MGF1
+S = Salt len (2 bytes)
+D = Hashed data (20, 32, 48 or 64 bytes)
+The DSI of EMSA-PSS is as defined in RFC 3447.
+DSI = EMSA-PSS-ENCODE(M, emBits, Hash, MGF, sLen).
+Hash is a supported hash Algorithm
+MGF is a supported masking function
+sLen is the length of the Salt
+The DSI is generated internally and only the Hash of the data and the Salt length are provided.
+Response
+Tr = 0xd5
+Lr = LDS
+Vr = DS
+where –
+DS = Resulting signature
+—————————————————————————————————————————-
+SIGN SSH CERTIFICATE Command
+Produce an SSH Certificate signature. The certificate can then be used to login to hosts.
+Only works with RSA keys.
+Required Capabilities
+Authentication Key used to open the session must have the sign-ssh-certificate capability.
+Asymmetric Key must have the sign-ssh-certificate capability.
+Interactive Mode
+yubihsm> certify e:session,w:key_id,w:template_id,a:algorithm,i:infile=-,F:outfile=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the asymmetric key to sign with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+template_id Required.
+Template Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+algorithm Required.
+Signing algorithm.
+Possible Values: rsa-pkcs1-sha1, rsa-pkcs1-sha256, rsa-pkcs1-sha384, rsa-pkcs1-sha512
+data
+Certificate request.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default Input Format: binary
+out
+Signed SSH certificate.
+Possible Values: Path to file or - for stdout
+Default Value: stdout
+Default Input Format: binary
+Example
+Produce a new SSH Certificate.
+yubihsm> certify 0 0xabcd 0x1234 rsa-pkcs-sha256 req.dat cert.dat
+Command Line Mode
+$ yubihsm-shell -a sign-ssh-certificate -i <key_id> --template-id <template_id> -A <algorithm> [--in <data> --informat <informat> --out <out> --authkey <authKeyID> -p <password> ]
+Parameters
+--authkey=INT
+The ObjectID of the authentication key used to open a session. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+Default Value: 1
+-p, --password=STRING Required.
+The password to authentication key used to open a session. The password is prompted for if not specified.
+-i, --object-id=SHORT Required.
+Object ID of the asymmetric key to sign with. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+--template-id=INT Required.
+Template Object ID. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+-A, --algorithm=STRING Required.
+Signing algorithm.
+Possible Values: rsa-pkcs1-sha1, rsa-pkcs1-sha256, rsa-pkcs1-sha384, rsa-pkcs1-sha512
+--in=STRING
+Certificate request
+Possible Values: Path to file or stdin
+Default Value: stdin
+Default Input Format: binary
+--informat=ENUM
+Input data format.
+Possible Values: binary, base64, hex, PEM
+--out=STRING
+Signed SSH certificate.
+Possible Values: Path to file or stdout
+Default Value: stdout
+Default Output Format: binary
+Example
+Produce a new SSH Certificate.
+$ yubihsm-shell -a sign-ssh-certificate -i 0xabcd --template-id 0x1234 -A rsa-pkcs-sha256 --in req.dat --out cert.dat
+Protocol Details
+Command
+Tc = 0x5d
+Lc = 2 + 2 + 1 + 4 + 256 + LR
+Vc = I || T || A || N || S || R
+Sign and SSH Certificate by using the given Asymmetric Key and SSH Template.
+where –
+I = Object ID of the Asymmetric Key (2 bytes)
+T = Object ID of the SSH Template (2 bytes)
+A = Algorithms (1 byte)
+N = Timestamp with the definition of Now (4 bytes)
+S = Signature over the request and timestamp (256 bytes)
+R = Request (LR bytes)
+Response
+Tr = 0xd6
+Lr = LS
+Vr = S
+where –
+S = Certificate Signature (LS bytes)
+—————————————————————————————————————————-
+UNWRAP DATA Command
+Decrypt (unwrap) data using a Wrap Key.
+Required Capabilities
+Authentication Key used to open the session must have the unwrap-data capability.
+Wrap Key must have the unwrap-data capability.
+Interactive Mode
+yubihsm> decrypt aesccm e:session,w:key_id,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Required.
+Object ID of the wrap key. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+data
+Data to decrypt/unwrap.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default Input Format: base64
+Example
+yubihsm> decrypt aesccm 0 0x5b3a MRkj6B0AAAAAAAAAAoO4dkIeAYoPvwTV/M/JX1dwKnLqnERO1hSW4wPS
+Hello world!
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x69
+Lc = 2 + 13 + LD + 16
+Vc = I || N || D || M
+where –
+I = Object ID of a Wrap Key (2 bytes)
+N = Nonce (13 bytes)
+D = Data to be unwrapped
+M = Mac (16 bytes)
+Response
+Tr = 0xe9
+Lr = LD
+Vr = D
+where –
+D = Unwrapped data
+—————————————————————————————————————————-
+VERIFY HMAC Command
+Verify a generated HMAC.
+Required Capabilities
+Authentication Key used to open the session must have the verify-hmac capability.
+HMAC Key must have the verify-hmac capability.
+Protocol Details
+Command
+Tc = 0x5c
+Lc = 2 + LH + LD
+Vc = I || H || D
+where –
+I = Object ID of the HMAC Key (2 bytes)
+H = HMAC (20, 32, 48 or 64 bytes)
+D = Data
+Response
+Tr = 0xdc
+Lr = 1
+Vr = V
+where –
+V = Verified (1 byte)
+V will have the value 1 if verification succeeded and 0 otherwise.
+—————————————————————————————————————————-
+WRAP DATA Command
+Encrypt (wrap) data using a Wrap Key.
+Required Capabilities
+Authentication Key used to open the session must have the wrap-data capability.
+Wrap Key must have the wrap-data capability.
+Interactive Mode
+yubihsm> encrypt aesccm e:session,w:key_id,i:data=-
+Parameters
+session Required.
+The ID of the authenticated session to send the command over.
+Possible Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+key_id Requiredc.
+Object ID of the wrap key. Object ID is a 2 bytes integer. Can be specified in hex or decimal.
+data
+Data to encrypt/wrap.
+Possible Values: Path to file or - for stdin
+Default Value: stdin
+Default Input Format: binary
+Example
+Using Wrap Key 0x5b3a encrypt the string Hello world!.
+yubihsm> encrypt aesccm 0 0x5b3a "Hello world!"
+MRkj6B0AAAAAAAAAAoO4dkIeAYoPvwTV/M/JX1dwKnLqnERO1hSW4wPS
+Command Line Mode
+This command is not available in command line mode.
+Protocol Details
+Command
+Tc = 0x68
+Lc = 2 + LD
+Vc = I || D
+where –
+I = Object ID of the Wrap Key (2 bytes)
+D = Data to be wrapped
+Response
+Tr = 0xe8
+Lr = 13 + LD + 16
+Vr = N || D || M
+where –
+N = Nonce (13 bytes)
+D = Wrapped data (LW = 1 + LD bytes)
+The wrapped data includes a leading encrypted nul byte that is added automatically by the YubiHSM2. This byte is checked by UNWRAP DATA and therefore must be added if manually generating an encrypted message offline.
+M = Mac (16 bytes)
+ Previous
+ Next 
+© Copyright 2026, Yubico AB.
+ Cookies
+ |
+ Privacy Policy

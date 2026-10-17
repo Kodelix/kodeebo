@@ -1,0 +1,187 @@
+ 
+ Key types, algorithms, and operations - Azure Key Vault Managed HSM | Microsoft Learn
+ Skip to main content
+ Skip to Ask Learn chat experience
+This browser is no longer supported.
+ Upgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.
+ Download Microsoft Edge
+ More info about Internet Explorer and Microsoft Edge
+ Table of contents 
+ Exit editor mode
+ Ask Learn
+ Ask Learn
+ Reading mode
+ Table of contents
+ Read in English
+ Add
+ Add to Plans
+ Edit
+ Copy Markdown
+ Print
+ Note
+ Access to this page requires authorization. You can try signing in or changing directories.
+ Access to this page requires authorization. You can try changing directories.
+Key types, algorithms, and operations (Managed HSM)
+ Feedback
+ Summarize this article for me
+ In this article
+Managed HSM supports RSA, Elliptic Curve, and symmetric (AES) keys. All keys are HSM-protected. For a high-level overview, see About keys in Managed HSM.
+The following table summarizes supported key types and algorithms in Managed HSM.
+ | Key types / sizes / curves
+ | Encrypt/Decrypt
+(Wrap/Unwrap)
+ | Sign/Verify
+ | EC-P256, EC-P256K, EC-P384, EC-P521
+ | NA
+ | ES256
+ES256K
+ES384
+ES512
+ | RSA 2K, 3K, 4K
+ | RSA-OAEP-256
+[Not recommended] RSA1_5
+[Not recommended] RSA-OAEP
+ | PS256
+PS384
+PS512
+RS256
+RS384
+RS512
+RSNULL
+ | oct 128-bit, 192-bit, 256-bit
+ | AES-KW
+AES-GCM
+AES-CBC
+ | HS256
+HS384
+HS512
+EC algorithms
+The following algorithm identifiers are supported with EC-HSM keys.
+Curve types
+P-256 — The NIST curve P-256, defined at DSS FIPS PUB 186-4.
+P-256K — The SEC curve SECP256K1, defined at SEC 2: Recommended Elliptic Curve Domain Parameters.
+P-384 — The NIST curve P-384, defined at DSS FIPS PUB 186-4.
+P-521 — The NIST curve P-521, defined at DSS FIPS PUB 186-4.
+SIGN/VERIFY
+ES256 — ECDSA for SHA-256 digests and keys created with curve P-256. Described at RFC7518.
+ES256K — ECDSA for SHA-256 digests and keys created with curve P-256K. Pending standardization.
+ES384 — ECDSA for SHA-384 digests and keys created with curve P-384. Described at RFC7518.
+ES512 — ECDSA for SHA-512 digests and keys created with curve P-521. Described at RFC7518.
+RSA algorithms
+The following algorithm identifiers are supported with RSA-HSM keys.
+WRAPKEY/UNWRAPKEY, ENCRYPT/DECRYPT
+RSA-OAEP-256 — RSAES using Optimal Asymmetric Encryption Padding with a hash function of SHA-256 and a mask generation function of MGF1 with SHA-256.
+[Not recommended] RSA1_5 — RSAES-PKCS1-V1_5 [RFC3447] key encryption.
+[Not recommended] RSA-OAEP — RSAES using Optimal Asymmetric Encryption Padding (OAEP) [RFC3447], with the default parameters specified by RFC 3447 in Section A.2.1 (SHA-1 with MGF1/SHA-1).
+Warning
+Microsoft recommends using RSA_OAEP_256 or stronger algorithms for enhanced security.
+Microsoft does not recommend RSA_1_5 or RSA_OAEP, which are included solely for backward compatibility. Cryptographic standards no longer consider RSA with the PKCS#1 v1.5 padding scheme secure for encryption, and RSA_OAEP uses SHA-1, which has known collision problems.
+SIGN/VERIFY
+PS256 — RSASSA-PSS using SHA-256 and MGF1 with SHA-256, as described in RFC7518.
+PS384 — RSASSA-PSS using SHA-384 and MGF1 with SHA-384, as described in RFC7518.
+PS512 — RSASSA-PSS using SHA-512 and MGF1 with SHA-512, as described in RFC7518.
+RS256 — RSASSA-PKCS-v1_5 using SHA-256. The application-supplied digest must be computed using SHA-256 and must be 32 bytes in length.
+RS384 — RSASSA-PKCS-v1_5 using SHA-384. The application-supplied digest must be computed using SHA-384 and must be 48 bytes in length.
+RS512 — RSASSA-PKCS-v1_5 using SHA-512. The application-supplied digest must be computed using SHA-512 and must be 64 bytes in length.
+RSNULL — See RFC2437; a specialized use case to enable certain TLS scenarios.
+Note
+RSA-PSS padding mode is recommended for better performance. The server constructs the DigestInfo for sign operations that algorithms RS256, RS384, and RS512 generate.
+Symmetric (AES) key algorithms
+The following algorithm identifiers are supported with oct-HSM keys.
+WRAPKEY/UNWRAPKEY, ENCRYPT/DECRYPT
+AES-KW — AES Key Wrap (RFC3394).
+AES-GCM — AES encryption in Galois Counter Mode (NIST SP 800-38d).
+AES-CBC — AES encryption in Cipher Block Chaining Mode (NIST SP 800-38a).
+When used with 256-bit keys, these algorithms are quantum-resistant according to the Commercial National Security Algorithm Suite 2.0 and Quantum Computing FAQ.
+SIGN/VERIFY (HMAC)
+HS256 — HMAC using SHA-256, as described in RFC7518.
+HS384 — HMAC using SHA-384, as described in RFC7518.
+HS512 — HMAC using SHA-512, as described in RFC7518.
+Note
+The sign and verify algorithm must match the key type and size. Otherwise, the service returns a key-size-incorrect error.
+For throughput numbers per AES key size and operation, see Managed HSM scaling guidance. To enforce a minimum AES key size with Azure Policy, see Azure Policy for Managed HSM.
+Key operations
+The following operations are supported on key objects:
+Create: A client creates a key in the service. The service generates and stores the value of the key and doesn't release it to the client.
+Import: A client imports an existing key to the service. Asymmetric keys can be imported by using several different packaging methods within a JWK construct.
+Update: A client with sufficient permissions modifies the metadata (key attributes) associated with a previously stored key.
+Delete: A client with sufficient permissions deletes a key.
+List: A client lists all keys in the service.
+List versions: A client lists all versions of a given key.
+Get: A client retrieves the public parts of a given key. The get operation doesn't return the private portion of an asymmetric key, nor the key material of a symmetric key.
+Backup: Exports a key in a protected form.
+Restore: Imports a previously backed-up key.
+Release: Securely releases a key to authorized code running within a confidential compute environment. Requires an attestation that the Trusted Execution Environment (TEE) meets the requirements of the key's release_policy.
+After a key is created, you can perform the following cryptographic operations with it:
+Sign and Verify: Strictly, this operation is "sign hash" or "verify hash", as the service doesn't hash content as part of signature creation. Applications should hash the data to be signed locally, then request that the service sign the hash. Verification of signed hashes is supported as a convenience for applications that might not have access to public key material; for best performance, verify operations should be performed locally.
+Key Encryption / Wrapping: A key stored in the service can protect another key, typically a symmetric content encryption key (CEK). When the key in the service is asymmetric, use key encryption (for example, RSA-OAEP; WRAPKEY/UNWRAPKEY are equivalent to ENCRYPT/DECRYPT). When the key in the service is symmetric, use key wrapping (for example, AES-KW). WRAPKEY is supported as a convenience for applications that might not have access to public key material; for best performance, wrap operations should be performed locally.
+Encrypt and Decrypt: A key stored in the service can encrypt or decrypt a single block of data. The size of the block is determined by the key type and the selected encryption algorithm. Encrypt is provided for convenience; for best performance, encrypt operations should be performed locally.
+The use of distinct WRAPKEY/UNWRAPKEY operations (rather than always using ENCRYPT/DECRYPT) provides semantic and authorization separation, and consistency across key types.
+The service doesn't support EXPORT operations. Once a key is provisioned, you can't extract it or modify its key material. To move a key, use the BACKUP and RESTORE operations to export or import the key in a protected form. Keys produced by BACKUP can't be used outside the service.
+You can restrict any of the cryptographic operations on a per-key basis by using the key_ops property of the JWK object.
+For more information about JWK objects, see JSON Web Key (JWK).
+For more information, see Key operations in the Key Vault REST API reference.
+Rotate
+Managed HSM supports automated key rotation. You can set a rotation policy per key to generate a new key version at a specified frequency, or rotate a key on demand. For details, see Configure key autorotation in Managed HSM. For broader lifecycle guidance, see How to migrate key workloads.
+Key attributes
+In addition to the key material, you can specify the following attributes. In a JSON request, you must include the attributes keyword and braces ({ }) even if you don't specify any attributes.
+enabled: boolean, optional, default is true. Specifies whether the key is enabled and usable for cryptographic operations. Use the enabled attribute with nbf and exp. When an operation occurs between nbf and exp, the operation is permitted only if enabled is set to true. Operations outside the nbf / exp window are automatically disallowed, except for decrypt, release, unwrap, and verify.
+nbf: IntDate, optional, default is now. The nbf (not before) attribute identifies the time before which the key MUST NOT be used for cryptographic operations, except for decrypt, release, unwrap, and verify. The processing of the nbf attribute requires that the current date/time MUST be after or equal to the not-before date/time listed in the nbf attribute. Some small leeway (normally no more than a few minutes) may be provided to account for clock skew. Its value MUST be a number containing an IntDate value.
+exp: IntDate, optional, default is "forever". The exp (expiration time) attribute identifies the expiration time on or after which the key MUST NOT be used for cryptographic operations, except for decrypt, release, unwrap, and verify. The processing of the exp attribute requires that the current date/time MUST be before the expiration date/time listed in the exp attribute. Some small leeway (typically no more than a few minutes) may be provided to account for clock skew. Its value MUST be a number containing an IntDate value.
+The following read-only attributes are included in any response that includes key attributes:
+created: IntDate, optional. The created attribute indicates when this version of the key was created. The value is null for keys created before the addition of this attribute. Its value MUST be a number containing an IntDate value.
+updated: IntDate, optional. The updated attribute indicates when this version of the key was updated. The value is null for keys that were last updated before the addition of this attribute. Its value MUST be a number containing an IntDate value.
+Date-time controlled operations
+Not-yet-valid and expired keys, outside the nbf / exp window, work for decrypt, release, unwrap, and verify operations (they don't return 403, Forbidden). The rationale for using the not-yet-valid state is to allow a key to be tested before production use. The rationale for using the expired state is to allow recovery operations on data that was created when the key was valid. You can also disable access to a key by updating the enabled attribute to false.
+For more information about other possible attributes, see the JSON Web Key (JWK) specification.
+Keys are bound to the Managed HSM instance in which they were created. You can't migrate or transfer a key between instances; to move a workload to a new key, see How to migrate key workloads. For more information about IntDate and other data types, see Data types.
+Key tags
+You can attach application-specific metadata in the form of tags. Up to 15 tags are supported per key, each with a 256-character name and a 256-character value.
+Note
+If a caller has the list or get permission to a key, they can read its tags.
+Access control
+Managed HSM uses a local, role-based access control (RBAC) model at the data plane that's separate from Azure RBAC at the management plane. Built-in roles such as Managed HSM Crypto User and Managed HSM Crypto Officer govern key operations and can be assigned at the HSM-wide or per-key scope; broader administrative roles such as Managed HSM Administrator govern security domain, backup/restore, and role management rather than key operations. For details, see Managed HSM local RBAC built-in roles and Managed HSM access control.
+Related content
+About keys in Managed HSM
+Manage keys in Managed HSM
+Import HSM-protected keys to Managed HSM (BYOK)
+Validate keys with key attestation
+Managed HSM scaling guidance
+Azure Policy for Managed HSM
+Managed HSM access control
+Feedback
+ Was this page helpful?
+ Yes
+ No
+ No
+ Need help with this topic?
+ Want to try using Ask Learn to clarify or guide you through this topic?
+ Ask Learn
+ Ask Learn
+ Suggest a fix? 
+ Additional resources
+ Last updated on 
+ 2026-05-22
+In this article
+ Was this page helpful?
+ Need help with this topic?
+ Want to try using Ask Learn to clarify or guide you through this topic?
+ Ask Learn
+ Ask Learn
+ Suggest a fix? 
+ en-us
+ Your Privacy Choices
+ Theme
+ Light 
+ Dark 
+ High contrast 
+ AI Disclaimer
+ Previous Versions
+ Blog
+ Contribute
+ Privacy
+ Consumer Health Privacy
+ Terms of Use
+ Trademarks
+© Microsoft 2026
+ 

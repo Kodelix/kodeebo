@@ -1,0 +1,163 @@
+
+Security advisories | Yubico
+OpenAI mandates hardware-backed passkeys for Trusted Access for Cyber members. Read more.
+Skip to content
+ EnglishFrançaisDeutsch日本語EspañolSvenska
+Investors
+Contact Sales
+Partners
+Support
+ AboutProductsEnterpriseResourcesSolutions
+ 0
+ All YubiKeys
+ Compare YubiKeys
+ What is a YubiKey?
+ Set up your YubiKey
+ YubiKey 5 Series
+ Learn more
+ Buy
+ YubiKey 5 FIPS Series
+ Learn more
+ Buy
+ YubiKey Bio Series
+ Learn more
+ Buy
+ Security Key Series
+ Learn more
+ Buy
+ YubiHSM 2 & YubiHSM 2 FIPS
+ Learn more
+ Buy
+ Accessories
+ Buy
+Home / Support / Security advisories
+Security advisories
+2026 Advisories 
+Security advisory: YSA-2026-02 
+webauthn-server-core User Impersonation
+Security advisory: YSA-2026-01 
+DLL search path issue in libfido2, python-fido2, and YubiKey Manager
+2025 Advisories 
+Security advisory: YSA-2025-02 
+FIDO PIN/UV Auth Protocol Two Out of Conformance
+Security advisory: YSA-2025-01 
+Partial Authentication Bypass in pam-u2f Software Package
+2024 Advisories 
+Security advisory: YSA-2024-03 
+Infineon ECDSA Private Key Recovery
+Security advisory: YSA-2024-02 
+FIDO Relying Party Enumeration
+Security advisory: YSA-2024-01 
+YubiKey Manager Privilege Escalation
+2023 Advisories 
+Security advisory: YSA-2023-01 
+YubiHSM 2 SDK uninitialized memory read in the PKCS11 module
+2022 Advisories 
+None
+2021 Advisories 
+Security advisory: YSA-2021-04 
+Input validation issues in libyubihsm
+Security advisory: YSA-2021-03 
+Local PIN bypass in pam-u2f
+Security advisory: YSA-2021-02 
+Denial of Service condition in yubihsm-connector
+Security advisory: YSA-2021-01 
+Tailored Denial of Service Issues in yubihsm-shell
+2020 Advisories 
+Security advisory: YSA-2020-06 
+Denial of service issues in yubihsm-shell
+Security advisory: YSA-2020-04 
+Access code not checked for NDEF updates
+Security advisory: YSA-2020-02, YSA-2020-3 
+Out of bounds read in libykpiv
+Security advisory: YSA-2020-01 
+Insufficient data validation in yubikey-val
+2019 Advisories 
+Security advisory: YSA-2019-02 
+Reduced initial randomness on FIPS keys
+Security advisory: YSA-2019-01 
+Unchecked buffer in libu2f-host
+2018 Advisories 
+Security advisory: YSA-2018-03 
+Unchecked buffer in libykpiv
+Security advisory: YSA-2018-02 
+WebUSB bypass of U2F phishing protection
+Security advisory: YSA-2018-01 
+Security issue with password protection in OATH Applet on YubiKey NEO
+2017 Advisories 
+Security advisory: YSA-2017-01 
+Infineon weak RSA key generation
+2015 Advisories 
+Security advisory: YSA-2015-1 
+YubiKey NEO OpenPGP PIN validation logic issue
+Read more on how Yubico rates the severity of security issues.
+Sign up to receive security advisories via email: 
+(Email notifications are sent only for High and Critical security issue ratings)
+ Join our newsletter
+ Security advisories RSS feed
+ Join our newsletter
+ Distributed monthly, it includes product news, new applications, case studies, events, and
+ discounts. Unsubscribe anytime.
+ By subscribing you agree to our Privacy Policy.
+ Subscribe
+ About us
+ About us
+ The team
+ Innovation history
+ Secure it forward program
+ Yubico blog
+ Press Room
+ Events
+ Partner programs
+ Careers
+ Investors
+ Products
+ YubiKey 5 Series
+ YubiKey 5 FIPS Series
+ Security Key Series
+ YubiKey Bio Series
+ YubiHSM 2 & YubiHSM 2 FIPS
+ Accessories
+ Yubico Authenticator
+ Computer login tools
+ Software Development kits
+ Enterprise
+ YubiKey as a Service
+ Delivery
+ Contact Sales
+ Enrollment
+ Professional Services
+ Solutions
+ All Solutions
+ Initiatives
+ Industries
+ Use cases
+ Technologies
+ Resources
+ Setting up your YubiKey
+ Find the right YubiKey
+ Works with YubiKey Catalog
+ What is a YubiKey
+ Case studies
+ Webinars
+ White papers and reports
+ Documentation
+ All downloads
+ Support Home
+ Support services
+ Buying and shipping information
+ Social
+ LinkedIn
+ YouTube
+ Instagram
+ X
+ Facebook
+ EnglishFrançaisDeutsch日本語EspañolSvenska
+Sitemap
+Cookies
+Legal
+Privacy
+Terms of use
+Accessibility
+Legal Imprint
+EU Right of Withdrawal

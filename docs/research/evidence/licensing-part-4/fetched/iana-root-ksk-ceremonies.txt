@@ -1,0 +1,347 @@
+
+ Root KSK Ceremonies
+Domains
+Protocols
+Numbers
+About
+Key Signing Ceremonies
+Ceremonies are usually conducted four times a year to perform operations using the Root
+ Key Signing Key, and involving Trusted Community Representatives.
+ In a typical ceremony, the KSK is used to sign a set of operational ZSKs that
+ will be used for a three month period to sign the DNS root zone. Other operations that may
+ occur during ceremonies include installing new cryptographic officers, replacing hardware,
+ or generating or replacing a KSK.
+Ceremonies
+ | Date
+ | Ceremony
+ | Agenda
+ | 2027-08-05
+ | 
+ KSK Ceremony 66-2
+ | Sign 2027Q4 ZSKs; Replicate KSK-2027; Introduce HSMs 11W & 12W
+ | 2027-08-04
+ | 
+ KSK Ceremony 66-1
+ | Delete KSK-2017 & Decommission Related Materials
+ | 2027-04-30
+ | 
+ KSK Ceremony 65-2
+ | Sign 2027Q3 ZSKs; Generate KSK-2027; Introduce Six HSMs
+ | 2027-04-29
+ | 
+ KSK Ceremony 65-1
+ | Delete KSK-2017 & Decommission Related Materials
+ | 2027-02-10
+ | 
+ KSK Ceremony 64
+ | Sign 2027Q2 ZSKs
+ | 2026-11-12
+ | 
+ KSK Ceremony 63
+ | Sign 2027Q1 ZSKs
+ | 2026-08-12
+ | 
+ KSK Ceremony 62
+ | Sign 2026Q4 ZSKs; Destroy HSMs 5W & 6W
+ | 2026-04-30
+ | 
+ KSK Ceremony 61
+ | Sign 2026Q3 ZSKs; Destroy HSMs 5E & 6E
+ | 2026-02-11
+ | 
+ KSK Ceremony 60
+ | Sign 2026Q2 ZSKs; Introduce BHSM3W
+ | 2025-11-13
+ | 
+ KSK Ceremony 59
+ | Sign 2026Q1 ZSKs; Replace CO4 East; Introduce BHSM3E
+ | 2025-07-16
+ | 
+ KSK Ceremony 58
+ | Sign 2025Q4 ZSKs
+ | 2025-04-24
+ | 
+ KSK Ceremony 57
+ | Sign 2025Q3 ZSKs
+ | 2025-02-12
+ | 
+ KSK Ceremony 56
+ | Sign 2025Q2 ZSKs; Replace CO3 & CO4 West
+ | 2024-10-17
+ | 
+ KSK Ceremony 55
+ | Sign 2025Q1 ZSKs; Replace CO1 East
+ | 2024-07-17
+ | 
+ KSK Ceremony 54
+ | Sign 2024Q4 ZSKs; Introduce Successor HSMs; Import KSK-2024
+ | 2024-04-26
+ | 
+ KSK Ceremony 53-2
+ | Introduce Successor HSMs; Generate KSK-2024
+ | 2024-04-25
+ | 
+ KSK Ceremony 53-1
+ | Sign 2024Q3 ZSKs; Replace RKSHs 1 & 6; Reissue RKSH Cards
+ | 2024-02-14
+ | 
+ KSK Ceremony 52
+ | Sign 2024Q2 ZSKs; Introduce HSM8W
+ | 2023-11-30
+ | 
+ KSK Ceremony 51
+ | Sign 2024Q1 ZSKs; Replace CO5 East; Introduce HSM7E & HSM8E
+ | 2023-07-19
+ | 
+ KSK Ceremony 50
+ | Sign 2023Q4 ZSKs; Import KSK-2023
+ | 2023-04-27
+ | 
+ KSK Ceremony 49
+ | Sign 2023Q3 ZSKs; Generate KSK-2023; Replace CO6 East
+ | 2023-02-01
+ | 
+ KSK Ceremony 48
+ | Sign 2023Q2 ZSKs; Reissue CO Cards; Replace CO2 West; Introduce HSM7W
+ | 2022-11-03
+ | 
+ KSK Ceremony 47
+ | Sign 2023Q1 ZSKs; Replace CO2 & CO7 East
+ | 2022-08-17
+ | 
+ KSK Ceremony 46
+ | Sign 2022Q4 ZSKs; Replace CO6 West; Destroy HSMs 3&4 (West)
+ | 2022-05-12
+ | 
+ KSK Ceremony 45
+ | Sign 2022Q3 ZSKs; Reissue CO Cards; Replace 2 TCRs; Destroy HSM4 (East)
+ | 2022-02-16
+ | 
+ KSK Ceremony 44
+ | Sign 2022Q2 ZSKs; Introduce HSM6W
+ | 2021-10-14
+ | 
+ KSK Ceremony 43
+ | Sign 2022Q1 ZSKs; Introduce HSM6E
+ | 2021-02-11
+ | 
+ KSK Ceremony 42
+ | Sign 2021Q2-2021Q4 ZSKs
+ | 2020-04-23
+ | 
+ KSK Ceremony 41
+ | Sign 2020Q3-2021Q1 ZSKs
+ | 2020-02-16
+ | 
+ KSK Ceremony 40
+ | Sign 2020Q2 ZSKs
+ | 2019-11-14
+ | 
+ KSK Ceremony 39
+ | Sign 2020Q1 ZSKs; Destroy HSM3 (East)
+ | 2019-08-14
+ | 
+ KSK Ceremony 38
+ | Sign 2019Q4 ZSKs; Delete KSK-2010; Destroy HSMs 1&2; Introduce HSM5W
+ | 2019-05-16
+ | 
+ KSK Ceremony 37
+ | Sign 2019Q3 ZSKs; Delete KSK-2010; Destroy HSMs 1&2; Introduce HSM5E
+ | 2019-02-27
+ | 
+ KSK Ceremony 36
+ | Sign 2019Q2 ZSKs
+ | 2018-11-15
+ | 
+ KSK Ceremony 35
+ | Sign 2019Q1 ZSKs
+ | 2018-08-15
+ | 
+ KSK Ceremony 34
+ | Sign 2018Q4 ZSKs
+ | 2018-04-11
+ | 
+ KSK Ceremony 33
+ | Sign 2018Q3 ZSKs
+ | 2018-02-07
+ | 
+ KSK Ceremony 32
+ | Sign 2018Q2 ZSKs; Destruction Test HSM1 (West)
+ | 2017-10-18
+ | 
+ KSK Ceremony 31
+ | Sign 2018Q1 ZSKs; Replace RKSH 3
+ | 2017-08-17
+ | 
+ KSK Ceremony 30
+ | Sign 2017Q4 ZSKs
+ | 2017-04-27
+ | 
+ KSK Ceremony 29
+ | Sign 2017Q3 ZSKs
+ | 2017-02-02
+ | 
+ KSK Ceremony 28
+ | Sign 2017Q2 ZSKs; Import KSK-2017
+ | 2016-10-27
+ | 
+ KSK Ceremony 27
+ | Sign 2017Q1 ZSKs; Generate KSK-2017; Zeroize HSMs 1&2 (East)
+ | 2016-08-11
+ | 
+ KSK Ceremony 26
+ | Sign 2016Q4 ZSKs; Zeroize HSMs 1&2 (West)
+ | 2016-05-12
+ | 
+ KSK Ceremony 25
+ | Sign 2016Q3 ZSKs
+ | 2016-02-11
+ | 
+ KSK Ceremony 24
+ | Sign 2016Q2 ZSKs; Replace CO6 West
+ | 2015-11-12
+ | 
+ KSK Ceremony 23
+ | Sign 2016Q1 ZSKs
+ | 2015-08-13
+ | 
+ KSK Ceremony 22
+ | Sign 2015Q4 ZSKs; Introduce HSMs 3&4 (West); Replace CO1 West
+ | 2015-04-09
+ | 
+ KSK Ceremony 21
+ | Sign 2015Q3 ZSKs; Introduce HSMs 3&4 (East)
+ | 2015-01-22
+ | 
+ KSK Ceremony 20
+ | Sign 2015Q2 ZSKs
+ | 2014-11-20
+ | 
+ KSK Ceremony 19
+ | Sign 2015Q1 ZSKs
+ | 2014-08-14
+ | 
+ KSK Ceremony 18
+ | Sign 2014Q4 ZSKs; Replace CO5 West
+ | 2014-04-17
+ | 
+ KSK Ceremony 17
+ | Sign 2014Q3 ZSKs
+ | 2014-02-13
+ | 
+ KSK Ceremony 16
+ | Sign 2014Q2 ZSKs
+ | 2013-10-24
+ | 
+ KSK Ceremony 15
+ | Sign 2014Q1 ZSKs
+ | 2013-08-07
+ | 
+ KSK Ceremony 14
+ | Sign 2013Q4 ZSKs
+ | 2013-05-02
+ | 
+ KSK Ceremony 13
+ | Sign 2013Q3 ZSKs; Replace CO5 East
+ | 2013-02-12
+ | 
+ KSK Ceremony 12
+ | Sign 2013Q2 ZSKs
+ | 2012-11-12
+ | 
+ KSK Ceremony 11
+ | Sign 2013Q1 ZSKs
+ | 2012-07-26
+ | 
+ KSK Ceremony 10
+ | Sign 2012Q4 ZSKs
+ | 2012-05-22
+ | 
+ KSK Ceremony 9
+ | Sign 2012Q3 ZSKs
+ | 2012-02-02
+ | 
+ KSK Ceremony 8
+ | Sign 2012Q2 ZSKs
+ | 2011-09-30
+ | 
+ KSK Ceremony 7
+ | Sign 2012Q1 ZSKs
+ | 2011-07-20
+ | 
+ KSK Ceremony 6
+ | Sign 2011Q4 ZSKs
+ | 2011-05-11
+ | 
+ KSK Ceremony 5
+ | Sign 2011Q3 ZSKs
+ | 2011-02-07
+ | 
+ KSK Ceremony 4
+ | Sign 2011Q2 ZSKs
+ | 2010-11-01
+ | 
+ KSK Ceremony 3
+ | Sign 2011Q1 ZSKs
+ | 2010-07-12
+ | 
+ KSK Ceremony 2
+ | Instantiate El Segundo KMF; Import KSK-2010; Sign 2010Q4 ZSKs
+ | 2010-06-16
+ | 
+ KSK Ceremony 1
+ | Instantiate Culpeper KMF; Generate KSK-2010; Sign 2010Q3 ZSKs
+Domain Names
+Overview
+Root Zone Management
+Overview
+Top-Level Domains
+Files and Downloads
+Manage Delegations
+Instructions & Guides
+.INT Registry
+Overview
+Register/modify an .INT domain
+Eligibility
+.ARPA Registry
+IDN Practices Repository
+Overview
+Submit a table
+Label Generation Rulesets
+Overview
+Root Zone Ruleset
+Reference Rulesets
+Root Key Signing Key (DNSSEC)
+Overview
+Trust Anchors and Rollovers
+Key Signing Ceremonies
+Policies & Procedures
+Community Representatives
+Reserved Domains
+ | Domain Names
+ | 
+Root Zone Registry
+.INT Registry
+.ARPA Registry
+IDN Repository
+ | Number Resources
+ | 
+Number Registries
+RIR Allocation Data
+Abuse Information
+ | Protocols
+ | 
+Protocol Registries
+Time Zone Database
+ | About Us
+ | 
+News
+Performance
+The Organization
+Archive
+Contact Us
+The IANA functions coordinate the Internet’s globally unique identifiers, and
+ are provided by Public Technical Identifiers, an affiliate of
+ ICANN.
+Privacy Policy
+Terms of Service

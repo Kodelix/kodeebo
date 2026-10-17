@@ -1,0 +1,110 @@
+
+ Logging AWS KMS API calls with AWS CloudTrail - AWS Key Management Service 
+View a markdown version of this page
+Logging AWS KMS API calls with AWS CloudTrail - AWS Key Management Service
+DocumentationAWS KMSDeveloper Guide
+Finding AWS KMS log entries in CloudTrailExcluding AWS KMS events from a trail
+Logging AWS KMS API calls with AWS CloudTrail
+AWS KMS is integrated with AWS CloudTrail, a service that records
+ all calls to AWS KMS by users, roles, and other AWS services. CloudTrail captures all API calls to
+ AWS KMS as events, including calls from the AWS KMS console, AWS KMS APIs, CloudFormation templates, the
+ AWS Command Line Interface (AWS CLI), and AWS Tools for PowerShell.
+CloudTrail logs all AWS KMS operations, including read-only operations, such as ListAliases and GetKeyRotationStatus, operations that manage KMS keys, such as CreateKey and PutKeyPolicy, and cryptographic
+ operations, such as GenerateDataKey and Decrypt. It also logs internal operations that AWS KMS calls for
+ you, such as DeleteExpiredKeyMaterial, DeleteKey, SynchronizeMultiRegionKey, and RotateKey.
+CloudTrail logs all successful operations and, in some scenarios, attempted calls that failed, such as when the caller is
+ denied access to a resource. Cross-account operations on KMS keys are logged in both the caller account and the
+ KMS key owner account. However, cross-account AWS KMS requests that are rejected because access
+ is denied are logged only in the caller's account.
+For security reasons, some fields are omitted from AWS KMS log entries, such as the
+ Plaintext parameter of an Encrypt request, and the response to GetKeyPolicy or any cryptographic operation. To make it easier to search for CloudTrail log
+ entries for particular KMS keys, AWS KMS adds the key ARN
+ of the affected KMS key to the responseElements field in the log entries for some
+ AWS KMS key management operations, even when the API operation doesn't return the key ARN.
+Although by default, all AWS KMS actions are logged as CloudTrail events, you can exclude AWS KMS
+ actions from a CloudTrail trail. For details, see Excluding AWS KMS events from a trail.
+Learn more: 
+For CloudTrail log examples of AWS KMS operations for attested platforms, see Monitoring attested requests.
+Topics
+Finding AWS KMS log entries in CloudTrail
+Excluding AWS KMS events from a trail
+Examples of AWS KMS log entries
+Finding AWS KMS log entries in CloudTrail
+To search CloudTrail log entries, use the CloudTrail console or the CloudTrail LookupEvents operation. CloudTrail supports numerous attribute values for filtering your search, including event name, user name, and
+ event source. 
+To help you search for AWS KMS log entries in CloudTrail, AWS KMS populates the following CloudTrail log
+ entry fields.
+Note
+Beginning in December 2022, AWS KMS populates the Resource type and
+ Resource name attributes in all management operations that change a
+ particular KMS key. These attribute values might be null in older CloudTrail entries for the
+ following operations: CreateAlias,
+ CreateGrant, DeleteAlias, DeleteImportedKeyMaterial,
+ ImportKeyMaterial, ReplicateKey, RetireGrant, RevokeGrant, UpdateAlias, and UpdatePrimaryRegion.
+ | Attribute
+ | Value
+ | Log entries
+ | Event source (EventSource)
+ | kms.amazonaws.com
+ | All operations.
+ | Resource type (ResourceType)
+ | AWS::KMS::Key
+ | Management operations that change a particular KMS key, such as
+ CreateKey and EnableKey, but not
+ ListKeys.
+ | Resource name (ResourceName)
+ | Key ARN (or key ID and key ARN)
+ | Management operations that change a particular KMS key, such as
+ CreateKey and EnableKey, but not
+ ListKeys.
+To help you find log entries for management operations on particular KMS keys, AWS KMS
+ records the key ARN of the affected KMS key in the responseElements.keyId
+ element of the log entry, even when the AWS KMS API operation doesn't return the key ARN.
+For example, a successful call to the DisableKey operation doesn't return any values in the response, but instead of a
+ null value, the responseElements.keyId value in the DisableKey log entry includes the key ARN of the disabled
+ KMS key.
+This feature was added in December 2022 and affects the following CloudTrail log entries:
+ CreateAlias, CreateGrant, DeleteAlias, DeleteKey, DisableKey,
+ EnableKey, EnableKeyRotation, ImportKeyMaterial,
+ RotateKey, SynchronizeMultiRegionKey, TagResource, UntagResource, UpdateAlias, and UpdatePrimaryRegion.
+Excluding AWS KMS events from a trail
+To provide a record of the use and management of their AWS KMS resources, most AWS KMS users
+ rely on the events in a CloudTrail trail. The trail can be an valuable source of data for auditing
+ critical events, such as creating, disabling, and deleting AWS KMS keys, changing key
+ policy, and the use of your KMS keys by AWS services on your behalf. In some cases, the
+ metadata in a CloudTrail log entry, such as the encryption
+ context in an encryption operation, can help you to avoid or resolve errors.
+However, because AWS KMS can generate a large number of events, AWS CloudTrail lets you exclude
+ AWS KMS events from a trail. This per-trail setting excludes all AWS KMS events; you cannot
+ exclude particular AWS KMS events.
+Warning
+Excluding AWS KMS events from a CloudTrail Log can obscure actions that use your KMS keys. Be
+ cautious when giving principals the cloudtrail:PutEventSelectors permission
+ that is required to perform this operation.
+To exclude AWS KMS events from a trail: 
+In the CloudTrail console, use the Log Key Management Service events
+ setting when you create a
+ trail or update
+ a trail. For instructions, see Logging
+ Management Events with the AWS Management Console in the AWS CloudTrail User Guide.
+In the CloudTrail API, use the PutEventSelectors operation. Add the ExcludeManagementEventSources
+ attribute to your event selectors with a value of kms.amazonaws.com. For an
+ example, see Example: A trail that does not log AWS Key Management Service events in the
+ AWS CloudTrail User Guide.
+You can disable this exclusion at any time by changing the console setting or the event
+ selectors for a trail. The trail will then start recording AWS KMS events. However, it cannot
+ recover AWS KMS events that occurred while the exclusion was effective.
+When you exclude AWS KMS events by using the console or API, the resulting CloudTrail
+ PutEventSelectors API operation is also logged in your CloudTrail Logs. If AWS KMS
+ events don't appear in your CloudTrail Logs, look for a PutEventSelectors event with
+ the ExcludeManagementEventSources attribute set to
+ kms.amazonaws.com.
+Document Conventions
+Monitor keys
+Examples of AWS KMS log entries
+Did this page help you? - Yes
+Thanks for letting us know we're doing a good job!
+If you've got a moment, please tell us what we did right so we can do more of it.
+Did this page help you? - No
+Thanks for letting us know this page needs work. We're sorry we let you down.
+If you've got a moment, please tell us how we can make the documentation better.

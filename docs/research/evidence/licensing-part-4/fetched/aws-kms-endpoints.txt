@@ -1,0 +1,770 @@
+
+ AWS Key Management Service endpoints and quotas - AWS General Reference 
+View a markdown version of this page
+AWS Key Management Service endpoints and quotas - AWS General Reference
+DocumentationReference guide
+Service endpointsService quotas
+AWS Key Management Service endpoints and quotas
+To connect programmatically to an AWS service, you use an endpoint. AWS services offer the following endpoint types 
+ in some or all of the AWS Regions that the service supports: IPv4 endpoints, dual-stack endpoints, and FIPS endpoints.
+ Some services provide global endpoints. For more information, see AWS service endpoints.
+Service quotas, also referred to as limits, are the maximum number of service resources or operations for your AWS account.
+ For more information, see AWS service quotas.
+The following are the service endpoints and service quotas for this service.
+Service endpoints
+ | Region Name
+ | Region
+ | Endpoint
+ | Protocol
+ | US East (Ohio)
+ | us-east-2
+ | 
+ kms.us-east-2.amazonaws.com
+ kms-fips.us-east-2.api.aws
+ kms.us-east-2.api.aws
+ kms-fips.us-east-2.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | US East (N. Virginia)
+ | us-east-1
+ | 
+ kms.us-east-1.amazonaws.com
+ kms-fips.us-east-1.api.aws
+ kms-fips.us-east-1.amazonaws.com
+ kms.us-east-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | US West (N. California)
+ | us-west-1
+ | 
+ kms.us-west-1.amazonaws.com
+ kms.us-west-1.api.aws
+ kms-fips.us-west-1.amazonaws.com
+ kms-fips.us-west-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | US West (Oregon)
+ | us-west-2
+ | 
+ kms.us-west-2.amazonaws.com
+ kms-fips.us-west-2.amazonaws.com
+ kms.us-west-2.api.aws
+ kms-fips.us-west-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Africa (Cape Town)
+ | af-south-1
+ | 
+ kms.af-south-1.amazonaws.com
+ kms.af-south-1.api.aws
+ kms-fips.af-south-1.api.aws
+ kms-fips.af-south-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Hong Kong)
+ | ap-east-1
+ | 
+ kms.ap-east-1.amazonaws.com
+ kms.ap-east-1.api.aws
+ kms-fips.ap-east-1.api.aws
+ kms-fips.ap-east-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Hyderabad)
+ | ap-south-2
+ | 
+ kms.ap-south-2.amazonaws.com
+ kms-fips.ap-south-2.amazonaws.com
+ kms.ap-south-2.api.aws
+ kms-fips.ap-south-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Jakarta)
+ | ap-southeast-3
+ | 
+ kms.ap-southeast-3.amazonaws.com
+ kms.ap-southeast-3.api.aws
+ kms-fips.ap-southeast-3.api.aws
+ kms-fips.ap-southeast-3.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Malaysia)
+ | ap-southeast-5
+ | 
+ kms.ap-southeast-5.amazonaws.com
+ kms-fips.ap-southeast-5.amazonaws.com
+ kms-fips.ap-southeast-5.api.aws
+ kms.ap-southeast-5.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Melbourne)
+ | ap-southeast-4
+ | 
+ kms.ap-southeast-4.amazonaws.com
+ kms-fips.ap-southeast-4.amazonaws.com
+ kms-fips.ap-southeast-4.api.aws
+ kms.ap-southeast-4.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Mumbai)
+ | ap-south-1
+ | 
+ kms.ap-south-1.amazonaws.com
+ kms.ap-south-1.api.aws
+ kms-fips.ap-south-1.amazonaws.com
+ kms-fips.ap-south-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (New Zealand)
+ | ap-southeast-6
+ | 
+ kms.ap-southeast-6.amazonaws.com
+ kms-fips.ap-southeast-6.api.aws
+ kms-fips.ap-southeast-6.amazonaws.com
+ kms.ap-southeast-6.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Osaka)
+ | ap-northeast-3
+ | 
+ kms.ap-northeast-3.amazonaws.com
+ kms-fips.ap-northeast-3.amazonaws.com
+ kms-fips.ap-northeast-3.api.aws
+ kms.ap-northeast-3.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Seoul)
+ | ap-northeast-2
+ | 
+ kms.ap-northeast-2.amazonaws.com
+ kms.ap-northeast-2.api.aws
+ kms-fips.ap-northeast-2.api.aws
+ kms-fips.ap-northeast-2.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Singapore)
+ | ap-southeast-1
+ | 
+ kms.ap-southeast-1.amazonaws.com
+ kms-fips.ap-southeast-1.amazonaws.com
+ kms.ap-southeast-1.api.aws
+ kms-fips.ap-southeast-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Sydney)
+ | ap-southeast-2
+ | 
+ kms.ap-southeast-2.amazonaws.com
+ kms-fips.ap-southeast-2.api.aws
+ kms-fips.ap-southeast-2.amazonaws.com
+ kms.ap-southeast-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Taipei)
+ | ap-east-2
+ | 
+ kms.ap-east-2.amazonaws.com
+ kms-fips.ap-east-2.api.aws
+ kms-fips.ap-east-2.amazonaws.com
+ kms.ap-east-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Thailand)
+ | ap-southeast-7
+ | 
+ kms.ap-southeast-7.amazonaws.com
+ kms.ap-southeast-7.api.aws
+ kms-fips.ap-southeast-7.api.aws
+ kms-fips.ap-southeast-7.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Asia Pacific (Tokyo)
+ | ap-northeast-1
+ | 
+ kms.ap-northeast-1.amazonaws.com
+ kms-fips.ap-northeast-1.api.aws
+ kms.ap-northeast-1.api.aws
+ kms-fips.ap-northeast-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Canada (Central)
+ | ca-central-1
+ | 
+ kms.ca-central-1.amazonaws.com
+ kms.ca-central-1.api.aws
+ kms-fips.ca-central-1.api.aws
+ kms-fips.ca-central-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Canada West (Calgary)
+ | ca-west-1
+ | 
+ kms.ca-west-1.amazonaws.com
+ kms-fips.ca-west-1.api.aws
+ kms-fips.ca-west-1.amazonaws.com
+ kms.ca-west-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Frankfurt)
+ | eu-central-1
+ | 
+ kms.eu-central-1.amazonaws.com
+ kms.eu-central-1.api.aws
+ kms-fips.eu-central-1.api.aws
+ kms-fips.eu-central-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Ireland)
+ | eu-west-1
+ | 
+ kms.eu-west-1.amazonaws.com
+ kms-fips.eu-west-1.api.aws
+ kms-fips.eu-west-1.amazonaws.com
+ kms.eu-west-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (London)
+ | eu-west-2
+ | 
+ kms.eu-west-2.amazonaws.com
+ kms-fips.eu-west-2.amazonaws.com
+ kms.eu-west-2.api.aws
+ kms-fips.eu-west-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Milan)
+ | eu-south-1
+ | 
+ kms.eu-south-1.amazonaws.com
+ kms-fips.eu-south-1.amazonaws.com
+ kms-fips.eu-south-1.api.aws
+ kms.eu-south-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Paris)
+ | eu-west-3
+ | 
+ kms.eu-west-3.amazonaws.com
+ kms-fips.eu-west-3.amazonaws.com
+ kms-fips.eu-west-3.api.aws
+ kms.eu-west-3.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Spain)
+ | eu-south-2
+ | 
+ kms.eu-south-2.amazonaws.com
+ kms-fips.eu-south-2.amazonaws.com
+ kms.eu-south-2.api.aws
+ kms-fips.eu-south-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Stockholm)
+ | eu-north-1
+ | 
+ kms.eu-north-1.amazonaws.com
+ kms-fips.eu-north-1.amazonaws.com
+ kms.eu-north-1.api.aws
+ kms-fips.eu-north-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Europe (Zurich)
+ | eu-central-2
+ | 
+ kms.eu-central-2.amazonaws.com
+ kms-fips.eu-central-2.amazonaws.com
+ kms-fips.eu-central-2.api.aws
+ kms.eu-central-2.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Israel (Tel Aviv)
+ | il-central-1
+ | 
+ kms.il-central-1.amazonaws.com
+ kms-fips.il-central-1.amazonaws.com
+ kms-fips.il-central-1.api.aws
+ kms.il-central-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Mexico (Central)
+ | mx-central-1
+ | 
+ kms.mx-central-1.amazonaws.com
+ kms.mx-central-1.api.aws
+ kms-fips.mx-central-1.amazonaws.com
+ kms-fips.mx-central-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Middle East (Bahrain)
+ | me-south-1
+ | 
+ kms.me-south-1.amazonaws.com
+ kms-fips.me-south-1.api.aws
+ kms.me-south-1.api.aws
+ kms-fips.me-south-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | Middle East (UAE)
+ | me-central-1
+ | 
+ kms.me-central-1.amazonaws.com
+ kms-fips.me-central-1.amazonaws.com
+ kms-fips.me-central-1.api.aws
+ kms.me-central-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | South America (São Paulo)
+ | sa-east-1
+ | 
+ kms.sa-east-1.amazonaws.com
+ kms-fips.sa-east-1.api.aws
+ kms.sa-east-1.api.aws
+ kms-fips.sa-east-1.amazonaws.com
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | 
+ AWS GovCloud (US-East)
+ | us-gov-east-1
+ | 
+ kms.us-gov-east-1.amazonaws.com
+ kms-fips.us-gov-east-1.amazonaws.com
+ kms-fips.us-gov-east-1.api.aws
+ kms.us-gov-east-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+ | 
+ AWS GovCloud (US-West)
+ | us-gov-west-1
+ | 
+ kms.us-gov-west-1.amazonaws.com
+ kms.us-gov-west-1.api.aws
+ kms-fips.us-gov-west-1.amazonaws.com
+ kms-fips.us-gov-west-1.api.aws
+ | 
+HTTPS
+HTTPS
+HTTPS
+HTTPS
+Service quotas
+ | Name
+ | Default
+ | Adjustable
+ | Description
+ | Aliases per CMK
+ | Each supported Region: 50
+ | 
+ Yes
+ | The maximum number of customer-created aliases per CMK permitted in each AWS Region of this AWS account. Aliases that AWS creates in your account with the aws/ prefix do not count against this quota. An alias is a friendly name for a customer master key (CMK). Each alias is associated with one CMK, but a CMK can have multiple aliases.
+ | CancelKeyDeletion request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum CancelKeyDeletion requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ConnectCustomKeyStore request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum ConnectCustomKeyStore requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | CreateAlias request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum CreateAlias requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | CreateCustomKeyStore request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum CreateCustomKeyStore requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | CreateGrant request rate
+ | Each supported Region: 50 per second
+ | 
+ Yes
+ | Maximum CreateGrant requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | CreateKey request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum CreateKey requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | Cryptographic operations (ECC & SM2) request rate
+ | Each supported Region: 1,000 per second
+ | 
+ Yes
+ | Maximum DeriveSharedSecret, Sign, and Verify requests with ECC KMS keys and Decrypt, DeriveSharedSecret, Encrypt, Sign, and Verify requests with SM2 (China Regions only) KMS keys per second. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | Cryptographic operations (ML-DSA) request rate
+ | Each supported Region: 1,000 per second
+ | 
+ Yes
+ | Maximum requests for cryptographic operations with ML-DSA CMKs per second. This shared quota applies to Sign and Verify requests using ML-DSA CMKs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | Cryptographic operations (ML-KEM) request rate
+ | Each supported Region: 1,000 per second
+ | 
+ Yes
+ | Maximum requests for cryptographic operations with ML-KEM CMKs per second. This shared quota applies to Encapsulate and Decapsulate requests using ML-KEM CMKs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | Cryptographic operations (RSA) request rate
+ | Each supported Region: 1,000 per second
+ | 
+ Yes
+ | Maximum requests for cryptographic operations with RSA CMKs per second. This shared quota applies to Encrypt, Decrypt, ReEncrypt, Sign, and Verify requests using RSA CMKs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | Cryptographic operations (symmetric) request rate
+ | 
+us-east-1: 100,000 per second
+us-east-2: 20,000 per second
+us-west-2: 100,000 per second
+ap-northeast-1: 20,000 per second
+ap-southeast-1: 20,000 per second
+ap-southeast-2: 20,000 per second
+eu-central-1: 20,000 per second
+eu-south-2: 20,000 per second
+eu-west-1: 100,000 per second
+eu-west-2: 20,000 per second
+Each of the other supported Regions: 10,000 per second
+ | 
+ Yes
+ | Maximum requests for cryptographic operations with a symmetric CMK per second. This shared quota applies to Decrypt, Encrypt, GenerateDataKey, GenerateDataKeyWithoutPlaintext, GenerateMac, GenerateRandom, ReEncrypt, and VerifyMac requests. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | Custom Key Stores
+ | Each supported Region: 10
+ | 
+ Yes
+ | The maximum number of custom key stores permitted in each AWS Region of this AWS account. This quota applies to the total number of custom key stores, including AWS CloudHSM key stores and external key stores, regardless of their connection state.
+ | Customer Master Keys (CMKs)
+ | Each supported Region: 100,000
+ | 
+ Yes
+ | The maximum number of customer managed CMKs permitted in each AWS Region of this AWS account. This quota does not apply to AWS managed CMKs.
+ | DeleteAlias request rate
+ | Each supported Region: 15 per second
+ | 
+ Yes
+ | Maximum DeleteAlias requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DeleteCustomKeyStore request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum DeleteCustomKeyStore requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DeleteImportedKeyMaterial request rate
+ | Each supported Region: 15 per second
+ | 
+ Yes
+ | Maximum DeleteImportedKeyMaterial requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DescribeCustomKeyStores request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum DescribeCustomKeyStores requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DescribeKey request rate
+ | Each supported Region: 2,000 per second
+ | 
+ Yes
+ | Maximum DescribeKey requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DisableKey request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum DisableKey requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DisableKeyRotation request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum DisableKeyRotation requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | DisconnectCustomKeyStore request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum DisconnectCustomKeyStore requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | EnableKey request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum EnableKey requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | EnableKeyRotation request rate
+ | Each supported Region: 15 per second
+ | 
+ Yes
+ | Maximum EnableKeyRotation requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | GenerateDataKeyPair (ECC_NIST_EDWARDS25519) request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum requests per second to generate ECC_NIST_EDWARDS25519 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for ECC_NIST_EDWARDS25519 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (ECC_NIST_P256) request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum requests per second to generate ECC_NIST_P256 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for ECC_NIST_P256 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (ECC_NIST_P384) request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum requests per second to generate ECC_NIST_P384 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for ECC_NIST_P384 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (ECC_NIST_P521) request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum requests per second to generate ECC_NIST_P521 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for ECC_NIST_P521 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (ECC_SECG_P256K1) request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum requests per second to generate ECC_SECG_P256K1 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for ECC_SECG_P256K1 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (ML_KEM_512, ML_KEM_768, ML_KEM_1024) request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum requests per second to generate ML-KEM data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for ML_KEM_512, ML_KEM_768, and ML_KEM_1024 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (RSA_2048) request rate
+ | Each supported Region: 20 per second
+ | 
+ Yes
+ | Maximum requests per second to generate RSA_2048 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for RSA_2048 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (RSA_3072) request rate
+ | Each supported Region: 4 per second
+ | 
+ Yes
+ | Maximum requests per second to generate RSA_3072 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for RSA_3072 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GenerateDataKeyPair (RSA_4096) request rate
+ | Each supported Region: 1 per second
+ | 
+ Yes
+ | Maximum requests per second to generate RSA_4096 data key pairs. This shared quota applies to GenerateDataKeyPair and GenerateDataKeyPairWithoutPlaintext requests for RSA_4096 data key pairs. When you reach this quota, KMS rejects this type of request for the remainder of the interval.
+ | GetKeyPolicy request rate
+ | Each supported Region: 1,000 per second
+ | 
+ Yes
+ | Maximum GetKeyPolicy requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | GetKeyRotationStatus request rate
+ | Each supported Region: 1,000 per second
+ | 
+ Yes
+ | Maximum GetKeyRotationStatus requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | GetParametersForImport request rate
+ | Each supported Region: 1 per second
+ | 
+ Yes
+ | Maximum GetParametersForImport requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | GetPublicKey request rate
+ | Each supported Region: 2,000 per second
+ | 
+ Yes
+ | Maximum GetPublicKey requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | Grants per CMK
+ | Each supported Region: 50,000
+ | 
+ Yes
+ | The maximum number of grants permitted for each customer managed CMK. This quota includes grants created by AWS services, but it does not apply to AWS managed CMKs.
+ | ImportKeyMaterial request rate
+ | Each supported Region: 15 per second
+ | 
+ Yes
+ | Maximum ImportKeyMaterial requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListAliases request rate
+ | Each supported Region: 500 per second
+ | 
+ Yes
+ | Maximum ListAliases requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListGrants request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum ListGrants requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListKeyPolicies request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum ListKeyPolicies requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListKeyRotations request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum ListKeyRotations requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListKeys request rate
+ | Each supported Region: 500 per second
+ | 
+ Yes
+ | Maximum ListKeys requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListResourceTags request rate
+ | Each supported Region: 2,000 per second
+ | 
+ Yes
+ | Maximum ListResourceTags requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ListRetirableGrants request rate
+ | Each supported Region: 100 per second
+ | 
+ Yes
+ | Maximum ListRetirableGrants requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | On-demand rotations per CMK
+ | Each supported Region: 25
+ | No
+ | The maximum number of on-demand rotations permitted for each customer managed key. This quota does not apply to AWS managed keys.
+ | PutKeyPolicy request rate
+ | Each supported Region: 15 per second
+ | 
+ Yes
+ | Maximum PutKeyPolicy requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ReplicateKey request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum ReplicateKey requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | RetireGrant request rate
+ | Each supported Region: 50 per second
+ | 
+ Yes
+ | Maximum RetireGrant requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | RevokeGrant request rate
+ | Each supported Region: 50 per second
+ | 
+ Yes
+ | Maximum RevokeGrant requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | RotateKeyOnDemand request rate
+ | Each supported Region: 5 per second
+ | No
+ | Maximum RotateKeyOnDemand requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | ScheduleKeyDeletion request rate
+ | Each supported Region: 15 per second
+ | 
+ Yes
+ | Maximum ScheduleKeyDeletion requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | TagResource request rate
+ | Each supported Region: 10 per second
+ | 
+ Yes
+ | Maximum TagResource requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | UntagResource request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum UntagResource requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | UpdateAlias request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum UpdateAlias requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | UpdateCustomKeyStore request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum UpdateCustomKeyStore requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | UpdateKeyDescription request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum UpdateKeyDescription requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+ | UpdatePrimaryRegion request rate
+ | Each supported Region: 5 per second
+ | 
+ Yes
+ | Maximum UpdatePrimaryRegion requests per second. When you reach this quota, KMS rejects requests for this operation for the remainder of the interval.
+Document Conventions
+Amazon Keyspaces
+Kinesis Data Streams
+Did this page help you? - Yes
+Thanks for letting us know we're doing a good job!
+If you've got a moment, please tell us what we did right so we can do more of it.
+Did this page help you? - No
+Thanks for letting us know this page needs work. We're sorry we let you down.
+If you've got a moment, please tell us how we can make the documentation better.

@@ -1,0 +1,275 @@
+The Secure Key to Your Digital Life.
+Private and Professional.
+Passwordless login and two-factor authentication protect your
+accounts against phishing and password theft. Secure data and
+communication encryption. Trustworthy thanks to open source
+and quality made in Germany.
+SECURE LOGIN                                                                15   Billion
+                                                                            Stolen Accounts
+ Two-Factor Authentication (2FA)
+                                                                            Passwords and phishing are the
+ Becomes the Norm
+                                                                            most common vulnerabilities
+ Most major websites and around half of all
+                                                                            Stolen accounts can have disastrous con-
+ companies use two-factor authentication.
+                                                                            sequences for the people and companies
+ But beware: Numerous publicly known cases
+                                                                            affected. Weak or stolen passwords and
+ prove that even SMS can be easily broken as
+                                                                            phishing are the most common gateways for
+ two-factor authentication.
+                                                                            successful hacker attacks. Around 15 billion
+ Thanks to strong cryptography, Nitrokey 3
+                                                                            stolen accounts are currently known. You can
+ supports secure two-factor authentication. This                            check whether you have already been affected
+ means that your accounts remain protected                                  yourself here: https://haveibeenpwned.com
+ even if your password has been stolen.                                     https://sec.hpi.uni-potsdam.de/ilc/search
+
+
+ Passwordless Login With Passkeys
+ Convinces
+ With the Nitrokey 3, you can avoid cumbersome
+ and insecure passwords. No more password
+ policies, password slips of paper and forgotten
+ passwords. From now on, you can log in easily                     ADVANTAGES
+ and securely using your Nitrokey 3.
+ Passwordless login is two-factor authentication
+ with device PIN. Optionally, there is no need to                         High Acceptance Thanks to Easy
+ enter a user name. In this case, the user identifies                     Usage
+ themselves using a key on the Nitrokey 3.                                Using the Nitrokey 3 is very simple: you configure
+                                                                          your Nitrokey 3 once with your accounts. From
+                                                                          then on, you confirm your login by simply pressing
+ Phishing Protection is Included
+                                                                          a button on the Nitrokey (optional: PIN entry). No
+ When logging in, Nitrokey 3 checks the domain
+                                                                          additional client software or driver installation
+ and thus reliably protects you against phishing
+                                                                          required.
+ attacks.
+
+                                                                          Good Compatibility Due to Future-
+                                                                          Proof Standard
+                                                                          Today, all web browsers, most popular websites
+                                                                          and numerous on-premise web services support
+                                                                          the required standard FIDO2 resp. Web Authenti-
+                                                                          cation (WebAuthn).
+
+
+
+
+            71%
+            increase in the number of
+            cyberattacks with stolen
+                    login data
+
+
+
+                                             Source: IBM Report: Identity Comes Under Attack, Straining
+                                             Enterprises‘ Recovery Time from Breaches, 2024
+Nitrokey
+is
+Better                                             Complete USB Connector
+                                                   Unlike some competitors, Nitrokey has a
+                                                   complete and standard-compliant USB con-
+                                                   nector. This ensures thousands of plugging
+                                                   cycles without connection problems. Anti-
+                                                   twist protection reduces support costs.
+
+
+
+   Security Requires Open
+   Source
+   Both hardware and firmware are open source
+   and enable independent security checks.
+                                                   Made in Berlin
+   Flexibly customizable, no manufacturer lock-    Nitrokey is developed and produced in Berlin
+   in, no false security through obfuscation, no   and Germany. We avoid cheap production ab-
+   hidden security gaps and backdoors.             road in favor of higher quality and security.
+
+
+
+
+   Hardware Security                               Investment Security
+   Nitrokey 3 stores your cryptographic keys in    We are continuously developing the Nitrokey 3
+   hardware so that they remain secure even        firmware. You receive updates and potenti-
+   if the device is lost. This makes Nitrokey 3    al security corrections via software updates
+   significantly more secure than SMS and app-     without having to replace the device.
+   based authentication methods.
+
+
+
+
+                                                   Sustainability
+   Simple Integration                              Regional production in Berlin, casings made
+   Nitrokey uses open interfaces and open          from recycled plastic granulate, plastic-free
+   source tools to enable easy integration into    shipping bags, green electricity and refur-
+   your systems. On request, we can develop a      bished laptops are examples that we take
+   customized solution for you.                    for granted.
+
+
+
+
+        www.nitrokey.com
+USE CASES
+For Private and Corporate Use - Protection                  For Companies - Protection Against
+Against Mass Surveillance and Hackers                       Hackers and Industrial Espionage
+
+  Passkeys for Passwordless Login                             Passwordless Logon to Computers
+  Forget your password for logging in to websites and         Employees will log on to their computers without
+  use the Nitrokey for passwordless login instead.            passwords but with their Nitrokey.
+
+
+  Protect Online Accounts With Two-Factor                     Passwordless Login to Your Own Enterprise
+  Authentication (2FA)                                        Systems
+  Nitrokey is your key to secure login to websites. Using     Replace your password policy, unauthorized pass-
+  FIDO2 and one-time passwords (OTP), your accounts           word slips and time-consuming password resets with
+  remain secure even if your password is stolen.              passwordless login using the Nitrokey. Security and
+                                                              acceptance through simplicity. We will be happy to
+  Phishing Protection                                         consult you on the integration.
+  When using WebAuthn or FIDO, the respective
+  domain is automatically checked and users are
+  effectively protected against phishing attacks.
+                                                            For IT Administrators and Security Experts -
+  Mobile Use With Smartphones                               Protecting Critical Infrastructure
+  You can also access your accounts securely on
+  smartphones using passkeys and NFC.                         Secure Server Administration With SSH
+                                                              Always have your SSH key securely with you in the
+  Encrypting Data and E-mails                                 Nitrokey. Your key is PIN-protected and cannot be
+  Encrypt your e-mails with GnuPG, OpenPGP, S/MIME,           exported/stolen from the Nitrokey. This eliminates
+  Thunderbird or Outlook. Encrypt entire hard disks           the insecure and inconvenient synchronization of
+  with VeraCrypt, LUKS or individual files with GnuPG.        key files on client systems.
+  Your private keys are securely stored in Nitrokey and
+  cannot be exported/stolen.                                  Protect Internet of Things (IoT) and Your Own
+                                                              Products
+                                                              Protect your own hardware products by integrating
+                                                              the Nitrokey. Allowing your servers to verify product‘s
+                                                              authenticity remotely (e.g. remote maintenance).
+
+
+                                                              Securely Store Cryptographic Keys
+                                                              Store cryptographic keys and certificates securely in
+                                                              the Nitrokey and prevent them from being stolen.
+
+
+                                                              Protect BIOS Integrity of Computers
+                                                              The Nitrokey and Measured Boot are used to
+                                                              verify the integrity of computer BIOS/firmware
+                                                              and thus protect against Evil Maid attacks. The
+                                                              colored LED of the Nitrokey indicates whether the
+                                                              BIOS is integer (green) or a tampering has been
+                                                              detected (red). Compatible e.g. with NitroPads
+                                                              and NitroPC.
+FEATURES
+ Passkeys/WebAuthn/FIDO2 for                                       Secure Storage of Cryptographic
+ Passwordless Login                                                Keys
+ Passkeys set new standards in terms of ease of                    Securely store your private keys for encrypting
+ use and thus achieve a high level of acceptance.                  e-mails, hard disks or individual files in the
+ Passkeys reliably protect your accounts against                   Nitrokey. This protects them against loss, theft
+ password theft and phishing.                                      and computer viruses and ensures they are
+                                                                   always with you.
+ One-time Passwords Protect
+ Accounts Against Identity Theft                                   Integrity Check/Tamper Detection
+ Protect your accounts against identity theft. One-                Verify the integrity of the computer BIOS using
+ time passwords are generated in the Nitrokey                      Measured Boot. The colored LED of the Nitrokey
+ and serve as a second authentication factor for                   indicates whether the BIOS is integer (green) or
+ logins (in addition to your normal password). This                a tampering has been detected (red). Supported
+ ensures that your accounts remain secure even if                  computers require a BIOS based on Heads, such
+ your password is stolen.                                          as NitroPad, NitroPC.
+
+
+ Password Manager
+ Save your passwords securely encrypted in the
+ integrated password manager. This way, you
+ always have your passwords with you and they
+ remain protected even if you lose your Nitrokey.
+
+
+
+
+                            MODERN SECURITY TECHNOLOGY
+                            The firmware is developed in the                A secure element (SE05x) is used as
+                            memory-safe programming language                cryptographic storage, a kind of smart
+                            Rust. This avoids potentially security-         card. This has been certified up to
+                            critical memory errors.                         operating system level in accordance
+                                                                            with Common Criteria EAL 6+ and
+                            Integrity: Only signed firmware up-             therefore meets high security require-
+                            dates can be installed.                         ments. Due to its power requirements,
+                                                                            the secure element can only be used
+                            Nitrokey is open source, so that the            via USB but not via NFC.
+                            secure implementation can be revie-
+                            wed by anyone.
+TECHNICAL DETAILS
+Authentication standards: WebAuthentication                      Smart card standards: PKCS#11 (OpenSC),
+(WebAuthn), CTAP2/FIDO2, CTAP1/FIDO U2F 1.2,                     Windows MiniDriver, OpenPGP Card (GnuPG),
+HOTP RFC 4226, TOTP RFC 6238, HOTP verification                  S/MIME, X.509, NIST PIV
+
+Two-factor authentication using server-side                      External hash algorithms: SHA-256, SHA-384,
+credentials for an unlimited number of accounts                  SHA-512
+(FIDO U2F, FIDO2)
+                                                                 Certification of the tamper-proof secure element
+Secure key storage: RSA 2048-4096,                               according to CC EAL6+
+NIST P-256, P-384, P-521 (secp256r1/prime256v1,
+                                                                 Physical random number generator (TRNG)
+secp384r1/prime384v1, secp521r1/prime521v1),
+Ed25519/Curve25519, Koblitz (secp256k1), brain-                  With touch button
+poolP256r1, brainpoolP384r1, brainpoolP512r1                     Activity indicator: four-color LED
+Performance                                                      Operating temperature: min. -40 °C to +80 °C
+                 Signature [ms]   Decryption [ms]
+                                                                 Conformity: FCC, CE, RoHS, WEEE, OSHwA
+ P-256                391              534
+ P-384                426              582                       Supported operating systems: Windows, macOS,
+ P-521                481              578                       Linux, BSD, Android, iOS
+ Curve25519           622              518
+ RSA-2048             238              240
+ RSA-3072             331              327
+ RSA-4096             465              456
+
+
+
+
+                                              Nitrokey 3A NFC        Nitrokey 3C NFC            Nitrokey 3A Mini
+Part number                                          NK3AN                  NK3CN                      NK3AM
+
+
+Passkeys                                              ~ 30                   ~ 30                       ~ 100
+
+
+Passwords                                              50                     50                         50
+
+
+Plug                                                 USB-A                  USB-C                      USB-A
+
+
+NFC (ISO/IEC 14443)
+
+
+Size                                            48 x 19 x 7 mm         40 x 19 x 7 mm             17 x 14 x 6 mm
+
+
+Weight                                                 6g                     4g                         3g
+
+
+Data Retention                                      > 15 years             > 15 years                 > 10 years
+
+
+PIN entries                                         > 100.000              > 100.000                  > 20.000
+
+
+Plugging and unplugging cycles USB                   > 1.500               > 10.000                    > 1.500
+plug (EIA-364-09)
+
+
+Maximum power consumption                           ~180 mW                ~180 mW                    ~110 mW
+Our
+Customers
+
+
+
+            GE Healthcare
+
+
+
+
+                            Version: 09/2026
+
