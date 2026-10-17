@@ -22,6 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import oracle  # noqa: E402  (same folder; never imports SUT code)
+import pins  # noqa: E402  (pinned cell lists, README "Pinned cell lists")
 
 PG_DSN = "postgres://postgres@127.0.0.1:56432/postgres"  # password from PGPASSWORD (set by run.sh)
 ADDR = "127.0.0.1:18471"
@@ -64,6 +65,10 @@ TOXICS = {
     "slow": [{"type": "latency", "stream": "downstream", "attributes": {"latency": 150, "jitter": 100}},
              {"type": "latency", "stream": "upstream", "attributes": {"latency": 150, "jitter": 100}}],
     "down": "down",
+}
+# Toxics used by later phases only. Kept out of TOXICS, because phase 2 derives its cells and its random campaign
+# from TOXICS (adding one there changed phase 2; found by the a5900db regression).
+EXTRA_TOXICS = {
     # SC-25a: a slow uplink; a 50-command batch takes longer than the 2 s HTTP timeout, a small one does not
     "bandwidth_3k": [{"type": "bandwidth", "stream": "upstream", "attributes": {"rate": 3}}],
 }
@@ -96,7 +101,7 @@ class Toxi:
     def apply(self, name):
         if not name:
             return
-        spec = TOXICS[name]
+        spec = TOXICS[name] if name in TOXICS else EXTRA_TOXICS[name]
         if spec == "down":
             self.api("POST", "/proxies/sync", {"enabled": False})
             self.active.append("down")
@@ -513,6 +518,8 @@ def phase2(seeds=50, campaign=3000, mutant_budget=400):
                "toxiproxy": "v2.13.0", "store": "sqlite3mc chacha20, journal delete + marker (OQ28 A+B)",
                "seeds_per_cell": seeds, "cells": [], "campaign": {}, "mutants": {}}
     print(f"phase 2, commit {summary['harness_commit']}, {seeds} seeds per cell, campaign {campaign}")
+    pins.check("phase2-cells", PHASE2_CELLS)  # fail fast if a shared table changed phase 2
+    pins.check("phase2-campaign-toxics", sorted(TOXICS))
     toxi = Toxi(RUNS)
     ok = True
     try:

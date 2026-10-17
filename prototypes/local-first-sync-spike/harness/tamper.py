@@ -276,11 +276,22 @@ def ts05(cipher):
     return rows
 
 
+# The scenarios every cipher must produce, in order (checked against README "Pinned cell lists" before the run,
+# and against the rows actually produced after it).
+TAMPER_SCENARIOS = ["db_middle_page", "db_page1", "hot_journal_crash_control", "hot_journal_crash_flip",
+                    "marker_flipped", "marker_deleted", "store_older_than_marker", "db_page_while_running",
+                    "walmode+marker-wal_header", "walmode+marker-wal_first_frame", "walmode+marker-wal_last_frame",
+                    "wrong_key", "truncated_key", "empty_key", "right_key_wrong_cipher", "wrong_key_x20",
+                    "right_key_after_attempts", "ts04a_plaintext_scan"]
+
 if __name__ == "__main__":
+    import pins
+    pins.check("tamper-scenarios", TAMPER_SCENARIOS)
     all_rows = []
     for cipher in CIPHERS:
-        all_rows += ts03(cipher)
-        all_rows += ts05(cipher)
+        rows = ts03(cipher) + ts05(cipher)
+        pins.check(f"tamper-scenarios", [r["scenario"] for r in rows])  # the code produced exactly the pinned rows
+        all_rows += rows
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "tamper-summary.json"), "w") as f:
         json.dump(all_rows, f, indent=1)

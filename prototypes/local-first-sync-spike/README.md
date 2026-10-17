@@ -178,6 +178,16 @@ bash prototypes/local-first-sync-spike/run.sh replay25 <seed> <tenth|full> [muta
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
 
+## Pinned cell lists (guard)
+
+Phase 2 and the tamper suite check, before they run anything, that their cell lists equal the lists pinned here (`harness/pins.py`). The tamper suite also checks, after the run, that it produced exactly these rows for each cipher. A new case that changes a shared table, as SC-25a's slow-link toxic once did for phase 2, therefore stops the run at once with a message naming what was added or removed. Without the guard, an untested cell surfaced only at the end of a 1 h 40 min regression. A deliberate change updates the list here in the same commit.
+
+- `pinned phase2-cells: down, req_blackhole, req_cut_10, req_cut_120, req_cut_400, reset_peer, resp_blackhole, resp_cut_1, resp_cut_150, resp_cut_20, slicer, slow, concurrent`
+- `pinned phase2-campaign-toxics: down, req_blackhole, req_cut_10, req_cut_120, req_cut_400, reset_peer, resp_blackhole, resp_cut_1, resp_cut_150, resp_cut_20, slicer, slow`
+- `pinned tamper-scenarios: db_middle_page, db_page1, hot_journal_crash_control, hot_journal_crash_flip, marker_flipped, marker_deleted, store_older_than_marker, db_page_while_running, walmode+marker-wal_header, walmode+marker-wal_first_frame, walmode+marker-wal_last_frame, wrong_key, truncated_key, empty_key, right_key_wrong_cipher, wrong_key_x20, right_key_after_attempts, ts04a_plaintext_scan`
+
+**Phase 3 gate campaign — required (founder, 2026-10-17):** it re-runs **phase 2 at full size** (50 seeds per cell, 3,000 campaign runs). After the toxic-table fix (SC-25a), phase 2 was re-checked only at reduced size (10 seeds, 300 runs).
+
 ## Tools fetched (not committed)
 
 Downloaded binaries live in `tools/`, which git ignores. Only their provenance is recorded here.
