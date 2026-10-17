@@ -1,0 +1,28 @@
+# s203 2026-10-17T07:46:56Z go go version go1.27.2 linux/amd64
+## go doc jsontext.AllowDuplicateNames
+package jsontext // import "encoding/json/jsontext"
+
+func AllowDuplicateNames(v bool) Options
+    AllowDuplicateNames specifies that JSON objects may contain duplicate member
+    names. Disabling the duplicate name check may provide performance benefits,
+    but breaks compliance with RFC 7493, section 2.3. The input or output will
+    still be compliant with RFC 8259, which leaves the handling of duplicate
+    names as unspecified behavior.
+
+    This affects either encoding or decoding.
+
+## go doc json.RejectUnknownMembers
+package json // import "encoding/json/v2"
+
+func RejectUnknownMembers(v bool) Options
+    RejectUnknownMembers specifies that unknown members should be rejected when
+    unmarshaling a JSON object.
+
+    This only affects unmarshaling and is ignored when marshaling.
+
+## go doc jsontext.WithByteLimit/Depth
+package jsontext // import "encoding/json/jsontext"
+
+func (d *Decoder) InputOffset() int64
+doc: no symbol WithByteLimit in package encoding/json/jsontext
+doc: no symbol WithDepthLimit in package encoding/json/jsontext

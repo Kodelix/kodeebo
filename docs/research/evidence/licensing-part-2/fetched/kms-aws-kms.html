@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Key spec reference - AWS Key Management Service</title><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="assets_root" content="/assets" /><meta name="target_state" content="symm-asymm-choose-key-spec" /><meta name="default_state" content="symm-asymm-choose-key-spec" /><link rel="icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" /><link rel="canonical" href="https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html" /><meta name="description" content="When you create an asymmetric KMS key or an HMAC KMS key, you select its key spec . The key spec , which is a property of every AWS KMS key, represents the cryptographic configuration of your KMS key. You choose the key spec when you create the KMS key, and you cannot change it. If you've selected the wrong key spec," /><meta name="deployment_region" content="IAD" /><meta name="product" content="AWS Key Management Service" /><meta name="guide" content="Developer Guide" /><meta name="abstract" content="Learn how to use AWS Key Management Service (AWS KMS) to securely store and manage encryption keys and perform encryption and decryption of user data." /><meta name="guide-locale" content="en_us" /><meta name="tocs" content="toc-contents.json" /><link rel="canonical" href="https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html" /><link rel="alternate" href="https://docs.aws.amazon.com/id_id/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="id-id" /><link rel="alternate" href="https://docs.aws.amazon.com/id_id/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="id" /><link rel="alternate" href="https://docs.aws.amazon.com/de_de/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="de-de" /><link rel="alternate" href="https://docs.aws.amazon.com/de_de/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="de" /><link rel="alternate" href="https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="en-us" /><link rel="alternate" href="https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="en" /><link rel="alternate" href="https://docs.aws.amazon.com/es_es/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="es-es" /><link rel="alternate" href="https://docs.aws.amazon.com/es_es/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="es" /><link rel="alternate" href="https://docs.aws.amazon.com/fr_fr/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="fr-fr" /><link rel="alternate" href="https://docs.aws.amazon.com/fr_fr/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="fr" /><link rel="alternate" href="https://docs.aws.amazon.com/it_it/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="it-it" /><link rel="alternate" href="https://docs.aws.amazon.com/it_it/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="it" /><link rel="alternate" href="https://docs.aws.amazon.com/ja_jp/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="ja-jp" /><link rel="alternate" href="https://docs.aws.amazon.com/ja_jp/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="ja" /><link rel="alternate" href="https://docs.aws.amazon.com/ko_kr/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="ko-kr" /><link rel="alternate" href="https://docs.aws.amazon.com/ko_kr/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="ko" /><link rel="alternate" href="https://docs.aws.amazon.com/pt_br/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="pt-br" /><link rel="alternate" href="https://docs.aws.amazon.com/pt_br/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="pt" /><link rel="alternate" href="https://docs.aws.amazon.com/zh_cn/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="zh-cn" /><link rel="alternate" href="https://docs.aws.amazon.com/zh_tw/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="zh-tw" /><link rel="alternate" href="https://docs.aws.amazon.com/kms/latest/developerguide/symm-asymm-choose-key-spec.html" hreflang="x-default" /><meta name="feedback-item" content="Key Management Service (KMS)" /><meta name="this_doc_product" content="AWS Key Management Service" /><meta name="this_doc_guide" content="Developer Guide" /><head xmlns="http://www.w3.org/1999/xhtml"> <script defer="" src="/assets/r/awsdocs-doc-page.2.0.0.js"></script><link href="/assets/r/awsdocs-doc-page.2.0.0.css" rel="stylesheet"/></head>
+<script defer="" id="awsc-panorama-bundle" type="text/javascript" src="https://prod.pa.cdn.uis.awsstatic.com/panorama-nav-init.js" data-config="{'appEntity':'aws-documentation','region':'us-east-1','service':'kms'}"></script><meta id="panorama-serviceSubSection" value="Developer Guide" /><meta id="panorama-serviceConsolePage" value="Key spec reference" /></head><body class="awsdocs awsui"><div class="awsdocs-container"><p><a href="symm-asymm-choose-key-spec.md">View a markdown version of this page</a></p><awsdocs-header></awsdocs-header><awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)"><div id="guide-toc" dom-region="navigation"><awsdocs-toc></awsdocs-toc></div><div id="main-column" dom-region="content" tabindex="-1"><awsdocs-view class="awsdocs-view"><div id="awsdocs-content"><head><title>Key spec reference - AWS Key Management Service</title><meta name="pdf" content="/pdfs/kms/latest/developerguide/kms-dg.pdf#symm-asymm-choose-key-spec" /><meta name="rss" content="aws-kms-document-history.rss" /><meta name="forums" content="https://repost.aws/tags/TAMC3vcPOPTF-rPAHZVRj1PQ" /><meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Key%20Management%20Service%20%28KMS%29&amp;topic_url=https://docs.aws.amazon.com/en_us/kms/latest/developerguide/symm-asymm-choose-key-spec.html" /><meta name="feedback-yes" content="feedbackyes.html?topic_url=https://docs.aws.amazon.com/en_us/kms/latest/developerguide/symm-asymm-choose-key-spec.html" /><meta name="feedback-no" content="feedbackno.html?topic_url=https://docs.aws.amazon.com/en_us/kms/latest/developerguide/symm-asymm-choose-key-spec.html" /><meta name="keywords" content="KMS,key management service,encryption key management,encryption key,,envelope encryption,AWS KMS reference guide,KMS key spec reference" /><link rel="alternate" type="text/markdown" href="symm-asymm-choose-key-spec.md" title="Markdown version" /><script type="application/ld+json">
+{
+    "@context" : "https://schema.org",
+    "@type" : "BreadcrumbList",
+    "itemListElement" : [
+      {
+        "@type" : "ListItem",
+        "position" : 1,
+        "name" : "AWS",
+        "item" : "https://aws.amazon.com"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 2,
+        "name" : "AWS KMS",
+        "item" : "https://docs.aws.amazon.com/kms/index.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 3,
+        "name" : "Developer Guide",
+        "item" : "https://docs.aws.amazon.com/kms/latest/developerguide"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 4,
+        "name" : "AWS KMS Reference",
+        "item" : "https://docs.aws.amazon.com/kms/latest/developerguide/references.html"
+      },
+      {
+        "@type" : "ListItem",
+        "position" : 5,
+        "name" : "Key spec reference",
+        "item" : "https://docs.aws.amazon.com/kms/latest/developerguide/references.html"
+      }
+    ]
+}
+</script></head><body><div id="main"><div style="display: none"><a href="/pdfs/kms/latest/developerguide/kms-dg.pdf#symm-asymm-choose-key-spec" target="_blank" rel="noopener noreferrer" title="Open PDF"></a></div><div id="breadcrumbs" class="breadcrumb"><a href="/index.html">Documentation</a><a href="/kms/index.html">AWS KMS</a><a href="overview.html">Developer Guide</a></div><div id="page-toc-src"><a href="#symmetric-cmks">SYMMETRIC_DEFAULT key spec</a><a href="#key-spec-rsa">RSA key specs</a><a href="#key-spec-ecc">Elliptic curve key specs</a><a href="#hmac-key-specs">Key specs for HMAC KMS keys</a><a href="#key-spec-mldsa">ML-DSA key specs</a><a href="#key-spec-sm">SM2 key spec (China Regions only)</a></div><div id="main-content" class="awsui-util-container"><div id="main-col-body"><awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner><h1 class="topictitle" id="symm-asymm-choose-key-spec">Key spec reference</h1><div class="awsdocs-page-header-container"><awsdocs-page-header></awsdocs-page-header><awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector></div><p>When you create an asymmetric KMS key or an HMAC KMS key, you select its <a href="./create-keys.html#key-spec">key spec</a>. The <em>key spec</em>,
+        which is a property of every AWS KMS key, represents the cryptographic configuration of
+        your KMS key. You choose the key spec when you create the KMS key, and you cannot change
+        it. If you've selected the wrong key spec, <a href="./deleting-keys.html">delete the
+            KMS key</a>, and create a new one.</p><div class="awsdocs-note"><div class="awsdocs-note-title"><awsui-icon name="status-info" variant="link"></awsui-icon><h6>Note</h6></div><div class="awsdocs-note-text"><p>The key spec for a KMS key was known as a "customer master key spec." The
+                <code class="code">CustomerMasterKeySpec</code> parameter of the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> operation is deprecated.
+            Instead, use the <code class="code">KeySpec</code> parameter. The response of the
+                <code class="code">CreateKey</code> and <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html">DescribeKey</a> operations includes a <code class="code">KeySpec</code> and
+                <code class="code">CustomerMasterKeySpec</code> member with the same value.</p></div></div><p>The key spec determines whether the KMS key is symmetric or asymmetric, the type of key
+        material in the KMS key, and the encryption algorithms, signing algorithms, or message
+        authentication code (MAC) algorithms that AWS KMS supports for the KMS key. The key spec
+        that you choose is typically determined by your use case and regulatory requirements.
+        However, cryptographic operations on KMS keys with different key specs are priced
+        differently and are subject to different quotas. For pricing details, see <a href="https://aws.amazon.com/kms/pricing/" rel="noopener noreferrer" target="_blank"><span>AWS Key Management Service Pricing</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. For information about request quotas,
+        see <a href="./requests-per-second.html">Request quotas</a>.</p><p>To limit the key specs that principals can use when creating KMS keys, use the <a href="./conditions-kms.html#conditions-kms-key-spec">kms:KeySpec</a> condition key. You can also use the
+            <code class="code">kms:KeySpec</code> condition key to allow principals to call AWS KMS operations only
+        on KMS keys with a particular key spec. For example, you can deny permission to schedule
+        deletion of any KMS key with an <code class="code">RSA_4096</code> key spec. </p><p>AWS KMS supports the following key specs for KMS keys:</p><div class="variablelist">
+         
+         
+         
+         
+         
+         
+    <dl>
+            <dt><span class="term"><a href="#symmetric-cmks">Symmetric encryption key spec</a>
+                (default)</span></dt>
+            <dd>
+                <div class="itemizedlist">
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>SYMMETRIC_DEFAULT</p>
+                    </li></ul></div>
+            </dd>
+         
+            <dt><span class="term"><a href="#key-spec-rsa">RSA key specs</a> (encryption and decryption -or-
+                signing and verification)</span></dt>
+            <dd>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>RSA_2048</p>
+                    </li><li class="listitem">
+                        <p>RSA_3072</p>
+                    </li><li class="listitem">
+                        <p>RSA_4096</p>
+                    </li></ul></div>
+            </dd>
+         
+            <dt><span class="term"><a href="#key-spec-ecc">Elliptic curve key specs</a></span></dt>
+            <dd>
+                <div class="itemizedlist">
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>Asymmetric NIST-standard <a href="https://datatracker.ietf.org/doc/html/rfc5753/" rel="noopener noreferrer" target="_blank"><span>elliptic curve
+                                key pairs</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (signing and verification -or- deriving shared
+                            secrets)</p>
+                        <div class="itemizedlist">
+                             
+                             
+                             
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>ECC_NIST_P256 (secp256r1)</p>
+                            </li><li class="listitem">
+                                <p>ECC_NIST_P384 (secp384r1)</p>
+                            </li><li class="listitem">
+                                <p>ECC_NIST_P521 (secp521r1)</p>
+                            </li><li class="listitem">
+                                <p>ECC_NIST_EDWARDS25519 (ed25519) - signing and verification only</p>
+                                <div class="itemizedlist">
+                                     
+                                <ul class="itemizedlist"><li class="listitem">
+                                        <p><b>Note:</b> For ECC_NIST_EDWARDS25519 KMS keys, the
+                                            ED25519_SHA_512 signing algorithm requires <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType"><code class="code">MessageType:RAW</code></a>, while ED25519_PH_SHA_512 requires <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType"><code class="code">MessageType:DIGEST</code></a>. These message types cannot be used interchangeably.</p>
+                                    </li></ul></div>
+                            </li></ul></div>
+                    </li><li class="listitem">
+                        <p>Other asymmetric elliptic curve key pairs (signing and
+                            verification)</p>
+                        <div class="itemizedlist">
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p>ECC_SECG_P256K1 (<a href="https://en.bitcoin.it/wiki/Secp256k1" rel="noopener noreferrer" target="_blank"><span>secp256k1</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>), commonly used for cryptocurrency.</p>
+                            </li></ul></div>
+                    </li></ul></div>
+            </dd>
+         
+            <dt><span class="term"><a href="#key-spec-sm">SM2 key spec</a> (encryption and decryption -or-
+                signing and verification -or- deriving shared secrets)</span></dt>
+            <dd>
+                <div class="itemizedlist">
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>SM2 (China Regions only)</p>
+                    </li></ul></div>
+            </dd>
+         
+            <dt><span class="term"><a href="#hmac-key-specs">HMAC key specs</a></span></dt>
+            <dd>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>HMAC_224</p>
+                    </li><li class="listitem">
+                        <p>HMAC_256</p>
+                    </li><li class="listitem">
+                        <p>HMAC_384</p>
+                    </li><li class="listitem">
+                        <p>HMAC_512</p>
+                    </li></ul></div>
+            </dd>
+         
+            <dt><span class="term"><a href="#key-spec-mldsa">ML-DSA key specs</a></span></dt>
+            <dd>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>ML_DSA_44</p>
+                    </li><li class="listitem">
+                        <p>ML_DSA_65</p>
+                    </li><li class="listitem">
+                        <p>ML_DSA_87</p>
+                    </li></ul></div>
+            </dd>
+        </dl></div>
+        <h2 id="symmetric-cmks">SYMMETRIC_DEFAULT key spec</h2>
+        <p>The default key spec, SYMMETRIC_DEFAULT, is the key spec for symmetric encryption
+            KMS keys. When you select the <b>Symmetric</b> key type and the
+                <b>Encrypt and decrypt</b> key usage in the AWS KMS console, it selects
+            the <code class="code">SYMMETRIC_DEFAULT</code> key spec. In the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html">CreateKey</a> operation, if you don't
+            specify a <code class="code">KeySpec</code> value, SYMMETRIC_DEFAULT is selected. If you don't have a
+            reason to use a different key spec, SYMMETRIC_DEFAULT is a good choice.</p>
+        <p>SYMMETRIC_DEFAULT represents AES-256-GCM, a symmetric algorithm based on <a href="https://csrc.nist.gov/csrc/media/publications/fips/197/final/documents/fips-197.pdf" rel="noopener noreferrer" target="_blank"><span>Advanced Encryption Standard</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (AES) in <a href="http://csrc.nist.gov/publications/nistpubs/800-38D/SP-800-38D.pdf" rel="noopener noreferrer" target="_blank"><span>Galois
+                Counter Mode</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (GCM) with 256-bit keys, an industry standard for secure
+            encryption. The ciphertext that this algorithm generates supports additional
+            authenticated data (AAD), such as an <a href="./encrypt_context.html">encryption
+                context</a>, and GCM provides an additional integrity check on the
+            ciphertext.</p>
+        <p>Data encrypted under AES-256-GCM is protected now and in the future. Cryptographers
+            consider this algorithm to be <em>quantum resistant</em>.
+            Theoretical future, large-scale quantum computing attacks on ciphertexts created under
+            256-bit AES-GCM keys <a href="https://www.etsi.org/images/files/ETSIWhitePapers/QuantumSafeWhitepaper.pdf" rel="noopener noreferrer" target="_blank"><span>reduce the effective security of the key to 128 bits</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. But, this security
+            level is sufficient to make brute force attacks on AWS KMS ciphertexts infeasible.</p>
+        <p>The only exception in China Regions, where SYMMETRIC_DEFAULT represents a 128-bit
+            symmetric key that uses SM4 encryption. You can only create a 128-bit SM4 key within
+            China Regions. You cannot create a 256-bit AES-GCM KMS key in China Regions.</p>
+        <p>You can use a symmetric encryption KMS key in AWS KMS to encrypt, decrypt, and
+            re-encrypt data, and to protect generated data keys and data key pairs. AWS services
+            that are integrated with AWS KMS use symmetric encryption KMS keys to encrypt your data
+            at rest. You can <a href="./importing-keys.html">import your own key material</a> into
+            a symmetric encryption KMS key and create symmetric encryption KMS keys in <a href="./key-store-overview.html#custom-key-store-overview">custom key stores</a>. For a table comparing
+            the operations that you can perform on symmetric and asymmetric KMS keys, see <a href="./symm-asymm-compare.html">Comparing Symmetric and Asymmetric
+            KMS keys</a>.</p>
+        <p>You can use a symmetric encryption KMS key in AWS KMS to encrypt, decrypt, and
+            re-encrypt data, and generate data keys and data key pairs. You can create <a href="./multi-region-keys-overview.html">multi-Region</a> symmetric encryption
+            KMS keys, <a href="./importing-keys.html">import your own key material</a> into a
+            symmetric encryption KMS key, and create symmetric encryption KMS keys in <a href="./key-store-overview.html#custom-key-store-overview">custom key stores</a>. For a table comparing
+            the operations that you can perform on KMS keys of different types, see <a href="./symm-asymm-compare.html">Key type reference</a>.</p>
+     
+        <h2 id="key-spec-rsa">RSA key specs</h2>
+        <p>When you use an RSA key spec, AWS KMS creates an asymmetric KMS key with an RSA key
+            pair. The private key never leaves AWS KMS unencrypted. You can use the public key within
+            AWS KMS, or download the public key for use outside of AWS KMS. </p>
+        <div class="awsdocs-note awsdocs-warning"><div class="awsdocs-note-title"><awsui-icon name="status-warning" variant="error"></awsui-icon><h6>Warning</h6></div><div class="awsdocs-note-text"><p>When you encrypt data outside of AWS KMS, be sure that you can decrypt your
+                ciphertext. If you use the public key from a KMS key that has been deleted from
+                AWS KMS, the public key from a KMS key configured for signing and verification, or
+                an encryption algorithm that is not supported by the KMS key, the data is
+                unrecoverable.</p></div></div>
+        <p>In AWS KMS, you can use asymmetric KMS keys with RSA key pairs for encryption and
+            decryption, or signing and verification, but not both. This property, known as <em><a href="./create-keys.html#key-usage">Key usage</a></em>, is
+            determined separately from the key spec, but you should make that decision before you
+            select a key spec. </p>
+        <p>AWS KMS supports the following RSA key specs for encryption and decryption or signing
+            and verification:</p>
+        <div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p>RSA_2048</p>
+            </li><li class="listitem">
+                <p>RSA_3072</p>
+            </li><li class="listitem">
+                <p>RSA_4096</p>
+            </li></ul></div>
+        <p>RSA key specs differ by the length of the RSA key in bits. The RSA key spec that you
+            choose might be determined by your security standards or the requirements of your task.
+            In general, use the largest key that is practical and affordable for your task.
+            Cryptographic operations on KMS keys with different RSA key specs are priced
+            differently. For information about AWS KMS pricing, see <a href="https://aws.amazon.com/kms/pricing/" rel="noopener noreferrer" target="_blank"><span>AWS Key Management Service Pricing</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. For
+            information about request quotas, see <a href="./requests-per-second.html">Request quotas</a>.</p>
+
+         
+            <h3 id="key-spec-rsa-encryption">RSA key specs for encryption and decryption</h3>
+            <p>When an RSA asymmetric KMS key is used for encryption and decryption, you
+                encrypt with the public key and decrypt with the private key. When you call the
+                    <code class="code">Encrypt</code> operation in AWS KMS for an RSA KMS key, AWS KMS uses the
+                public key in the RSA key pair and the encryption algorithm you specify to encrypt
+                your data. To decrypt the ciphertext, call the <code class="code">Decrypt</code> operation and
+                specify the same KMS key and encryption algorithm. AWS KMS then uses the private key
+                in the RSA key pair to decrypt your data. </p>
+            <p>You can also download the public key and use it to encrypt data outside of AWS KMS.
+                Be sure to use an encryption algorithm that AWS KMS supports for RSA KMS keys. To
+                decrypt the ciphertext, call the <code class="code">Decrypt</code> function with the same
+                KMS key and encryption algorithm. </p>
+            <p>AWS KMS supports two encryption algorithms for KMS keys with RSA key specs. These
+                algorithms, which are defined in <a href="https://tools.ietf.org/html/rfc8017" rel="noopener noreferrer" target="_blank"><span>PKCS #1 v2.2</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>, differ in the hash function they use internally. In
+                AWS KMS, the RSAES_OAEP algorithms always use the same hash function for both hashing
+                purposes and for the <a href="https://tools.ietf.org/html/rfc8017#appendix-B.2" rel="noopener noreferrer" target="_blank"><span>mask generation function</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (MGF1). You are required to
+                specify an encryption algorithm when you call the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html">Encrypt</a> and <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html">Decrypt</a> operations. You can choose a
+                different algorithm for each request.</p>
+            <div class="table-container"><div class="table-contents"><table id="w167aac47c11c17c15b9"><caption>Supported encryption algorithms for RSA key specs</caption><thead>
+                        <tr>
+                            <th>Encryption algorithm</th>
+                            <th>Algorithm description</th>
+                        </tr>
+                    </thead>
+                        <tr>
+                            <td tabindex="-1">RSAES_OAEP_SHA_1</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 7.1. RSA encryption with OAEP Padding using
+                                SHA-1 for both the hash and in the MGF1 mask generation function
+                                along with an empty label.</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">RSAES_OAEP_SHA_256</td>
+                            <td tabindex="-1">PKCS #1, Section 7.1. RSA encryption with OAEP Padding using
+                                SHA-256 for both the hash and in the MGF1 mask generation function
+                                along with an empty label.</td>
+                        </tr>
+                    </table></div></div>
+            <p>You cannot configure a KMS key to use a particular encryption algorithm.
+                However, you can use the <a href="./conditions-kms.html#conditions-kms-encryption-algorithm">kms:EncryptionAlgorithm</a> policy condition to specify the encryption
+                algorithms that principals are allowed to use with the KMS key. </p>
+            <p>To get the encryption algorithms for a KMS key, <a href="./finding-keys.html#viewing-console-details">view the cryptographic configuration</a> of
+                the KMS key in the AWS KMS console or use the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html">DescribeKey</a> operation. AWS KMS
+                also provides the key spec and encryption algorithms when you download your public
+                key, either in the AWS KMS console or by using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_GetPublicKey.html">GetPublicKey</a> operation. </p>
+            <p>You might choose an RSA key spec based on the length of the
+                plaintext data that you can encrypt in each request. The following table shows the
+                maximum size, in bytes, of the plaintext that you can encrypt in a single call to
+                the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html">Encrypt</a> operation. The values
+                differ with the key spec and encryption algorithm. To compare, you can use a
+                symmetric encryption KMS key to encrypt up to 4096 bytes at one time. </p>
+            <p>To compute the maximum plaintext length in bytes for these algorithms, use the
+                following formula: (<code class="replaceable">key_size_in_bits</code> / 8) - (2 *
+                    <code class="replaceable">hash_length_in_bits</code>/8) - 2. For example, for RSA_2048
+                with SHA-256, the maximum plaintext size in bytes is (2048/8) - (2 * 256/8) -2 =
+                190.</p>
+            <div class="table-container"><div class="table-contents"><table id="w167aac47c11c17c15c19"><caption>Maximum plaintext size (in bytes) in an Encrypt operation</caption><thead>
+                        <tr>
+                            <th></th>
+                            <th colspan="2">Encryption algorithm</th>
+                        </tr>
+                        <tr>
+                            <th>Key spec</th>
+                            <th>RSAES_OAEP_SHA_1</th>
+                            <th>RSAES_OAEP_SHA_256</th>
+                        </tr>
+                    </thead>
+                        <tr>
+                            <td tabindex="-1"><b>RSA_2048</b></td>
+                            <td tabindex="-1">214</td>
+                            <td tabindex="-1">190</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1"><b>RSA_3072</b></td>
+                            <td tabindex="-1">342</td>
+                            <td tabindex="-1">318 </td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1"><b>RSA_4096</b></td>
+                            <td tabindex="-1">470</td>
+                            <td tabindex="-1">446 </td>
+                        </tr>
+                    </table></div></div>
+         
+
+         
+            <h3 id="key-spec-rsa-sign">RSA key specs for signing and verification</h3>
+            <p>When an RSA asymmetric KMS key is used for signing and verification, you
+                generate the signature for a message with the private key and verify the signature
+                with the public key. </p>
+            <p>When you call the <code class="code">Sign</code> operation in AWS KMS for an asymmetric
+                KMS key, AWS KMS uses the private key in the RSA key pair, the message, and the
+                signing algorithm you specify, to generate a signature. To verify the signature,
+                call the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Verify.html">Verify</a> operation. Specify
+                the signature, plus the same KMS key, message, and signing algorithm. AWS KMS then
+                uses the public key in the RSA key pair to verify the signature. You can also
+                download the public key and use it to verify the signature outside of AWS KMS.</p>
+            <p>AWS KMS supports the following signing algorithms for all KMS keys with an RSA key
+                spec. You are required to specify a signing algorithm when you call the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html">Sign</a> and <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Verify.html">Verify</a> operations. You can choose a
+                different algorithm for each request. When signing with RSA key pairs, RSASSA-PSS
+                algorithms are preferred. We include RSASSA-PKCS1-v1_5 algorithms for compatibility
+                with existing applications.</p>
+            <div class="table-container"><div class="table-contents"><table id="w167aac47c11c17c17b9"><caption>Supported signing algorithms for RSA key specs</caption><thead>
+                        <tr>
+                            <th>Signing algorithm</th>
+                            <th>Algorithm description</th>
+                        </tr>
+                    </thead>
+                        <tr>
+                            <td tabindex="-1">RSASSA_PSS_SHA_256</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 8.1, RSA signature with PSS padding using
+                                SHA-256 for both the message digest and the MGF1 mask generation
+                                function along with a 256-bit salt</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">RSASSA_PSS_SHA_384</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 8.1, RSA signature with PSS padding using
+                                SHA-384 for both the message digest and the MGF1 mask generation
+                                function along with a 384-bit salt</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">RSASSA_PSS_SHA_512</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 8.1, RSA signature with PSS padding using
+                                SHA-512 for both the message digest and the MGF1 mask generation
+                                function along with a 512-bit salt</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">RSASSA_PKCS1_V1_5_SHA_256</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 8.2, RSA signature with PKCS #1v1.5 Padding
+                                and SHA-256</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">RSASSA_PKCS1_V1_5_SHA_384</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 8.2, RSA signature with PKCS #1v1.5 Padding
+                                and SHA-384</td>
+                        </tr>
+                        <tr>
+                            <td tabindex="-1">RSASSA_PKCS1_V1_5_SHA_512</td>
+                            <td tabindex="-1">PKCS #1 v2.2, Section 8.2, RSA signature with PKCS #1v1.5 Padding
+                                and SHA-512</td>
+                        </tr>
+                    </table></div></div>
+            <p>You cannot configure a KMS key to use particular signing algorithms. However,
+                you can use the <a href="./conditions-kms.html#conditions-kms-signing-algorithm">kms:SigningAlgorithm</a> policy condition to specify the signing algorithms
+                that principals are allowed to use with the KMS key. </p>
+            <p>To get the signing algorithms for a KMS key, <a href="./finding-keys.html#viewing-console-details">view the cryptographic configuration</a> of
+                the KMS key in the AWS KMS console or by using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html">DescribeKey</a> operation. AWS KMS
+                also provides the key spec and signing algorithms when you download your public key,
+                either in the AWS KMS console or by using the <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_GetPublicKey.html">GetPublicKey</a> operation. </p>
+         
+     
+        <h2 id="key-spec-ecc">Elliptic curve key specs</h2>
+        <p><b></b></p>
+        <p>When you use an elliptic curve (ECC) key spec, AWS KMS creates an asymmetric KMS key
+            with an ECC key pair for signing and verification or deriving shared secrets (but not
+            both). The private key that generates signatures or derives shared secrets never leaves
+            AWS KMS unencrypted. You can use the public key to <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Verify.html">verify signatures</a> within AWS KMS, or <a href="./importing-keys-get-public-key-and-token.html">download the public key</a> for
+            use outside of AWS KMS. </p>
+        <p>When you use an Edwards Curve key spec, AWS KMS creates an asymmetric KMS key with an
+            Ed25519 key pair for signing and verification. The private key that generates
+            signatures never leaves AWS KMS unencrypted. You can use the
+            public key to <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Verify.html">verify signatures</a> within
+            AWS KMS, or <a href="./importing-keys-get-public-key-and-token.html">download the public
+                key</a> for use outside of AWS KMS. </p>
+        <p>AWS KMS supports the following ECC key specs for asymmetric KMS keys.</p>
+
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p>Asymmetric NIST-standard elliptic curve key pairs (signing and verification
+                    -or- deriving shared secrets)</p>
+                <div class="itemizedlist">
+                     
+                     
+                     
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>ECC_NIST_P256 (secp256r1)</p>
+                    </li><li class="listitem">
+                        <p>ECC_NIST_P384 (secp384r1)</p>
+                    </li><li class="listitem">
+                        <p>ECC_NIST_P521 (secp521r1)</p>
+                    </li><li class="listitem">
+                        <p>ECC_NIST_EDWARDS25519 (ed25519) - signing and verification only</p>
+                        <div class="itemizedlist">
+                             
+                        <ul class="itemizedlist"><li class="listitem">
+                                <p><b>Note:</b> For ECC_NIST_EDWARDS25519 KMS keys, the
+                                    ED25519_SHA_512 signing algorithm requires <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType"><code class="code">MessageType:RAW</code></a>, while ED25519_PH_SHA_512 requires <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType"><code class="code">MessageType:DIGEST</code></a>. These message types cannot be used interchangeably.</p>
+                            </li></ul></div>
+                    </li></ul></div>
+            </li><li class="listitem">
+                <p>Other asymmetric elliptic curve key pairs (signing and verification)</p>
+                <div class="itemizedlist">
+                     
+                <ul class="itemizedlist"><li class="listitem">
+                        <p>ECC_SECG_P256K1 (<a href="https://en.bitcoin.it/wiki/Secp256k1" rel="noopener noreferrer" target="_blank"><span>secp256k1</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>), commonly used for cryptocurrencies.</p>
+                    </li></ul></div>
+            </li></ul></div>
+        <p>The ECC key spec that you choose might be determined by your security standards or the
+            requirements of your task. In general, use the curve with the most points that is
+            practical and affordable for your task.</p>
+        <p>If you're creating an asymmetric KMS key to <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DeriveSharedSecret.html">derive shared secrets</a>, use
+            one of the NIST-standard elliptic curve key specs (except ECC_SECG_P256K1 and ECC_NIST_EDWARDS25519).
+            The only supported key agreement algorithm for deriving shared secrets is the <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf#page=60" rel="noopener noreferrer" target="_blank"><span>Elliptic Curve Cryptography Cofactor Diffie-Hellman Primitive</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> (ECDH). For
+            an example of how to derive shared secrets offline, see <a href="./offline-operations.html#key-spec-ecc-offline">Deriving shared secrets offline</a>.</p>
+        <p>If you're creating an asymmetric KMS key to use with cryptocurrencies, use the
+            ECC_SECG_P256K1 key spec. You can also use this key spec for other purposes, but it is
+            required for Bitcoin, and other cryptocurrencies.</p>
+        <p>The following table shows the signing algorithms that AWS KMS supports for each of the
+            ECC key specs. You cannot configure a KMS key to use particular signing algorithms.
+            However, you can use the <a href="./conditions-kms.html#conditions-kms-signing-algorithm">kms:SigningAlgorithm</a> policy condition to specify the signing algorithms that
+            principals are allowed to use with the KMS key. </p>
+        <div class="table-container"><div class="table-contents"><table id="w167aac47c11c19c21"><caption>Supported signing algorithms for ECC key specs</caption><thead>
+                    <tr>
+                        <th>Key spec</th>
+                        <th>Signing algorithm</th>
+                        <th>Algorithm description</th>
+                    </tr>
+                </thead>
+                    <tr>
+                        <td tabindex="-1">ECC_NIST_P256 </td>
+                        <td tabindex="-1">ECDSA_SHA_256</td>
+                        <td tabindex="-1">NIST FIPS 186-4, Section 6.4, ECDSA signature using the curve
+                            specified by the key and SHA-256 for the message digest.</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">ECC_NIST_P384</td>
+                        <td tabindex="-1">ECDSA_SHA_384</td>
+                        <td tabindex="-1">NIST FIPS 186-4, Section 6.4, ECDSA signature using the curve
+                            specified by the key and SHA-384 for the message digest.</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">ECC_NIST_P521</td>
+                        <td tabindex="-1">ECDSA_SHA_512</td>
+                        <td tabindex="-1">NIST FIPS 186-4, Section 6.4, ECDSA signature using the curve
+                            specified by the key and SHA-512 for the message digest.</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">ECC_SECG_P256K1</td>
+                        <td tabindex="-1">ECDSA_SHA_256</td>
+                        <td tabindex="-1">NIST FIPS 186-4, Section 6.4, ECDSA signature using the curve
+                            specified by the key and SHA-256 for the message digest.</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">ECC_NIST_EDWARDS25519</td>
+                        <td tabindex="-1">ED25519_SHA_512</td>
+                        <td tabindex="-1">NIST FIPS 186-5, Section 7.6, EdDSA signature using the curve specified
+                            by the key and SHA-512 for the message digest. KMS requires <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType"><code class="code">MessageType:RAW</code></a> with this algorithm.</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">ECC_NIST_EDWARDS25519</td>
+                        <td tabindex="-1">ED25519_PH_SHA_512</td>
+                        <td tabindex="-1">NIST FIPS 186-5, Section 7.8, HashEdDSA signature using the curve
+                            specified by the key and SHA-512 for the message digest. KMS requires <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Sign.html#KMS-Sign-request-MessageType"><code class="code">MessageType:DIGEST</code></a> with this algorithm.
+                            When you specify the ED25519_PH_SHA_512 signing algorithm with
+                            <code class="code">MessageType:DIGEST</code>, AWS KMS still performs the SHA-512 prehash
+                            described in <a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf#page=39" rel="noopener noreferrer" target="_blank"><span>Step 1
+                            of Section 7.8.1</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. This means the input is hashed twice: once by
+                            you and once by KMS.</td>
+                    </tr>
+                </table></div></div>
+
+
+
+     
+        <h2 id="hmac-key-specs">Key specs for HMAC KMS keys</h2>
+        <p>AWS KMS supports symmetric HMAC keys in varying lengths. The key spec that you select
+            can depend on your security, regulatory, or business requirements. The length of the key
+            determines the MAC algorithm that is used in <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_GenerateMac.html">GenerateMac</a> and <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_VerifyMac.html">VerifyMac</a> operations. In general,
+            longer keys are more secure. Use the longest key that is practical for your use
+            case.</p>
+        <div class="table-container"><div class="table-contents"><table id="w167aac47c11c21b5"><thead>
+                    <tr>
+                        <th>HMAC key spec</th>
+                        <th>MAC algorithm</th>
+                    </tr>
+                </thead>
+                    <tr>
+                        <td tabindex="-1">HMAC_224</td>
+                        <td tabindex="-1">HMAC_SHA_224</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">HMAC_256</td>
+                        <td tabindex="-1">HMAC_SHA_256</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">HMAC_384</td>
+                        <td tabindex="-1">HMAC_SHA_384</td>
+                    </tr>
+                    <tr>
+                        <td tabindex="-1">HMAC_512</td>
+                        <td tabindex="-1">HMAC_SHA_512</td>
+                    </tr>
+                </table></div></div>
+     
+        <h2 id="key-spec-mldsa">ML-DSA key specs</h2>
+        <p>An ML-DSA key is a cryptographic key used in the Module-Lattice-Based Digital
+            Signature Algorithm (ML-DSA), which is designed for post-quantum cryptography. This
+            algorithm is part of the NIST (National Institute of Standards and Technology)
+            standardization effort, specifically outlined in <a href="https://csrc.nist.gov/pubs/fips/204/final" rel="noopener noreferrer" target="_blank"><span>Federal Information Processing
+                Standards (FIPS) 204</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.</p>
+        <p>ML-DSA keys are used in a public-private key pair system. The private key is used for
+            signing data, while the public key is used for verifying the signature. This system
+            ensures the authenticity, integrity, and non-repudiation of digital messages or
+            documents, even in the face of potential quantum computer threats.</p>
+        <p>When you create a key with the ML-DSA key spec, AWS KMS creates an asymmetric KMS key
+            with a ML-DSA key pair for signing and verification. The private key that generates
+            signatures never leaves AWS KMS unencrypted. You can use the public key to <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_Verify.html">verify
+                signatures</a> within AWS KMS, or <a href="https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys-get-public-key-and-token.html">download the public key</a> for use outside of AWS KMS.</p>
+        <p>AWS KMS supports the following ML-DSA key specs for asymmetric KMS keys:</p>
+        <div class="itemizedlist">
+             
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <p>ML_DSA_44</p>
+            </li><li class="listitem">
+                <p>ML_DSA_65</p>
+            </li><li class="listitem">
+                <p>ML_DSA_87</p>
+            </li></ul></div>
+        <p>AWS KMS supports the ML_DSA_SHAKE_256 signing algorithm for all of the ML-DSA key
+            specs.</p>
+     
+        <h2 id="key-spec-sm">SM2 key spec (China Regions only)</h2>
+        <p>The SM2 key spec is an elliptic curve key spec defined within the GM/T series of
+            specifications published by <a href="https://www.oscca.gov.cn/" rel="noopener noreferrer" target="_blank"><span>China's Office of State Commercial
+                Cryptography Administration (OSCCA)</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>. The SM2 key spec is available only in
+            China Regions. When you use the SM2 key spec, AWS KMS creates an asymmetric KMS key
+            with an SM2 key pair. You can use your SM2 key pair within AWS KMS, or download the public
+            key for use outside of AWS KMS. For more information, see <a href="./offline-operations.html#key-spec-sm-offline-verification">Offline verification with SM2 key pairs (China Regions only)</a>.</p>
+        <p>Each KMS key can have only one <a href="./create-keys.html#key-usage">Key usage</a>. You can use an SM2 KMS key for signing and verification, encryption and
+            decryption, <em>or</em> deriving shared secrets. You must specify the key
+            usage when you create the KMS key, and you cannot change it after the key is
+            created.</p>
+        <p>If you're creating an asymmetric KMS key to <a href="https://docs.aws.amazon.com/kms/latest/APIReference/API_DeriveSharedSecret.html">derive shared secrets</a>, use
+            the SM2 key spec. The only supported key agreement algorithm for deriving shared secrets
+            is the <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf#page=60" rel="noopener noreferrer" target="_blank"><span>Elliptic Curve Cryptography Cofactor Diffie-Hellman Primitive</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>
+            (ECDH).</p>
+        <p>AWS KMS supports the following SM2 encryption and signing algorithms:</p>
+        <div class="itemizedlist">
+             
+             
+        <ul class="itemizedlist"><li class="listitem">
+                <div class="variablelist">
+                     
+                <dl>
+                        <dt><span class="term"><span class="topcom">SM2PKE</span> encryption algorithm</span></dt>
+                        <dd>
+                            <p>SM2PKE is an elliptic curve based encryption algorithm defined by
+                                OSCCA in GM/T 0003.4-2012.</p>
+                        </dd>
+                    </dl></div>
+            </li><li class="listitem">
+                <div class="variablelist">
+                     
+                <dl>
+                        <dt><span class="term"><span class="topcom">SM2DSA</span> signing algorithm</span></dt>
+                        <dd>
+                            <p>SM2DSA is an elliptic curve based signing algorithm defined by
+                                OSCCA in GM/T 0003.2-2012. SM2DSA requires a distinguishing ID that
+                                is hashed with the SM3 hashing algorithm and then combined with the
+                                message, or message digest, that you passed to AWS KMS. This
+                                concatenated value is then hashed and signed by AWS KMS.</p>
+                        </dd>
+                    </dl></div>
+            </li></ul></div>
+
+    <awsdocs-copyright class="copyright-print"></awsdocs-copyright><awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback></div><noscript><div><div><div><div id="js_error_message"><p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your browser.</strong></p><p>To use the Amazon Web Services Documentation, Javascript must be enabled. Please refer to your browser's Help pages for instructions.</p></div></div></div></div></noscript><div id="main-col-footer" class="awsui-util-font-size-0"><div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div><div class="prev-next"><div id="previous" class="prev-link" accesskey="p" href="./symm-asymm-compare.html">Key type reference</div><div id="next" class="next-link" accesskey="n" href="./kms-api-permissions-reference.html">Permissions reference</div></div></div><awsdocs-page-utilities></awsdocs-page-utilities></div><div id="quick-feedback-yes" style="display: none;"><div class="title">Did this page help you? - Yes</div><div class="content"><p>Thanks for letting us know we're doing a good job!</p><p>If you've got a moment, please tell us what we did right so we can do more of it.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Key Management Service (KMS)&amp;topic_url=https://docs.aws.amazon.com/en_us/kms/latest/developerguide/symm-asymm-choose-key-spec.html"></awsui-button></p></div></div><div id="quick-feedback-no" style="display: none;"><div class="title">Did this page help you? - No</div><div class="content"><p>Thanks for letting us know this page needs work. We're sorry we let you down.</p><p>If you've got a moment, please tell us how we can make the documentation better.</p><p><awsui-button id="fblink" rel="noopener noreferrer" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Key Management Service (KMS)&amp;topic_url=https://docs.aws.amazon.com/en_us/kms/latest/developerguide/symm-asymm-choose-key-spec.html"></awsui-button></p></div></div></div></body></div></awsdocs-view><div class="page-loading-indicator" id="page-loading-indicator"><awsui-spinner size="large"></awsui-spinner></div></div><div id="tools-panel" dom-region="tools"><awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel></div></awsui-app-layout><awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner></div></body></html>

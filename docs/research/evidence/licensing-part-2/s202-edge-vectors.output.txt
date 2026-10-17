@@ -1,0 +1,28 @@
+# s202 executed 2026-10-17T07:46:12Z; vectors: work/vectors.json (sha256 d3574c336bfe18fa...)
+## Go
+go: go.mod requires go >= 1.27.2 (running go 1.27.1; GOTOOLCHAIN=local)
+go: go.mod requires go >= 1.27.2 (running go 1.27.1; GOTOOLCHAIN=local)
+## Node
+added 2 packages in 932ms
+node v24.21.0 openssl 3.6.5
+valid_rfc8032_test2                                     node:crypto=true                         noble-default=true                   noble-zip215:false=true
+flipped_message_bit                                     node:crypto=false                        noble-default=false                  noble-zip215:false=false
+malleated_S_plus_L                                      node:crypto=false                        noble-default=false                  noble-zip215:false=false
+key_31_bytes                                            node:crypto=THROW(Error)                 noble-default=THROW(RangeError)      noble-zip215:false=THROW(RangeError)
+sig_63_bytes                                            node:crypto=false                        noble-default=THROW(RangeError)      noble-zip215:false=THROW(RangeError)
+small_order_key_identity__R_identity_S0                 node:crypto=false                        noble-default=true                   noble-zip215:false=false
+noncanonical_key_y_eq_p_plus_1__R_identity_S0           node:crypto=false                        noble-default=true                   noble-zip215:false=false
+key_identity_with_sign_bit_set__R_identity_S0           node:crypto=false                        noble-default=true                   noble-zip215:false=false
+noncanonical_R_y_eq_p_plus_1_with_key_identity_S0       node:crypto=false                        noble-default=true                   noble-zip215:false=false
+## Java
+bc jar bytes 7224011
+java 21.0.12.1+1
+valid_rfc8032_test2                                     jdk=true                                                         bc=true
+flipped_message_bit                                     jdk=false                                                        bc=false
+malleated_S_plus_L                                      jdk=THROW(SignatureException: s is too large)                    bc=false
+key_31_bytes                                            jdk=THROW(InvalidKeySpecException: java.security.InvalidKeyException: Unable to decode key) bc=THROW(ArrayIndexOutOfBoundsException)
+sig_63_bytes                                            jdk=THROW(SignatureException: signature length invalid)          bc=THROW(ArrayIndexOutOfBoundsException)
+small_order_key_identity__R_identity_S0                 jdk=true                                                         bc=false
+noncanonical_key_y_eq_p_plus_1__R_identity_S0           jdk=THROW(InvalidKeyException: y value is too large)             bc=false
+key_identity_with_sign_bit_set__R_identity_S0           jdk=THROW(InvalidKeyException: Invalid point)                    bc=false
+noncanonical_R_y_eq_p_plus_1_with_key_identity_S0       jdk=THROW(SignatureException: y value is too large)              bc=false

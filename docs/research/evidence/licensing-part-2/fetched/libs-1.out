@@ -1,0 +1,37 @@
+# fetched 2026-10-17T07:43:04Z
+## circl
+{"Version":"v1.6.5","Time":"2026-08-05T16:32:19Z","Origin":{"VCS":"git","URL":"https://github.com/cloudflare/circl","Hash":"cfa7c70defd831ffb0792ab2af560bfef43d60ca","Ref":"refs/tags/v1.6.5"}}
+Copyright (c) 2019 Cloudflare. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+## go stdlib alt: edwards25519
+{"Version":"v1.2.0","Time":"2026-02-17T17:23:26Z","Origin":{"VCS":"git","URL":"https://github.com/FiloSottile/edwards25519","Hash":"b182a6575cfd9f4fbb1d1d4e487a6b00a3ec06f7","Ref":"refs/tags/v1.2.0"}}
+## BC
+    <latest>1.86</latest>
+    <release>1.86</release>
+    <lastUpdated>20260911045244</lastUpdated>
+## Tink
+    <latest>1.24.0</latest>
+    <release>1.24.0</release>
+    <lastUpdated>20261016131807</lastUpdated>
+## noble-curves
+{
+  "latest": "2.4.0",
+  "time": "2026-08-27T14:28:07.012Z",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 20.19.0"
+  }
+}
+## noble-ed25519
+{
+  "latest": "3.2.0",
+  "time": "2026-08-27T16:41:44.623Z",
+  "license": "MIT"
+}
+## libsodium-wrappers
+{
+  "latest": "0.8.4",
+  "time": "2026-04-19T11:26:26.616Z",
+  "license": "ISC"
+}

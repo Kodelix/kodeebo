@@ -1,0 +1,1655 @@
+ <!DOCTYPE html>
+		<html
+			class="layout layout-holy-grail   show-table-of-contents conceptual show-breadcrumb default-focus"
+			lang="en-us"
+			dir="ltr"
+			data-authenticated="false"
+			data-auth-status-determined="false"
+			data-target="docs"
+			x-ms-format-detection="none"
+		>
+			
+		<head>
+			<title>Key types, algorithms, and operations - Azure Key Vault | Microsoft Learn</title>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<meta name="color-scheme" content="light dark" />
+
+			<meta name="description" content="Supported key types, algorithms, attributes, and operations for vaults in Azure Key Vault." />
+			<link rel="canonical" href="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys-details" /> 
+
+			<!-- Non-customizable open graph and sharing-related metadata -->
+			<meta name="twitter:card" content="summary_large_image" />
+			<meta name="twitter:site" content="@MicrosoftLearn" />
+			<meta property="og:type" content="website" />
+			<meta property="og:image:alt" content="Microsoft Learn" />
+			<meta property="og:image" content="https://learn.microsoft.com/en-us/media/open-graph-image.png" />
+			<!-- Page specific open graph and sharing-related metadata -->
+			<meta property="og:title" content="Key types, algorithms, and operations - Azure Key Vault" />
+			<meta property="og:url" content="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys-details" />
+			<meta property="og:description" content="Supported key types, algorithms, attributes, and operations for vaults in Azure Key Vault." />
+			<meta name="platform_id" content="81169110-e35e-f0c8-7d45-60758f261e33" /> <meta name="scope" content="Azure" />
+			<meta name="locale" content="en-us" />
+			 
+			<meta name="uhfHeaderId" content="azure" />
+
+			<meta name="page_type" content="conceptual" />
+
+			<!--page specific meta tags-->
+			
+
+			<!-- custom meta tags -->
+			
+		<meta name="breadcrumb_path" content="/azure/breadcrumb/azure-security/toc.json" />
+	
+		<meta name="feedback_help_link_url" content="https://learn.microsoft.com/answers/tags/5/azure-key-vault/" />
+	
+		<meta name="feedback_help_link_type" content="get-help-at-qna" />
+	
+		<meta name="feedback_product_url" content="https://feedback.azure.com/d365community/forum/285c5ae0-f524-ec11-b6e6-000d3a4f0da0" />
+	
+		<meta name="feedback_system" content="Standard" />
+	
+		<meta name="permissioned-type" content="public" />
+	
+		<meta name="recommendations" content="true" />
+	
+		<meta name="recommendation_types" content="Training" />
+	
+		<meta name="recommendation_types" content="Certification" />
+	
+		<meta name="ms.suite" content="office" />
+	
+		<meta name="author" content="msmbaldwin" />
+	
+		<meta name="ms.author" content="mbaldwin" />
+	
+		<meta name="learn_banner_products" content="azure" />
+	
+		<meta name="services" content="key-vault" />
+	
+		<meta name="ms.service" content="azure-key-vault" />
+	
+		<meta name="ms.subservice" content="keys" />
+	
+		<meta name="ms.topic" content="concept-article" />
+	
+		<meta name="ms.date" content="2026-07-07T00:00:00Z" />
+	
+		<meta name="ai-usage" content="ai-assisted" />
+	
+		<meta name="document_id" content="8bb0a5f4-0599-b06f-f4eb-09e2fe4e41f6" />
+	
+		<meta name="document_version_independent_id" content="ae2f1f4b-0961-e0c0-fd0f-1d49c23f3d3f" />
+	
+		<meta name="updated_at" content="2026-10-06T17:34:00Z" />
+	
+		<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/azure-security-docs-pr/blob/live/articles/key-vault/keys/about-keys-details.md" />
+	
+		<meta name="gitcommit" content="https://github.com/MicrosoftDocs/azure-security-docs-pr/blob/8dfb50ed846e99053e32805d00bf6bd9eface9c4/articles/key-vault/keys/about-keys-details.md" />
+	
+		<meta name="git_commit_id" content="8dfb50ed846e99053e32805d00bf6bd9eface9c4" />
+	
+		<meta name="site_name" content="Docs" />
+	
+		<meta name="depot_name" content="Learn.azure-security" />
+	
+		<meta name="schema" content="Conceptual" />
+	
+		<meta name="toc_rel" content="toc.json" />
+	
+		<meta name="word_count" content="2307" />
+	
+		<meta name="asset_id" content="key-vault/keys/about-keys-details" />
+	
+		<meta name="moniker_range_name" content="" />
+	
+		<meta name="item_type" content="Content" />
+	
+		<meta name="source_path" content="articles/key-vault/keys/about-keys-details.md" />
+	
+		<meta name="previous_tlsh_hash" content="CF3AB562B50EEF61EB915B43284BE58261F09684ABB07ED01578709654079EA7874158BBA723FB08937207C712E3BA6DD3D6EF36E22C3372549A145DC94C508A8B9837FBEC" />
+	
+		<meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/azure-security-docs/blob/main/articles/key-vault/keys/about-keys-details.md" />
+	
+		<meta name="markdown_url" content="https://learn.microsoft.com/en-us/azure/key-vault/keys/about-keys-details?accept=text/markdown" />
+	 
+		<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/f488294d-f483-456e-94e3-755f933b811b" data-source="generated" />
+	
+		<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/540ac133-a371-4dbb-8f94-28d6cc77a70b" data-source="generated" />
+	
+		<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/02662057-0b9b-40f4-a3c7-537125b6d283" data-source="generated" />
+	
+		<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/60bfc045-f127-4841-9d00-ea35495a5800" data-source="generated" />
+	
+
+			<!-- Apply persisted/system theme before first paint to prevent wrong-theme flash when scripts are deferred. -->
+			<script id="theme-preference">
+				(function () {
+			try {
+				var stored = localStorage.getItem('theme');
+				var theme = /^(light|dark|high-contrast)$/.test(stored)
+					? stored
+					: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				document.documentElement.classList.add('theme-' + theme);
+			} catch (e) {}
+		})();;
+			</script>
+
+			<script id="atlas-layout-preferences">
+				(function () {
+			try {
+				var state = JSON.parse(localStorage.getItem('atlas-layout-preferences') || '{}');
+				var view = state["docs-layout-persistence"] || {};
+				var excludesKey = "";
+				var blocked = {};
+				if (excludesKey) {
+					var exclusions = JSON.parse(localStorage.getItem('atlas-layout-exclusions') || '{}');
+					if (Object.prototype.hasOwnProperty.call(exclusions, excludesKey)) {
+						var scoped = exclusions[excludesKey];
+						if (scoped) {
+							if (typeof scoped === 'object') blocked = scoped;
+						}
+					}
+				}
+				var html = document.documentElement;
+				for (var c in view) {
+					if (Object.prototype.hasOwnProperty.call(blocked, c)) continue;
+					if (view[c]) html.classList.add(c);
+					else html.classList.remove(c);
+				}
+			} catch (e) {}
+		})();;
+			</script>
+
+			<!-- assets and js globals -->
+			
+			<link rel="stylesheet" href="/static/assets/0.4.03574.8308-9505b1c8/styles/site.css" />
+			
+			<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+			<!-- Keep this URL in sync with oneDSScriptSelector in instrumentation/one-ds.ts. -->
+			<script async src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script>
+			
+
+			<!-- msdocs global object -->
+			<script id="msdocs-script">
+		var msDocs = {
+  "environment": {
+    "accessLevel": "online",
+    "azurePortalHostname": "portal.azure.com",
+    "reviewFeatures": false,
+    "supportLevel": "production",
+    "systemContent": true,
+    "siteName": "learn",
+    "legacyHosting": false
+  },
+  "data": {
+    "contentLocale": "en-us",
+    "contentDir": "ltr",
+    "userLocale": "en-us",
+    "userDir": "ltr",
+    "pageTemplate": "Conceptual",
+    "layoutStateStorageKey": "docs-layout-persistence",
+    "brand": "azure",
+    "context": {},
+    "standardFeedback": true,
+    "showFeedbackReport": false,
+    "feedbackHelpLinkType": "get-help-at-qna",
+    "feedbackHelpLinkUrl": "https://learn.microsoft.com/answers/tags/5/azure-key-vault/",
+    "feedbackSystem": "Standard",
+    "feedbackGitHubRepo": "MicrosoftDocs/azure-docs",
+    "feedbackProductUrl": "https://feedback.azure.com/d365community/forum/285c5ae0-f524-ec11-b6e6-000d3a4f0da0",
+    "extendBreadcrumb": false,
+    "isEditDisplayable": true,
+    "isPrivateUnauthorized": false,
+    "hideViewSource": false,
+    "isPermissioned": false,
+    "hasRecommendations": true
+  },
+  "functions": {}
+};;
+	</script>
+
+			<!-- base scripts, msdocs global should be before this -->
+			<script
+				src="/static/assets/0.4.03574.8308-9505b1c8/scripts/en-us/index-docs.js"
+				async
+			></script>
+			
+
+			<!-- json-ld -->
+			
+		</head>
+	
+			<body
+				id="body"
+				data-bi-name="body"
+				class="layout-body "
+				lang="en-us"
+				dir="ltr"
+			>
+				<header class="layout-body-header background-color-body-medium">
+		<div class="header-holder has-default-focus">
+			
+		<a
+			href="#main"
+			
+			style="z-index: 1070"
+			class="outline-color-text visually-hidden-until-focused position-fixed inner-focus focus-visible top-0 left-0 right-0 padding-xs text-align-center background-color-body"
+			
+		>
+			Skip to main content
+		</a>
+	
+		<a
+			href="#"
+			data-skip-to-ask-learn
+			style="z-index: 1070"
+			class="outline-color-text visually-hidden-until-focused position-fixed inner-focus focus-visible top-0 left-0 right-0 padding-xs text-align-center background-color-body"
+			hidden
+		>
+			Skip to Ask Learn chat experience
+		</a>
+	
+
+			<div hidden id="cookie-consent-holder" data-test-id="cookie-consent-container"></div>
+			<!-- Unsupported browser warning -->
+			<div
+				id="unsupported-browser"
+				style="background-color: white; color: black; padding: 16px; border-bottom: 1px solid grey;"
+				hidden
+			>
+				<div style="max-width: 800px; margin: 0 auto;">
+					<p style="font-size: 24px">This browser is no longer supported.</p>
+					<p style="font-size: 16px; margin-top: 16px;">
+						Upgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.
+					</p>
+					<div style="margin-top: 12px;">
+						<a
+							href="https://go.microsoft.com/fwlink/p/?LinkID=2092881 "
+							style="background-color: #0078d4; border: 1px solid #0078d4; color: white; padding: 6px 12px; border-radius: 2px; display: inline-block;"
+						>
+							Download Microsoft Edge
+						</a>
+						<a
+							href="https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge"
+							style="background-color: white; padding: 6px 12px; border: 1px solid #505050; color: #171717; border-radius: 2px; display: inline-block;"
+						>
+							More info about Internet Explorer and Microsoft Edge
+						</a>
+					</div>
+				</div>
+			</div>
+			<!-- site header -->
+			<div
+				id="ms--site-header"
+				data-test-id="site-header-wrapper"
+				itemscope="itemscope"
+				itemtype="http://schema.org/Organization"
+			>
+				<div
+					id="ms--mobile-nav"
+					class="site-header display-none-tablet padding-inline-none gap-none"
+					data-bi-name="mobile-header"
+					data-test-id="mobile-header"
+				></div>
+				<div
+					id="ms--primary-nav"
+					class="site-header display-none display-flex-tablet"
+					data-bi-name="L1-header"
+					data-test-id="primary-header"
+				></div>
+				<div
+					id="ms--secondary-nav"
+					class="site-header display-none display-flex-tablet"
+					data-bi-name="L2-header"
+					data-test-id="secondary-header"
+					
+				></div>
+			</div>
+			
+		<!-- banner -->
+		<div data-banner>
+			<div id="disclaimer-holder"></div>
+			
+		</div>
+		<!-- banner end -->
+	
+		</div>
+	</header>
+				 <section
+					id="layout-body-menu"
+					class="layout-body-menu border-right display-flex background-color-body-medium"
+					data-bi-name="menu"
+			  >
+					
+		<div
+			id="left-container"
+			class="left-container display-none padding-none display-block-tablet width-full display-none-until-layout-restored"
+			data-toc-container="true"
+		>
+			<div
+				id="ms--toc-content"
+				class="padding-left-sm padding-right-none padding-bottom-sm height-full"
+			>
+				<nav
+					id="affixed-left-container"
+					class="margin-top-xxs-tablet position-sticky display-flex flex-direction-column width-full"
+					aria-label="Primary"
+					data-bi-name="left-toc"
+					role="navigation"
+				>
+					<div
+						id="ms--collapsible-toc-header"
+						class="display-flex flex-direction-row-reverse justify-content-center align-items-center margin-bottom-xxs margin-right-xxs"
+					>
+						<button
+							type="button"
+							class="button button-clear button-sm inner-focus"
+							data-collapsible-toc-toggle
+							aria-expanded="true"
+							hidden
+							aria-controls="ms--toc-content"
+							aria-label="Table of contents"
+						>
+							<span class="icon icon-mirrored-rtl" aria-hidden="true">
+								<span
+									class="docon docon-panel-left-contract display-none-layout-menu-collapsed"
+								></span>
+								<span
+									class="docon docon-panel-left-expand display-none display-inline-layout-menu-collapsed"
+								></span>
+							</span>
+						</button>
+						<div
+							id="ms--collapsible-toc-moniker-slot"
+							class="flex-grow-1 display-none-layout-menu-collapsed"
+						></div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	
+			  </section>
+
+				<main
+					id="main"
+					role="main"
+					class="layout-body-main "
+					data-bi-name="content"
+					lang="en-us"
+					dir="ltr"
+				>
+					
+			<div
+		id="ms--content-header"
+		class="content-header default-focus border-bottom-none"
+		data-bi-name="content-header"
+	>
+		<div class="content-header-controls margin-xxs margin-inline-sm-tablet">
+			<button
+				type="button"
+				class="contents-button button button-sm margin-right-xxs"
+				data-bi-name="contents-expand"
+				aria-haspopup="true"
+				data-contents-button
+			>
+				<span class="icon" aria-hidden="true"><span class="docon docon-menu"></span></span>
+				<span class="contents-expand-title"> Table of contents </span>
+			</button>
+			<button
+				type="button"
+				class="ap-collapse-behavior ap-expanded button button-sm"
+				data-bi-name="ap-collapse"
+				aria-controls="action-panel"
+			>
+				<span class="icon" aria-hidden="true"><span class="docon docon-exit-mode"></span></span>
+				<span>Exit editor mode</span>
+			</button>
+		</div>
+	</div> 
+		<div
+			id="action-panel"
+			role="region"
+			aria-label="Action Panel"
+			class="action-panel"
+			tabindex="-1"
+		></div>
+	
+			<div
+				data-main-column
+				class="reading-width margin-inline-auto layout-padding padding-top-none padding-top-sm-tablet padding-bottom-sm"
+			>
+				<div>
+					
+		<div id="article-header" class="background-color-body margin-bottom-xs display-none-print">
+			<div class="display-flex align-items-center justify-content-space-between">
+				
+		<details
+			id="article-header-breadcrumbs-overflow-popover"
+			class="popover popover-left"
+			data-for="article-header-breadcrumbs"
+		>
+			<summary
+				class="button button-clear button-primary button-sm inner-focus"
+				aria-label="All breadcrumbs"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-more"></span>
+				</span>
+			</summary>
+			<div id="article-header-breadcrumbs-overflow" class="popover-content"></div>
+		</details>
+
+		<bread-crumbs
+			id="article-header-breadcrumbs"
+			role="group"
+			aria-label="Breadcrumbs"
+			data-test-id="article-header-breadcrumbs"
+			class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop margin-left-negative-xxs padding-left-xxs"
+		></bread-crumbs>
+	 
+		<div
+			id="article-header-page-actions"
+			class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch"
+		>
+			
+		<button
+			class="button button-sm border-none inner-focus display-none-tablet flex-shrink-0 "
+			data-bi-name="ask-learn-assistant-entry"
+			data-test-id="ask-learn-assistant-modal-entry-mobile"
+			data-ask-learn-modal-entry
+			
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-label="Ask Learn"
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+		</button>
+		<button
+			class="button button-sm display-none display-inline-flex-tablet display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn "
+			data-bi-name="ask-learn-assistant-entry"
+			
+			data-test-id="ask-learn-assistant-modal-entry-tablet"
+			data-ask-learn-modal-entry
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+		<button
+			class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn "
+			data-bi-name="ask-learn-assistant-entry"
+			
+			data-test-id="ask-learn-assistant-flyout-entry"
+			data-ask-learn-flyout-entry
+			data-flyout-button="toggle"
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-controls="ask-learn-flyout"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+	 
+
+			<details class="popover popover-right" id="article-header-page-actions-overflow">
+				<summary
+					class="justify-content-flex-start button button-clear button-sm button-primary inner-focus"
+					aria-label="More actions"
+					aria-expanded="false"
+					title="More actions"
+				>
+					<span class="icon" aria-hidden="true">
+						<span class="docon docon-more-vertical"></span>
+					</span>
+				</summary>
+				<div class="popover-content">
+					
+		<button
+			type="button"
+			id="ms--focus-mode-button"
+			data-focus-mode
+			data-bi-name="focus-mode-entry"
+			data-page-action-item="overflow-all"
+			data-popover-close
+			class="button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus display-none display-inline-flex-tablet"
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-glasses"></span>
+			</span>
+			<span>Reading mode</span>
+		</button>
+	 
+		<button
+			data-page-action-item="overflow-mobile"
+			type="button"
+			class="display-block-layout-menu-collapsed button-block button-sm inner-focus button button-clear display-none-tablet justify-content-flex-start text-align-left"
+			data-bi-name="contents-expand"
+			data-contents-button
+			data-popover-close
+		>
+			<span class="icon" aria-hidden="true"
+				><span class="docon docon-editor-list-bullet"></span
+			></span>
+			<span class="contents-expand-title">Table of contents</span>
+		</button>
+	 
+		<a
+			id="lang-link-overflow"
+			class="button-sm inner-focus button button-clear button-block justify-content-flex-start text-align-left"
+			data-bi-name="language-toggle"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			data-read-in-link
+			href="#"
+			hidden
+		>
+			<span class="icon" aria-hidden="true" data-read-in-link-icon>
+				<span class="docon docon-locale-globe"></span>
+			</span>
+			<span data-read-in-link-text>Read in English</span>
+		</a>
+	
+					
+		<button
+			type="button"
+			class="collection button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus"
+			data-list-type="collection"
+			data-bi-name="collection"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			data-popover-close
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-circle-addition"></span>
+			</span>
+			<span class="collection-status">Add</span>
+		</button>
+	 
+		<button
+			type="button"
+			class="collection button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus"
+			data-list-type="plan"
+			data-bi-name="plan"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			data-popover-close
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-circle-addition"></span>
+			</span>
+			<span class="plan-status">Add to Plans</span>
+		</button>
+	 
+					
+		<a
+			data-contenteditbtn
+			class="button button-clear button-block button-sm inner-focus justify-content-flex-start text-align-left text-decoration-none"
+			data-bi-name="edit"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			
+			href="https://github.com/MicrosoftDocs/azure-security-docs/blob/main/articles/key-vault/keys/about-keys-details.md"
+			data-original_content_git_url="https://github.com/MicrosoftDocs/azure-security-docs-pr/blob/live/articles/key-vault/keys/about-keys-details.md"
+			data-original_content_git_url_template="{repo}/blob/{branch}/articles/key-vault/keys/about-keys-details.md"
+			data-pr_repo=""
+			data-pr_branch=""
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-edit-outline"></span>
+			</span>
+			<span>Edit</span>
+		</a>
+	  
+		<hr class="margin-block-xxs" />
+		
+				<button
+					class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus"
+					type="button"
+					data-bi-name="copy-markdown"
+					data-page-action-item="overflow-all"
+					data-copy-markdown
+					data-copy-state="idle"
+					data-check-hidden="true"
+				>
+					<span class="icon color-primary" aria-hidden="true">
+						<span data-show-when="idle" class="docon docon-code-lang"></span>
+						<span data-show-when="loading" class="loader" hidden></span>
+						<span data-show-when="success" class="docon docon-check-mark" hidden></span>
+					</span>
+					<span>Copy Markdown</span>
+				</button>
+		   
+				<button
+					class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus"
+					type="button"
+					data-bi-name="print"
+					data-page-action-item="overflow-all"
+					data-popover-close
+					data-print-page
+					data-check-hidden="true"
+				>
+					<span class="icon color-primary" aria-hidden="true">
+						<span class="docon docon-print"></span>
+					</span>
+					<span>Print</span>
+				</button>
+		  
+	
+				</div>
+			</details>
+		</div>
+	
+			</div>
+		</div>
+	  
+		<!-- privateUnauthorizedTemplate is hidden by default -->
+		<div unauthorized-private-section data-bi-name="permission-content-unauthorized-private" hidden>
+			<hr class="hr margin-top-xs margin-bottom-sm" />
+			<div class="notification notification-info">
+				<div class="notification-content">
+					<p class="margin-top-none notification-title">
+						<span class="icon" aria-hidden="true"
+							><span class="docon docon-exclamation-circle-solid"></span
+						></span>
+						<span>Note</span>
+					</p>
+					<p class="margin-top-none authentication-determined not-authenticated">
+						Access to this page requires authorization. You can try <a class="docs-sign-in" href="#" data-bi-name="permission-content-sign-in">signing in</a> or <a  class="docs-change-directory" data-bi-name="permisson-content-change-directory">changing directories</a>.
+					</p>
+					<p class="margin-top-none authentication-determined authenticated">
+						Access to this page requires authorization. You can try <a class="docs-change-directory" data-bi-name="permisson-content-change-directory">changing directories</a>.
+					</p>
+				</div>
+			</div>
+		</div>
+	
+					<div class="content"><h1 id="key-types-algorithms-and-operations">Key types, algorithms, and operations</h1></div>
+					
+		<div
+			id="article-metadata"
+			data-bi-name="article-metadata"
+			data-test-id="article-metadata"
+			class="page-metadata-container display-flex gap-xxs justify-content-space-between align-items-center flex-wrap-wrap"
+		>
+			 
+				<div
+					id="user-feedback"
+					class="margin-block-xxs display-none display-none-print"
+					hidden
+					data-hide-on-archived
+				>
+					
+		<button
+			id="user-feedback-button"
+			data-test-id="conceptual-feedback-button"
+			class="button button-sm button-clear button-primary display-none"
+			type="button"
+			data-bi-name="user-feedback-button"
+			data-user-feedback-button
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-like"></span>
+			</span>
+			<span>Feedback</span>
+		</button>
+	
+				</div>
+		  
+		</div>
+	 
+		<div data-id="ai-summary" class="display-none-print">
+			<div id="ms--ai-summary-cta" class="margin-top-xs display-flex align-items-center">
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-sparkle-fill gradient-text-vivid"></span>
+				</span>
+				<button
+					id="ms--ai-summary"
+					type="button"
+					class="tag tag-sm tag-suggestion margin-left-xxs"
+					data-test-id="ai-summary-cta"
+					data-bi-name="ai-summary-cta"
+					data-an="ai-summary"
+				>
+					<span class="ai-summary-cta-text">
+						Summarize this article for me
+					</span>
+				</button>
+			</div>
+			<!-- Slot where the client will render the summary card after the user clicks the CTA -->
+			<div id="ms--ai-summary-header" class="margin-top-xs"></div>
+		</div>
+	 
+		<nav
+			id="center-doc-outline"
+			class="doc-outline display-none-desktop display-none-print margin-bottom-sm"
+			data-bi-name="intopic toc"
+			aria-label="In this article"
+		>
+			<h2 id="ms--in-this-article" class="title is-6 margin-block-xs">
+				In this article
+			</h2>
+		</nav>
+	 <div class="content"><p>This article describes key types, algorithms, attributes, and operations for Azure Key Vault (vaults). For the equivalent reference for Managed HSM, see <a href="../managed-hsm/about-keys-details" data-linktype="relative-path">Key types, algorithms, and operations (Managed HSM)</a>. For a summary of supported key types by resource, see <a href="about-keys" data-linktype="relative-path">About keys</a>.</p>
+<p>The following table shows a summary of key types and supported algorithms in Key Vault. For full details on symmetric (oct-HSM / AES) algorithms and HMAC sign/verify, see <a href="#symmetric-key-algorithms" data-linktype="self-bookmark">Symmetric key algorithms</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Key types/sizes/curves</th>
+<th>Encrypt/Decrypt<br>(Wrap/Unwrap)</th>
+<th>Sign/Verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EC-P256, EC-P256K, EC-P384, EC-P521</td>
+<td>NA</td>
+<td>ES256<br>ES256K<br>ES384<br>ES512</td>
+</tr>
+<tr>
+<td>RSA 2K, 3K, 4K</td>
+<td>RSA-OAEP-256<br>[Not recommended] RSA1_5<br>[Not recommended] RSA-OAEP</td>
+<td>PS256<br>PS384<br>PS512<br>RS256<br>RS384<br>RS512<br>RSNULL</td>
+</tr>
+<tr>
+<td>oct-HSM 128, 192, 256 (Premium; preview)</td>
+<td>AES-KW<br>AES-GCM<br>AES-CBC</td>
+<td>HS256<br>HS384<br>HS512</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ec-algorithms">EC algorithms</h2>
+<p>The following algorithm identifiers are supported with EC-HSM keys.</p>
+<h3 id="curve-types">Curve types</h3>
+<ul>
+<li><strong>P-256</strong> - The NIST curve P-256, defined at <a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf" data-linktype="external">DSS FIPS PUB 186-4</a>.</li>
+<li><strong>P-256K</strong> - The SEC curve SECP256K1, defined at <a href="https://www.secg.org/sec2-v2.pdf" data-linktype="external">SEC 2: Recommended Elliptic Curve Domain Parameters</a>.</li>
+<li><strong>P-384</strong> - The NIST curve P-384, defined at <a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf" data-linktype="external">DSS FIPS PUB 186-4</a>.</li>
+<li><strong>P-521</strong> - The NIST curve P-521, defined at <a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf" data-linktype="external">DSS FIPS PUB 186-4</a>.</li>
+</ul>
+<h3 id="signverify">SIGN/VERIFY</h3>
+<ul>
+<li><strong>ES256</strong> - ECDSA for SHA-256 digests and keys created with curve P-256. This algorithm is described at <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>ES256K</strong> - ECDSA for SHA-256 digests and keys created with curve P-256K. This algorithm is pending standardization.</li>
+<li><strong>ES384</strong> - ECDSA for SHA-384 digests and keys created with curve P-384. This algorithm is described at <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>ES512</strong> - ECDSA for SHA-512 digests and keys created with curve P-521. This algorithm is described at <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+</ul>
+<h2 id="rsa-algorithms">RSA algorithms</h2>
+<p>The following algorithm identifiers are supported with RSA and RSA-HSM keys.</p>
+<h3 id="wrapkeyunwrapkey-encryptdecrypt">WRAPKEY/UNWRAPKEY, ENCRYPT/DECRYPT</h3>
+<ul>
+<li><strong>RSA-OAEP-256</strong> - RSAES that uses Optimal Asymmetric Encryption Padding with a hash function of SHA-256 and a mask generation function of MGF1 with SHA-256.</li>
+<li>[Not recommended] <strong>RSA1_5</strong> - RSAES-PKCS1-V1_5 [RFC3447] key encryption.</li>
+<li>[Not recommended] <strong>RSA-OAEP</strong> - RSAES using Optimal Asymmetric Encryption Padding (OAEP) [RFC3447], with the default parameters specified by RFC 3447 in Section A.2.1. Those default parameters are using a hash function of SHA-1 and a mask generation function of MGF1 with SHA-1.</li>
+</ul>
+<div class="WARNING">
+<p>Warning</p>
+<p>Microsoft recommends using RSA_OAEP_256 or stronger algorithms for enhanced security.</p>
+<p>Microsoft doesn't recommend RSA_1_5 and RSA_OAEP. These algorithms are included only for backward compatibility. Cryptographic standards no longer consider RSA with the PKCS#1 v1.5 padding scheme secure for encryption. RSA_OAEP uses SHA1, which has known collision problems.</p>
+</div>
+<h3 id="signverify-1">SIGN/VERIFY</h3>
+<ul>
+<li><strong>PS256</strong> - RSASSA-PSS using SHA-256 and MGF1 with SHA-256, as described in <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>PS384</strong> - RSASSA-PSS using SHA-384 and MGF1 with SHA-384, as described in <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>PS512</strong> - RSASSA-PSS using SHA-512 and MGF1 with SHA-512, as described in <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>RS256</strong> - RSASSA-PKCS-v1_5 using SHA-256. The application supplied digest value must be computed using SHA-256 and must be 32 bytes in length.</li>
+<li><strong>RS384</strong> - RSASSA-PKCS-v1_5 using SHA-384. The application supplied digest value must be computed using SHA-384 and must be 48 bytes in length.</li>
+<li><strong>RS512</strong> - RSASSA-PKCS-v1_5 using SHA-512. The application supplied digest value must be computed using SHA-512 and must be 64 bytes in length.</li>
+<li><strong>RSNULL</strong> - See <a href="https://tools.ietf.org/html/rfc2437" data-linktype="external">RFC2437</a>, a specialized use-case to enable certain TLS scenarios.</li>
+</ul>
+<div class="NOTE">
+<p>Note</p>
+<p>For better performance, use the RSA-PSS padding mode. The server constructs the DigestInfo for Sign operations that algorithms RS256, RS384, and RS512 generate.</p>
+</div>
+<h2 id="symmetric-key-algorithms">Symmetric key algorithms</h2>
+<div class="IMPORTANT">
+<p>Important</p>
+<p>Symmetric (oct-HSM / AES) key support in Azure Key Vault Premium is currently in <strong>public preview</strong>. Supported key sizes are 128-bit, 192-bit, and 256-bit. Preview features are provided as-is, with no service-level agreement, and aren't recommended for production workloads. For more information, see <a href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/" data-linktype="external">Supplemental Terms of Use for Microsoft Azure Previews</a>.</p>
+</div>
+<p>The following algorithm identifiers are supported with oct-HSM (symmetric/AES) keys in Azure Key Vault Premium.</p>
+<h3 id="wrapkeyunwrapkey-encryptdecrypt-1">WRAPKEY/UNWRAPKEY, ENCRYPT/DECRYPT</h3>
+<ul>
+<li><strong>AES-KW</strong> - AES key wrap, as described in <a href="https://datatracker.ietf.org/doc/html/rfc3394" data-linktype="external">RFC3394</a>.</li>
+<li><strong>AES-GCM</strong> - AES encryption in Galois Counter Mode (<a href="https://csrc.nist.gov/publications/sp800" data-linktype="external">NIST SP 800-38d</a>).</li>
+<li><strong>AES-CBC</strong> - AES encryption in Cipher Block Chaining Mode (<a href="https://csrc.nist.gov/publications/sp800" data-linktype="external">NIST SP 800-38a</a>).</li>
+</ul>
+<p>When used with 256-bit keys, these algorithms are quantum-resistant according to the <a href="https://media.defense.gov/2022/Sep/07/2003071836/-1/-1/0/CSI_CNSA_2.0_FAQ_.PDF" data-linktype="external">Commercial National Security Algorithm Suite 2.0 and Quantum Computing FAQ</a>.</p>
+<h3 id="signverify-hmac">SIGN/VERIFY (HMAC)</h3>
+<ul>
+<li><strong>HS256</strong> - HMAC using SHA-256, as described in <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>HS384</strong> - HMAC using SHA-384, as described in <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+<li><strong>HS512</strong> - HMAC using SHA-512, as described in <a href="https://tools.ietf.org/html/rfc7518" data-linktype="external">RFC7518</a>.</li>
+</ul>
+<div class="NOTE">
+<p>Note</p>
+<p>The sign and verify algorithm must match the key type and size. Otherwise, the service returns a key-size-incorrect error.</p>
+</div>
+<p>For symmetric (oct-HSM) key algorithm support in Managed HSM, see <a href="../managed-hsm/about-keys-details#symmetric-aes-key-algorithms" data-linktype="relative-path">Key types, algorithms, and operations (Managed HSM)</a>.</p>
+<h2 id="key-operations">Key operations</h2>
+<p>The following operations are supported on key objects:</p>
+<ul>
+<li><strong>Create</strong>: A client creates a key in the service. The service generates and stores the value of the key and doesn't release it to the client.</li>
+<li><strong>Import</strong>: A client imports an existing key to the service. Asymmetric keys can be imported by using several different packaging methods within a JWK construct.</li>
+<li><strong>Update</strong>: A client with sufficient permissions modifies the metadata (key attributes) associated with a previously stored key.</li>
+<li><strong>Delete</strong>: A client with sufficient permissions deletes a key.</li>
+<li><strong>List</strong>: A client lists all keys in the service.</li>
+<li><strong>List versions</strong>: A client lists all versions of a given key.</li>
+<li><strong>Get</strong>: A client retrieves the public parts of a given key. The get operation doesn't return the private portion of an asymmetric key, nor the key material of a symmetric key.</li>
+<li><strong>Backup</strong>: Exports a key in a protected form.</li>
+<li><strong>Restore</strong>: Imports a previously backed-up key.</li>
+<li><strong>Release</strong>: Securely releases a key to authorized code running within a confidential compute environment. Requires an attestation that the Trusted Execution Environment (TEE) meets the requirements of the key's release_policy.</li>
+</ul>
+<p>After a key is created, you can perform the following cryptographic operations with it:</p>
+<ul>
+<li><strong>Sign and Verify</strong>: Strictly, this operation is "sign hash" or "verify hash", as the service doesn't hash content as part of signature creation. Applications should hash the data to be signed locally, then request that the service sign the hash. Verification of signed hashes is supported as a convenience for applications that might not have access to public key material; for best performance, verify operations should be performed locally.</li>
+<li><strong>Key Encryption / Wrapping</strong>: A key stored in the service can protect another key, typically a symmetric content encryption key (CEK). When the key in the service is asymmetric, use key encryption (for example, RSA-OAEP; WRAPKEY/UNWRAPKEY are equivalent to ENCRYPT/DECRYPT). When the key in the service is symmetric, use key wrapping (for example, AES-KW). WRAPKEY is supported as a convenience for applications that might not have access to public key material; for best performance, wrap operations should be performed locally.</li>
+<li><strong>Encrypt and Decrypt</strong>: A key stored in the service can encrypt or decrypt a single block of data. The size of the block is determined by the key type and the selected encryption algorithm. Encrypt is provided for convenience; for best performance, encrypt operations should be performed locally.</li>
+</ul>
+<p>The use of distinct WRAPKEY/UNWRAPKEY operations (rather than always using ENCRYPT/DECRYPT) provides semantic and authorization separation, and consistency across key types.</p>
+<p>The service doesn't support EXPORT operations. Once a key is provisioned, you can't extract it or modify its key material. To move a key, use the BACKUP and RESTORE operations to export or import the key in a protected form. Keys produced by BACKUP can't be used outside the service.</p>
+<p>You can restrict any of the cryptographic operations on a per-key basis by using the <code>key_ops</code> property of the JWK object.</p>
+<p>For more information about JWK objects, see <a href="https://tools.ietf.org/html/draft-ietf-jose-json-web-key-41" data-linktype="external">JSON Web Key (JWK)</a>.</p>
+<p>In addition to the operations listed above, Key Vault (vaults) supports:</p>
+<ul>
+<li><strong>Rotate</strong>: Rotates an existing key by generating a new version of the key. This operation is available only on Key Vault resources (not on Managed HSM).</li>
+</ul>
+<p>For more information, see <a href="/en-us/rest/api/keyvault" data-linktype="absolute-path">Key operations in the Key Vault REST API reference</a>.</p>
+<h2 id="key-rotation-policy-operations">Key rotation policy operations</h2>
+<p>Set key auto-rotation by configuring the key auto-rotation policy. This feature is only available on Key Vault resources.</p>
+<ul>
+<li><strong>Get Rotation Policy</strong>: Retrieve the rotation policy configuration.</li>
+<li><strong>Set Rotation Policy</strong>: Set the rotation policy configuration.</li>
+</ul>
+<h2 id="key-attributes">Key attributes</h2>
+<p>In addition to the key material, you can specify the following attributes. In a JSON request, you must include the <code>attributes</code> keyword and braces (<code>{</code> <code>}</code>) even if you don't specify any attributes.</p>
+<ul>
+<li><em>enabled</em>: boolean, optional, default is <strong>true</strong>. Specifies whether the key is enabled and usable for cryptographic operations. Use the <em>enabled</em> attribute with <em>nbf</em> and <em>exp</em>. When an operation occurs between <em>nbf</em> and <em>exp</em>, the operation is permitted only if <em>enabled</em> is set to <strong>true</strong>. Operations outside the <em>nbf</em> / <em>exp</em> window are automatically disallowed, except for decrypt, release, unwrap, and verify.</li>
+<li><em>nbf</em>: IntDate, optional, default is now. The <em>nbf</em> (not before) attribute identifies the time before which the key MUST NOT be used for cryptographic operations, except for decrypt, release, unwrap, and verify. The processing of the <em>nbf</em> attribute requires that the current date/time MUST be after or equal to the not-before date/time listed in the <em>nbf</em> attribute. Some small leeway (normally no more than a few minutes) may be provided to account for clock skew. Its value MUST be a number containing an IntDate value.</li>
+<li><em>exp</em>: IntDate, optional, default is "forever". The <em>exp</em> (expiration time) attribute identifies the expiration time on or after which the key MUST NOT be used for cryptographic operations, except for decrypt, release, unwrap, and verify. The processing of the <em>exp</em> attribute requires that the current date/time MUST be before the expiration date/time listed in the <em>exp</em> attribute. Some small leeway (typically no more than a few minutes) may be provided to account for clock skew. Its value MUST be a number containing an IntDate value.</li>
+</ul>
+<p>The following read-only attributes are included in any response that includes key attributes:</p>
+<ul>
+<li><em>created</em>: IntDate, optional. The <em>created</em> attribute indicates when this version of the key was created. The value is null for keys created before the addition of this attribute. Its value MUST be a number containing an IntDate value.</li>
+<li><em>updated</em>: IntDate, optional. The <em>updated</em> attribute indicates when this version of the key was updated. The value is null for keys that were last updated before the addition of this attribute. Its value MUST be a number containing an IntDate value.</li>
+</ul>
+<h3 id="date-time-controlled-operations">Date-time controlled operations</h3>
+<p>Not-yet-valid and expired keys, outside the <em>nbf</em> / <em>exp</em> window, work for <strong>decrypt</strong>, <strong>release</strong>, <strong>unwrap</strong>, and <strong>verify</strong> operations (they don't return 403, Forbidden). The rationale for using the not-yet-valid state is to allow a key to be tested before production use. The rationale for using the expired state is to allow recovery operations on data that was created when the key was valid. You can also disable access to a key by updating the <em>enabled</em> attribute to <strong>false</strong>.</p>
+<p>For more information about other possible attributes, see the <a href="https://tools.ietf.org/html/draft-ietf-jose-json-web-key-41" data-linktype="external">JSON Web Key (JWK)</a> specification.</p>
+<p>In addition to the attributes listed above, Key Vault keys expose:</p>
+<ul>
+<li><em>hsmPlatform</em>: string, optional. The underlying HSM platform that protects a key.
+<ul>
+<li>A <code>hsmPlatform</code> value of <code>2</code> means the key is protected by the latest FIPS 140-3 Level 3 validated HSM platform.</li>
+<li>A <code>hsmPlatform</code> value of <code>1</code> means the key is protected by the previous FIPS 140-2 Level 2 validated HSM platform.</li>
+<li>A <code>hsmPlatform</code> value of <code>0</code> means the key is protected by a FIPS 140-2 Level 1 software cryptographic module.</li>
+</ul>
+</li>
+</ul>
+<p>Keys are bound to the HSM in which you created them. Azure Key Vault automatically creates new keys and key versions on the latest HSM platform. You can't migrate or transfer existing keys between platforms. For guidance on moving workloads to a new key, see <a href="../general/migrate-key-workloads" data-linktype="relative-path">How to migrate key workloads</a>.</p>
+<p>For more information about IntDate and other data types, see <a href="../general/about-keys-secrets-certificates#data-types" data-linktype="relative-path">Data types</a>.</p>
+<h2 id="key-tags">Key tags</h2>
+<p>You can specify more application-specific metadata in the form of tags. Key Vault supports up to 15 tags, each of which can have a 256-character name and a 256-character value.</p>
+<div class="NOTE">
+<p>Note</p>
+<p>If a caller has the <em>list</em> or <em>get</em> permission to a key, they can read the tags.</p>
+</div>
+<h2 id="key-access-control">Key access control</h2>
+<p>Key Vault provides access control for keys at the Key Vault level, which acts as the container for keys. You can control access to keys by using either Key Vault <a href="../general/rbac-guide" data-linktype="relative-path">Azure role-based access control</a> (recommended) or the legacy <a href="../general/assign-access-policy" data-linktype="relative-path">vault access policy</a> permission model. Azure RBAC is the default and recommended authorization model. It has three predefined roles to manage keys: <strong>Key Vault Crypto Officer</strong>, <strong>Key Vault Crypto User</strong>, and <strong>Key Vault Service Encryption User</strong>. You can scope these roles to the subscription, resource group, or vault level. For more information, see <a href="../general/rbac-access-policy" data-linktype="relative-path">Azure RBAC vs. access policies</a>.</p>
+<p>Vault access policy permission model permissions (legacy):</p>
+<ul>
+<li><p>Permissions for key management operations</p>
+<ul>
+<li><em>get</em>: Read the public part of a key, plus its attributes</li>
+<li><em>list</em>: List the keys or versions of a key stored in a key vault</li>
+<li><em>update</em>: Update the attributes for a key</li>
+<li><em>create</em>: Create new keys</li>
+<li><em>import</em>: Import a key to a key vault</li>
+<li><em>delete</em>: Delete the key object</li>
+<li><em>recover</em>: Recover a deleted key</li>
+<li><em>backup</em>: Back up a key in a key vault</li>
+<li><em>restore</em>: Restore a backed up key to a key vault</li>
+</ul>
+</li>
+<li><p>Permissions for cryptographic operations</p>
+<ul>
+<li><em>decrypt</em>: Use the key to unprotect a sequence of bytes</li>
+<li><em>encrypt</em>: Use the key to protect an arbitrary sequence of bytes</li>
+<li><em>unwrapKey</em>: Use the key to unprotect wrapped symmetric keys</li>
+<li><em>wrapKey</em>: Use the key to protect a symmetric key</li>
+<li><em>verify</em>: Use the key to verify digests</li>
+<li><em>sign</em>: Use the key to sign digests</li>
+</ul>
+</li>
+<li><p>Permissions for privileged operations</p>
+<ul>
+<li><em>purge</em>: Purge (permanently delete) a deleted key</li>
+<li><em>release</em>: Release a key to a confidential compute environment, which matches the <code>release_policy</code> of the key</li>
+</ul>
+</li>
+<li><p>Permissions for rotation policy operations</p>
+<ul>
+<li><em>rotate</em>: Rotate an existing key by generating a new version of the key (Key Vault only)</li>
+<li><em>get rotation policy</em>: Retrieve rotation policy configuration</li>
+<li><em>set rotation policy</em>: Set rotation policy configuration</li>
+</ul>
+</li>
+</ul>
+<p>For more information about working with keys, see <a href="/en-us/rest/api/keyvault" data-linktype="absolute-path">Key operations in the Key Vault REST API reference</a>.</p>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="../general/overview" data-linktype="relative-path">About Key Vault</a></li>
+<li><a href="../managed-hsm/about-keys" data-linktype="relative-path">About keys in Managed HSM</a></li>
+<li><a href="../managed-hsm/about-keys-details" data-linktype="relative-path">Key types, algorithms, and operations (Managed HSM)</a></li>
+<li><a href="../secrets/about-secrets" data-linktype="relative-path">About secrets</a></li>
+<li><a href="../certificates/about-certificates" data-linktype="relative-path">About certificates</a></li>
+<li><a href="../general/about-keys-secrets-certificates" data-linktype="relative-path">Key Vault REST API overview</a></li>
+<li><a href="../general/authentication-requests-and-responses" data-linktype="relative-path">Authentication, requests, and responses</a></li>
+<li><a href="../general/developers-guide" data-linktype="relative-path">Key Vault Developer's Guide</a></li>
+</ul>
+</div>
+					
+		<div
+			id="ms--inline-notifications"
+			class="margin-block-xs"
+			data-bi-name="inline-notification"
+		></div>
+	 
+		<div
+			id="assertive-live-region"
+			role="alert"
+			aria-live="assertive"
+			class="visually-hidden"
+			aria-relevant="additions"
+			aria-atomic="true"
+		></div>
+		<div
+			id="polite-live-region"
+			role="status"
+			aria-live="polite"
+			class="visually-hidden"
+			aria-relevant="additions"
+			aria-atomic="true"
+		></div>
+	
+					
+		<!-- feedback section -->
+		<section
+			id="site-user-feedback-footer"
+			class="font-size-sm margin-top-md display-none-print display-none-desktop"
+			data-test-id="site-user-feedback-footer"
+			data-bi-name="site-feedback-section"
+		>
+			<hr class="hr" />
+			<h2 id="ms--feedback" class="title is-3">Feedback</h2>
+			<div class="display-flex flex-wrap-wrap align-items-center">
+				<p class="font-weight-semibold margin-xxs margin-left-none">
+					Was this page helpful?
+				</p>
+				<div class="buttons">
+					<button
+						class="thumb-rating-button like button button-primary button-sm"
+						data-test-id="footer-rating-yes"
+						data-binary-rating-response="rating-yes"
+						type="button"
+						title="This article is helpful"
+						data-bi-name="button-rating-yes"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-like"></span>
+						</span>
+						<span>Yes</span>
+					</button>
+					<button
+						class="thumb-rating-button dislike button button-primary button-sm"
+						id="standard-rating-no-button"
+						hidden
+						data-test-id="footer-rating-no"
+						data-binary-rating-response="rating-no"
+						type="button"
+						title="This article is not helpful"
+						data-bi-name="button-rating-no"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-dislike"></span>
+						</span>
+						<span>No</span>
+					</button>
+					<details
+						class="popover popover-top"
+						id="mobile-help-popover"
+						data-test-id="footer-feedback-popover"
+					>
+						<summary
+							class="thumb-rating-button dislike button button-primary button-sm"
+							data-test-id="details-footer-rating-no"
+							data-binary-rating-response="rating-no"
+							title="This article is not helpful"
+							data-bi-name="button-rating-no"
+							aria-pressed="false"
+							data-bi-an="feedback-unhelpful-popover"
+						>
+							<span class="icon" aria-hidden="true">
+								<span class="docon docon-dislike"></span>
+							</span>
+							<span>No</span>
+						</summary>
+						<div
+							class="popover-content width-200 width-300-tablet"
+							role="dialog"
+							aria-labelledby="popover-heading"
+							aria-describedby="popover-description"
+						>
+							<p id="popover-heading" class="font-size-lg margin-bottom-xxs font-weight-semibold">
+								Need help with this topic?
+							</p>
+							<p id="popover-description" class="font-size-sm margin-bottom-xs">
+								Want to try using Ask Learn to clarify or guide you through this topic?
+							</p>
+							
+		<div class="buttons flex-direction-row flex-wrap justify-content-center gap-xxs">
+			<div>
+		<button
+			class="button button-sm border inner-focus display-none margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-test-id="ask-learn-assistant-modal-entry-mobile-feedback"
+			data-ask-learn-modal-entry-feedback
+			data-bi-an=feedback-unhelpful-popover
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-label="Ask Learn"
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+		</button>
+		<button
+			class="button button-sm display-inline-flex display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-modal-entry-tablet-feedback"
+			data-ask-learn-modal-entry-feedback
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+		<button
+			class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-flyout-entry-feedback"
+			data-ask-learn-flyout-entry-show-only
+			data-flyout-button="toggle"
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-controls="ask-learn-flyout"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+	</div>
+			<button
+				type="button"
+				class="button button-sm margin-right-xxs"
+				data-help-option="suggest-fix"
+				data-bi-name="feedback-suggest"
+				data-bi-an="feedback-unhelpful-popover"
+				data-test-id="suggest-fix"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-feedback"></span>
+				</span>
+				<span> Suggest a fix? </span>
+			</button>
+		</div>
+	
+						</div>
+					</details>
+				</div>
+			</div>
+		</section>
+		<!-- end feedback section -->
+	
+				</div>
+				
+		<div id="ms--additional-resources-mobile" class="display-none-print">
+			<hr class="hr" hidden />
+			<h2 id="ms--additional-resources-mobile-heading" class="title is-3" hidden>
+				Additional resources
+			</h2>
+			
+		<section
+			id="right-rail-recommendations-mobile"
+			class=""
+			data-bi-name="recommendations"
+			hidden
+		></section>
+	 
+		<section
+			id="right-rail-training-mobile"
+			class=""
+			data-bi-name="learning-resource-card"
+			hidden
+		></section>
+	 
+		<section
+			id="right-rail-events-mobile"
+			class=""
+			data-bi-name="events-card"
+			hidden
+		></section>
+	
+		</div>
+	 
+		<div
+			id="article-metadata-footer"
+			data-bi-name="article-metadata-footer"
+			data-test-id="article-metadata-footer"
+			class="page-metadata-container"
+		>
+			<hr class="hr" />
+			<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+				<li class="visibility-hidden-visual-diff">
+			<span class="badge badge-sm text-wrap-pretty">
+				<span>Last updated on <local-time format="twoDigitNumeric"
+		datetime="2026-07-30T17:40:00.000Z"
+		data-article-date-source="calculated"
+		class="is-invisible"
+	>
+		2026-07-30
+	</local-time></span>
+			</span>
+		</li>
+			</ul>
+		</div>
+	
+			</div>
+		
+				</main>
+				<aside
+					id="layout-body-aside"
+					class="layout-body-aside  "
+					data-bi-name="aside"
+					aria-label="Additional resources"
+			  >
+					
+		<div
+			id="ms--additional-resources"
+			class="right-container padding-sm display-none display-block-desktop height-full"
+			data-bi-name="pageactions"
+		>
+			<div id="affixed-right-container" data-bi-name="right-column">
+				
+		<nav
+			id="side-doc-outline"
+			class="doc-outline border-bottom padding-bottom-xs margin-bottom-xs scrollbar-width-thin"
+			data-bi-name="intopic toc"
+			aria-label="In this article"
+		>
+			<h3>In this article</h3>
+		</nav>
+	
+				<!-- Feedback -->
+				
+		<section
+			id="ms--site-user-feedback-right-rail"
+			class="font-size-sm display-none-print"
+			data-test-id="site-user-feedback-right-rail"
+			data-bi-name="site-feedback-right-rail"
+		>
+			<div class="display-flex flex-wrap-wrap align-items-center">
+				<p class="font-weight-semibold margin-xxs margin-left-none">
+					Was this page helpful?
+				</p>
+				<div class="display-flex flex-wrap-nowrap">
+					<button
+						class="thumb-rating-button like inner-focus"
+						data-test-id="right-rail-rating-yes"
+						data-binary-rating-response="rating-yes"
+						type="button"
+						title="This article is helpful"
+						aria-label="This article is helpful"
+						data-bi-name="button-rating-yes"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-like"></span>
+						</span>
+					</button>
+					<button
+						class="thumb-rating-button dislike inner-focus"
+						id="right-rail-no-button"
+						hidden
+						data-test-id="right-rail-rating-no"
+						data-binary-rating-response="rating-no"
+						type="button"
+						title="This article is not helpful"
+						aria-label="This article is not helpful"
+						data-bi-name="button-rating-no"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-dislike"></span>
+						</span>
+					</button>
+					<details class="popover popover-right" id="help-popover" data-test-id="feedback-popover">
+						<summary
+							tabindex="0"
+							class="thumb-rating-button dislike inner-focus"
+							data-test-id="details-right-rail-rating-no"
+							data-binary-rating-response="rating-no"
+							title="This article is not helpful"
+							aria-label="This article is not helpful"
+							data-bi-name="button-rating-no"
+							aria-pressed="false"
+							data-bi-an="feedback-unhelpful-popover"
+						>
+							<span class="icon" aria-hidden="true">
+								<span class="docon docon-dislike"></span>
+							</span>
+						</summary>
+						<div
+							class="popover-content width-200 width-300-tablet"
+							role="dialog"
+							aria-labelledby="popover-heading-right-rail"
+							aria-describedby="popover-description-right-rail"
+						>
+							<p
+								id="popover-heading-right-rail"
+								class="font-size-lg margin-bottom-xxs font-weight-semibold"
+							>
+								Need help with this topic?
+							</p>
+							<p id="popover-description-right-rail" class="font-size-sm margin-bottom-xs">
+								Want to try using Ask Learn to clarify or guide you through this topic?
+							</p>
+							
+		<div class="buttons flex-direction-row flex-wrap justify-content-center gap-xxs">
+			<div>
+		<button
+			class="button button-sm border inner-focus display-none margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-test-id="ask-learn-assistant-modal-entry-mobile-feedback"
+			data-ask-learn-modal-entry-feedback
+			data-bi-an=feedback-unhelpful-popover
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-label="Ask Learn"
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+		</button>
+		<button
+			class="button button-sm display-inline-flex display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-modal-entry-tablet-feedback"
+			data-ask-learn-modal-entry-feedback
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+		<button
+			class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-flyout-entry-feedback"
+			data-ask-learn-flyout-entry-show-only
+			data-flyout-button="toggle"
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-controls="ask-learn-flyout"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+	</div>
+			<button
+				type="button"
+				class="button button-sm margin-right-xxs"
+				data-help-option="suggest-fix"
+				data-bi-name="feedback-suggest"
+				data-bi-an="feedback-unhelpful-popover"
+				data-test-id="suggest-fix"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-feedback"></span>
+				</span>
+				<span> Suggest a fix? </span>
+			</button>
+		</div>
+	
+						</div>
+					</details>
+				</div>
+			</div>
+		</section>
+	
+			</div>
+		</div>
+	
+			  </aside> <section
+					id="layout-body-flyout"
+					class="layout-body-flyout "
+					data-bi-name="flyout"
+			  >
+					 <div
+	class="height-full border-left background-color-body-medium"
+	id="ask-learn-flyout"
+></div>
+			  </section> <div class="layout-body-footer " data-bi-name="layout-footer">
+		<footer
+			id="footer"
+			data-test-id="footer"
+			data-bi-name="footer"
+			class="footer-layout padding-xs padding-sm-desktop has-default-focus border-top"
+			role="contentinfo"
+		>
+			<div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop">
+				
+		<a
+			data-mscc-ic="false"
+			href="#"
+			data-bi-name="select-locale"
+			class="locale-selector-link flex-shrink-0 button button-sm button-clear external-link-indicator"
+			id=""
+			title=""
+			><span class="icon" aria-hidden="true"
+				><span class="docon docon-world"></span></span
+			><span class="local-selector-link-text">en-us</span></a
+		>
+	 <div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://aka.ms/yourcaliforniaprivacychoices"
+			data-bi-name="your-privacy-choices"
+			class="button button-sm button-clear flex-shrink-0 external-link-indicator"
+			id=""
+			title=""
+			>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 30 14"
+			xml:space="preserve"
+			height="16"
+			width="43"
+			aria-hidden="true"
+			focusable="false"
+		>
+			<path
+				d="M7.4 12.8h6.8l3.1-11.6H7.4C4.2 1.2 1.6 3.8 1.6 7s2.6 5.8 5.8 5.8z"
+				style="fill-rule:evenodd;clip-rule:evenodd;fill:#fff"
+			></path>
+			<path
+				d="M22.6 0H7.4c-3.9 0-7 3.1-7 7s3.1 7 7 7h15.2c3.9 0 7-3.1 7-7s-3.2-7-7-7zm-21 7c0-3.2 2.6-5.8 5.8-5.8h9.9l-3.1 11.6H7.4c-3.2 0-5.8-2.6-5.8-5.8z"
+				style="fill-rule:evenodd;clip-rule:evenodd;fill:#06f"
+			></path>
+			<path
+				d="M24.6 4c.2.2.2.6 0 .8L22.5 7l2.2 2.2c.2.2.2.6 0 .8-.2.2-.6.2-.8 0l-2.2-2.2-2.2 2.2c-.2.2-.6.2-.8 0-.2-.2-.2-.6 0-.8L20.8 7l-2.2-2.2c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0l2.2 2.2L23.8 4c.2-.2.6-.2.8 0z"
+				style="fill:#fff"
+			></path>
+			<path
+				d="M12.7 4.1c.2.2.3.6.1.8L8.6 9.8c-.1.1-.2.2-.3.2-.2.1-.5.1-.7-.1L5.4 7.7c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0L8 8.6l3.8-4.5c.2-.2.6-.2.9 0z"
+				style="fill:#06f"
+			></path>
+		</svg>
+	
+			<span>Your Privacy Choices</span></a
+		>
+	
+	</div>
+				<div class="flex-shrink-0">
+		<div class="dropdown has-caret-up">
+			<button
+				data-test-id="theme-selector-button"
+				class="dropdown-trigger button button-clear button-sm inner-focus theme-dropdown-trigger"
+				aria-controls="{{ themeMenuId }}"
+				aria-haspopup="true"
+				aria-expanded="false"
+				data-bi-name="theme"
+			>
+				<span class="icon" aria-hidden="true"><span class="docon docon-sun"></span></span>
+				<span>Theme</span>
+				<span class="icon expanded-indicator" aria-hidden="true">
+					<span class="docon docon-chevron-down-light"></span>
+				</span>
+			</button>
+			<div class="dropdown-menu" id="{{ themeMenuId }}" role="menu">
+				<ul class="theme-selector padding-xxs" data-test-id="theme-dropdown-menu" role="none">
+					<li class="theme display-block" role="none">
+						<button
+							class="button button-clear button-sm theme-control button-block justify-content-flex-start text-align-left"
+							role="menuitemradio"
+							aria-checked="false"
+							data-theme-to="light"
+							tabindex="-1"
+						>
+							<span class="theme-light margin-right-xxs">
+								<span
+									class="theme-selector-icon border display-inline-block has-body-background"
+									aria-hidden="true"
+								>
+									<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+										<rect width="22" height="14" class="has-fill-body-background" />
+										<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+										<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+										<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+										<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+										<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+									</svg>
+								</span>
+							</span>
+							<span> Light </span>
+						</button>
+					</li>
+					<li class="theme display-block" role="none">
+						<button
+							class="button button-clear button-sm theme-control button-block justify-content-flex-start text-align-left"
+							role="menuitemradio"
+							aria-checked="false"
+							data-theme-to="dark"
+							tabindex="-1"
+						>
+							<span class="theme-dark margin-right-xxs">
+								<span
+									class="border theme-selector-icon display-inline-block has-body-background"
+									aria-hidden="true"
+								>
+									<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+										<rect width="22" height="14" class="has-fill-body-background" />
+										<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+										<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+										<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+										<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+										<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+									</svg>
+								</span>
+							</span>
+							<span> Dark </span>
+						</button>
+					</li>
+					<li class="theme display-block" role="none">
+						<button
+							class="button button-clear button-sm theme-control button-block justify-content-flex-start text-align-left"
+							role="menuitemradio"
+							aria-checked="false"
+							data-theme-to="high-contrast"
+							tabindex="-1"
+						>
+							<span class="theme-high-contrast margin-right-xxs">
+								<span
+									class="border theme-selector-icon display-inline-block has-body-background"
+									aria-hidden="true"
+								>
+									<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+										<rect width="22" height="14" class="has-fill-body-background" />
+										<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+										<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+										<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+										<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+										<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+									</svg>
+								</span>
+							</span>
+							<span> High contrast </span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+			</div>
+			<ul class="links" data-bi-name="footerlinks">
+				<li class="manage-cookies-holder" hidden=""></li>
+				<li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/principles-for-ai-generated-content"
+			data-bi-name="aiDisclaimer"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>AI Disclaimer</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/previous-versions/"
+			data-bi-name="archivelink"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Previous Versions</a
+		>
+	
+	</li> <li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog"
+			data-bi-name="bloglink"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Blog</a
+		>
+	
+	</li> <li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/contribute"
+			data-bi-name="contributorGuide"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Contribute</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://go.microsoft.com/fwlink/?LinkId=521839"
+			data-bi-name="privacy"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Privacy</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://go.microsoft.com/fwlink/?linkid=2259814"
+			data-bi-name="consumer-health-privacy"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Consumer Health Privacy</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/legal/termsofuse"
+			data-bi-name="termsofuse"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Terms of Use</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/"
+			data-bi-name="trademarks"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Trademarks</a
+		>
+	
+	</li>
+				<li>&copy; Microsoft 2026</li>
+			</ul>
+		</footer>
+	</footer>
+			</body>
+		</html>

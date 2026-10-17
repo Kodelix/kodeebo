@@ -1,0 +1,17 @@
+## Go rerun 2 (go mod tidy, then run) 2026-10-17T07:46:42Z
+go: downloading golang.org/x/crypto v0.54.0
+go: downloading golang.org/x/sys v0.47.0
+go version go1.27.2 linux/amd64
+runtime go1.27.2
+valid_rfc8032_test2                                     go-stdlib=true                                     circl=true
+flipped_message_bit                                     go-stdlib=false                                    circl=false
+malleated_S_plus_L                                      go-stdlib=false                                    circl=false
+key_31_bytes                                            go-stdlib=PANIC(ed25519: bad public key length: 31) circl=false
+sig_63_bytes                                            go-stdlib=false                                    circl=false
+small_order_key_identity__R_identity_S0                 go-stdlib=true                                     circl=true
+noncanonical_key_y_eq_p_plus_1__R_identity_S0           go-stdlib=true                                     circl=false
+key_identity_with_sign_bit_set__R_identity_S0           go-stdlib=true                                     circl=false
+noncanonical_R_y_eq_p_plus_1_with_key_identity_S0       go-stdlib=false                                    circl=false
+require github.com/cloudflare/circl v1.6.5
+	golang.org/x/crypto v0.54.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect

@@ -71,6 +71,16 @@ docs/research/evidence/eta-e-receipt-e-invoice/**/__pycache__/
 docs/research/evidence/desktop-client-adr-followups/fetched/s29-jar-download/sqlite-jdbc-3.53.4.0.jar
 # Copied OWASP MASTG page that contains a demo credential: left out of git.
 docs/research/evidence/tenant-isolation/part-6/src/mastg/android-MASVS-PLATFORM-MASTG-TEST-0007.md
+# TCG TPM 2.0 Library rev 01.38 PDFs (licensing note Part 3); source URL,
+# retrieval date and SHA-256 in docs/research/licensing.md § 9 (Part 3 evidence files).
+docs/research/evidence/licensing/**/*.pdf
+# RFC 8032 copy (licensing note Part 2): its test vectors contain example private
+# keys that trip gitleaks; URL and SHA-256 in docs/research/licensing.md § 9.
+docs/research/evidence/licensing-part-2/fetched/rfc8032.txt
+# Saved Google Cloud KMS and Vault Transit doc pages: embedded site keys and
+# example tokens trip gitleaks; URL and SHA-256 in docs/research/licensing.md § 9.
+docs/research/evidence/licensing-part-2/fetched/kms-gcp-kms.html
+docs/research/evidence/licensing-part-2/fetched/kms-vault-transit.html
 
 # === Runtime artifacts ===
 docs/consistency-failures.md
