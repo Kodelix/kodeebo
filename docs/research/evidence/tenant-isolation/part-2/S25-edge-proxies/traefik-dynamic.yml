@@ -1,0 +1,33 @@
+http:
+  routers:
+    dead:
+      rule: "PathPrefix(`/dead`)"
+      entryPoints: [web]
+      service: deadsvc
+      priority: 100
+      middlewares: [strip]
+    main:
+      rule: "PathPrefix(`/`)"
+      entryPoints: [web]
+      service: up
+      middlewares: [strip]
+  services:
+    up:
+      loadBalancer:
+        servers:
+          - url: "http://ti-p2-up:8080"
+    deadsvc:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:1"
+  middlewares:
+    strip:
+      headers:
+        customRequestHeaders:
+          X-Tenant-Id: ""
+          X-Tenant-Slug: ""
+          X-Tenant: ""
+          Forwarded: ""
+          X-Real-Ip: ""
+          X-Client-Ip: ""
+          X-Forwarded-Prefix: ""

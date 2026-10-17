@@ -1,0 +1,197 @@
+Pager usage is off.
+=== T1 pre-context lookup: ti_device cannot read credentials directly, only through auth_device(key_id)
+BEGIN
+SET
+ERROR:  permission denied for table device_credentials
+ROLLBACK
+BEGIN
+SET
+              tenant_id               |              branch_id               |              device_id               | device_status | cred_state 
+--------------------------------------+--------------------------------------+--------------------------------------+---------------+------------
+ aaaaaaaa-0000-4000-8000-000000000001 | a1a1a1a1-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | active        | active
+(1 row)
+
+ rows_for_unknown_key 
+----------------------
+                    0
+(1 row)
+
+COMMIT
+=== T2 apply_cmd: identity from context (credential of device dA1), payload ids are only claims
+BEGIN
+SET
+a) payload repeats the right ids, seq 1
+ERROR:  relation "inbox" does not exist
+CONTEXT:  compilation of PL/pgSQL function "apply_cmd" near line 4
+b) payload has no ids at all, seq 2
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+c) payload claims tenant B, branch b1 and device dB1 (valid credential is dA1), seq 3
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+d) payload claims the right tenant but another branch of tenant A (a2)
+e) payload claims right tenant and branch but the other device of tenant A (dA2)
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+f) replay of command 1, identical body
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+g) command 1 again with a different body (altered amount)
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+h) new command id under used seq 2 (clone or restore)
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+i) money fact the server flags: seq 3 with needs_review (permission revoked earlier)
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+j) no context at all (authentication layer forgot to set it): must fail closed
+BEGIN
+SET
+ERROR:  relation "inbox" does not exist
+CONTEXT:  compilation of PL/pgSQL function "apply_cmd" near line 4
+ROLLBACK
+--- superuser view of what was written
+ command_id | device_seq | tenant_id | device_id | branch_id | outcome 
+------------+------------+-----------+-----------+-----------+---------
+(0 rows)
+
+ id | tenant_id | device_id | kind | detail 
+----+-----------+-----------+------+--------
+(0 rows)
+
+ id | tenant_id | branch_id | device_id | reason | status 
+----+-----------+-----------+-----------+--------+--------
+(0 rows)
+
+         what          | count 
+-----------------------+-------
+ events under tenant B |     0
+(1 row)
+
+=== T3 who can read and write what
+--- ti_dash as tenant B sees nothing of tenant A
+BEGIN
+SET
+ inbox | events | review 
+-------+--------+--------
+     0 |      0 |      0
+(1 row)
+
+UPDATE 0
+COMMIT
+--- ti_dash as tenant A: reads, decides one review item, cannot edit the fact, cannot delete
+BEGIN
+SET
+ inbox | events | review 
+-------+--------+--------
+     0 |      0 |      0
+(1 row)
+
+UPDATE 0
+COMMIT
+BEGIN
+SET
+ERROR:  permission denied for table review_queue
+ROLLBACK
+BEGIN
+SET
+ERROR:  permission denied for table review_queue
+ROLLBACK
+--- ti_device as dA1: insert-only on events/review/offline; cannot read the review queue or events; cannot delete inbox
+BEGIN
+SET
+ERROR:  permission denied for table review_queue
+ROLLBACK
+BEGIN
+SET
+ERROR:  permission denied for table device_events
+ROLLBACK
+BEGIN
+SET
+ERROR:  permission denied for table inbox
+ROLLBACK
+=== T4 forged inserts and the composite foreign key
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "device_events"
+ROLLBACK
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "device_events"
+ROLLBACK
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "inbox"
+ROLLBACK
+--- policy is tenant-only for ti_dash, so the composite FK must catch a branch the device does not belong to
+BEGIN
+SET
+ERROR:  insert or update on table "inbox" violates foreign key constraint "inbox_tenant_id_device_id_branch_id_fkey"
+DETAIL:  Key is not present in table "devices".
+ROLLBACK
+BEGIN
+SET
+ERROR:  insert or update on table "inbox" violates foreign key constraint "inbox_tenant_id_device_id_branch_id_fkey"
+DETAIL:  Key is not present in table "devices".
+ROLLBACK
+--- a refusal for an UNKNOWN credential has no tenant, so device_events (tenant/branch/device NOT NULL + FK) cannot hold it
+ERROR:  insert or update on table "device_events" violates foreign key constraint "device_events_tenant_id_device_id_branch_id_fkey"
+DETAIL:  Key (tenant_id, device_id, branch_id)=(8c2bd0f9-36b0-44b8-a1ae-e94d8cb064ae, 3c1f87bb-6f8c-4fb2-98cd-4c347d12fb15, 3c192c13-7b28-4758-aeef-5f6ce3e2b2ae) is not present in table "devices".
+=== T5 verified-restore watermark: ops writes across tenants (explicit policy, no BYPASSRLS), devices read their own row only, monotonic
+BEGIN
+SET
+INSERT 0 2
+UPDATE 1
+COMMIT
+BEGIN
+SET
+ERROR:  watermark may not decrease (120 -> 90)
+CONTEXT:  PL/pgSQL function s.wm_monotonic() line 1 at RAISE
+ROLLBACK
+BEGIN
+SET
+              device_id               | hwm_seq 
+--------------------------------------+---------
+ d1d1d1d1-0000-4000-8000-0000000000a1 |     120
+(1 row)
+
+ERROR:  permission denied for table verified_restore_watermark
+ROLLBACK
+BEGIN
+SET
+ da2_sees 
+----------
+        0
+(1 row)
+
+ROLLBACK
+BEGIN
+SET
+              tenant_id               |              device_id               | hwm_seq 
+--------------------------------------+--------------------------------------+---------
+ bbbbbbbb-0000-4000-8000-000000000001 | d3d3d3d3-0000-4000-8000-0000000000b1 |      40
+(1 row)
+
+ROLLBACK
+--- ti_dash cannot write the watermark
+BEGIN
+SET
+ERROR:  operator does not exist: integer ** integer
+LINE 1: UPDATE s.verified_restore_watermark SET hwm_seq = 10**9;
+                                                            ^
+HINT:  No operator matches the given name and argument types. You might need to add explicit type casts.
+ROLLBACK
+=== T6 fail closed: unset context, and context that was set locally in an earlier transaction
+BEGIN
+SET
+COMMIT
+BEGIN
+SET
+ tenant_setting_after_commit 
+-----------------------------
+ 
+(1 row)
+
+ inbox_rows_visible 
+--------------------
+                  0
+(1 row)
+
+ERROR:  new row violates row-level security policy for table "device_events"
+ROLLBACK

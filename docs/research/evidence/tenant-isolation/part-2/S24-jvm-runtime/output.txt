@@ -1,0 +1,33 @@
+### date (UTC): 2026-10-16T22:01:09Z
+### openjdk version "21.0.12.1" 2026-08-18; info: kotlinc-jvm 2.4.21 (JRE 21.0.12.1+1)
+### classpath: annotations-23.0.0.jar checker-qual-3.55.1.jar exposed-core-1.5.1.jar exposed-jdbc-1.5.1.jar HikariCP-7.1.0.jar jooq-3.21.9.jar kotlin-reflect-2.3.20.jar kotlin-stdlib-2.4.21.jar kotlinx-coroutines-core-jvm-1.11.0.jar kotlinx-datetime-jvm-0.7.1-0.6.x-compat.jar postgresql-42.7.14.jar r2dbc-spi-1.0.0.RELEASE.jar reactive-streams-1.0.3.jar slf4j-api-2.0.9.jar slf4j-nop-2.0.17.jar 
+### server: postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)
+ app_rt   | f        | f
+ migrator | f        | f
+(2 rows)
+
+### java 21.0.12.1  kotlin 2.4.21
+PASS K1a forgotten context (Exposed transaction{}): 0 rows visible  [St(pid=109, rows=0, guc=<NULL>)]
+PASS K1b forgotten context: INSERT rejected with SQLSTATE 42501  [sqlState=42501]
+PASS K2a set_config(...,true) first, then query: tenant A sees 3 rows  [St(pid=109, rows=3, guc=11111111-1111-4111-8111-111111111111)]
+PASS K2b next borrower (same backend, no tx context): clean GUC, 0 rows  [St(pid=109, rows=0, guc=)]
+PASS K2c malformed tenant id: error 22P02 (not silently 0 rows)  [sqlState=22P02]
+PASS K3 suspendTransaction + withContext(Default) hop: GUC follows the connection (3 rows)  [threads main -> DefaultDispatcher-worker-1, St(pid=109, rows=3, guc=11111111-1111-4111-8111-111111111111)]
+PASS K3b after suspendTransaction: next borrower clean  [St(pid=109, rows=0, guc=)]
+PASS K4a ThreadLocal on a reused pool thread: request 2 reads request 1's tenant (leak demonstrated)  [request 2 saw 11111111-1111-4111-8111-111111111111]
+PASS K4b plain ThreadLocal across delay()/yield() on a 4-thread dispatcher: mismatches > 0 (demonstrated)  [mismatches=399 of 400]
+PASS K4c ThreadLocal.asContextElement across the same suspension: mismatches == 0  [mismatches=0 of 400]
+PASS K5 nested suspendTransaction with another tenant changes the OUTER context (shared connection)  [outer before=3 inner=5 outer after inner=St(pid=109, rows=5, guc=22222222-2222-4222-8222-222222222222)]
+PASS K6a autoCommit=true: set_config(...,true) is lost before the next statement (context silently absent, 0 rows)  [St(pid=109, rows=0, guc=)]
+PASS K6b connection returned with an open tx: HikariCP rolls back and reuses it; next borrower clean  [same backend=true St(pid=109, rows=0, guc=)]
+PASS K6c NEGATIVE CONTROL session-level set_config(...,false): HikariCP does NOT reset it; next borrower sees tenant A  [St(pid=109, rows=3, guc=11111111-1111-4111-8111-111111111111)]
+PASS K6d guard wrapper detects the dirty connection, evicts it, hands out a clean one  [evicted=1 St(pid=110, rows=0, guc=<NULL>)]
+PASS K7a jOOQ forgotten context: 0 rows  [rows=0]
+PASS K7b jOOQ transactionResult: set_config(...,true) then query in one connection: 3 rows  [rows=3]
+PASS K7c jOOQ: next borrower clean  [St(pid=110, rows=0, guc=)]
+PASS K8a pgjdbc default props via PgBouncer 1.26.0 tx mode, max_prepared_statements=200: no error in 60 tx  [null]
+OBS  K8b pgjdbc default props (prepareThreshold=5) via PgBouncer max_prepared_statements=0: first error = PSQLException: ERROR: prepared statement "S_1" already exists
+PASS K8c pgjdbc prepareThreshold=0 via PgBouncer max_prepared_statements=0: no error in 60 tx  [null]
+### failures=0
+### exit code 0
+### done 2026-10-16T22:01:22Z

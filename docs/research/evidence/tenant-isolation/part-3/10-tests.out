@@ -1,0 +1,240 @@
+Pager usage is off.
+=== T1 pre-context lookup: ti_device cannot read credentials directly, only through auth_device(key_id)
+BEGIN
+SET
+ERROR:  permission denied for table device_credentials
+ROLLBACK
+BEGIN
+SET
+              tenant_id               |              branch_id               |              device_id               | device_status | cred_state 
+--------------------------------------+--------------------------------------+--------------------------------------+---------------+------------
+ aaaaaaaa-0000-4000-8000-000000000001 | a1a1a1a1-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | active        | active
+(1 row)
+
+ rows_for_unknown_key 
+----------------------
+                    0
+(1 row)
+
+COMMIT
+=== T2 apply_cmd: identity from context (credential of device dA1), payload ids are only claims
+BEGIN
+SET
+a) payload repeats the right ids, seq 1
+ apply_cmd 
+-----------
+ applied
+(1 row)
+
+b) payload has no ids at all, seq 2
+ apply_cmd 
+-----------
+ applied
+(1 row)
+
+c) payload claims tenant B, branch b1 and device dB1 (valid credential is dA1), seq 3
+      apply_cmd      
+---------------------
+ refused:id_mismatch
+(1 row)
+
+d) payload claims the right tenant but another branch of tenant A (a2)
+      apply_cmd      
+---------------------
+ refused:id_mismatch
+(1 row)
+
+e) payload claims right tenant and branch but the other device of tenant A (dA2)
+      apply_cmd      
+---------------------
+ refused:id_mismatch
+(1 row)
+
+f) replay of command 1, identical body
+     apply_cmd     
+-------------------
+ duplicate:applied
+(1 row)
+
+g) command 1 again with a different body (altered amount)
+        apply_cmd         
+--------------------------
+ flagged:payload_mismatch
+(1 row)
+
+h) new command id under used seq 2 (clone or restore)
+      apply_cmd       
+----------------------
+ flagged:seq_conflict
+(1 row)
+
+i) money fact the server flags: seq 3 with needs_review (permission revoked earlier)
+ apply_cmd 
+-----------
+ applied
+(1 row)
+
+COMMIT
+j) no context at all (authentication layer forgot to set it): must fail closed
+BEGIN
+SET
+ROLLBACK
+--- superuser view of what was written
+ERROR:  no device context (fail closed)
+CONTEXT:  PL/pgSQL function apply_cmd(jsonb) line 6 at RAISE
+              command_id              | device_seq |              tenant_id               |              device_id               |              branch_id               | outcome 
+--------------------------------------+------------+--------------------------------------+--------------------------------------+--------------------------------------+---------
+ 10000000-0000-4000-8000-000000000001 |          1 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | a1a1a1a1-0000-4000-8000-000000000001 | applied
+ 10000000-0000-4000-8000-000000000002 |          2 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | a1a1a1a1-0000-4000-8000-000000000001 | applied
+ 10000000-0000-4000-8000-000000000009 |          3 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | a1a1a1a1-0000-4000-8000-000000000001 | applied
+(3 rows)
+
+ id |              tenant_id               |              device_id               |       kind       |                                                                                                                detail                                                                                                                
+----+--------------------------------------+--------------------------------------+------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  1 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | id_mismatch      | {"command_id": "10000000-0000-4000-8000-000000000003", "claimed_branch": "b1b1b1b1-0000-4000-8000-000000000001", "claimed_device": "d3d3d3d3-0000-4000-8000-0000000000b1", "claimed_tenant": "bbbbbbbb-0000-4000-8000-000000000001"}
+  2 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | id_mismatch      | {"command_id": "10000000-0000-4000-8000-000000000004", "claimed_branch": "a2a2a2a2-0000-4000-8000-000000000002", "claimed_device": "d1d1d1d1-0000-4000-8000-0000000000a1", "claimed_tenant": "aaaaaaaa-0000-4000-8000-000000000001"}
+  3 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | id_mismatch      | {"command_id": "10000000-0000-4000-8000-000000000005", "claimed_branch": "a1a1a1a1-0000-4000-8000-000000000001", "claimed_device": "d2d2d2d2-0000-4000-8000-0000000000a2", "claimed_tenant": "aaaaaaaa-0000-4000-8000-000000000001"}
+  4 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | payload_mismatch | {"seq": 1, "command_id": "10000000-0000-4000-8000-000000000001", "kept_payload": {"k": "sale", "total": 9000}}
+  5 | aaaaaaaa-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | seq_conflict     | {"seq": 2, "command_id": "10000000-0000-4000-8000-000000000008", "kept_payload": {"k": "sale", "total": 1234}}
+(5 rows)
+
+ id |              tenant_id               |              branch_id               |              device_id               |       reason       | status 
+----+--------------------------------------+--------------------------------------+--------------------------------------+--------------------+--------
+  1 | aaaaaaaa-0000-4000-8000-000000000001 | a1a1a1a1-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | payload_mismatch   | open
+  2 | aaaaaaaa-0000-4000-8000-000000000001 | a1a1a1a1-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | seq_conflict       | open
+  3 | aaaaaaaa-0000-4000-8000-000000000001 | a1a1a1a1-0000-4000-8000-000000000001 | d1d1d1d1-0000-4000-8000-0000000000a1 | permission_revoked | open
+(3 rows)
+
+         what          | count 
+-----------------------+-------
+ events under tenant B |     0
+(1 row)
+
+=== T3 who can read and write what
+--- ti_dash as tenant B sees nothing of tenant A
+BEGIN
+SET
+ inbox | events | review 
+-------+--------+--------
+     0 |      0 |      0
+(1 row)
+
+UPDATE 0
+COMMIT
+--- ti_dash as tenant A: reads, decides one review item, cannot edit the fact, cannot delete
+BEGIN
+SET
+ inbox | events | review 
+-------+--------+--------
+     3 |      5 |      3
+(1 row)
+
+UPDATE 1
+COMMIT
+BEGIN
+SET
+ERROR:  permission denied for table review_queue
+ROLLBACK
+BEGIN
+SET
+ERROR:  permission denied for table review_queue
+ROLLBACK
+--- ti_device as dA1: insert-only on events/review/offline; cannot read the review queue or events; cannot delete inbox
+BEGIN
+SET
+ERROR:  permission denied for table review_queue
+ROLLBACK
+BEGIN
+SET
+ERROR:  permission denied for table device_events
+ROLLBACK
+BEGIN
+SET
+ERROR:  permission denied for table inbox
+ROLLBACK
+=== T4 forged inserts and the composite foreign key
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "device_events"
+ROLLBACK
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "device_events"
+ROLLBACK
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "inbox"
+ROLLBACK
+--- policy is tenant-only for ti_dash, so the composite FK must catch a branch the device does not belong to
+BEGIN
+SET
+ERROR:  insert or update on table "inbox" violates foreign key constraint "inbox_tenant_id_device_id_branch_id_fkey"
+DETAIL:  Key is not present in table "devices".
+ROLLBACK
+BEGIN
+SET
+ERROR:  insert or update on table "inbox" violates foreign key constraint "inbox_tenant_id_device_id_branch_id_fkey"
+DETAIL:  Key is not present in table "devices".
+ROLLBACK
+--- a refusal for an UNKNOWN credential has no tenant, so device_events (tenant/branch/device NOT NULL + FK) cannot hold it
+ERROR:  insert or update on table "device_events" violates foreign key constraint "device_events_tenant_id_device_id_branch_id_fkey"
+DETAIL:  Key (tenant_id, device_id, branch_id)=(d760f2bd-6dd4-4c41-a6d9-f32f65b13f4d, ac5d4b5e-9ea4-4855-8a64-3784ce215463, d27add10-2909-434b-b6c7-db67821ccfa4) is not present in table "devices".
+=== T5 verified-restore watermark: ops writes across tenants (explicit policy, no BYPASSRLS), devices read their own row only, monotonic
+BEGIN
+SET
+INSERT 0 2
+UPDATE 1
+COMMIT
+BEGIN
+SET
+ERROR:  watermark may not decrease (120 -> 90)
+CONTEXT:  PL/pgSQL function s.wm_monotonic() line 1 at RAISE
+ROLLBACK
+BEGIN
+SET
+              device_id               | hwm_seq 
+--------------------------------------+---------
+ d1d1d1d1-0000-4000-8000-0000000000a1 |     120
+(1 row)
+
+ERROR:  permission denied for table verified_restore_watermark
+ROLLBACK
+BEGIN
+SET
+ da2_sees 
+----------
+        0
+(1 row)
+
+ROLLBACK
+BEGIN
+SET
+              tenant_id               |              device_id               | hwm_seq 
+--------------------------------------+--------------------------------------+---------
+ bbbbbbbb-0000-4000-8000-000000000001 | d3d3d3d3-0000-4000-8000-0000000000b1 |      40
+(1 row)
+
+ROLLBACK
+--- ti_dash cannot write the watermark
+BEGIN
+SET
+ERROR:  permission denied for table verified_restore_watermark
+ROLLBACK
+=== T6 fail closed: unset context, and context that was set locally in an earlier transaction
+BEGIN
+SET
+COMMIT
+BEGIN
+SET
+ tenant_setting_after_commit 
+-----------------------------
+ 
+(1 row)
+
+ inbox_rows_visible 
+--------------------
+                  0
+(1 row)
+
+ERROR:  new row violates row-level security policy for table "device_events"
+ROLLBACK

@@ -1,0 +1,210 @@
+### version
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+### setup
+INSERT 0 2
+INSERT 0 1
+INSERT 0 2
+### catalogue (as superuser)
+  tbl   | enabled | forced | policies |     owner     |             verdict              
+--------+---------+--------+----------+---------------+----------------------------------
+ cash   | t       | t      |        1 | kodeebo_owner | ok
+ items  | t       | f      |        1 | kodeebo_owner | FAIL: not FORCE (owner bypasses)
+ locked | t       | t      |        0 | kodeebo_owner | WARN: no policy (deny all)
+ notes  | f       | f      |        0 | kodeebo_owner | FAIL: RLS not enabled
+ orders | t       | t      |        1 | kodeebo_owner | ok
+(5 rows)
+
+    rolname    | rolsuper | rolbypassrls 
+---------------+----------+--------------
+ kodeebo_app   | f        | f
+ kodeebo_owner | f        | f
+ postgres      | t        | t
+(3 rows)
+
+ owned_by_runtime_role 
+-----------------------
+(0 rows)
+
+       view        |       reloptions        |         verdict          
+-------------------+-------------------------+--------------------------
+ items_report      | (none)                  | FAIL: runs as view owner
+ items_report_safe | {security_invoker=true} | ok
+(2 rows)
+
+ proname 
+---------
+(0 rows)
+
+  tbl   |  unique_index   |         verdict          
+--------+-----------------+--------------------------
+ cash   | app.cash_pkey   | FAIL: first column is id
+ items  | app.items_pkey  | FAIL: first column is id
+ locked | app.locked_pkey | FAIL: first column is id
+ notes  | app.notes_pkey  | FAIL: first column is id
+ orders | app.orders_pkey | FAIL: first column is id
+(5 rows)
+
+### runtime role
+== R1 no tenant context at all: orders / items / cash must return 0 rows
+   t    | count 
+--------+-------
+ orders |     0
+ items  |     0
+ cash   |     0
+(3 rows)
+
+== R2 context unset vs empty string (set earlier in a committed txn leaves '): still 0 rows, no error
+BEGIN
+ set_config 
+------------
+ 
+(1 row)
+
+ orders_empty_ctx 
+------------------
+                0
+(1 row)
+
+COMMIT
+BEGIN
+SET
+COMMIT
+ after_commit_value 
+--------------------
+ 
+(1 row)
+
+ orders_after_commit 
+---------------------
+                   0
+(1 row)
+
+== R3 INSERT with no context fails WITH CHECK
+ERROR:  new row violates row-level security policy for table "orders"
+== R4 tenant A context: sees A only; cannot insert/update/delete B rows; cannot read B by id
+BEGIN
+SET
+ id |              tenant_id               
+----+--------------------------------------
+  1 | aaaaaaaa-0000-0000-0000-00000000000a
+(1 row)
+
+ id 
+----
+(0 rows)
+
+ERROR:  new row violates row-level security policy for table "orders"
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+ROLLBACK
+== R5 forced policy with no policy denies even with context (locked)
+BEGIN
+SET
+ locked_rows 
+-------------
+           0
+(1 row)
+
+ROLLBACK
+== R6 branch scope: tenant A + branch 1 sees only branch 1 cash; tenant A without branch sees none; wrong branch sees none
+BEGIN
+SET
+SET
+ id |              branch_id               
+----+--------------------------------------
+  1 | b1000000-0000-0000-0000-000000000001
+(1 row)
+
+ROLLBACK
+BEGIN
+SET
+ cash_no_branch 
+----------------
+              0
+(1 row)
+
+ROLLBACK
+BEGIN
+SET
+SET
+ERROR:  new row violates row-level security policy for table "cash"
+ROLLBACK
+== R7 defect 2 (no RLS): tenant A context still reads B notes
+BEGIN
+SET
+ id |  body  
+----+--------
+  1 | a-note
+  2 | b-note
+(2 rows)
+
+ROLLBACK
+== R8 defect via view: items direct (RLS) vs items_report (no security_invoker) vs items_report_safe, tenant A context
+BEGIN
+SET
+  src   | count 
+--------+-------
+ direct |     1
+(1 row)
+
+     src      |              tenant_id               | n 
+--------------+--------------------------------------+---
+ view_default | aaaaaaaa-0000-0000-0000-00000000000a | 1
+ view_default | bbbbbbbb-0000-0000-0000-00000000000b | 1
+(2 rows)
+
+          src          |              tenant_id               | n 
+-----------------------+--------------------------------------+---
+ view_security_invoker | aaaaaaaa-0000-0000-0000-00000000000a | 1
+(1 row)
+
+ROLLBACK
+== R9 runtime role cannot disable RLS or switch role
+SET
+ERROR:  query would be affected by row-level security policy for table "items"
+ERROR:  must be owner of table orders
+ERROR:  permission denied to set role "kodeebo_owner"
+### runtime role R4 redo
+== R4a tenant A: read B row by id -> 0 rows
+BEGIN
+SET
+ id 
+----
+(0 rows)
+
+ROLLBACK
+== R4b tenant A: INSERT a row carrying tenant B -> RLS violation
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "orders"
+ROLLBACK
+== R4c tenant A: UPDATE B row -> UPDATE 0
+BEGIN
+SET
+UPDATE 0
+ROLLBACK
+== R4d tenant A: DELETE B row -> DELETE 0
+BEGIN
+SET
+DELETE 0
+ROLLBACK
+== R4e tenant A: move own row to tenant B (UPDATE tenant_id) -> RLS violation
+BEGIN
+SET
+ERROR:  new row violates row-level security policy for table "orders"
+ROLLBACK
+== R4f tenant A: duplicate primary key against B row id=2 (probe via error text, sync-note F128 shape)
+BEGIN
+SET
+ERROR:  duplicate key value violates unique constraint "orders_pkey"
+ROLLBACK
+### owner role
+== O1 owner, no context: orders (FORCE) vs items (not FORCE)
+   t    | count 
+--------+-------
+ orders |     0
+ items  |     2
+(2 rows)
+
+### container removed

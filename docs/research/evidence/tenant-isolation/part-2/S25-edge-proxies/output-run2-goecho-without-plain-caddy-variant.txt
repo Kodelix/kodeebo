@@ -1,0 +1,292 @@
+### date (UTC): 2026-10-16T22:04:42Z
+### caddy: v2.11.7 h1:yj0Y4fYZGPkSvibBJ1sTWE33xC0fxztVyXEW5iIdUT4=
+### traefik: Version:      3.7.14 Codename:     langres Go version:   go1.26.8 Built:        2026-10-06T07:42:27Z OS/Arch:      linux/amd64 
+### Docker version 29.9.1, build dfc520dcc2
+### bridge gateway (the TCP peer seen by the edge when curl runs on the host): 192.168.176.1
+
+=================== CADDY 2.11.7: Caddyfile.edge (header_up -X-Tenant*, global+site log filters)
+
+--- R1: GET /t/cafe-slug/menu?x=1 with spoofed headers -> upstream echo
+HTTP/1.1 200 OK
+Content-Length: 424
+Content-Type: text/plain
+Date: Fri, 16 Oct 2026 22:04:45 GMT
+Via: 1.1 Caddy
+
+UPSTREAM-SAW-PEER: 192.168.176.3:56982
+UPSTREAM-SAW-URI: /t/cafe-slug/menu?x=1
+HDR Accept: */*
+HDR Accept-Encoding: gzip
+HDR Referer: http://app.example/t/cafe-slug/menu?x=1
+HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+HDR User-Agent: curl/8.23.0
+HDR Via: 1.1 Caddy
+HDR X-Client-Ip: 192.168.176.1
+HDR X-Forwarded-For: 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Proto: http
+
+--- R2: same, plus Connection: X-Client-Ip, X-Forwarded-For (hop-by-hop abuse)
+HTTP/1.1 200 OK
+Content-Length: 424
+Content-Type: text/plain
+Date: Fri, 16 Oct 2026 22:04:45 GMT
+Via: 1.1 Caddy
+
+UPSTREAM-SAW-PEER: 192.168.176.3:56982
+UPSTREAM-SAW-URI: /t/cafe-slug/menu?x=1
+HDR Accept: */*
+HDR Accept-Encoding: gzip
+HDR Referer: http://app.example/t/cafe-slug/menu?x=1
+HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+HDR User-Agent: curl/8.23.0
+HDR Via: 1.1 Caddy
+HDR X-Client-Ip: 192.168.176.1
+HDR X-Forwarded-For: 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Proto: http
+
+--- R3: GET /dead/t/cafe-slug/menu (upstream dial failure -> 502)
+HTTP/1.1 502 Bad Gateway
+Server: Caddy
+Date: Fri, 16 Oct 2026 22:04:45 GMT
+Content-Length: 0
+
+
+--- edge container log since 2026-10-16T22:04:44.652324478Z (all lines)
+{"level":"info","ts":1792188285.6602747,"logger":"http.log.access.log0","msg":"handled request","request":{"remote_ip":"192.168.176.1","remote_port":"46888","client_ip":"192.168.176.1","proto":"HTTP/1.1","method":"GET","host":"192.168.176.3","uri":"REDACTED","headers":{"X-Tenant-Slug":["evil-slug"],"X-Tenantdomain":["evil-no-hyphen"],"X-Forwarded-For":["6.6.6.6"],"X-Tenant":["bare-tenant-header"],"X-Forwarded-Server":["evil-server"],"X-Client-Ip":["9.9.9.9"],"X-Tenant-Id":["evil-tenant"],"X-Forwarded-Host":["evil.example"],"X_tenant_id":["underscore-variant"],"Traceparent":["00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01"],"User-Agent":["curl/8.23.0"],"Accept":["*/*"],"X-Forwarded-Port":["4443"],"X-Forwarded-Prefix":["/t/evil"],"Forwarded":["for=6.6.6.6;proto=https"],"X-Real-Ip":["7.7.7.7"],"X-Tenant-Foo":["other-suffix"],"X-Forwarded-Proto":["https"]}},"bytes_read":0,"user_id":"","duration":0.0004463,"size":424,"status":200,"resp_headers":{"Via":["1.1 Caddy"],"Content-Type":["text/plain"],"Date":["Fri, 16 Oct 2026 22:04:45 GMT"],"Content-Length":["424"]}}
+{"level":"info","ts":1792188285.6681252,"logger":"http.log.access.log0","msg":"handled request","request":{"remote_ip":"192.168.176.1","remote_port":"46898","client_ip":"192.168.176.1","proto":"HTTP/1.1","method":"GET","host":"192.168.176.3","uri":"REDACTED","headers":{"X-Tenant-Slug":["evil-slug"],"X-Forwarded-Port":["4443"],"X-Forwarded-Prefix":["/t/evil"],"Traceparent":["00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01"],"X-Tenant":["bare-tenant-header"],"X-Tenant-Foo":["other-suffix"],"User-Agent":["curl/8.23.0"],"X-Forwarded-For":["6.6.6.6"],"X-Forwarded-Proto":["https"],"Forwarded":["for=6.6.6.6;proto=https"],"X-Real-Ip":["7.7.7.7"],"X-Client-Ip":["9.9.9.9"],"Connection":["X-Client-Ip, X-Forwarded-For"],"Accept":["*/*"],"X-Tenant-Id":["evil-tenant"],"X-Forwarded-Host":["evil.example"],"X-Forwarded-Server":["evil-server"],"X_tenant_id":["underscore-variant"],"X-Tenantdomain":["evil-no-hyphen"]}},"bytes_read":0,"user_id":"","duration":0.000564603,"size":424,"status":200,"resp_headers":{"Via":["1.1 Caddy"],"Date":["Fri, 16 Oct 2026 22:04:45 GMT"],"Content-Length":["424"],"Content-Type":["text/plain"]}}
+{"level":"error","ts":1792188285.6752877,"logger":"http.log.error.log0","msg":"dial tcp 127.0.0.1:1: connect: connection refused","request":{"remote_ip":"192.168.176.1","remote_port":"46908","client_ip":"192.168.176.1","proto":"HTTP/1.1","method":"GET","host":"192.168.176.3","uri":"REDACTED","headers":{"X-Forwarded-Port":["4443"],"X-Client-Ip":["9.9.9.9"],"X-Forwarded-Proto":["https"],"X-Real-Ip":["7.7.7.7"],"X-Tenant-Foo":["other-suffix"],"User-Agent":["curl/8.23.0"],"X-Tenant-Slug":["evil-slug"],"X-Tenant-Id":["evil-tenant"],"X-Forwarded-Server":["evil-server"],"X-Tenantdomain":["evil-no-hyphen"],"X-Forwarded-For":["6.6.6.6"],"Accept":["*/*"],"Forwarded":["for=6.6.6.6;proto=https"],"Traceparent":["00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01"],"X-Tenant":["bare-tenant-header"],"X-Forwarded-Host":["evil.example"],"X-Forwarded-Prefix":["/t/evil"],"X_tenant_id":["underscore-variant"]}},"duration":0.000240438,"status":502,"err_id":"jkrwxaaqm","err_trace":"reverseproxy.statusError (reverseproxy.go:1695)"}
+{"level":"error","ts":1792188285.6752992,"logger":"http.log.access.log0","msg":"handled request","request":{"remote_ip":"192.168.176.1","remote_port":"46908","client_ip":"192.168.176.1","proto":"HTTP/1.1","method":"GET","host":"192.168.176.3","uri":"REDACTED","headers":{"X-Tenant-Slug":["evil-slug"],"X-Tenant-Id":["evil-tenant"],"X-Forwarded-Server":["evil-server"],"X-Tenantdomain":["evil-no-hyphen"],"X-Forwarded-For":["6.6.6.6"],"Accept":["*/*"],"Forwarded":["for=6.6.6.6;proto=https"],"Traceparent":["00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01"],"X-Tenant":["bare-tenant-header"],"X-Forwarded-Host":["evil.example"],"X-Forwarded-Prefix":["/t/evil"],"X_tenant_id":["underscore-variant"],"X-Forwarded-Port":["4443"],"X-Client-Ip":["9.9.9.9"],"X-Forwarded-Proto":["https"],"X-Real-Ip":["7.7.7.7"],"X-Tenant-Foo":["other-suffix"],"User-Agent":["curl/8.23.0"]}},"bytes_read":0,"user_id":"","duration":0.000240438,"size":0,"status":502,"resp_headers":{"Server":["Caddy"]}}
+
+--- what the upstream saw (R1)
+  X-Tenant-Id => ABSENT
+  X-Tenant-Slug => ABSENT
+  X-Tenant => ABSENT
+  X-Tenantdomain => ABSENT
+  X_Tenant_Id => ABSENT
+  X-Tenant-Foo => ABSENT
+  X-Forwarded-For => HDR X-Forwarded-For: 192.168.176.1
+  X-Forwarded-Host => HDR X-Forwarded-Host: 192.168.176.3
+  X-Forwarded-Proto => HDR X-Forwarded-Proto: http
+  X-Forwarded-Prefix => ABSENT
+  X-Forwarded-Port => ABSENT
+  X-Forwarded-Server => ABSENT
+  Forwarded => ABSENT
+  X-Real-Ip => ABSENT
+  X-Client-Ip => HDR X-Client-Ip: 192.168.176.1
+  Traceparent => HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+
+--- what the upstream saw (R2, Connection: X-Client-Ip, X-Forwarded-For)
+  X-Tenant-Id => ABSENT
+  X-Tenant-Slug => ABSENT
+  X-Tenant => ABSENT
+  X-Tenantdomain => ABSENT
+  X_Tenant_Id => ABSENT
+  X-Tenant-Foo => ABSENT
+  X-Forwarded-For => HDR X-Forwarded-For: 192.168.176.1
+  X-Forwarded-Host => HDR X-Forwarded-Host: 192.168.176.3
+  X-Forwarded-Proto => HDR X-Forwarded-Proto: http
+  X-Forwarded-Prefix => ABSENT
+  X-Forwarded-Port => ABSENT
+  X-Forwarded-Server => ABSENT
+  Forwarded => ABSENT
+  X-Real-Ip => ABSENT
+  X-Client-Ip => HDR X-Client-Ip: 192.168.176.1
+  Traceparent => HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+
+=================== CADDY 2.11.7: Caddyfile.edge.trusted (peer inside trusted_proxies)
+HDR X-Client-Ip: 6.6.6.6
+HDR X-Forwarded-For: 6.6.6.6, 192.168.176.1
+
+=================== TRAEFIK 3.7.14: traefik-default.yml (middleware 'strip' = customRequestHeaders with empty values)
+
+--- R1: GET /t/cafe-slug/menu?x=1 with spoofed headers -> upstream echo
+HTTP/1.1 200 OK
+Content-Length: 538
+Content-Type: text/plain
+Date: Fri, 16 Oct 2026 22:04:49 GMT
+
+UPSTREAM-SAW-PEER: 192.168.176.3:57004
+UPSTREAM-SAW-URI: /t/cafe-slug/menu?x=1
+HDR Accept: */*
+HDR Accept-Encoding: gzip
+HDR Referer: http://app.example/t/cafe-slug/menu?x=1
+HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+HDR User-Agent: curl/8.23.0
+HDR X-Forwarded-For: 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Port: 80
+HDR X-Forwarded-Proto: http
+HDR X-Forwarded-Server: 3317523b32e6
+HDR X-Tenant-Foo: other-suffix
+HDR X-Tenantdomain: evil-no-hyphen
+HDR X_tenant_id: underscore-variant
+
+--- R2: same, plus Connection: X-Client-Ip, X-Forwarded-For (hop-by-hop abuse)
+HTTP/1.1 200 OK
+Content-Length: 538
+Content-Type: text/plain
+Date: Fri, 16 Oct 2026 22:04:49 GMT
+
+UPSTREAM-SAW-PEER: 192.168.176.3:57004
+UPSTREAM-SAW-URI: /t/cafe-slug/menu?x=1
+HDR Accept: */*
+HDR Accept-Encoding: gzip
+HDR Referer: http://app.example/t/cafe-slug/menu?x=1
+HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+HDR User-Agent: curl/8.23.0
+HDR X-Forwarded-For: 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Port: 80
+HDR X-Forwarded-Proto: http
+HDR X-Forwarded-Server: 3317523b32e6
+HDR X-Tenant-Foo: other-suffix
+HDR X-Tenantdomain: evil-no-hyphen
+HDR X_tenant_id: underscore-variant
+
+--- R3: GET /dead/t/cafe-slug/menu (upstream dial failure -> 502)
+HTTP/1.1 502 Bad Gateway
+Date: Fri, 16 Oct 2026 22:04:49 GMT
+Content-Length: 11
+
+Bad Gateway
+--- edge container log since 2026-10-16T22:04:48.893068920Z (all lines)
+{"ClientAddr":"192.168.176.1:46956","ClientHost":"192.168.176.1","ClientPort":"46956","ClientUsername":"-","DownstreamContentSize":538,"DownstreamStatus":200,"Duration":437073,"OriginContentSize":538,"OriginDuration":389789,"OriginStatus":200,"Overhead":47284,"RequestAddr":"192.168.176.3","RequestContentSize":0,"RequestCount":2,"RequestHost":"192.168.176.3","RequestMethod":"GET","RequestPath":"/t/cafe-slug/menu?x=1","RequestPort":"-","RequestProtocol":"HTTP/1.1","RequestScheme":"http","RetryAttempts":0,"RouterName":"main@file","ServiceAddr":"ti-p2-up:8080","ServiceName":"up@file","ServiceURL":"http://ti-p2-up:8080","StartLocal":"2026-10-16T22:04:49.90120073Z","StartUTC":"2026-10-16T22:04:49.90120073Z","downstream_Content-Length":"538","downstream_Content-Type":"text/plain","downstream_Date":"Fri, 16 Oct 2026 22:04:49 GMT","entryPointName":"web","level":"info","msg":"","origin_Content-Length":"538","origin_Content-Type":"text/plain","origin_Date":"Fri, 16 Oct 2026 22:04:49 GMT","request_Accept":"*/*","request_Referer":"http://app.example/t/cafe-slug/menu?x=1","request_Traceparent":"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01","request_User-Agent":"curl/8.23.0","request_X-Forwarded-Host":"192.168.176.3","request_X-Forwarded-Port":"80","request_X-Forwarded-Proto":"http","request_X-Forwarded-Server":"3317523b32e6","request_X-Tenant-Foo":"other-suffix","request_X-Tenantdomain":"evil-no-hyphen","request_X_tenant_id":"underscore-variant","time":"2026-10-16T22:04:49Z"}
+{"ClientAddr":"192.168.176.1:46958","ClientHost":"192.168.176.1","ClientPort":"46958","ClientUsername":"-","DownstreamContentSize":538,"DownstreamStatus":200,"Duration":479034,"OriginContentSize":538,"OriginDuration":428959,"OriginStatus":200,"Overhead":50075,"RequestAddr":"192.168.176.3","RequestContentSize":0,"RequestCount":3,"RequestHost":"192.168.176.3","RequestMethod":"GET","RequestPath":"/t/cafe-slug/menu?x=1","RequestPort":"-","RequestProtocol":"HTTP/1.1","RequestScheme":"http","RetryAttempts":0,"RouterName":"main@file","ServiceAddr":"ti-p2-up:8080","ServiceName":"up@file","ServiceURL":"http://ti-p2-up:8080","StartLocal":"2026-10-16T22:04:49.908690493Z","StartUTC":"2026-10-16T22:04:49.908690493Z","downstream_Content-Length":"538","downstream_Content-Type":"text/plain","downstream_Date":"Fri, 16 Oct 2026 22:04:49 GMT","entryPointName":"web","level":"info","msg":"","origin_Content-Length":"538","origin_Content-Type":"text/plain","origin_Date":"Fri, 16 Oct 2026 22:04:49 GMT","request_Accept":"*/*","request_Referer":"http://app.example/t/cafe-slug/menu?x=1","request_Traceparent":"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01","request_User-Agent":"curl/8.23.0","request_X-Forwarded-Host":"192.168.176.3","request_X-Forwarded-Port":"80","request_X-Forwarded-Proto":"http","request_X-Forwarded-Server":"3317523b32e6","request_X-Tenant-Foo":"other-suffix","request_X-Tenantdomain":"evil-no-hyphen","request_X_tenant_id":"underscore-variant","time":"2026-10-16T22:04:49Z"}
+{"ClientAddr":"192.168.176.1:46964","ClientHost":"192.168.176.1","ClientPort":"46964","ClientUsername":"-","DownstreamContentSize":11,"DownstreamStatus":502,"Duration":557305,"OriginContentSize":11,"OriginDuration":245530,"OriginStatus":502,"Overhead":311775,"RequestAddr":"192.168.176.3","RequestContentSize":0,"RequestCount":4,"RequestHost":"192.168.176.3","RequestMethod":"GET","RequestPath":"/dead/t/cafe-slug/menu","RequestPort":"-","RequestProtocol":"HTTP/1.1","RequestScheme":"http","RetryAttempts":0,"RouterName":"dead@file","ServiceAddr":"127.0.0.1:1","ServiceName":"deadsvc@file","ServiceURL":"http://127.0.0.1:1","StartLocal":"2026-10-16T22:04:49.918518614Z","StartUTC":"2026-10-16T22:04:49.918518614Z","downstream_Content-Type":"","entryPointName":"web","level":"info","msg":"","origin_Content-Type":"","request_Accept":"*/*","request_Referer":"http://app.example/t/cafe-slug/menu?x=1","request_Traceparent":"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01","request_User-Agent":"curl/8.23.0","request_X-Forwarded-Host":"192.168.176.3","request_X-Forwarded-Port":"80","request_X-Forwarded-Proto":"http","request_X-Forwarded-Server":"3317523b32e6","request_X-Tenant-Foo":"other-suffix","request_X-Tenantdomain":"evil-no-hyphen","request_X_tenant_id":"underscore-variant","time":"2026-10-16T22:04:49Z"}
+
+--- what the upstream saw (R1)
+  X-Tenant-Id => ABSENT
+  X-Tenant-Slug => ABSENT
+  X-Tenant => ABSENT
+  X-Tenantdomain => HDR X-Tenantdomain: evil-no-hyphen
+  X_Tenant_Id => HDR X_tenant_id: underscore-variant
+  X-Tenant-Foo => HDR X-Tenant-Foo: other-suffix
+  X-Forwarded-For => HDR X-Forwarded-For: 192.168.176.1
+  X-Forwarded-Host => HDR X-Forwarded-Host: 192.168.176.3
+  X-Forwarded-Proto => HDR X-Forwarded-Proto: http
+  X-Forwarded-Prefix => ABSENT
+  X-Forwarded-Port => HDR X-Forwarded-Port: 80
+  X-Forwarded-Server => HDR X-Forwarded-Server: 3317523b32e6
+  Forwarded => ABSENT
+  X-Real-Ip => ABSENT
+  X-Client-Ip => ABSENT
+  Traceparent => HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+
+--- what the upstream saw (R2, Connection: X-Client-Ip, X-Forwarded-For)
+  X-Tenant-Id => ABSENT
+  X-Tenant-Slug => ABSENT
+  X-Tenant => ABSENT
+  X-Tenantdomain => HDR X-Tenantdomain: evil-no-hyphen
+  X_Tenant_Id => HDR X_tenant_id: underscore-variant
+  X-Tenant-Foo => HDR X-Tenant-Foo: other-suffix
+  X-Forwarded-For => HDR X-Forwarded-For: 192.168.176.1
+  X-Forwarded-Host => HDR X-Forwarded-Host: 192.168.176.3
+  X-Forwarded-Proto => HDR X-Forwarded-Proto: http
+  X-Forwarded-Prefix => ABSENT
+  X-Forwarded-Port => HDR X-Forwarded-Port: 80
+  X-Forwarded-Server => HDR X-Forwarded-Server: 3317523b32e6
+  Forwarded => ABSENT
+  X-Real-Ip => ABSENT
+  X-Client-Ip => ABSENT
+  Traceparent => HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+
+=================== TRAEFIK 3.7.14: traefik-hardened.yml (middleware 'strip' = customRequestHeaders with empty values)
+
+--- R1: GET /t/cafe-slug/menu?x=1 with spoofed headers -> upstream echo
+HTTP/1.1 200 OK
+Content-Length: 538
+Content-Type: text/plain
+Date: Fri, 16 Oct 2026 22:04:53 GMT
+
+UPSTREAM-SAW-PEER: 192.168.176.3:40102
+UPSTREAM-SAW-URI: /t/cafe-slug/menu?x=1
+HDR Accept: */*
+HDR Accept-Encoding: gzip
+HDR Referer: http://app.example/t/cafe-slug/menu?x=1
+HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+HDR User-Agent: curl/8.23.0
+HDR X-Forwarded-For: 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Port: 80
+HDR X-Forwarded-Proto: http
+HDR X-Forwarded-Server: 44cd1c1eb779
+HDR X-Tenant-Foo: other-suffix
+HDR X-Tenantdomain: evil-no-hyphen
+HDR X_tenant_id: underscore-variant
+
+--- R2: same, plus Connection: X-Client-Ip, X-Forwarded-For (hop-by-hop abuse)
+HTTP/1.1 200 OK
+Content-Length: 538
+Content-Type: text/plain
+Date: Fri, 16 Oct 2026 22:04:53 GMT
+
+UPSTREAM-SAW-PEER: 192.168.176.3:40102
+UPSTREAM-SAW-URI: /t/cafe-slug/menu?x=1
+HDR Accept: */*
+HDR Accept-Encoding: gzip
+HDR Referer: http://app.example/t/cafe-slug/menu?x=1
+HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+HDR User-Agent: curl/8.23.0
+HDR X-Forwarded-For: 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Port: 80
+HDR X-Forwarded-Proto: http
+HDR X-Forwarded-Server: 44cd1c1eb779
+HDR X-Tenant-Foo: other-suffix
+HDR X-Tenantdomain: evil-no-hyphen
+HDR X_tenant_id: underscore-variant
+
+--- R3: GET /dead/t/cafe-slug/menu (upstream dial failure -> 502)
+HTTP/1.1 502 Bad Gateway
+Date: Fri, 16 Oct 2026 22:04:53 GMT
+Content-Length: 11
+
+Bad Gateway
+--- edge container log since 2026-10-16T22:04:52.555474129Z (all lines)
+{"ClientPort":"45450","ClientUsername":"-","DownstreamContentSize":538,"DownstreamStatus":200,"Duration":224544,"OriginContentSize":538,"OriginDuration":198605,"OriginStatus":200,"Overhead":25939,"RequestAddr":"192.168.176.3","RequestContentSize":0,"RequestCount":2,"RequestHost":"192.168.176.3","RequestMethod":"GET","RequestPort":"-","RequestProtocol":"HTTP/1.1","RequestScheme":"http","RetryAttempts":0,"RouterName":"main@file","ServiceAddr":"ti-p2-up:8080","ServiceName":"up@file","ServiceURL":"http://ti-p2-up:8080","StartLocal":"2026-10-16T22:04:53.562248076Z","StartUTC":"2026-10-16T22:04:53.562248076Z","entryPointName":"web","level":"info","msg":"","request_Traceparent":"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01","time":"2026-10-16T22:04:53Z"}
+{"ClientPort":"45454","ClientUsername":"-","DownstreamContentSize":538,"DownstreamStatus":200,"Duration":186939,"OriginContentSize":538,"OriginDuration":161604,"OriginStatus":200,"Overhead":25335,"RequestAddr":"192.168.176.3","RequestContentSize":0,"RequestCount":3,"RequestHost":"192.168.176.3","RequestMethod":"GET","RequestPort":"-","RequestProtocol":"HTTP/1.1","RequestScheme":"http","RetryAttempts":0,"RouterName":"main@file","ServiceAddr":"ti-p2-up:8080","ServiceName":"up@file","ServiceURL":"http://ti-p2-up:8080","StartLocal":"2026-10-16T22:04:53.566275502Z","StartUTC":"2026-10-16T22:04:53.566275502Z","entryPointName":"web","level":"info","msg":"","request_Traceparent":"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01","time":"2026-10-16T22:04:53Z"}
+{"ClientPort":"45466","ClientUsername":"-","DownstreamContentSize":11,"DownstreamStatus":502,"Duration":147490,"OriginContentSize":11,"OriginDuration":114990,"OriginStatus":502,"Overhead":32500,"RequestAddr":"192.168.176.3","RequestContentSize":0,"RequestCount":4,"RequestHost":"192.168.176.3","RequestMethod":"GET","RequestPort":"-","RequestProtocol":"HTTP/1.1","RequestScheme":"http","RetryAttempts":0,"RouterName":"dead@file","ServiceAddr":"127.0.0.1:1","ServiceName":"deadsvc@file","ServiceURL":"http://127.0.0.1:1","StartLocal":"2026-10-16T22:04:53.570013229Z","StartUTC":"2026-10-16T22:04:53.570013229Z","entryPointName":"web","level":"info","msg":"","request_Traceparent":"00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01","time":"2026-10-16T22:04:53Z"}
+
+--- what the upstream saw (R1)
+  X-Tenant-Id => ABSENT
+  X-Tenant-Slug => ABSENT
+  X-Tenant => ABSENT
+  X-Tenantdomain => HDR X-Tenantdomain: evil-no-hyphen
+  X_Tenant_Id => HDR X_tenant_id: underscore-variant
+  X-Tenant-Foo => HDR X-Tenant-Foo: other-suffix
+  X-Forwarded-For => HDR X-Forwarded-For: 192.168.176.1
+  X-Forwarded-Host => HDR X-Forwarded-Host: 192.168.176.3
+  X-Forwarded-Proto => HDR X-Forwarded-Proto: http
+  X-Forwarded-Prefix => ABSENT
+  X-Forwarded-Port => HDR X-Forwarded-Port: 80
+  X-Forwarded-Server => HDR X-Forwarded-Server: 44cd1c1eb779
+  Forwarded => ABSENT
+  X-Real-Ip => ABSENT
+  X-Client-Ip => ABSENT
+  Traceparent => HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+
+--- what the upstream saw (R2, Connection: X-Client-Ip, X-Forwarded-For)
+  X-Tenant-Id => ABSENT
+  X-Tenant-Slug => ABSENT
+  X-Tenant => ABSENT
+  X-Tenantdomain => HDR X-Tenantdomain: evil-no-hyphen
+  X_Tenant_Id => HDR X_tenant_id: underscore-variant
+  X-Tenant-Foo => HDR X-Tenant-Foo: other-suffix
+  X-Forwarded-For => HDR X-Forwarded-For: 192.168.176.1
+  X-Forwarded-Host => HDR X-Forwarded-Host: 192.168.176.3
+  X-Forwarded-Proto => HDR X-Forwarded-Proto: http
+  X-Forwarded-Prefix => ABSENT
+  X-Forwarded-Port => HDR X-Forwarded-Port: 80
+  X-Forwarded-Server => HDR X-Forwarded-Server: 44cd1c1eb779
+  Forwarded => ABSENT
+  X-Real-Ip => ABSENT
+  X-Client-Ip => ABSENT
+  Traceparent => HDR Traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+
+=================== TRAEFIK 3.7.14 with forwardedHeaders.trustedIPs = bridge range (peer trusted)
+HDR X-Forwarded-For: 6.6.6.6, 192.168.176.1
+HDR X-Forwarded-Host: 192.168.176.3
+HDR X-Forwarded-Proto: https
+### done 2026-10-16T22:04:55Z

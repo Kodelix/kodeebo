@@ -1,0 +1,21 @@
+== S12b start 2026-10-16T21:57:26Z
+2026-10-16 21:57:26.827 UTC [1] LOG process up: PgBouncer 1.26.0, libevent 2.1.13-stable (epoll), adns: evdns2, tls: OpenSSL 3.5.8 25 Aug 2026
+-- T0: fresh server connection: setting and visible rows with no context (expect <NULL> and 0)
+pid 3116|setting=[<NULL>]
+sees 0
+-- T4: SET LOCAL (statement form) in a transaction, then a following autocommit statement
+SET LOCAL client sees 2
+after commit setting=[] sees 0
+-- T5: set_config(...,true) in autocommit (no explicit transaction), then second statement
+11111111-1111-4111-8111-111111111111
+autocommit second statement setting=[] sees 0
+-- T6: ROLLBACK path: set_config in a rolled-back transaction, then a new client
+11111111-1111-4111-8111-111111111111
+new client after rollback setting=[] sees 0
+-- T7: client disconnects in the middle of a transaction (killed psql via timeout) after set_config, then a new client
+new client after aborted client setting=[] sees 0
+-- T8: malformed context in a transaction behind the pooler (expect error 22P02), then a new client
+not-a-uuid
+ERROR:  invalid input syntax for type uuid: "not-a-uuid"
+new client after error setting=[<NULL>] sees 0
+== S12b end 2026-10-16T21:57:37Z

@@ -1,0 +1,17 @@
+sqlite3 3.54.0
+off-delete-mode              journal_mode=delete secure_delete=0
+   after DELETE (+TRUNCATE checkpoint in WAL mode): db canaries=356 journal canaries=None wal canaries=None db bytes=32768
+off-delete-mode-vacuum       journal_mode=delete secure_delete=0
+   after DELETE (+TRUNCATE checkpoint in WAL mode): db canaries=356 journal canaries=None wal canaries=None db bytes=32768
+   after VACUUM: db canaries=0 journal canaries=None journal exists=False db bytes=8192
+off-wal-mode                 journal_mode=wal secure_delete=0
+   after DELETE (+TRUNCATE checkpoint in WAL mode): db canaries=356 journal canaries=None wal canaries=0 db bytes=32768
+off-wal-mode-vacuum          journal_mode=wal secure_delete=0
+   after DELETE (+TRUNCATE checkpoint in WAL mode): db canaries=356 journal canaries=None wal canaries=0 db bytes=32768
+   after VACUUM: db canaries=356 journal canaries=None journal exists=False db bytes=32768
+off-persist-mode             journal_mode=persist secure_delete=0
+   after DELETE (+TRUNCATE checkpoint in WAL mode): db canaries=356 journal canaries=112 wal canaries=None db bytes=32768
+off-persist-mode-vacuum      journal_mode=persist secure_delete=0
+   after DELETE (+TRUNCATE checkpoint in WAL mode): db canaries=356 journal canaries=112 wal canaries=None db bytes=32768
+   after VACUUM: db canaries=0 journal canaries=112 journal exists=True db bytes=8192
+work dir removed

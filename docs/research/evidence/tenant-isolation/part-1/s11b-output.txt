@@ -1,0 +1,13 @@
+== S11b start 2026-10-16T21:58:48Z
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+superuser view: t01 rows total = 150 (expect 150)
+-- pg_dump as non-bypass role dump_rt WITHOUT --enable-row-security (expect error):
+pg_dump: error: query failed: ERROR:  query would be affected by row-level security policy for table "t01"
+pg_dump: detail: Query was: COPY public.t01 (id, tenant_id, a, b, c, d, e) TO stdout;
+-- pg_dump as dump_rt WITH --enable-row-security --inserts, tenant A in PGOPTIONS:
+INSERT lines for public.t01 in the dump: 100 (expect 100)
+INSERT lines naming tenant B id: 1 (expect 0)
+INSERT lines naming the tenants table rows (tenants has no RLS): 100 (a table without RLS is dumped in full)
+-- pg_dump as dump_rt WITH --enable-row-security and NO tenant context (expect no tenant rows):
+INSERT lines for public.t01 with no context: 0 (expect 0)
+== S11b end 2026-10-16T21:58:49Z

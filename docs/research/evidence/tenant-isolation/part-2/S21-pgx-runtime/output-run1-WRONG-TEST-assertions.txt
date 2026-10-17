@@ -1,0 +1,101 @@
+### date (UTC): 2026-10-16T21:55:53Z
+### go version go1.27.2 linux/amd64; Docker version 29.9.1, build dfc520dcc2
+### images: postgres:18.6 sha256:74935e722416  edoburu/pgbouncer:v1.26.0-p0 sha256:b17551c776ef
+### server: postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)
+CREATE ROLE
+CREATE ROLE
+CREATE SCHEMA
+SET
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE POLICY
+RESET
+GRANT
+GRANT
+GRANT
+ALTER ROLE
+INSERT 0 3
+INSERT 0 5
+ rolname  | rolsuper | rolbypassrls 
+----------+----------+--------------
+ app_rt   | f        | f
+ migrator | f        | f
+(2 rows)
+
+### pgbouncer containers up: ti-p2-pgb0 ti-p2-pgb 
+=== RUN   TestGo_ForgottenContextFailsClosed
+    tenant_test.go:84: no tx, no context: pid=109 rows_visible=0 guc="<NULL>" err=<nil>
+    tenant_test.go:90: tx without set_config: rows_visible=0 guc="<NULL>"
+    tenant_test.go:95: INSERT without context -> 42501 new row violates row-level security policy for table "orders"
+--- PASS: TestGo_ForgottenContextFailsClosed (0.01s)
+=== RUN   TestGo_LocalContextDoesNotSurviveCommitOrRollback
+    tenant_test.go:110: inside tx A: pid=110 rows=3 guc="11111111-1111-4111-8111-111111111111"
+    tenant_test.go:120: after commit, next borrower: pid=110 (same backend: true) rows=0 guc=""
+    tenant_test.go:128: after fn error (boom): pid=110 rows=0 guc=""
+    tenant_test.go:134: recovered panic: use case panicked
+    tenant_test.go:138: after panic: pid=110 rows=0 guc="" stat idle=1 total=1
+--- PASS: TestGo_LocalContextDoesNotSurviveCommitOrRollback (0.01s)
+=== RUN   TestGo_CancelledContextAtRollbackDestroysConn
+    tenant_test.go:154: WithTenant returned: work failed
+    tenant_test.go:156: next borrower: pid=112 (same as before: false) rows=0 guc="<NULL>" err=<nil>
+    tenant_test.go:158: tenant context leaked after cancel
+--- FAIL: TestGo_CancelledContextAtRollbackDestroysConn (0.01s)
+=== RUN   TestGo_LeakedOpenTxIsDestroyedOnRelease
+    tenant_test.go:178: leaked-tx conn pid=113; next borrower pid=114 (different: true) rows=0 guc="<NULL>" err=<nil>
+    tenant_test.go:180: a connection returned inside a transaction must be destroyed, not reused
+--- FAIL: TestGo_LeakedOpenTxIsDestroyedOnRelease (0.01s)
+=== RUN   TestGo_SessionLevelSetConfigLeaks_NegativeControl
+    tenant_test.go:191: NEGATIVE CONTROL (is_local=false): next borrower pid=115 rows=3 guc="11111111-1111-4111-8111-111111111111" -> tenant A rows are visible to whoever borrows next
+--- PASS: TestGo_SessionLevelSetConfigLeaks_NegativeControl (0.01s)
+=== RUN   TestGo_PrepareConnGuardCatchesLeakedSessionValue
+    tenant_test.go:215: with PrepareConn guard: connections destroyed=1 next borrower pid=117 rows=0 guc="<NULL>" err=<nil>
+--- PASS: TestGo_PrepareConnGuardCatchesLeakedSessionValue (0.01s)
+=== RUN   TestGo_SecondSetConfigSwitchesTenant
+    tenant_test.go:228: same tx: first context A rows=3; after second set_config(B) err=<nil> rows=5
+--- PASS: TestGo_SecondSetConfigSwitchesTenant (0.00s)
+=== RUN   TestGo_MalformedTenantRaises22P02
+    tenant_test.go:241: malformed context: rows=0 err=22P02 invalid input syntax for type uuid: "not-a-uuid"
+--- PASS: TestGo_MalformedTenantRaises22P02 (0.00s)
+=== RUN   TestGo_StatementCacheStaysPerConnection
+    tenant_test.go:269: 50 alternating tenant transactions OK on a direct connection, default exec mode
+--- PASS: TestGo_StatementCacheStaysPerConnection (0.02s)
+=== RUN   TestPooler_LocalContextNoLeakAcrossClients
+    tenant_test.go:292: client1 tx tenant A through PgBouncer: server pid=121 rows=3
+    tenant_test.go:299: client2 (no tx context) next: server pid=121 (same server conn: true) rows=0 guc="" err=<nil>
+--- PASS: TestPooler_LocalContextNoLeakAcrossClients (0.09s)
+=== RUN   TestPooler_SessionLevelSetConfigLeaksAcrossClients_NegativeControl
+    tenant_test.go:312: NEGATIVE CONTROL: client2 sees server pid=121 rows=3 guc="11111111-1111-4111-8111-111111111111" (client1 never shared a session with client2 from its own point of view)
+--- PASS: TestPooler_SessionLevelSetConfigLeaksAcrossClients_NegativeControl (0.00s)
+=== RUN   TestPooler_DefaultExecModeWithoutPreparedStatementSupport
+    tenant_test.go:332: default mode, PgBouncer max_prepared_statements=0, alternating clients: first error = ERROR: prepared statement "stmtcache_824b70176cb2e344eb061d93d1a4ee60b40b3ac76a56340a" already exists (SQLSTATE 42P05)
+--- PASS: TestPooler_DefaultExecModeWithoutPreparedStatementSupport (0.02s)
+=== RUN   TestPooler_ExecModeExecWorksWithoutPreparedStatementSupport
+    tenant_test.go:359: QueryExecModeExec: 40 alternating-tenant transactions across two clients OK with max_prepared_statements=0
+--- PASS: TestPooler_ExecModeExecWorksWithoutPreparedStatementSupport (0.01s)
+=== RUN   TestPooler_DescribeExecIsUnsafe
+    tenant_test.go:374: DescribeExec through PgBouncer, 60 tx: errors=0 (doc says unsafe; zero errors here does not prove safety)
+--- PASS: TestPooler_DescribeExecIsUnsafe (0.02s)
+=== RUN   TestAcquireTimeout_StarvationFailsFast
+    tenant_test.go:388: while a request holds the only conn open: next request err=context deadline exceeded
+--- PASS: TestAcquireTimeout_StarvationFailsFast (0.31s)
+FAIL
+FAIL	ti.p2/s21	0.525s
+FAIL
+### pgbouncer (mps=200) log tail
+2026-10-16 21:56:01.918 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34902 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.920 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34910 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.920 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34910 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.921 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34910 closing because: client close request (age=0s)
+2026-10-16 21:56:01.921 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34910 closing because: client close request (age=0s)
+2026-10-16 21:56:01.921 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34902 closing because: client close request (age=0s)
+2026-10-16 21:56:01.921 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34902 closing because: client close request (age=0s)
+2026-10-16 21:56:01.951 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34912 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.951 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34912 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.952 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34920 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.952 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34920 login attempt: db=postgres user=app_rt tls=no replication=no
+2026-10-16 21:56:01.973 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34912 closing because: client close request (age=0s)
+2026-10-16 21:56:01.973 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34920 closing because: client close request (age=0s)
+2026-10-16 21:56:01.973 UTC [1] LOG C-0x7fd92ac123b0: postgres/app_rt@192.168.176.1:34912 closing because: client close request (age=0s)
+2026-10-16 21:56:01.973 UTC [1] LOG C-0x7fd92ac12698: postgres/app_rt@192.168.176.1:34920 closing because: client close request (age=0s)
+### done 2026-10-16T21:56:02Z

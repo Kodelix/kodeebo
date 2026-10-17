@@ -1,0 +1,8 @@
+# Variant: plain reverse_proxy, no header_up at all (to attribute what Caddy does by default).
+{
+	admin off
+	auto_https off
+}
+:80 {
+	reverse_proxy ti-p2-up:8080
+}

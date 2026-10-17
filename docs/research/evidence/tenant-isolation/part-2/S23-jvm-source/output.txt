@@ -1,0 +1,449 @@
+### date (UTC): 2026-10-16T21:57:27Z
+### hikari: 52 files  <- https://repo1.maven.org/maven2/com/zaxxer/HikariCP/7.1.0/HikariCP-7.1.0-sources.jar
+### expcore: 105 files  <- https://repo1.maven.org/maven2/org/jetbrains/exposed/exposed-core/1.5.1/exposed-core-1.5.1-sources.jar
+### expjdbc: 47 files  <- https://repo1.maven.org/maven2/org/jetbrains/exposed/exposed-jdbc/1.5.1/exposed-jdbc-1.5.1-sources.jar
+### pgjdbc: 316 files  <- https://repo1.maven.org/maven2/org/postgresql/postgresql/42.7.14/postgresql-42.7.14-sources.jar
+
+===== HikariCP ProxyConnection.close(): what happens to an open transaction / dirty state
+   public final void close() throws SQLException
+   {
+      // Closing statements can cause connection eviction, so this must run before the conditional below
+      closeStatements();
+
+      if (delegate != ClosedConnection.CLOSED_CONNECTION) {
+         leakTask.cancel();
+
+         try {
+            if (isCommitStateDirty && !isAutoCommit) {
+               delegate.rollback();
+               LOGGER.debug("{} - Executed rollback on connection {} due to dirty commit state on close().", poolEntry.getPoolName(), delegate);
+            }
+
+            if (dirtyBits != 0) {
+               poolEntry.resetConnectionState(this, dirtyBits);
+            }
+
+            delegate.clearWarnings();
+         }
+         catch (SQLException e) {
+            // when connections are aborted, exceptions are often thrown that should not reach the application
+            if (!poolEntry.isMarkedEvicted()) {
+               throw checkException(e);
+            }
+         }
+         finally {
+            delegate = ClosedConnection.CLOSED_CONNECTION;
+            poolEntry.recycle();
+         }
+      }
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   @SuppressWarnings("RedundantThrows")
+   public boolean isClosed() throws SQLException
+   {
+      return (delegate == ClosedConnection.CLOSED_CONNECTION);
+   }
+
+   /** {@inheritDoc} */
+   @Override
+   public Statement createStatement() throws SQLException
+   {
+      return ProxyFactory.getProxyStatement(this, trackStatement(delegate.createStatement()));
+
+===== HikariCP ProxyConnection: dirty bits and resetting
+39:   static final int DIRTY_BIT_READONLY   = 0b000001;
+40:   static final int DIRTY_BIT_AUTOCOMMIT = 0b000010;
+41:   static final int DIRTY_BIT_ISOLATION  = 0b000100;
+42:   static final int DIRTY_BIT_CATALOG    = 0b001000;
+43:   static final int DIRTY_BIT_NETTIMEOUT = 0b010000;
+44:   static final int DIRTY_BIT_SCHEMA     = 0b100000;
+57:   private int dirtyBits;
+58:   private boolean isCommitStateDirty;
+196:         isCommitStateDirty = true;
+249:            if (isCommitStateDirty && !isAutoCommit) {
+254:            if (dirtyBits != 0) {
+255:               poolEntry.resetConnectionState(this, dirtyBits);
+379:      isCommitStateDirty = false;
+387:      isCommitStateDirty = false;
+395:      isCommitStateDirty = true;
+402:      if ((dirtyBits & DIRTY_BIT_AUTOCOMMIT) != 0) {
+414:      dirtyBits |= DIRTY_BIT_AUTOCOMMIT;
+421:      if ((dirtyBits & DIRTY_BIT_READONLY) != 0) {
+433:      dirtyBits |= DIRTY_BIT_READONLY;
+440:      if ((dirtyBits & DIRTY_BIT_ISOLATION) != 0) {
+452:      dirtyBits |= DIRTY_BIT_ISOLATION;
+459:      if ((dirtyBits & DIRTY_BIT_CATALOG) != 0) {
+471:      dirtyBits |= DIRTY_BIT_CATALOG;
+478:      if ((dirtyBits & DIRTY_BIT_NETTIMEOUT) != 0) {
+490:      dirtyBits |= DIRTY_BIT_NETTIMEOUT;
+497:      if ((dirtyBits & DIRTY_BIT_SCHEMA) != 0) {
+509:      dirtyBits |= DIRTY_BIT_SCHEMA;
+
+===== HikariCP PoolBase.resetConnectionState
+   void resetConnectionState(final Connection connection, final ProxyConnection proxyConnection, final int dirtyBits) throws SQLException
+   {
+      int resetBits = 0;
+
+      if ((dirtyBits & DIRTY_BIT_READONLY) != 0 && proxyConnection.getReadOnlyState() != isReadOnly) {
+         connection.setReadOnly(isReadOnly);
+         resetBits |= DIRTY_BIT_READONLY;
+      }
+
+      if ((dirtyBits & DIRTY_BIT_AUTOCOMMIT) != 0 && proxyConnection.getAutoCommitState() != isAutoCommit) {
+         connection.setAutoCommit(isAutoCommit);
+         resetBits |= DIRTY_BIT_AUTOCOMMIT;
+      }
+
+      if ((dirtyBits & DIRTY_BIT_ISOLATION) != 0 && proxyConnection.getTransactionIsolationState() != transactionIsolation) {
+         //noinspection MagicConstant
+         connection.setTransactionIsolation(transactionIsolation);
+         resetBits |= DIRTY_BIT_ISOLATION;
+      }
+
+      if ((dirtyBits & DIRTY_BIT_CATALOG) != 0 && catalog != null && !catalog.equals(proxyConnection.getCatalogState())) {
+         connection.setCatalog(catalog);
+         resetBits |= DIRTY_BIT_CATALOG;
+      }
+
+      if ((dirtyBits & DIRTY_BIT_NETTIMEOUT) != 0 && proxyConnection.getNetworkTimeoutState() != networkTimeout) {
+         setNetworkTimeout(connection, networkTimeout);
+         resetBits |= DIRTY_BIT_NETTIMEOUT;
+      }
+
+      if ((dirtyBits & DIRTY_BIT_SCHEMA) != 0 && schema != null && !schema.equals(proxyConnection.getSchemaState())) {
+         connection.setSchema(schema);
+         resetBits |= DIRTY_BIT_SCHEMA;
+      }
+
+      if (resetBits != 0 && logger.isDebugEnabled()) {
+         logger.debug("{} - Reset ({}) on connection {}", poolName, stringFromResetBits(resetBits), connection);
+      }
+   }
+
+   void shutdownNetworkTimeoutExecutor()
+   {
+      isNetworkTimeoutSupported = UNINITIALIZED;
+      if (netTimeoutExecutor instanceof ThreadPoolExecutor) {
+         ((ThreadPoolExecutor) netTimeoutExecutor).shutdownNow();
+      }
+   }
+
+   long getLoginTimeout()
+   {
+      try {
+
+===== HikariCP: connectionInitSql use, and any DISCARD/RESET
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:75:   private String connectionInitSql;
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:395:      return connectionInitSql;
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:403:    * @param connectionInitSql the SQL to execute on new connections
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:405:   public void setConnectionInitSql(String connectionInitSql)
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:408:      this.connectionInitSql = connectionInitSql;
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:594:    *       and {@code connectionInitSql} are valid.  If those validations fail, an exception
+/tmp/tmp.5xkMsnvDzr/hikari/com/zaxxer/hikari/HikariConfig.java:1057:      connectionInitSql = getNullIfEmpty(connectionInitSql);
+
+===== Exposed: where the current transaction lives (ThreadLocal vs coroutine context)
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/TransactionScope.kt:22:fun <T : Any> nullableTransactionScope() = TransactionStore<T>()
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/Transactions.kt:38:fun <T> withThreadLocalTransaction(transaction: Transaction?, block: () -> T): T {
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextHolder.kt:10:interface TransactionContextHolder : CoroutineContext.Element {
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextElement.kt:3:import kotlinx.coroutines.ThreadContextElement
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextElement.kt:21:class TransactionContextElement(
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextElement.kt:23:) : ThreadContextElement<Transaction?>, AbstractCoroutineContextElement(TransactionContextElement) {
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextElement.kt:25:    companion object Key : CoroutineContext.Key<TransactionContextElement>
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextElement.kt:52:        // Check if stack is empty - this can happen if withThreadLocalTransaction already popped it
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/suspend/TransactionContextElement.kt:57:                    "This is likely because withThreadLocalTransaction already popped the transaction. Skipping restore."
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/TransactionsHolder.kt:95:                "Loaded TransactionsHolder class ${(it ?: ThreadLocalTransactionsStack)::class.simpleName} to manage instances (priority ${it?.priority ?: 0})"
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/TransactionsHolder.kt:98:        ?: ThreadLocalTransactionsStack
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/ThreadLocalTransactionsStack.kt:28: * - withThreadLocalTransaction(...)
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/ThreadLocalTransactionsStack.kt:31:internal object ThreadLocalTransactionsStack : TransactionsHolder {
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/ThreadLocalTransactionsStack.kt:32:    private val transactions = ThreadLocal<Stack<Transaction>>()
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/ThreadLocalTransactionsStack.kt:60:            // Remove the ThreadLocal entirely when stack is empty.
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/transactions/ThreadLocalTransactionsStack.kt:92:    //  Related issue: https://youtrack.jetbrains.com/issue/EXPOSED-915/ThreadLocalTransactionsStack-makes-inefficient-operations
+/tmp/tmp.5xkMsnvDzr/expcore/org/jetbrains/exposed/v1/core/vendors/DatabaseDialect.kt:182:private val explicitDialect = ThreadLocal<DatabaseDialect?>()
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/JdbcTransaction.kt:15:import org.jetbrains.exposed.v1.core.transactions.withThreadLocalTransaction
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/JdbcTransaction.kt:89:        withThreadLocalTransaction(this) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/JdbcTransaction.kt:109:        withThreadLocalTransaction(this) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/JdbcTransaction.kt:217:        withThreadLocalTransaction(this) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/JdbcTransaction.kt:233:        return withThreadLocalTransaction(this) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/JdbcTransaction.kt:309:        return withThreadLocalTransaction(this) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:9:import org.jetbrains.exposed.v1.core.transactions.withThreadLocalTransaction
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:17:import java.util.concurrent.ThreadLocalRandom
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:149:        withThreadLocalTransaction(transaction) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:213:            return withThreadLocalTransaction(transaction) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:238:                    ThreadLocalRandom.current().nextLong(intermediateDelay, intermediateDelay + retryInterval)
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:257:            withThreadLocalTransaction(transaction) {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:388:                    ThreadLocalRandom.current().nextLong(intermediateDelay, intermediateDelay + retryInterval)
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/JdbcTransactionManager.kt:8:import org.jetbrains.exposed.v1.core.transactions.suspend.TransactionContextElement
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/JdbcTransactionManager.kt:62:    return TransactionContextHolderImpl(transaction, contextKey) + TransactionContextElement(transaction)
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:82:                ThreadLocalTransaction(
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:202:    private class ThreadLocalTransaction(
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:215:                    setupTxConnection?.invoke(this, this@ThreadLocalTransaction) ?: run {
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:226:                            db.dataSourceIsolationLevel != this@ThreadLocalTransaction.transactionIsolation ||
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:227:                            db.dataSourceReadOnly != this@ThreadLocalTransaction.readOnly
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:230:                            transactionIsolation = this@ThreadLocalTransaction.transactionIsolation
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/TransactionManager.kt:231:                            readOnly = this@ThreadLocalTransaction.readOnly
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/vendors/DatabaseDialectMetadata.kt:197:private val explicitDialect = ThreadLocal<DatabaseDialectMetadata?>()
+
+===== Exposed: names of suspend transaction entry points
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:131:fun <T> transaction(
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:191:fun <T> inTopLevelTransaction(
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:282:suspend fun <T> suspendTransaction(
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/Transactions.kt:341:suspend fun <T> inTopLevelSuspendTransaction(
+/tmp/tmp.5xkMsnvDzr/expjdbc/org/jetbrains/exposed/v1/jdbc/transactions/experimental/Suspended.kt:23:suspend fun <T> newSuspendedTransaction(
+
+===== Exposed: deprecation annotations near suspended transactions
+
+===== Exposed: transaction exec() and connection-level API to run set_config
+
+===== pgjdbc: reset on connection close / DISCARD / setLocal
+/tmp/tmp.5xkMsnvDzr/pgjdbc/org/postgresql/core/v3/QueryExecutorImpl.java:2507:              && (status.startsWith("DEALLOCATE ALL") || status.startsWith("DISCARD ALL"))) {
+/tmp/tmp.5xkMsnvDzr/pgjdbc/org/postgresql/core/v3/QueryExecutorImpl.java:2546:          // RESET ALL and changes the driver cannot see in the command tag (e.g. a SET inside
+/tmp/tmp.5xkMsnvDzr/pgjdbc/org/postgresql/core/v3/QueryExecutorImpl.java:2556:                    // "RESET ALL" reverts every parameter, search_path included.
+
+===== pgjdbc: prepareThreshold default
+/tmp/tmp.5xkMsnvDzr/pgjdbc/org/postgresql/PGProperty.java:570:  PREPARE_THRESHOLD(
+  PREPARE_THRESHOLD(
+      "prepareThreshold",
+      "5",
+      "Statement prepare threshold. A value of {@code -1} stands for forceBinary"),
+
+  /**
+   * Force use of a particular protocol version when connecting, if set, disables protocol version
+   * fallback.
+   */
+  PROTOCOL_VERSION(
+      "protocolVersion",
+
+===== Exposed TransactionContextElement.kt (head)
+package org.jetbrains.exposed.v1.core.transactions.suspend
+
+import kotlinx.coroutines.ThreadContextElement
+import org.jetbrains.exposed.v1.core.InternalApi
+import org.jetbrains.exposed.v1.core.Transaction
+import org.jetbrains.exposed.v1.core.exposedLogger
+import org.jetbrains.exposed.v1.core.transactions.TransactionsHolderProvider
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
+
+/**
+ * A coroutine context element that manages thread-local transaction state for coroutines.
+ *
+ * This element ensures that when a coroutine is suspended and resumed on a different thread,
+ * the transaction is properly restored to the thread-local stack.
+ *
+ * @property transaction The transaction to be managed in the coroutine context.
+ * @suppress
+ */
+@InternalApi
+class TransactionContextElement(
+    private val transaction: Transaction
+) : ThreadContextElement<Transaction?>, AbstractCoroutineContextElement(TransactionContextElement) {
+
+    companion object Key : CoroutineContext.Key<TransactionContextElement>
+
+    /**
+     * Updates the thread context when the coroutine is resumed on a thread.
+     * Pushes the transaction onto the current transactions data holder and returns the previous transaction.
+     *
+     * @param context The coroutine context.
+     * @return The previous transaction that was on top of the stack, or null if none existed.
+     */
+    override fun updateThreadContext(context: CoroutineContext): Transaction? {
+        val previousTransaction = TransactionsHolderProvider.holder.getTransactionOrNull()
+        if (previousTransaction?.transactionId == transaction.transactionId) return null
+
+        TransactionsHolderProvider.holder.storeTransaction(transaction)
+        return transaction
+    }
+
+    /**
+     * Restores the thread context when the coroutine is suspended or completed.
+     * Pops the transaction from the thread-local stack and validates it matches the expected transaction.
+     *
+     * @param context The coroutine context.
+     * @param oldState The transaction that was added to the stack and was returned by [updateThreadContext].
+     */
+    override fun restoreThreadContext(context: CoroutineContext, oldState: Transaction?) {
+        if (oldState == null) return
+
+        // Check if stack is empty - this can happen if withThreadLocalTransaction already popped it
+        val currentTransaction = TransactionsHolderProvider.holder.getTransactionOrNull()
+        if (currentTransaction == null) {
+            exposedLogger.warn(
+                "restoreThreadContext called for transaction ${transaction.transactionId} but stack is already empty. " +
+                    "This is likely because withThreadLocalTransaction already popped the transaction. Skipping restore."
+            )
+            return
+        }
+
+        // Check if the top of the stack is actually our transaction before popping
+        if (currentTransaction.transactionId != transaction.transactionId) {
+            exposedLogger.warn(
+                "restoreThreadContext called for transaction ${transaction.transactionId} but top of stack is ${currentTransaction.transactionId}. " +
+                    "Skipping restore to avoid corrupting the stack."
+            )
+            return
+        }
+
+        // Safe to pop
+        val poppedTransaction = TransactionsHolderProvider.holder.removeTransaction()
+        if (poppedTransaction.transactionId != transaction.transactionId) {
+            exposedLogger.warn(
+                "The current thread local stack of transactions had a transaction ${poppedTransaction.transactionId} on the top. " +
+
+===== Exposed suspendTransaction (KDoc + signature)
+            if (attempts >= transaction.maxAttempts) {
+                throw cause
+            }
+        } finally {
+            @OptIn(InternalApi::class)
+            withThreadLocalTransaction(transaction) {
+                closeStatementsAndConnection(transaction)
+            }
+        }
+    }
+}
+
+/**
+ * Creates a suspendable transaction with the specified [transactionIsolation] and [readOnly] settings, then calls
+ * the [statement] block with this transaction as its receiver and returns the result.
+ *
+ * **Note** If the database value [db] is not set, the value used will be either the last [Database] instance created
+ * or the value associated with the parent transaction (if this function is invoked in an existing transaction).
+ *
+ * **Note** This function catches all throwables (including errors) to ensure proper transaction rollback
+ * and resource cleanup, even in exceptional circumstances.
+ *
+ * @param db Database to use for the transaction. Defaults to `null`.
+ * @param transactionIsolation Transaction isolation level. Defaults to `db.transactionManager.defaultIsolationLevel`.
+ * @param readOnly Whether the transaction should be read-only. Defaults to `db.transactionManager.defaultReadOnly`.
+ * @return The final result of the [statement] block.
+ * @throws IllegalStateException If no database is available
+ * @throws SQLException If a database error occurs and retry attempts are exhausted
+ * @throws Throwable If any other error occurs during execution
+ */
+suspend fun <T> suspendTransaction(
+    db: Database? = null,
+    transactionIsolation: Int? = db?.transactionManager?.defaultIsolationLevel,
+    readOnly: Boolean? = db?.transactionManager?.defaultReadOnly,
+    statement: suspend JdbcTransaction.() -> T
+): T {
+    val databaseToUse = resolveDatabaseOrThrow(db)
+
+    val outer = databaseToUse.transactionManager.getCurrentContextTransaction()
+
+    return if (outer != null) {
+        val transaction = outer.transactionManager.newTransaction(
+            transactionIsolation ?: outer.transactionManager.defaultIsolationLevel,
+            readOnly ?: outer.transactionManager.defaultReadOnly,
+            outer
+        )
+
+===== Exposed experimental newSuspendedTransaction (head)
+package org.jetbrains.exposed.v1.jdbc.transactions.experimental
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.withContext
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.inTopLevelSuspendTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import kotlin.coroutines.CoroutineContext
+
+@Deprecated(
+    message = """"
+        This function will be removed in future releases.
+
+        Replace with `suspendTransaction()` call. `suspendTransaction()` doesn't allow to pass
+        context as a parameter, use `withContext()` if you need to use transaction with custom context.
+    """,
+    level = DeprecationLevel.WARNING
+)
+suspend fun <T> newSuspendedTransaction(
+    context: CoroutineContext? = null,
+    db: Database? = null,
+    transactionIsolation: Int? = null,
+    readOnly: Boolean? = null,
+    statement: suspend JdbcTransaction.() -> T
+): T {
+    return withContext(context ?: currentCoroutineContext()) {
+        inTopLevelSuspendTransaction(db, transactionIsolation, readOnly, null, statement)
+    }
+}
+
+@Deprecated(
+    message = """"
+        This function will be removed in future releases.
+
+        Replace with `suspendTransaction()` call. `suspendTransaction()` doesn't allow to pass
+        context as a parameter, use `withContext()` if you need to use transaction with custom context.
+    """,
+    level = DeprecationLevel.WARNING
+)
+suspend fun <T> JdbcTransaction.withSuspendTransaction(
+    context: CoroutineContext? = null,
+    statement: suspend JdbcTransaction.() -> T
+): T {
+    val tx = this
+    return withContext(context ?: currentCoroutineContext()) {
+        suspendTransaction(tx.db, tx.transactionIsolation, tx.readOnly, statement)
+
+===== Exposed: JdbcTransaction.exec and connection access
+136:    fun exec(
+158:    fun <T : Any> exec(
+215:    fun execInBatch(stmts: List<String>) {
+295:    internal fun execQuery(query: BlockingExecutable<ResultApi, *>): ResultSet = execQuery(query) { it }
+
+===== pgjdbc QueryExecutorImpl around DISCARD ALL / RESET ALL handling
+
+          if (fields != null && tuples != null) {
+            handler.handleResultRows(currentQuery, fields, tuples, currentPortal);
+          }
+          tuples = null;
+          break;
+        }
+
+        case PgMessageType.COMMAND_COMPLETE_RESPONSE: { // end of Execute
+          // Handle status.
+          String status = receiveCommandStatus();
+          if (isFlushCacheOnDeallocate()
+              && (status.startsWith("DEALLOCATE ALL") || status.startsWith("DISCARD ALL"))) {
+            deallocateEpoch++;
+          }
+          if (isFlushCacheOnDdl()
+              && (status.startsWith("CREATE ")
+                  || status.startsWith("DROP ")
+                  || status.startsWith("ALTER "))) {
+            // DDL invalidates any server-side prepared plan that references
+            // the affected relation. Bump the epoch so the driver
+          // prepared plan or catalog-name resolution cached under the previous path potentially
+          // stale, so bump the epoch to force a rebuild. The command tag is always upper-case
+          // ("SET"/"RESET"), but the user-supplied SQL may use any case, so the search_path token
+          // is matched case-insensitively.
+          // PostgreSQL 18+ reports search_path via ParameterStatus (GUC_REPORT), which
+          // receiveParameterStatus turns into a value-based invalidation covering SET, RESET,
+          // RESET ALL and changes the driver cannot see in the command tag (e.g. a SET inside
+          // PL/pgSQL). Once the server has reported search_path (it is then in the parameter status
+          // map) this scan is redundant, so skip it.
+          if ((status.startsWith("SET") || status.startsWith("RESET"))
+              && getParameterStatus("search_path") == null) {
+            String nativeSql = currentQuery.getNativeQuery().nativeSql;
+            // Scan only the first SEARCH_PATH_SCAN_LIMIT characters to avoid a big overhead for
+            // long queries.
+            boolean changesSearchPath =
+                containsIgnoreCase(nativeSql, "search_path", SEARCH_PATH_SCAN_LIMIT)
+                    // "RESET ALL" reverts every parameter, search_path included.
+                    || (status.startsWith("RESET")
+                        && containsIgnoreCase(nativeSql, "all", SEARCH_PATH_SCAN_LIMIT));
+            if (changesSearchPath
+                && !nativeSql.equals(lastSetSearchPathQuery)) {
+              // Search path was changed, invalidate prepared statement cache
+              lastSetSearchPathQuery = nativeSql;
+              deallocateEpoch++;
+            }
+          }
+### done2 2026-10-16T21:57:28Z

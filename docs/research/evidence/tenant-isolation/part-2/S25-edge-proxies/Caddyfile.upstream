@@ -1,0 +1,24 @@
+# Upstream echo server (second caddy:2.11.7-alpine container). Returns the request
+# headers it received, one per line, so run.sh can show what survived the edge.
+# NOTE: write `{{ $k }}` with spaces: `{$k}` inside `{{$k}}` is parsed by the Caddyfile as an
+# env-var placeholder and corrupts the template (first run printed `HDR {}`).
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	# upstream-originated redirect whose Location carries a slug (check 5)
+	redir /redir/* /t/cafe-slug/menu 302
+
+	handle {
+		header Content-Type text/plain
+		templates
+		respond <<EOT
+		UPSTREAM-SAW-PEER: {{.RemoteIP}}
+		UPSTREAM-SAW-URI: {{.Req.RequestURI}}
+		{{ range $k, $v := .Req.Header }}HDR {{ $k }}: {{ index $v 0 }}
+		{{ end }}
+		EOT 200
+	}
+}

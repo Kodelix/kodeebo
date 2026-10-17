@@ -1,0 +1,133 @@
+== S11 start 2026-10-16T21:56:41Z  N=100 tenants  T=30 tables each (1 PK + 1 tenant-leading index per table)
+ PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+
+ 200
+
+NOTICE:  database "rls_db" does not exist, skipping
+NOTICE:  database "sch_db" does not exist, skipping
+NOTICE:  database "tmpl_db" does not exist, skipping
+NOTICE:  database "tdb_1" does not exist, skipping
+NOTICE:  database "tdb_2" does not exist, skipping
+NOTICE:  database "tdb_3" does not exist, skipping
+NOTICE:  database "tdb_4" does not exist, skipping
+NOTICE:  database "tdb_5" does not exist, skipping
+NOTICE:  database "tdb_6" does not exist, skipping
+NOTICE:  database "tdb_7" does not exist, skipping
+NOTICE:  database "tdb_8" does not exist, skipping
+NOTICE:  database "tdb_9" does not exist, skipping
+NOTICE:  database "tdb_10" does not exist, skipping
+NOTICE:  database "tdb_11" does not exist, skipping
+NOTICE:  database "tdb_12" does not exist, skipping
+NOTICE:  database "tdb_13" does not exist, skipping
+NOTICE:  database "tdb_14" does not exist, skipping
+NOTICE:  database "tdb_15" does not exist, skipping
+NOTICE:  database "tdb_16" does not exist, skipping
+NOTICE:  database "tdb_17" does not exist, skipping
+NOTICE:  database "tdb_18" does not exist, skipping
+NOTICE:  database "tdb_19" does not exist, skipping
+NOTICE:  database "tdb_20" does not exist, skipping
+NOTICE:  database "tdb_21" does not exist, skipping
+NOTICE:  database "tdb_22" does not exist, skipping
+NOTICE:  database "tdb_23" does not exist, skipping
+NOTICE:  database "tdb_24" does not exist, skipping
+NOTICE:  database "tdb_25" does not exist, skipping
+NOTICE:  database "tdb_26" does not exist, skipping
+NOTICE:  database "tdb_27" does not exist, skipping
+NOTICE:  database "tdb_28" does not exist, skipping
+NOTICE:  database "tdb_29" does not exist, skipping
+NOTICE:  database "tdb_30" does not exist, skipping
+NOTICE:  database "tdb_31" does not exist, skipping
+NOTICE:  database "tdb_32" does not exist, skipping
+NOTICE:  database "tdb_33" does not exist, skipping
+NOTICE:  database "tdb_34" does not exist, skipping
+NOTICE:  database "tdb_35" does not exist, skipping
+NOTICE:  database "tdb_36" does not exist, skipping
+NOTICE:  database "tdb_37" does not exist, skipping
+NOTICE:  database "tdb_38" does not exist, skipping
+NOTICE:  database "tdb_39" does not exist, skipping
+NOTICE:  database "tdb_40" does not exist, skipping
+NOTICE:  database "tdb_41" does not exist, skipping
+NOTICE:  database "tdb_42" does not exist, skipping
+NOTICE:  database "tdb_43" does not exist, skipping
+NOTICE:  database "tdb_44" does not exist, skipping
+NOTICE:  database "tdb_45" does not exist, skipping
+NOTICE:  database "tdb_46" does not exist, skipping
+NOTICE:  database "tdb_47" does not exist, skipping
+NOTICE:  database "tdb_48" does not exist, skipping
+NOTICE:  database "tdb_49" does not exist, skipping
+NOTICE:  database "tdb_50" does not exist, skipping
+NOTICE:  database "tdb_51" does not exist, skipping
+NOTICE:  database "tdb_52" does not exist, skipping
+NOTICE:  database "tdb_53" does not exist, skipping
+NOTICE:  database "tdb_54" does not exist, skipping
+NOTICE:  database "tdb_55" does not exist, skipping
+NOTICE:  database "tdb_56" does not exist, skipping
+NOTICE:  database "tdb_57" does not exist, skipping
+NOTICE:  database "tdb_58" does not exist, skipping
+NOTICE:  database "tdb_59" does not exist, skipping
+NOTICE:  database "tdb_60" does not exist, skipping
+NOTICE:  database "tdb_61" does not exist, skipping
+NOTICE:  database "tdb_62" does not exist, skipping
+NOTICE:  database "tdb_63" does not exist, skipping
+NOTICE:  database "tdb_64" does not exist, skipping
+NOTICE:  database "tdb_65" does not exist, skipping
+NOTICE:  database "tdb_66" does not exist, skipping
+NOTICE:  database "tdb_67" does not exist, skipping
+NOTICE:  database "tdb_68" does not exist, skipping
+NOTICE:  database "tdb_69" does not exist, skipping
+NOTICE:  database "tdb_70" does not exist, skipping
+NOTICE:  database "tdb_71" does not exist, skipping
+NOTICE:  database "tdb_72" does not exist, skipping
+NOTICE:  database "tdb_73" does not exist, skipping
+NOTICE:  database "tdb_74" does not exist, skipping
+NOTICE:  database "tdb_75" does not exist, skipping
+NOTICE:  database "tdb_76" does not exist, skipping
+NOTICE:  database "tdb_77" does not exist, skipping
+NOTICE:  database "tdb_78" does not exist, skipping
+NOTICE:  database "tdb_79" does not exist, skipping
+NOTICE:  database "tdb_80" does not exist, skipping
+NOTICE:  database "tdb_81" does not exist, skipping
+NOTICE:  database "tdb_82" does not exist, skipping
+NOTICE:  database "tdb_83" does not exist, skipping
+NOTICE:  database "tdb_84" does not exist, skipping
+NOTICE:  database "tdb_85" does not exist, skipping
+NOTICE:  database "tdb_86" does not exist, skipping
+NOTICE:  database "tdb_87" does not exist, skipping
+NOTICE:  database "tdb_88" does not exist, skipping
+NOTICE:  database "tdb_89" does not exist, skipping
+NOTICE:  database "tdb_90" does not exist, skipping
+NOTICE:  database "tdb_91" does not exist, skipping
+NOTICE:  database "tdb_92" does not exist, skipping
+NOTICE:  database "tdb_93" does not exist, skipping
+NOTICE:  database "tdb_94" does not exist, skipping
+NOTICE:  database "tdb_95" does not exist, skipping
+NOTICE:  database "tdb_96" does not exist, skipping
+NOTICE:  database "tdb_97" does not exist, skipping
+NOTICE:  database "tdb_98" does not exist, skipping
+NOTICE:  database "tdb_99" does not exist, skipping
+NOTICE:  database "tdb_100" does not exist, skipping
+[RLS ] build schema + 100 tenant rows: 0.35 s
+[RLS ] pg_database_size: 8926 kB ; pg_class rows: 570 ; pg_attribute rows: 3962
+[RLS ] migration fan-out (ADD COLUMN on 30 tables, 1 database): 0.09 s  (statements: 30)
+[SCH ] provision 100 schemas x 30 tables (3000 tables): 11.28 s  (avg 0.113 s per tenant)
+[SCH ] pg_database_size: 109 MB ; pg_class rows: 15415 ; pg_attribute rows: 81161
+[SCH ] migration fan-out (ADD COLUMN, 1 transaction, 1 database): 0.21 s  (statements: 3000)
+[DB  ] provision 100 databases from template (3000 tables): 10.20 s  (avg 0.102 s per tenant)
+[DB  ] pg_database_size tmpl_db: 8774 kB ; tdb_1: 8617 kB ; sum of 100 tdb_*: 841 MB
+[DB  ] pg_class rows per database: 565 ; pg_database rows: 107
+[DB  ] migration fan-out (ADD COLUMN, 100 separate connections, 30 statements each): 10.66 s  (statements: 3000)
+[SCH ] pg_dump -Fc -n ten_50 : 0.35 s ; size 34501 bytes
+[DB  ] pg_dump -Fc tdb_50     : 0.08 s ; size 34001 bytes
+NOTICE:  database "restore_chk" does not exist, skipping
+[SCH ] pg_restore of one tenant schema into a separate database: 0.25 s ; tables restored: 30
+NOTICE:  role "dump_rt" does not exist, skipping
+[RLS ] insert as superuser (bypasses RLS) rows for one tenant: 0
+[RLS ] pg_dump as non-bypass role WITHOUT --enable-row-security (expect error):
+pg_dump: error: query failed: ERROR:  query would be affected by row-level security policy for table "t01"
+pg_dump: detail: Query was: COPY public.t01 (id, tenant_id, a, b, c, d, e) TO stdout;
+[RLS ] pg_dump as non-bypass role WITH --enable-row-security --inserts, tenant GUC via PGOPTIONS (rows visible to that tenant only):
+[RLS ] time 0.09 s ; INSERT lines for t01 in dump: 0  (superuser table count was 0)
+[RLS ] fresh connection to rls_db  : 55.9 ms per connect+query (30 runs, includes docker exec)
+[SCH ] fresh connection to sch_db  : 58.4 ms per connect+query (30 runs, includes docker exec)
+[DB  ] fresh connection to tdb_50  : 50.3 ms per connect+query (30 runs, includes docker exec)
+== S11 end 2026-10-16T21:57:28Z

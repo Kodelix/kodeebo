@@ -1,0 +1,1123 @@
+        Law No. 151 of 2020, Concerning the Issuance of the Personal Data Protection Law
+                         In the name of the people President of the republic
+        The House of Representatives has enacted the following law, which we hereby
+                                       promulgate:
+
+
+
+                                         Issuance Articles
+
+Article (1):
+
+The provisions of this Law and the accompanying law shall apply with respect to the
+protection of personal data that is processed electronically, whether in whole or in part, by
+any data holder, controller, or processor, and this shall apply to natural persons only.
+
+
+
+Article (2):
+
+The provisions of this Law and the accompanying law shall apply to any person who commits
+any of the crimes stipulated in the accompanying law, where the offender is:
+
+    •    An Egyptian national, whether the act is committed inside or outside the Arab
+         Republic of Egypt.
+
+    •    A non-Egyptian residing within the Arab Republic of Egypt.
+
+    •    A non-Egyptian outside the Arab Republic of Egypt, provided the act is criminalized
+         under the laws of the country where it was committed under any legal description,
+         and the data subject to the crime pertains to Egyptians or foreigners residing within
+         the Arab Republic of Egypt.
+
+
+
+Article (3):
+
+The provisions of the accompanying law shall not apply to the following:
+
+    •    Personal data retained by natural persons for others, which is processed for personal
+         use only.
+
+    •    Personal data processed for the purpose of obtaining official statistical data or
+         pursuant to a legal provision.
+    •   Personal data processed exclusively for journalistic or media purposes, provided that
+        the data is accurate and correct and is not used for any other purposes, without
+        prejudice to the laws regulating press and media.
+
+    •   Personal data related to judicial seizure reports, investigations, and court
+        proceedings.
+
+    •   Personal data held by national security authorities and data excluded for other
+        considerations as determined by such authorities.
+
+               o   The Center shall, upon request by national security authorities, notify the
+                   controller or processor to amend, erase, withhold, restrict access to, or
+                   suspend circulation of personal data within a specified time period, in
+                   accordance with national security considerations. The controller or processor
+                   shall comply with the instructions set forth in such notification within the
+                   specified period.
+
+    •   Personal data held by the Central Bank of Egypt and entities subject to its oversight
+        and supervision, with the exception of money transfer companies and currency
+        exchange companies, provided that the Central Bank’s regulations on the handling of
+        personal data apply to those exceptions.
+
+
+
+Article (4):
+
+The Minister concerned with communications and information technology shall issue the
+Executive Regulations of the accompanying law within six (6) months from the date this Law
+comes into force.
+
+
+
+Article (5):
+
+The Economic Courts shall have jurisdiction over the crimes committed in violation of the
+provisions of the accompanying law.
+
+
+
+Article (6):
+
+Entities subject to the provisions of this Law shall be required to regularize their status in
+accordance with the provisions of the accompanying law and its Executive Regulations within
+one (1) year from the date of issuance of such Regulations.
+Article (7):
+
+This Law shall be published in the Official Gazette and shall come into force three (3) months
+after the day following its publication date.
+
+This Law shall be sealed with the State’s Seal and shall be enforced as one of its laws.
+
+
+
+                                  Personal Data Protection Law
+
+Chapter One: Definitions
+
+Article (1):
+
+For the purposes of implementing this Law, the following terms and expressions shall have
+the meanings assigned to each:
+
+    •   Personal Data: Any data relating to an identified or identifiable natural person,
+        whether directly or indirectly, through linking such data with other information such
+        as name, voice, image, identification number, online identifier, or any data that
+        reveals psychological, health, economic, cultural, or social identity.
+
+    •   Processing: Any electronic or technical operation involving the writing, collecting,
+        recording, retaining, storing, merging, displaying, sending, receiving, circulating,
+        publishing, erasing, altering, modifying, retrieving, or analyzing of personal data,
+        whether partially or wholly, and through any electronic or technological medium or
+        device.
+
+    •   Sensitive Personal Data: Data that reveals mental, psychological, physical, or genetic
+        health, biometric data, financial data, religious beliefs, political opinions, or security
+        status. In all cases, children’s data shall be deemed sensitive personal data.
+
+    •   Data Subject: Any natural person to whom electronically processed personal data
+        relates, and who can be identified legally or factually and distinguished from others.
+
+    •   Data Holder: Any natural or legal person who legally or factually possesses and retains
+        personal data in any form or on any storage medium, whether such person is the
+        originator of the data or has acquired possession thereof by any means.
+
+    •   Controller: Any natural or legal person who, by virtue or nature of their work, has the
+        right to access personal data and determine the method, manner, and criteria for its
+        retention or processing, in accordance with a defined purpose or activity.
+•   Processor: Any natural or legal person who, by virtue of their role, processes personal
+    data for their own benefit or on behalf of the controller in accordance with the
+    controller’s instructions and under a formal agreement.
+
+•   Personal Data Availability: Any method by which personal data is made known to
+    others, including through access, circulation, publication, transfer, use, display,
+    transmission, reception, or disclosure.
+
+•   Data Security: Technical and organizational procedures and measures designed to
+    protect the confidentiality, privacy, integrity, and completeness of personal data.
+
+•   Personal Data Breach or Violation: Any unauthorized access to or unlawful acquisition
+    of personal data, or any unlawful operation of copying, transmitting, distributing,
+    exchanging, transferring, or circulating that aims at revealing, disclosing, damaging, or
+    modifying personal data during its storage, transfer, or processing.
+
+•   Cross-border Personal Data Flow: The transfer, availability, registration, storage,
+    circulation, publication, use, display, transmission, reception, retrieval, or processing
+    of personal data from within the geographical boundaries of the Arab Republic of
+    Egypt to outside it or vice versa.
+
+•   Electronic Marketing: Sending any message, statement, or promotional or marketing
+    content by any technological means, in any form, directed at specific individuals to
+    directly or indirectly promote goods or services, or solicit commercial, political, social,
+    or charitable requests.
+
+•   National Security Authorities: The Presidency of the Republic, the Ministry of Defense,
+    the Ministry of Interior, the General Intelligence Service, and the Administrative
+    Control Authority.
+
+•   The Center: The Personal Data Protection Center.
+
+•   License: An official document issued by the Center to a legal entity authorizing it to
+    engage in activities related to the collection, storage, transfer, or processing of
+    personal electronic data or in electronic marketing, or all of the foregoing, specifying
+    the licensee's obligations in accordance with the technical standards, procedures, and
+    requirements set out in the Executive Regulations of this Law. The license is valid for
+    three years and may be renewed.
+
+•   Permit: An official document issued by the Center to a natural or legal person
+    authorizing them to perform specific tasks or engage temporarily (not exceeding one
+    year, renewable) in the collection, storage, transfer, or processing of personal
+    electronic data or electronic marketing, or all of the foregoing, subject to the
+    technical standards, procedures, and requirements set out in the Executive
+    Regulations.
+    •   Accreditation: A certificate issued by the Center confirming that a natural or legal
+        person has met all technical, legal, and organizational requirements set out in the
+        Executive Regulations of this Law and is qualified to provide consultancy in the field of
+        personal data protection.
+
+    •   Competent Minister: The Minister responsible for communications and information
+        technology affairs.
+
+
+
+
+Chapter Two: Rights of the Data Subject and Conditions for Data Collection and Processing
+
+Article (2):
+
+It is prohibited to collect, process, disclose, or reveal personal data by any means without the
+explicit consent of the data subject, unless otherwise authorized by law.
+
+The data subject shall have the following rights:
+
+    •   To be informed of, access, or obtain their personal data held by any holder,
+        controller, or processor.
+
+    •   To withdraw prior consent for the retention or processing of their personal data.
+
+    •   To request correction, modification, deletion, addition, or updating of personal data.
+
+    •   To restrict processing to a specific scope.
+
+    •   To be notified of any breach or violation of their personal data.
+
+    •   To object to the processing of their personal data or the outcomes thereof if such
+        processing conflicts with their fundamental rights and freedoms.
+
+Except for right (5) above, the data subject shall bear the cost of the service provided by the
+controller or processor in the exercise of these rights. The Center shall issue decisions on the
+applicable fees, provided they do not exceed EGP 20,000.
+Article (3):
+
+The collection, processing, and retention of personal data shall be subject to the following
+conditions:
+
+    •   The data must be collected for legitimate, specific, and declared purposes known to
+        the data subject.
+
+    •   The data must be accurate, sound, and secure.
+
+    •   The processing must be lawful and appropriate to the purposes for which the data
+        was collected.
+
+    •   The data shall not be retained for longer than necessary to fulfill the specified
+        purpose.
+
+The Executive Regulations shall set out the policies, procedures, controls, and technical
+standards for the collection, processing, retention, and protection of personal data.
+
+
+
+Chapter Three: Obligations of the Controller and Processor
+
+Part One: Obligations of the Controller
+
+Article (4):
+
+Without prejudice to Article (12) of this Law, the controller shall comply with the following
+obligations:
+
+    •   To obtain or receive personal data from the holder or relevant authorities, as the case
+        may be, after obtaining the data subject’s consent or in legally permitted cases.
+
+    •   To verify the accuracy, sufficiency, and relevance of personal data for the specified
+        purpose of its collection.
+
+    •   To determine the method, manner, and criteria for processing, unless processing is
+        delegated to a processor by written contract.
+
+    •   To ensure that the purpose of data collection is consistent with the intended
+        processing objectives.
+
+    •   To refrain from any act or omission that would result in making personal data
+        available except as permitted by law.
+   •   To implement all necessary technical and organizational measures and adopt
+       standard practices to protect and secure personal data, preserving its confidentiality
+       and preventing breaches, damage, alteration, or tampering before any unauthorized
+       processing.
+
+   •   To erase personal data upon the expiration of the defined purpose, unless there is a
+       legitimate reason to retain it, in which case the data must no longer be identifiable to
+       the data subject.
+
+   •   To promptly correct any inaccuracies in personal data upon notification or discovery.
+
+   •   To maintain a dedicated data record/log that includes: categories of personal data;
+       entities to whom the data is disclosed or made available, including legal grounds,
+       timeframes, limitations, and scope; mechanisms for data erasure or modification; and
+       any cross-border data transfer details, along with descriptions of technical and
+       organizational security measures.
+
+   •   To obtain a license or permit from the Center to process personal data.
+
+   •   To appoint a representative in Egypt if the controller is located outside the country, as
+       specified by the Executive Regulations.
+
+   •   To provide the necessary means to demonstrate compliance with the provisions of
+       this Law and to enable the Center to conduct inspections and audits.
+
+Where multiple controllers are involved, each shall be individually responsible for full
+compliance with the Law, and the data subject may exercise their rights against any
+controller independently.
+
+The Executive Regulations shall define the policies, procedures, controls, and technical
+standards for these obligations.
+Chapter Three: Obligations of the Controller and Processor
+
+Second, Obligations of the Processor
+
+Article (5):
+
+Without prejudice to the provisions of Article (12) of this Law, the personal data processor
+shall be bound by the following obligations:
+
+    •   To carry out and execute data processing in accordance with the rules set forth under
+        this Law and its Executive Regulations, based on lawful and legitimate grounds, and
+        pursuant to written instructions received from the Center, the Controller, or any
+        person so authorized, as the case may be—particularly in relation to the scope,
+        subject matter, nature, and type of the personal data processed, and the
+        appropriateness and sufficiency of such data for the specified purpose.
+
+    •   To ensure that the purposes of processing and its execution are lawful and do not
+        violate public order or morals.
+
+    •   Not to exceed the scope or duration of the specified processing purpose, and to
+        notify the Controller, the data subject, or any authorized party, as applicable, of the
+        duration necessary for the processing.
+
+    •   To delete the personal data upon the expiration of the processing duration or to
+        deliver it to the Controller.
+
+    •   To refrain from performing or abstaining from any act that would result in the
+        disclosure of personal data or processing outcomes, except in cases permitted by law.
+
+    •   Not to conduct any processing of personal data that contradicts the purpose or
+        activity of the Controller, unless such processing is for statistical or educational
+        purposes, is non-profit, and does not infringe upon the privacy of the data subject.
+
+    •   To protect and secure the processing operations, including the media and electronic
+        devices used, and the personal data stored thereon.
+
+    •   Not to cause any direct or indirect harm to the data subject.
+
+    •   To maintain a dedicated record of processing activities, which shall include the
+        categories of processing conducted on behalf of any Controller, contact details of the
+        Processor and its Data Protection Officer, timeframes and limitations of processing,
+        scope of processing, mechanisms for deletion or amendment of personal data, and a
+        description of technical and organizational security measures.
+    •   To provide the necessary means to demonstrate compliance with the provisions of
+        this Law when requested by the Controller and to enable the Center to inspect and
+        verify such compliance.
+
+    •   To obtain a license or permit from the Center to process personal data.
+
+    •   A Processor located outside the Arab Republic of Egypt must appoint a representative
+        within Egypt in accordance with the Executive Regulations.
+
+In the case of multiple Processors, each shall be jointly bound by all obligations stipulated in
+this Law unless a contract clearly defines the respective responsibilities of each party.
+
+The Executive Regulations shall specify the policies, procedures, standards, conditions,
+guidelines, and criteria governing these obligations.
+
+
+
+Third, Conditions for Lawful Processing
+
+Article (6):
+
+Electronic processing shall be deemed lawful and legitimate if any of the following conditions
+are met:
+
+    •   The data subject has given explicit consent for the processing of their personal data
+        for one or more specific purposes.
+
+    •   The processing is necessary for the performance of a contractual obligation, a legal
+        act, or to conclude a contract in favor of the data subject, or to initiate legal
+        proceedings or defend legal claims.
+
+    •   The processing is carried out to fulfill a legal obligation or pursuant to an order from
+        competent investigative authorities or a judicial ruling.
+
+    •   The processing is necessary to enable the Controller or an authorized party to
+        exercise legitimate rights, provided it does not conflict with the fundamental rights
+        and freedoms of the data subject.
+Fourth, Obligation to Notify and Report
+
+Article (7):
+
+Each of the Controller and Processor, as applicable, must notify the Center within seventy-
+two (72) hours upon becoming aware of any breach or violation of personal data in their
+possession. In the event the breach relates to national security, notification must be
+immediate. The Center must in all cases notify national security authorities of the incident
+without delay.
+
+The Controller or Processor must also, within seventy-two (72) hours from becoming aware
+of the incident, provide the Center with the following:
+
+    •   A description of the nature, form, causes, and estimated volume of the breach or
+        violation, and affected personal data records.
+
+    •   Contact details of the Data Protection Officer.
+
+    •   Potential consequences of the breach or violation.
+
+    •   A description of the measures taken or proposed to address the breach or violation
+        and mitigate its adverse effects.
+
+    •   Documentation of the breach or violation and the corrective actions taken.
+
+    •   Any documents, information, or data requested by the Center.
+
+In all cases, the Controller and Processor must notify the data subject within three (3)
+working days from the date of the notification and inform them of the actions taken.
+
+The Executive Regulations shall set forth the procedures for notification and reporting.
+
+
+
+Chapter Four: Data Protection Officer (DPO)
+
+First, Appointment of a Data Protection Officer
+
+Article (8):
+
+A register shall be established at the Center for the registration of Data Protection Officers.
+The Executive Regulations shall define the conditions, procedures, and mechanisms for such
+registration.
+The legal representative of any legal entity acting as a Controller or Processor shall appoint a
+qualified employee within its legal structure to act as the Data Protection Officer and shall
+register them in the aforementioned register and publicly disclose the appointment.
+
+Where the Controller or Processor is a natural person, they shall be personally responsible
+for compliance with the provisions of this Law.
+
+
+
+Second, Responsibilities of the Data Protection Officer
+
+Article (9):
+
+The Data Protection Officer shall be responsible for the implementation of this Law, its
+Executive Regulations, and decisions issued by the Center. The Officer shall supervise and
+monitor compliance procedures within the organization and receive requests concerning
+personal data in accordance with this Law.
+
+In particular, the Data Protection Officer shall:
+
+    •   Conduct periodic assessments and audits of personal data protection systems and
+        prevent breaches, document assessment results, and issue recommendations to
+        enhance protection.
+
+    •   Act as a direct point of contact with the Center and implement its decisions related to
+        the enforcement of this Law.
+
+    •   Enable data subjects to exercise their rights as stipulated in this Law.
+
+    •   Notify the Center in the event of any breach or violation of personal data.
+
+    •   Respond to requests from data subjects or authorized parties and reply to the Center
+        regarding any complaints submitted in accordance with this Law.
+
+    •   Oversee the registration and updating of the Controller’s data register or the
+        Processor’s processing activity log to ensure data accuracy.
+
+    •   Remove any violations concerning personal data within the organization and take
+        corrective measures.
+
+    •   Organize appropriate training programs for employees to ensure compliance with the
+        requirements of this Law.
+The Executive Regulations shall further detail the additional obligations, procedures, and
+responsibilities assigned to the Data Protection Officer.
+
+
+
+Chapter Five: Procedures for Accessing Personal Data
+
+Article (10):
+
+When requested to grant access to personal data, the Controller, Processor, or data holder
+must comply with the following procedures:
+
+    •   The request must be submitted in writing by an authorized party or pursuant to a
+        legal instrument.
+
+    •   The validity of the supporting documents must be verified and retained.
+
+    •   The request must be decided upon within six (6) working days from the date of
+        submission. If rejected, the refusal must be reasoned. Failure to respond within the
+        prescribed period shall be deemed a refusal.
+
+
+
+Article (11):
+
+Digital evidence derived from personal data, in accordance with this Law, shall have the same
+probative value as written evidence, provided it meets the technical standards and conditions
+specified in the Executive Regulations.
+
+
+
+Chapter Six: Sensitive Personal Data
+
+Article (12):
+
+It is prohibited for a Controller or Processor, whether a natural or legal person, to collect,
+transfer, store, retain, process, or make available sensitive personal data without a license
+from the Center.
+
+Except in cases expressly permitted by law, written and explicit consent must be obtained
+from the data subject.
+
+If any such operation involves the personal data of children, the consent of the parent or
+legal guardian must be obtained.
+Participation by a child in a game, competition, or any other activity shall not be made
+conditional on the provision of personal data beyond what is necessary for participation.
+
+All such activities must adhere to the standards and requirements set out in the Executive
+Regulations of this Law.
+
+
+
+Article (13):
+
+In addition to the obligations provided for in Article (9) of this Law, the Data Protection
+Officer and relevant personnel under the Controller or Processor must implement and
+comply with security policies and procedures to prevent breaches or violations of sensitive
+personal data.
+
+
+
+Chapter Seven: Cross-Border Personal Data Transfers
+
+Article (14):
+
+It is prohibited to transfer personal data collected or prepared for processing to a foreign
+country, or to store or share it abroad, unless the destination provides a level of protection
+not less than that stipulated under this Law, and subject to licensing or authorization by the
+Center.
+
+The Executive Regulations shall determine the policies, standards, controls, and rules
+necessary for cross-border transfer, storage, sharing, processing, or availability of personal
+data, as well as for its protection.
+
+
+
+Article (15):
+
+By way of exception to Article (14), the transfer, sharing, dissemination, or processing of
+personal data to a country that does not offer an adequate level of protection may be
+permitted where the data subject or their legal representative has given explicit consent, and
+in the following cases:
+
+    •   To preserve the life of the data subject and provide them with medical care or
+        treatment, or manage their healthcare services.
+
+    •   For the performance of obligations to establish, exercise, or defend legal rights.
+    •   To enter into or perform a contract already concluded or to be concluded between
+        the data controller and a third party, in favor of the data subject.
+
+    •   For purposes of international judicial cooperation.
+
+    •   Where required by law or necessary to protect the public interest.
+
+    •   To carry out financial transfers to another country in accordance with its applicable
+        legislation.
+
+    •   Where the transfer or processing is executed under a bilateral or multilateral
+        international agreement to which the Arab Republic of Egypt is a party.
+
+
+
+
+Article (16):
+
+The Controller or Processor may, as applicable, make personal data available to another
+Controller or Processor located outside the Arab Republic of Egypt, subject to licensing by the
+Center, provided that the following conditions are met:
+
+    •   The nature of activities or the purpose for which the personal data is obtained is
+        consistent between both parties.
+
+    •   There is a legitimate interest on the part of either or both Controllers or Processors,
+        or the data subject.
+
+    •   The level of legal and technical protection of personal data available to the foreign
+        Controller or Processor is not less than that provided under Egyptian law.
+
+The Executive Regulations shall specify the necessary conditions, procedures, safeguards,
+standards, and rules applicable to such transfers.
+Chapter Eight: Direct Electronic Marketing
+
+Article (17):
+
+It is prohibited to make any electronic communication for the purpose of direct marketing to
+the data subject unless the following conditions are met:
+
+    •   Prior consent has been obtained from the data subject.
+
+    •   The communication clearly identifies its originator and sender.
+
+    •   The sender has a valid and accessible address.
+
+    •   The communication explicitly indicates that it is for direct marketing purposes.
+
+    •   Clear and easily accessible mechanisms are provided to enable the data subject to opt
+        out of or withdraw their consent to receive such communications.
+
+
+
+Article (18):
+
+Any sender of electronic communications for direct marketing purposes must comply with
+the following obligations:
+
+    •   The marketing purpose must be specified and clear.
+
+    •   The sender must not disclose the contact details of the data subject.
+
+    •   The sender must retain electronic records documenting the data subject’s consent or
+        non-objection to receiving such communications, along with any modifications, for a
+        period of three (3) years from the date of the last message sent.
+
+The Executive Regulations shall establish the rules, conditions, and controls governing direct
+electronic marketing.
+Chapter Nine, The Personal Data Protection Center
+
+Article (19):
+
+A public economic authority shall be established under the name “Personal Data Protection
+Center”, affiliated with the competent Minister and possessing legal personality. Its principal
+office shall be located in Cairo Governorate or in a neighboring governorate. The Center shall
+aim to protect personal data and regulate its processing and availability. In pursuit of its
+objectives, the Center shall exercise all powers stipulated under this Law, and in particular
+shall:
+
+    •   Develop and implement policies, strategic plans, and programs necessary for the
+        protection of personal data.
+
+    •   Unify policies and plans related to personal data protection and processing within the
+        Arab Republic of Egypt.
+
+    •   Issue and implement decisions, controls, procedures, and standards relating to
+        personal data protection.
+
+    •   Establish guiding frameworks for codes of conduct concerning personal data
+        protection, and approve such codes for various entities.
+
+    •   Coordinate and cooperate with all governmental and non-governmental bodies to
+        ensure personal data protection procedures and engage with all relevant initiatives.
+
+    •   Support the development of human resource capabilities across public and private
+        sectors involved in data protection.
+
+    •   Issue licenses, permits, approvals, and take all necessary measures relating to
+        personal data protection and the enforcement of this Law.
+
+    •   Accredit entities and individuals and grant them the necessary authorizations to
+        provide advisory services related to personal data protection.
+
+    •   Receive complaints and notifications related to this Law and issue appropriate
+        decisions thereon.
+
+    •   Provide opinions on draft laws and international agreements that regulate or relate
+        directly or indirectly to personal data.
+
+    •   Supervise and inspect entities subject to this Law and take necessary legal measures.
+
+    •   Verify conditions for cross-border data transfers and issue corresponding regulatory
+        decisions.
+    •   Organize conferences, workshops, training, and awareness programs and publish
+        materials to raise public and institutional awareness of data protection rights.
+
+    •   Provide all forms of expertise and advisory services related to personal data
+        protection, especially to investigative and judicial authorities.
+
+    •   Conclude agreements, memoranda of understanding, and coordinate and cooperate
+        with international entities relevant to the Center’s work in accordance with applicable
+        procedures.
+
+    •   Issue periodic bulletins updating protection measures to align with sector-specific
+        activities and the Center's recommendations.
+
+    •   Prepare and issue an annual report on the state of personal data protection in the
+        Arab Republic of Egypt.
+
+
+
+Article (20):
+
+The Center shall have a Board of Directors chaired by the competent Minister, and composed
+of the following members:
+
+    •   A representative from the Ministry of Defense, nominated by the Minister of Defense.
+
+    •   A representative from the Ministry of Interior, nominated by the Minister of Interior.
+
+    •   A representative from the General Intelligence Service, nominated by its Head.
+
+    •   A representative from the Administrative Control Authority, nominated by its Head.
+
+    •   A representative from the Information Technology Industry Development Agency
+        (ITIDA), nominated by its Board Chair.
+
+    •   A representative from the National Telecommunications Regulatory Authority (NTRA),
+        nominated by its Board Chair.
+
+    •   The Executive Director of the Center.
+
+    •   Three experts appointed by the competent Minister.
+The term of the Board shall be three years, renewable. The composition of the Board and the
+financial remuneration of its members shall be determined by a decision of the Prime
+Minister.
+
+The Board may form one or more subcommittees from among its members and assign them
+temporary tasks. The Board may also delegate its chairperson or the Executive Director to
+carry out some of its responsibilities.
+
+
+
+Article (21):
+
+The Board of Directors is the supreme authority responsible for managing the affairs of the
+Center and exercising its powers. It shall issue decisions necessary to achieve the objectives
+of the Center and this Law and its executive regulations, including the following:
+
+    •   Approving policies, strategic plans, and programs related to personal data protection.
+
+    •   Approving regulations, controls, procedures, and standards for personal data
+        protection.
+
+    •   Approving plans for international cooperation and exchange of expertise with
+        relevant organizations.
+
+    •   Approving the organizational structure, financial and administrative regulations,
+        human resources policies, and the annual budget of the Center.
+
+    •   Approving the establishment of branch offices of the Center within the Republic.
+
+    •   Accepting grants, donations, and endowments necessary for the Center’s purposes,
+        subject to applicable legal approvals.
+
+
+
+Article (22):
+
+The Board shall meet at the invitation of its Chair at least once per month or whenever
+necessary. Meetings shall be valid only with a quorum of the majority of its members
+present. Decisions shall be adopted by a two-thirds majority of those present. The Chair may
+invite any person to attend without voting rights.
+Article (23):
+
+The Center shall have an Executive Director, appointed by decision of the Prime Minister
+based on the recommendation of the competent Minister, for a term of four years,
+renewable once. The Executive Director shall be responsible to the Board of Directors for the
+technical, administrative, and financial operation of the Center and shall represent it in
+dealings with third parties and before courts.
+
+The Executive Director shall in particular:
+
+    •   Oversee implementation of Board decisions.
+
+    •   Manage and supervise the Center's daily operations and administration.
+
+    •   Submit periodic reports to the Board on the Center’s activities, progress toward goals,
+        and any operational challenges or proposed solutions.
+
+    •   Exercise additional powers as defined by the Center’s internal regulations.
+
+    •   Take all necessary actions to implement the Center’s functions and responsibilities set
+        forth in Article 21 of this Law.
+
+The Executive Director shall be assisted by a sufficient number of experts, technical, and
+administrative staff in accordance with the Center’s organizational structure.
+
+
+
+Article (24):
+
+Members of the Board of Directors and employees of the Center are prohibited from
+disclosing any documents, records, or data relating to the cases monitored, examined, or
+processed by the Center, including those submitted during assessments or related to issued
+decisions. This confidentiality obligation continues after the termination of their relationship
+with the Center.
+
+Disclosure of such information may only be made to investigative authorities or judicial
+entities.
+Article (25):
+
+In coordination with the competent authorities, the Center may cooperate with its foreign
+counterparts under ratified bilateral, regional, or international agreements or under the
+principle of reciprocity, to ensure personal data protection and verify compliance by
+controllers and processors operating outside the Republic. The Center shall also facilitate the
+exchange of information to ensure data protection, support investigations of violations or
+crimes, and track perpetrators.
+
+
+
+Chapter Ten: Licenses, Permits, and Accreditations
+
+Section One: Types of Licenses, Permits, and Accreditations
+
+Article (26):
+
+The Center shall issue licenses, permits, and accreditations as follows:
+
+    •   Classify and define the types of licenses, permits, and accreditations and establish the
+        conditions for each, in accordance with the Law’s executive regulations.
+
+    •   Issue licenses or permits to controllers and processors for data retention, processing,
+        and handling in accordance with this Law.
+
+    •   Issue licenses or permits for direct electronic marketing activities.
+
+    •   Issue licenses or permits to associations, unions, or clubs processing personal data of
+        their members within their scope of activities.
+
+    •   Issue licenses or permits for visual surveillance systems in public spaces.
+
+    •   Issue licenses or permits for the processing of sensitive personal data.
+
+    •   Issue permits and accreditations to individuals or entities authorized to provide
+        consultancy on data protection procedures and compliance.
+
+    •   Issue licenses and permits for cross-border transfer of personal data.
+
+The executive regulations shall define the types, categories, levels, procedures, conditions,
+forms, and renewal rules of such licenses, permits, and accreditations, along with applicable
+fees, provided that the license fee does not exceed EGP 2,000,000 and the fee for permits or
+accreditations does not exceed EGP 500,000.
+Section Two: Licensing Procedures
+
+Article (27):
+
+Applications for licenses, permits, and accreditations shall be submitted on forms prepared
+by the Center, accompanied by the required documents and information, including proof of
+financial capability and technical competence. The Center shall decide on the application
+within ninety (90) days of completing all requirements; otherwise, the request shall be
+deemed rejected.
+
+The Center may request additional documents or guarantees to ensure adequate protection
+of personal data, where applicable.
+
+Controllers or processors may apply for multiple licenses or permits depending on the types
+of personal data involved.
+
+
+
+Section Three: Modification of License or Permit Conditions
+
+Article (28):
+
+The Center may, in the public interest, amend the conditions of a license or permit in the
+following cases:
+
+    •   To comply with international or regional agreements or relevant domestic legislation.
+
+    •   At the request of the licensee.
+
+    •   In case of merger involving the controller or processor inside or outside Egypt.
+
+    •   If such amendment is necessary to achieve the objectives of this Law.
+
+
+
+Section Four: Revocation of Licenses, Permits, or Accreditations
+
+Article (29):
+
+The Center may revoke a license, permit, or accreditation if:
+
+    •   The licensee violates its terms or conditions.
+
+    •   Renewal fees are not paid.
+
+    •   There is repeated non-compliance with decisions of the Center.
+    •   The license, permit, or accreditation is assigned to a third party without the Center’s
+        approval.
+
+    •   A final judgment is issued declaring the controller or processor bankrupt.
+
+
+
+Section Five: Administrative Penalties
+
+Article (30):
+
+Without prejudice to civil or criminal liability, the Executive Director shall issue a warning to
+any party in breach of this Law, requiring cessation of the violation and remedy of its causes
+or consequences within a specified timeframe. If the warning is not complied with, the Board
+may issue a reasoned decision to:
+
+    •   Issue a warning of partial or full suspension of the license, permit, or accreditation for
+        a specified period.
+
+    •   Suspend the license, permit, or accreditation, partially or fully.
+
+    •   Withdraw or cancel the license, permit, or accreditation, partially or fully.
+
+    •   Publish a statement of the confirmed violations in one or more widely circulated
+        media outlets at the violator’s expense.
+
+    •   Subject the controller or processor to technical supervision by the Center to ensure
+        data protection, at their expense.
+
+
+
+Chapter Eleven: Budget and Financial Resources of the Center
+
+Article (31):
+
+The Center shall have an independent budget prepared in the format applicable to economic
+authorities, in accordance with the rules specified in its internal regulations and following the
+unified accounting system, without being subject to general governmental financial systems.
+The fiscal year of the Center shall coincide with the State’s fiscal year.
+
+The Center shall maintain a special account at the Central Bank of Egypt, into which all its
+revenues shall be deposited. It may, with the approval of the Minister of Finance, open an
+account at a commercial bank. Any budget surplus may be carried forward to subsequent
+fiscal years.
+The Center’s expenditures shall be made in accordance with its financial regulations and for
+purposes defined by its Board. The Center’s financial resources shall include:
+
+    •   Allocations from the Information Technology Industry Development Agency.
+
+    •   Allocations from the public treasury, not less than one-third of the total fines
+        collected under this Law.
+
+    •   Revenues from services provided by the Center.
+
+    •   License, permit, and accreditation fees, and reconciliation amounts accepted by the
+        Center.
+
+    •   Investment returns on the Center’s funds.
+
+    •   Grants, donations, and endowments accepted by the Board of Directors.
+
+
+
+Chapter Twelve: Requests and Complaints
+
+Section One: Requests
+
+Article (32):
+
+The data subject or any party with a legal capacity may submit a request to any data holder,
+controller, or processor regarding the exercise of their rights as stipulated in this Law.
+The recipient of the request must respond within six (6) working days from the date of
+submission.
+
+
+
+Section Two: Complaints
+
+Article (33):
+
+Without prejudice to the right to judicial recourse, the data subject or any person with legal
+capacity and a direct interest may submit a complaint in the following cases:
+
+    •   A violation or breach of personal data protection rights.
+
+    •   Failure to enable the data subject to exercise their rights.
+
+    •   Decisions issued by the data protection officer at the controller or processor in
+        response to submitted requests.
+Complaints shall be submitted to the Center, which shall undertake the necessary
+investigative procedures and issue a decision within thirty (30) working days from the date of
+submission. The complainant and the party complained against must be notified of the
+decision.
+
+The party complained against must implement the Center's decision within seven (7) working
+days of notification and provide the Center with evidence of compliance.
+
+
+
+Chapter Thirteen: Judicial Enforcement Powers
+
+Article (34):
+
+Designated employees of the Center, identified by a decree of the Minister of Justice upon
+the proposal of the competent minister, shall have judicial enforcement authority to
+document violations of the provisions of this Law.
+
+
+
+Chapter Fourteen: Offences and Penalties
+
+General Provisions
+
+Article (35):
+
+Without prejudice to any more severe penalty under another law and without prejudice to
+the right of the aggrieved party to claim compensation, the crimes stipulated in the following
+articles shall be subject to the penalties specified therein.
+
+
+
+Article (36):
+
+Any data holder, controller, or processor who collects, processes, discloses, makes available,
+or transfers electronically processed personal data by any means without legal authorization
+or the consent of the data subject shall be punished with a fine not less than EGP 100,000
+and not exceeding EGP 1,000,000.
+
+If the act is committed for material or moral gain, or with the intent of exposing the data
+subject to risk or harm, the penalty shall be imprisonment for no less than six months and a
+fine between EGP 200,000 and EGP 2,000,000, or one of these penalties.
+Article (37):
+
+A fine not less than EGP 100,000 and not exceeding EGP 1,000,000 shall be imposed on any
+data holder, controller, or processor who unlawfully refuses to enable the data subject to
+exercise their rights under Article 2 of this Law.
+
+A fine not less than EGP 200,000 and not exceeding EGP 2,000,000 shall be imposed on any
+person who collects personal data without fulfilling the conditions stipulated in Article 3 of
+this Law.
+
+
+
+Article (38):
+
+A fine not less than EGP 300,000 and not exceeding EGP 3,000,000 shall be imposed on any
+controller or processor who fails to comply with their obligations under Articles 4, 5, and 7 of
+this Law.
+
+
+
+
+Article (39):
+
+A fine not less than EGP 200,000 and not exceeding EGP 2,000,000 shall be imposed on any
+legal representative of a legal person who fails to comply with their obligations under Article
+8 of this Law.
+
+
+
+Article (40):
+
+A fine not less than EGP 200,000 and not exceeding EGP 2,000,000 shall be imposed on any
+data protection officer who fails to fulfill their duties under Article 9 of this Law.
+If the violation results from negligence, the fine shall be not less than EGP 50,000 and not
+exceeding EGP 500,000.
+
+
+
+Article (41):
+
+Any data holder, controller, or processor who collects, discloses, transfers, processes, stores,
+or otherwise deals with sensitive personal data without the consent of the data subject or
+outside the legally authorized cases shall be punished with imprisonment for no less than
+three months and a fine between EGP 500,000 and EGP 5,000,000, or one of these penalties.
+Article (42):
+
+Any person who violates the cross-border personal data transfer provisions under Articles 14,
+15, and 16 of this Law shall be punished with imprisonment for no less than three months
+and a fine between EGP 500,000 and EGP 5,000,000, or one of these penalties.
+
+
+
+Article (43):
+
+A fine not less than EGP 200,000 and not exceeding EGP 2,000,000 shall be imposed on any
+person who violates the electronic marketing provisions under Articles 17 and 18 of this Law.
+
+
+
+Article (44):
+
+A fine not less than EGP 300,000 and not exceeding EGP 3,000,000 shall be imposed on any
+member of the Board of Directors or employee of the Center who breaches the
+confidentiality obligations stipulated in Article 24 of this Law.
+
+
+
+Article (45):
+
+A fine not less than EGP 500,000 and not exceeding EGP 5,000,000 shall be imposed on any
+person who violates the provisions related to licenses, permits, or accreditations as stipulated
+in this Law.
+
+
+
+Article (46):
+
+Any person who prevents a Center employee with judicial enforcement authority from
+performing their duties shall be punished with imprisonment for no less than six months and
+a fine between EGP 200,000 and EGP 2,000,000, or one of these penalties.
+
+
+
+Article (47):
+
+The person responsible for the actual management of the violating legal entity shall be
+punished with the same penalties prescribed for the offenses committed in violation of this
+Law, provided that it is proven that they were aware of the violation, and that their breach of
+managerial duties contributed to the commission of the offense.
+The legal entity shall be jointly liable to satisfy any compensation awarded if the violation was
+committed by one of its employees, acting in the name of and for the benefit of the legal
+entity.
+
+
+
+Article (48):
+
+In all cases, in addition to the penalties stipulated in this Law, the court shall order the
+publication of the conviction judgment in two widely circulated newspapers and on open
+electronic information networks at the expense of the convicted party.
+
+In cases of recidivism, the penalties provided in this chapter shall be doubled, both minimum
+and maximum limits.
+
+Attempting to commit any of the offenses stipulated in this Law shall be punishable by half of
+the penalty prescribed for the completed offense.
+
+
+
+Chapter Fourteen: Offences and Penalties — Settlement and Conciliation
+
+Article (49):
+
+The accused may, at any stage of the criminal case and before the judgment becomes final,
+reach a settlement with the victim, their authorized agent, or legal successor, subject to the
+approval of the Center, before the Public Prosecution or competent court, as applicable, for
+the misdemeanors stipulated in Articles 36, 37, 38, 39, 40, 41, and 43 of this Law.
+
+Settlement with the Center is permitted for the misdemeanors stipulated in Articles 42, 44,
+and 45 of this Law at any stage of the criminal case.
+
+In all cases, the accused wishing to settle must pay an amount equal to half of the minimum
+fine prescribed for the offense before the criminal case is filed.
+
+If the accused wishes to settle after the case is filed but before the judgment becomes final,
+they must pay half of the maximum fine prescribed for the offense, or the amount of the
+imposed fine, whichever is greater.
+
+Payments shall be made to the treasury of the competent court, Public Prosecution, or
+Center, as appropriate.
+
+Settlement results in the termination of the criminal case without prejudice to the rights of
+the aggrieved party.
+

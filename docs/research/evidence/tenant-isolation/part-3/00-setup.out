@@ -1,0 +1,86 @@
+NOTICE:  drop cascades to 14 other objects
+DETAIL:  drop cascades to function s.ctx(text)
+drop cascades to table s.tenants
+drop cascades to table s.branches
+drop cascades to table s.devices
+drop cascades to table s.device_credentials
+drop cascades to table s.sync_cursor
+drop cascades to table s.inbox
+drop cascades to table s.device_events
+drop cascades to table s.offline_periods
+drop cascades to table s.review_queue
+drop cascades to table s.verified_restore_watermark
+drop cascades to function s.wm_monotonic()
+drop cascades to function s.auth_device(uuid)
+drop cascades to function s.apply_cmd(jsonb)
+DROP SCHEMA
+DO
+CREATE SCHEMA
+GRANT
+SET
+SET
+CREATE FUNCTION
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+DO
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+REVOKE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+RESET
+ALTER FUNCTION
+SET
+SET
+CREATE FUNCTION
+GRANT
+RESET
+INSERT 0 2
+INSERT 0 3
+INSERT 0 3
+INSERT 0 2

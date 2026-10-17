@@ -1,0 +1,13 @@
+# Variant: the peer (bridge gateway range) is listed as a trusted proxy -> client-sent XFF is believed.
+{
+	admin off
+	auto_https off
+	servers {
+		trusted_proxies static 172.16.0.0/12 192.168.0.0/16 10.0.0.0/8
+	}
+}
+:80 {
+	reverse_proxy ti-p2-up:8080 {
+		header_up X-Client-IP {client_ip}
+	}
+}

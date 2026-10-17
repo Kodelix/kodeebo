@@ -1,0 +1,168 @@
+### date (UTC): 2026-10-16T22:05:32Z
+### fetched caddy v2.11.7 source archive
+
+===== grep: underscore / invalid header handling in caddyhttp
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/staticresp.go:373:		return caddy.ExitCodeFailedStartup, fmt.Errorf("invalid header flag: %v", err)
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:163:	// A list of header field names containing underscores that should
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:165:	// ALL headers with underscores to prevent ambiguity with
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:166:	// CGI/FastCGI backends that map hyphens to underscores
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:183:	// A header name containing both an underscore and a dot (e.g.
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:190:	ExpectedUnderscoreHeaders []string `json:"expected_underscore_headers,omitempty"`
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:195:	// dots to underscores when registering CGI-style variables, e.g.
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:210:	// underscore form of the same logical name if such a backend is in
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:214:	// A header name containing both a dot and an underscore is never
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:216:	// ExpectedUnderscoreHeaders; only an exact (non-glob) entry for
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:391:	// precomputed underscore header allowlist (built during provisioning)
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:392:	underscoreExactAllow  map[string]struct{}
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:393:	underscoreExactDrop   map[string]struct{}
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:394:	underscorePrefixRules []aliasPrefixRule
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:408:// aliasPrefixRule pairs a canonical allowed prefix (underscore- or
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:410:// matching in the underscore/dot allowlists.
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:417:// allowlist (ExpectedUnderscoreHeaders or ExpectedDotHeaders) and builds
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:467:// provisionUnderscoreHeaders validates the ExpectedUnderscoreHeaders
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:470:func (s *Server) provisionUnderscoreHeaders() error {
+/tmp/tmp.1VGWnmxyP2/caddy-2.11.7/modules/caddyhttp/server.go:471:	if len(s.ExpectedUnderscoreHeaders) == 0 {
+
+===== headers.go: ApplyTo delete matching
+func (ops HeaderOps) ApplyToRequest(r *http.Request) {
+	repl := r.Context().Value(caddy.ReplacerCtxKey).(*caddy.Replacer)
+
+	// capture the current Host header so we can
+	// reset to it when we're done
+	origHost, hadHost := r.Header["Host"]
+
+	// append r.Host; this way, we know that our value
+	// was last in the list, and if an Add operation
+	// appended something else after it, that's probably
+	// fine because it's weird to have multiple Host
+	// headers anyway and presumably the one they added
+	// is the one they wanted
+	r.Header["Host"] = append(r.Header["Host"], r.Host)
+
+	// apply header operations
+	ops.ApplyTo(r.Header, repl)
+
+	// retrieve the last Host value (likely the one we appended)
+	if len(r.Header["Host"]) > 0 {
+		r.Host = r.Header["Host"][len(r.Header["Host"])-1]
+	} else {
+		r.Host = ""
+	}
+
+	// reset the Host header slice
+	if hadHost {
+		r.Header["Host"] = origHost
+	} else {
+		delete(r.Header, "Host")
+	}
+}
+
+// responseWriterWrapper defers response header
+// operations until WriteHeader is called.
+type responseWriterWrapper struct {
+	*caddyhttp.ResponseWriterWrapper
+	replacer    *caddy.Replacer
+	require     *caddyhttp.ResponseMatcher
+	headerOps   *HeaderOps
+	wroteHeader bool
+}
+
+func (rww *responseWriterWrapper) WriteHeader(status int) {
+	if rww.wroteHeader {
+		return
+	}
+	// 1xx responses aren't final; just informational
+	if status < 100 || status > 199 {
+		rww.wroteHeader = true
+	}
+	if rww.require == nil || rww.require.Match(status, rww.ResponseWriterWrapper.Header()) {
+		if rww.headerOps != nil {
+			rww.headerOps.ApplyTo(rww.ResponseWriterWrapper.Header(), rww.replacer)
+		}
+	}
+	rww.ResponseWriterWrapper.WriteHeader(status)
+}
+
+func (rww *responseWriterWrapper) Write(d []byte) (int, error) {
+	if !rww.wroteHeader {
+
+===== reverseproxy.go: addForwardedHeaders
+func (h Handler) addForwardedHeaders(req *http.Request) error {
+	// Check if the client is a trusted proxy
+	trusted := caddyhttp.GetVar(req.Context(), caddyhttp.TrustedProxyVarKey).(bool)
+
+	var clientIP string
+
+	if req.RemoteAddr == "@" {
+		// For Unix socket connections, RemoteAddr is "@" which cannot
+		// be parsed as host:port. If untrusted, strip forwarded headers
+		// for security. If trusted, there is no peer IP to append to
+		// X-Forwarded-For, so clientIP stays empty.
+		if !trusted {
+			req.Header.Del("X-Forwarded-For")
+			req.Header.Del("X-Forwarded-Proto")
+			req.Header.Del("X-Forwarded-Host")
+			return nil
+		}
+	} else {
+		// Parse the remote IP, ignore the error as non-fatal,
+		// but the remote IP is required to continue, so we
+		// just return early. This should probably never happen
+		// though, unless some other module manipulated the request's
+		// remote address and used an invalid value.
+		var err error
+		clientIP, _, err = net.SplitHostPort(req.RemoteAddr)
+		if err != nil {
+			// Remove the `X-Forwarded-*` headers to avoid upstreams
+			// potentially trusting a header that came from the client
+			req.Header.Del("X-Forwarded-For")
+			req.Header.Del("X-Forwarded-Proto")
+			req.Header.Del("X-Forwarded-Host")
+			return nil
+		}
+
+		// Client IP may contain a zone if IPv6, so we need
+		// to pull that out before parsing the IP
+		clientIP, _, _ = strings.Cut(clientIP, "%")
+		ipAddr, err := netip.ParseAddr(clientIP)
+
+		// If ParseAddr fails (e.g. non-IP network like SCION), we cannot check
+		// if it is a trusted proxy by IP range. In this case, we ignore the
+		// error and treat the connection as untrusted (or retain existing status).
+		if err == nil {
+			for _, ipRange := range h.trustedProxies {
+				if ipRange.Contains(ipAddr) {
+					trusted = true
+
+===== reverseproxy.go: hop-by-hop / Connection header handling
+152:	// with the exceptions of special hop-by-hop headers.
+198:	// herd of reconnecting clients which had their connections closed
+261:	// Stores upgraded requests (hijacked connections) for proper cleanup
+262:	connections           map[io.ReadWriteCloser]openConnection
+263:	connectionsCloseTimer *time.Timer
+264:	connectionsMu         *sync.Mutex
+288:	h.connections = make(map[io.ReadWriteCloser]openConnection)
+289:	h.connectionsMu = new(sync.Mutex)
+461:	err := h.cleanupConnections()
+529:		clonedReq.Header.Set("Connection", "Upgrade")
+861:	removeConnectionHeaders(req.Header)
+863:	// Remove hop-by-hop headers to the backend. Especially
+864:	// important is "Connection" because we want a persistent
+865:	// connection, regardless of what the client sent to us.
+867:	for _, h := range hopHeaders {
+879:	// After stripping all the hop-by-hop connection headers above, add back any
+882:		req.Header.Set("Connection", "Upgrade")
+936:		// For Unix socket connections, RemoteAddr is "@" which cannot
+970:		// error and treat the connection as untrusted (or retain existing status).
+1079:	// http.Transport reads a newer value to dial a new connection when that new
+1268:	// Strip hop-by-hop headers from the upstream response.
+1271:	// and restore it with a canonical Connection header.
+1274:	removeConnectionHeaders(res.Header)
+1275:	for _, h := range hopHeaders {
+1281:		res.Header.Set("Connection", "Upgrade")
+1409:	// if the error occurred while dialing (i.e. a connection
+1411:	// should be safe to retry, since without a connection, no
+1419:		// if the error occurred after a connection was established,
+1486:			// The issue is that h2 transport will use the address to determine if new connections are needed
+1487:			// to roundtrip requests but the without escaping, new connections are constantly created and closed until
+### done 2026-10-16T22:05:33Z

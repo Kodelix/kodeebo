@@ -1,0 +1,1 @@
+# run 1 of S12 failed: PgBouncer 'no such user: app_rt' (trust auth without auth_file). Kept as a wrong test; fixed in run 2 by adding auth_file.

@@ -1,0 +1,31 @@
+== S12 start 2026-10-16T21:56:42Z
+image [edoburu/pgbouncer@sha256:9c78945868a6a142c7fc40ccd843bbe5a606df163c7ffce4de70e0d628d696a2] created 2026-09-30T02:17:05.043450294Z
+2026-10-16 21:56:42.291 UTC [1] LOG kernel file descriptor limit: 2048 (hard: 2097152); max_client_conn: 20, max expected fd use: 33
+2026-10-16 21:56:42.291 UTC [1] LOG listening on 127.0.0.1:57434
+2026-10-16 21:56:42.291 UTC [1] LOG process up: PgBouncer 1.26.0, libevent 2.1.13-stable (epoll), adns: evdns2, tls: OpenSSL 3.5.8 25 Aug 2026
+-- version via SHOW VERSION (admin console not enabled); binary version:
+PgBouncer 1.26.0
+libevent 2.1.13-stable
+-- T1: tx-local context, then a NEW client on the (single) server connection with no context
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+-- T2: UNSAFE session-level SET (is_local=false) in client 1, then client 3 on the same server connection
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+-- T2b: SET (statement) at session level behaves the same way?
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+-- T3: two concurrent clients, different tenants, pool size 1 (they must serialise; each must see only its tenant)
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+-- T4: SET LOCAL (statement form) inside a transaction
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+-- T5: multi-statement protocol: set_config and query in two separate simple-query round trips WITHOUT an explicit transaction (autocommit) - context must NOT survive
+psql: error: connection to server at "127.0.0.1", port 57434 failed: FATAL:  "trust" authentication failed
+-- PgBouncer log tail
+2026-10-16 21:56:46.736 UTC [1] WARNING C-0x7ff99afa03a0: (nodb)/app_rt@127.0.0.1:52776 pooler error: "trust" authentication failed
+2026-10-16 21:56:46.932 UTC [1] LOG C-0x7ff99afa03a0: (nodb)/app_rt@127.0.0.1:52788 no such user: app_rt
+2026-10-16 21:56:46.932 UTC [1] LOG C-0x7ff99afa03a0: (nodb)/app_rt@127.0.0.1:52788 login attempt: db=s10 user=app_rt tls=no replication=no
+2026-10-16 21:56:46.932 UTC [1] LOG C-0x7ff99afa03a0: (nodb)/app_rt@127.0.0.1:52788 closing because: "trust" authentication failed (age=0s)
+2026-10-16 21:56:46.932 UTC [1] WARNING C-0x7ff99afa03a0: (nodb)/app_rt@127.0.0.1:52788 pooler error: "trust" authentication failed
+== S12 end 2026-10-16T21:56:47Z

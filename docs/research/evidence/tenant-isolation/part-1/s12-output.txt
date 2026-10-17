@@ -1,0 +1,44 @@
+== S12 start 2026-10-16T21:56:55Z
+image [edoburu/pgbouncer@sha256:9c78945868a6a142c7fc40ccd843bbe5a606df163c7ffce4de70e0d628d696a2] created 2026-09-30T02:17:05.043450294Z
+2026-10-16 21:56:55.817 UTC [1] LOG kernel file descriptor limit: 2048 (hard: 2097152); max_client_conn: 20, max expected fd use: 33
+2026-10-16 21:56:55.817 UTC [1] LOG listening on 127.0.0.1:57434
+2026-10-16 21:56:55.817 UTC [1] LOG process up: PgBouncer 1.26.0, libevent 2.1.13-stable (epoll), adns: evdns2, tls: OpenSSL 3.5.8 25 Aug 2026
+-- version via SHOW VERSION (admin console not enabled); binary version:
+PgBouncer 1.26.0
+libevent 2.1.13-stable
+-- T1: tx-local context, then a NEW client on the (single) server connection with no context
+client1 backend pid 879
+11111111-1111-4111-8111-111111111111
+client1 sees 2
+client2 backend pid 879
+client2 setting after client1 tx = []
+client2 sees (no context) 0
+-- T2: UNSAFE session-level SET (is_local=false) in client 1, then client 3 on the same server connection
+11111111-1111-4111-8111-111111111111
+client1 sees 2
+client3 backend pid 879
+client3 setting = [11111111-1111-4111-8111-111111111111]
+client3 sees (never set a context) 2
+-- T2b: SET (statement) at session level behaves the same way?
+client1 sees 1
+client4 setting = [22222222-2222-4222-8222-222222222222]
+client4 sees 1
+-- T3: two concurrent clients, different tenants, pool size 1 (they must serialise; each must see only its tenant)
+11111111-1111-4111-8111-111111111111
+
+tenantA client sees 2
+22222222-2222-4222-8222-222222222222
+tenantB client sees 1
+-- T4: SET LOCAL (statement form) inside a transaction
+SET LOCAL client sees 2
+after commit, no context sees 1
+-- T5: multi-statement protocol: set_config and query in two separate simple-query round trips WITHOUT an explicit transaction (autocommit) - context must NOT survive
+11111111-1111-4111-8111-111111111111
+autocommit second statement sees 1
+-- PgBouncer log tail
+2026-10-16 21:57:02.226 UTC [1] LOG C-0x7f5e871c1698: s10/app_rt@127.0.0.1:34228 closing because: client close request (age=1s)
+2026-10-16 21:57:02.745 UTC [1] LOG C-0x7f5e871c1698: s10/app_rt@127.0.0.1:34236 login attempt: db=s10 user=app_rt tls=no replication=no
+2026-10-16 21:57:02.746 UTC [1] LOG C-0x7f5e871c1698: s10/app_rt@127.0.0.1:34236 closing because: client close request (age=0s)
+2026-10-16 21:57:03.262 UTC [1] LOG C-0x7f5e871c1698: s10/app_rt@127.0.0.1:34248 login attempt: db=s10 user=app_rt tls=no replication=no
+2026-10-16 21:57:03.262 UTC [1] LOG C-0x7f5e871c1698: s10/app_rt@127.0.0.1:34248 closing because: client close request (age=0s)
+== S12 end 2026-10-16T21:57:03Z

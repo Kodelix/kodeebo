@@ -1,0 +1,427 @@
+SET
+== T0 role attributes (login, not SET ROLE)
+ current_user | rolsuper | rolbypassrls 
+--------------+----------+--------------
+ app_rt       | f        | f
+(1 row)
+
+== T1 owner of tenant A (branch_all=on): all three A branches, nothing of B
+BEGIN
+SET
+SET
+              branch_id               | count 
+--------------------------------------+-------
+ 00000000-0000-0000-0000-0000000000a1 |  5000
+ 00000000-0000-0000-0000-0000000000a2 |  5000
+ 00000000-0000-0000-0000-0000000000a3 |  5000
+(3 rows)
+
+              branch_id               |  n   | total  
+--------------------------------------+------+--------
+ 00000000-0000-0000-0000-0000000000a1 | 5000 | 271550
+ 00000000-0000-0000-0000-0000000000a2 | 5000 | 271550
+ 00000000-0000-0000-0000-0000000000a3 | 5000 | 271550
+(3 rows)
+
+ bills_of_tenant_b 
+-------------------
+                 0
+(1 row)
+
+COMMIT
+== T2 manager of A1 only (branch_ids=A1)
+BEGIN
+SET
+SET
+              branch_id               | count 
+--------------------------------------+-------
+ 00000000-0000-0000-0000-0000000000a1 |  5000
+(1 row)
+
+-- client-supplied filter naming A2 (the "client-sent branch id"):
+ rows_when_client_asks_for_a2 
+------------------------------
+                            0
+(1 row)
+
+ rows_when_client_asks_for_tenant_b 
+------------------------------------
+                                  0
+(1 row)
+
+-- tenant-wide catalogue still visible:
+ items_visible 
+---------------
+            10
+(1 row)
+
+-- aggregate report (security_invoker view): only A1
+              branch_id               |  n   | total  
+--------------------------------------+------+--------
+ 00000000-0000-0000-0000-0000000000a1 | 5000 | 271550
+(1 row)
+
+-- plain (non-invoker) view owned by migrator:
+ plain_view_rows 
+-----------------
+               0
+(1 row)
+
+-- branches list: tenant-wide (names of sibling branches are visible)
+ branches_visible 
+------------------
+                3
+(1 row)
+
+COMMIT
+== T2b manager A1 writes: INSERT into A2 must fail
+BEGIN
+SET
+SET
+ROLLBACK
+== T2c manager A1: INSERT into A1 works; UPDATE moving a row from A1 to A2 must fail
+BEGIN
+ERROR:  new row violates row-level security policy "b_bills" for table "bills"
+SET
+SET
+INSERT 0 1
+ROLLBACK
+BEGIN
+SET
+SET
+ERROR:  new row violates row-level security policy "b_bills" for table "bills"
+ROLLBACK
+== T2d manager A1: DELETE of A2 rows hits 0 rows
+BEGIN
+SET
+SET
+DELETE 0
+ROLLBACK
+== T2e composite FK: bill_lines naming A2 for a bill of A1 must fail even for the owner
+BEGIN
+SET
+SET
+ERROR:  insert or update on table "bill_lines" violates foreign key constraint "bill_lines_tenant_id_branch_id_bill_id_fkey"
+DETAIL:  Key is not present in table "bills".
+ROLLBACK
+== T2f manager of A1 and A2 (two assignments)
+BEGIN
+SET
+SET
+              branch_id               | count 
+--------------------------------------+-------
+ 00000000-0000-0000-0000-0000000000a1 |  5000
+ 00000000-0000-0000-0000-0000000000a2 |  5000
+(2 rows)
+
+COMMIT
+== T3 fail closed: tenant set but no branch setting; and nothing set; and empty branch_ids
+BEGIN
+SET
+ no_branch_setting 
+-------------------
+                 0
+(1 row)
+
+COMMIT
+BEGIN
+ nothing_set 
+-------------
+           0
+(1 row)
+
+COMMIT
+BEGIN
+SET
+SET
+ empty_branch_ids 
+------------------
+                0
+(1 row)
+
+COMMIT
+-- malformed branch list
+BEGIN
+SET
+SET
+ERROR:  invalid input syntax for type uuid: "not-a-uuid"
+ROLLBACK
+-- branch_all set to something other than on
+BEGIN
+SET
+SET
+ branch_all_true 
+-----------------
+               0
+(1 row)
+
+COMMIT
+== T4 a second SET LOCAL in the same transaction silently widens the scope (application must set once)
+BEGIN
+SET
+SET
+ before_second_set 
+-------------------
+              5000
+(1 row)
+
+SET
+ after_second_set 
+------------------
+            15000
+(1 row)
+
+COMMIT
+== T5 variant 2: scope derived from staff_branches via app.staff_id (no branch list from the token)
+-- manager A1 (staff 05a1)
+BEGIN
+SET
+SET
+              branch_id               | count 
+--------------------------------------+-------
+ 00000000-0000-0000-0000-0000000000a1 |  5000
+(1 row)
+
+COMMIT
+-- manager A1+A2 (staff 05a2)
+BEGIN
+SET
+SET
+              branch_id               | count 
+--------------------------------------+-------
+ 00000000-0000-0000-0000-0000000000a1 |  5000
+ 00000000-0000-0000-0000-0000000000a2 |  5000
+(2 rows)
+
+COMMIT
+-- a manager tries to grant himself branch A3 (actor_role=manager): must fail
+BEGIN
+SET
+SET
+SET
+ERROR:  new row violates row-level security policy for table "staff_branches"
+ROLLBACK
+-- owner removes manager 05a1 assignment; the very next transaction of that manager sees nothing (no token refresh involved)
+BEGIN
+SET
+SET
+DELETE 1
+COMMIT
+BEGIN
+SET
+SET
+ after_unassign 
+----------------
+              0
+(1 row)
+
+COMMIT
+-- same staff id presented under tenant B context: nothing
+BEGIN
+SET
+SET
+ staff_of_a_under_tenant_b 
+---------------------------
+                         0
+(1 row)
+
+COMMIT
+== T6 materialized view owned by a BYPASSRLS role: read under tenant B context
+BEGIN
+SET
+              tenant_id               |              branch_id               |  n   
+--------------------------------------+--------------------------------------+------
+ 00000000-0000-0000-0000-00000000000a | 00000000-0000-0000-0000-0000000000a1 | 5000
+ 00000000-0000-0000-0000-00000000000a | 00000000-0000-0000-0000-0000000000a2 | 5000
+ 00000000-0000-0000-0000-00000000000a | 00000000-0000-0000-0000-0000000000a3 | 5000
+ 00000000-0000-0000-0000-00000000000b | 00000000-0000-0000-0000-0000000000b1 | 5000
+(4 rows)
+
+COMMIT
+-- is row security even available on a materialized view? (as the owner, in a superuser session this is tried in 20-mv-rls-try.sql)
+== T7 timing: EXPLAIN ANALYZE branch-scoped aggregate, variant 1 (list) vs variant 2 (subquery), 3 runs each; owner (branch_all) for reference
+-- variant 1, manager A1
+BEGIN
+SET
+SET
+                                                                                                 QUERY PLAN                                                                                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=140
+   ->  Bitmap Heap Scan on bills (actual rows=1439.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (branch_id = ANY ((string_to_array(NULLIF(current_setting('app.branch_ids'::text, true), ''::text), ','::text))::uuid[])))
+         Rows Removed by Filter: 2878
+         Heap Blocks: exact=67
+         Buffers: shared hit=140
+         ->  Bitmap Index Scan on bills_tenant_id_branch_id_created_at_idx (actual rows=4318.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=73
+ Planning:
+   Buffers: shared hit=11
+ Planning Time: 0.130 ms
+ Execution Time: 3.027 ms
+(16 rows)
+
+                                                                                                 QUERY PLAN                                                                                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=137
+   ->  Bitmap Heap Scan on bills (actual rows=1439.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (branch_id = ANY ((string_to_array(NULLIF(current_setting('app.branch_ids'::text, true), ''::text), ','::text))::uuid[])))
+         Rows Removed by Filter: 2878
+         Heap Blocks: exact=67
+         Buffers: shared hit=137
+         ->  Bitmap Index Scan on bills_tenant_id_branch_id_created_at_idx (actual rows=4318.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+ Planning Time: 0.099 ms
+ Execution Time: 3.097 ms
+(14 rows)
+
+                                                                                                 QUERY PLAN                                                                                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=137
+   ->  Bitmap Heap Scan on bills (actual rows=1439.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (branch_id = ANY ((string_to_array(NULLIF(current_setting('app.branch_ids'::text, true), ''::text), ','::text))::uuid[])))
+         Rows Removed by Filter: 2878
+         Heap Blocks: exact=67
+         Buffers: shared hit=137
+         ->  Bitmap Index Scan on bills_tenant_id_branch_id_created_at_idx (actual rows=4318.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+ Planning Time: 0.083 ms
+ Execution Time: 3.529 ms
+(14 rows)
+
+COMMIT
+-- variant 2, staff 05a2 (A1+A2)
+BEGIN
+SET
+SET
+                                                                           QUERY PLAN                                                                            
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=4453
+   ->  Bitmap Heap Scan on bills_v2 (actual rows=2878.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (ANY (branch_id = (SubPlan 1).col1)))
+         Rows Removed by Filter: 1439
+         Heap Blocks: exact=66
+         Buffers: shared hit=4453
+         ->  Bitmap Index Scan on bills_v2_tenant_id_branch_id_created_at_idx (actual rows=4317.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+         SubPlan 1
+           ->  Result (actual rows=1.67 loops=4317)
+                 One-Time Filter: ((NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid = bills_v2.tenant_id)
+                 Buffers: shared hit=4317
+                 ->  Seq Scan on staff_branches sb (actual rows=1.67 loops=4317)
+                       Filter: ((tenant_id = bills_v2.tenant_id) AND (staff_id = (NULLIF(current_setting('app.staff_id'::text, true), ''::text))::uuid))
+                       Rows Removed by Filter: 0
+                       Buffers: shared hit=4317
+ Planning:
+   Buffers: shared hit=6
+ Planning Time: 0.099 ms
+ Execution Time: 6.123 ms
+(24 rows)
+
+                                                                           QUERY PLAN                                                                            
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=4453
+   ->  Bitmap Heap Scan on bills_v2 (actual rows=2878.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (ANY (branch_id = (SubPlan 1).col1)))
+         Rows Removed by Filter: 1439
+         Heap Blocks: exact=66
+         Buffers: shared hit=4453
+         ->  Bitmap Index Scan on bills_v2_tenant_id_branch_id_created_at_idx (actual rows=4317.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+         SubPlan 1
+           ->  Result (actual rows=1.67 loops=4317)
+                 One-Time Filter: ((NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid = bills_v2.tenant_id)
+                 Buffers: shared hit=4317
+                 ->  Seq Scan on staff_branches sb (actual rows=1.67 loops=4317)
+                       Filter: ((tenant_id = bills_v2.tenant_id) AND (staff_id = (NULLIF(current_setting('app.staff_id'::text, true), ''::text))::uuid))
+                       Rows Removed by Filter: 0
+                       Buffers: shared hit=4317
+ Planning Time: 0.094 ms
+ Execution Time: 6.571 ms
+(22 rows)
+
+                                                                           QUERY PLAN                                                                            
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=4453
+   ->  Bitmap Heap Scan on bills_v2 (actual rows=2878.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (ANY (branch_id = (SubPlan 1).col1)))
+         Rows Removed by Filter: 1439
+         Heap Blocks: exact=66
+         Buffers: shared hit=4453
+         ->  Bitmap Index Scan on bills_v2_tenant_id_branch_id_created_at_idx (actual rows=4317.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+         SubPlan 1
+           ->  Result (actual rows=1.67 loops=4317)
+                 One-Time Filter: ((NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid = bills_v2.tenant_id)
+                 Buffers: shared hit=4317
+                 ->  Seq Scan on staff_branches sb (actual rows=1.67 loops=4317)
+                       Filter: ((tenant_id = bills_v2.tenant_id) AND (staff_id = (NULLIF(current_setting('app.staff_id'::text, true), ''::text))::uuid))
+                       Rows Removed by Filter: 0
+                       Buffers: shared hit=4317
+ Planning Time: 0.094 ms
+ Execution Time: 5.757 ms
+(22 rows)
+
+COMMIT
+-- owner, variant 1 (branch_all)
+BEGIN
+SET
+SET
+                                                                                                 QUERY PLAN                                                                                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=137
+   ->  Bitmap Heap Scan on bills (actual rows=4317.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (branch_id = ANY ((string_to_array(NULLIF(current_setting('app.branch_ids'::text, true), ''::text), ','::text))::uuid[])))
+         Heap Blocks: exact=67
+         Buffers: shared hit=137
+         ->  Bitmap Index Scan on bills_tenant_id_branch_id_created_at_idx (actual rows=4318.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+ Planning Time: 0.063 ms
+ Execution Time: 0.718 ms
+(13 rows)
+
+                                                                                                 QUERY PLAN                                                                                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1.00 loops=1)
+   Buffers: shared hit=137
+   ->  Bitmap Heap Scan on bills (actual rows=4317.00 loops=1)
+         Recheck Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+         Filter: ((current_setting('app.branch_all'::text, true) = 'on'::text) OR (branch_id = ANY ((string_to_array(NULLIF(current_setting('app.branch_ids'::text, true), ''::text), ','::text))::uuid[])))
+         Heap Blocks: exact=67
+         Buffers: shared hit=137
+         ->  Bitmap Index Scan on bills_tenant_id_branch_id_created_at_idx (actual rows=4318.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (created_at > (now() - '1 day'::interval)))
+               Index Searches: 4
+               Buffers: shared hit=70
+ Planning Time: 0.042 ms
+ Execution Time: 0.690 ms
+(13 rows)
+
+COMMIT

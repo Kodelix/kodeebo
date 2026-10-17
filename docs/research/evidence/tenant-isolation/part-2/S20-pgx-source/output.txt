@@ -1,0 +1,364 @@
+### date (UTC): 2026-10-16T21:54:05Z
+### fetched proxy.golang.org pgx v5.11.0.zip sha256=ada62e9524433648...
+{"Version":"v5.11.0","Time":"2026-09-07T23:39:32Z","Origin":{"VCS":"git","URL":"https://github.com/jackc/pgx","Hash":"5e583fa7aabfa88b796292f849fc9d7d75ac159d","Ref":"refs/tags/v5.11.0"}}
+
+===== tx.go: BeginFunc / BeginTxFunc / beginFuncExec / Commit / Rollback
+42:type TxOptions struct {
+191:func (tx *dbTx) Commit(ctx context.Context) error {
+220:func (tx *dbTx) Rollback(ctx context.Context) error {
+402:func BeginFunc(
+421:func BeginTxFunc(
+438:func beginFuncExec(ctx context.Context, tx Tx, fn func(Tx) error) (err error) {
+func beginFuncExec(ctx context.Context, tx Tx, fn func(Tx) error) (err error) {
+	defer func() {
+		rollbackErr := tx.Rollback(ctx)
+		if rollbackErr != nil && !errors.Is(rollbackErr, ErrTxClosed) {
+			err = rollbackErr
+		}
+	}()
+
+	fErr := fn(tx)
+	if fErr != nil {
+		_ = tx.Rollback(ctx) // ignore rollback error as there is already an error to return
+		return fErr
+	}
+
+	return tx.Commit(ctx)
+}
+
+===== tx.go: dbTx.Commit / Rollback
+func (tx *dbTx) Commit(ctx context.Context) error {
+	if tx.closed {
+		return ErrTxClosed
+	}
+
+	commandSQL := "commit"
+	if tx.commitQuery != "" {
+		commandSQL = tx.commitQuery
+	}
+
+	commandTag, err := tx.conn.Exec(ctx, commandSQL)
+	tx.closed = true
+	if err != nil {
+		if tx.conn.PgConn().TxStatus() != 'I' {
+			_ = tx.conn.Close(ctx) // already have error to return
+		}
+		return err
+	}
+	if commandTag.String() == "ROLLBACK" {
+		return ErrTxCommitRollback
+	}
+
+	return nil
+}
+
+// Rollback rolls back the transaction. Rollback will return ErrTxClosed if the
+// Tx is already closed, but is otherwise safe to call multiple times. Hence, a
+// defer tx.Rollback() is safe even if tx.Commit() will be called first in a
+// non-error condition.
+func (tx *dbTx) Rollback(ctx context.Context) error {
+	if tx.closed {
+		return ErrTxClosed
+	}
+
+	_, err := tx.conn.Exec(ctx, "rollback")
+	tx.closed = true
+	if err != nil {
+		// A rollback failure leaves the connection in an undefined state
+		tx.conn.die()
+		return err
+	}
+
+	return nil
+}
+
+// Exec delegates to the underlying *Conn
+func (tx *dbTx) Exec(ctx context.Context, sql string, arguments ...any) (commandTag pgconn.CommandTag, err error) {
+	if tx.closed {
+		return pgconn.CommandTag{}, ErrTxClosed
+	}
+
+	return tx.conn.Exec(ctx, sql, arguments...)
+}
+
+// Prepare delegates to the underlying *Conn
+func (tx *dbTx) Prepare(ctx context.Context, name, sql string) (*pgconn.StatementDescription, error) {
+
+===== pgxpool/conn.go: Release
+func (c *Conn) Release() {
+	if c.res == nil {
+		return
+	}
+
+	conn := c.Conn()
+	res := c.res
+	c.res = nil
+
+	if c.p.releaseTracer != nil {
+		c.p.releaseTracer.TraceRelease(c.p, TraceReleaseData{Conn: conn})
+	}
+
+	if conn.IsClosed() || conn.PgConn().IsBusy() || conn.PgConn().TxStatus() != 'I' {
+		res.Destroy()
+		// Signal to the health check to run since we just destroyed a connections
+		// and we might be below minConns now
+		c.p.triggerHealthCheck()
+		return
+	}
+
+	// If the pool is consistently being used, we might never get to check the
+	// lifetime of a connection since we only check idle connections in checkConnsHealth
+	// so we also check the lifetime here and force a health check
+	if c.p.isExpired(res) {
+		c.p.lifetimeDestroyCount.Add(1)
+		res.Destroy()
+		// Signal to the health check to run since we just destroyed a connections
+		// and we might be below minConns now
+		c.p.triggerHealthCheck()
+		return
+	}
+
+	if c.p.afterRelease == nil {
+		res.Release()
+		return
+	}
+
+	go func() {
+		if c.p.afterRelease(conn) {
+			res.Release()
+		} else {
+			res.Destroy()
+			// Signal to the health check to run since we just destroyed a connections
+			// and we might be below minConns now
+			c.p.triggerHealthCheck()
+		}
+	}()
+}
+
+// Hijack assumes ownership of the connection from the pool. Caller is responsible for closing the connection. Hijack
+
+===== pgxpool/tx.go: Commit / Rollback release the connection
+func (tx *Tx) Commit(ctx context.Context) error {
+	err := tx.t.Commit(ctx)
+	if tx.c != nil {
+		tx.c.Release()
+		tx.c = nil
+	}
+	return err
+}
+
+// Rollback rolls back the transaction and returns the associated connection back to the Pool. Rollback will return
+// where an error where errors.Is(ErrTxClosed) is true if the Tx is already closed, but is otherwise safe to call
+// multiple times. Hence, defer tx.Rollback() is safe even if tx.Commit() will be called first in a non-error condition.
+func (tx *Tx) Rollback(ctx context.Context) error {
+	err := tx.t.Rollback(ctx)
+	if tx.c != nil {
+		tx.c.Release()
+		tx.c = nil
+	}
+	return err
+}
+
+func (tx *Tx) CopyFrom(ctx context.Context, tableName pgx.Identifier, columnNames []string, rowSrc pgx.CopyFromSource) (int64, error) {
+	return tx.t.CopyFrom(ctx, tableName, columnNames, rowSrc)
+}
+
+func (tx *Tx) SendBatch(ctx context.Context, b *pgx.Batch) pgx.BatchResults {
+	return tx.t.SendBatch(ctx, b)
+}
+
+func (tx *Tx) LargeObjects() pgx.LargeObjects {
+	return tx.t.LargeObjects()
+
+===== pgxpool/pool.go: hooks (config struct) and Acquire/PrepareConn/BeforeAcquire usage
+91:	shouldPing            func(context.Context, ShouldPingParams) bool
+113:// ShouldPingParams are the parameters passed to ShouldPing.
+114:type ShouldPingParams struct {
+128:	// AfterConnect is called after a connection is established, but before it is added to the pool.
+129:	AfterConnect func(context.Context, *pgx.Conn) error
+131:	// BeforeAcquire is called before a connection is acquired from the pool. It must return true to allow the
+135:	// Deprecated: Use PrepareConn instead. If both PrepareConn and BeforeAcquire are set, PrepareConn will take
+136:	// precedence, ignoring BeforeAcquire.
+137:	BeforeAcquire func(context.Context, *pgx.Conn) bool
+139:	// PrepareConn is called before a connection is acquired from the pool. If this function returns true, the connection
+149:	PrepareConn func(context.Context, *pgx.Conn) (bool, error)
+151:	// AfterRelease is called after a connection is released, but before it is returned to the pool. It must return true to
+153:	AfterRelease func(*pgx.Conn) bool
+155:	// BeforeClose is called right before a connection is closed and removed from the pool.
+156:	BeforeClose func(*pgx.Conn)
+158:	// ShouldPing is called after a connection is acquired from the pool. If it returns true, the connection is pinged to check for liveness.
+160:	ShouldPing func(context.Context, ShouldPingParams) bool
+228:	prepareConn := config.PrepareConn
+229:	if prepareConn == nil && config.BeforeAcquire != nil {
+231:			return config.BeforeAcquire(ctx, conn), nil
+238:		afterConnect:          config.AfterConnect,
+240:		afterRelease:          config.AfterRelease,
+241:		beforeClose:           config.BeforeClose,
+262:	if config.ShouldPing != nil {
+263:		p.shouldPing = config.ShouldPing
+265:		p.shouldPing = func(ctx context.Context, params ShouldPingParams) bool {
+647:		shouldPingParams := ShouldPingParams{Conn: cr.conn, IdleDuration: res.IdleDuration()}
+682:	return nil, errors.New("pgxpool: too many failed attempts acquiring connection; likely bug in PrepareConn, BeforeAcquire, or ShouldPing hook")
+	// Deprecated: Use PrepareConn instead. If both PrepareConn and BeforeAcquire are set, PrepareConn will take
+	// precedence, ignoring BeforeAcquire.
+	BeforeAcquire func(context.Context, *pgx.Conn) bool
+
+	// PrepareConn is called before a connection is acquired from the pool. If this function returns true, the connection
+	// is considered valid, otherwise the connection is destroyed. If the function returns a non-nil error, the instigating
+	// query will fail with the returned error.
+	//
+	// Specifically, this means that:
+	//
+	// 	- If it returns true and a nil error, the query proceeds as normal.
+	// 	- If it returns true and an error, the connection will be returned to the pool, and the instigating query will fail with the returned error.
+	// 	- If it returns false, and an error, the connection will be destroyed, and the query will fail with the returned error.
+
+===== ResetSession anywhere in the module (names only)
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:144:	// IdleDuration is how long it has been since ResetSession last ran.
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:171:// OptionResetSession provides a callback that can be used to add custom logic prior to executing a query on the
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:173:// If ResetSessionFunc returns ErrBadConn error the connection will be discarded.
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:174:func OptionResetSession(rs func(context.Context, *pgx.Conn) error) OptionOpenDB {
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:176:		dc.ResetSession = rs
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:213:		ResetSession:  func(context.Context, *pgx.Conn) error { return nil },       // noop reset session by default
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:230:		ResetSession: func(context.Context, *pgx.Conn) error { return nil }, // noop reset session by default
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:262:	ResetSession  func(context.Context, *pgx.Conn) error       // function is called before a connection is reused
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:314:		resetSessionFunc: c.ResetSession,
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/stdlib/sql.go:425:	lastResetSessionTime time.Time
+
+===== PgBouncer / QueryExecMode / statement cache wording in pgx doc comments
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:211:PgBouncer
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:213:By default pgx automatically uses protocol-level named prepared statements. PgBouncer 1.21.0 and newer can use these
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:215:zero. In this configuration the default [QueryExecModeCacheStatement] mode may be used. See the PgBouncer documentation
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:216:for limitations and configuration details: https://www.pgbouncer.org/config.html#max_prepared_statements.
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:218:When using an older PgBouncer version or when prepared statement support is disabled, set
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:220:[QueryExecModeSimpleProtocol] are also compatible with PgBouncer. Prefer [QueryExecModeExec] over
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:222:PgBouncer may assign a different server connection between the describe and execute steps.
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/doc.go:224:SQL-level prepared statements created with PREPARE are not supported by PgBouncer in transaction pooling mode.
+/tmp/tmp.g6zkg3jRJR/src/github.com/jackc/pgx/v5@v5.11.0/conn.go:39:	// and automatically prepares and caches prepared statements. This may be incompatible with proxies such as PgBouncer
+38:	// DefaultQueryExecMode controls the default mode for executing queries. By default pgx uses the extended protocol
+41:	// be preferable to use [QueryExecModeExec] or [QueryExecModeSimpleProtocol]. The same functionality can be controlled
+42:	// on a per query basis by passing a [QueryExecMode] as the first query argument.
+43:	DefaultQueryExecMode QueryExecMode
+130:	errDisabledStatementCache   = fmt.Errorf("cannot use QueryExecModeCacheStatement with disabled statement cache")
+131:	errDisabledDescriptionCache = fmt.Errorf("cannot use QueryExecModeCacheDescribe with disabled description cache")
+192:	defaultQueryExecMode := QueryExecModeCacheStatement
+197:			defaultQueryExecMode = QueryExecModeCacheStatement
+199:			defaultQueryExecMode = QueryExecModeCacheDescribe
+201:			defaultQueryExecMode = QueryExecModeDescribeExec
+203:			defaultQueryExecMode = QueryExecModeExec
+205:			defaultQueryExecMode = QueryExecModeSimpleProtocol
+218:		DefaultQueryExecMode:     defaultQueryExecMode,
+230://     QueryExecMode constant documentation for the meaning of these values. Default: "cache_statement".
+500:	mode := c.config.DefaultQueryExecMode
+506:		case QueryExecMode:
+526:		mode = QueryExecModeSimpleProtocol
+546:	case QueryExecModeCacheStatement:
+560:	case QueryExecModeCacheDescribe:
+574:	case QueryExecModeDescribeExec:
+580:	case QueryExecModeExec:
+582:	case QueryExecModeSimpleProtocol:
+585:		return pgconn.CommandTag{}, fmt.Errorf("unknown QueryExecMode: %v", mode)
+652:type QueryExecMode int32
+655:	_ QueryExecMode = iota
+661:	QueryExecModeCacheStatement
+667:	QueryExecModeCacheDescribe
+674:	QueryExecModeDescribeExec
+685:	// But the text format would encode the integer 7 as the string "VII". As QueryExecModeExec uses the text format, it
+686:	// is possible that changing query mode from another mode to QueryExecModeExec could change the behavior of the query.
+690:	QueryExecModeExec
+699:	// QueryExecModeSimpleProtocol should have the user application visible behavior as QueryExecModeExec. This includes
+704:	// QueryExecModeSimpleProtocol uses client side parameter interpolation. All values are quoted and escaped. Prefer
+705:	// QueryExecModeExec over QueryExecModeSimpleProtocol whenever possible. In general QueryExecModeSimpleProtocol should
+708:	QueryExecModeSimpleProtocol
+711:func (m QueryExecMode) String() string {
+713:	case QueryExecModeCacheStatement:
+715:	case QueryExecModeCacheDescribe:
+717:	case QueryExecModeDescribeExec:
+719:	case QueryExecModeExec:
+type QueryExecMode int32
+
+const (
+	_ QueryExecMode = iota
+
+	// Automatically prepare and cache statements. This uses the extended protocol. Queries are executed in a single round
+	// trip after the statement is cached. This is the default. If the database schema is modified or the search_path is
+	// changed after a statement is cached then the first execution of a previously cached query may fail. e.g. If the
+	// number of columns returned by a "SELECT *" changes or the type of a column is changed.
+	QueryExecModeCacheStatement
+
+	// Cache statement descriptions (i.e. argument and result types) and assume they do not change. This uses the extended
+	// protocol. Queries are executed in a single round trip after the description is cached. If the database schema is
+	// modified or the search_path is changed after a statement is cached then the first execution of a previously cached
+	// query may fail. e.g. If the number of columns returned by a "SELECT *" changes or the type of a column is changed.
+	QueryExecModeCacheDescribe
+
+	// Get the statement description on every execution. This uses the extended protocol. Queries require two round trips
+	// to execute. It does not use named prepared statements. But it does use the unnamed prepared statement to get the
+	// statement description on the first round trip and then uses it to execute the query on the second round trip. This
+	// may cause problems with connection poolers that switch the underlying connection between round trips. It is safe
+	// even when the database schema is modified concurrently.
+	QueryExecModeDescribeExec
+
+	// Assume the PostgreSQL query parameter types based on the Go type of the arguments. This uses the extended protocol
+	// with text formatted parameters and results. Queries are executed in a single round trip. Type mappings can be
+	// registered with pgtype.Map.RegisterDefaultPgType. Queries will be rejected that have arguments that are
+	// unregistered or ambiguous. e.g. A map[string]string may have the PostgreSQL type json or hstore. Modes that know
+	// the PostgreSQL type can use a map[string]string directly as an argument. This mode cannot.
+	//
+	// On rare occasions user defined types may behave differently when encoded in the text format instead of the binary
+	// format. For example, this could happen if a "type RomanNumeral int32" implements fmt.Stringer to format integers as
+	// Roman numerals (e.g. 7 is VII). The binary format would properly encode the integer 7 as the binary value for 7.
+	// But the text format would encode the integer 7 as the string "VII". As QueryExecModeExec uses the text format, it
+	// is possible that changing query mode from another mode to QueryExecModeExec could change the behavior of the query.
+	// This should not occur with types pgx supports directly and can be avoided by registering the types with
+	// pgtype.Map.RegisterDefaultPgType and implementing the appropriate type interfaces. In the cas of RomanNumeral, it
+	// should implement pgtype.Int64Valuer.
+	QueryExecModeExec
+
+	// Use the simple protocol. Assume the PostgreSQL query parameter types based on the Go type of the arguments. This is
+	// especially significant for []byte values. []byte values are encoded as PostgreSQL bytea. string must be used
+	// instead for text type values including json and jsonb. Type mappings can be registered with
+	// pgtype.Map.RegisterDefaultPgType. Queries will be rejected that have arguments that are unregistered or ambiguous.
+	// e.g. A map[string]string may have the PostgreSQL type json or hstore. Modes that know the PostgreSQL type can use a
+	// map[string]string directly as an argument. This mode cannot. Queries are executed in a single round trip.
+	//
+	// QueryExecModeSimpleProtocol should have the user application visible behavior as QueryExecModeExec. This includes
+	// the warning regarding differences in text format and binary format encoding with user defined types. There may be
+	// other minor exceptions such as behavior when multiple result returning queries are erroneously sent in a single
+	// string.
+	//
+	// QueryExecModeSimpleProtocol uses client side parameter interpolation. All values are quoted and escaped. Prefer
+	// QueryExecModeExec over QueryExecModeSimpleProtocol whenever possible. In general QueryExecModeSimpleProtocol should
+	// only be used if connecting to a proxy server, connection pool server, or non-PostgreSQL server that does not
+	// support the extended protocol.
+
+===== doc.go PgBouncer section
+PgBouncer
+
+By default pgx automatically uses protocol-level named prepared statements. PgBouncer 1.21.0 and newer can use these
+prepared statements in transaction and statement pooling modes when its max_prepared_statements setting is greater than
+zero. In this configuration the default [QueryExecModeCacheStatement] mode may be used. See the PgBouncer documentation
+for limitations and configuration details: https://www.pgbouncer.org/config.html#max_prepared_statements.
+
+When using an older PgBouncer version or when prepared statement support is disabled, set
+[ConnConfig.DefaultQueryExecMode] to [QueryExecModeExec]. [QueryExecModeCacheDescribe] and
+[QueryExecModeSimpleProtocol] are also compatible with PgBouncer. Prefer [QueryExecModeExec] over
+[QueryExecModeSimpleProtocol] whenever possible. Do not use [QueryExecModeDescribeExec] with transaction pooling because
+PgBouncer may assign a different server connection between the describe and execute steps.
+
+SQL-level prepared statements created with PREPARE are not supported by PgBouncer in transaction pooling mode.
+*/
+
+===== stdlib: ResetSession option
+144:	// IdleDuration is how long it has been since ResetSession last ran.
+171:// OptionResetSession provides a callback that can be used to add custom logic prior to executing a query on the
+173:// If ResetSessionFunc returns ErrBadConn error the connection will be discarded.
+174:func OptionResetSession(rs func(context.Context, *pgx.Conn) error) OptionOpenDB {
+176:		dc.ResetSession = rs
+213:		ResetSession:  func(context.Context, *pgx.Conn) error { return nil },       // noop reset session by default
+230:		ResetSession: func(context.Context, *pgx.Conn) error { return nil }, // noop reset session by default
+262:	ResetSession  func(context.Context, *pgx.Conn) error       // function is called before a connection is reused
+314:		resetSessionFunc: c.ResetSession,
+425:	lastResetSessionTime time.Time
+
+### done 2026-10-16T21:54:06Z

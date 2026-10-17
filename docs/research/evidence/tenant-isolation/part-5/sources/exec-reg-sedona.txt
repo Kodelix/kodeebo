@@ -1,0 +1,1282 @@
+Egypt Personal Data Protection
+Law – Executive Regulations
+                         Arab Republic of Egypt
+
+                 Presidency of the Arab Republic of Egypt
+
+
+
+
+                   Al-Waqa'i' al-Misriyya
+                 Supplement to the Official Gazette
+
+
+
+
+                                                                       Price: EGP 15
+
+
+
+
+Issue No. 244            Issued on Saturday, 10 Jumada Al Awwal 1447     Year:
+                                                                         199H
+(Supplement A)           Corresponding to 1 November 2025
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+                     Ministry of Communications and Information Technology
+
+                                      Decree No. 816 of 2025
+
+   concerning the issuance of the Executive Regulations of the Personal Data Protection Law
+                             promulgated by Law No. 151 of 2020
+
+The Minister of Communications and Information Technology,
+
+After perusal of the Constitution;
+
+the Penal Code;
+
+the Civil Code;
+
+the Code of Criminal Procedure;
+
+Decree-Law No. 96 of 1952 Regulating Expertise Before Judicial Authorities;
+
+the Civil and Commercial Procedures Law promulgated by Law No. 13 of 1968;
+
+the Law of Evidence in Civil and Commercial Matters promulgated by Law No. 25 of 1968;
+
+Law No. 34 of 1976 concerning the Commercial Register;
+
+the Law on Joint Stock Companies, Limited Partnerships, Limited Liability Companies, and Single-
+Person Companies promulgated by Law No. 159 of 1981;
+
+Law No. 12 of 1996 promulgating the Child Law;
+
+the Commercial Law promulgated by Law No. 17 of 1999;
+
+the Law on the Protection of Intellectual Property Rights promulgated by Law No. 82 of 2002;
+
+the Telecommunication Regulation Law promulgated by Law No. 10 of 2003;
+
+Law No. 15 of 2004 on E-signature and Establishment of the Information Technology Industry
+Development Authority (ITIDA);
+
+Law No. 3 of 2005 Promulgating the Law on the Protection of Competition and the Prohibition of
+Monopolistic Practices;
+
+Law No. 87 of 2018 Regulating Road Transport Services Using Information Technology;
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+Law No. 175 of 2018 on Anti-Cyber and Information Technology Crimes;
+
+Law No. 181 of 2018 on Consumer Protection;
+
+the Central Bank and Banking System Law promulgated by Law No. 194 of 2020; and
+
+based on the opinion of the State Council;
+
+                                     hereby resolves as follows:
+
+Article 1
+The provisions of the Executive Regulations attached to this Decree concerning the Personal Data
+Protection Law referred to shall apply.
+
+Article 2
+This Decree shall be published in Al-Waqa'i' al-Misriyya Newspaper and shall come into force on the
+day following its publication.
+
+
+
+
+                                             Minister of Communications and Information Technology
+                                                                                   Dr. Amr Talaat
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+Table of Content
+
+Policies, Procedures, Controls, and Standard Criteria for Collecting, Processing, Storing, and Securing
+Personal Data ............................................................................................................................................ 6
+Policies, Procedures, Technical Controls, and Standards for the Obligations of the Personal Data
+Controller.................................................................................................................................................. 7
+Policies, Procedures, Controls, Conditions, Instructions, and Standard Criteria for the Obligations of
+the Personal Data Processor ..................................................................................................................... 8
+Obligations of the Controller and Processor in Cases of Personal Data Breach or Violation ................ 10
+Obligations of the Center in Cases of Personal Data Breach or Violation ............................................. 10
+Conditions for Registering Personal Data Protection Officers ............................................................... 11
+Documents Required for Registration in the Personal Data Protection Officers’ Register .................... 11
+Registration of Personal Data Protection Officers ................................................................................. 12
+Termination of Contractual Relationship or Replacement of Personal Data Protection Officers .......... 12
+Scope of Authority of the Personal Data Protection Officer .................................................................. 13
+Obligations of the Personal Data Protection Officer .............................................................................. 13
+Digital Evidence ..................................................................................................................................... 13
+Standards and Controls for Handling Sensitive Personal Data .............................................................. 14
+Standards and Controls for Handling Children’s Data ........................................................................... 15
+Policies, Standards, Controls, and Rules for Transferring, Storing, Sharing, Processing, Making
+Available, or Protecting Personal Data Across Borders ......................................................................... 15
+Requirements, Procedures, Precautions, Standards, and Rules for Making Personal Data Available to
+Another Controller or Processor Outside the Arab Republic of Egypt .................................................. 16
+Rules, Conditions, and Controls Related to Direct Electronic Marketing .............................................. 16
+Classification and Categories of Licenses for Controllers and/or Processors of Personal Data and
+Sensitive Personal Data .......................................................................................................................... 17
+Classification and Categories of Permits for Controllers and/or Processors of Personal Data and
+Sensitive Personal Data .......................................................................................................................... 20
+Conditions for Licensing/Permitting Legal Entity Controllers and Processors for Personal Data and
+Sensitive Personal Data .......................................................................................................................... 21
+Conditions for Permitting Natural Person Controllers and Processors for Personal Data and Sensitive
+Personal Data .......................................................................................................................................... 21
+Licensing or Permitting Cross-Border Transfer of Personal Data for Legal Entities ............................. 22
+Conditions for Obtaining a License/Permit for Cross-Border Transfer of Personal Data for Legal
+Entities .................................................................................................................................................... 22
+Conditions for Obtaining a Permit for Cross-Border Transfer of Personal Data for Natural Persons ... 22
+Special Procedures for Obtaining a License or Permit for Cross-Border Transfer of Personal Data for
+Legal and Natural Persons ...................................................................................................................... 23
+Fees for Obtaining a License or Permit for Cross-Border Transfer of Personal Data ............................ 23
+License or Permit for Direct Electronic Marketing ................................................................................ 23
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+Categories of Licenses / Permits for Direct Electronic Marketing ......................................................... 24
+Controls for Obtaining a License / Permit for Direct Electronic Marketing .......................................... 24
+License/Permit for the Use of Visual Surveillance Systems in Public Places ........................................ 24
+Conditions for Obtaining an Accreditation Certificate to Provide Consulting Services on Personal Data
+Protection Procedures for Natural Persons ............................................................................................. 25
+Conditions for Obtaining an Accreditation Certificate to Provide Consulting Services on Personal Data
+Protection Procedures for Legal Entities ................................................................................................ 25
+Fees for Obtaining an Accreditation Certificate to Provide Consulting Services on Personal Data
+Protection for Natural Persons / Legal Entities ...................................................................................... 26
+Data and Documents Required for Obtaining a License / Permit for Legal Entities.............................. 26
+Procedures for Obtaining Licenses / Permits for Legal Entities............................................................. 27
+Data and Documents Required for Obtaining a Permit for Natural Persons. ......................................... 27
+Procedures for Obtaining Permits for Natural Persons .......................................................................... 28
+General Provisions and Conditions for Licenses / Permits for Legal and Natural Persons .................... 28
+Renewal of Licenses / Permits ............................................................................................................... 28
+Forms of Licenses / Permits / Accreditations ......................................................................................... 29
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+                                        Executive Regulations
+                                 of the Personal Data Protection Law
+
+Article 1
+
+For the purposes of these Regulations, the definitions set forth in the Personal Data Protection Law shall
+have the same meaning herein. The term “Law” refers to Law No. 151 of 2020 on Personal Data
+Protection.
+
+  Policies, Procedures, Controls, and Standard Criteria for Collecting, Processing, Storing, and
+                                     Securing Personal Data
+
+Article 2
+
+Personal Data collection, Processing, storage, and Security shall be carried out in accordance with the
+following controls, standards, procedures, and policies:
+
+First – Controls and Standards:
+
+    1. The entity collecting Personal Data shall hold a License or Permit as a Controller or Processor,
+       without prejudice to other obligations imposed by competent authorities regulating the activity.
+    2. Personal Data shall not be collected except after obtaining the Data Subject’s consent and
+       informing them clearly of the purpose. Providing Personal Data to receive lawful services or
+       transactions constitutes consent by a natural person for collection and Processing of such data
+       for that purpose only. Such data may not be used for any other purposes unless prior consent is
+       obtained.
+    3. Approval from the Personal Data Protection Center (“the Center”, or “PDPC”) shall be obtained
+       for mechanisms used in Personal Data collection and for obtaining consent from the Data
+       Subject or guardian thereof in case of children’s data.
+    4. Define the retention period based on the purpose of collection.
+    5. Maintain confidentiality and prohibit use, disclosure, or circulation except as legally permitted
+       and in accordance with the License or Permit.
+
+Second – Procedures and Policies:
+
+    1. Inform the Data Subject of their rights under Article 2 of the Law.
+    2. Implement security measures and software issued by the Center for Data protection, including
+       devices and media used.
+    3. Maintain a secure electronic register recording:
+          - Data Subject’s consent, date thereof, and form thereof;
+          - Description of the categories of Personal Data collected and the scope of use thereof.
+          - Retention periods for each category, and the relation thereof to the intended purpose.
+          - Regulatory and technical measures for Data Security enabling the Center to conduct
+              periodic inspections and verify the compliance of the Licensee with such measures.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+
+
+Policies, Procedures, Technical Controls, and Standards for the Obligations of the Personal Data
+                                           Controller
+
+Article 3
+
+The obligations of the Personal Data Controller shall be in accordance with the following technical
+standards, procedures, and policies:
+
+First – Technical Standards and Controls:
+
+    1. Obtain a License or Permit from the Center in accordance with the categories, conditions, and
+       procedures specified in these Regulations, without prejudice to obligations imposed by
+       competent authorities regulating the activity.
+    2. Do not deviate from the licensed or permitted purpose for using Personal Data collected and
+       processed under the License or Permit issued by the Center to the Controller.
+    3. Verify that the Personal Data collected is accurate by reviewing its source, whether from
+       employees or directly from the Data Subject, and ensure its consistency with the purpose of
+       collection and Processing as per the License or Permit issued by the Center to the Controller.
+    4. Erase Personal Data immediately upon the expiry of the retention purpose and notify the Data
+       Subject of such erasure. Personal Data shall not remain in a form that allows identification of
+       the Data Subject if retained for any lawful reason after the purpose has ended.
+    5. Establish a mechanism approved by the Center enabling the Data Subject to request access to
+       their Personal Data, withdraw prior consent, correct or amend their Data, restrict Processing
+       within a defined scope, or object to any Processing.
+    6. A Controller located outside the Arab Republic of Egypt and having no branch or representative
+       office inside the country shall appoint a representative within Egypt through a company branch
+       or an authorized office, approved by the Center for the duration of the License or Permit. If the
+       Controller is a natural person, they shall appoint an agent within Egypt.
+    7. Enable the Center inspectors, as judicial enforcement officers, to review electronic records and
+       verify compliance with technical standards and security procedures for data protection, as well
+       as any executive decisions issued by the Center in this regard.
+    8. Comply with the volume and type of Personal Data permitted under the law governing its
+       activity. Any additional Personal Data requested shall adhere to the rules and standards set forth
+       in the Law, including retention, security, and transfer requirements, where such rules are absent
+       in the governing law.
+    9. Take necessary measures to ensure that individuals collecting Personal Data maintain
+       confidentiality of such Personal Data and do not use, circulate, or disclose such Data in any form
+       except for legally prescribed reasons.
+
+Second – Procedures and Policies:
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    1. Conduct periodic testing and evaluation to ensure the accuracy and integrity of collected
+       Personal Data, in accordance with the assessment and inspection mechanisms issued by the
+       Center.
+    2. Implement measures to render Personal Data unreadable and ensure that such Data does not
+       remain in a form that allows identification of the Data Subject when retained for legal reasons
+       or national security considerations. Such Data shall be erased upon the expiry of the legal reason
+       or purpose.
+    3. Take technical measures necessary to maintain Data confidentiality and prevent breaches.
+    4. Adopt technical and regulatory measures to ensure the ability to restore Personal Data, access it
+       in a timely manner, and contain it in case of any physical or technical incident.
+    5. Without prejudice to the obligation to maintain electronic records referred to in Article 2 of these
+       Regulations, the Controller shall maintain secure electronic records that include:
+            • Requests by the Data Subject to add or amend Personal Data, including the Data to be
+                amended, whether the amendment was completed or not, and the reason therefor.
+            • Requests by the Data Subject to erase Data or withdraw prior consent, including whether
+                the erasure was completed or not and the method of notifying the Data Subject thereof.
+            • Personal Data retained for legal reasons or national security considerations, enabling
+                Center inspectors to verify compliance with technical and security standards without
+                allowing identification of the Data Subject by third parties.
+
+     Policies, Procedures, Controls, Conditions, Instructions, and Standard Criteria for the
+                           Obligations of the Personal Data Processor
+
+Article 4
+
+The Processing of Personal Data shall be carried out in accordance with the following controls,
+standards, procedures, and policies:
+
+First – Controls and Standards:
+
+    1. Obtain a License or Permit from the Center in accordance with the categories, conditions, and
+       procedures specified in these Regulations, without prejudice to obligations imposed by
+       competent authorities regulating the activity.
+    2. Establish a mechanism approved by the Center that defines the volume of Personal Data and the
+       purpose of Processing the same, and allows recording the Data Subject’s consent, as well as
+       notifying the Controller, the Data Subject, and all concerned parties of the required Processing
+       period.
+    3. Ensure that employees handling Personal Data at the Processor maintain confidentiality and do
+       not use, circulate, or disclose such Data in any form except for legally prescribed reasons.
+    4. Enable the Center inspectors, as judicial enforcement officers, to review electronic records and
+       verify compliance with technical standards and security procedures for data protection, as well
+       as any executive decisions issued by the Center, and ensure that Processing purposes align with
+       the nature of the licensed activity.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+   5. A Processor located outside the Arab Republic of Egypt and having no branch or representative
+      office inside the country shall appoint a representative within Egypt through a company branch
+      or an authorized office, approved by the Center for the duration of the License or Permit. If the
+      Processor is a natural person, they shall appoint an agent within Egypt.
+   6. Prohibit Processing of any Personal Data for purposes other than those of the Controller or its
+      activity, except for statistical or educational purposes that are non-profit, subject to the
+      following conditions:
+
+        a) Obtain the Data Subject’s consent.
+        b) Ensure that the subject of the study is relevant to the Personal Data being processed.
+        c) When Personal Data is circulated in any form, it shall be encoded so that the Data Subject
+            cannot be identified.
+   7. The Processor shall handle Personal Data during Processing and when using it for artificial
+      intelligence training and emerging or innovative technologies in accordance with locally,
+      regionally, and internationally recognized principles, ensuring that such technologies are used
+      in a manner that does not cause harm to the Data Subject.
+   8. The Processor shall comply with the volume and type of Personal Data permitted under the law
+      governing its activity. Any additional Personal Data requested shall adhere to the rules and
+      standards set forth in the Law, including retention, security, and transfer requirements, where
+      such rules are absent in the governing law.
+
+Second – Procedures and Policies:
+
+   1. Implement security measures necessary to protect and secure Personal Data during Processing,
+      including securing devices and media used, and store Personal Data in an unreadable format to
+      ensure confidentiality and prevent unauthorized identification of the Data Subject.
+   2. Adopt technical and regulatory measures that guarantee the ability to restore Personal Data,
+      access it in a timely manner, and contain it in case of any physical or technical incident.
+   3. Incorporate into operational policies the maintenance of a secure electronic register that
+      includes:
+          • Recording and describing Processing operations performed, as well as the categories of
+               Personal Data used, and scope of use. The register shall include details of the Processor,
+               a copy of the Processing contract concluded with the Controller, details of the
+               Controller’s Data Protection Officer, details of the Controller’s legal representative,
+               Processing standards, and—where data is transferred across borders—the countries to
+               which data is transferred, security systems applied, data flow paths, and a general
+               description of technical standards used for data protection.
+          • The time periods required for Processing each category of Personal Data.
+          • The regulatory and technical measures followed for securing data, Processing
+               operations, and storage, enabling the Center to conduct periodic inspections and verify
+               the Processor’s compliance.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+            •   Recording the date and time of data erasure after Processing is completed, or
+                confirmation of its delivery to the Controller, in accordance with legally prescribed
+                circumstances.
+
+   Obligations of the Controller and Processor in Cases of Personal Data Breach or Violation
+
+Article 5
+
+The Controller and Processor, as the case may be, shall notify the Center through its designated
+electronic portal or hotline within seventy-two (72) hours of becoming aware of any Personal Data
+Breach or Violation. Such notification shall be recorded in a secure electronic register prepared for this
+purpose and include the following:
+
+    1. The time and date of awareness of the Personal Data Breach or Violation and the time of
+       reporting.
+    2. A description of the nature of the Personal Data Breach or Violation and the time of occurrence,
+       enabling the Center to estimate the approximate volume of compromised data.
+    3. The potential consequences of the Personal Data Breach or Violation and the expected extent of
+       damage.
+    4. Immediate measures and corrective actions taken in response to the Personal Data Breach or
+       Violation .
+    5. Details of the Data Protection Officer.
+    6. Any additional documents, data, or information requested by the Center.
+
+If the Personal Data Breach or Violation relates to national security considerations or the entities
+responsible for them, the notification shall be made to the Center immediately and shall include, in
+addition to the above, the following:
+
+    a) The connection of the Personal Data Breach or Violation to national security considerations.
+    b) The volume of data affected by the Personal Data Breach or Violation and an assessment of the
+       resulting damage.
+
+In all cases, the Controller and Processor, as the case may be, shall notify the Data Subject within three
+(3) business days from the date of reporting the Personal Data Breach or Violation to the Center, along
+with the security measures taken, using the agreed communication method (SMS, email, or phone call)
+specified when consent for data collection was obtained.
+
+             Obligations of the Center in Cases of Personal Data Breach or Violation
+
+Article 6
+
+The Center shall provide appropriate channels and means for reporting Personal Data Breaches or
+Violations, while ensuring the adoption of a dedicated communication method for receiving reports
+related to national security considerations.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+The Center shall also coordinate with National Security Authorities to determine the mechanisms for
+notifying them upon receiving reports of Personal Data Breaches or Violations.
+
+Furthermore, the Center shall regularly train and raise awareness among Personal Data Protection
+Officers on standards for classifying the nature of Personal Data Breaches or Violations.
+
+                   Conditions for Registering Personal Data Protection Officers
+
+Article 7
+
+The following conditions shall be met for registering Personal Data Protection Officers:
+
+    1. The applicant shall hold academic qualifications or professional certifications and have practical
+       experience in relevant fields, in accordance with the standards adopted by the Center’s Board of
+       Directors for the purpose of Personal Data protection.
+    2. The applicant shall pass the tests approved by the Center, based on the nature and scale of the
+       Personal Data activity for which registration is requested.
+    3. The applicant shall not have been previously convicted of any crimes involving dishonor or
+       breach of trust.
+
+    Documents Required for Registration in the Personal Data Protection Officers’ Register
+
+Article 8
+
+The application for registration in the Personal Data Protection Officers’ Register shall be submitted
+along with the following documents:
+
+    1. A copy of the applicant’s identification document (National ID for Egyptians, passport for
+       foreigners).
+    2. A recent personal photograph.
+    3. Copies of academic qualifications obtained.
+    4. Details of practical experience in relevant fields.
+    5. Criminal record certificate for Egyptians, and for foreigners duly authenticated by the competent
+       authorities.
+    6. Proof of passing the tests prescribed by the Center for registration.
+    7. The Data Protection Officer code, if previously registered in the Center Personal Data Protection
+       Officers’ Register for another Controller or Processor, or if previously registered as a natural
+       person and now seeking registration with a Controller or Processor.
+
+The Center shall review the application and notify the applicant of acceptance or rejection within thirty
+(30) business days from the date of submission. The Center may request additional documents necessary
+for decision-making within a specified period, and shall notify the applicant of acceptance or rejection
+within fifteen (15) days from the date of completing the required documents.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+The legal representative of any entity shall take the necessary steps to register Personal Data Protection
+Officers to enable them to perform their duties in accordance with the provisions of the Law.
+
+                          Registration of Personal Data Protection Officers
+
+Article 9
+
+The Center shall establish an electronic register dedicated to the registration of Personal Data Protection
+Officers. Each officer shall be assigned a unique identification number referred to as the “Personal Data
+Protection Officer Code”, which shall be linked to the nature and volume of data they are authorized to
+handle based on the results of their qualification tests. This code shall allow retrieval of all relevant
+information about the officer.
+
+Registration shall be completed through the Center’s electronic portal on the designated links by either
+of the following methods:
+
+    1. A request submitted by the legal representative of the Controller or Processor to register an
+       employee in the Personal Data Protection Officers’ Register, including proof of meeting the
+       registration requirements and the volume and nature of data the officer is authorized to handle.
+    2. A request submitted by a natural person, including proof of meeting the registration
+       requirements and the volume and nature of data they are authorized to handle.
+
+The Personal Data Protection Officer Code shall be determined based on compliance with the
+registration requirements.
+
+ Termination of Contractual Relationship or Replacement of Personal Data Protection Officers
+
+Article 10
+
+The legal representative of any Controller or Processor, when intending to terminate the relationship
+with a Personal Data Protection Officer, shall notify the Center at least fifteen (15) days prior to such
+termination. During this period, the representative shall submit a request to register or assign another
+Personal Data Protection Officer—whether from the entity’s organizational structure or under a
+contractual arrangement—consistent with the nature and volume of data previously handled. The request
+shall specify the code of the replacement officer and the duration of assignment if temporary. This shall
+be done through the Center’s electronic portal or any other communication method approved by the
+Center.
+
+The Center may suspend a registered Personal Data Protection Officer and request their replacement if
+they violate any registration conditions. In such cases, the legal representative shall register a temporary
+replacement officer from those already registered with the Center, whether from the entity’s
+organizational structure or under a contractual arrangement, for the same volume and nature of data
+handled, until a permanent officer is appointed within a timeframe determined by the Center.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+The legal representative shall also notify and provide the Center with the contact details of the
+replacement officer.
+
+                     Scope of Authority of the Personal Data Protection Officer
+
+Article 11
+
+A Personal Data Protection Officer registered with the Center may perform their duties within more than
+one organizational structure, provided the following two conditions are met:
+
+    1. The entities for which the Personal Data Protection Officer is registered shall consent to the
+       officer performing duties for other entities or legal persons, without resulting in any conflict of
+       interest, and within the limits of the volume and nature of data the Personal Data Protection
+       Officer is authorized to handle.
+    2. The Center shall approve the registration of the Personal Data Protection Officer for more than
+       one entity, based on the nature and scale of such entities’ activities, and after ensuring that such
+       registration does not create any conflict or impair the officer’s duties.
+
+It is permissible to register a single Personal Data Protection Officer for entities that are structurally or
+organizationally linked and whose activities are integrated through data exchange, provided the Center
+is notified accordingly.
+
+                         Obligations of the Personal Data Protection Officer
+
+Article 12
+
+The Personal Data Protection Officer shall comply with the following obligations:
+
+    1. Monitor the implementation of security policies issued by the Center regarding the protection
+       of Processing, storage, and circulation of Personal Data, and submit an annual report to the
+       Center on the state of privacy protection at the Controller or Processor, or upon request.
+    2. Submit a report to the Center within fifteen (15) days from assuming duties as a replacement
+       Personal Data Protection Officer, detailing the state of privacy protection, in cases of
+       replacement as provided under Article 10 of these Regulations.
+    3. Oversee the handling of notifications and complaints submitted by Data Subjects regarding
+       requests to erase, amend, or add Personal Data, and ensure their execution.
+    4. Avoid any assignments that conflict with or compromise the protection of Personal Data.
+    5. Establish a separate system when serving multiple entities, institutions, or companies, to
+       facilitate the performance of duties and responsibilities and enable the Center to review
+       compliance
+
+                                             Digital Evidence
+
+Article 13
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+Digital evidence derived from Personal Data shall have the same probative value as evidence obtained
+from written data and information, provided that the following technical standards and conditions
+are met:
+
+    1. The collection or extraction of digital evidence related to Personal Data shall be carried out
+       using technologies that ensure no alteration, update, deletion, or deviation in the Personal Data
+       and related information.
+    2. The digital evidence shall be relevant to the incident and within the scope of proving or
+       disproving the matter in accordance with the mandate of the investigating authority or the
+       competent court.
+    3. The collection, extraction, and preservation of the evidence shall be performed by judicial
+       enforcement officers authorized to handle this type of evidence or by experts from investigative
+       or judicial authorities. The reports or technical records shall specify the type and specifications
+       of the software, tools, and devices used, ensuring the original is preserved without tampering.
+    4. Digital evidence shall be documented in a procedure report by the competent authority prior to
+       examination and analysis, through printing copies of the stored files or scanning them by any
+       visual or digital means. These copies shall be certified by those responsible for collecting,
+       extracting, or analyzing the digital evidence, and each copy shall bear the date and time of
+       printing or scanning, the name of the person performing the task, details of the devices,
+       equipment, and tools used, and the data and information related to the content of the evidence.
+
+                   Standards and Controls for Handling Sensitive Personal Data
+
+Article 14
+
+Each of the Controller or Processor, as the case may be, whether a natural or legal person, shall comply
+with the following standards and controls when collecting, transferring, storing, retaining, Processing,
+or Making Available Sensitive Personal Data:
+
+    1. Obtain a License or Permit from the Center in accordance with the nature of its activity and the
+       categories of Licenses and Permits specified in these Regulations.
+    2. Obtain explicit written consent (in paper or electronic form) from the Data Subject or the
+       guardian in the case of children’s data, except in cases authorized by law.
+    3. Ensure that such data is essential and necessary for the specific purpose related to the
+       Controller’s or Processor’s activity and that its use does not cause harm to the Data Subject.
+    4. Comply with the security standards prescribed by the Center for handling Sensitive Personal
+       Data.
+    5. In cases where a child participates in a game, contest, or any other activity, no more data shall
+       be collected than is necessary for such participation, and such data shall not be used for profiling,
+       tracking, or behavioral monitoring of children.
+    6. Any other standards adopted by the Center’s Board of Directors aimed at protecting Sensitive
+       Personal Data.
+    7. Maintain secure electronic records as required by the Center, including:
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+        a) Recording the consents of the Data Subject or the child’s guardian when handling Sensitive
+           Personal Data in any of the forms mentioned.
+        b) Recording requests for deletion, erasure, amendment, or suspension of Processing of
+           Sensitive Personal Data submitted by the Data Subject or the child’s guardian, along with
+           evidence of their implementation.
+
+                       Standards and Controls for Handling Children’s Data
+
+Article 15
+
+Holders, Controllers, or Processors of data relating to children under the age of fifteen (15) shall obtain
+explicit written consent (in paper or electronic form) from the guardian prior to collecting and Processing
+such data for the purpose of providing a service or for any other purpose. The consent shall specify its
+time frame, without prejudice to the guardian’s right to withdraw or amend their consent. The Center
+shall approve the mechanisms and formats for such consents.
+
+For children aged fifteen (15) to eighteen (18), the child or their guardian, as the case may be, shall
+provide the guardian’s consent for the collection and Processing of the child’s data. The Center shall
+determine the mechanisms for obtaining such consent from the guardian in a manner that ensures
+compliance with the legal requirements prescribed in this regard.
+
+Policies, Standards, Controls, and Rules for Transferring, Storing, Sharing, Processing, Making
+                     Available, or Protecting Personal Data Across Borders
+
+Article 16
+
+The transfer, storage, sharing, Processing, or Making Available of Personal Data across borders shall be
+subject to the following controls, rules, policies, and standards:
+
+First – Controls and Rules:
+
+    1. The Controller or Processor, as the case may be, shall obtain a License or Permit from the Center
+       for transferring Personal Data collected or prepared for Processing to a foreign country for
+       Processing, storage, or sharing purposes, based on the Center’s assessment of the adequacy of
+       protection level in that country.
+    2. The Controller or Processor, as the case may be, shall obtain the Data Subject’s consent for
+       transferring Personal Data collected or prepared for Processing to a foreign country for
+       Processing, storage, or sharing purposes.
+    3. Each of the Controller or Processor shall take all necessary measures to ensure the use of
+       technologies that guarantee an adequate level of protection for Personal Data during transfer,
+       circulation, sharing, or storage, in accordance with the License or Permit issued by the Center
+       and commensurate with the volume and nature of the data authorized for cross-border transfer,
+       sharing, storage, or Processing.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    4. The Controller or Processor, as the case may be, shall transfer Personal Data collected or
+       prepared for Processing only to the country or countries specified in the License or Permit issued
+       by the Center and shall update the License or Permit if additional countries are added during its
+       validity period.
+
+Second – Policies and Standards:
+
+The Center shall specify, in its policies, the countries that provide an adequate level of protection for
+Personal Data in accordance with the provisions of the Law, without prejudice to establishing a
+mechanism for periodic review, based on the following standards:
+
+    1. The existence of legislation or regulations related to Personal Data protection and their
+       consistency with the provisions of the Law.
+    2. The availability of technical and security measures that ensure the protection of Personal Data.
+    3. The existence of legal provisions for compensation in cases where the Data Subject suffers harm
+       due to misuse of their Personal Data.
+
+In light of the availability of the aforementioned standards, the Center may approve the issuance of a
+License or Permit for the Controller or Processor, as the case may be, to transfer, store, or share such
+data to any other foreign countries that meet the same standards.
+
+    Requirements, Procedures, Precautions, Standards, and Rules for Making Personal Data
+       Available to Another Controller or Processor Outside the Arab Republic of Egypt
+
+Article 17
+
+The Controller or Processor, as the case may be, may make Personal Data available to another controller
+or processor outside the Arab Republic of Egypt pursuant to an authorization from the Center, subject
+to the following requirements, precautions, and standards:
+
+    1. The activities of the group of projects or companies shall be aligned in a common or integrated
+       nature of work, achieving a legitimate interest for both parties or for the Data Subject.
+    2. Precautions shall be taken to ensure a level of legal and technical protection for Personal Data
+       at the foreign controller or processor that is no less than that applied within the Arab Republic
+       of Egypt.
+
+             Rules, Conditions, and Controls Related to Direct Electronic Marketing
+
+Article 18
+
+The sender, whether a Controller or Processor, of any electronic communication for the purpose of direct
+marketing shall comply with the following rules, conditions, and controls:
+
+First – Rules and Conditions:
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    1. Obtain a License from the Center to engage in direct Electronic Marketing activities.
+    2. Obtain explicit consent from the Data Subject to receive marketing communications.
+    3. The Controller, Processor, or marketing intermediary shall erase Personal Data in the following
+       cases:
+        a) If the Data Subject withdraws consent for the use of their data for Electronic Marketing
+            purposes.
+        b) Upon the expiry of the retention period or when the marketing purpose ceases, whichever
+            occurs first.
+
+Second – Controls:
+
+    1. Do not use Personal Data collected for Electronic Marketing for any other purpose, nor exchange
+       or process it for other purposes, except with the Data Subject’s explicit consent.
+    2. The initial communication shall include the identity of the sender and specify the marketing
+       purpose, enabling the Data Subject to exercise their right to refuse the communication or
+       withdraw prior consent, using any method approved by the Center such as personal messages
+       via (social media, SMS, email), phone calls, or other technical means.
+    3. If the sender acts as a marketing intermediary, they shall ensure that the Controller or Processor
+       has obtained the Data Subject’s consent to receive marketing communications for the declared
+       purposes. The sender shall also retain the source of the Personal Data, including proof of
+       consent; otherwise, they shall immediately cease using such data for Electronic Marketing .
+    4. Maintain electronic records, to be made available to the Center upon request, including:
+            a) How and when the Data Subject’s consent for Electronic Marketing was obtained, and
+                the specific purpose.
+            b) Requests for deletion or modification of such consent and the actions taken in that
+                regard.
+            c) Mechanisms for securing and storing Personal Data in accordance with procedures
+                approved by the Center.
+
+In all cases, the Center shall designate a means of communication to receive citizens’ complaints related
+to direct Electronic Marketing, whether through its website or via dedicated short telephone numbers.
+
+Classification and Categories of Licenses for Controllers and/or Processors of Personal Data and
+                                     Sensitive Personal Data
+
+Article 19
+
+The Center shall issue a consolidated License for Controllers/Processors for legal entities, in accordance
+with the following tables:
+
+Number of Personal Data Records Annual License Fee for Controller/Processor
+          From 1 to 100,000                       Exempt from License fees
+      From 101,000 to 200,000                              EGP 200
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+      From 201,000 to 300,000                            EGP 300
+      From 301,000 to 400,000                            EGP 400
+      From 401,000 to 500,000                            EGP 500
+      From 501,000 to 600,000                            EGP 600
+      From 601,000 to 700,000                            EGP 700
+      From 701,000 to 800,000                            EGP 800
+      From 801,000 to 900,000                            EGP 900
+     From 901,000 to 1,000,000                          EGP 1,000
+
+The value for each additional 100,000 Personal Data records exceeding one million and up to two million
+shall be calculated at EGP 5,000, as follows:
+
+Number of Personal Data Records Annual License Fee for Controller/Processor
+    From 1,000,001 to 1,100,000                         EGP 5,000
+    From 1,100,001 to 1,200,000                         EGP 10,000
+    From 1,200,001 to 1,300,000                         EGP 15,000
+    From 1,300,001 to 1,400,000                         EGP 20,000
+    From 1,400,001 to 1,500,000                         EGP 25,000
+    From 1,500,001 to 1,600,000                         EGP 30,000
+    From 1,600,001 to 1,700,000                         EGP 35,000
+    From 1,700,001 to 1,800,000                         EGP 40,000
+    From 1,800,001 to 1,900,000                         EGP 45,000
+    From 1,900,001 to 2,000,000                         EGP 50,000
+
+The value for each additional 100,000 Personal Data records exceeding two million and up to three
+million shall be calculated at EGP 10,000, as follows:
+
+Number of Personal Data Records Annual License Fee for Controller/Processor
+    From 2,000,001 to 2,100,000                         EGP 60,000
+    From 2,100,001 to 2,200,000                         EGP 70,000
+    From 2,200,001 to 2,300,000                         EGP 80,000
+    From 2,300,001 to 2,400,000                         EGP 90,000
+    From 2,400,001 to 2,500,000                        EGP 100,000
+    From 2,500,001 to 2,600,000                        EGP 110,000
+    From 2,600,001 to 2,700,000                        EGP 120,000
+    From 2,700,001 to 2,800,000                        EGP 130,000
+    From 2,800,001 to 2,900,000                        EGP 140,000
+    From 2,900,001 to 3,000,000                        EGP 150,000
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+The value for each additional 100,000 Personal Data records exceeding three million and up to four
+million shall be calculated at EGP 15,000, as follows:
+
+Number of Personal Data Records Annual License Fee for Controller/Processor
+     From 3,000,001 to 3,100,000                       EGP 165,000
+     From 3,100,001 to 3,200,000                       EGP 180,000
+     From 3,200,001 to 3,300,000                       EGP 195,000
+     From 3,300,001 to 3,400,000                       EGP 210,000
+     From 3,400,001 to 3,500,000                       EGP 225,000
+     From 3,500,001 to 3,600,000                       EGP 240,000
+     From 3,600,001 to 3,700,000                       EGP 255,000
+     From 3,700,001 to 3,800,000                       EGP 270,000
+     From 3,800,001 to 3,900,000                       EGP 285,000
+     From 3,900,001 to 4,000,000                       EGP 300,000
+
+The value for each additional 100,000 Personal Data records exceeding four million and up to five
+million shall be calculated at EGP 20,000, as follows:
+
+Number of Personal Data Records Annual License Fee for Controller/Processor
+     From 4,000,001 to 4,100,000                       EGP 320,000
+     From 4,100,001 to 4,200,000                       EGP 340,000
+     From 4,200,001 to 4,300,000                       EGP 360,000
+     From 4,300,001 to 4,400,000                       EGP 380,000
+     From 4,400,001 to 4,500,000                       EGP 400,000
+     From 4,500,001 to 4,600,000                       EGP 420,000
+     From 4,600,001 to 4,700,000                       EGP 440,000
+     From 4,700,001 to 4,800,000                       EGP 460,000
+     From 4,800,001 to 4,900,000                       EGP 480,000
+     From 4,900,001 to 5,000,000                       EGP 500,000
+
+
+ •    The License fee for data volumes exceeding five million Personal Data records shall be the
+      maximum amount prescribed by law, which is EGP 666,666 annually, totaling EGP 2,000,000
+      over three years.
+ •    The License fees for a Controller-only or Processor-only License for legal entities shall be half
+      the value indicated in the above tables, based on the data volume.
+ •    The License fees for Processing carried out by associations/ syndicates/ clubs for Personal Data
+      of their members, within the scope of their activities, shall be as follows:
+
+                       Entity                                     Annual License Fee
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+                    Associations                                        EGP 5,000
+                      Syndicates                                        EGP 10,000
+      Clubs (less than 50,000 member records)                           EGP 20,000
+     Clubs (more than 50,000 member records)                            EGP 50,000
+
+Classification and Categories of Permits for Controllers and/or Processors of Personal Data and
+                                    Sensitive Personal Data
+
+Article 20
+
+The Center shall issue a Permit for a Controller and/or Processor for a specific and temporary purpose,
+for varying periods not exceeding one Gregorian year. The Center may assess the continuity of such
+purpose as a condition for granting the Permit. The Permit authorizes the holder to obtain Personal Data
+and determine the method, manner, and standards for retaining, Processing, controlling, or transferring
+such data in accordance with the purpose specified in the Permit and without contravening the provisions
+of the Law and these Regulations.
+
+The Permit fees shall be determined based on the requested duration as well as the nature and volume
+of Personal Data, as follows:
+
+                          Permit Fee
+                                          Permit Fee for      Permit Fee for      Permit Fee for >9
+ Number of Personal         for 1–3
+                                           >3–6 Months         >6–9 Months         Months–1 Year
+   Data Records             Months
+                                             (in EGP)            (in EGP)            (in EGP)
+                           (in EGP)
+                         Exempt from
+   From 1 to 25,000                  Exempt from fees Exempt from fees             Exempt from fees
+                            fees
+ More than 25,000 up
+                          EGP 10,000        EGP 15,000          EGP 20,000           EGP 25,000
+     to 250,000
+ More than 250,000 up
+                          EGP 12,500        EGP 25,000          EGP 37,500           EGP 50,000
+      to 500,000
+ More than 500,000 up
+                          EGP 25,000        EGP 50,000          EGP 75,000           EGP 100,000
+    to 1,000,000
+ More than 1,000,000
+                          EGP 50,000       EGP 100,000         EGP 150,000           EGP 200,000
+  up to 2,000,000
+ More than 2,000,000
+                          EGP 75,000       EGP 150,000         EGP 225,000           EGP 300,000
+  up to 3,000,000
+ More than 3,000,000
+                         EGP 100,000       EGP 200,000         EGP 300,000           EGP 400,000
+  up to 4,000,000
+ More than 4,000,000
+                         EGP 125,000       EGP 250,000         EGP 375,000           EGP 500,000
+  up to 5,000,000
+ More than 5,000,000     The Permit fee for any duration shall be the maximum amount prescribed by
+ individual Personal                                         law.
+    Data records
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    •   The fees applicable to Permits for Controller only or Processor only, whether for natural or legal
+        persons, shall be half of the amounts indicated in the above table, according to the volume of
+        data.
+
+Conditions for Licensing/Permitting Legal Entity Controllers and Processors for Personal Data
+                                 and Sensitive Personal Data
+
+Article 21
+
+The conditions for obtaining a License/Permit for legal entity Controllers and Processors are as follows:
+
+    1. Statement of the mechanism used to obtain the Data Subject’s consent for collecting, retaining,
+       and Processing their data, as well as the mechanisms for exercising the rights granted to the Data
+       Subject under the law.
+    2. Submission of evidence of maintaining electronic records related to the obligations of the
+       Controller and Processor.
+    3. Specification of the mechanisms and procedures used to secure and protect Personal Data in
+       compliance with the security standards issued by the Center.
+    4. Submission of evidence of the Licensee or Permit holder’s commitment to applying the
+       provisions of the law and the conditions of the License or Permit, enabling the Center to conduct
+       inspection and oversight.
+    5. Provision of the contractual relationship document with the Personal Data Protection Officer,
+       explicitly stating acceptance of the responsibilities of the Personal Data Protection Officer, along
+       with evidence of the Controller’s or Processor’s commitment to granting the Personal Data
+       Protection Officer independence in performing duties to the extent necessary.
+    6. Declaration of compliance with financial penalties imposed by the Center in case of violation
+       of License or Permit conditions.
+    7. Submission of evidence of compliance with controls and standards for handling Sensitive
+       Personal Data and children’s data.
+
+  Conditions for Permitting Natural Person Controllers and Processors for Personal Data and
+                                   Sensitive Personal Data
+
+Article 22
+
+The conditions for obtaining a Permit for Natural Person Controllers and Processors are as follows:
+
+    1. Statement of the mechanism used to obtain the Data Subject’s consent for collecting, retaining,
+       and Processing their data, as well as the mechanisms for exercising the rights granted to the Data
+       Subject under the law.
+    2. Specification of the mechanisms and procedures used to secure and protect Personal Data, in
+       compliance with the security standards issued by the Center.
+    3. Submission of evidence of the Permit holder’s commitment to applying the provisions of the
+       law and the conditions of the Permit, enabling the Center to conduct inspection and oversight.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    4. Submission of evidence of compliance with controls and standards for handling Sensitive
+       Personal Data and children’s data.
+
+       Licensing or Permitting Cross-Border Transfer of Personal Data for Legal Entities
+
+Article 23
+
+The License or Permit shall authorize the Controller or Processor to transfer Personal Data collected or
+prepared for Processing from within the geographic scope of the Arab Republic of Egypt to outside its
+territory, in accordance with the controls and standards governing cross-border Personal Data handling
+set forth in these Regulations.
+
+   Conditions for Obtaining a License/Permit for Cross-Border Transfer of Personal Data for
+                                        Legal Entities
+
+Article 24
+
+Without prejudice to the general conditions for obtaining a License/Permit, the following requirements
+shall be met to obtain a License or Permit for cross-border transfer of Personal Data for legal entities:
+
+    1. Specify the destination to which the Data will be transferred.
+    2. Provide evidence of the nature of the activity of the Controller or Processor to whom the
+       Personal Data will be transferred.
+    3. Identify the nature of the Personal Data being processed.
+    4. Detail the security systems, (temporary and final) Data repositories, and the measures taken to
+       protect the Data during transfer to the final destination.
+    5. Provide evidence of compliance with the standards, controls, and rules necessary for
+       transferring, storing, sharing, Processing, or Making Available Data across borders.
+    6. Specify the purpose of the cross-border data transfer.
+    7. Provide sufficient information about (temporary and final) Data repositories in accordance with
+       the forms issued by the Center.
+    8. Describe the categories of Personal Data being transferred, their volume, and their retention
+       period.
+
+   Conditions for Obtaining a Permit for Cross-Border Transfer of Personal Data for Natural
+                                           Persons
+
+Article 25
+
+Without prejudice to the general conditions for obtaining a Permit, the following requirements shall be
+met to obtain a Permit for cross-border transfer of Personal Data for natural persons:
+
+    1. Nature and description of the Personal Data to be transferred across borders, its volume, and the
+       purpose of the transfer.
+    2. Specify the destination to which the Data will be transferred and the retention period thereof.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    3. Detail the security systems, (temporary and final) Data repositories, and the measures taken to
+       protect the data during transfer to the final destination.
+    4. Provide evidence of compliance with the standards, controls, and rules necessary for
+       transferring, storing, or sharing data across borders.
+    5. Provide sufficient information about (temporary and final) Data repositories in accordance with
+       the forms issued by the Center.
+
+  Special Procedures for Obtaining a License or Permit for Cross-Border Transfer of Personal
+                             Data for Legal and Natural Persons
+
+Article 26
+
+The representative of the legal or natural person shall submit an application to the Center to obtain a
+License or Permit, as applicable, for the cross-border transfer of Personal Data through the designated
+electronic portal. The application shall include all data and documents referred to in Articles 24 and 25
+of these Regulations.
+
+The Center shall review the application through specialized teams, in accordance with the prescribed
+procedures and rules. The Center may contact the applicant if clarification or additional documents are
+required to decide on the application.
+
+The Center shall notify the applicant of the outcome of the review, whether accepted or rejected, within
+a period not exceeding ninety (90) business days from the date of completion of all required information
+and documents. Failure to respond shall be deemed a rejection of the application.
+
+       Fees for Obtaining a License or Permit for Cross-Border Transfer of Personal Data
+
+Article 27
+
+The fees prescribed for obtaining a License or Permit for cross-border transfer of Personal Data shall be
+fifty percent (50%) of the fees applicable for obtaining a License/Permit for a Controller and/or
+Processor, as the case may be, and in accordance with the nature and volume of the Personal Data.
+
+                         License or Permit for Direct Electronic Marketing
+
+Article 28
+
+The License or Permit shall be issued to the Controller or Processor, as the case may be, providing
+Electronic Marketing services.
+
+Such License or Permit shall Permit the use of Personal Data in the fields and activities of direct
+Electronic Marketing for oneself or on behalf of others, in accordance with the conditions and controls
+prescribed by law.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+                 Categories of Licenses / Permits for Direct Electronic Marketing
+
+Article 29
+
+Categories of Licenses/Permits for Direct Electronic Marketing shall be determined as follows:
+
+First Category: License/Permit for direct Electronic Marketing on behalf of others:
+This License is issued to the Controller and/or Processor providing direct Electronic Marketing services
+for third parties, with the purpose of promoting goods, services, or activities of others.
+
+Second Category: License/Permit for direct Electronic Marketing for own purposes:
+This License is issued to the Controller and/or Processor authorized to promote goods, services, or
+activities related to their own business.
+
+The fees for obtaining a License/Permit for direct Electronic Marketing shall be as follows:
+
+The fee for a License or Permit for direct Electronic Marketing for own purposes shall be 10% of the
+fee for a Controller and/or Processor License/Permit.
+
+The fee for a License or Permit for direct Electronic Marketing on behalf of others shall be 25% of the
+fee for a Controller or Processor License/Permit .
+
+             Controls for Obtaining a License / Permit for Direct Electronic Marketing
+
+Article 30
+
+Obtaining a License / Permit for direct Electronic Marketing, in its various categories, shall be subject
+to the following controls:
+
+    1. Provide evidence of obtaining approval from the competent authority regulating the activity.
+    2. Obtain a License / Permit as a Controller or Processor.
+    3. Specify the mechanisms for obtaining the Data Subject’s consent to receive direct electronic
+       communications regarding the goods / services being marketed.
+    4. Define mechanisms enabling the Data Subject to refuse electronic communication or withdraw
+       prior consent to receive such communications.
+    5. Maintain electronic records documenting the Data Subject’s consents and any subsequent
+       requests for erasure or modification.
+
+             License/Permit for the Use of Visual Surveillance Systems in Public Places
+
+Article 31
+
+The Center shall issue a License / Permit for the use of visual surveillance systems in public places that
+enable the display or recording of images or videos of natural persons and their possession, through
+which individuals can be identified, subject to the following conditions:
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    1. Obtain all necessary Licenses, Permits, and approvals from the competent authorities for the use
+       of visual surveillance systems in public places.
+    2. Clearly announce the presence of visual surveillance systems in visible locations.
+    3. Ensure that no transfer / availability / recording / Processing of data captured by such systems
+       occurs outside the geographic scope of the Arab Republic of Egypt, except for legally prescribed
+       reasons.
+    4. Do not perform any Processing that would allow access to Personal Data through images or
+       videos using technologies such as face recognition or similar techniques, except as legally
+       permitted or with the explicit consent of the Data Subject.
+    5. Implement measures requiring personnel operating visual surveillance systems in public places
+       to maintain the confidentiality of such Data and prohibit its use, circulation, or disclosure in any
+       form, except for legally prescribed reasons.
+    6. Follow the procedures and measures issued by the Center to ensure the security of recordings
+       collected through visual surveillance systems and protect them from breaches.
+    7. Enable the Center to carry out necessary oversight and inspection procedures on visual
+       surveillance systems in public places to fulfill its legally mandated objectives and competencies.
+
+Exception: Visual surveillance systems installed in private residences are excluded, provided they do
+not exceed their spatial boundaries.
+
+The fee for obtaining a License to use visual surveillance systems in public places shall be EGP 1,000
+every three (3) years. The fee for obtaining a Permit to use visual surveillance systems in public places
+shall be EGP 500 annually.
+
+    Conditions for Obtaining an Accreditation Certificate to Provide Consulting Services on
+                   Personal Data Protection Procedures for Natural Persons
+
+Article 32
+
+The conditions for obtaining an Accreditation certificate to provide consulting services on Personal Data
+Protection procedures for natural persons are as follows:
+
+    1. The applicant shall hold academic qualifications or professional certifications and possess
+       practical experience in relevant fields.
+    2. The applicant shall successfully pass the tests approved by the Center in accordance with the
+       nature and scope of the Personal Data activity under application.
+    3. The applicant shall not have been previously convicted of any crimes involving dishonor or
+       breach of trust.
+
+    Conditions for Obtaining an Accreditation Certificate to Provide Consulting Services on
+                    Personal Data Protection Procedures for Legal Entities
+
+Article 33
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+The conditions for obtaining an Accreditation certificate to provide consulting services on Personal Data
+Protection Procedures for Legal Entities are as follows:
+
+    1. Provide evidence of the nature and legal basis of the legal entity’s activity.
+    2. Demonstrate practical experience in relevant fields.
+    3. Provide evidence that legal entity’s employees engaged in consulting on Personal Data
+       protection procedures have obtained an Accreditation certificate from the Center and hold a
+       valid Permit to operate in the field of consulting.
+
+Fees for Obtaining an Accreditation Certificate to Provide Consulting Services on Personal Data
+                        Protection for Natural Persons / Legal Entities
+
+Article 34
+
+The fees for obtaining an Accreditation certificate to provide consulting services shall be as follows:
+
+    •   For a natural person: EGP 5,000 annually.
+    •   For a legal entity: EGP 50,000 annually.
+
+The validity period of the Accreditation certificate shall be three years from the date of issuance, and the
+certificate may be renewed for similar periods at the same fees indicated above.
+
+        Data and Documents Required for Obtaining a License / Permit for Legal Entities
+
+Article 35
+
+To obtain a License / Permit for legal entities, the following data and documents shall be submitted:
+
+    1. A copy of the commercial register of the legal entity, along with its address, legal representative,
+        organizational structure, nature of activity, and contact details (telephone – email).
+    2. The category of the requested License / Permit.
+    3. The nature and volume of Personal Data, including identifying any Sensitive Data.
+    4. The retention period for Personal Data.
+    5. The security procedures for transferring Personal Data.
+    6. The mechanism for erasing or modifying Data at the request of the Data Subject or for legally
+        prescribed reasons.
+    7. The method of Data storage.
+    8. Identify the Data Protection Officer.
+    9. The mechanism for obtaining the Data Subject’s consent.
+    10. Provide all technical details about the infrastructure used, including (data center classification,
+        types of devices used, current technical certifications and Accreditations obtained by the
+        company from various authorities), and confirm compliance with technical and operational
+        requirements set by the Center.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    11. Submission of technical certifications and Accreditations obtained by the applicant regarding
+        securing the retention and Processing of Personal Data, including specifying the issuing
+        authorities, date of issuance, and validity period.
+
+                   Procedures for Obtaining Licenses / Permits for Legal Entities
+
+Article 36
+
+The Center shall issue Licenses / Permits to legal entities through an electronic portal established for the
+purpose of receiving applications for obtaining such Licenses / Permits, in accordance with the following
+procedures:
+
+    1. An application for any of the Licenses / Permits specified in these Regulations shall be submitted
+       to the Center through the designated electronic portal. The application shall include all data and
+       documents set out in these Regulations for each category of License, and fulfill any other
+       requirements determined by the Center.
+    2. The Center shall examine the application through specialized teams, in accordance with the
+       prescribed procedures and rules. The Center may contact the applicant if clarification of any
+       points or completion of any necessary documents is required to decide on the application.
+    3. The Center shall notify the applicant of the outcome of the review, whether accepted or rejected,
+       within a period not exceeding 90 business days from the date of completion of all required data
+       and documents. Failure to respond within this period shall be deemed a rejection of the
+       application.
+
+             Data and Documents Required for Obtaining a Permit for Natural Persons.
+
+Article 37
+
+To obtain a Permit for natural persons, the following data and documents shall be submitted:
+
+    1. A copy of the personal identification document, criminal record certificate, educational
+       qualifications, and the nature of the work undertaken thereby.
+    2. The nature and category of the requested Permit.
+    3. The purpose for obtaining the Permit.
+    4. The nature and volume of the Personal Data to be processed, including identification of any
+       Sensitive Data.
+    5. The retention period for Personal Data.
+    6. The mechanism for erasing and amending Personal Data in accordance with the wishes of the
+       Data Subject or for reasons stipulated by law.
+    7. The method for storing Personal Data.
+    8. The mechanism for obtaining and recording the consent of the Data Subject.
+    9. Completion of all technical information regarding the infrastructure used, including (types of
+       devices used – current technical certificates and Accreditations), and the extent of compliance
+       with the technical and operational requirements set by the Center.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+    10. Submission of technical certificates and Accreditations obtained by the applicant concerning the
+        Security of Personal Data retention and Processing, specifying the issuing entities, date of
+        issuance, and validity period.
+
+                       Procedures for Obtaining Permits for Natural Persons
+
+Article 38
+
+The Center shall issue Permits to natural persons through an electronic portal established for the purpose
+of receiving applications for obtaining such Permits, in accordance with the following procedures:
+
+    1. An application for any of the Permit categories specified in these Regulations shall be submitted
+       to the Center through the designated electronic portal. The application shall include all data and
+       documents set out in these Regulations for each category of Permit, and fulfill any other
+       requirements determined by the Center.
+    2. The Center shall examine the application through specialized teams, in accordance with the
+       prescribed procedures and rules. The Center may contact the applicant if clarification of any
+       points or completion of any necessary documents is required to decide on the application
+    3. The Center shall notify the applicant of the outcome of the review, whether accepted or rejected,
+       within a period not exceeding ninety (90) days from the date of completion of all required data
+       and documents. Failure to respond within this period shall be deemed a rejection of the
+       application.
+
+In the event that the Center accepts the application, the Permit granted to the natural person shall be
+valid for a period not exceeding one year, and the Permit holder shall be responsible for implementing
+the provisions of the Law and acting as the Data Protection Officer.
+
+    General Provisions and Conditions for Licenses / Permits for Legal and Natural Persons
+
+Article 39
+
+    •   When Processing Personal Data of their members within the scope of their activities, all
+        associations, syndicates, and clubs shall obtain the necessary Licenses / Permits in accordance
+        with the controls and conditions set forth in the Law and these Regulations.
+    •   In the event that the number of Personal Data records exceeds the data covered by the issued
+        License or Permit, legal and natural persons shall apply to the Center to amend the
+        License/Permit in line with the nature, volume, and categories of the Data.
+    •   Legal entities seeking to obtain Licenses or Permits under the provisions of the Law and these
+        Regulations shall secure the necessary approvals to conduct their activities.
+
+                                    Renewal of Licenses / Permits
+
+Article 40
+
+First – Renewal of Licenses:
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+A License shall expire upon the end of its term and may be renewed for additional periods upon
+submission of a request by the License holder to the Center, in accordance with the mechanisms
+determined by the Center, at least three months prior to the expiration of the License term.
+
+Renewal shall be subject to the applicable controls and conditions and payment of the prescribed License
+issuance fees.
+
+Second – Renewal of Permits:
+
+A Permit shall expire upon the end of its term and may be renewed multiple times upon submission of
+a request by the Permit holder to the Center, in accordance with the mechanisms determined by the
+Center, at least one month prior to the expiration of the Permit term.
+
+Renewal shall be subject to the applicable controls and conditions and payment of the prescribed Permit
+issuance fees.
+
+                            Forms of Licenses / Permits / Accreditations
+
+Article 41
+
+Application forms for obtaining Licenses / Permits / Accreditations shall be prepared in electronic format
+and submitted through an interactive platform via the Center’s electronic portal.
+
+The type of form, conditions, controls, and procedures necessary for obtaining Licenses / Permits /
+Accreditations shall be determined based on the nature of the applicant’s activity and the Data selected
+from the content registered on the platform. This content includes all categories, levels, and
+classifications relating to the volume and nature of Personal Data, methods of storage and Security,
+intended purpose, and other standards, controls, and measures approved by the Center’s Board of
+Directors for the protection of Personal Data.
+
+The form shall be issued electronically after reviewing the required documents and data, including the
+following:
+
+    1. A statement specifying the type of Personal Data and the purpose of its retention or Processing.
+    2. A statement of the time periods for retaining Personal Data, along with the commitment of the
+       Licensee/Permit holder to erase such data immediately upon fulfillment of its intended purpose.
+    3. Evidence of maintaining a dedicated record of Personal Data, including its categories,
+       identification of parties to whom the data will be disclosed or made available, the legal basis for
+       such disclosure, mechanisms for erasure or amendment, and any other information related to
+       cross-border Data transfers.
+    4. A statement of the mechanism for obtaining the consent of the Data Subject.
+    5. A declaration of compliance with obligations related to Personal Data Security.
+    6. A declaration confirming the provision of necessary facilities to enable the Center to conduct
+       inspection and oversight.
+Al-Waqa'i' al-Misriyya - Issue No. 244, Supplement A, dated 1 November 2025
+
+
+   7. A declaration by parties dealing with the Licensee guaranteeing the confidentiality of Personal
+      Data.
+   8. A declaration of commitment to pay any financial penalties and compensation imposed by the
+      Center.
+

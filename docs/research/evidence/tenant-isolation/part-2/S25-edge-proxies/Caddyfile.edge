@@ -1,0 +1,39 @@
+# Kodeebo part-2 candidate edge (plain HTTP :80 so the spike needs no ACME). Differences from restaurant-menu S-C:
+# -X-Tenant* (no hyphen) to also catch X-Tenant and X-Tenantdomain; no mask of IP here (logging decision is the user's).
+{
+	admin off
+	auto_https off
+	log default {
+		output stdout
+		format filter {
+			wrap json
+			request>uri replace REDACTED
+			request>headers>Referer delete
+		}
+	}
+}
+:80 {
+	log {
+		output stdout
+		format filter {
+			wrap json
+			request>uri replace REDACTED
+			request>headers>Referer delete
+			resp_headers>Location delete
+		}
+	}
+	handle /dead/* {
+		reverse_proxy 127.0.0.1:1
+	}
+	handle {
+		reverse_proxy ti-p2-up:8080 {
+			header_up -X-Tenant*
+			header_up -Forwarded
+			header_up -X-Real-IP
+			header_up -X-Forwarded-Prefix
+			header_up -X-Forwarded-Port
+			header_up -X-Forwarded-Server
+			header_up X-Client-IP {client_ip}
+		}
+	}
+}

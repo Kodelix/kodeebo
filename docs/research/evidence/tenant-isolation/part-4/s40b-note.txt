@@ -1,0 +1,6 @@
+Run 1 (s40b-sqlite-residue.run1-CONFOUNDED.*) is kept, labelled confounded: the SQLite 3.54.0 build on this host reports
+compile option SECURE_DELETE present and `PRAGMA secure_delete` = 1 by default, so the case named "default-delete-only"
+did NOT test SQLite's documented default (off); it tested a build whose default is on. Run 2 (s40b2-secure-delete-off.*)
+sets `PRAGMA secure_delete=OFF` explicitly. Run 1's WAL, journal PERSIST/TRUNCATE results are not affected by this (they
+concern files other than the main-file free pages) but secure_delete=1 was in force there too.
+Also: in run 1 the first lines of case_basic() contain a leftover no-op (`fill(con) if False else None`); harmless.

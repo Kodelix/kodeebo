@@ -1,0 +1,11 @@
+SET
+ALTER MATERIALIZED VIEW
+SET
+ERROR:  ALTER action ENABLE ROW SECURITY cannot be performed on relation "mv_branch_totals"
+DETAIL:  This operation is not supported for materialized views.
+RESET
+     relname      | relkind | relrowsecurity 
+------------------+---------+----------------
+ mv_branch_totals | m       | f
+(1 row)
+

@@ -1,0 +1,80 @@
+### date (UTC): 2026-10-16T21:56:47Z
+
+== org/postgresql/postgresql
+    <latest>42.7.14</latest>
+    <release>42.7.14</release>
+    <lastUpdated>20261007215823</lastUpdated>
+last 6 versions: 42.7.9 42.7.10 42.7.11 42.7.12 42.7.13 42.7.14 
+pom Last-Modified for release 42.7.14: last-modified: Wed, 07 Oct 2026 21:41:10 GMT
+
+== com/zaxxer/HikariCP
+    <latest>7.1.0</latest>
+    <release>7.1.0</release>
+    <lastUpdated>20260614185921</lastUpdated>
+last 6 versions: 6.3.2 6.3.3 7.0.0 7.0.1 7.0.2 7.1.0 
+pom Last-Modified for release 7.1.0: last-modified: Sun, 14 Jun 2026 18:53:25 GMT
+
+== org/jetbrains/exposed/exposed-core
+    <latest>1.6.0</latest>
+    <release>1.6.0</release>
+    <lastUpdated>20261016135854</lastUpdated>
+last 6 versions: 1.3.0 1.3.1 1.4.0 1.5.0 1.5.1 1.6.0 
+pom Last-Modified for release 1.6.0: last-modified: Fri, 16 Oct 2026 13:56:08 GMT
+
+== org/jetbrains/exposed/exposed-jdbc
+    <latest>1.6.0</latest>
+    <release>1.6.0</release>
+    <lastUpdated>20261016135900</lastUpdated>
+last 6 versions: 1.3.0 1.3.1 1.4.0 1.5.0 1.5.1 1.6.0 
+pom Last-Modified for release 1.6.0: last-modified: Fri, 16 Oct 2026 13:56:08 GMT
+
+== org/jetbrains/exposed/exposed-r2dbc
+    <latest>1.6.0</latest>
+    <release>1.6.0</release>
+    <lastUpdated>20261016135855</lastUpdated>
+last 6 versions: 1.3.0 1.3.1 1.4.0 1.5.0 1.5.1 1.6.0 
+pom Last-Modified for release 1.6.0: last-modified: Fri, 16 Oct 2026 13:56:09 GMT
+
+== org/jooq/jooq
+    <latest>3.21.9</latest>
+    <release>3.21.9</release>
+    <lastUpdated>20260925075449</lastUpdated>
+last 6 versions: 3.21.4 3.21.5 3.21.6 3.21.7 3.21.8 3.21.9 
+pom Last-Modified for release 3.21.9: last-modified: Fri, 25 Sep 2026 07:47:52 GMT
+
+== org/testcontainers/postgresql
+    <latest>1.21.4</latest>
+    <release>1.21.4</release>
+    <lastUpdated>20251216003926</lastUpdated>
+last 6 versions: 1.20.6 1.21.0 1.21.1 1.21.2 1.21.3 1.21.4 
+pom Last-Modified for release 1.21.4: last-modified: Tue, 16 Dec 2025 00:21:12 GMT
+
+== org/testcontainers/testcontainers
+    <latest>2.0.5</latest>
+    <release>2.0.5</release>
+    <lastUpdated>20260420182013</lastUpdated>
+last 6 versions: 2.0.0 2.0.1 2.0.2 2.0.3 2.0.4 2.0.5 
+pom Last-Modified for release 2.0.5: last-modified: Mon, 20 Apr 2026 18:00:10 GMT
+
+== org/jetbrains/kotlinx/kotlinx-coroutines-core
+    <latest>1.11.0</latest>
+    <release>1.11.0</release>
+    <lastUpdated>20260508122950</lastUpdated>
+last 6 versions: 1.8.1 1.9.0 1.10.0 1.10.1 1.10.2 1.11.0 
+pom Last-Modified for release 1.11.0: last-modified: Thu, 07 May 2026 14:02:59 GMT
+
+== exposed 1.5.1 / HikariCP 7.1.0 / pgjdbc: exact files
+org/jetbrains/exposed/exposed-core/1.5.1/exposed-core-1.5.1.pom: HTTP/2 200  last-modified: Fri, 09 Oct 2026 20:21:15 GMT 
+org/jetbrains/exposed/exposed-jdbc/1.5.1/exposed-jdbc-1.5.1.pom: HTTP/2 200  last-modified: Fri, 09 Oct 2026 20:21:15 GMT 
+com/zaxxer/HikariCP/7.1.0/HikariCP-7.1.0.pom: HTTP/2 200  last-modified: Sun, 14 Jun 2026 18:53:25 GMT 
+
+== testcontainers-go via Go proxy
+{"Version":"v0.44.0","Time":"2026-08-07T10:52:31Z","Origin":{"VCS":"git","URL":"https://github.com/testcontainers/testcontainers-go","Hash":"007bd6b1407fe3f2ab9487479e8bd841e16a1c97","Ref":"refs/tags/v0.44.0"}}
+{"Version":"v0.44.0","Time":"2026-08-07T10:52:31Z","Origin":{"VCS":"git","URL":"https://github.com/testcontainers/testcontainers-go","Subdir":"modules/postgres","Hash":"007bd6b1407fe3f2ab9487479e8bd841e16a1c97","Ref":"refs/tags/modules/postgres/v0.44.0"}}
+
+== PgBouncer downloads page: versions listed
+pgbouncer-1.25.1.tar.gz
+pgbouncer-1.25.2.tar.gz
+pgbouncer-1.26.0.tar.gz
+pgbouncer-1.26.1.tar.gz
+### done 2026-10-16T21:56:52Z

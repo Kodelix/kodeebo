@@ -1,0 +1,25 @@
+sqlite3 library version: 3.54.0 python 3.14.8
+compile option SECURE_DELETE present: True
+--- main file after DELETE of all rows (rollback-journal mode, connection closed afterwards)
+default-delete-only                secure_delete=1 canaries: after insert=300 after DELETE=0 after post-step=0  file bytes=32768
+secure_delete-ON-before-delete     secure_delete=1 canaries: after insert=300 after DELETE=0 after post-step=0  file bytes=32768
+secure_delete-FAST-before-delete   secure_delete=2 canaries: after insert=300 after DELETE=300 after post-step=300  file bytes=32768
+default-then-VACUUM                secure_delete=1 canaries: after insert=300 after DELETE=0 after post-step=0  file bytes=8192
+--- WAL mode: canaries in the -wal file, then checkpoint modes (connection kept open, files read while open)
+after insert+commit: db canaries=0  wal canaries=300 wal bytes=41232
+after DELETE+commit: db canaries=0  wal canaries=300 wal bytes=74192
+after checkpoint(PASSIVE) (0, 18, 18): db canaries=0  wal canaries=300 wal bytes=74192
+after checkpoint(TRUNCATE) (0, 0, 0): db canaries=0  wal canaries=0 wal bytes=0
+after close: wal file exists=False
+--- WAL mode with secure_delete=ON and journal_size_limit=0 (does the -wal keep canaries after a full checkpoint?)
+after DELETE+checkpoint(RESTART) (0, 18, 18): db canaries=0 wal canaries=300 wal bytes=74192
+after one more small commit: wal canaries=0 wal bytes=4152
+--- rollback journal: pre-images of deleted pages are in the -journal while the transaction is open
+during uncommitted DELETE: journal exists=True journal canaries=300 journal bytes=33344
+after commit (journal_mode=DELETE): journal exists=False ; the copy taken during the transaction still holds canaries=300
+--- journal_mode=PERSIST: the journal file stays after commit with only its header zeroed
+after commit (PERSIST): journal exists=True journal canaries=300 journal bytes=33344
+after close (PERSIST): journal exists=True journal canaries=300
+--- journal_mode=TRUNCATE
+after commit (TRUNCATE): journal exists=True journal bytes=0
+work dir removed

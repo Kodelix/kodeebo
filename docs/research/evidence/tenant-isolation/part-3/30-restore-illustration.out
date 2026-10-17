@@ -1,0 +1,28 @@
+NOTICE:  database "ti_p3_restore" does not exist, skipping
+--- snapshot taken at T1
+--- after T1 (server-originated changes a device cannot resend): revoke dA1, enrol dA3 + credential, owner decides review item 2, a new security event
+--- live database (before the restore)
+devices | d1d1d1d1-0000-4000-8000-0000000000a1 | revoked
+devices | d2d2d2d2-0000-4000-8000-0000000000a2 | active
+devices | d4d4d4d4-0000-4000-8000-0000000000a3 | active
+review item 2 | accepted
+clone_suspected events | 1
+--- restored database (state at T1)
+devices | d1d1d1d1-0000-4000-8000-0000000000a1 | active
+devices | d2d2d2d2-0000-4000-8000-0000000000a2 | active
+credential of dA1 | active
+credential c3 present | 0
+review item 2 | open
+clone_suspected events | 0
+--- roles, grants, policies after restore (policies are in the dump; roles are cluster-level and were not dumped)
+18
+branches | f | f
+device_credentials | t | t
+device_events | t | t
+devices | t | t
+inbox | t | t
+offline_periods | t | t
+review_queue | t | t
+sync_cursor | t | t
+tenants | f | f
+verified_restore_watermark | t | t

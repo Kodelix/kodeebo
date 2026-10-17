@@ -1,0 +1,16 @@
+=== Case 1: inbox INSERT only (FK takes KEY SHARE on devices row)
+  revoke starts at 01:00:56.721
+20-revoke-race.sh: line 14: bc: command not found
+  revoke finished at 01:00:56.780, took  s
+  in-flight command committed at 01:00:58.786
+  final device status: revoked; inbox rows for seq 10: 1
+=== Case 2: apply_cmd (reads the devices row FOR SHARE first)
+applied
+  revoke starts at 01:00:59.943
+
+  in-flight apply_cmd committed at 01:01:02.003
+20-revoke-race.sh: line 14: bc: command not found
+  revoke finished at 01:01:02.004, took  s
+  next command after the revoke committed:
+refused:device_not_active
+  events of kind revoked_credential_used: 1

@@ -1,0 +1,14 @@
+# Traefik 3.7.14 static config, access log with only json format set (everything else default), header logging on to see what is logged.
+entryPoints:
+  web:
+    address: ":80"
+providers:
+  file:
+    filename: /etc/traefik/dynamic.yml
+accessLog:
+  format: json
+  fields:
+    headers:
+      defaultMode: keep
+log:
+  level: INFO
