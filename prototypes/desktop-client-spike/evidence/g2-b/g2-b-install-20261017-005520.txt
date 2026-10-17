@@ -1,0 +1,8 @@
+copy installer: 6 s (135657715 bytes)
+task kspike-cfb8898e started at 00:55:43.145
+program exit code: 0 after 246.8 s
+exe: C:\Users\cashier\AppData\Local\Programs\kodeebo-spike-b\KodeeboSpikeB.exe
+installed size: 428.5 MB
+uninstall entry HKCU (per-user): KodeeboSpikeB 1.0.0 1.0.0 | InstallLocation=
+screenshot: .cache/g1-b-after-install.png
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-b-install-20261017-005520.txt

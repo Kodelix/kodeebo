@@ -1,0 +1,16 @@
+gui: cashier Active ~325 s after reboot; settling 120 s
+cold proc_to_first_frame_ms=56659 launch_to_first_frame_ms=61066 pid=2512
+warm1 proc_to_first_frame_ms=287 launch_to_first_frame_ms=1106 pid=5152
+warm2 proc_to_first_frame_ms=261 launch_to_first_frame_ms=1080 pid=4884
+warm3 proc_to_first_frame_ms=267 launch_to_first_frame_ms=1078 pid=3216
+warm4 proc_to_first_frame_ms=286 launch_to_first_frame_ms=1121 pid=1824
+warm5 proc_to_first_frame_ms=270 launch_to_first_frame_ms=1147 pid=5136
+idle proc_to_first_frame_ms=268 launch_to_first_frame_ms=1122 pid=5316
+memory at 10 min idle:
+tree: 4 processes; working set 24.4 MB; private bytes 92.6 MB
+  KodeeboSpikeB.exe pid=5316 ws=11.8 MB private=36.5 MB
+  KodeeboSpikeB.exe pid=4884 ws=3.5 MB private=13.6 MB
+  KodeeboSpikeB.exe pid=2368 ws=3.6 MB private=10.8 MB
+  KodeeboSpikeB.exe pid=4880 ws=5.4 MB private=31.7 MB
+system: free physical 2,436 MB of 4,028 MB
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-b-gui-20261017-021314.txt

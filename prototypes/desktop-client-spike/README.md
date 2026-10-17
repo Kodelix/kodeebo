@@ -4,7 +4,7 @@
 
 # Prototype: desktop client spike (round 1)
 
-**Status:** in-progress. Plan approved by the founder 2026-10-16 (with changes below). **G0 PASS** (2026-10-16, evidence/g0-*.txt). G1 next.
+**Status:** round 1 for A and B concluded 2026-10-17: **G0 PASS; A and B both PASS G1 and G2** (Findings below). C (Tauri 2) not run: round 1b only if the founder decides it still adds something (founder, 2026-10-17). Round 2 (G3 Arabic, G4 update, tamper legs) not started. Indicative only: VM, not the physical 4 GB PC.
 **Risk tested:** `design/product-brief.md` risk 2: "A desktop technology runs well, prints and opens the drawer on Windows 10/11."
 **Plan:** `docs/research/desktop-client-technology.md` § 9 (Spikes): S1/S40, S7/S43, S10, S20 and the phase 1 text. Round 1 covers the part of them listed under "Gates" below.
 **Path:** code spike (feasibility). Throwaway: nothing here is imported by production code, and if a runtime is chosen, its production code is written from scratch (`.claude/rules/prototype-code.md`). The spike does **not** choose the stack. It feeds the runtime ADR.
@@ -99,10 +99,40 @@ tools/vm.sh ssh cashier whoami                                         # standar
 - **G0-F3:** a `Match User cashier` → `AuthorizedKeysFile` rule was applied on only ~60% of connections by OpenSSH 7.7 for Windows; the key moved to `C:\Users\cashier\.ssh\authorized_keys`, after which 30 of 30 logins worked. Baseline re-saved as `clean-ssh2`.
 - **Snapshot revert works** with libvirt 12.8.0 on the external snapshot chain (top overlay discarded, marker gone). The emulated TPM state and UEFI NVRAM are not part of the disk snapshot.
 
-### Answered from the research evidence (to confirm in G2)
+### G1 and G2 for A and B (2026-10-17) — evidence/g2-a/, evidence/g2-b/
 
+All on the 4 GB / 2 vCPU VM, Windows 10 Pro 22H2 build 19045.2965, Defender on, disk throttled to 100 IOPS + 80 MiB/s (sequential effectively ~12 MiB/s, G0-F2), installed and run as the standard user `cashier`. **Indicative only: a VM on a fast host, not the physical 4 GB PC.**
+
+| | A — Compose Multiplatform Desktop 1.12.2 (JDK 21 jlink, sqlite-jdbc 3.53.4.0 SQLite3MC, JNA 5.19.1) | B — Electron 44.8.0 (better-sqlite3-multiple-ciphers 13.0.3, koffi 2.16.3) |
+|---|---|---|
+| **G1** installer | per-user MSI (jpackage + WiX 3.11 that the Compose plugin downloads itself), 72.6 MB; `MSI_LUA: … no elevation required`; **uninstall entry under HKLM** although the files go to `%LOCALAPPDATA%` | per-user NSIS (`oneClick`, `perMachine:false`), 129 MB; uninstall entry under HKCU |
+| install time (throttled) / installed size | 63 s / 136 MB | **247 s / 429 MB** (Electron 369 MB; 60 MB of it are native modules for other platforms, trimmable to ~375 MB) |
+| first-ever launch → first frame (throttled) | 12.7 s | 8.8 s |
+| **G1 verdict** | **PASS** | **PASS** |
+| G2 RAW print: 20 runs, sink vs golden | 20/20 byte-identical, 20,250 bytes, same SHA-256 (and 3/3 on the rebuilt app) | 20/20 byte-identical, 20,250 bytes, same SHA-256 |
+| G2 kill test: 100 × `taskkill /F` mid-transaction, then `integrity_check` + consistency | **0 of 100** corrupt or inconsistent (≈1,150 bills at the end) | **0 of 100** corrupt or inconsistent |
+| close bill, warm, 200 runs: p50 / p95 / max | 201 / 244 / 390 ms (a repeat run had one 2.68 s outlier: `db` 2.64 s on run 4) | 201 / 247 / 392 ms |
+| **after reboot**, no warm-up: native layer load before 1st close / 1st close / max of 200 | 5.4 s (JNA) / 0.51 s / 0.52 s | 2.4 s (koffi) / 1.45 s / 1.45 s |
+| **after reboot**, with warm-up: native load / warm-up (store open · print path · dummy tx) / 1st close / max | 5.3 s / 3.08 s (2.95 · 0.11 · 0.02) / 0.66 s / 0.66 s | 2.3–3.2 s / 2.6–3.2 s (store open ~2.6–3.2 s) / 0.87 s / 0.87–0.88 s |
+| **G2 verdict (3 s ceiling)** | **PASS** on the rebuilt app (first build: 7.1 s, see A-F3) | **PASS** |
+| *Measured, not gated:* first GUI launch after reboot → first frame (reboot, logon, +120 s; 1 run each, not the planned 10) | **49.0 s** | **56.7 s** |
+| warm GUI launch → first frame (5 runs) | 0.95–1.01 s | 0.26–0.29 s |
+| idle at 10 min: processes / working set / private bytes | 1 / 14.7 MB / 183.5 MB | 4 / 24.4 MB / 92.6 MB |
+
+The cold GUI starts (49 s and 57 s) are **upper bounds**: the throttle pages the runtime in at ~2 MB/s (IOPS-bound, G0-F2), much slower than a real HDD reads sequentially. They still show what the start-up budget must cover on a weak PC, and that both runtimes need a physical-PC measurement before `perf-budgets.md` sets a start-up number.
+
+**Findings**
+- **A-F1 (store unreadable after the first run).** `DriverManager.getConnection()` then `PRAGMA hexkey` creates a store that every later process fails to open (`SQLITE_NOTADB`). The key must be applied by the driver while it opens the connection: `SQLiteMCConfig.Builder().withHexKey(bytes).build().createConnection(url)`. Verified: write, reopen, write, reopen → integrity ok, consistent.
+- **A-F2 (blocking dialog).** An exception escaping `main()` makes the jpackage launcher show a modal "Failed to launch JVM" box: on an unattended counter PC the app would wait for someone to press OK. Every headless mode now catches its errors.
+- **A-F3 (the 7.1 s first sale after reboot).** In the first build, JNA's native library was loaded lazily inside the first print (print 6.57 s of the 7.10 s). Loading the native layer before the first sale moves 5.3–5.4 s into start-up; the first close is then 0.5–0.7 s. JNA unpacks its DLL into `%TEMP%` on first use in every process; koffi ships its DLL unpacked in the install folder and loads in 2.3–3.2 s cold, 5 ms warm.
+- **Warm-up (founder question 2):** it moves native loading and store opening (2.6–3.2 s) into the start-up budget. What it does not move: the **first print job after boot** still costs 0.3–0.8 s (`StartDocPrinter` 330–540 ms, B's first `ClosePrinter` 789 ms without warm-up), because `OpenPrinter` alone does not warm the spooler. A production warm-up would need a dummy job or an earlier first print.
+- **Sequential reading (founder question 1): not answerable cleanly here.** Inside the app, the first close reads 29–53 KB (≈ 2–4 ms at 12 MiB/s): **the sale itself is not disk-bound.** The multi-second start-up phases happen before in-app counters exist, and process counters miss memory-mapped EXE/DLL paging (B showed 1 MB "read"). The disk-level counter saw ~61 MB read while B started and ran, arriving at ~2 MB/s, i.e. **bound by the 100 IOPS cap, not by sequential speed**, and mixed with Windows' own post-reboot reads (prefetch, Defender), which carry on past the 120 s settle. Separating the app's paging from that needs a per-process disk trace (Windows Performance Recorder) on the physical 4 GB PC: not researched or downloaded yet.
+- **Harness findings:** an SSH session is not an interactive logon (msiexec returns 1601; GUI apps get no desktop), so everything on `cashier`'s desktop runs through `schtasks /IT` (`guest/run-interactive.ps1`); for a standard user the ScheduledTasks cmdlets fail with "Access denied" over WMI; `echo %ERRORLEVEL%> f` writes nothing (redirection of handle 0); PowerShell progress bars and stderr version banners abort scripts over SSH.
+
+### Answered from the research evidence, confirmed in G2
+
+- **Confirmed on the real sink (G2):** every print from A and B arrived as exactly 20,250 bytes with the golden file's SHA-256. No extra byte was added by the runtime, the spooler, the Generic / Text Only driver or the file port, and no status query reached the sink.
 - **The 6-byte gap between the golden file (20,250 bytes) and the 20,256 bytes the research's fake printer received (F226).** The golden stream is complete. Its 20,250 bytes are `ESC @` (2) + `GS v 0` header (8) + raster 72 bytes × 281 rows (20,232) + `LF LF LF` (3) + `ESC p 00 19 fa` drawer pulse (5). The other 6 bytes are two real-time status queries, `DLE EOT 1` (`10 04 01`) and `DLE EOT 4` (`10 04 04`), 3 bytes each. The research test (`fake_tcp_printer.py`) sent them after the receipt to exercise its reply loop (its own output prints `sent len(data) + 6`), and the fake printer records every byte it receives, so they are in its 20,256. They are not part of the receipt.
-- **G2 must confirm it on the real sink**, not only compare files: the sink must receive exactly 20,250 bytes, with the same SHA-256 as the golden file. A Windows RAW queue is write-oriented, so no `DLE EOT` query is expected to reach the sink. If any extra byte appears, G2 records what it is and which layer added it (runtime, spooler, driver or port).
 
 ## Evidence index
 

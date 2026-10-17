@@ -1,0 +1,14 @@
+bench args: --close-bench 200 
+task kspike-ab390a67 started at 01:01:47.622
+program exit code: 0 after 42.3 s
+bench file: .cache/g2-b-bench-1792224107725.txt
+max 391.556
+p95 246.635
+p50 201.093
+phases file: .cache/g2-b-phases-1792224107725.txt
+ffi_boot_ms=4.7 warmup=false
+run 1 db=150.2 load_native=1.9 open_printer=2.1 start_doc=47.3 write=0.2 end_doc=1.1 close_printer=0.8 read_bytes=24362 write_bytes=61774 read_ops=4 write_ops=23
+run 2 db=125.3 load_native=0.0 open_printer=0.7 start_doc=28.7 write=0.1 end_doc=0.8 close_printer=1.8 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+run 3 db=157.0 load_native=0.0 open_printer=0.5 start_doc=21.2 write=0.1 end_doc=1.1 close_printer=0.3 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+sink after bench (last job): sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-b-bench-20261017-010148.txt

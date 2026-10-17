@@ -1,0 +1,4 @@
+jna_boot_ms=5415.8 warmup=false
+run 1 db=132.5 load_native=19.7 open_printer=1.9 start_doc=339.5 write=0.3 end_doc=18.5 close_printer=0.3 read_bytes=38004 write_bytes=61774 read_ops=49 write_ops=23
+run 2 db=148.0 load_native=0.0 open_printer=0.4 start_doc=22.0 write=0.2 end_doc=0.8 close_printer=1.3 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+run 3 db=184.5 load_native=0.0 open_printer=0.8 start_doc=40.6 write=0.1 end_doc=0.7 close_printer=22.9 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23

@@ -1,0 +1,30 @@
+Domain snapshot clean-ssh2 reverted
+
+
+prep: reverted clean-ssh2, booted, throttle 100 IOPS
+printer: KSPIKE-SINK | driver: Generic / Text Only | port: C:\ksink\receipt.prn | datatype: RAW | processor: winprint
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-prep-20261017-023451.txt
+copy installer: 3 s (76144716 bytes)
+task kspike-5f1ae578 started at 02:36:52.782
+program exit code: 0 after 66.4 s
+exe: C:\Users\cashier\AppData\Local\KodeeboSpikeA\KodeeboSpikeA.exe
+installed size: 136.2 MB
+uninstall entry HKLM (per-machine): KodeeboSpikeA 1.0.0 | InstallLocation=C:\Users\cashier\AppData\Local\KodeeboSpikeA\
+MSI log:
+  MSI (s) (20:50) [02:37:51:344]: Windows Installer installed the product. Product Name: KodeeboSpikeA. Product Version: 1.0.0. Product Language: 1033. Manufacturer: Unknown. Installation success or error status: 0.
+screenshot: .cache/g1-a-after-install.png
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-install-20261017-023637.txt
+gui: cashier Active ~325 s after reboot; settling 120 s
+cold proc_to_first_frame_ms=49043 launch_to_first_frame_ms=51673 pid=900
+warm1 proc_to_first_frame_ms=949 launch_to_first_frame_ms=1774 pid=5008
+warm2 proc_to_first_frame_ms=963 launch_to_first_frame_ms=1774 pid=3424
+warm3 proc_to_first_frame_ms=1012 launch_to_first_frame_ms=1839 pid=5548
+warm4 proc_to_first_frame_ms=962 launch_to_first_frame_ms=1819 pid=4024
+warm5 proc_to_first_frame_ms=946 launch_to_first_frame_ms=1772 pid=4980
+idle proc_to_first_frame_ms=948 launch_to_first_frame_ms=1775 pid=3760
+memory at 10 min idle:
+tree: 1 processes; working set 14.7 MB; private bytes 183.5 MB
+  KodeeboSpikeA.exe pid=3760 ws=14.7 MB private=183.5 MB
+system: free physical 2,500 MB of 4,028 MB
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-gui-20261017-023805.txt
+SEQUENCE-DONE

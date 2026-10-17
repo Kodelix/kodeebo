@@ -1,0 +1,7 @@
+task kspike-a9b54fc9 started at 23:05:37.065
+bench file: .cache/g2-a-bench-1792216766849.txt
+max 389.796
+p95 243.690
+p50 200.670
+sink after bench (last job): sink: NO FILE 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-bench-20261016-230244.txt

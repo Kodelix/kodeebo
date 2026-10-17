@@ -1,0 +1,4 @@
+ffi_boot_ms=2361.1 warmup=false
+run 1 db=171.8 load_native=2.5 open_printer=2.4 start_doc=333.1 write=129.1 end_doc=21.1 close_printer=789.3 read_bytes=53034 write_bytes=65870 read_ops=11 write_ops=24
+run 2 db=161.5 load_native=0.0 open_printer=0.5 start_doc=33.9 write=0.0 end_doc=0.7 close_printer=0.2 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+run 3 db=225.0 load_native=0.0 open_printer=1.0 start_doc=53.1 write=0.2 end_doc=1.4 close_printer=1.0 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23

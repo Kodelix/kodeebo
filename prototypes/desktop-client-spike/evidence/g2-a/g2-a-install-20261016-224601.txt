@@ -1,0 +1,10 @@
+copy installer: 3 s (76140620 bytes)
+C:\Users\cashier\run-interactive.ps1 : Cannot process argument transformation on parameter 'timeoutSec'. Cannot 
+convert value "C:\Users\cashier\Downloads\KodeeboSpikeA-1.0.0.msi" to type "System.Int32". Error: "Input string was 
+not in a correct format."
+    + CategoryInfo          : InvalidData: (:) [run-interactive.ps1], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : ParameterArgumentTransformationError,run-interactive.ps1
+ 
+exe: NOT FOUND
+screenshot: .cache/g1-a-after-install.png
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-install-20261016-224601.txt

@@ -1,0 +1,9 @@
+# Excerpt of the verbose MSI log of A's first per-user install (msiexec /l*v, as cashier, 2026-10-16).
+# The full log is not committed: its WiX directory IDs trip the secret scanner (false positives). Full copy: .cache/install-a.utf8.log (gitignored).
+Machine policy value 'AlwaysInstallElevated' is 0
+MSI_LUA: Package is marked as LUA installation capable with no elevation required
+Product: KodeeboSpikeA -- Installation completed successfully.
+Property(S): INSTALLDIR = C:\Users\cashier\AppData\Local\KodeeboSpikeA\
+Property(S): LocalAppDataFolder = C:\Users\cashier\AppData\Local\
+User policy value 'AlwaysInstallElevated' is 0
+Windows Installer installed the product. Product Name: KodeeboSpikeA. Product Version: 1.0.0. Product Language: 1033. Manufacturer: Unknown. Installation success or error status: 0.

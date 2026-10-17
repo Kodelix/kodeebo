@@ -1,0 +1,23 @@
+print 1: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=687 
+print 2: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=344 
+print 3: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 4: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=375 
+print 5: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 6: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=344 
+print 7: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=391 
+print 8: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=406 
+print 9: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 10: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=375 
+print 11: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 12: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 13: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 14: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 15: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 16: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 17: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 18: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=391 
+print 19: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+print 20: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=359 
+PRINT RESULT: 20 of 20 byte-identical at the sink, 0 not
+app print.txt tail: ok ok ok 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-b-print-20261017-010047.txt

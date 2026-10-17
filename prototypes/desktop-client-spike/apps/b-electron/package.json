@@ -1,0 +1,31 @@
+{
+  "name": "kodeebo-spike-b",
+  "productName": "KodeeboSpikeB",
+  "version": "1.0.0",
+  "description": "PROTOTYPE - NOT FOR PRODUCTION. Desktop client spike, runtime B (Electron). See ../SPEC.md.",
+  "main": "main.js",
+  "private": true,
+  "license": "UNLICENSED",
+  "dependencies": {
+    "better-sqlite3-multiple-ciphers": "13.0.3",
+    "koffi": "2.16.3"
+  },
+  "devDependencies": {
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "dev.kodelix.kodeebo.spike.b",
+    "productName": "KodeeboSpikeB",
+    "electronVersion": "44.8.0",
+    "electronDist": "electron-dist",
+    "npmRebuild": false,
+    "asar": true,
+    "asarUnpack": ["**/*.node"],
+    "files": ["main.js", "preload.js", "index.html", "receipt.bin", "node_modules/**/*"],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "signAndEditExecutable": false
+    },
+    "nsis": { "oneClick": true, "perMachine": false }
+  }
+}

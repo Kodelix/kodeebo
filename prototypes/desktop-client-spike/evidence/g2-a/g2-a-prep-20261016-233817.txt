@@ -1,0 +1,3 @@
+prep: reverted clean-ssh2, booted, throttle 100 IOPS
+printer: KSPIKE-SINK | driver: Generic / Text Only | port: C:\ksink\receipt.prn | datatype: RAW | processor: winprint
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-prep-20261016-233817.txt

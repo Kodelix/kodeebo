@@ -1,0 +1,54 @@
+Domain snapshot clean-ssh2 reverted
+
+
+prep: reverted clean-ssh2, booted, throttle 100 IOPS
+printer: KSPIKE-SINK | driver: Generic / Text Only | port: C:\ksink\receipt.prn | datatype: RAW | processor: winprint
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-prep-20261017-002643.txt
+copy installer: 3 s (76144716 bytes)
+task kspike-a66ebaa8 started at 00:29:22.070
+program exit code: 0 after 44.2 s
+exe: C:\Users\cashier\AppData\Local\KodeeboSpikeA\KodeeboSpikeA.exe
+installed size: 136.2 MB
+uninstall entry HKLM (per-machine): KodeeboSpikeA 1.0.0 | InstallLocation=C:\Users\cashier\AppData\Local\KodeeboSpikeA\
+MSI log:
+  MSI (s) (0C:84) [00:29:57:242]: Windows Installer installed the product. Product Name: KodeeboSpikeA. Product Version: 1.0.0. Product Language: 1033. Manufacturer: Unknown. Installation success or error status: 0.
+screenshot: .cache/g1-a-after-install.png
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-install-20261017-002914.txt
+print 1: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=656 
+print 2: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=391 
+print 3: program exit code: 0 | sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=391 
+PRINT RESULT: 3 of 3 byte-identical at the sink, 0 not
+app print.txt tail: ok ok ok 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-print-20261017-003010.txt
+rebootbench: cashier Active ~325 s after reboot; throttle 100 IOPS; settling 120 s
+bench args: --close-bench 200 
+task kspike-b0e7e239 started at 00:40:10.738
+program exit code: 0 after 74.9 s
+bench file: .cache/g2-a-bench-1792222830414.txt
+max 520.880
+p95 312.484
+p50 206.365
+phases file: .cache/g2-a-phases-1792222830414.txt
+jna_boot_ms=5415.8 warmup=false
+run 1 db=132.5 load_native=19.7 open_printer=1.9 start_doc=339.5 write=0.3 end_doc=18.5 close_printer=0.3 read_bytes=38004 write_bytes=61774 read_ops=49 write_ops=23
+run 2 db=148.0 load_native=0.0 open_printer=0.4 start_doc=22.0 write=0.2 end_doc=0.8 close_printer=1.3 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+run 3 db=184.5 load_native=0.0 open_printer=0.8 start_doc=40.6 write=0.1 end_doc=0.7 close_printer=22.9 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+sink after bench (last job): sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=4,000 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-bench-20261017-004007.txt
+rebootbench: cashier Active ~325 s after reboot; throttle 100 IOPS; settling 120 s
+bench args: --close-bench 200 --warmup
+task kspike-06ad3b07 started at 00:51:03.080
+program exit code: 0 after 74.1 s
+bench file: .cache/g2-a-bench-1792223483726.txt
+warmup_ms=3080.2 parts=2951.7,111.3,17.2
+max 657.262
+p95 280.798
+p50 203.004
+phases file: .cache/g2-a-phases-1792223483726.txt
+jna_boot_ms=5277.3 warmup=true
+run 1 db=269.1 load_native=0.0 open_printer=0.5 start_doc=366.4 write=0.7 end_doc=20.3 close_printer=0.2 read_bytes=44279 write_bytes=65870 read_ops=24 write_ops=24
+run 2 db=176.2 load_native=0.0 open_printer=0.9 start_doc=49.9 write=0.1 end_doc=0.8 close_printer=2.9 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+run 3 db=192.8 load_native=0.0 open_printer=0.6 start_doc=57.5 write=0.2 end_doc=2.0 close_printer=3.7 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+sink after bench (last job): sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=4,047 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-bench-20261017-005101.txt
+SEQUENCE-DONE

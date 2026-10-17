@@ -1,0 +1,15 @@
+bench args: --close-bench 200 --warmup
+task kspike-dac7dfd7 started at 01:22:57.805
+program exit code: 0 after 74.3 s
+bench file: .cache/g2-b-bench-1792225404313.txt
+warmup_ms=2608.1 parts=2591.5,3.6,13.0
+max 873.649
+p95 254.192
+p50 200.662
+phases file: .cache/g2-b-phases-1792225404313.txt
+ffi_boot_ms=2341.9 warmup=true
+run 1 db=162.7 load_native=0.1 open_printer=18.3 start_doc=428.9 write=240.8 end_doc=21.8 close_printer=0.7 read_bytes=28688 write_bytes=61774 read_ops=9 write_ops=23
+run 2 db=769.6 load_native=0.0 open_printer=1.4 start_doc=41.7 write=0.1 end_doc=0.8 close_printer=0.4 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+run 3 db=195.3 load_native=0.0 open_printer=1.0 start_doc=35.3 write=0.0 end_doc=0.8 close_printer=0.5 read_bytes=4112 write_bytes=61774 read_ops=3 write_ops=23
+sink after bench (last job): sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=3,828 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-b-bench-20261017-012254.txt

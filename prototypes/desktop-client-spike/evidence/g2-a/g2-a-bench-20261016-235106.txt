@@ -1,0 +1,8 @@
+task kspike-a52aed90 started at 23:51:05.834
+program exit code: 0 after 44.1 s
+bench file: .cache/g2-a-bench-1792219909823.txt
+max 2682.672
+p95 266.027
+p50 200.691
+sink after bench (last job): sink bytes=20250 golden bytes=20250 sha256_equal=True queue_drain_ms=375 
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-bench-20261016-235106.txt

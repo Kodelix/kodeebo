@@ -1,0 +1,35 @@
+<!-- PROTOTYPE - NOT FOR PRODUCTION -->
+<!-- Question: Can A (Compose Desktop), B (Electron) or C (Tauri 2) do the counter's duties on the 4 GB reference VM? -->
+<!-- Date: 2026-10-17 -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'">
+  <title>Kodeebo spike B</title>
+  <style>
+    body { margin: 0; font: 14px "Segoe UI", sans-serif; background: #fff; }
+    button { margin: 8px; padding: 12px; background: #2e7d32; color: #fff; border: 0; font: inherit; }
+    div.row { padding: 4px 12px; }
+  </style>
+</head>
+<body>
+  <button id="close">Close bill</button>
+  <div id="list"></div>
+  <script>
+    const list = document.getElementById('list');
+    const pad = (n) => String(n).padStart(2, '0');
+    let html = '';
+    for (let i = 0; i < 200; i++) html += `<div class="row">Station ${i + 1} — 0:${pad(i % 60)} — EGP ${25 + i}.00</div>`;
+    list.innerHTML = html;
+    // two animation frames: the second callback runs after the first frame with the list has been presented
+    requestAnimationFrame(() => requestAnimationFrame(() => window.api.painted(Date.now())));
+    const btn = document.getElementById('close');
+    btn.onclick = async () => {
+      btn.textContent = '…';
+      try { btn.textContent = `Close bill (last ${Math.round(await window.api.closeBill())} ms)`; }
+      catch (e) { btn.textContent = 'Close bill failed: ' + e.message; }
+    };
+  </script>
+</body>
+</html>

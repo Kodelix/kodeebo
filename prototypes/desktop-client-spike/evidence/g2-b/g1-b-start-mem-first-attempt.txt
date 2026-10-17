@@ -1,0 +1,49 @@
+warm1 proc_to_first_frame_ms=28917 launch_to_first_frame_ms=29698 pid=388
+taskkill.exe : ERROR: Access denied
+At C:\Users\cashier\start-measure.ps1:31 char:22
++ if ($kill) { $null = & taskkill.exe /PID $kv['pid'] /T /F 2>&1 }
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: Access denied:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warm2 proc_to_first_frame_ms=292 launch_to_first_frame_ms=1108 pid=4168
+taskkill.exe : ERROR: Access denied
+At C:\Users\cashier\start-measure.ps1:31 char:22
++ if ($kill) { $null = & taskkill.exe /PID $kv['pid'] /T /F 2>&1 }
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: Access denied:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warm3 proc_to_first_frame_ms=291 launch_to_first_frame_ms=1110 pid=6628
+taskkill.exe : ERROR: Access denied
+At C:\Users\cashier\start-measure.ps1:31 char:22
++ if ($kill) { $null = & taskkill.exe /PID $kv['pid'] /T /F 2>&1 }
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: Access denied:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warm4 proc_to_first_frame_ms=298 launch_to_first_frame_ms=1119 pid=5408
+taskkill.exe : ERROR: Access denied
+At C:\Users\cashier\start-measure.ps1:31 char:22
++ if ($kill) { $null = & taskkill.exe /PID $kv['pid'] /T /F 2>&1 }
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: Access denied:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warm5 proc_to_first_frame_ms=285 launch_to_first_frame_ms=1100 pid=6176
+taskkill.exe : ERROR: Access denied
+At C:\Users\cashier\start-measure.ps1:31 char:22
++ if ($kill) { $null = & taskkill.exe /PID $kv['pid'] /T /F 2>&1 }
++                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: Access denied:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+idle proc_to_first_frame_ms=293 launch_to_first_frame_ms=1112 pid=5240
+== memory at 10 min idle (pid 5240)
+tree: 4 processes; working set 69.5 MB; private bytes 90.2 MB
+  KodeeboSpikeB.exe pid=5240 ws=60.7 MB private=41.7 MB
+  KodeeboSpikeB.exe pid=4024 ws=4.1 MB private=11.2 MB
+  KodeeboSpikeB.exe pid=6164 ws=3.1 MB private=13.4 MB
+  KodeeboSpikeB.exe pid=6584 ws=1.7 MB private=23.8 MB
+system: free physical 2,248 MB of 4,028 MB
+DONE

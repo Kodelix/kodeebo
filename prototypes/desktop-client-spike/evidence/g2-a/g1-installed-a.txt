@@ -1,0 +1,5 @@
+exe: C:\Users\cashier\AppData\Local\KodeeboSpikeA\KodeeboSpikeA.exe
+installed size: 136.2 MB
+uninstall entry HKLM (per-machine): KodeeboSpikeA 1.0.0 | InstallLocation=C:\Users\cashier\AppData\Local\KodeeboSpikeA\
+MSI log:
+  MSI (s) (04:FC) [22:32:38:703]: Windows Installer installed the product. Product Name: KodeeboSpikeA. Product Version: 1.0.0. Product Language: 1033. Manufacturer: Unknown. Installation success or error status: 0.

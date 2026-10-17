@@ -1,0 +1,10 @@
+copy installer: 3 s (76140620 bytes)
+task kspike-b8ec2211 started at 22:46:45.614
+program exit code:  after 600.2 s
+exe: C:\Users\cashier\AppData\Local\KodeeboSpikeA\KodeeboSpikeA.exe
+installed size: 136.2 MB
+uninstall entry HKLM (per-machine): KodeeboSpikeA 1.0.0 | InstallLocation=C:\Users\cashier\AppData\Local\KodeeboSpikeA\
+MSI log:
+  MSI (s) (18:64) [22:47:19:535]: Windows Installer installed the product. Product Name: KodeeboSpikeA. Product Version: 1.0.0. Product Language: 1033. Manufacturer: Unknown. Installation success or error status: 0.
+screenshot: .cache/g1-a-after-install.png
+output: /home/kiko/saas-products/kodeebo/prototypes/desktop-client-spike/.cache/g2-a-install-20261016-224641.txt
