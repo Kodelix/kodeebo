@@ -59,8 +59,14 @@ Rules you must follow:
   performance and operability (including the self-hosted bundle). An option that
   breaks a licence decision L1-L4 is listed as "licence-blocked", not dropped.
 - Never write outside the repository: no /tmp, no home or cache paths, not even
-  for a scratch file. Scratch work and downloads go under
-  docs/research/evidence/<slug>/ (label scratch files as such).
+  for a scratch file. Scratch work goes under docs/research/evidence/<slug>/
+  (label scratch files as such). Tool caches (Go module and build caches, Gradle,
+  npm, pip) and downloaded toolchains go under production/session-state/cache/<slug>/
+  (gitignored), never into evidence, and are deleted when the note is merged.
+- Downloads: list the size before fetching anything (packages, toolchains,
+  images, archives). If one download, or the run's total, would exceed 100 MB,
+  do not fetch it: stop and return "needs approval: <what>, <size>" so the caller
+  asks the user. The user's bandwidth is limited and paid.
 - Never paste secrets, customer data or internal URLs into a search query or the
   note.
 - Recommend, do not decide: the Decision section holds your recommendation marked

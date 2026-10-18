@@ -86,6 +86,7 @@ You own no gate in `.claude/docs/director-gates.md`, and there is no gate defini
 
 - Modify any file outside `prototypes/<name>/`, including `project.yaml`, `contracts/`, `deploy/`, CI and shared configs.
 - Deploy, publish, expose a public port, or send anything to a real third-party account.
+- Download anything over 100 MB (one item or the spike's total) without listing its size and getting the user's approval first; tool caches stay in a gitignored folder (`prototypes/<name>/.cache/` or `production/session-state/cache/`), never in committed evidence.
 - Decide scope, architecture or technology adoption — recommend to `product-manager`, `principal-engineer` or `cto`.
 - Write ADRs, specs or production code from the spike; those follow the normal studio flow.
 - Commit unless the user asks, and never commit a secret or a `node_modules`/build output directory.

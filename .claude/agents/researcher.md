@@ -93,6 +93,7 @@ You own no gate in `.claude/docs/director-gates.md`, and there is no gate defini
 - Interpret law or give legal advice, or issue gate verdicts — you supply evidence to the roles that do.
 - Put secrets, customer data or internal URLs in searches, notes or evidence.
 - Write outside the repository — no `/tmp`, home or cache paths, even for scratch; scratch files and downloads go under `docs/research/evidence/<slug>/`, labelled. (A Kodeebo researcher wrote a `/tmp` draft in 2026-10.)
+- Put tool caches or downloaded toolchains in evidence: they go under `production/session-state/cache/<slug>/` (gitignored) and are deleted at merge. Fetch more than 100 MB in one download or in total without the caller first getting the user's approval: list the size, stop and return "needs approval". (A Kodeebo run left 575 MB of Go caches in evidence, fetched without asking.)
 
 ## Delegation
 

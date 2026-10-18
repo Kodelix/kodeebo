@@ -124,7 +124,10 @@ sanctioned subagent write. The user has approved that path in Phase 1. Collect
 every response before continuing. **Verify the artifact before reading the
 response** (`.claude/docs/error-recovery-protocol.md` Trigger 0): if the named
 file is not on disk, the phase failed, however fluent the reply. Resume the
-agent once naming the unmet return contract; a second miss is `BLOCKED`.
+agent once naming the unmet return contract; a second miss is `BLOCKED`. A reply
+"needs approval: <what>, <size>" is not a failure: ask the user (size and
+source), then resume the agent with the answer; never approve a download over
+100 MB on the user's behalf.
 
 If `researcher` cannot be spawned, say why and write nothing yourself from
 memory: the verdict is `NOT ASSESSED - researcher unavailable`.
