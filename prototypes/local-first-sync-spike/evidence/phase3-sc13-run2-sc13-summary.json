@@ -1,0 +1,185 @@
+{
+ "harness_commit": "245ddde",
+ "started": "2026-10-18 18:04:06",
+ "cells": [
+  {
+   "cell": "a_clone_keep_original",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "quarantine": {
+     "device_id": "dev-1",
+     "kept": "m1",
+     "reason": "second_machine",
+     "state": "resolved"
+    },
+    "review": 5,
+    "streams": [
+     "dev-1",
+     "dev-1@m2"
+    ],
+    "held": [
+     "held: 6 sales, 90.00 EGP"
+    ],
+    "after": [
+     "of which 75.00 EGP from a retired copy, pending your review"
+    ]
+   },
+   "seconds": 14.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_clone_keep_clone",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "quarantine": {
+     "device_id": "dev-1",
+     "kept": "m2",
+     "reason": "second_machine",
+     "state": "resolved"
+    },
+    "review": 5,
+    "streams": [
+     "dev-1",
+     "dev-1@m1"
+    ],
+    "held": [
+     "held: 6 sales, 90.00 EGP"
+    ],
+    "after": [
+     "of which 75.00 EGP from a retired copy, pending your review"
+    ]
+   },
+   "seconds": 13.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_rollback_ts01a",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "quarantine": {
+     "device_id": "dev-1",
+     "kept": "m1",
+     "reason": "sequence_reused",
+     "state": "resolved"
+    },
+    "review": 3,
+    "streams": [
+     "dev-1",
+     "dev-1@overwritten"
+    ],
+    "held": [
+     "held: 3 sales, 45.00 EGP"
+    ],
+    "after": [
+     "of which 45.00 EGP from a timeline a restore overwrote, pending your review"
+    ]
+   },
+   "seconds": 12.1,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "drop_conflicting": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_rollback_ts01a"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-m1-5 acknowledged but missing on the server"
+   ],
+   "seconds": 1.8
+  },
+  "no_machine_check": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_clone_keep_original"
+   ],
+   "first_violation": [
+    "R48",
+    "quarantine reason sequence_reused, model second_machine"
+   ],
+   "seconds": 0.7
+  },
+  "resolve_drops_other": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_clone_keep_original"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-m2-11 acknowledged but missing on the server"
+   ],
+   "seconds": 0.7
+  },
+  "alert_each_batch": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_clone_keep_original"
+   ],
+   "first_violation": [
+    "R48",
+    "2 owner alerts for one quarantine"
+   ],
+   "seconds": 0.7
+  },
+  "block_on_quarantine": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_clone_keep_original"
+   ],
+   "first_violation": [
+    "R49",
+    "clone during quarantine: the counter on m2 refused a sale: {'ok': False, 'op': 'sell_items', 'error': 'sync_quarantined'}"
+   ],
+   "seconds": 0.7
+  },
+  "review_not_in_totals": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_clone_keep_original"
+   ],
+   "first_violation": [
+    "R53",
+    "report_after: total 13500 (model 21000), pending review 7500 (model 7500): [{'label': 'of which 75.00 EGP from a retired copy, pending your review', 'n': 5, 'piasters': 7500, 'reason': 'other_copy'}]"
+   ],
+   "seconds": 0.7
+  },
+  "held_hidden": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_clone_keep_original"
+   ],
+   "first_violation": [
+    "R52",
+    "held line during quarantine [], model 6 sales, 9000 piasters"
+   ],
+   "seconds": 0.8
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 45.8
+}
