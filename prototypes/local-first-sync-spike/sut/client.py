@@ -140,6 +140,9 @@
 #   applying it: it counts as acknowledged, and the counter keeps selling. Replies say whether the identity is
 #   quarantined and whether this copy has been retired by the owner's choice; the client shows it, never stops.
 #      MUTANT also: block_on_quarantine (the counter refuses sales while the identity is quarantined).
+# Phase 3 (TS-02a): a "held" result (a command after a sequence gap, stored by the server unapplied) also counts as
+#   stored. The server then asks for a resend from the gap; the retention rebuild sends the missing command from its
+#   bill if the device still has it.
 # Phase 3 (TS-07a, clock change during an open session; with CLOCKED=1): within one boot every duration comes from
 #   the monotonic counter, never the wall clock: session time, and the length of an app closure (same boot id). The
 #   timer compares wall and monotonic time since the last checkpoint; a difference above WALL_DRIFT_S (5 min) is
@@ -829,7 +832,7 @@ def apply_reply(resp):
     """Inside the caller's transaction: acknowledge from a fully parsed reply, then (retention mode) record the
     server's resend request and archive confirmation, and prune what the rule allows."""
     for r in resp["results"] or []:
-        if r["result"] in ("applied", "duplicate", "quarantined"):  # quarantined = stored by the server (SC-13)
+        if r["result"] in ("applied", "duplicate", "quarantined", "held"):  # quarantined/held = stored by the server
             if RETENTION:
                 q("DELETE FROM outbox WHERE command_id = ?", (r["command_id"],))
                 q("UPDATE sync_state SET acked_seq = max(acked_seq, ?) WHERE id = 1", (r["seq"],))

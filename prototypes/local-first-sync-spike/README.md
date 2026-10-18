@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; remaining phase 3 legs in order A (founder, 2026-10-18): TS-02a/b, S207, TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on the dev run, finding P3-F13, (b2) blind spot confirmed; remaining phase 3 legs in order A (founder, 2026-10-18): S207, TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -251,6 +251,16 @@ bash prototypes/local-first-sync-spike/run.sh ts07 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay07 <seed> <cell> [mutant]
+```
+
+TS-02 (outbox deletion and renumbering by an insider):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh ts02 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay02 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1408,6 +1418,58 @@ A device that goes offline right after receiving an edit keeps that edit open on
 **Not covered:**
 - **A clock change across a power-off** (the wall clock is the only bridge there): phase 5, with S306.
 - **Real Windows clock edits and event 4616:** S304, phase 4 (TS-07b).
+
+### Phase 3 — TS-02: an insider with the database key deletes a queued command, or deletes and renumbers
+
+**Pass signal (sync note § 9.1.1, TS-02):** the server detects the sequence gap and alerts the owner. The note expects (b), renumbering that leaves no gap, to fail (the same blind spot as TS-01b, OQ27).
+
+**Founder decision (2026-10-18) for (a2):**
+- **Owner action:** the owner may "accept the gap".
+- **Held, never dropped:** until then, commands after the gap are stored, never refused or dropped, and held unapplied, exactly as in the OQ7 quarantine.
+- **Dashboard:** it shows "held: N sales, X EGP" with the alert "missing sequence N, possibly deleted on the device".
+- **On acceptance:** the lost number is recorded permanently as a lost range, and the held commands apply once.
+
+**Design under test (`GAP_HOLD=1` on the server):**
+- **Holding:** a command whose sequence leaves a gap is stored unapplied (`held`), and the device counts it as stored. While a gap is open, every reply asks the device to resend from it.
+- **(a1) the device still has the command in its bill (retention rule):** the rebuild sends it. The gap closes, and the held commands apply once. No alert.
+- **(a2) the device does not have it:** the gap stays open. Once it is older than the threshold (spike: 600 s of server time), one owner alert is raised. The owner report shows the held sales, with the alert text once it is raised. `POST /gap/accept` records the missing range permanently and applies the held commands.
+
+**Cells** (each: 3 sales synced, then 3 queued, seq 4–6):
+
+| Cell | Insider's edit | Expected |
+|---|---|---|
+| `a1_outbox_row_deleted` | Deletes the queued outbox row of seq 5; the bill stays | 4 applied, 6 held, then 5 rebuilt from the bill and applied; the gap is closed by the device; all 6 sales once; no alert |
+| `a2_sale_erased` | Erases sale 5 entirely (outbox row, bill, payment); then 2 more sales | 4 applied; 6, 7, 8 held and not applied. Before the threshold the report shows "held: 3 sales, 45.00 EGP" without the alert, after it "missing sequence 5, possibly deleted on the device" (one alert). The owner accepts: lost range 5–5, permanent, with an owner alert; 6, 7, 8 apply once |
+| `b2_renumber_marker_forged` | Erases sale 5, renumbers 6 to 5, lowers the counter and rewrites the commit marker with the key | The device starts and syncs normally. **Expected blind spot (OQ27), confirmed:** no gap, no alert, no lost range, and sale 5 is gone. Recorded, not counted as a violation |
+
+**(b1), renumbered without the marker:** the store's counter is then below the marker, and the device refuses the store at start. That is the tamper suite's `store_older_than_marker` row, PASS since phase 1. The marker is signed with the database key, so an insider who holds that key can forge it, as in `b2`. A marker key the cashier cannot reach (TPM or DPAPI machine scope) is the key-custody question (desktop-note S11).
+
+**Checks added:**
+- **R57 (a1):** every sale once, no alert, and the gap closed by the device.
+- **R58 (a2):** held commands are stored and none is applied before the owner accepts. One alert after the threshold, with the founder's wording; the report shows the held sales; the lost range 5–5 is recorded with an owner alert; the held commands apply once (I1, I2).
+
+**Mutants:**
+- `gap_silent` (server): no alert.
+- `gap_auto_skip` (server): the cursor jumps the gap with no owner and no record.
+- `gap_refused` (server): the old behaviour; a gap is refused and nothing is stored.
+
+#### Run 1 (dev, uncommitted harness on `d721b26`) — PASS
+
+`evidence/phase3-ts02-run1-dev*`, 29 s.
+- **Cells:** all 3 PASS, 20 seeds each, 0 violations. In every `b2` run the blind spot was confirmed.
+- **Mutants:** all three caught.
+  - `gap_silent` after 2 runs, in `a2` (R58).
+  - `gap_auto_skip` after 1, in `a1` (I1: the sale the device could have resent was skipped and lost).
+  - `gap_refused` after 1, in `a1` (I1).
+- **Smoke on the changed client and server:** SC-13 (2 seeds) and SC-19 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Finding P3-F13 — while a gap is open the server must ask for a resend, because a held acknowledgement empties the device's outbox.** In the first design the device, once told "held", had nothing pending and stopped syncing. The command it still had in its bill was never sent, and a recoverable deletion would have looked like a real loss. With the resend request, the retention rule turns a deleted queued command into no loss at all (`a1`).
+
+**Not covered:**
+- **A forged `low_seq`:** an insider who also edits what the device reports as its lowest retained sequence could make SC-19's lost-range path record a skip without the owner. It is recorded and alerted, but automatic. That belongs to the sync threat model.
+- **What the owner sees when a gap is accepted:** the amount of the lost sale is unknown to the server. The dashboard spec decides the wording.
+- **The threshold value:** 600 s here; the spec sets it.
+
 
 
 

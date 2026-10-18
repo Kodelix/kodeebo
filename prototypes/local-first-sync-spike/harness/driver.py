@@ -7,6 +7,8 @@
 # waits for quiescence, then runs the independent oracle.
 #   python3 harness/driver.py selftest
 #   python3 harness/driver.py replay <seed> [mutant]
+import hashlib
+import hmac
 import json
 import os
 import random
@@ -3749,6 +3751,206 @@ def ts07(seeds=20, mutant_budget=12):
     return ok
 
 
+TS02_CELLS = ["a1_outbox_row_deleted", "a2_sale_erased", "b2_renumber_marker_forged"]
+TS02_MUTANTS = ["gap_silent", "gap_auto_skip", "gap_refused"]
+TS02_ALERT_S = 600
+
+
+def insider_edit(run, fn):
+    """An insider with the database key edits the stopped store (TS-02): fn(connection)."""
+    run.send({"op": "exit"})
+    run.client.wait()
+    c = run.open_client_store()
+    c.execute("BEGIN IMMEDIATE")
+    fn(c)
+    c.execute("COMMIT")
+    c.close()
+
+
+def ts02_script(cell):
+    def script(run):
+        st = run.ts02 = {"cell": cell, "mismatch": [], "erased": None, "exercised": False}
+        n = [0]
+
+        def sell():
+            aid = f"s{run.seed}-x{n[0]}"
+            n[0] += 1
+            r = run.send({"op": "sell_items", "action_id": aid, "n": 1})
+            if r and r.get("ok"):
+                a = {"op": "sell_items", "action_id": aid, "start_min": 0, "end_min": 0, "expected_piasters": 1500}
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+                run.seq_of[aid] = r.get("seq")
+            return aid
+
+        def sync(k=1):
+            r = None
+            for _ in range(k):
+                r = run.send({"op": "sync"})
+            return r
+
+        def dump():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=60).read())
+
+        def report():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/owner_report", timeout=30).read())
+
+        def erase(c, seq):
+            aid = c.execute("SELECT action_id FROM bills WHERE seq = ?", (seq,)).fetchall()[0][0]
+            for t in ("payments", "minutes"):
+                c.execute(f"DELETE FROM {t} WHERE action_id = ?", (aid,))
+            c.execute("DELETE FROM bills WHERE seq = ?", (seq,))
+            c.execute("DELETE FROM outbox WHERE seq = ?", (seq,))
+            return aid
+
+        post_json("/config", {"prices": SC13_PRICES})
+        run.send({"op": "pull_config"})
+        for _ in range(3):
+            sell()
+        sync(2)
+        for _ in range(3):  # seq 4, 5, 6 queued, not yet synced
+            sell()
+        if cell == "a1_outbox_row_deleted":  # only the queued command is deleted; its bill is retained
+            insider_edit(run, lambda c: c.execute("DELETE FROM outbox WHERE seq = 5"))
+            sync(4)
+            d = dump()
+            st["gap"] = (d.get("gaps") or [{}])[0]
+            st["alerts"] = [e for e in d.get("device_events", []) if e["kind"] == "missing_sequence"]
+            st["exercised"] = st["gap"].get("state") == "closed"
+        elif cell == "a2_sale_erased":  # the whole sale is erased: queued command, bill, payment
+            insider_edit(run, lambda c: st.update(erased=erase(c, 5)))
+            sync(2)
+            sell(), sell()  # seq 7, 8: the counter keeps selling
+            sync(2)
+            d = dump()
+            st["ledger_before_accept"] = {r["action_id"] for r in d["ledger"] if r["kind"] == "sale"}
+            st["held_before"] = {r["command_id"][4:] for r in d.get("held_cmds", [])}
+            st["report_before_alert"] = report()
+            post_json(f"/test/clock?advance={TS02_ALERT_S + 1}", {})  # the gap outlives the threshold
+            sync(1)
+            st["report_alerted"] = report()
+            st["alerts"] = [e for e in dump().get("device_events", []) if e["kind"] == "missing_sequence"]
+            st["accept"] = dash("POST", "/gap/accept", {"device_id": "dev-1"})[1]
+            sync(3)
+            st["exercised"] = bool(st["accept"].get("ok"))
+        elif cell == "b2_renumber_marker_forged":  # delete, renumber, and forge the commit marker with the key
+            def renumber(c):
+                st["erased"] = erase(c, 5)
+                for old in (6,):
+                    c.execute("UPDATE outbox SET seq = ? WHERE seq = ?", (old - 1, old))
+                    c.execute("UPDATE bills SET seq = ? WHERE seq = ?", (old - 1, old))
+                c.execute("UPDATE counter SET seq = seq - 1 WHERE id = 1")
+                new = c.execute("SELECT seq FROM counter WHERE id = 1").fetchall()[0][0]
+                mac = hmac.new(bytes.fromhex(run.key), f"kodeebo-spike-hwm:{new}".encode(), hashlib.sha256).hexdigest()
+                with open(run.db + ".hwm", "w") as f:
+                    json.dump({"seq": new, "mac": mac}, f)
+            insider_edit(run, renumber)
+            sync(3)
+            d = dump()
+            st["alerts"] = [e for e in d.get("device_events", []) if e["kind"] == "missing_sequence"]
+            st["lost"] = d.get("lost_seqs", [])
+            got = {r["action_id"] for r in d["ledger"] if r["kind"] == "sale"}
+            st["blind_spot_confirmed"] = not st["alerts"] and not st["lost"] and st["erased"] not in got
+            st["exercised"] = True
+    return script
+
+
+def ts02_extra(run, dump):
+    """R57 (a1) a deleted queued command whose bill is retained is rebuilt and applied: every sale once, no alert,
+    the gap closed by the device. R58 (a2) commands after an erased sale are stored and held, none applied before the
+    owner accepts; one alert after the threshold saying "missing sequence N, possibly deleted on the device"; the
+    owner report shows the held sales; on acceptance the missing number is a permanent lost range and the held
+    commands apply once. (b2) is the expected blind spot (OQ27): recorded, not a violation."""
+    st, v = run.ts02, list(run.ts02["mismatch"])
+    allowed = frozenset()
+    if st["cell"] == "a1_outbox_row_deleted":
+        if st.get("alerts"):
+            v.append(("R57", f"{len(st['alerts'])} missing-sequence alerts for a gap the device could fill"))
+        if (st.get("gap") or {}).get("resolved_by") != "device":
+            v.append(("R57", f"gap not closed by the device: {st.get('gap')}"))
+    elif st["cell"] == "a2_sale_erased":
+        after = {f"s{run.seed}-x{k}" for k in (5, 6, 7)}  # seq 6, 7, 8 (action ids x5..x7)
+        if st.get("ledger_before_accept", set()) & after:
+            v.append(("R58", f"held commands applied before the owner accepted: {sorted(st['ledger_before_accept'] & after)}"))
+        if st.get("held_before") != after:
+            v.append(("R58", f"held {sorted(st.get('held_before', []))}, model {sorted(after)}"))
+        hb = [h for h in (st.get("report_before_alert") or {}).get("held") or [] if "missing_from" in h]
+        ha = [h for h in (st.get("report_alerted") or {}).get("held") or [] if "missing_from" in h]
+        if [(h["n"], h["piasters"]) for h in hb] != [(3, 4500)] or any(h.get("alert_text") for h in hb):
+            v.append(("R58", f"owner report before the threshold: {hb}"))
+        if not ha or ha[0].get("alert_text") != "missing sequence 5, possibly deleted on the device":
+            v.append(("R58", f"owner report after the threshold: {ha}"))
+        if len(st.get("alerts", [])) != 1:
+            v.append(("R58", f"{len(st.get('alerts', []))} missing-sequence alerts, model 1"))
+        lost = [(r["from_seq"], r["to_seq"], r["owner_alert"]) for r in dump.get("lost_seqs", [])]
+        if lost != [(5, 5, True)]:
+            v.append(("R58", f"lost ranges {lost}, model [(5, 5, True)]"))
+        else:
+            allowed = frozenset({st["erased"]})  # erased on the device and recorded by the owner's acceptance
+    else:
+        allowed = frozenset({st["erased"]})  # the expected blind spot: the sale is gone and nothing says so
+    st["owner_view"] = {"gaps": dump.get("gaps"), "lost": dump.get("lost_seqs"),
+                        "alerts": [(e.get("detail") or {}).get("text") for e in dump.get("device_events", [])
+                                   if e["kind"] == "missing_sequence"],
+                        "blind_spot_confirmed": st.get("blind_spot_confirmed")}
+    return v, allowed
+
+
+def ts02_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"ts02-{cell}", client_env=dict(RETENTION_ENV),
+              server_env={"GAP_HOLD": "1", "GAP_ALERT_S": str(TS02_ALERT_S)})
+    run.script, run.extra = ts02_script(cell), ts02_extra
+    r = run.go()
+    r["ts02"] = run.ts02
+    return r
+
+
+def ts02(seeds=20, mutant_budget=12):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 TS-02 (outbox deletion and renumbering by an insider), commit {summary['harness_commit']}", flush=True)
+    ok = True
+    for cell in TS02_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = ts02_run(s, cell)
+            exercised += bool(r["ts02"].get("exercised"))
+            if s == 1:
+                sample = r["ts02"].get("owner_view")
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:26s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in TS02_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // 2 + 1, TS02_CELLS[k % 2]  # the gap mechanics live in a1 and a2
+            r = ts02_run(s, cell, mutant=mu, label=f"ts02-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:16s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "ts02-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"TS-02: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -3758,6 +3960,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "ts02":  # ts02 [seeds_per_cell]
+        sys.exit(0 if ts02(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay02":  # replay02 <seed> <cell> [mutant]
+        r = ts02_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay02", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "ts02", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "ts07":  # ts07 [seeds_per_cell]
         sys.exit(0 if ts07(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay07":  # replay07 <seed> <cell> [mutant]

@@ -1,0 +1,119 @@
+{
+ "harness_commit": "d721b26+dirty",
+ "started": "2026-10-18 23:50:37",
+ "cells": [
+  {
+   "cell": "a1_outbox_row_deleted",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "gaps": [
+     {
+      "alerted": false,
+      "device_id": "dev-1",
+      "missing_from": 5,
+      "resolved_by": "device",
+      "state": "closed"
+     }
+    ],
+    "lost": [],
+    "alerts": [],
+    "blind_spot_confirmed": null
+   },
+   "seconds": 8.1,
+   "result": "PASS"
+  },
+  {
+   "cell": "a2_sale_erased",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "gaps": [
+     {
+      "alerted": true,
+      "device_id": "dev-1",
+      "missing_from": 5,
+      "resolved_by": "owner",
+      "state": "closed"
+     }
+    ],
+    "lost": [
+     {
+      "device_id": "dev-1",
+      "from_seq": 5,
+      "owner_alert": true,
+      "to_seq": 5
+     }
+    ],
+    "alerts": [
+     "missing sequence 5, possibly deleted on the device"
+    ],
+    "blind_spot_confirmed": null
+   },
+   "seconds": 10.4,
+   "result": "PASS"
+  },
+  {
+   "cell": "b2_renumber_marker_forged",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "gaps": [],
+    "lost": [],
+    "alerts": [],
+    "blind_spot_confirmed": true
+   },
+   "seconds": 8.7,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "gap_silent": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "a2_sale_erased"
+   ],
+   "first_violation": [
+    "R58",
+    "owner report after the threshold: [{'alerted': False, 'device_id': 'dev-1', 'label': 'held: 3 sales, 45.00 EGP', 'missing_from': 5, 'n': 3, 'piasters': 4500}]"
+   ],
+   "seconds": 1.0
+  },
+  "gap_auto_skip": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a1_outbox_row_deleted"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-x4 acknowledged but missing on the server"
+   ],
+   "seconds": 0.4
+  },
+  "gap_refused": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a1_outbox_row_deleted"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-x4 acknowledged but missing on the server"
+   ],
+   "seconds": 0.6
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 29.4
+}

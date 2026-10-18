@@ -91,6 +91,15 @@
 // pending your review") until the owner marks them reviewed (POST /review/ack). During quarantine it shows "held:
 // N sales, X EGP" for the device, with the alert. MUTANT=review_not_in_totals leaves retired streams out of the
 // totals; MUTANT=held_hidden omits the held line.
+//
+// TS-02a (a command deleted on the device before sync), GAP_HOLD=1, founder decision 2026-10-18: a command whose
+// sequence leaves a gap is stored and held unapplied, never refused or dropped (as the OQ7 quarantine), and the reply
+// asks the device to resend from the gap; a device that still holds the missing command (in its retained bill)
+// closes the gap itself and the held commands apply once. A gap open longer than GAP_ALERT_S (server clock) raises one
+// owner alert "missing sequence N, possibly deleted on the device", and the owner report shows "held: N sales, X EGP".
+// POST /gap/accept is the owner accepting the gap: the missing numbers are recorded permanently as a lost range and
+// the held commands apply once. MUTANT=gap_silent never alerts; MUTANT=gap_auto_skip skips the gap without the owner;
+// MUTANT=gap_refused keeps the old behaviour (a gap is refused, nothing stored).
 package main
 
 import (
@@ -118,7 +127,7 @@ const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
   corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs, bill_bdays,
-  day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue;
+  day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue, gaps, held_cmds, lost_seqs;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL, machine_id text,
@@ -172,6 +181,12 @@ CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, de
 CREATE TABLE bill_bdays (device_id text NOT NULL, action_id text NOT NULL, bday int NOT NULL, PRIMARY KEY (device_id, action_id));
 CREATE TABLE day_closes (device_id text NOT NULL, bday int NOT NULL, n_device int NOT NULL, total_device bigint NOT NULL,
   n_server int NOT NULL, total_server bigint NOT NULL, PRIMARY KEY (device_id, bday));
+CREATE TABLE gaps (device_id text PRIMARY KEY, missing_from bigint NOT NULL, first_seen double precision NOT NULL,
+  alerted boolean NOT NULL DEFAULT false, state text NOT NULL, resolved_by text);
+CREATE TABLE held_cmds (device_id text NOT NULL, command_id text NOT NULL, seq bigint NOT NULL, payload_hash text NOT NULL,
+  payload jsonb NOT NULL, PRIMARY KEY (device_id, command_id));
+CREATE TABLE lost_seqs (device_id text NOT NULL, from_seq bigint NOT NULL, to_seq bigint NOT NULL,
+  accepted_at double precision NOT NULL, owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, from_seq));
 CREATE TABLE device_machine (device_id text PRIMARY KEY, machine_id text NOT NULL);
 CREATE TABLE quarantine (device_id text PRIMARY KEY, since double precision NOT NULL, reason text NOT NULL,
   state text NOT NULL, kept text);
@@ -856,6 +871,21 @@ func handleOwnerReport(w http.ResponseWriter, r *http.Request) {
 		h["label"] = fmt.Sprintf("held: %d sales, %s", h["n"], egp(h["piasters"].(int64)))
 		h["alert"] = true
 	}
+	gapHeld, err := dumpRows(ctx, `SELECT g.device_id, g.missing_from, g.alerted, count(h.command_id) AS n,
+		coalesce(sum((h.payload->>'sale_piasters')::bigint), 0)::bigint AS piasters
+		FROM gaps g JOIN held_cmds h ON h.device_id = g.device_id
+		WHERE g.state = 'open' AND coalesce(h.payload->>'action_id', '') <> '' GROUP BY g.device_id, g.missing_from, g.alerted`)
+	if err != nil {
+		fail(err)
+		return
+	}
+	for _, h := range gapHeld { // TS-02a: the same held line, with the missing-sequence alert once it is raised
+		h["label"] = fmt.Sprintf("held: %d sales, %s", h["n"], egp(h["piasters"].(int64)))
+		if h["alerted"].(bool) {
+			h["alert_text"] = fmt.Sprintf("missing sequence %d, possibly deleted on the device", h["missing_from"])
+		}
+		held = append(held, h)
+	}
 	if mutant == "held_hidden" {
 		held = nil
 	}
@@ -887,6 +917,130 @@ func dumpRowsTx(ctx context.Context, tx pgx.Tx, q string, args ...any) ([]map[st
 		return nil, err
 	}
 	return pgx.CollectRows(rows, pgx.RowToMap)
+}
+
+var gapHold = os.Getenv("GAP_HOLD") == "1" // TS-02a
+
+// holdAfterGap stores a command that arrived after a gap and opens (or keeps) the device's gap record.
+func holdAfterGap(ctx context.Context, tx pgx.Tx, dev string, c command) error {
+	var cur int64
+	if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id = 1 AND device_id = $1`, dev).Scan(&cur); err != nil {
+		return err
+	}
+	pj, _ := json.Marshal(c.Payload)
+	if _, err := tx.Exec(ctx, `INSERT INTO held_cmds VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,
+		dev, c.CommandID, c.Seq, c.PayloadHash, string(pj)); err != nil {
+		return err
+	}
+	_, err := tx.Exec(ctx, `INSERT INTO gaps VALUES ($1,$2,$3,false,'open',NULL) ON CONFLICT (device_id)
+		DO UPDATE SET missing_from = $2, first_seen = $3, alerted = false, state = 'open', resolved_by = NULL
+		WHERE gaps.state = 'closed'`, dev, cur+1, nowS())
+	return err
+}
+
+// drainHeld applies held commands that have become contiguous, closes a gap the device filled, and raises the owner
+// alert for a gap older than GAP_ALERT_S. It returns whether a gap is still open.
+func drainHeld(ctx context.Context, tx pgx.Tx, dev, closer string) (bool, error) {
+	for {
+		var cur int64
+		if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id = 1 AND device_id = $1`, dev).Scan(&cur); err != nil {
+			return false, err
+		}
+		if _, err := tx.Exec(ctx, `DELETE FROM held_cmds WHERE device_id = $1 AND seq <= $2`, dev, cur); err != nil {
+			return false, err
+		}
+		var c command
+		var pj []byte
+		err := tx.QueryRow(ctx, `SELECT command_id, seq, payload_hash, payload FROM held_cmds WHERE device_id = $1 AND seq = $2`,
+			dev, cur+1).Scan(&c.CommandID, &c.Seq, &c.PayloadHash, &pj)
+		if errors.Is(err, pgx.ErrNoRows) {
+			break
+		}
+		if err != nil {
+			return false, err
+		}
+		if err := json.Unmarshal(pj, &c.Payload); err != nil {
+			return false, err
+		}
+		if _, err := applyOne(ctx, tx, dev, c); err != nil {
+			return false, err
+		}
+	}
+	var held int
+	if err := tx.QueryRow(ctx, `SELECT count(*) FROM held_cmds WHERE device_id = $1`, dev).Scan(&held); err != nil {
+		return false, err
+	}
+	if held == 0 {
+		_, err := tx.Exec(ctx, `UPDATE gaps SET state = 'closed', resolved_by = $2 WHERE device_id = $1 AND state = 'open'`, dev, closer)
+		return false, err
+	}
+	var first float64
+	var alerted bool
+	var missing int64
+	err := tx.QueryRow(ctx, `SELECT first_seen, alerted, missing_from FROM gaps WHERE device_id = $1 AND state = 'open'`, dev).Scan(&first, &alerted, &missing)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	if !alerted && nowS()-first >= float64(envSeconds("GAP_ALERT_S", 600)) && mutant != "gap_silent" {
+		detail, _ := json.Marshal(map[string]any{"missing_from": missing,
+			"text": fmt.Sprintf("missing sequence %d, possibly deleted on the device", missing)})
+		if _, err := tx.Exec(ctx, `UPDATE gaps SET alerted = true WHERE device_id = $1`, dev); err != nil {
+			return true, err
+		}
+		if _, err := tx.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'missing_sequence',$2,true)`,
+			dev, detail); err != nil {
+			return true, err
+		}
+	}
+	return true, nil
+}
+
+// handleGapAccept is the owner accepting a gap: the missing numbers become a permanent lost range, the held commands
+// apply once (TS-02a, founder decision 2026-10-18).
+func handleGapAccept(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var b struct {
+		DeviceID string `json:"device_id"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	fail := func(err error) { http.Error(w, err.Error(), http.StatusInternalServerError) }
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		fail(err)
+		return
+	}
+	defer tx.Rollback(context.Background())
+	var cur, minHeld int64
+	if err := tx.QueryRow(ctx, `SELECT c.last_seq, min(h.seq) FROM cursor_ c JOIN held_cmds h ON h.device_id = c.device_id
+		JOIN gaps g ON g.device_id = c.device_id AND g.state = 'open'
+		WHERE c.tenant_id = 1 AND c.device_id = $1 GROUP BY c.last_seq`, b.DeviceID).Scan(&cur, &minHeld); err != nil {
+		http.Error(w, `{"error":"no open gap with held commands"}`, http.StatusConflict)
+		return
+	}
+	if _, err := tx.Exec(ctx, `INSERT INTO lost_seqs VALUES ($1,$2,$3,$4,true)`, b.DeviceID, cur+1, minHeld-1, nowS()); err != nil {
+		fail(err)
+		return
+	}
+	if _, err := tx.Exec(ctx, `UPDATE cursor_ SET last_seq = $2 WHERE tenant_id = 1 AND device_id = $1`, b.DeviceID, minHeld-1); err != nil {
+		fail(err)
+		return
+	}
+	if _, err := drainHeld(ctx, tx, b.DeviceID, "owner"); err != nil {
+		fail(err)
+		return
+	}
+	if err := tx.Commit(ctx); err != nil {
+		fail(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"ok":true,"lost_from":%d,"lost_to":%d}`, cur+1, minHeld-1)
 }
 
 var errReconcileRequired = errors.New("reconcile required")
@@ -1035,6 +1189,15 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 						out, err = storeQuarantined(ctx, tx, b.DeviceID, b.Machine, c)
 					}
 				}
+			} else if err == nil && gapHold && out == "gap" && mutant != "gap_refused" {
+				if mutant == "gap_auto_skip" { // planted defect: jump the cursor over the gap, no owner, no record
+					if _, err = tx.Exec(ctx, `UPDATE cursor_ SET last_seq = $2 WHERE tenant_id = 1 AND device_id = $1`,
+						b.DeviceID, c.Seq-1); err == nil {
+						out, err = applyOne(ctx, tx, b.DeviceID, c)
+					}
+				} else if err = holdAfterGap(ctx, tx, b.DeviceID, c); err == nil {
+					out = "held" // stored, not applied; the device counts it as stored (TS-02a)
+				}
 			} else if err == nil && out == "applied" && b.Machine != "" {
 				_, err = tx.Exec(ctx, `UPDATE inbox SET machine_id = $3 WHERE tenant_id = 1 AND device_id = $1 AND command_id = $2`,
 					b.DeviceID, c.CommandID, b.Machine)
@@ -1119,6 +1282,20 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		resendFrom = cur + 1 // this batch closed part of the gap: ask for the rest only
 		if resendFrom > *b.AckedSeq {
 			resendFrom = 0
+		}
+	}
+	if gapHold && !retired {
+		open, err := drainHeld(ctx, tx, b.DeviceID, "device")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id=1 AND device_id=$1`, b.DeviceID).Scan(&cur); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if open {
+			resendFrom = cur + 1 // a gap is open: the device resends from it (a retained bill can fill it)
 		}
 	}
 	var archived int64
@@ -1463,6 +1640,9 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
 			FROM items i ORDER BY i.item_id`,
 		"stock_alerts":    "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
+		"gaps":            "SELECT device_id, missing_from, alerted, state, resolved_by FROM gaps ORDER BY device_id",
+		"held_cmds":       "SELECT device_id, command_id, seq FROM held_cmds ORDER BY seq",
+		"lost_seqs":       "SELECT device_id, from_seq, to_seq, owner_alert FROM lost_seqs ORDER BY from_seq",
 		"quarantine":      "SELECT device_id, reason, state, kept FROM quarantine ORDER BY device_id",
 		"quarantine_cmds": "SELECT device_id, machine_id, command_id, seq FROM quarantine_cmds ORDER BY arrived",
 		"review_queue":    "SELECT stream_id, action_id, command_id, seq, amount_piasters, reason, reviewed FROM review_queue ORDER BY stream_id, seq",
@@ -1543,6 +1723,7 @@ func main() {
 	mux.HandleFunc("POST /quarantine/resolve", handleResolve)
 	mux.HandleFunc("GET /owner_report", handleOwnerReport)
 	mux.HandleFunc("POST /review/ack", handleReviewAck)
+	mux.HandleFunc("POST /gap/accept", handleGapAccept)
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })
