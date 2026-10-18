@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29, SC-30, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on the dev run; SC-30, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -201,6 +201,16 @@ bash prototypes/local-first-sync-spike/run.sh sc28 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay28 <seed> <cell> [mutant]
+```
+
+SC-29 (stock policy per item):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc29 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay29 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -992,4 +1002,72 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **Several dashboard users editing one bill at once.**
 - **Corrections reaching the device and the ETA Return Receipt** (OQ9 (3); ETA note).
 - **Authorisation:** who may edit, and the audit record.
+
+### Phase 3 — SC-29: stock policy per item
+
+**Founder rule under test (2026-10-17, sync note OQ9 (1)):**
+1. Per item, the owner chooses "allow negative stock and alert" or "refuse the sale".
+2. New items default to "allow and alert".
+3. A policy change applies when the device receives it (as SC-23 rule 3).
+
+**Design under test:**
+- **Server:**
+  - `POST /stock` edits the item catalogue (price, and policy `allow_alert`, `refuse` or none) and records stock receipts. Each change is a new config version, sent on the config feed.
+  - A sale's item lines move the server's stock mirror (receipts minus items sold), and its `neg_alerts` become owner alerts. Both are effects of the applied command, so the inbox keeps them single across resends and restores.
+  - The server never refuses a sale for stock: the device decided from the policy it held (OQ6).
+- **Device:**
+  - Applies a feed when it receives it: the catalogue is replaced, and each receipt is added to its stock once (receipt id).
+  - `sell_stock` decides from the policy it holds. A `refuse` item without enough stock refuses the **whole** sale with `out_of_stock`, naming the items; nothing is billed and no stock moves. An `allow_alert` item (or one with no policy) may go negative.
+  - Stock is decremented in the bill's transaction.
+- **When the owner is alerted (founder, 2026-10-18):** when an item's stock **crosses** from ≥ 0 to < 0. There is no alert on further negative sales, and the next alert comes only after a restock brings the item back to ≥ 0 and it crosses again. Offline that is at most once per item per offline period, because a restock needs the feed. The alert rides the sale command.
+- **Old-policy sales (founder, 2026-10-18):** folded into the SC-23 owner summary, so there is one summary per period in which the device lacked the current config, keyed by the old `cfg_version`. It counts every sale under that version (`n_sales`, as SC-23 does). Among them it also counts the sales of an item whose policy at that version differs from its policy now (`n_policy`), and lists those items. The server keeps each item's policy per config version to judge this.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_allow_offline` | snack (allow, stock 1) and gum (no policy, stock 0). Offline: snack ×3, gum ×1, then snack + gum. Online: the owner restocks snack +5, then snack ×3 | Every sale goes through. Alerts: snack once offline, gum once (the default is allow), snack again after the restock crossing. Final stock snack −1, gum −2 on device, server and model |
+| `b_refuse_offline` | cola (refuse, stock 1) and snack (allow, stock 0). Offline: cola, cola, cola + snack, snack. Online: restock cola +2, then cola ×2, cola | Last cola sold; the next cola and the mixed sale refused whole (`out_of_stock`, naming cola); snack goes negative with one alert; after the restock cola ×2 sells and the next cola is refused |
+| `c_restore` | snack (allow, 1) and cola (refuse, 1). Backup, then the last snack and one more, and the last cola; synced. The server is restored from the backup and the device resends; then cola again and snack again | The restored server asks for the resend. Each sale is on the server once, with one snack alert. The second cola is refused (the device's stock says 0); the later snack sale goes further negative without a new alert |
+| `d_policy_change` | snack allow, cola refuse, gum allow, stock 0. Offline, the owner swaps snack and cola; the device sells one of each, and a gum. Online, after the pull, snack and cola again | Offline: snack sells under the allow it holds, cola is refused under the refuse it holds, gum sells. After the pull: snack refused, cola sells. One alert each. One owner summary for the old version: 2 sales, 1 of them an old-policy sale (snack) |
+| `e_dup_reply` | snack (allow, 0) sold; the reply of the sync that uploads it is cut (`resp_cut_20`); the resend is answered `duplicate` | One sale, one alert |
+
+**Checks added:**
+- **R35:** a refuse item without stock refuses the whole sale at the counter, naming the item. Nothing is billed: I8 catches a bill that reached the server anyway.
+- **R36:** an allow item goes negative, and the owner gets exactly one alert per crossing below zero.
+- **R37:** a new item behaves as allow-and-alert.
+- **R38:** a policy change applies when the device receives it, not before.
+- **R39:** device stock, server mirror and the driver's model agree for every item.
+- **R40:** exactly one owner summary per period in which the device lacked the current config, with the sale count and the old-policy sales and items the model expects; no summary in a cell with no such period.
+
+**Mutants:**
+- `refuse_ignored` (client): the refuse policy is not enforced.
+- `alert_every_sale` (client): every negative sale alerts.
+- `default_refuse` (client): a new item defaults to refuse.
+- `stale_policy` (client): a policy once held is never updated.
+- `alert_outside_inbox` (server): alerts are recorded for every command received, duplicates included.
+- `summary_ignores_policy` (server): the summary counts the sales but never the old-policy ones.
+
+#### Run 1 (dev, uncommitted harness on `f4aa0ab`) — PASS
+
+`evidence/phase3-sc29-run1-dev*`, 42 s (rerun after the founder's answers added R40).
+- **Cells:** all 5 PASS, 20 seeds each, 0 violations.
+- **Exercised:** `c_restore` counts only when the restored server asked for a resend. `e_dup_reply` counts only when the cut sync failed and the resend was answered `duplicate`.
+- **Mutants:** all six caught.
+  - `refuse_ignored` after 2 runs: the refused cola reached the server as a sale nobody submitted (I8).
+  - `alert_every_sale` after 1 (R36: 4 snack alerts against 2).
+  - `default_refuse` after 1 (R37).
+  - `stale_policy` after 4, in `d_policy_change`: after the pull the device still sold snack under the old allow (I8).
+  - `alert_outside_inbox` after 5, in `e_dup_reply` (R36: 2 alerts against 1).
+  - `summary_ignores_policy` after 4, in `d_policy_change` (R40: `n_policy` 0 against 1).
+- **Smoke on the changed client and server:** SC-28 (4 seeds), SC-23 (3, after the summary change) and SC-19 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Founder decisions (2026-10-18):** (1) alert at the crossing below zero, as built; (2) old-policy sales go into the SC-23 owner summary rather than a separate note (R40).
+
+**Not covered:**
+- **Several devices selling the same stock in one branch:** S203, after Tier 1.
+- **Stock counts and adjustments by the owner** other than receipts (damage, count corrections).
+- **Recipes:** an item that uses up other stock.
+- **The refusal message in Arabic and English:** the desktop spike's G3 and the UI spec.
+
 

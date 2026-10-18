@@ -47,6 +47,17 @@
 // original sale is never rewritten (OQ9 (3), OQ6). MUTANT=queue_when_offline stores edits for an offline device;
 // MUTANT=expire_delivered rejects delivered edits at the deadline too; MUTANT=correction_rewrites changes the
 // original sale row.
+//
+// SC-29 (stock policy per item, founder rule 2026-10-17, sync note OQ9 (1)): POST /stock edits the item catalogue
+// (price and policy "allow_alert" | "refuse"; no policy = a new item, allow_alert on the device) and records stock
+// receipts; each change is a new config version, sent on the config feed. A sale's item lines move the server's
+// stock mirror (receipts minus sold), and its neg_alerts become owner alerts. Both are effects of the applied
+// command, so the inbox keeps them single. The server never refuses a sale for stock: the device decided from the
+// policy it held (OQ6). MUTANT=alert_outside_inbox records alerts for every command received, duplicates included.
+// Old-policy sales (founder, 2026-10-18) fold into the SC-23 owner summary: one summary per period in which the device
+// lacked the current config (keyed by the old cfg_version), counting all sales under that version (n_sales) and,
+// among them, the sales of an item whose policy at that version differs from its policy now (n_policy, with the
+// items). Each item's policy is kept per config version. MUTANT=summary_ignores_policy leaves n_policy at 0.
 package main
 
 import (
@@ -72,7 +83,7 @@ import (
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
-  corrections;
+  corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -107,7 +118,8 @@ CREATE TABLE device_pulls (device_id text NOT NULL, version int NOT NULL, at tim
 CREATE TABLE device_leases (device_id text PRIMARY KEY, issued_at double precision NOT NULL, grace_s bigint NOT NULL,
   warn_s bigint NOT NULL);
 CREATE TABLE price_summaries (device_id text NOT NULL, kind text NOT NULL, period_key bigint NOT NULL,
-  n_sales int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, kind, period_key));
+  n_sales int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, n_policy int NOT NULL DEFAULT 0,
+  policy_items jsonb NOT NULL DEFAULT '[]', PRIMARY KEY (device_id, kind, period_key));
 CREATE TABLE device_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   kind text NOT NULL, detail jsonb NOT NULL, owner_alert boolean NOT NULL);
 CREATE TABLE edits (edit_id text PRIMARY KEY, device_id text NOT NULL, session_id text NOT NULL, n int NOT NULL,
@@ -115,6 +127,14 @@ CREATE TABLE edits (edit_id text PRIMARY KEY, device_id text NOT NULL, session_i
   delivered_at double precision, deliveries int NOT NULL DEFAULT 0, resolved_at double precision, resolved_by text);
 CREATE TABLE corrections (correction_id text PRIMARY KEY, action_id text NOT NULL, delta_piasters bigint NOT NULL,
   original_piasters bigint NOT NULL);
+CREATE TABLE items (item_id text PRIMARY KEY, price int NOT NULL, policy text);
+CREATE TABLE item_policy_history (version int NOT NULL, item_id text NOT NULL, policy text,
+  PRIMARY KEY (version, item_id));
+CREATE TABLE stock_receipts (receipt_id text PRIMARY KEY, item_id text NOT NULL, qty int NOT NULL);
+CREATE TABLE stock_moves (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
+  action_id text NOT NULL, item_id text NOT NULL, qty int NOT NULL);
+CREATE TABLE stock_alerts (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
+  action_id text NOT NULL, item_id text NOT NULL, owner_alert boolean NOT NULL DEFAULT true);
 `
 
 type payload struct {
@@ -130,6 +150,14 @@ type payload struct {
 	EditID          string    `json:"edit_id"`
 	Result          string    `json:"result"`
 	Reason          *string   `json:"reason"`
+	Lines           []line    `json:"lines"`      // SC-29: catalogue items sold
+	NegAlerts       []string  `json:"neg_alerts"` // SC-29: items whose stock crossed below zero with this sale
+}
+
+type line struct {
+	Item  string `json:"item"`
+	N     int64  `json:"n"`
+	Price int64  `json:"price"`
 }
 
 type segment struct {
@@ -321,6 +349,45 @@ func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error 
 			return err
 		}
 	}
+	for _, l := range p.Lines { // SC-29: the stock mirror moves with the applied sale
+		if _, err := tx.Exec(ctx, `INSERT INTO stock_moves (device_id, action_id, item_id, qty) VALUES ($1,$2,$3,$4)`,
+			dev, p.ActionID, l.Item, -l.N); err != nil {
+			return err
+		}
+	}
+	if mutant != "alert_outside_inbox" {
+		return stockAlerts(ctx, tx, dev, p)
+	}
+	return nil
+}
+
+// policyChanged returns the items of a sale whose policy at the sale's cfg_version differs from their policy now
+// (SC-29; no history row at that version = the item was new then, no policy).
+func policyChanged(ctx context.Context, tx pgx.Tx, p payload) ([]string, error) {
+	var out []string
+	for _, l := range p.Lines {
+		var changed bool
+		err := tx.QueryRow(ctx, `SELECT (SELECT h.policy FROM item_policy_history h WHERE h.item_id = $1 AND h.version <= $2
+			ORDER BY h.version DESC LIMIT 1) IS DISTINCT FROM (SELECT policy FROM items WHERE item_id = $1)`,
+			l.Item, p.CfgVersion).Scan(&changed)
+		if err != nil {
+			return nil, err
+		}
+		if changed {
+			out = append(out, l.Item)
+		}
+	}
+	return out, nil
+}
+
+// stockAlerts records one owner alert per item the device reported crossing below zero (SC-29).
+func stockAlerts(ctx context.Context, tx pgx.Tx, dev string, p payload) error {
+	for _, item := range p.NegAlerts {
+		if _, err := tx.Exec(ctx, `INSERT INTO stock_alerts (device_id, action_id, item_id) VALUES ($1,$2,$3)`,
+			dev, p.ActionID, item); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -474,7 +541,9 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 	}
 	results := []result{} // always a list, also for an empty batch (an SC-25b lease heartbeat): never JSON null
 	stale := 0
-	lagged := map[int]int{} // old version -> sales (rule 2 widened: online, the device had not pulled the new list)
+	lagged := map[int]int{}           // old version -> sales (rule 2 widened: online, the device had not pulled the new list)
+	policyN := map[int]int{}          // old version -> sales of an item whose policy changed since (SC-29)
+	policyItems := map[int][]string{} // old version -> those items
 	for _, c := range b.Commands {
 		out, err := applyOne(ctx, tx, b.DeviceID, c)
 		if err != nil {
@@ -482,9 +551,26 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		results = append(results, result{c.CommandID, c.Seq, out})
+		if mutant == "alert_outside_inbox" && out != "gap" { // planted defect: duplicates alert again
+			if err := stockAlerts(ctx, tx, b.DeviceID, c.Payload); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
 		if out == "applied" && c.Payload.CfgVersion > 0 && c.Payload.CfgVersion < curVersion {
 			stale++ // billed at a previous price: a valid fact (SC-23 rule 2)
 			lagged[c.Payload.CfgVersion]++
+			if mutant != "summary_ignores_policy" {
+				changed, err := policyChanged(ctx, tx, c.Payload)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				if len(changed) > 0 {
+					policyN[c.Payload.CfgVersion]++
+					policyItems[c.Payload.CfgVersion] = append(policyItems[c.Payload.CfgVersion], changed...)
+				}
+			}
 			if mutant == "per_sale_flag" {
 				if err := flag(ctx, tx, "needs_review_price", b.DeviceID, c); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -514,9 +600,17 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		for k, n := range rows {
-			if _, err := tx.Exec(ctx, `INSERT INTO price_summaries (device_id, kind, period_key, n_sales) VALUES ($1,$2,$3,$4)
-				ON CONFLICT (device_id, kind, period_key) DO UPDATE SET n_sales = price_summaries.n_sales + EXCLUDED.n_sales`,
-				b.DeviceID, kind, k, n); err != nil {
+			pi, _ := json.Marshal(append([]string{}, policyItems[int(k)]...))
+			if kind != "lacking" {
+				pi = []byte("[]")
+			}
+			if _, err := tx.Exec(ctx, `INSERT INTO price_summaries (device_id, kind, period_key, n_sales, n_policy, policy_items)
+				VALUES ($1,$2,$3,$4,$5,(SELECT coalesce(jsonb_agg(DISTINCT x ORDER BY x), '[]') FROM jsonb_array_elements_text($6::jsonb) x))
+				ON CONFLICT (device_id, kind, period_key) DO UPDATE SET n_sales = price_summaries.n_sales + EXCLUDED.n_sales,
+				n_policy = price_summaries.n_policy + EXCLUDED.n_policy,
+				policy_items = (SELECT coalesce(jsonb_agg(DISTINCT x ORDER BY x), '[]') FROM jsonb_array_elements_text(
+				  price_summaries.policy_items || EXCLUDED.policy_items) x)`,
+				b.DeviceID, kind, k, n, policyN[int(k)], string(pi)); err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
@@ -670,6 +764,21 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	out := map[string]any{"epoch": epoch, "version": version, "price": price, "prices": prices}
+	items, err := dumpRows(ctx, `SELECT item_id, price, policy FROM items ORDER BY item_id`) // SC-29 catalogue
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	cat := map[string]any{}
+	for _, it := range items {
+		cat[it["item_id"].(string)] = map[string]any{"price": it["price"], "policy": it["policy"]}
+	}
+	receipts, err := dumpRows(ctx, `SELECT receipt_id, item_id, qty FROM stock_receipts ORDER BY receipt_id`)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	out["items"], out["receipts"] = cat, receipts
 	if dev := r.URL.Query().Get("device"); dev != "" && r.Method == http.MethodGet {
 		out["lease"] = issueLease(ctx, dev)
 	}
@@ -770,6 +879,66 @@ func handleCorrection(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"ok":true,"recorded":%t}`, tag.RowsAffected() == 1)
 }
 
+// handleStock is the owner's catalogue and stock receipt edit (SC-29); every change is a new config version.
+func handleStock(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var b struct {
+		Items map[string]struct {
+			Price  int     `json:"price"`
+			Policy *string `json:"policy"`
+		} `json:"items"`
+		Receipt *struct {
+			ReceiptID string `json:"receipt_id"`
+			ItemID    string `json:"item_id"`
+			Qty       int    `json:"qty"`
+		} `json:"receipt"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+	defer tx.Rollback(context.Background())
+	for id, it := range b.Items {
+		if _, err := tx.Exec(ctx, `INSERT INTO items VALUES ($1,$2,$3) ON CONFLICT (item_id)
+			DO UPDATE SET price = $2, policy = $3`, id, it.Price, it.Policy); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	if b.Receipt != nil {
+		if _, err := tx.Exec(ctx, `INSERT INTO stock_receipts VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`,
+			b.Receipt.ReceiptID, b.Receipt.ItemID, b.Receipt.Qty); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	var version int
+	if err := tx.QueryRow(ctx, `UPDATE config SET version = version + 1 WHERE id = 1 RETURNING version`).Scan(&version); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if _, err := tx.Exec(ctx, `INSERT INTO config_history (version, prices) SELECT version, prices FROM config
+		ON CONFLICT (version) DO NOTHING`); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if _, err := tx.Exec(ctx, `INSERT INTO item_policy_history SELECT $1, item_id, policy FROM items`, version); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := tx.Commit(ctx); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"ok":true,"version":%d}`, version)
+}
+
 func dumpRows(ctx context.Context, q string) ([]map[string]any, error) {
 	rows, err := pool.Query(ctx, q)
 	if err != nil {
@@ -794,11 +963,16 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		"device_events": "SELECT device_id, kind, detail, owner_alert FROM device_events ORDER BY id",
 		"edits":         "SELECT edit_id, session_id, n, state, reason, created_at, deadline, delivered_at, deliveries, resolved_at, resolved_by FROM edits ORDER BY created_at",
 		"corrections":   "SELECT correction_id, action_id, delta_piasters, original_piasters FROM corrections ORDER BY correction_id",
+		"stock": `SELECT i.item_id, i.policy,
+			  coalesce((SELECT sum(qty) FROM stock_receipts r WHERE r.item_id = i.item_id), 0)
+			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
+			FROM items i ORDER BY i.item_id`,
+		"stock_alerts": "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
 		"price_summaries": `WITH b AS (SELECT s.*,
 			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,
 			  (SELECT min(p.at) FROM device_pulls p WHERE p.device_id = s.device_id AND p.version > s.period_key) AS to_ts
 			  FROM price_summaries s)
-			SELECT b.device_id, b.kind, b.period_key, b.n_sales, b.owner_alert,
+			SELECT b.device_id, b.kind, b.period_key, b.n_sales, b.n_policy, b.policy_items, b.owner_alert,
 			  extract(epoch FROM b.from_ts)::float8 AS from_s, extract(epoch FROM b.to_ts)::float8 AS to_s,
 			  (SELECT count(*) FROM offline_periods o WHERE o.device_id = b.device_id
 			     AND o.to_ts > b.from_ts AND o.from_ts < coalesce(b.to_ts, now())) AS offline_periods
@@ -863,6 +1037,7 @@ func main() {
 	mux.HandleFunc("POST /edit", handleEdit)
 	mux.HandleFunc("GET /edit", handleEdit)
 	mux.HandleFunc("POST /correction", handleCorrection)
+	mux.HandleFunc("POST /stock", handleStock)
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })

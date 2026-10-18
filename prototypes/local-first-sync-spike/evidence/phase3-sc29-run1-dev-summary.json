@@ -1,0 +1,262 @@
+{
+ "harness_commit": "f4aa0ab+dirty",
+ "started": "2026-10-18 03:47:37",
+ "cells": [
+  {
+   "cell": "a_allow_offline",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "alerts": {
+     "snack": 2,
+     "gum": 1
+    },
+    "owner_alerts": {
+     "snack": 2,
+     "gum": 1
+    },
+    "model_stock": {
+     "snack": -1,
+     "gum": -2
+    },
+    "device_stock": {
+     "snack": -1,
+     "gum": -2
+    },
+    "server_stock": {
+     "gum": -2,
+     "snack": -1
+    },
+    "refused": 0,
+    "negative": 3,
+    "summaries": {}
+   },
+   "seconds": 6.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_refuse_offline",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "alerts": {
+     "snack": 1
+    },
+    "owner_alerts": {
+     "snack": 1
+    },
+    "model_stock": {
+     "cola": 0,
+     "snack": -1
+    },
+    "device_stock": {
+     "cola": 0,
+     "snack": -1
+    },
+    "server_stock": {
+     "cola": 0,
+     "snack": -1
+    },
+    "refused": 3,
+    "negative": 1,
+    "summaries": {}
+   },
+   "seconds": 5.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_restore",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "alerts": {
+     "snack": 1
+    },
+    "owner_alerts": {
+     "snack": 1
+    },
+    "model_stock": {
+     "snack": -2,
+     "cola": 0
+    },
+    "device_stock": {
+     "snack": -2,
+     "cola": 0
+    },
+    "server_stock": {
+     "cola": 0,
+     "snack": -2
+    },
+    "refused": 1,
+    "negative": 1,
+    "summaries": {}
+   },
+   "seconds": 13.0,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_policy_change",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "alerts": {
+     "snack": 1,
+     "gum": 1,
+     "cola": 1
+    },
+    "owner_alerts": {
+     "snack": 1,
+     "gum": 1,
+     "cola": 1
+    },
+    "model_stock": {
+     "snack": -1,
+     "gum": -1,
+     "cola": -1
+    },
+    "device_stock": {
+     "snack": -1,
+     "gum": -1,
+     "cola": -1
+    },
+    "server_stock": {
+     "cola": -1,
+     "gum": -1,
+     "snack": -1
+    },
+    "refused": 2,
+    "negative": 3,
+    "summaries": {
+     "2": {
+      "n_sales": 2,
+      "n_policy": 1,
+      "items": [
+       "snack"
+      ]
+     }
+    }
+   },
+   "seconds": 5.4,
+   "result": "PASS"
+  },
+  {
+   "cell": "e_dup_reply",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "alerts": {
+     "snack": 1
+    },
+    "owner_alerts": {
+     "snack": 1
+    },
+    "model_stock": {
+     "snack": -1
+    },
+    "device_stock": {
+     "snack": -1
+    },
+    "server_stock": {
+     "snack": -1
+    },
+    "refused": 0,
+    "negative": 1,
+    "summaries": {}
+   },
+   "seconds": 4.6,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "refuse_ignored": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_refuse_offline"
+   ],
+   "first_violation": [
+    "I8",
+    "s1-x2 on the server was never submitted"
+   ],
+   "seconds": 0.8
+  },
+  "alert_every_sale": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_allow_offline"
+   ],
+   "first_violation": [
+    "R36",
+    "owner stock alerts {'snack': 4, 'gum': 2}, model {'snack': 2, 'gum': 1}"
+   ],
+   "seconds": 0.3
+  },
+  "default_refuse": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_allow_offline"
+   ],
+   "first_violation": [
+    "R37",
+    "gum 0 -> -1 (default allow): model allows, device answered {'ok': False, 'op': 'sell_stock', 'error': 'out_of_stock', 'warning': 'out_of_stock', 'items': ['gum']}"
+   ],
+   "seconds": 0.3
+  },
+  "stale_policy": {
+   "caught": true,
+   "runs_to_catch": 4,
+   "seed_cell": [
+    1,
+    "d_policy_change"
+   ],
+   "first_violation": [
+    "I8",
+    "s1-x3 on the server was never submitted"
+   ],
+   "seconds": 1.5
+  },
+  "alert_outside_inbox": {
+   "caught": true,
+   "runs_to_catch": 5,
+   "seed_cell": [
+    1,
+    "e_dup_reply"
+   ],
+   "first_violation": [
+    "R36",
+    "owner stock alerts {'snack': 2}, model {'snack': 1}"
+   ],
+   "seconds": 1.9
+  },
+  "summary_ignores_policy": {
+   "caught": true,
+   "runs_to_catch": 4,
+   "seed_cell": [
+    1,
+    "d_policy_change"
+   ],
+   "first_violation": [
+    "R40",
+    "owner summaries {2: {'n_sales': 2, 'n_policy': 0, 'items': []}}, model {2: {'n_sales': 2, 'n_policy': 1, 'items': ['snack']}}"
+   ],
+   "seconds": 1.5
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 41.5
+}

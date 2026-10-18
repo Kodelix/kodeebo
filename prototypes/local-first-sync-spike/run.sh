@@ -4,7 +4,7 @@
 # Date: 2026-10-16
 #   run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper
 #          | phase2 [seeds_per_cell] [campaign_runs] | replay2 <seed> <cell|random> [mutant] | ts09
-#          | sc19 [seeds_per_cell] | replay19 <seed> <cell> [mutant] | sc20 [seeds] | sc20real [seeds] | replay20 <seed> <cell> [mutant] | sc21 [seeds] | replay21 <seed> <cell> [mutant] | sc22 [seeds] | replay22 <seed> <cell> [mutant] | sc23 [seeds] | replay23 <seed> <cell> [mutant] | sc25 [tenth|full|both] | replay25 <seed> <tenth|full> [mutant] | sc25b [seeds] | replay25b <seed> <cell> [mutant] | sc28 [seeds] | replay28 <seed> <cell> [mutant] | stop
+#          | sc19 [seeds_per_cell] | replay19 <seed> <cell> [mutant] | sc20 [seeds] | sc20real [seeds] | replay20 <seed> <cell> [mutant] | sc21 [seeds] | replay21 <seed> <cell> [mutant] | sc22 [seeds] | replay22 <seed> <cell> [mutant] | sc23 [seeds] | replay23 <seed> <cell> [mutant] | sc25 [tenth|full|both] | replay25 <seed> <tenth|full> [mutant] | sc25b [seeds] | replay25b <seed> <cell> [mutant] | sc28 [seeds] | replay28 <seed> <cell> [mutant] | sc29 [seeds] | replay29 <seed> <cell> [mutant] | stop
 set -euo pipefail
 cd "$(dirname "$0")"
 PG=lfs-spike-pg
@@ -45,11 +45,13 @@ case "${1:-}" in
   replay25b) start_pg; build_server; .venv/bin/python harness/driver.py replay25b "$2" "$3" "${4:-}" ;;
   sc28)     start_pg; build_server; .venv/bin/python harness/driver.py sc28 "${2:-24}" ;;
   replay28) start_pg; build_server; .venv/bin/python harness/driver.py replay28 "$2" "$3" "${4:-}" ;;
+  sc29)     start_pg; build_server; .venv/bin/python harness/driver.py sc29 "${2:-20}" ;;
+  replay29) start_pg; build_server; .venv/bin/python harness/driver.py replay29 "$2" "$3" "${4:-}" ;;
   replay25) start_pg; build_server; .venv/bin/python harness/driver.py replay25 "$2" "$3" "${4:-}" ;;
   replay23) start_pg; build_server; .venv/bin/python harness/driver.py replay23 "$2" "$3" "${4:-}" ;;
   replay22) start_pg; build_server; .venv/bin/python harness/driver.py replay22 "$2" "$3" "${4:-}" ;;
   replay21) start_pg; build_server; .venv/bin/python harness/driver.py replay21 "$2" "$3" "${4:-}" ;;
   replay20) start_pg; build_server; .venv/bin/python harness/driver.py replay20 "$2" "$3" "${4:-}" ;;
   stop)     docker rm -f "$PG" >/dev/null 2>&1 || true ;;
-  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | phase2 [seeds] [runs] | replay2 <seed> <cell|random> [mutant] | ts09 | sc19 [seeds] | replay19 <seed> <cell> [mutant] | sc20 [seeds] | sc20real [seeds] | replay20 <seed> <cell> [mutant] | sc21 [seeds] | replay21 <seed> <cell> [mutant] | sc22 [seeds] | replay22 <seed> <cell> [mutant] | sc23 [seeds] | replay23 <seed> <cell> [mutant] | sc25 [tenth|full|both] | replay25 <seed> <tenth|full> [mutant] | sc25b [seeds] | replay25b <seed> <cell> [mutant] | sc28 [seeds] | replay28 <seed> <cell> [mutant] | stop" >&2; exit 2 ;;
+  *) echo "usage: run.sh selftest | replay <seed> [mutant] | phase1 | replay1 <seed> <cipher> <point> [mutant] | tamper | phase2 [seeds] [runs] | replay2 <seed> <cell|random> [mutant] | ts09 | sc19 [seeds] | replay19 <seed> <cell> [mutant] | sc20 [seeds] | sc20real [seeds] | replay20 <seed> <cell> [mutant] | sc21 [seeds] | replay21 <seed> <cell> [mutant] | sc22 [seeds] | replay22 <seed> <cell> [mutant] | sc23 [seeds] | replay23 <seed> <cell> [mutant] | sc25 [tenth|full|both] | replay25 <seed> <tenth|full> [mutant] | sc25b [seeds] | replay25b <seed> <cell> [mutant] | sc28 [seeds] | replay28 <seed> <cell> [mutant] | sc29 [seeds] | replay29 <seed> <cell> [mutant] | stop" >&2; exit 2 ;;
 esac

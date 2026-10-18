@@ -2564,6 +2564,266 @@ def sc28(seeds=24, mutant_budget=24):
     return ok
 
 
+SC29_CELLS = ["a_allow_offline", "b_refuse_offline", "c_restore", "d_policy_change", "e_dup_reply"]
+SC29_MUTANTS = ["refuse_ignored", "alert_every_sale", "default_refuse", "stale_policy", "alert_outside_inbox",
+                "summary_ignores_policy"]
+SC29_PRICES = {"snack": 1000, "cola": 1500, "gum": 500}
+
+
+def sc29_script(cell):
+    def script(run):
+        toxi = run.net.toxi
+        st = run.sc29 = {"cell": cell, "mismatch": [], "alerts": {}, "stock": {}, "refused": 0, "negative": 0,
+                         "exercised": False, "expect_summary": {}, "lacking": None}
+        policy, stock, n = {}, {}, [0]  # the driver's model of what the device holds
+
+        def catalogue(items, receipts=()):
+            post_json("/stock", {"items": {k: {"price": SC29_PRICES[k], "policy": v} for k, v in items.items()}})
+            for k, q_ in receipts:
+                post_json("/stock", {"receipt": {"receipt_id": f"r{run.seed}-{n[0]}", "item_id": k, "qty": q_}})
+                n[0] += 1
+
+        def pull(online=True):
+            """The device takes the feed; the model follows only if the device could reach the server."""
+            r = run.send({"op": "pull_config"})
+            if online and r and r.get("ok"):
+                srv = json.loads(urllib.request.urlopen(SERVER_URL + "/config", timeout=5).read())
+                st["held_version"] = srv["version"]
+                policy.clear()
+                policy.update({k: v["policy"] for k, v in srv["items"].items()})
+                got = {}
+                for rc in srv["receipts"]:
+                    got[rc["item_id"]] = got.get(rc["item_id"], 0) + rc["qty"]
+                st.setdefault("receipts_seen", {})
+                for k, total in got.items():
+                    stock[k] = stock.get(k, 0) + total - st["receipts_seen"].get(k, 0)
+                st["receipts_seen"] = got
+            return r
+
+        def sell(label, lines):
+            aid = f"s{run.seed}-x{n[0]}"
+            n[0] += 1
+            out = [k for k, q_ in lines if (policy.get(k) or "allow_alert") == "refuse" and stock.get(k, 0) - q_ < 0]
+            r = run.send({"op": "sell_stock", "action_id": aid, "lines": [{"item": k, "n": q_} for k, q_ in lines]})
+            if out:
+                st["refused"] += 1
+                if not r or r.get("ok") or r.get("error") != "out_of_stock" or sorted(r.get("items", [])) != sorted(out):
+                    st["mismatch"].append(("R38" if cell == "d_policy_change" else "R35", f"{label}: model refuses {out}, device answered {r}"))
+                return r
+            if not r or not r.get("ok"):
+                rule = "R38" if cell == "d_policy_change" else (
+                    "R37" if any(policy.get(k) is None for k, _ in lines) else "R36")
+                st["mismatch"].append((rule, f"{label}: model allows, device answered {r}"))
+                return r
+            if st.get("lacking") is not None:  # sold under a config the device no longer has current (R40)
+                e = st["expect_summary"].setdefault(st["held_version"], {"n_sales": 0, "n_policy": 0, "items": set()})
+                e["n_sales"] += 1
+                moved = [k for k, _ in lines if st["lacking"].get(k, policy.get(k)) != policy.get(k)]
+                e["n_policy"] += bool(moved)
+                e["items"] |= set(moved)
+            for k, q_ in lines:
+                before = stock.get(k, 0)
+                stock[k] = before - q_
+                if before >= 0 > stock[k]:
+                    st["alerts"][k] = st["alerts"].get(k, 0) + 1
+                    st["negative"] += 1
+            a = {"op": "sell_stock", "action_id": aid, "start_min": 0, "end_min": 0,
+                 "expected_piasters": sum(q_ * SC29_PRICES[k] for k, q_ in lines)}
+            run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+            run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+            run.seq_of[aid] = r.get("seq")
+            return r
+
+        def drain(fault=None):
+            for k in range(10):
+                toxi.apply(fault if k == 0 else None)
+                try:
+                    r = run.send({"op": "sync"})
+                finally:
+                    toxi.clear()
+                if r and r.get("ok") and r.get("pending") == 0:
+                    return r
+
+        if cell == "a_allow_offline":
+            catalogue({"snack": "allow_alert", "gum": None}, [("snack", 1)])  # gum: a new item, no policy set
+            pull()
+            toxi.apply("down")
+            sell("snack 1 -> 0", [("snack", 1)])
+            sell("snack 0 -> -1", [("snack", 1)])
+            sell("snack -1 -> -2", [("snack", 1)])
+            sell("gum 0 -> -1 (default allow)", [("gum", 1)])
+            sell("snack + gum", [("snack", 1), ("gum", 1)])
+            toxi.clear()
+            drain()
+            catalogue({}, [("snack", 5)])  # the owner restocks; the next crossing alerts again
+            pull()
+            sell("snack 2 -> -1", [("snack", 3)])
+            st["exercised"] = st["negative"] >= 3
+        elif cell == "b_refuse_offline":
+            catalogue({"cola": "refuse", "snack": "allow_alert"}, [("cola", 1)])
+            pull()
+            toxi.apply("down")
+            sell("cola 1 -> 0", [("cola", 1)])
+            sell("cola 0: refused", [("cola", 1)])
+            sell("cola + snack: refused whole", [("cola", 1), ("snack", 1)])
+            sell("snack 0 -> -1", [("snack", 1)])
+            toxi.clear()
+            drain()
+            catalogue({}, [("cola", 2)])
+            pull()
+            sell("cola 2 -> 0", [("cola", 2)])
+            sell("cola 0: refused again", [("cola", 1)])
+            st["exercised"] = st["refused"] >= 3
+        elif cell == "c_restore":
+            catalogue({"snack": "allow_alert", "cola": "refuse"}, [("snack", 1), ("cola", 1)])
+            pull()
+            path = os.path.join(run.dir, "b1.dump")
+            pg_backup(path)  # the backup holds the catalogue, not the sales below
+            sell("snack 1 -> -1 (last unit and one more)", [("snack", 2)])
+            sell("cola last unit", [("cola", 1)])
+            drain()
+            run.server_down = True
+            run.server.terminate()
+            run.server.wait()
+            st["cursor_after_restore"] = pg_restore(path, f"r{run.seed}-sc29")
+            run.server_down = False
+            run.start_server()
+            drain()  # the device resends what the restored server lost, once
+            pull()
+            sell("cola again after the restore: refused", [("cola", 1)])
+            sell("snack -1 -> -2 (no new alert)", [("snack", 1)])
+            st["exercised"] = st["cursor_after_restore"] == 0 and st["refused"] >= 1
+        elif cell == "d_policy_change":
+            catalogue({"snack": "allow_alert", "cola": "refuse", "gum": "allow_alert"})
+            pull()
+            toxi.apply("down")
+            catalogue({"snack": "refuse", "cola": "allow_alert"})  # the owner swaps both while the device is offline
+            st["lacking"] = {"snack": "refuse", "cola": "allow_alert"}  # the server's policies now, for R40
+            pull(online=False)  # the device cannot reach the feed: it keeps the policies it holds
+            sell("snack under the held allow", [("snack", 1)])
+            sell("cola under the held refuse", [("cola", 1)])
+            sell("gum: an old-config sale, policy unchanged", [("gum", 1)])
+            toxi.clear()
+            drain()
+            st["lacking"] = None
+            pull()
+            sell("snack after the new refuse", [("snack", 1)])
+            sell("cola after the new allow", [("cola", 1)])
+            st["exercised"] = st["refused"] == 2 and st["negative"] == 3
+        elif cell == "e_dup_reply":
+            catalogue({"snack": "allow_alert"})
+            pull()
+            sell("snack 0 -> -1", [("snack", 1)])
+            toxi.apply("resp_cut_20")  # the server applies the sale; its reply is lost
+            try:
+                cut = run.send({"op": "sync"})
+            finally:
+                toxi.clear()
+            again = run.send({"op": "sync"})  # the resend: the server answers "duplicate"
+            st["exercised"] = not (cut or {}).get("ok") and any(
+                x["result"] == "duplicate" for x in (again or {}).get("results") or [])
+        drain()
+        st["model_stock"] = dict(stock)
+    return script
+
+
+def sc29_extra(run, dump):
+    """R35 a refuse item without stock refuses the whole sale at the counter, naming it, and bills nothing (I8 catches
+    a bill that reached the server anyway); R36 an allow item goes negative and the owner gets exactly one alert per
+    crossing below zero; R37 a new item behaves as allow-and-alert; R38 a policy change applies when the device
+    receives it (the per-sale outcomes above, against the model's held policy); R39 device stock, server mirror and
+    the model agree for every item."""
+    st = run.sc29
+    v = list(st["mismatch"])
+    got = {}
+    for a_ in dump.get("stock_alerts", []):
+        got[a_["item_id"]] = got.get(a_["item_id"], 0) + 1
+        if not a_["owner_alert"]:
+            v.append(("R36", f"stock alert for {a_['item_id']} without an owner alert"))
+    if got != st["alerts"]:
+        v.append(("R36", f"owner stock alerts {got}, model {st['alerts']}"))
+    c = run.open_client_store()
+    dev = dict(c.execute("SELECT item_id, qty FROM stock").fetchall())
+    c.close()
+    srv = {r["item_id"]: r["qty"] for r in dump.get("stock", [])}
+    model = st.get("model_stock", {})
+    for k in sorted(set(dev) | set(srv) | set(model)):
+        if not (dev.get(k, 0) == srv.get(k, 0) == model.get(k, 0)):
+            v.append(("R39", f"{k}: device {dev.get(k, 0)}, server {srv.get(k, 0)}, model {model.get(k, 0)}"))
+    # R40 (founder, 2026-10-18): old-policy sales are folded into the SC-23 owner summary, one per period in which
+    # the device lacked the current config, judged by cfg_version
+    want = {k: {"n_sales": e["n_sales"], "n_policy": e["n_policy"], "items": sorted(e["items"])}
+            for k, e in st["expect_summary"].items()}
+    have = {r["period_key"]: {"n_sales": r["n_sales"], "n_policy": r["n_policy"], "items": sorted(r["policy_items"])}
+            for r in dump.get("price_summaries", []) if r["kind"] == "lacking"}
+    if have != want:
+        v.append(("R40", f"owner summaries {have}, model {want}"))
+    st["summaries"] = have
+    st["device_stock"], st["server_stock"], st["owner_alerts"] = dev, srv, got
+    if st["cell"] == "c_restore":  # exercised only if the restored server really asked for a resend
+        st["exercised"] = st["exercised"] and any(e["outcome"] == "resend" for e in dump.get("reconcile", []))
+    return v, frozenset()
+
+
+def sc29_run(seed, cell, toxi, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc29-{cell}", net=Net(toxi, "none"), client_env=dict(RETENTION_ENV))
+    run.script, run.extra = sc29_script(cell), sc29_extra
+    r = run.go()
+    r["sc29"] = run.sc29
+    return r
+
+
+def sc29(seeds=20, mutant_budget=25):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 SC-29 (stock policy per item), commit {summary['harness_commit']}", flush=True)
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        for cell in SC29_CELLS:
+            t1 = time.time()
+            bad, exercised, sample = [], 0, None
+            for s in range(1, seeds + 1):
+                r = sc29_run(s, cell, toxi)
+                exercised += bool(r["sc29"].get("exercised"))
+                if s == 1:
+                    sample = {k: r["sc29"].get(k) for k in ("alerts", "owner_alerts", "model_stock", "device_stock",
+                                                            "server_stock", "refused", "negative", "summaries")}
+                if r["violations"]:
+                    bad.append({"seed": s, "violations": r["violations"][:3]})
+            res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+            ok &= res == "PASS"
+            summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                     "first_bad": bad[:3], "sample_seed_1": sample,
+                                     "seconds": round(time.time() - t1, 1), "result": res})
+            print(f"  {cell:18s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+        for mu in SC29_MUTANTS:
+            t1 = time.time()
+            caught = None
+            for k in range(mutant_budget):
+                s, cell = k // len(SC29_CELLS) + 1, SC29_CELLS[k % len(SC29_CELLS)]
+                r = sc29_run(s, cell, toxi, mutant=mu, label=f"sc29-mutant-{mu}")
+                if r["violations"]:
+                    caught = (s, cell, r["violations"][0])
+                    break
+            summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                      "seed_cell": caught[:2] if caught else None,
+                                      "first_violation": caught[2] if caught else None,
+                                      "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {mu:20s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+                  f"{caught[2] if caught else '-'}", flush=True)
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc29-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-29: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -2573,6 +2833,17 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc29":  # sc29 [seeds_per_cell]
+        sys.exit(0 if sc29(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay29":  # replay29 <seed> <cell> [mutant]
+        t = Toxi(RUNS)
+        try:
+            r = sc29_run(int(sys.argv[2]), sys.argv[3], t, mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                         label="replay29", verbose=True)
+            print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc29", "violations")},
+                             indent=1, default=str))
+        finally:
+            t.stop()
     if sys.argv[1] == "sc28":  # sc28 [seeds_per_cell]
         sys.exit(0 if sc28(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay28":  # replay28 <seed> <cell> [mutant]

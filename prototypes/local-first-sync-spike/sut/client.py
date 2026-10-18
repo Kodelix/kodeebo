@@ -100,6 +100,17 @@
 #   connected device receives edits. Edit results are retained like bills, so a server restore can rebuild them.
 #      MUTANT also: edit_apply_twice (no dedupe on the edit id: a re-delivered edit is applied again),
 #      edit_after_close (an edit for a closed bill is answered "applied" without changing the bill).
+# Phase 3 (SC-29, stock policy per item; founder rule 2026-10-17, sync note OQ9 (1)):
+#   The config feed carries the item catalogue (price and policy: "allow_alert" or "refuse"; no policy = a new item,
+#   which defaults to allow_alert) and the owner's stock receipts. The device applies a feed when it receives it (as
+#   SC-23 rule 3): items replaced, each receipt added to its stock once (receipt id). sell_stock decides on the device
+#   from the policy it holds: a "refuse" item without enough stock refuses the whole sale ("out_of_stock", naming the
+#   items) and nothing is billed; an "allow_alert" item may go negative. Stock is decremented in the bill's
+#   transaction. The owner is alerted when an item's stock crosses from >= 0 to < 0; offline that is at most once per
+#   item and offline period, because a restock needs the feed. The alert rides the sale command (neg_alerts), so the
+#   server's inbox dedupe keeps it single across resends and restores.
+#      MUTANT also: refuse_ignored (the refuse policy is not enforced), alert_every_sale (every negative sale alerts),
+#      default_refuse (a new item defaults to refuse), stale_policy (a policy once held is never updated).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -473,6 +484,9 @@ def open_store():
             "payload_hash TEXT, status TEXT NOT NULL)",
             "CREATE TABLE IF NOT EXISTS edits (edit_id TEXT PRIMARY KEY, session_id TEXT, n INTEGER, result TEXT, "
             "reason TEXT, seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",  # SC-28
+            "CREATE TABLE IF NOT EXISTS items (item_id TEXT PRIMARY KEY, price INTEGER NOT NULL, policy TEXT)",  # SC-29
+            "CREATE TABLE IF NOT EXISTS stock (item_id TEXT PRIMARY KEY, qty INTEGER NOT NULL)",
+            "CREATE TABLE IF NOT EXISTS receipts (receipt_id TEXT PRIMARY KEY)",
         ]:
             c.execute(stmt).fetchall()
         check_marker(c)
@@ -506,8 +520,9 @@ elif open_error is not None:
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
 
 
-def close_and_pay(a, priced=None):
-    """priced (SC-23): (minutes, sale, extra payload fields) computed by close_session from the device's prices."""
+def close_and_pay(a, priced=None, also=None):
+    """priced (SC-23): (minutes, sale, extra payload fields) computed by close_session from the device's prices.
+    also (SC-29): more writes that belong to the same transaction as the bill (the stock decrement)."""
     if priced:
         mins, sale, extra = priced
     else:
@@ -530,6 +545,8 @@ def close_and_pay(a, priced=None):
             q("INSERT INTO minutes VALUES (?,?,?)", (a["action_id"], a["session_id"], m))
         if priced:
             q("DELETE FROM sessions WHERE session_id = ?", (a["session_id"],))
+        if also:
+            also()
 
     def outbox():
         seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
@@ -922,6 +939,49 @@ def sell_items(m):
     close_and_pay(a, priced=([], n * price, extra))
 
 
+def sell_stock(m):
+    """SC-29: a sale of catalogue items, refused or allowed from the policy and stock the device holds."""
+    v = q("SELECT cfg_version FROM sync_state WHERE id = 1")[0][0]
+    lines, out, alerts = [], [], []
+    for ln in sorted(m["lines"], key=lambda x: x["item"]):
+        row = q("SELECT price, policy FROM items WHERE item_id = ?", (ln["item"],))
+        if not row:
+            raise PriceError("price_missing", f"the device's catalogue has no item {ln['item']!r}")
+        price, policy = row[0]
+        policy = policy or ("refuse" if MUTANT == "default_refuse" else "allow_alert")  # a new item: allow and alert
+        n = int(ln["n"])
+        have = (q("SELECT qty FROM stock WHERE item_id = ?", (ln["item"],)) or [(0,)])[0][0]
+        if policy == "refuse" and have - n < 0 and MUTANT != "refuse_ignored":
+            out.append(ln["item"])
+        if have - n < 0 and (have >= 0 or MUTANT == "alert_every_sale"):
+            alerts.append(ln["item"])  # crossed below zero: one owner alert
+        lines.append({"item": ln["item"], "n": n, "price": price})
+    if out:  # refused at the counter; nothing is billed and no stock moves
+        return reply({"ok": False, "op": "sell_stock", "error": "out_of_stock", "warning": "out_of_stock", "items": out})
+
+    def decrement():
+        for ln in lines:
+            q("INSERT INTO stock VALUES (?, 0) ON CONFLICT (item_id) DO NOTHING", (ln["item"],))
+            q("UPDATE stock SET qty = qty - ? WHERE item_id = ?", (ln["n"], ln["item"]))
+    extra = {"cfg_version": v or 0, "segments": [], "lines": lines, "neg_alerts": alerts}
+    a = {"action_id": m["action_id"], "session_id": m["action_id"], "day": m.get("day", 0)}
+    close_and_pay(a, priced=([], sum(ln["n"] * ln["price"] for ln in lines), extra), also=decrement)
+
+
+def apply_catalogue(cfg):
+    """SC-29, inside the caller's transaction: the catalogue as received, and each new stock receipt once."""
+    for item, it in (cfg.get("items") or {}).items():
+        old = q("SELECT policy FROM items WHERE item_id = ?", (item,))
+        policy = old[0][0] if old and MUTANT == "stale_policy" else it.get("policy")  # planted defect: keeps the old
+        q("INSERT INTO items VALUES (?,?,?) ON CONFLICT (item_id) DO UPDATE SET price = excluded.price, "
+          "policy = excluded.policy", (item, int(it["price"]), policy))
+    for r in cfg.get("receipts") or []:
+        if not q("SELECT 1 FROM receipts WHERE receipt_id = ?", (r["receipt_id"],)):
+            q("INSERT INTO receipts VALUES (?)", (r["receipt_id"],))
+            q("INSERT INTO stock VALUES (?, 0) ON CONFLICT (item_id) DO NOTHING", (r["item_id"],))
+            q("UPDATE stock SET qty = qty + ? WHERE item_id = ?", (int(r["qty"]), r["item_id"]))
+
+
 def pull_config():
     """SC-19(d): server-to-device config feed. The epoch changes on every server restore, so a version number
     seen before the restore can come back with different content; compare epoch first."""
@@ -942,8 +1002,11 @@ def pull_config():
             record_event("config_epoch_changed", RuntimeError(f"server epoch {le} -> {epoch}"),
                          local_version=lv, server_version=version)
     if take:
+        q("BEGIN IMMEDIATE")
         q("UPDATE sync_state SET cfg_epoch = ?, cfg_version = ?, cfg_price = ?, cfg_prices = ? WHERE id = 1",
           (epoch, version, price, prices))
+        apply_catalogue(cfg)
+        q("COMMIT")
     reply({"ok": True, "op": "pull_config", "applied": take, "version": version, "prices": json.loads(prices)})
 
 
@@ -974,7 +1037,7 @@ for line in sys.stdin:
         else:
             reply({"ok": False, "op": op, "store": "refused"})
         continue
-    gated = ("sale", "start_session", "sell_items") + (("close_session",) if MUTANT == "expiry_blocks_close" else ())
+    gated = ("sale", "start_session", "sell_items", "sell_stock") + (("close_session",) if MUTANT == "expiry_blocks_close" else ())
     if LEASE_ON and op in gated and lease_status()["status"] in ("expired", "none"):
         reply({"ok": False, "op": op, "error": "lease_expired", "warning": "lease_expired"})  # until the server is reached
         report_events()
@@ -1014,11 +1077,11 @@ for line in sys.stdin:
                    "counter": q("SELECT seq FROM counter WHERE id = 1")[0][0], "unreported": len(unreported)})
         elif op == "pull_config":
             pull_config()
-        elif op in ("start_session", "change_tier", "close_session", "sell_items"):  # SC-23
+        elif op in ("start_session", "change_tier", "close_session", "sell_items", "sell_stock"):  # SC-23, SC-29
             handled = (Exception,) if MUTANT == "swallow_store_errors" else (ValueError, KeyError, IndexError)
             try:
                 {"start_session": start_session, "change_tier": change_tier, "close_session": close_session,
-                 "sell_items": sell_items}[op](msg)
+                 "sell_items": sell_items, "sell_stock": sell_stock}[op](msg)
             except handled as e:  # no price list, a price missing, an unknown session: refuse the action, not the store
                 code = getattr(e, "code", "unknown_session" if isinstance(e, (KeyError, IndexError)) else "invalid")
                 reply({"ok": False, "op": op, "error": code, "warning": code, "detail": str(e)[:100]})
