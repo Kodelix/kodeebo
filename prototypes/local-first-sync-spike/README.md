@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on the dev run; SC-30, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -1061,6 +1061,15 @@ A device that goes offline right after receiving an edit keeps that edit open on
   - `alert_outside_inbox` after 5, in `e_dup_reply` (R36: 2 alerts against 1).
   - `summary_ignores_policy` after 4, in `d_policy_change` (R40: `n_policy` 0 against 1).
 - **Smoke on the changed client and server:** SC-28 (4 seeds), SC-23 (3, after the summary change) and SC-19 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+#### Run 2 (committed harness `6e2ecff`) — SC-29 **PASS**, full regression PASS
+
+`evidence/phase3-sc29-run2-*`. No log is marked `+dirty`.
+- **Log headers:** two other-session commits landed on `main` while the run went on: `4edb8af` and `2309b5c`, ADR documents only. The harness stamps HEAD, so later logs name those commits: SC-23 onwards say `6e2ecff`, SC-22/21a/20 say `4edb8af`, and the rest say `2309b5c`. Neither commit touches the spike folder or the sync note (`git diff 6e2ecff 2309b5c -- prototypes/local-first-sync-spike` is empty). Every step therefore ran the `6e2ecff` harness.
+- **SC-29:** 5 × 20 runs, 0 violations. All six mutants were caught after the same number of runs as run 1.
+- **Earlier cases:** SC-28, SC-25b, SC-25a (one-tenth size 30 of 30 and full size 3 of 3), SC-23, SC-22, SC-21a, SC-20 (and its real tmpfs leg, 50 of 50) and SC-19 PASS, every mutant caught.
+- **Earlier phases:** phase 0, phase 1 and phase 2 (10 seeds, 300 runs) PASS; TS-09 counted 16 of 16 sales. Tamper: 36 of 36.
+- **The pinned-list guard** passed for phase 2 and tamper.
 
 **Founder decisions (2026-10-18):** (1) alert at the crossing below zero, as built; (2) old-policy sales go into the SC-23 owner summary rather than a separate note (R40).
 

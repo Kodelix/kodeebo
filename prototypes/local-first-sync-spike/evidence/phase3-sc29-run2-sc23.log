@@ -1,0 +1,16 @@
+phase 3 SC-23 (prices while offline), commit 6e2ecff, 50 seeds per cell
+  a_offline_session  exercised 50/50  summaries 50  violating 0  PASS
+  b_tier_change      exercised 50/50  summaries 50  violating 0  PASS
+  c_two_periods      exercised 50/50  summaries 100  violating 0  PASS
+  d_online_lag       exercised 50/50  summaries 100  violating 0  PASS
+  e_no_price_list    exercised 50/50  summaries 0  violating 0  PASS
+  f_corrupt_session_op exercised 50/50  summaries 0  violating 0  PASS
+  mutant reprice_on_server      CAUGHT after 1 runs: ('I3', 's1-a0 sale 10181 != expected 15925')
+  mutant per_sale_flag          CAUGHT after 1 runs: ('I8', 'server flag needs_review_price for cmd-s1-a0 seq 1')
+  mutant retroactive_price      CAUGHT after 2 runs: ('I3', 's1-a0 sale 10616 != expected 11998')
+  mutant tier_uses_start_price  CAUGHT after 2 runs: ('I3', 's1-a0 sale 12955 != expected 11998')
+  mutant offline_only           CAUGHT after 1 runs: ('R19', "summaries per lacking period {} (other kinds [{'device_id': 'dev-1', 'from_s': 1792288262.045226, 'kind': 'offline', 'n_policy': 0, 'n_sales': 2, 'offline_periods': 1, 'owner_alert': True, 'period_key': 1, 'policy_items': [], 'to_s': 1792288262.151006}]), expected {2: 2}")
+  mutant zero_price_default     CAUGHT after 5 runs: ('I8', 's1-x1 on the server was never submitted')
+  mutant swallow_store_errors   CAUGHT after 6 runs: ('R22', "the session op did not refuse the damaged store: {'ok': False, 'op': 'start_session', 'error': 'invalid', 'warning': 'invalid', 'detail': 'database disk image is malformed'}")
+  mutant round_per_segment      CAUGHT after 2 runs: ('I3', 's1-a1 sale 6980 != expected 6979')
+SC-23: PASS  (total 367.0 s)
