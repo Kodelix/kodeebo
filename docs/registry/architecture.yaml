@@ -139,13 +139,18 @@ tenancy_rules:
     adr: ADR-0002
     adr_status: Accepted
     status: active
+  - id: TR-SUSPENSION-CONTRACT
+    rule: "For a suspended (unpaid) tenant (ADR-0001 Decision 4, founder 2026-10-18): already-sold device uploads are always accepted with a tenant_suspended notice; leases are not renewed, so devices stop new sales at lease end and the backlog is still accepted; no enrolment (createCode, redeem refuse); dashboard owner only, for export and payment (endAllForTenant at suspension; Sessions.create refuses non-owners; LoginLookup returns tenant status); existing support grants revoked, none approved; no purge before a closure state; usage counts continue; tenant status read per request from CP tenant_status with no cache; reinstatement restores access and suspension deletes nothing."
+    adr: ADR-0001
+    adr_status: Accepted
+    status: active
 
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
     contract: "TenantConnectionResolver.resolve(TenantId) -> TenantDataSource; the only way app code reaches tenant data; today returns the shared pool."
     adr: ADR-0001
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0001 amendment 2026-10-18 (suspension contract) -> IC-TENANT-CONNECTION-RESOLVER-R2"
   - id: IC-SCOPE-HELPER
     contract: "WithScope (Go) / withScope (Ktor) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope."
     adr: ADR-0002
@@ -213,6 +218,11 @@ interface_contracts:
     status: active
   - id: IC-PRE-CONTEXT-LOOKUPS-R4
     contract: "ADR-0001 § 1c, SECURITY DEFINER functions owned by auth_lookup, pinned search_path, EXECUTE only for the named roles: LoginLookup.find(identifier), Logins.create/disable (owner, app_rt), Logins.statusOf(user) (inside, tenant match, app_rt), Logins.changeOwnVerifier(tokenHash, verifier) (app_rt, after the app re-verifies the current password); SessionLookup.find, Sessions.create, Sessions.end (app_rt), Sessions.endAllForUser (owner, app_rt), Sessions.endAllForTenant (platform_rt); EnrolmentCodeLookup.find(codeHash) -> {tenant, branch, branchLabel, seat, state} (device_rt, no consumption), Enrolment.createCode (owner, app_rt; stores the branch display label on the code row), Enrolment.redeem (device_rt); DeviceCredentialLookup.find, Devices.rotateCredential (device_rt), Devices.revokeCredential (owner, app_rt), Devices.revokeCredentialForLicensing (licensing service roles, tenant match only); SupportGrantLookup.find(grantId, operatorId), listByOperator(operatorId) (support_rt). auth_lookup never reads TD tables. Account recovery is added by the staff-auth ADR."
+    adr: ADR-0001
+    adr_status: Accepted
+    status: active
+  - id: IC-TENANT-CONNECTION-RESOLVER-R2
+    contract: "TenantConnectionResolver.resolve(TenantId) -> {TenantDataSource, tenantStatus}; the only way app code reaches tenant data; today returns the shared pool; an unknown tenant -> typed error, no fallback pool; a suspended tenant resolves with its status (read per request from CP tenant_status, no cache) and each surface applies the suspension contract (ADR-0001 Decision 4)."
     adr: ADR-0001
     adr_status: Accepted
     status: active

@@ -26,7 +26,7 @@ Accepted
 
 ## Decision Makers
 
-The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. **2026-10-18, founder decision (ADR-0004 § 7a):** the CP class allows derived counts without money, names, items or contents; usage counts added as a CP example. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** PL writes and sign-in lookup (§ 1c), `deploy_rt`, data migrations as `job_rt`, tenant list via `platform_rt`, M27/M38 as a future amendment. **Third review (2026-10-18):** deploy option A (privileged migrations as the bootstrap superuser); licensing revoke split; `EnrolmentCodeLookup` listed. **Fourth review (2026-10-18, CONCERNS):** stale superuser line; enrolment label stored on the code; `Logins.statusOf`; C5 planted test; ALTER FUNCTION source; deploy runbook stop. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
+The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. **2026-10-18, founder decision (ADR-0004 § 7a):** the CP class allows derived counts without money, names, items or contents; usage counts added as a CP example. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** PL writes and sign-in lookup (§ 1c), `deploy_rt`, data migrations as `job_rt`, tenant list via `platform_rt`, M27/M38 as a future amendment. **Third review (2026-10-18):** deploy option A (privileged migrations as the bootstrap superuser); licensing revoke split; `EnrolmentCodeLookup` listed. **Fourth review (2026-10-18, CONCERNS):** stale superuser line; enrolment label stored on the code; `Logins.statusOf`; C5 planted test; ALTER FUNCTION source; deploy runbook stop. **Amended 2026-10-18 (founder): suspension contract, Decision 4** (from `/threat-model tenant-isolation`). Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
 
 ## Summary
 
@@ -158,6 +158,17 @@ Every LOGIN role other than the bootstrap superuser is `NOSUPERUSER`, `NOBYPASSR
 
 **3. Tenant unit: tenant → branch → device.** Tenant = the owner organisation; branch = one venue; device = one cashier PC. Keys are composite down the hierarchy: `branches (tenant_id, id)`, `devices (tenant_id, branch_id, id)`. The owner web dashboard and its Play-wrapped form are clients of the tenant, not devices. Seats, per-device pricing and device binding are licensing decisions: see `docs/research/licensing.md` Part 1 and the founder rules in `docs/research/tenant-isolation.md` § 5; this ADR does not restate them.
 
+**4. Suspension contract (amendment, founder 2026-10-18).** For a suspended (unpaid) tenant:
+- Devices keep uploading already-sold commands (money facts are never lost). Each reply carries a `tenant_suspended` notice, and the backlog is always accepted.
+- Leases are not renewed (licensing ADR), so a device stops new sales when its lease ends; its backlog is still accepted after that.
+- No enrolment: `Enrolment.createCode` and `Enrolment.redeem` refuse.
+- Dashboard: owner only, for export and payment. `Sessions.endAllForTenant` runs at suspension; `LoginLookup.find` returns the tenant status, and `Sessions.create` refuses everyone except the owner.
+- Support: existing grants are revoked by the suspension step, and no new grant can be approved (ADR-0004).
+- Jobs: no purge until the tenant is in a closure state (DEL-2); usage counts continue.
+- Reinstatement restores normal access; suspension deletes nothing.
+
+Threat model: `docs/architecture/threat-models/tenant-isolation.md` M5.
+
 ### Architecture
 
 ```mermaid
@@ -197,7 +208,9 @@ TenantId            value type: parsed UUID; constructed only from an authentica
 TenantConnectionResolver (port, app layer)
   resolve(tenant: TenantId) -> TenantDataSource
     // Today: the shared pool for every tenant.
-    // Failure: unknown or suspended tenant -> typed error, no fallback pool.
+    // Failure: unknown tenant -> typed error, no fallback pool. A suspended tenant resolves: the resolver
+    // returns the data source and the tenant status, read per request from CP tenant_status with no cache,
+    // and each surface applies Decision 4 (amendment, founder 2026-10-18).
 
 Table classes (TD, CP, G, PL): one list kept next to the migrations, one entry per table;
 the catalogue test fails on any table without a class, on a G table not on the global
@@ -340,6 +353,7 @@ Greenfield: no existing data.
 - [ ] Each PL lookup returns identity for a known key and 0 rows for an unknown key; a runtime role cannot select the PL table directly (F325).
 - [ ] Each § 1c function works for its named roles and fails for every other role (`permission denied`); an "inside, owner" function fails for a manager and for another tenant's row.
 - [ ] A planted migration that creates a role, or creates or re-owns an `auth_lookup` function, without the privileged mark fails C5 in CI.
+- [ ] For a suspended tenant: an upload of an already-sold command is accepted with `tenant_suspended`; enrolment, a manager sign-in, a new grant and a purge are refused; the owner can sign in and export; after the lease ends the device sells nothing new.
 - [ ] **The tenant-isolation threat model (`docs/architecture/threat-models/tenant-isolation.md`, `/threat-model tenant-isolation`) blocks the first story that stores tenant data; it does not block acceptance of this ADR (founder, 2026-10-18).**
 - [ ] Every tenant-data access in `app` goes through `TenantConnectionResolver` (architecture test once the backend track is chosen).
 - [ ] Performance: checked against `perf-budgets.md` once it exists; not checked until then.
