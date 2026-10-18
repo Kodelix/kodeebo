@@ -4,7 +4,7 @@
 > **Status**: Draft (verdict NOT ASSESSED: no feature spec yet; `tenancy.model` and `distribution.model` unset in `project.yaml` — see § 9)
 > **Author**: `appsec-engineer` via `/threat-model` (STRIDE draft), `researcher` (requirement IDs), `privacy-compliance-specialist` (personal-data flows); reviewed and consolidated in the authoring session · **Reviewer**: security-lead (SL-THREAT-MODEL skipped - lean mode)
 > **Date**: 2026-10-18 · **Next review**: the first feature spec that stores tenant data (`--update`); a new trust boundary or role; account recovery added to ADR-0001 § 1c; the licensing ADR amending ADR-0001/0002 (M27/M38 roles, licensing scope kind); the key-custody ADR; an incident; and at the latest 2027-04-18, the first hire or the first paying customer (residual-risk review)
-> **Feature spec**: none (`design/specs/` absent) · **Research note**: `docs/research/tenant-isolation.md` (parts 1–7) · **ADRs**: ADR-0001, ADR-0002, ADR-0003, ADR-0004 (Accepted 2026-10-18), ADR-0005 (Proposed; M54 and R-6); registry `docs/registry/architecture.yaml`
+> **Feature spec**: none (`design/specs/` absent) · **Research note**: `docs/research/tenant-isolation.md` (parts 1–7) · **ADRs**: ADR-0001, ADR-0002, ADR-0003, ADR-0004 (Accepted 2026-10-18), ADR-0005 (Accepted 2026-10-18; M54, M55, R-6, R-7); registry `docs/registry/architecture.yaml`
 > **Required because**: authentication · authorization model · PII export/delete · admin/impersonation
 > **Standards**: OWASP ASVS 5.0.0 (May 2025; tag `v5.0.0`) — Level 3 for authentication and session, Level 2 elsewhere · OWASP API Security Top 10 2023 · OWASP MASVS 2.1.0: not applicable (no mobile surface in scope)
 
