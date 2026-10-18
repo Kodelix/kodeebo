@@ -99,6 +99,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -209,6 +210,7 @@ type payload struct {
 	FromWall        float64   `json:"from_wall"`     // SC-30: device wall time of the last-alive checkpoint
 	ToWall          float64   `json:"to_wall"`       // SC-30: device wall time at restart
 	OpenSessions    int       `json:"open_sessions"` // SC-30
+	DurationS       *int64    `json:"duration_s"`    // TS-07a: the measured length; monotonic within one boot
 	Lines           []line    `json:"lines"`         // SC-29: catalogue items sold
 	NegAlerts       []string  `json:"neg_alerts"`    // SC-29: items whose stock crossed below zero with this sale
 }
@@ -409,6 +411,9 @@ func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error 
 			if suspicious {
 				msg += " - unusual: check why the app was closed"
 			}
+		}
+		if p.DurationS != nil && math.Abs(float64(*p.DurationS)-(p.ToWall-p.FromWall)) > 300 {
+			msg += fmt.Sprintf("; measured length %d min - the device clock was changed during this time", *p.DurationS/60)
 		}
 		if p.OpenSessions > 0 {
 			msg += fmt.Sprintf("; %d session(s) were running", p.OpenSessions)

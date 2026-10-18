@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`;, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on the dev run, finding P3-F12; remaining phase 3 legs in order A (founder, 2026-10-18): TS-02a/b, S207, TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -241,6 +241,16 @@ bash prototypes/local-first-sync-spike/run.sh sc13 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay13 <seed> <cell> [mutant]
+```
+
+TS-07a (clock change during an open session, injected clock):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh ts07 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay07 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1345,6 +1355,51 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **The machine id on Windows** and a clone onto an identical VM image that reports the same id: phase 4. A clone with the same machine id is still caught, later, by its first reused sequence number.
 - **Re-enrolling the retired copy as a new device:** the device enrolment spec.
 - **Refiling the stock moves and business days of a retired stream:** these SC-29/SC-31 records are not run with the clone policy.
+
+### Phase 3 — TS-07a: the wall clock is changed during an open session (injected clock)
+
+**Pass signal (sync note § 9.1.1, TS-07; Linux phase 3 leg (a)):** session time is billed from the trusted time source, not the edited wall clock, and the edit is recorded.
+
+**Design under test (with `CLOCKED=1`, SC-30's injected clock):**
+- **Durations:** within one boot every duration comes from the monotonic counter, never the wall clock. That covers session time, and the length of an app closure (same boot id). Only a power-off (new boot id) is spanned by the wall clock, and trusting that is phase 5.
+- **Recording a move:** the one-minute timer, and the start after an app closure, compare wall and monotonic time since the last checkpoint. A difference above 5 minutes is recorded as `wall_clock_moved` with the size of the move, and reported to the server (owner alert). Smaller drift, such as an NTP correction, is not reported.
+- **Notice wording:** an outage notice carries its measured length. When the device's wall times disagree with it by more than 5 minutes, the notice says the device clock was changed.
+
+**Cells** (seeds vary the time before the change by 0–30 s):
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_forward` | Session open 10 min; wall clock +2 h; 10 min more; close | Bill 20 min; one `wall_clock_moved` (+7,200 s) owner event |
+| `b_back` | As `a`, wall clock −3 h | Bill 20 min; one event (−10,800 s) |
+| `c_back_during_app_kill` | Session open 10 min; the app is closed 5 min and the clock set back 3 h meanwhile; restart; 4 min; close | Bill 19 min; one event; one "app was closed" notice saying "measured length 5 min - the device clock was changed during this time" |
+| `d_small_drift` | Wall clock +30 s (an NTP correction) | Bill 20 min; no event |
+
+**Checks added:**
+- **R54:** the session is billed its true elapsed time whatever the wall clock did. I5 and I3 check the same on the server rows.
+- **R55:** every wall-clock move above 5 minutes is recorded once, with its size, as an owner-visible event; smaller drift is not.
+- **R56:** an app closure during which the clock moved still gets its notice, measured on the monotonic counter.
+
+**Mutants:**
+- `bill_from_wall` (client): session time from the wall clock.
+- `no_wall_move_event` (client): the move is not recorded.
+- `app_down_gap_from_wall` (client): an app closure measured on the wall clock (SC-30's first draft).
+
+#### Run 1 (dev, uncommitted harness on `94bb337`) — PASS
+
+`evidence/phase3-ts07a-run1-dev*`, 34 s.
+- **Cells:** all 4 PASS, 20 seeds each, 0 violations.
+- **Mutants:** all three caught.
+  - `bill_from_wall` after 1 run (I3: 140.00 EGP billed for 20 minutes instead of 20.00).
+  - `no_wall_move_event` after 1 (R55).
+  - `app_down_gap_from_wall` after 3, in `c` (R56: no notice at all).
+- **Smoke on the changed client and server:** SC-30 (3 seeds) and SC-13 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Finding P3-F12 — an app closure must be measured on the monotonic counter, not the wall clock.** SC-30's first version measured the closure from the wall times at the last checkpoint and at restart. A cashier who closes the app and sets the clock back gets a negative gap, so no notice at all. A clock set forward inflates it. This is the most suspicious kind of outage (founder, 2026-10-18), and it was the one a clock change hid. The fix: within one boot the monotonic counter measures the closure, and the notice shows the wall times with the measured length.
+
+**Not covered:**
+- **A clock change across a power-off** (the wall clock is the only bridge there): phase 5, with S306.
+- **Real Windows clock edits and event 4616:** S304, phase 4 (TS-07b).
+
 
 
 - **The owner's minimum and increment:** billing spec.

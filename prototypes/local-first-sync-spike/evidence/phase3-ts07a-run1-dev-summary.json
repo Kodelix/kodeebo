@@ -1,0 +1,113 @@
+{
+ "harness_commit": "94bb337+dirty",
+ "started": "2026-10-18 21:50:00",
+ "cells": [
+  {
+   "cell": "a_forward",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "moves": [
+     7200
+    ],
+    "notices": [],
+    "billed_min": 20
+   },
+   "seconds": 8.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_back",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "moves": [
+     -10800
+    ],
+    "notices": [],
+    "billed_min": 20
+   },
+   "seconds": 7.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_back_during_app_kill",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "moves": [
+     -10800
+    ],
+    "notices": [
+     "App was closed while the PC was on, from 2027-01-15 08:10 to 2027-01-15 05:15 (device time) - unusual: check why the app was closed; measured length 5 min - the device clock was changed during this time; 1 session(s) were running"
+    ],
+    "billed_min": 19
+   },
+   "seconds": 8.0,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_small_drift",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "moves": [],
+    "notices": [],
+    "billed_min": 20
+   },
+   "seconds": 8.0,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "bill_from_wall": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_forward"
+   ],
+   "first_violation": [
+    "I3",
+    "s1-a1 sale 14000 != expected 2000"
+   ],
+   "seconds": 0.4
+  },
+  "no_wall_move_event": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_forward"
+   ],
+   "first_violation": [
+    "R55",
+    "0 wall_clock_moved events, model 1 ([7200])"
+   ],
+   "seconds": 0.4
+  },
+  "app_down_gap_from_wall": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_back_during_app_kill"
+   ],
+   "first_violation": [
+    "R56",
+    "outage notices [], model [{'off_kind': 'app_down', 'open_sessions': 1}]"
+   ],
+   "seconds": 1.2
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 34.1
+}

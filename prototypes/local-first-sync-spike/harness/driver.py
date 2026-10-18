@@ -3592,6 +3592,163 @@ def sc13(seeds=20, mutant_budget=15):
     return ok
 
 
+TS07_CELLS = ["a_forward", "b_back", "c_back_during_app_kill", "d_small_drift"]
+TS07_MUTANTS = ["bill_from_wall", "no_wall_move_event", "app_down_gap_from_wall"]
+
+
+def ts07_script(cell):
+    def script(run):
+        st = run.ts07 = {"cell": cell, "moves": [], "notices": [], "exercised": False}
+        clk = run.sc30_clock
+
+        def write():
+            with open(run.db + ".testclock", "w") as f:
+                json.dump(clk, f)
+
+        def advance(sec):  # true time passes: monotonic and wall together; the timer ticks each minute
+            for _ in range(int(sec // SC30_TICK)):
+                clk["mono"] += SC30_TICK
+                clk["wall"] += SC30_TICK
+                write()
+                run.send({"op": "tick"})
+            rest = sec % SC30_TICK
+            clk["mono"] += rest
+            clk["wall"] += rest
+            write()
+
+        def move_wall(sec):  # someone edits the Windows clock (or NTP corrects it); true time does not move
+            clk["wall"] += sec
+            write()
+            if abs(sec) > 300:
+                st["moves"].append(sec)
+
+        post_json("/config", {"prices": SC30_PRICES})
+        run.send({"op": "pull_config"})
+        run.send({"op": "tick"})
+        sid = f"s{run.seed}-s1"
+        run.send({"op": "start_session", "session_id": sid, "tier": "std"})
+        mono0 = clk["mono"]
+        jitter = run.seed % 7 * 5
+        advance(10 * 60 + jitter)
+        if cell == "a_forward":
+            move_wall(2 * 3600)
+            advance(10 * 60)
+        elif cell == "b_back":
+            move_wall(-3 * 3600)
+            advance(10 * 60)
+        elif cell == "c_back_during_app_kill":
+            run.client.kill()
+            run.client.wait()
+            clk["mono"] += 5 * 60  # the app is closed 5 minutes; the PC stays on
+            clk["wall"] += 5 * 60
+            move_wall(-3 * 3600)  # and the clock is set back meanwhile
+            frm_wall = clk["wall"] - (5 * 60 - 3 * 3600)  # the device wall time at its last checkpoint
+            run.send({"op": "tick"})  # restart
+            st["notices"].append({"off_kind": "app_down", "open_sessions": 1, "gap_s": 5 * 60})
+            advance(4 * 60)
+        elif cell == "d_small_drift":
+            move_wall(30)  # an NTP correction: no alert
+            advance(10 * 60)
+        aid = f"s{run.seed}-a1"
+        r = run.send({"op": "close_session", "action_id": aid, "session_id": sid})
+        mins = int((clk["mono"] - mono0) // 60)  # true elapsed time: the monotonic counter
+        st["mins"], st["reply"] = mins, r
+        if r and r.get("ok"):
+            a = {"op": "close_session", "action_id": aid, "session_id": sid, "start_min": 0, "end_min": mins,
+                 "expected_piasters": (mins * SC30_PRICES["std"] + 30) // 60}
+            run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+            run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+            run.seq_of[aid] = r.get("seq")
+        for _ in range(5):
+            r = run.send({"op": "sync"})
+            if r and r.get("ok") and r.get("pending") == 0:
+                break
+        st["exercised"] = True
+    return script
+
+
+def ts07_extra(run, dump):
+    """R54 the session is billed its true elapsed time whatever the wall clock did (I5 and I3 on the server rows);
+    R55 every wall-clock move above 5 minutes is recorded once as an owner-visible event, a smaller drift not at all;
+    R56 an app closure during which the clock moved gets its notice, measured on the monotonic counter."""
+    st, v = run.ts07, []
+    got = sum(1 for m in dump["minutes"] if m["session_id"] == f"s{run.seed}-s1")
+    if not (st.get("reply") or {}).get("ok") or got != st["mins"]:
+        v.append(("R54", f"billed {got} min, true elapsed {st['mins']} min ({st.get('reply')})"))
+    moves = [e for e in dump.get("device_events", []) if e["kind"] == "wall_clock_moved"]
+    if len(moves) != len(st["moves"]) or any(not e["owner_alert"] for e in moves):
+        v.append(("R55", f"{len(moves)} wall_clock_moved events, model {len(st['moves'])} ({st['moves']})"))
+    for e, want in zip(moves, st["moves"]):
+        got_move = (e["detail"] or {}).get("move_s")
+        if got_move is None or abs(got_move - want) > 60:
+            v.append(("R55", f"recorded move {got_move} s, model {want} s"))
+    offs = [{"off_kind": r["off_kind"], "open_sessions": r["open_sessions"]} for r in dump.get("device_offs", [])]
+    want = [{"off_kind": n["off_kind"], "open_sessions": n["open_sessions"]} for n in st["notices"]]
+    if offs != want:
+        v.append(("R56", f"outage notices {offs}, model {want}"))
+    st["owner_view"] = {"moves": [(e["detail"] or {}).get("move_s") for e in moves],
+                        "notices": [r.get("message") for r in dump.get("device_offs", [])], "billed_min": got}
+    return v, frozenset()
+
+
+def ts07_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"ts07-{cell}", client_env={**RETENTION_ENV, "CLOCKED": "1"})
+    run.sc30_clock = {"boot": 1, "mono": 1000.0, "wall": 1_800_000_000.0}
+    with open(run.db + ".testclock", "w") as f:
+        json.dump(run.sc30_clock, f)
+    run.script, run.extra = ts07_script(cell), ts07_extra
+    r = run.go()
+    r["ts07"] = run.ts07
+    return r
+
+
+def ts07(seeds=20, mutant_budget=12):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 TS-07a (clock change during an open session, injected clock), commit {summary['harness_commit']}",
+          flush=True)
+    ok = True
+    for cell in TS07_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = ts07_run(s, cell)
+            exercised += bool(r["ts07"].get("exercised"))
+            if s == 1:
+                sample = r["ts07"].get("owner_view")
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:22s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in TS07_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(TS07_CELLS) + 1, TS07_CELLS[k % len(TS07_CELLS)]
+            r = ts07_run(s, cell, mutant=mu, label=f"ts07-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:24s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "ts07-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"TS-07a: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -3601,6 +3758,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "ts07":  # ts07 [seeds_per_cell]
+        sys.exit(0 if ts07(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay07":  # replay07 <seed> <cell> [mutant]
+        r = ts07_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay07", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "ts07", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "sc13":  # sc13 [seeds_per_cell]
         sys.exit(0 if sc13(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay13":  # replay13 <seed> <cell> [mutant]

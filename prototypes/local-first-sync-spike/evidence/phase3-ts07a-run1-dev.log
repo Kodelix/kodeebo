@@ -1,0 +1,9 @@
+phase 3 TS-07a (clock change during an open session, injected clock), commit 94bb337+dirty
+  a_forward              exercised 20/20  violating 0  PASS  seed 1: {'moves': [7200], 'notices': [], 'billed_min': 20}
+  b_back                 exercised 20/20  violating 0  PASS  seed 1: {'moves': [-10800], 'notices': [], 'billed_min': 20}
+  c_back_during_app_kill exercised 20/20  violating 0  PASS  seed 1: {'moves': [-10800], 'notices': ['App was closed while the PC was on, from 2027-01-15 08:10 to 2027-01-15 05:15 (device time) - unusual: check why the app was closed; measured length 5 min - the device clock was changed during this time; 1 session(s) were running'], 'billed_min': 19}
+  d_small_drift          exercised 20/20  violating 0  PASS  seed 1: {'moves': [], 'notices': [], 'billed_min': 20}
+  mutant bill_from_wall           CAUGHT after 1 runs: ('I3', 's1-a1 sale 14000 != expected 2000')
+  mutant no_wall_move_event       CAUGHT after 1 runs: ('R55', '0 wall_clock_moved events, model 1 ([7200])')
+  mutant app_down_gap_from_wall   CAUGHT after 3 runs: ('R56', "outage notices [], model [{'off_kind': 'app_down', 'open_sessions': 1}]")
+TS-07a: PASS  (total 34.1 s)

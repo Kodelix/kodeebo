@@ -140,6 +140,13 @@
 #   applying it: it counts as acknowledged, and the counter keeps selling. Replies say whether the identity is
 #   quarantined and whether this copy has been retired by the owner's choice; the client shows it, never stops.
 #      MUTANT also: block_on_quarantine (the counter refuses sales while the identity is quarantined).
+# Phase 3 (TS-07a, clock change during an open session; with CLOCKED=1): within one boot every duration comes from
+#   the monotonic counter, never the wall clock: session time, and the length of an app closure (same boot id). The
+#   timer compares wall and monotonic time since the last checkpoint; a difference above WALL_DRIFT_S (5 min) is
+#   recorded as wall_clock_moved with the size of the move and reported to the server (owner alert). Smaller drift
+#   (an NTP correction) is not reported.
+#      MUTANT also: bill_from_wall (session time from the wall clock), no_wall_move_event (the move is not recorded),
+#      app_down_gap_from_wall (an app closure measured on the wall clock: the SC-30 first draft).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -530,7 +537,7 @@ def open_store():
             "CREATE TABLE IF NOT EXISTS receipts (receipt_id TEXT PRIMARY KEY)",
             "CREATE TABLE IF NOT EXISTS alive (id INTEGER PRIMARY KEY CHECK (id = 1), boot INTEGER, mono REAL, wall REAL)",
             "CREATE TABLE IF NOT EXISTS session_clock (session_id TEXT PRIMARY KEY, boot INTEGER NOT NULL, "
-            "mono_at REAL NOT NULL, accum_s REAL NOT NULL)",  # SC-30
+            "mono_at REAL NOT NULL, accum_s REAL NOT NULL, wall_at REAL)",  # SC-30 (wall_at: the bill_from_wall mutant)
             "CREATE TABLE IF NOT EXISTS outages (id INTEGER PRIMARY KEY, kind TEXT, from_wall REAL, to_wall REAL, "
             "open_sessions INTEGER, seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",
             "CREATE TABLE IF NOT EXISTS business_day (id INTEGER PRIMARY KEY CHECK (id = 1), day_no INTEGER NOT NULL, "
@@ -951,20 +958,35 @@ def start_session(m):
     q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], start, json.dumps(prices), v, json.dumps(seg)))
     if clocked:
         c = test_clock()
-        q("INSERT INTO session_clock VALUES (?,?,?,0)", (m["session_id"], c["boot"], c["mono"]))
+        q("INSERT INTO session_clock VALUES (?,?,?,0,?)", (m["session_id"], c["boot"], c["mono"], c["wall"]))
     q("COMMIT")
     reply({"ok": True, "op": "start_session", "rate": seg[0]["rate"], "v": v})
 
 
 def session_elapsed_s(session_id):
     """SC-30: time accumulated before the current boot plus the monotonic time since the anchor."""
-    boot, mono_at, accum = q("SELECT boot, mono_at, accum_s FROM session_clock WHERE session_id = ?", (session_id,))[0]
+    boot, mono_at, accum, wall_at = q("SELECT boot, mono_at, accum_s, wall_at FROM session_clock WHERE session_id = ?",
+                                      (session_id,))[0]
+    if MUTANT == "bill_from_wall":  # planted defect: the edited wall clock decides the bill
+        return test_clock()["wall"] - wall_at
     return accum + (test_clock()["mono"] - mono_at)
+
+
+def check_wall_move(c, mono0, wall0, at):
+    """TS-07a: within one boot, wall and monotonic time must advance together; a move above WALL_DRIFT_S is recorded."""
+    move = (c["wall"] - wall0) - (c["mono"] - mono0)
+    if abs(move) > WALL_DRIFT_S and MUTANT != "no_wall_move_event":
+        record_event("wall_clock_moved", RuntimeError(f"wall clock moved {move:+.0f} s against the monotonic counter"),
+                     move_s=round(move), at=at)
+        report_events()
 
 
 def tick():
     """SC-30: the app's one-minute timer writes the last-alive checkpoint."""
     c = test_clock()
+    row = q("SELECT boot, mono, wall FROM alive WHERE id = 1")
+    if row and row[0][0] == c["boot"]:
+        check_wall_move(c, row[0][1], row[0][2], "tick")
     q("INSERT INTO alive VALUES (1,?,?,?) ON CONFLICT (id) DO UPDATE SET boot = excluded.boot, mono = excluded.mono, "
       "wall = excluded.wall", (c["boot"], c["mono"], c["wall"]))
     reply({"ok": True, "op": "tick"})
@@ -979,7 +1001,12 @@ def check_outage():
     notice = None
     if row:
         boot0, mono0, wall0 = row[0]
-        gap = c["wall"] - wall0
+        same_boot = boot0 == c["boot"]
+        # Same boot: the monotonic counter kept running and measures the closure (TS-07a); a new boot: only the wall
+        # clock spans the power-off (its trust is phase 5).
+        gap = c["mono"] - mono0 if same_boot and MUTANT != "app_down_gap_from_wall" else c["wall"] - wall0
+        if same_boot:
+            check_wall_move(c, mono0, wall0, "start")
         if boot0 != c["boot"] and MUTANT != "mono_across_boot":  # powered off: the monotonic counter restarted
             down = 0 if MUTANT == "outage_not_counted" else gap
             for sid, mono_at in q("SELECT session_id, mono_at FROM session_clock WHERE boot = ?", (boot0,)):
@@ -988,7 +1015,8 @@ def check_outage():
         if gap > TICK_S or MUTANT == "notice_every_restart":
             n_open = q("SELECT count(*) FROM sessions")[0][0]
             notice = {"kind": "device_off", "off_kind": "power_off" if boot0 != c["boot"] else "app_down",
-                      "from_wall": wall0, "to_wall": c["wall"], "open_sessions": n_open}
+                      "from_wall": wall0, "to_wall": c["wall"], "open_sessions": n_open,
+                      "duration_s": round(gap)}  # TS-07a: the measured length (monotonic within one boot)
     if MUTANT != "no_alive_update":
         q("INSERT INTO alive VALUES (1,?,?,?) ON CONFLICT (id) DO UPDATE SET boot = excluded.boot, "
           "mono = excluded.mono, wall = excluded.wall", (c["boot"], c["mono"], c["wall"]))
