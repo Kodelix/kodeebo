@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on the dev run, finding P3-F10; SC-29, SC-30, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29, SC-30, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -32,7 +32,7 @@ This code is throwaway (`.claude/rules/prototype-code.md`). Nothing here is impo
 | 5 | Day-close totals and tampered clocks; SC-25b with the real N5 rules. Runs without S308 (server billing parity): **PARKED, trigger: the backend-track decision** (founder, 2026-10-18). The tax order is a configurable inclusive/exclusive setting until ETA answers | per § 9.1 / § 9.1.2 |
 | PowerSync track | Does PowerSync fit (sync note Part A, S1–S4)? **Order (founder, 2026-10-17):** after the phase 3 gate passes, not in parallel. S2–S4 on Linux right after the gate; S1 on Windows inside phase 4. No adoption before counsel reads the FSL licence (sync note OQ2: the tech/IP counsel brief, drafted after the PowerSync track reports) | Part A's pass conditions |
 
-**Order (founder, 2026-10-18):** close the sync spike before anything else starts. Everything in phases 3, 4 and 5 runs before the sync ADR, except S308 (parked), in this order:
+**Order (founder, 2026-10-18):** close the sync spike before the tenancy review and the backend research start. It runs in parallel with the desktop spike, and neither has priority. Everything in phases 3, 4 and 5 runs before the sync ADR, except S308 (parked), in this order:
 1. the phase 3 gate (≥ 3,000 runs, phase 2 at full size in the same campaign);
 2. PowerSync S2–S4 on Linux;
 3. phase 4 on the Windows VM;
@@ -42,7 +42,7 @@ This code is throwaway (`.claude/rules/prototype-code.md`). Nothing here is impo
 - **Baseline:** the shared Windows VM's baseline is snapshot **`clean-ssh2`**, not `clean`.
 - **What it contains:** Windows 10 22H2 with no cumulative updates; Edge/WebView2 self-updated to 155; OpenSSH with key-only access (the desktop spike's dedicated key in `prototypes/desktop-client-spike/.keys/`, host key pinned); cashier auto-logon; and the 100 IOPS + 80 MiB/s disk throttle.
 - **Rules:** coordinate with the desktop spike before using the VM, and restore `clean-ssh2` after each run.
-- **Shared with the desktop spike's round 4 (founder, 2026-10-18):** claim the VM in the checkpoint (`production/session-state/active.md`) before use and release it there afterwards. Run each tamper leg both spikes need once, on the shared store, and cite that run from both READMEs.
+- **Shared with the desktop spike's round 4 (founder, 2026-10-18):** claim the VM in the checkpoint (`production/session-state/active.md`) before use and release it there afterwards. When the desktop block says FREE, the VM goes to whichever spike is ready; there is no priority between the spikes. Run each tamper leg both spikes need once, on the shared store, and cite that run from both READMEs.
 
 **Added cases (founder, 2026-10-16; full rows with mechanisms in `docs/research/local-first-sync.md` § 9.1.2).** SC-19 is the highest-risk gap and runs first in phase 3.
 
@@ -970,11 +970,21 @@ The lease is counted on server time plus the device's monotonic counter, never t
   - `correction_rewrites` after 7 (I3: the original sale changed).
 - **Smoke on the changed client and server:** SC-19 (3 seeds), SC-25b (3) and SC-23 (2) PASS with every mutant caught. The full regression follows on the committed harness.
 
+#### Run 2 (committed harness `a77dfa3`) — SC-28 **PASS**, full regression PASS
+
+`evidence/phase3-sc28-run2-*` (every log header `commit a77dfa3`, no `+dirty`).
+- **SC-28:** 4 × 24 runs, 0 violations. All five mutants were caught after the same number of runs as run 1.
+- **Earlier cases:** SC-25b, SC-25a (one-tenth size 30 of 30 and full size 3 of 3), SC-23, SC-22, SC-21a, SC-20 (and its real tmpfs leg, 50 of 50) and SC-19 PASS, every mutant caught. SC-25a's progress per window again varies with timing only on the slow-uplink window.
+- **Earlier phases:** phase 0, phase 1 and phase 2 (10 seeds, 300 runs) PASS. Phase 2's TS-09 sale count is 16 against 15 on `04996e2`, a wall-clock effect. Tamper: 36 of 36.
+- **The pinned-list guard** passed for phase 2 and tamper.
+
 **Finding P3-F10 — once an edit has been sent, only the device can end it.** A reply carrying the edit may or may not have arrived, so after delivery the server cannot safely declare it rejected. If it did and the device had applied it, the dashboard would say "rejected" while the bill includes the items (`expire_delivered` shows exactly this). The rule "pending ends in applied or rejected, never stuck" therefore holds in two parts:
 - **Never delivered:** the server ends the edit at its deadline and never sends it afterwards.
 - **Delivered:** the device ends it at its next contact. Until then the dashboard must say "sent to the device at X, waiting for it", not just "pending".
 
-A device that goes offline right after receiving an edit keeps that edit open on the dashboard until it reconnects. This is a UX requirement for the dashboard spec and needs the founder's eye: "never stuck" cannot hold without the device.
+A device that goes offline right after receiving an edit keeps that edit open on the dashboard until it reconnects. **Decided (founder, 2026-10-18), for the dashboard spec:**
+- P3-F10 is acceptable. Until the device confirms, the dashboard shows "sent to the device at X, waiting for it", and it never shows "rejected" for a delivered edit.
+- While an edit to a bill has been delivered and is not yet confirmed, the dashboard refuses a second edit to the same bill. The spike does not build this refusal; it is a dashboard rule.
 
 **Not covered:**
 - **Real presence:** a live channel (WebSocket or SSE) instead of "contact within 15 s". The window, the deadline (120 s) and the dashboard wording are spike values, for the dashboard and billing specs.
