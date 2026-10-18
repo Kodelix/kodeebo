@@ -1,0 +1,11 @@
+phase 3 SC-28 (dashboard edit of an open bill), commit 35fcc26
+  a_connected    {'a_connected': 24}  exercised 24/24  violating 0  PASS
+  b_offline      {'b_offline': 24}  exercised 24/24  violating 0  PASS
+  c_race         {'edit_first': 8, 'close_unsynced': 8, 'close_synced': 8}  exercised 24/24  violating 0  PASS
+  d_cut          {'reply_cut': 6, 'confirm_cut': 6, 'backlog': 6, 'deadline': 6}  exercised 24/24  violating 0  PASS
+  mutant edit_apply_twice     CAUGHT after 12 runs: ('I3', 's3-a0 sale 15000 != expected 9000')
+  mutant edit_after_close     CAUGHT after 7 runs: ('R30', 's2-e1: server applied/None, model rejected/bill_closed')
+  mutant queue_when_offline   CAUGHT after 2 runs: ('I3', 's1-a0 sale 9000 != expected 6000')
+  mutant expire_delivered     CAUGHT after 16 runs: ('I8', 'server flag edit_conflict for cmd-edit-s4-e1 seq 1')
+  mutant correction_rewrites  CAUGHT after 7 runs: ('I3', 's2-a0 sale 9000 != expected 6000')
+SC-28: PASS  (total 43.2 s)
