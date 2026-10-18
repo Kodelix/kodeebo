@@ -26,7 +26,7 @@ Accepted
 
 ## Decision Makers
 
-The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. **2026-10-18, founder decision (ADR-0004 § 7a):** the CP class allows derived counts without money, names, items or contents; usage counts added as a CP example. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** PL writes and sign-in lookup (§ 1c), `deploy_rt`, data migrations as `job_rt`, tenant list via `platform_rt`, M27/M38 as a future amendment. **Third review (2026-10-18):** deploy option A (privileged migrations as the bootstrap superuser); licensing revoke split; `EnrolmentCodeLookup` listed. **Fourth review (2026-10-18, CONCERNS):** stale superuser line; enrolment label stored on the code; `Logins.statusOf`; C5 planted test; ALTER FUNCTION source; deploy runbook stop. **Amended 2026-10-18 (founder): suspension contract, Decision 4** (from `/threat-model tenant-isolation`). Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
+The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. **2026-10-18, founder decision (ADR-0004 § 7a):** the CP class allows derived counts without money, names, items or contents; usage counts added as a CP example. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** PL writes and sign-in lookup (§ 1c), `deploy_rt`, data migrations as `job_rt`, tenant list via `platform_rt`, M27/M38 as a future amendment. **Third review (2026-10-18):** deploy option A (privileged migrations as the bootstrap superuser); licensing revoke split; `EnrolmentCodeLookup` listed. **Fourth review (2026-10-18, CONCERNS):** stale superuser line; enrolment label stored on the code; `Logins.statusOf`; C5 planted test; ALTER FUNCTION source; deploy runbook stop. **Amended 2026-10-18 (founder): suspension contract, Decision 4** (from `/threat-model tenant-isolation`). **Amended 2026-10-18 (ADR-0005 review, at the user's instruction):** closure and erasure functions for `job_rt` and grant revocation at suspension in § 1c; routine retention continues while suspended, closure request from the suspended dashboard and Kodelix-started closure after 90 days of suspension in Decision 4. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
 
 ## Summary
 
@@ -128,7 +128,7 @@ Every LOGIN role other than the bootstrap superuser is `NOSUPERUSER`, `NOBYPASSR
 
 **Data migrations (backfills) run as `job_rt` through the ADR-0002 helper (Job kind), one tenant per transaction**, with the grants that migration needs. A backfill that changes 0 rows on a tenant that has rows of that table fails the migration.
 
-**1c. PL access functions.** These are the only way to read or write a PL table before a tenant context exists. Each does one action, runs in the caller's transaction, and touches one key or one tenant. A function marked "owner" also requires `app.tenant_id` to equal the row's tenant and `app.branch_all = 'on'`, which is set only for a verified owner (ADR-0003).
+**1c. PL access functions.** These are the only way to read or write a PL table before a tenant context exists. Each does one action, runs in the caller's transaction, and touches one key or one tenant. A function marked "owner" also requires `app.tenant_id` to equal the row's tenant and `app.branch_all = 'on'`, which is set only for a verified owner (ADR-0003). A function marked "inside, job" (amendment 2026-10-18, ADR-0005) has `EXECUTE` by `job_rt` only, requires `app.tenant_id` to equal the row's tenant, and touches the context tenant's rows only; each is created by a privileged migration (ADR-0004 § 9), since `auth_lookup` owns it.
 
 | Table | Function (port) | Before or inside context | `EXECUTE` by | Action |
 |---|---|---|---|---|
@@ -149,6 +149,14 @@ Every LOGIN role other than the bootstrap superuser is `NOSUPERUSER`, `NOBYPASSR
 | | `Devices.revokeCredential(device)` | inside, owner | `app_rt` | owner revokes or retires |
 | | `Devices.revokeCredentialForLicensing(device, reason)` | inside, tenant match only | licensing service roles | the licensing service revokes or retires; requires `app.tenant_id` to equal the row's tenant (these roles never get `app.branch_all`) |
 | `support_grants` | `SupportGrantLookup.find(grantId, operatorId)`, `SupportGrantLookup.listByOperator(operatorId)` | before | `support_rt` | ADR-0004; returns grant fields, never tenant data |
+| | `SupportGrants.revokeAllForTenant(tenant)` | before | `platform_rt` | the suspension step (Decision 4) revokes every grant of the tenant (amendment 2026-10-18) |
+| | `Closure.revokeGrants()` | inside, job | `job_rt` | ADR-0005 `purge_personal`: revoke every grant of the tenant |
+| `sessions` | `Closure.endSessions()` | inside, job | `job_rt` | ADR-0005 `purge_personal`: end and delete every session of the tenant |
+| `login_identities` | `Closure.purgeLogins()` | inside, job | `job_rt` | ADR-0005 `purge_personal`: delete every login of the tenant, the owner's included (the owner's login ends at `purge_personal`) |
+| `login_identities`, `sessions` | `Erasure.erasePersonLogin(user)` | inside, job | `job_rt` | ADR-0005 person erasure: delete one user's login and sessions |
+| `enrolment_codes` | `Closure.purgeEnrolmentCodes()` | inside, job | `job_rt` | ADR-0005 `purge_personal`: delete every code of the tenant |
+| `device_credentials` | `Closure.revokeDevices()` | inside, job | `job_rt` | ADR-0005 `purge_personal`: revoke every credential of the tenant; rows deleted at `purged` |
+| all PL tables | `Closure.purgeRemaining()` | inside, job | `job_rt` | ADR-0005 `purged`: delete every remaining PL row of the tenant |
 
 `Sessions.create` trusts the application to have verified the sign-in: password verification is an application control (ASVS V6), and this function only records the result.
 
@@ -162,9 +170,9 @@ Every LOGIN role other than the bootstrap superuser is `NOSUPERUSER`, `NOBYPASSR
 - Devices keep uploading already-sold commands (money facts are never lost). Each reply carries a `tenant_suspended` notice, and the backlog is always accepted.
 - Leases are not renewed (licensing ADR), so a device stops new sales when its lease ends; its backlog is still accepted after that.
 - No enrolment: `Enrolment.createCode` and `Enrolment.redeem` refuse.
-- Dashboard: owner only, for export and payment. `Sessions.endAllForTenant` runs at suspension; `LoginLookup.find` returns the tenant status, and `Sessions.create` refuses everyone except the owner.
-- Support: existing grants are revoked by the suspension step, and no new grant can be approved (ADR-0004).
-- Jobs: no purge until the tenant is in a closure state (DEL-2); usage counts continue.
+- Dashboard: owner only, for export, payment and a closure request (ADR-0005; amendment 2026-10-18). `Sessions.endAllForTenant` runs at suspension; `LoginLookup.find` returns the tenant status, and `Sessions.create` refuses everyone except the owner.
+- Support: existing grants are revoked by the suspension step (`SupportGrants.revokeAllForTenant`, run by `platform_rt`; amendment 2026-10-18), and no new grant can be approved (ADR-0004).
+- Jobs: no **closure** purge (`purge_personal`, archive) until the tenant is in a closure state (ADR-0005). Routine retention (expired export files, ended sessions, logs) continues. Usage counts continue. After 90 days of suspension (ADR-0005 retention table) Kodelix may start closure, with notices to the owner contacts at suspension and at days 30, 60 and 80 (amendment 2026-10-18).
 - Reinstatement restores normal access; suspension deletes nothing.
 
 Threat model: `docs/architecture/threat-models/tenant-isolation.md` M5.

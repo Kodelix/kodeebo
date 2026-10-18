@@ -5,6 +5,7 @@
 # 2026-10-18: ADR-0001..0004 Accepted by the founder; adr_status updated to Accepted on every entry (superseded entries keep their superseded_by status).
 # 2026-10-18: ADR-0001..0004 revised in place (still Proposed) after /architecture-review
 # (FAIL, text fixes B1, B2 and per-ADR items); changed stances superseded by "-R2" entries.
+# 2026-10-18: ADR-0005 revised after /architecture-review (FAIL, text fixes) with dated ADR-0001 and ADR-0004 amendments; changed stances superseded.
 
 data_ownership: []
 
@@ -143,23 +144,58 @@ tenancy_rules:
     rule: "For a suspended (unpaid) tenant (ADR-0001 Decision 4, founder 2026-10-18): already-sold device uploads are always accepted with a tenant_suspended notice; leases are not renewed, so devices stop new sales at lease end and the backlog is still accepted; no enrolment (createCode, redeem refuse); dashboard owner only, for export and payment (endAllForTenant at suspension; Sessions.create refuses non-owners; LoginLookup returns tenant status); existing support grants revoked, none approved; no purge before a closure state; usage counts continue; tenant status read per request from CP tenant_status with no cache; reinstatement restores access and suspension deletes nothing."
     adr: ADR-0001
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0001 amendment 2026-10-18 (ADR-0005 review) -> TR-SUSPENSION-CONTRACT-R2"
   - id: TR-CLOSURE-STATES
     rule: "Tenant closure is the staged state machine active -> suspended -> closure_requested -> export_window -> purge_personal -> archive_retained(retain_until) -> purged; owner only with step-up, cooling-off and every owner contact notified; purge_personal only after the export is downloaded or the window ends, never for a suspended tenant; each step idempotent, run as job_rt via the Job kind, and recorded with date and time."
     adr: ADR-0005
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0005 revision 2026-10-18 -> TR-CLOSURE-STATES-R2"
   - id: TR-TAX-ARCHIVE
     rule: "Sales, receipts, ETA payloads and cancelled originals are kept in append-only archive tables (class TD) with a per-tenant retain_until of five years after the tax period; after purge_personal staff appear only as an opaque id with no mapping to a name; readable only for the owner's export and a legal hold; purged with a dated record when retain_until passes."
     adr: ADR-0005
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0005 revision 2026-10-18 -> TR-TAX-ARCHIVE-R2"
   - id: TR-DELETION-REPLAY
     rule: "Backups expire inside a window shorter than 60 days; every tenant deletion, person erasure and device revocation writes a tombstone to a deletion journal outside the restorable database (home set by the storage ADR, D5-C); the restore runbook replays every tombstone before the restored database serves traffic. Retention values stay open in ADR-0005 and are set in the feature spec."
     adr: ADR-0005
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0005 revision 2026-10-18 -> TR-DELETION-REPLAY-R2"
 
+  - id: TR-SUSPENSION-CONTRACT-R2
+    rule: "For a suspended (unpaid) tenant (ADR-0001 Decision 4, founder 2026-10-18; amended 2026-10-18): already-sold device uploads are always accepted with a tenant_suspended notice; leases are not renewed, so devices stop new sales at lease end and the backlog is still accepted; no enrolment (createCode, redeem refuse); dashboard owner only, for export, payment and a closure request (endAllForTenant at suspension; Sessions.create refuses non-owners; LoginLookup returns tenant status); existing support grants revoked by SupportGrants.revokeAllForTenant (platform_rt), none approved; no closure purge (purge_personal, archive) before a closure state, while routine retention (expired export files, ended sessions, logs) continues; usage counts continue; after 90 days of suspension (ADR-0005 retention table) Kodelix may start closure, with notices to the owner contacts at suspension and at days 30, 60 and 80; tenant status read per request from CP tenant_status with no cache; reinstatement restores access and suspension deletes nothing."
+    adr: ADR-0001
+    adr_status: Accepted
+    status: active
+  - id: TR-CLOSURE-STATES-R2
+    rule: "Tenant closure is the staged state machine active -> [suspended, optional] -> closure_requested -> export_window -> purge_personal -> archive_retained(retain_until) -> purged. Started by the owner with step-up (every owner contact notified) or by Kodelix (platform_rt) after the Kodelix-closure threshold of suspension (default 90 days) with notices at suspension and days 30, 60, 80; the owner can cancel with step-up before purge_personal starts (back to active, or suspended if it was). Leases stop renewing at closure_requested; cooling-off (default 14 days) must exceed the device lease (CI-checked). purge_personal waits until every device's lease has ended and its backlog has drained (at most until the export window ends; a lost device does not hold it longer) and until the export is downloaded or the window ends; never while suspended. purge_personal runs as job_rt via the Job kind, one tenant per transaction: deletes staff and customer personal data not needed for tax through job_rt DELETE policies, de-identifies staff in the archive, runs the ADR-0001 § 1c Closure functions (sessions, logins including the owner's, enrolment codes, devices, grants) and prunes the support journal per retention. purged removes the archive and archive_contact, every remaining PL row (Closure.purgeRemaining), the support journal (final anchor off-host) and usage counts per retention; the CP tenant_status row stays as purged, IDs only. Every transition idempotent, resumable and recorded with date and time."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: TR-TAX-ARCHIVE-R2
+    rule: "Sales, receipts, ETA payloads and cancelled originals are written to append-only archive tables (class TD) from the first sale, with a per-tenant retain_until of five years after the tax period; runtime roles have no UPDATE or DELETE on them, and the only delete path is a job_rt DELETE policy requiring retain_until < clock_timestamp() and no legal hold. After purge_personal staff appear only as an opaque id with no mapping to a name; de-identification covers staff only: tax-required buyer identifiers stay inside the byte-exact signed ETA payloads (threat model R-6). A sale arriving after purge_personal is accepted into the archive with staff identifiers replaced on arrival. After purge_personal the owner has no login; archive access is a Kodelix-run EXP-2 export on the owner's verified request, using one owner contact kept in archive_contact (TD), deleted at purged. Erasing one staff member de-identifies their sales, never deletes them."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: TR-DELETION-REPLAY-R2
+    rule: "Backups expire inside the backup window (default 30 days, below the 60-day device retention); a scheduled check compares the oldest backup's age with the window and alerts. Every tenant deletion, person erasure, device revocation and legal-hold change writes a tombstone to a deletion journal outside the restorable database (home set by the storage ADR, D5-C), kept 5 years by default (longer than the backup window, CI-checked); the restore runbook replays every tombstone before the restored database serves traffic and destroys the side instance."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: TR-LEGAL-HOLD
+    rule: "Legal hold is a Kodelix operator flag with a reason on CP tenant_status, set and released only by platform_rt; each set and release is recorded in the deletion journal; while set, the archive purge (archive_retained -> purged) does not run and job_rt's archive DELETE policy refuses."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: TR-SUPPORT-JOURNAL-PRUNE
+    rule: "The support grant and access journal is never updated; its only DELETE path is SupportJournal.pruneBefore(cutoff), a SECURITY DEFINER function owned by audit_writer (privileged migration), EXECUTE by job_rt only, inside the tenant context: under the per-tenant advisory lock it deletes oldest-first only rows older than the retention cutoff (default 2 years) and in the same transaction writes a chain anchor (hash of the last pruned row, count, cutoff) that becomes the chain's new start and is shipped to the off-host log; verification starts from the newest anchor; at purged the whole journal is pruned once its retention ends, leaving a final anchor off-host."
+    adr: ADR-0004
+    adr_status: Accepted
+    status: active
+  - id: TR-RETENTION-DEFAULTS
+    rule: "One retention table, every period configuration with a typed default; founder defaults 2026-10-18, which the feature spec may refine: closure cooling-off 14 days (must exceed the device lease); export window 30 days; generated export files 7 days, then deleted; backup window 30 days (below the 60-day device retention); ended sessions 90 days; support access journal 2 years; technical logs 30 days, with no personal data; security events 1 year; usage counts 3 years; deletion journal 5 years; Kodelix-started closure after 90 days of suspension. Fixed by other rules: tax archive 5 years after the tax period; device keeps 60 days; staff access requests answered within 6 working days. Routine retention runs while a tenant is suspended; each purge job logs every run; no period is a literal in code."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
     contract: "TenantConnectionResolver.resolve(TenantId) -> TenantDataSource; the only way app code reaches tenant data; today returns the shared pool."
@@ -235,7 +271,7 @@ interface_contracts:
     contract: "ADR-0001 § 1c, SECURITY DEFINER functions owned by auth_lookup, pinned search_path, EXECUTE only for the named roles: LoginLookup.find(identifier), Logins.create/disable (owner, app_rt), Logins.statusOf(user) (inside, tenant match, app_rt), Logins.changeOwnVerifier(tokenHash, verifier) (app_rt, after the app re-verifies the current password); SessionLookup.find, Sessions.create, Sessions.end (app_rt), Sessions.endAllForUser (owner, app_rt), Sessions.endAllForTenant (platform_rt); EnrolmentCodeLookup.find(codeHash) -> {tenant, branch, branchLabel, seat, state} (device_rt, no consumption), Enrolment.createCode (owner, app_rt; stores the branch display label on the code row), Enrolment.redeem (device_rt); DeviceCredentialLookup.find, Devices.rotateCredential (device_rt), Devices.revokeCredential (owner, app_rt), Devices.revokeCredentialForLicensing (licensing service roles, tenant match only); SupportGrantLookup.find(grantId, operatorId), listByOperator(operatorId) (support_rt). auth_lookup never reads TD tables. Account recovery is added by the staff-auth ADR."
     adr: ADR-0001
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0001 amendment 2026-10-18 (ADR-0005 review) -> IC-PRE-CONTEXT-LOOKUPS-R5"
   - id: IC-TENANT-CONNECTION-RESOLVER-R2
     contract: "TenantConnectionResolver.resolve(TenantId) -> {TenantDataSource, tenantStatus}; the only way app code reaches tenant data; today returns the shared pool; an unknown tenant -> typed error, no fallback pool; a suspended tenant resolves with its status (read per request from CP tenant_status, no cache) and each surface applies the suspension contract (ADR-0001 Decision 4)."
     adr: ADR-0001
@@ -245,8 +281,18 @@ interface_contracts:
     contract: "EXP-2: per-table COPY ... TO STDOUT as CSV with header, run as the non-bypass role with the tenant context set; ETA payloads byte-for-byte; manifest {file, rows, sha256, exportedAt, schemaVersion} and a data dictionary, zipped; credentials, verifiers, token hashes and device keys excluded; tenant-wide export owner-started as job_rt, person-started export in that person's Staff scope; delivery re-checks status and permission and writes a dated delivery record."
     adr: ADR-0005
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0005 revision 2026-10-18 -> IC-TENANT-EXPORT-R2"
 
+  - id: IC-PRE-CONTEXT-LOOKUPS-R5
+    contract: "ADR-0001 § 1c, SECURITY DEFINER functions owned by auth_lookup, pinned search_path, EXECUTE only for the named roles: LoginLookup.find(identifier), Logins.create/disable (owner, app_rt), Logins.statusOf(user) (inside, tenant match, app_rt), Logins.changeOwnVerifier(tokenHash, verifier) (app_rt, after the app re-verifies the current password); SessionLookup.find, Sessions.create, Sessions.end (app_rt), Sessions.endAllForUser (owner, app_rt), Sessions.endAllForTenant (platform_rt); EnrolmentCodeLookup.find(codeHash) -> {tenant, branch, branchLabel, seat, state} (device_rt, no consumption), Enrolment.createCode (owner, app_rt; stores the branch display label on the code row), Enrolment.redeem (device_rt); DeviceCredentialLookup.find, Devices.rotateCredential (device_rt), Devices.revokeCredential (owner, app_rt), Devices.revokeCredentialForLicensing (licensing service roles, tenant match only); SupportGrantLookup.find(grantId, operatorId), listByOperator(operatorId) (support_rt); SupportGrants.revokeAllForTenant(tenant) (before, platform_rt, suspension step). Inside, job (EXECUTE by job_rt only, app.tenant_id must equal the row's tenant, context tenant only; amendment 2026-10-18 for ADR-0005): Closure.endSessions(), Closure.purgeLogins() (owner's login included), Closure.purgeEnrolmentCodes(), Closure.revokeDevices(), Closure.revokeGrants(), Closure.purgeRemaining() (at purged), Erasure.erasePersonLogin(user). auth_lookup never reads TD tables. Account recovery is added by the staff-auth ADR."
+    adr: ADR-0001
+    adr_status: Accepted
+    status: active
+  - id: IC-TENANT-EXPORT-R2
+    contract: "EXP-2: per-table COPY ... TO STDOUT as CSV with header, run as the non-bypass role with the tenant context set; ETA payloads byte-for-byte; manifest {file, rows, sha256, exportedAt, schemaVersion} and a data dictionary, zipped; credentials, verifiers, token hashes and device keys excluded; tenant-wide export owner-started as job_rt; archive export after purge_personal Kodelix-started on the owner's verified request as job_rt; person-started and my-data exports in that person's Staff scope. Delivered to the requester only (owner for tenant-wide and archive, the person for person-started and my-data); random file key; file deleted after the export-files period (default 7 days); status and permission re-checked at publish and at download; per-tenant rate cap; dated delivery record. S52 runs before the export story."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
 performance_budgets: []
 
 api_decisions: []
