@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: DEL-2 as recommended with DEL-4 de-identification as a step and DEL-3 as the escalation; EXP-2 export; backups expire inside the window and deletions are replayed after any restore; the tax archive kept segregated for its period; key destruction counts as erasure; staff records belong to the owner, who receives the export before deletion) and approved this ADR's outline on 2026-10-18. It also carries the threat model's retention and erasure mitigations (M48, M54–M62). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** B1 — closure and erasure act on PL tables only through named ADR-0001 § 1c functions for `job_rt` (dated ADR-0001 amendment); B2 — the support journal is pruned oldest-first by one `audit_writer` function with a recorded chain anchor (dated ADR-0004 amendment). **Founder decisions 2026-10-18:** H1 — leases stop renewing at `closure_requested`; `purge_personal` waits for every device's lease to end and its backlog to drain, at most until the export window ends; a late sale is accepted into the archive, de-identified on arrival. H2 — the owner's login ends at `purge_personal`; archive access afterwards is a Kodelix-run export on the owner's verified request, with one owner contact kept for that; legal hold is an operator flag with a reason, recorded in the deletion journal. H3 — tax-required buyer identifiers stay inside the signed ETA payloads; de-identification covers staff; residual risk accepted (threat model R-6). H4 — Kodelix may start closure after 90 days of suspension, with notices at suspension and at days 30, 60 and 80. M1–M5 and the low items as the reviewer suggested (one staff member's sales de-identified, not deleted; erasure owner-only with step-up; export to the owner first). M6 — S52 accepted as pending, run before the export story. **Retention defaults set by the founder (2026-10-18)** (Decision 6); the feature spec may refine them. Stack-lead validation: NOT ASSESSED — `stack.backend` and `stack.data` are unset. CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: DEL-2 as recommended with DEL-4 de-identification as a step and DEL-3 as the escalation; EXP-2 export; backups expire inside the window and deletions are replayed after any restore; the tax archive kept segregated for its period; key destruction counts as erasure; staff records belong to the owner, who receives the export before deletion) and approved this ADR's outline on 2026-10-18. It also carries the threat model's retention and erasure mitigations (M48, M54–M62). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** B1 — closure and erasure act on PL tables only through named ADR-0001 § 1c functions for `job_rt` (dated ADR-0001 amendment); B2 — the support journal is pruned oldest-first by one `audit_writer` function with a recorded chain anchor (dated ADR-0004 amendment). **Founder decisions 2026-10-18:** H1 — leases stop renewing at `closure_requested`; `purge_personal` waits for every device's lease to end and its backlog to drain, at most until the export window ends; a late sale is accepted into the archive, de-identified on arrival. H2 — the owner's login ends at `purge_personal`; archive access afterwards is a Kodelix-run export on the owner's verified request, with one owner contact kept for that; legal hold is an operator flag with a reason, recorded in the deletion journal. H3 — tax-required buyer identifiers stay inside the signed ETA payloads; de-identification covers staff; residual risk accepted (threat model R-6). H4 — Kodelix may start closure after 90 days of suspension, with notices at suspension and at days 30, 60 and 80. M1–M5 and the low items as the reviewer suggested (one staff member's sales de-identified, not deleted; erasure owner-only with step-up; export to the owner first). M6 — S52 accepted as pending, run before the export story. **Retention defaults set by the founder (2026-10-18)** (Decision 6); the feature spec may refine them. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** founder decisions — the support journal and the deletion journal are separate stores (ADR-0004 § 5 amended; `pruneBefore` never touches a tombstone); cooling-off 15 days by default and longer than the longest lease of any plan (14 days today), CI-checked. Reviewer fixes: `closure_origin` with cancel to origin; `retain_until` only moves later and an active tenant's archive is never purged; de-identification deletes the id-to-name link; retention table class G, changed only by reviewed migration; archive access after `purge_personal` by a one-time code to `archive_contact`; Kodelix-closure notices sent by a `job_rt` job; erasure covers the device copy; personal-data marker; which record goes to which store; legal-hold reason an enum or ticket id. The ADR-0001 and ADR-0004 amendments of 2026-10-18 take effect only when this ADR is Accepted. Stack-lead validation: NOT ASSESSED — `stack.backend` and `stack.data` are unset. CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
@@ -54,7 +54,7 @@ Critical ADR: yes — retention and deletion of tenant and personal data in the 
 | **Depends On** | ADR-0001 (tenancy model; table classes; § 1c functions as amended 2026-10-18; suspension contract Decision 4), ADR-0002 (Job kind for purges and tenant-wide exports), ADR-0003 (person-started exports under Staff scope), ADR-0004 (support journal; prune as amended 2026-10-18) — all Accepted 2026-10-18 |
 | **Enables** | Closure and export stories; staff erasure; the retention table and purge jobs; the restore runbook; the incident runbook's breach clock (operational, research part 5 A.5) |
 | **Blocks** | Any story that deletes tenant data, purges, exports or restores; the customer terms' retention text |
-| **Ordering Note** | Where the deletion and tombstone journal lives "outside the restorable database" is the storage / server-sync-state ADR's decision (research D5-C, flagged on spike S33). This ADR can be accepted before it; the closure flow and the restore replay cannot ship before it. The step-up mechanism for closure and erasure is the staff-auth ADR's (P7-OQ9). Retention of licensing tables (seats, leases) is the licensing ADR's. Closure from `suspended` widens ADR-0001 Decision 4's owner allowance, done by the ADR-0001 amendment of 2026-10-18. S52 runs before the export story (M6). Retention defaults are set in Decision 6; the feature spec may refine them before the first production tenant. |
+| **Ordering Note** | Where the deletion and tombstone journal lives "outside the restorable database" is the storage / server-sync-state ADR's decision (research D5-C, flagged on spike S33). This ADR can be accepted before it; the closure flow and the restore replay cannot ship before it. The step-up mechanism for closure and erasure is the staff-auth ADR's (P7-OQ9). Retention of licensing tables (seats, leases) is the licensing ADR's. Closure from `suspended` widens ADR-0001 Decision 4's owner allowance, done by the ADR-0001 amendment of 2026-10-18. S52 runs before the export story (M6). Retention defaults are set in Decision 6; the feature spec may refine them before the first production tenant. The ADR-0001 and ADR-0004 amendments of 2026-10-18 take effect only when this ADR is Accepted. |
 
 ## Context
 
@@ -88,15 +88,16 @@ Research note: `docs/research/tenant-isolation.md` (part 5; § 5). Threat model:
 ## Decision
 
 **1. Closure is a staged state machine (DEL-2).** States: `active → [suspended] → closure_requested → export_window → purge_personal → archive_retained(retain_until) → purged`. `suspended` follows ADR-0001 Decision 4 and is optional, not a required step.
-- **Who starts it:** (a) the **owner**, with step-up authentication, every owner contact notified (threat model M11); (b) **Kodelix, after the tenant has been suspended for the Kodelix-closure threshold** (Decision 6; default 90 days), with notices to the owner contacts at suspension and at days 30, 60 and 80 of suspension; the normal steps follow.
-- **Cancel:** the owner, with step-up, can cancel at any point before `purge_personal` starts; the tenant returns to `active`, or to `suspended` if it was suspended (payment still due).
+- **Who starts it:** (a) the **owner**, with step-up authentication, every owner contact notified (threat model M11); (b) **Kodelix, after the tenant has been suspended for the Kodelix-closure threshold** (Decision 6; default 90 days): `platform_rt` finds the tenant on CP `tenant_status` and moves it to `closure_requested`; the notices to the owner contacts at suspension and at days 30, 60 and 80 of suspension are sent by a `job_rt` job in that tenant's scope, which reads the owner contacts (`platform_rt` reads CP only). The normal steps follow.
+- **`closure_origin`** (`active` | `suspended`) is recorded on CP `tenant_status` at `closure_requested`. From either origin: no enrolment and no lease renewal. Origin `active`: normal access continues until `purge_personal`. Origin `suspended`: the suspension contract (ADR-0001 Decision 4) stays in force through `closure_requested` and `export_window`.
+- **Cancel:** the owner, with step-up, can cancel at any point before `purge_personal` starts; **the tenant returns to its `closure_origin`** (for `suspended`, payment is still due).
 - **Leases stop renewing at `closure_requested`** (licensing ADR); a device stops new sales when its lease ends, and its backlog is always accepted.
-- **Cooling-off** (Decision 6; default 14 days) runs from `closure_requested` to `export_window`. It must stay longer than the device lease (7 days, licensing base plan), so every lease has ended before the export window opens; CI checks that invariant on the retention table.
+- **Cooling-off** (Decision 6; default 15 days) runs from `closure_requested` to `export_window`. It must stay longer than **the longest lease of any plan** (14 days today, `docs/architecture/licence-model.md`), so every lease has ended before the export window opens; CI checks the retention table against the plan catalogue.
 - **Export first:** `export_window` gives the owner the EXP-2 export (Decision 4).
 - **`purge_personal` waits** until every device's lease has ended and its upload backlog has drained, and until the owner has downloaded the export or the window has ended. A device that never syncs again (lost, broken) holds the purge **at most until the export window ends** (founder, 2026-10-18); anything it sends later goes into the archive under the late-sale rule (Decision 2).
 - **`purge_personal` steps** (as `job_rt`, Job kind, one tenant per transaction):
-  - delete staff and customer personal data the tax record does not need, through `job_rt` `DELETE` policies on the personal-data TD tables that the schema migration names in this ADR's coverage list;
-  - de-identify the archive's staff references (Decision 2);
+  - delete staff and customer personal data the tax record does not need, through `job_rt` `DELETE` policies on the TD tables marked `personal`. **Personal-data marker:** the schema migration marks every TD table `personal`, `tax` or `other` in a catalogue comment; a CI test fails when a TD table has no marker (like the export coverage test, M47);
+  - de-identify staff in the archive by deleting the id-to-name mapping rows (Decision 2);
   - run `Closure.endSessions`, `Closure.purgeLogins` (the owner's login ends here), `Closure.purgeEnrolmentCodes`, `Closure.revokeDevices` and `Closure.revokeGrants` (ADR-0001 § 1c, amendment 2026-10-18);
   - prune the support journal per its retention (ADR-0004 § 5, amendment 2026-10-18).
 - **Logged:** every transition writes a dated record to the deletion journal (Decision 3) and gives the owner a **dated deletion record** to pass on to staff (M58).
@@ -104,31 +105,38 @@ Research note: `docs/research/tenant-isolation.md` (part 5; § 5). Threat model:
 - **`purged` removes** the archive and the archive contact (Decision 2), every remaining PL row (`Closure.purgeRemaining`), the tenant's support journal (final anchor kept off-host, ADR-0004) and the tenant's usage counts per their retention. The CP `tenant_status` row stays as `purged`, IDs only; tombstones stay in the deletion journal for their own retention.
 
 **2. The tax archive is segregated; staff are de-identified.** Sales, receipts, ETA payloads and cancelled originals are written to append-only archive tables (class TD) **from the first sale**, not copied at closure, with a per-tenant `retain_until` = five years after the tax period (eta-note R3; the period is a per-venue setting).
-- **Protection:** runtime roles have no `UPDATE` or `DELETE` on archive tables. The only delete path is a `job_rt` `DELETE` policy requiring `retain_until < clock_timestamp()` and no legal hold; it is never hard-deleted early.
-- **De-identification covers staff:** once `purge_personal` has run, staff appear only as an **opaque staff id with no mapping to a name** (M62).
+- **Protection:** runtime roles have no `UPDATE` or `DELETE` on archive rows. The only delete path is a `job_rt` `DELETE` policy requiring `retain_until < clock_timestamp()` and no legal hold; it is never hard-deleted early.
+- **`retain_until` only moves later:** it is written only by a `job_rt` function (end of the last tax period with a sale + five years; recomputed when a late sale arrives); a `BEFORE UPDATE` trigger refuses any decrease, and changing a venue's tax period never lowers an existing `retain_until`. **An active tenant's archive is never purged:** the archive purge runs only from `archive_retained`.
+- **De-identification covers staff, by deleting the link:** archive rows carry only the opaque staff id from the first sale; names live only in the staff tables. De-identifying deletes the id-to-name mapping rows and never updates an archive row; afterwards staff appear only as an **opaque staff id with no mapping to a name** (M62). eta-note F222's receipt v1.2 field list has no staff field, so the signed payloads hold none (the e-invoice data model was not checked).
 - **Buyer identifiers stay in the signed payloads:** an identifier a tax rule requires (eta-note F404: above EGP 150,000) stays inside the byte-exact signed ETA payload, because changing it would break the signature. Residual risk accepted by Kamel Mohamed, founder, 2026-10-18 (rare for cafés; threat model R-6).
-- **Late sales:** a sale arriving after `purge_personal` is still accepted into the archive, with staff identifiers replaced by opaque ids on arrival (money facts are never lost).
-- **Access after `purge_personal`:** the owner's login no longer exists; the archive is reached only by a **Kodelix-run EXP-2 export on the owner's verified request**. One owner contact is kept in an `archive_contact` row (class TD) for that verification and deleted at `purged`.
-- **Legal hold:** a Kodelix operator flag with a reason on CP `tenant_status`, written by `platform_rt` and recorded in the deletion journal, blocks the archive purge until released; the release is recorded too.
+- **Late sales:** a sale arriving after `purge_personal` is still accepted: it is inserted into the archive with the opaque staff id, and any name field is dropped on arrival (money facts are never lost).
+- **Access after `purge_personal`:** the owner's login no longer exists; the archive is reached only by a **Kodelix-run EXP-2 export on the owner's verified request**. One owner contact is kept in an `archive_contact` row (class TD), deleted at `purged`. Verification: on the request, a `job_rt` job in that tenant's scope reads `archive_contact` and sends a one-time code to it; the code's hash is kept on a CP `archive_requests` row (IDs only, written by `platform_rt`); when the requester returns the code, the verification is recorded in the deletion journal and the export job runs. The file goes **only to the archive contact**, through a single-use link bound to that code that expires with the export-files period; this replaces the session re-check, since no login exists.
+- **Legal hold:** a Kodelix operator flag with a reason — **an enum or a ticket id, never free text** — on CP `tenant_status`, written by `platform_rt` and recorded in the deletion journal, blocks the archive purge until released; the release is recorded too.
 - The archive is purged when `retain_until` passes and no hold is set, with a dated record.
 
-**3. Backups expire; deletions are replayed.** Backups age out inside the backup window (Decision 6; default 30 days, below the 60-day device retention). Every tenant deletion, person erasure and device revocation writes a **tombstone** to a deletion journal kept **outside the restorable database**; the restore runbook re-applies every tombstone before the restored database serves traffic, and destroys the side-restore instance afterwards (M48). The journal's home is decided by the storage ADR (D5-C); the tombstones outlive the backup window. A **scheduled check** compares the oldest backup's age with the retention-table backup window and alerts when it is exceeded; the backup tool's own expiry is configured to match by the storage ADR.
+**3. Backups expire; deletions are replayed.** Backups age out inside the backup window (Decision 6; default 30 days, below the 60-day device retention). Every tenant deletion, person erasure and device revocation writes a **tombstone** to a deletion journal kept **outside the restorable database**; the restore runbook re-applies every tombstone before the restored database serves traffic, and destroys the side-restore instance afterwards (M48). The journal's home is decided by the storage ADR (D5-C); the tombstones outlive the backup window. A **scheduled check** compares the oldest backup's age with the retention-table backup window and alerts when it is exceeded; the backup tool's own expiry is configured to match by the storage ADR. **The deletion journal is a separate store from the support journal** (founder, 2026-10-18; ADR-0004 § 5 amended). Which record goes where:
+
+| Store | Location | Kept | Records |
+|---|---|---|---|
+| Deletion journal | outside the restorable database | 5 years | tombstones (tenant, person, device); closure transitions and cancels; legal-hold set and release; archive purges; export deliveries; archive-request verifications |
+| Support journal | inside the database (ADR-0004 § 5) | 2 years | support grants and accesses |
+| Security events | security event log | 1 year | refused step-ups; refused closure or erasure attempts; export rate-cap hits; failed sign-ins (identifier masked) |
 
 **4. Export is EXP-2.** Per-table `COPY (SELECT …) TO STDOUT` as CSV with a header, run as the non-bypass role with the tenant context set (research F530); ETA payloads exported byte-for-byte; a manifest lists each file, row count, SHA-256, export time and schema version; a data dictionary; zipped. Credentials, password verifiers, token hashes and device keys are excluded. A coverage test fails when a TD table is neither exported nor explicitly excluded (M47).
 - **Who runs it:** a tenant-wide export is owner-started and runs as `job_rt`; an archive export after `purge_personal` is Kodelix-started on the owner's verified request and runs as `job_rt`; an export a person starts runs as `app_rt` in that person's Staff scope (ADR-0003).
-- **Delivery goes to the requester:** the owner for tenant-wide and archive exports; the person for person-started and "my data" exports. The file has a random key and expires with the export-files period (Decision 6); the requester's status and permission are re-checked when the file is published and again at download (M45); exports are rate-capped per tenant (M11); every delivery writes a dated **delivery record** (M57).
+- **Delivery goes to the requester:** the owner for tenant-wide exports; the archive contact for archive exports after `purge_personal` (Decision 2); the person for person-started and "my data" exports. The file has a random key and expires with the export-files period (Decision 6); the requester's status and permission are re-checked when the file is published and again at download (M45); exports are rate-capped per tenant (M11); every delivery writes a dated **delivery record** (M57).
 
 **5. People.**
 - **Staff records belong to the owner** (founder): Kodelix exports them to the owner, then deletes; Labour Law retention is the owner's duty.
-- **Erase one staff member (M55):** owner-only, with step-up. The person's records go to the owner in an export first. Then one idempotent `job_rt` job deletes their personal-data rows (server rows, passcode hash, sync tombstones, export files), runs `Erasure.erasePersonLogin` (ADR-0001 § 1c), and replaces their id in sales and the archive with an opaque id. **Sales are de-identified, never deleted** (FP-HARD-DELETE-TAX-ARCHIVE). Logs and backups age out; the tombstone is replayed after any restore; a dated record is written.
+- **Erase one staff member (M55):** owner-only, with step-up. The person's records go to the owner in an export first. Then one idempotent `job_rt` job deletes their personal-data rows (server rows, id-to-name mapping, passcode hash, sync tombstones, export files) and runs `Erasure.erasePersonLogin` (ADR-0001 § 1c); their sales keep the opaque id, so **sales are de-identified by deleting the link, never deleted or updated** (FP-HARD-DELETE-TAX-ARCHIVE). **Device copy:** the job sends an "erase person" sync command to every device of the tenant; each device removes the person's name, passcode hash and other personal fields and keeps sales with the opaque id; the owner's erasure record lists the devices that confirmed; a device that never confirms loses the data under its 60-day local retention (sync note OQ29). Logs and backups age out; the tombstone is replayed after any restore; a dated record is written.
 - **"My data" export (M56):** an owner or manager can export their own login, session timestamps and their view of the support journal; no credentials or token hashes.
 - **Access requests (M59):** a staff member's request is taken in, forwarded to the owner as controller, and answered within six working days (internal timer); the extract covers one person only.
 
-**6. One retention table (M54).** Every period is configuration with a typed default. **Defaults set by the founder (2026-10-18); the feature spec may refine them** before the first production tenant. Each purge job logs every run. **Routine retention keeps running for a suspended tenant**; only closure purges wait for a closure state (ADR-0001 Decision 4, amended).
+**6. One retention table (M54).** Every period is configuration with a typed default. **Defaults set by the founder (2026-10-18); the feature spec may refine them** before the first production tenant. Each purge job logs every run. **Who changes values:** the retention table is class G (ADR-0001), so runtime roles only read it; values change only through a reviewed migration run as `deploy_rt`; CI checks the invariants; a change takes effect at the next purge without a code change. **Routine retention keeps running for a suspended tenant**; only closure purges wait for a closure state (ADR-0001 Decision 4, amended).
 
 | Category | Default | Rule |
 |---|---|---|
-| Closure cooling-off | 14 days | longer than the device lease (7 days); CI-checked |
+| Closure cooling-off | 15 days | longer than the longest lease of any plan (14 days today); CI-checked |
 | Export window | 30 days | |
 | Generated export files | 7 days, then deleted | |
 | Backup window | 30 days | below the 60-day device retention; DEL-3 trigger if it cannot stay below 60 days |
@@ -157,11 +165,11 @@ stateDiagram-v2
   suspended --> active: reinstated
   active --> closure_requested: owner, step-up
   suspended --> closure_requested: owner, step-up; or Kodelix after 90 days suspended
-  closure_requested --> active: owner cancels, step-up
-  closure_requested --> suspended: owner cancels (was suspended)
+  closure_requested --> active: owner cancels, step-up (origin active)
+  closure_requested --> suspended: owner cancels, step-up (origin suspended)
   closure_requested --> export_window: cooling-off ends
-  export_window --> active: owner cancels, step-up
-  export_window --> suspended: owner cancels (was suspended)
+  export_window --> active: owner cancels, step-up (origin active)
+  export_window --> suspended: owner cancels, step-up (origin suspended)
   export_window --> purge_personal: leases ended and backlogs drained (at most until window ends), and owner downloaded or window ends
   purge_personal --> archive_retained: personal data purged, staff de-identified
   archive_retained --> purged: retain_until passed and no legal hold
@@ -178,24 +186,28 @@ stateDiagram-v2
 ```text
 TenantClosure (app layer)
   request(owner principal, stepUpProof) -> ClosureRequested      // owner action, app_rt; notifies every owner contact
-  requestBySuspension(tenant) -> ClosureRequested | NotYet       // platform_rt; only after the Kodelix-closure threshold, notices sent
-  cancel(owner principal, stepUpProof) -> active | suspended     // only before purge_personal starts
+  requestBySuspension(tenant) -> ClosureRequested | NotYet       // platform_rt (CP only); after the threshold; notices sent by a job_rt job
+  cancel(owner principal, stepUpProof) -> closure_origin         // only before purge_personal starts
   advance(tenant) -> next state | NotYet(reason)                 // job_rt via the Job kind; idempotent; periods from the retention table
 
 LegalHold (platform_rt, CP tenant_status)
-  set(tenant, reason) / release(tenant, reason)                  // each recorded in the deletion journal
+  set(tenant, reason) / release(tenant, reason)                  // reason: enum or ticket id; each recorded in the deletion journal
+
+ArchiveRequest (after purge_personal)
+  open(tenant) -> code sent to archive_contact (job_rt)          // code hash on CP archive_requests (platform_rt)
+  verify(requestId, code) -> Verified | Refused                  // recorded in the deletion journal; starts the archive export
 
 DeletionJournal (port; home decided by the storage ADR, outside the restorable database)
   append(Tombstone{kind: tenant | person | device | hold, ids, at, reason})   // IDs only
   replay(sinceBackupTime)                                                     // restore runbook
 
 TenantExport (EXP-2)
-  start(scope) -> ExportId        // tenant-wide: owner, job_rt; archive: Kodelix on verified owner request, job_rt; person-started: that person's Staff scope
+  start(scope) -> ExportId        // tenant-wide: owner, job_rt; archive: after ArchiveRequest.verify, job_rt; person-started: that person's Staff scope
   manifest: [{file, rows, sha256}], exportedAt, schemaVersion
-  deliver(exportId, requester)    // to the requester only; re-checks status and permission at publish and download; rate-capped; writes a delivery record
+  deliver(exportId, requester)    // to the requester only (archive: the archive contact, single-use link bound to the code); re-checks status and permission at publish and download; rate-capped; writes a delivery record
 
 PersonErasure
-  erase(owner principal, stepUpProof, staffId) -> ErasureRecord   // export to the owner first; idempotent across every store; sales de-identified; dated
+  erase(owner principal, stepUpProof, staffId) -> ErasureRecord   // export to the owner first; idempotent across every store incl. devices; sales keep the opaque id; lists confirmed devices; dated
 
 RetentionPolicy (configuration, typed defaults)
   periodFor(category) -> Duration           // categories and defaults as in Decision 6; tax archive per venue (retain_until)
@@ -204,18 +216,19 @@ RetentionPolicy (configuration, typed defaults)
 ### Implementation Guidelines
 
 - **Must (jobs):** closure steps, purges, person erasure and tenant-wide and archive exports run as `job_rt` through the ADR-0002 Job kind, one tenant per transaction; each step is idempotent and resumable; PL rows are touched only through the ADR-0001 § 1c functions.
-- **Must:** every closure transition, cancel, legal-hold change, erasure, purge and export delivery writes a dated record (IDs only) to the deletion journal or the security journal.
+- **Must:** every closure transition, cancel, legal-hold change, erasure, purge, export delivery and archive-request verification writes a dated record (IDs only) to the store Decision 3 names; the deletion journal and the support journal stay separate stores.
 - **Must:** `purge_personal` never starts before every device's lease has ended and its backlog has drained (bounded by the export window's end), and before the owner has downloaded the export or the window has ended; never while the tenant is `suspended` (ADR-0001 Decision 4).
 - **Must:** an already-sold upload is accepted in every state, including after `purge_personal` (into the archive, staff de-identified on arrival).
-- **Must (archive):** archive tables are class TD, written from the first sale, append-only for runtime roles, with `retain_until` per tenant; the only delete path is `job_rt`'s policy requiring `retain_until` passed and no legal hold; after `purge_personal` no table maps the archive's staff id to a name (M62).
+- **Must (archive):** archive tables are class TD, written from the first sale, append-only for runtime roles, with `retain_until` per tenant that only moves later; the only delete path is `job_rt`'s policy requiring `retain_until` passed and no legal hold, run only from `archive_retained`; de-identification deletes the id-to-name link and never updates an archive row; after `purge_personal` no table maps the archive's staff id to a name (M62).
 - **Must (restore):** the restore runbook replays every tombstone before the restored database serves traffic; the side instance is destroyed afterwards; drilled (M48); a scheduled check alerts when the oldest backup is older than the backup window.
 - **Must (export):** EXP-2 runs as the non-bypass role with the tenant context set; credentials, verifiers, token hashes and device keys excluded; a coverage test covers every TD table; delivered to the requester only.
-- **Must (configuration):** every period comes from the retention table with a typed default; no literal in code; CI checks cooling-off > device lease and deletion-journal retention > backup window.
+- **Must (configuration):** every period comes from the retention table (class G, changed only by reviewed migration) with a typed default; no literal in code; CI checks cooling-off > the longest lease of any plan and deletion-journal retention > backup window.
+- **Must:** every TD table carries a personal-data marker (`personal`, `tax`, `other`); CI fails on a missing one.
 - **Must never:** hard-delete the tax archive or any sale before `retain_until`, outside a legal-hold release — including when erasing one person.
 - **Must never:** purge or erase without a dated record.
 - **Must never:** export with `pg_dump` for the owner (EXP-1), or run a person's export as `job_rt`.
 - **Must never:** wipe a device's local records automatically on closure.
-- **Must never:** write free text into `support_grants.reason` or the access-opened purpose, or a typed identifier into a failed-login log line.
+- **Must never:** write free text into `support_grants.reason`, the access-opened purpose or the legal-hold reason, or a typed identifier into a failed-login log line.
 
 ## Alternatives Considered
 
@@ -272,7 +285,8 @@ RetentionPolicy (configuration, typed defaults)
 
 - More moving parts: a state machine with cancel and Kodelix-started closure, an archive written from the first sale, a deletion journal outside the database, a legal-hold flag, a restore runbook that must be drilled.
 - Personal data in backups lives until the window ends (30 days by default), not instantly; disclosed to staff through the owner.
-- After `purge_personal` the owner has no login; archive access needs a manual Kodelix export on a verified request.
+- After `purge_personal` the owner has no login; archive access needs a Kodelix export on a request verified by a one-time code to the archive contact.
+- A restore can roll the support journal back to the backup point (it lives inside the database); the off-host log and the latest anchor record what was lost (ADR-0004 § 5).
 - Tax-required buyer identifiers stay in signed payloads for the archive period (R-6).
 - The closure flow cannot ship before the storage ADR places the deletion journal.
 
@@ -285,7 +299,7 @@ RetentionPolicy (configuration, typed defaults)
 | Risk | Probability | Impact | Mitigation |
 |------|------------|--------|-----------|
 | A restore brings back a deleted tenant or erased person | Medium | High | Tombstone replay before serving traffic; restore drill (M48) |
-| A stolen owner session erases a venue | Medium | High | Step-up, cooling-off longer than the lease, every owner contact notified, cancel before `purge_personal` (M11) |
+| A stolen owner session erases a venue | Medium | High | Step-up, cooling-off longer than the longest lease, every owner contact notified, cancel before `purge_personal` (M11) |
 | A sale sold offline arrives after `purge_personal` | Medium | Medium | Always accepted into the archive, staff de-identified on arrival (Decision 2) |
 | A lost device holds the purge forever | Low | Medium | Wait bounded by the export window's end; late sales go to the archive |
 | Kodelix closes a tenant whose owner missed the notices | Low | High | Notices at suspension and days 30, 60, 80 to every owner contact; cooling-off and cancel still apply |
@@ -293,7 +307,9 @@ RetentionPolicy (configuration, typed defaults)
 | Buyer identifiers retained in signed payloads | Low | Low | Required for tax; rare for cafés; R-6 accepted by name |
 | Purge misses a store (tombstones, exports, mapping to the archive id) | Medium | Medium | Erase-one-person job across every store; archive de-identification test (M55, M62) |
 | A new TD table is left out of the export | Medium | Medium | Export coverage test (M47) |
-| Retention defaults drift from the founder's values without review | Low | Medium | Defaults in Decision 6; the spec may refine them; changes are configuration with a record (M54) |
+| Retention defaults drift from the founder's values without review | Low | Medium | Defaults in Decision 6; retention table class G, changed only by reviewed migration; CI invariants (M54) |
+| `retain_until` lowered to purge records early | Low | High | Only a `job_rt` function writes it; a trigger refuses any decrease; no purge while active |
+| An erased person's data survives on a device | Medium | Medium | Erase command by sync; confirmed devices listed; 60-day device retention as the bound (M55) |
 | Archive outlives the contract as Kodelix processing | Low | Medium | Counsel item closed by founder statement (2026-10-18); disclosed in the customer terms |
 | Backup window drifts above its value | Low | High | Scheduled backup-age check and alert; window in the retention table; DEL-3 trigger (Decision 7) |
 
@@ -322,7 +338,7 @@ RetentionPolicy (configuration, typed defaults)
 Greenfield.
 
 1. The retention table with the founder defaults (Decision 6) and the CI invariants with the first schema migration; the spec may refine values before the first production tenant.
-2. The archive tables, `retain_until`, the `archive_contact` table and the legal-hold flag with the first sales tables.
+2. The archive tables, `retain_until` and its no-decrease trigger, the `archive_contact` table, CP `archive_requests`, `closure_origin` and the legal-hold flag with the first sales tables; the personal-data marker CI test with the first TD table.
 3. The ADR-0001 § 1c closure and erasure functions and the ADR-0004 prune function as privileged migrations with the first closure story.
 4. The deletion journal once the storage ADR places it; until then no closure or restore story ships.
 5. S52, then export; closure, person erasure and the restore runbook as stories, each with its negative test; the restore drill before the first production tenant.
@@ -332,15 +348,15 @@ Greenfield.
 ## Validation Criteria
 
 - [ ] Closure or erasure without fresh step-up is refused; a purge before cooling-off ends, before leases end and backlogs drain (unless the export window has ended), or before the export is downloaded (or the window ends) is refused; a suspended tenant is never purged.
-- [ ] Cancel works before `purge_personal` and is refused after it starts.
+- [ ] Cancel works before `purge_personal`, returns the tenant to its `closure_origin`, and is refused after it starts; a tenant closing from `suspended` keeps the suspension contract until `purge_personal` (no non-owner sign-in, no enrolment, no new grant).
 - [ ] Kodelix closure before the threshold is refused; the four notices are sent and recorded.
 - [ ] A lease renewal after `closure_requested` is refused; an already-sold upload after `purge_personal` lands in the archive with staff de-identified.
-- [ ] After `purge_personal`: no staff name anywhere except the export already delivered; no table maps the archive's staff id to a name (M62); the owner cannot sign in; an archive export runs only on a recorded verified request.
-- [ ] The archive cannot be deleted before `retain_until` or under legal hold by any role; after it, the purge job removes it and writes a dated record.
+- [ ] After `purge_personal`: no staff name anywhere except the export already delivered; no table maps the archive's staff id to a name (M62), and no archive row was updated; the owner cannot sign in; an archive export runs only after a recorded one-time-code verification and goes only to the archive contact.
+- [ ] The archive cannot be deleted before `retain_until`, under legal hold, or while the tenant is active, by any role; a decrease of `retain_until` is refused; after it passes, the purge job removes the archive and writes a dated record.
 - [ ] Restore drill: a deleted tenant, an erased person and a revoked device stay gone after a restore; the side instance is destroyed (M48); the backup-age check alerts on an over-age backup.
 - [ ] Export: contains every TD table or an explicit exclusion, no credentials, no other tenant's rows; the manifest hashes match; a person-started export contains only that person's branches; delivery to anyone but the requester is refused; the rate cap holds.
-- [ ] Erasing one staff member removes their personal data from every store, keeps their sales with an opaque id and writes a dated record; replay after a restore re-erases (M55).
-- [ ] Every period is read from the retention table; changing a value changes the next purge without a deploy; CI fails when cooling-off ≤ device lease.
+- [ ] Erasing one staff member removes their personal data from every store and from every device that confirms the erase command, keeps their sales with the opaque id and writes a dated record listing confirmed devices; replay after a restore re-erases (M55).
+- [ ] Every period is read from the retention table; a reviewed value change takes effect at the next purge without a code change; CI fails when cooling-off ≤ the longest lease of any plan, when deletion-journal retention ≤ the backup window, or when a TD table has no personal-data marker.
 - [ ] **The tenant-isolation threat model blocks the first story that stores tenant data; it does not block acceptance of this ADR (founder, 2026-10-18).**
 - [ ] Performance: checked against `perf-budgets.md` once it exists; not checked until then.
 
