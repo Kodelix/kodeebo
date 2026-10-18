@@ -144,6 +144,21 @@ tenancy_rules:
     adr: ADR-0001
     adr_status: Accepted
     status: active
+  - id: TR-CLOSURE-STATES
+    rule: "Tenant closure is the staged state machine active -> suspended -> closure_requested -> export_window -> purge_personal -> archive_retained(retain_until) -> purged; owner only with step-up, cooling-off and every owner contact notified; purge_personal only after the export is downloaded or the window ends, never for a suspended tenant; each step idempotent, run as job_rt via the Job kind, and recorded with date and time."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: TR-TAX-ARCHIVE
+    rule: "Sales, receipts, ETA payloads and cancelled originals are kept in append-only archive tables (class TD) with a per-tenant retain_until of five years after the tax period; after purge_personal staff appear only as an opaque id with no mapping to a name; readable only for the owner's export and a legal hold; purged with a dated record when retain_until passes."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: TR-DELETION-REPLAY
+    rule: "Backups expire inside a window shorter than 60 days; every tenant deletion, person erasure and device revocation writes a tombstone to a deletion journal outside the restorable database (home set by the storage ADR, D5-C); the restore runbook replays every tombstone before the restored database serves traffic. Retention values stay open in ADR-0005 and are set in the feature spec."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
 
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
@@ -225,6 +240,11 @@ interface_contracts:
     contract: "TenantConnectionResolver.resolve(TenantId) -> {TenantDataSource, tenantStatus}; the only way app code reaches tenant data; today returns the shared pool; an unknown tenant -> typed error, no fallback pool; a suspended tenant resolves with its status (read per request from CP tenant_status, no cache) and each surface applies the suspension contract (ADR-0001 Decision 4)."
     adr: ADR-0001
     adr_status: Accepted
+    status: active
+  - id: IC-TENANT-EXPORT
+    contract: "EXP-2: per-table COPY ... TO STDOUT as CSV with header, run as the non-bypass role with the tenant context set; ETA payloads byte-for-byte; manifest {file, rows, sha256, exportedAt, schemaVersion} and a data dictionary, zipped; credentials, verifiers, token hashes and device keys excluded; tenant-wide export owner-started as job_rt, person-started export in that person's Staff scope; delivery re-checks status and permission and writes a dated delivery record."
+    adr: ADR-0005
+    adr_status: Proposed
     status: active
 
 performance_budgets: []
@@ -341,4 +361,14 @@ forbidden_patterns:
     pattern: "A migration that creates or alters a role, or creates, replaces or re-owns a function owned by auth_lookup, support_fn or audit_writer, that is not marked privileged or is run as deploy_rt."
     adr: ADR-0001
     adr_status: Accepted
+    status: active
+  - id: FP-HARD-DELETE-TAX-ARCHIVE
+    pattern: "Hard-deleting the tax archive (or any sales, receipt or ETA record) before its retain_until, outside a legal-hold release; exporting the owner's data with pg_dump (EXP-1)."
+    adr: ADR-0005
+    adr_status: Proposed
+    status: active
+  - id: FP-PURGE-WITHOUT-RECORD
+    pattern: "A purge, erasure or export delivery that writes no dated record; a restore that serves traffic before the deletion journal is replayed; automatically wiping a device's local records on closure."
+    adr: ADR-0005
+    adr_status: Proposed
     status: active
