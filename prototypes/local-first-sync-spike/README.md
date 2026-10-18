@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on the dev run;, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`;, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -1229,6 +1229,15 @@ A device that goes offline right after receiving an edit keeps that edit open on
   - `end_day_two_txns` after 6, in `f` (R46: the day was closed with no End Day command).
   - `bill_old_day` after 1 (I8: the server flagged a bill for a closed day).
 - **Smoke on the changed client and server:** SC-23 (2 seeds), SC-30 (3) and SC-29 (3) PASS with every mutant caught. The full regression follows on the committed harness.
+
+#### Run 2 (committed harness `56c8dbc`) — SC-31 **PASS**, full regression PASS
+
+`evidence/phase3-sc31-run2-*`. No log is marked `+dirty`.
+- **Log headers:** two other-session commits landed during the run, `37d226b` and `e5bd849` (ADR documents). SC-31 to SC-25b say `56c8dbc`, the rest say `e5bd849`. Neither commit touches the spike folder or the sync note (`git diff 56c8dbc e5bd849 -- prototypes/local-first-sync-spike` is empty), so every step ran the `56c8dbc` harness.
+- **SC-31:** 6 × 20 runs, 0 violations. All four mutants were caught after the same number of runs as run 1.
+- **Earlier cases:** SC-30, SC-29, SC-28, SC-25b, SC-25a (one-tenth size 30 of 30 and full size 3 of 3), SC-23, SC-22, SC-21a, SC-20 (and its real tmpfs leg, 50 of 50) and SC-19 PASS, every mutant caught.
+- **Earlier phases:** phase 0, phase 1 and phase 2 (10 seeds, 300 runs) PASS; TS-09 counted 16 of 16 sales. Tamper: 36 of 36.
+- **The pinned-list guard** passed for phase 2 and tamper.
 
 **Not covered:**
 - **What a shift is** (cashier hand-over, cash count): the shift spec.
