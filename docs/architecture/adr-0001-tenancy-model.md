@@ -22,15 +22,15 @@ Proposed
 
 ## Last Verified
 
-2026-10-17
+2026-10-18
 
 ## Decision Makers
 
-The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
-Kodeebo's hosted backend must keep each owner organisation's data, devices and staff apart on one PostgreSQL 18.6 cluster that serves local-first cashier devices, the owner web dashboard and the same dashboard wrapped for Google Play. Decision: one shared schema with `ENABLE` + `FORCE` row-level security on every tenant table and non-bypass runtime roles, reached only through a tenant-to-connection resolver so one tenant can later move to its own database without changing callers; the tenant unit is tenant (owner organisation) → branch (venue) → device (cashier PC).
+Kodeebo's hosted backend must keep each owner organisation's data, devices and staff apart on one PostgreSQL 18.6 cluster that serves local-first cashier devices, the owner web dashboard and the same dashboard wrapped for Google Play. Decision: one shared schema with `ENABLE` + `FORCE` row-level security, where the tenant predicate is a restrictive policy that binds every role and each role gets its own permissive policy; four table classes and one closed role inventory, none with `BYPASSRLS`; all access through a tenant-to-connection resolver so one tenant can later move to its own database without changing callers; the tenant unit is tenant (owner organisation) → branch (venue) → device (cashier PC).
 
 ## Stack Compatibility
 
@@ -43,7 +43,7 @@ Kodeebo's hosted backend must keep each owner organisation's data, devices and s
 | **References Consulted** | `docs/stack-reference/postgres/VERSION.md`, `best-practices.md` § 1, `breaking-changes.md`, `deprecated-apis.md`; `docs/research/tenant-isolation.md` (parts 1, 4, 5, 6); `docs/research/licensing.md` Part 1 |
 | **Pinned versions relied on** | `postgres:18.6` (`pins.yaml` `postgres.image`) |
 | **Post-Cutoff APIs Used** | PostgreSQL 18 row security as fixed in 18.6 (CVE-2026-14666, row-security caching after role changes — research F124): 18.6 is the floor for server and client tools |
-| **Verification Required** | Catalogue tests C1–C5/C8 fail on a planted defect and pass on the real schema (F111, F617); runtime-role negative tests DB-01…DB-10 (part 6 § 3.10); a resolver test that routes every tenant query through the port |
+| **Verification Required** | Catalogue tests C1–C5/C8 fail on a planted defect and pass on the real schema (F111, F617); runtime-role negative tests DB-01…DB-10 (part 6 § 3.10); a resolver test that routes every tenant query through the port. **The restrictive-tenant + permissive-per-role shape was not executed in the research** (its semantics are sourced, F408, tier 2; the spikes used a permissive tenant policy): DB-07/DB-08 and a planted "permissive policy for a new role" test run on this shape with the first tenant-table migration, before any tenant data is stored |
 
 Critical ADR: yes — tenancy model (Foundation; `workflow: standard` critical list).
 
@@ -52,9 +52,9 @@ Critical ADR: yes — tenancy model (Foundation; `workflow: standard` critical l
 | Field | Value |
 |-------|-------|
 | **Depends On** | None (first ADR) |
-| **Enables** | ADR-0002 (tenant context), ADR-0003 (branch scope and session); the operator cross-tenant access ADR (next to write); device credential and enrolment; server sync state and restore; key custody and re-registration; retention, deletion and export; sync limits; licensing (device mode) |
+| **Enables** | ADR-0002 (tenant context), ADR-0003 (branch scope and session), ADR-0004 (operator access); device credential and enrolment; server sync state and restore; key custody and re-registration; retention, deletion and export; sync limits; licensing (device mode) |
 | **Blocks** | Every epic that stores tenant data (none written yet); `/setup-stack` setting `tenancy.model` |
-| **Ordering Note** | Accept before `/setup-stack` writes `tenancy.model: shared-schema-rls`. The operator cross-tenant access ADR must be written and accepted before any support or admin tooling is built (Kodelix does the guided installs and support). |
+| **Ordering Note** | Accept before `/setup-stack` writes `tenancy.model: shared-schema-rls`. ADR-0004 (operator access) must be accepted before any support or admin tooling is built (Kodelix does the guided installs and support). |
 
 ## Context
 
@@ -87,7 +87,43 @@ Research note: `docs/research/tenant-isolation.md` (Draft; verdict BLOCKED for i
 
 ## Decision
 
-**1. Model: `shared-schema-rls`.** One database, one application schema. Every table that holds tenant data carries `tenant_id uuid NOT NULL`, has `ENABLE` and `FORCE ROW LEVEL SECURITY`, and a permissive policy `tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid` for each command (the `NULLIF` is required: a local setting reads back as an empty string after its transaction, F110). How the setting is set is ADR-0002; branch scope on top of it is ADR-0003.
+**1. Model: `shared-schema-rls`, tenant predicate restrictive for every role.** One database, one application schema. Every tenant-keyed table (classes TD, CP and PL below) carries `tenant_id uuid NOT NULL` and has `ENABLE` and `FORCE ROW LEVEL SECURITY`. The tenant predicate is a **RESTRICTIVE** policy for all commands:
+
+```sql
+CREATE POLICY tenant_isolation ON <table> AS RESTRICTIVE FOR ALL
+  USING      (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid)
+  WITH CHECK (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid);
+```
+
+On TD tables it has no `TO` clause, so it binds every role, including roles added later. What each role may do is a separate **permissive** policy written `TO <that role>` for the commands it needs; a permissive policy without `TO` is forbidden. PostgreSQL ORs permissive policies and ANDs restrictive ones (F408), so no permissive policy — a later "sharing" policy, ADR-0004's support policy, a mistake — can reach past the tenant. This follows `docs/stack-reference/postgres/best-practices.md` § 1 ("put the hard tenant predicate in a RESTRICTIVE policy"); the first draft of this ADR used a permissive tenant policy, which applied to every role and let any later role read any tenant by setting the context (review B1). The `NULLIF` is required: a local setting reads back as an empty string after its transaction (F110). How the setting is set is ADR-0002; branch scope on top of it is ADR-0003.
+
+**1a. Table classes.** Every table is in exactly one class, recorded next to the migrations; the catalogue test checks each class's rules.
+
+| Class | What it holds | Examples | RLS rules |
+|---|---|---|---|
+| **TD — tenant data** | Anything about a tenant's business, people, devices or licences: sales, stock, staff, attendance, sync inbox and events, review queue, reports, the support grant and access journal (ADR-0004), **and the licensing tables** `seats`, `seat_licences`, `devices`, `seat_moves`, `approvals`, `lease_log` (licensing threat model M35) | `orders`, `staff`, `staff_branches`, `inbox`, `seats`, `lease_log` | `tenant_isolation` restrictive with no `TO` (every role); permissive policies only `TO` named roles; no `USING (true)` / `WITH CHECK (true)` policy |
+| **CP — tenant-keyed control plane** | Platform state about a tenant that holds no personal data and no sales, tax or licensing data | tenant status and suspension, plan assignment and plan-limit values, restore watermark (ti F328) | `tenant_isolation` restrictive written `TO` every inventory role except `platform_rt`; `platform_rt` has the only permissive `USING (true)` policy, on CP tables only |
+| **G — global** | No tenant meaning, no `tenant_id` | plan catalogue, tax-rate tables, feature-flag definitions | No RLS; on the global allow-list; runtime roles read only |
+| **PL — pre-context lookup** | Tenant-keyed rows that must be found **before** any tenant context exists, by a secret or an opaque handle | `device_credentials` (by key id, ti F325), `enrolment_codes` (by code hash), `sessions` (by token hash, ADR-0003) | `tenant_isolation` restrictive written `TO` every inventory role except `auth_lookup`; runtime roles have no grant on them; they are read only through `SECURITY DEFINER` lookup functions owned by `auth_lookup` (NOLOGIN, all-rows SELECT policy on PL tables only), with a pinned `search_path` and `EXECUTE` granted to named roles only; each returns identity (tenant, branch, device or user, status) for one key and 0 rows for an unknown key (F325). All later work runs through the ADR-0002 helper. M35's `ENABLE` + `FORCE` on `device_credentials` and `enrolment_codes` holds |
+
+**1b. Role inventory (closed).** These are the only database roles. A new role needs an ADR amendment; the catalogue test fails on any role not listed.
+
+| Role | Login | Purpose | Tables | Defined by |
+|---|---|---|---|---|
+| `migrator` | NOLOGIN | Owns every table and type; runs DDL and data migrations (which iterate tenants with the context set) | all (owner) | this ADR |
+| bootstrap superuser | local only | Cluster administration, extensions, upgrades, restore; never an application login | — | this ADR; custody ADR-0004 |
+| `app_rt` | LOGIN | Owner dashboard API (web and Play-wrapped) | TD, CP (own tenant), G | this ADR; ADR-0003 |
+| `device_rt` | LOGIN | Sync endpoint for cashier devices; least-privilege grants as in ti F328 (the credential ADR may merge it into `app_rt`; until then it is separate) | TD (device grants), CP (own watermark), G | this ADR; credential ADR |
+| `job_rt` | LOGIN | Background jobs (export, retention, limits, provisioning); iterates tenants, one transaction per tenant with the context set | TD, CP (own tenant per transaction), G | this ADR |
+| licensing service roles | LOGIN | Issuer and lease service; work per tenant with the context set, on the licensing TD tables only | TD (licensing tables) | licensing ADR (names and grants) |
+| `platform_rt` | LOGIN | Control plane: tenant status, suspension, plan, watermark across tenants | CP only (`USING (true)`), G | this ADR; ADR-0004 § 7 |
+| `auth_lookup` | NOLOGIN | Owns the pre-context lookup functions | PL only | this ADR |
+| `support_rt` | LOGIN | Kodelix support reads behind the owner grant gate | TD (SELECT, grant-gated) | ADR-0004 |
+| `support_fn` | NOLOGIN | Owns the support verbs | TD (grant-gated per verb) | ADR-0004 |
+| `audit_writer` | NOLOGIN | Owns the support journal append functions | TD (journal INSERT only) | ADR-0004 |
+| `backup_rt` | LOGIN | Physical backup; `REPLICATION` only | none (physical copy) | ADR-0004 |
+
+Every LOGIN role other than the bootstrap superuser is `NOSUPERUSER`, `NOBYPASSRLS`, owns nothing and holds only the grants its purpose needs; no role in the list has `BYPASSRLS`.
 
 **2. Exit to database-per-tenant (Option D) stays open.** Every access to tenant data goes through a `TenantConnectionResolver` port. Today it returns the shared pool for every tenant. Moving a tenant to its own database is an adapter change plus a data move, never a caller change. The move happens only on a trigger: a signed customer or regulatory requirement for physical isolation, own keys or data location; a measured noisy-neighbour impact; or single-tenant restore or erasure demand that row-level work cannot meet (research part 1 § 5 "conditions that reopen").
 
@@ -106,17 +142,22 @@ flowchart LR
     S --> R[TenantConnectionResolver port]
   end
   subgraph PG["PostgreSQL 18.6 — one schema"]
-    T[(tenant tables<br/>tenant_id NOT NULL<br/>ENABLE + FORCE RLS)]
-    G[(global tables<br/>explicit allow-list)]
+    T[(TD tenant data<br/>tenant_id NOT NULL, ENABLE + FORCE<br/>RESTRICTIVE tenant policy, every role)]
+    C[(CP control plane<br/>tenant-keyed, no personal data)]
+    L[(PL pre-context lookups<br/>credentials, sessions, enrolment codes)]
+    G[(G global tables<br/>explicit allow-list)]
   end
   D -- signed sync --> A
   W -- opaque session --> A
-  R -- runtime role: LOGIN, NOSUPERUSER,<br/>NOBYPASSRLS, owns nothing --> T
+  A -- lookup by key or token hash --> F[SECURITY DEFINER lookup<br/>owner auth_lookup]
+  F --> L
+  R -- runtime roles: LOGIN, NOSUPERUSER,<br/>NOBYPASSRLS, owns nothing --> T
   R --> G
+  P[platform_rt] -- USING true, CP only --> C
   M[migrator role: NOLOGIN owner of all tables] -. DDL only .-> T
 ```
 
-Trust boundary: the database enforces the tenant predicate for the runtime role; the application cannot widen it except through the scope helper (ADR-0002).
+Trust boundary: the database enforces the tenant predicate for every role through the restrictive policy; a role's permissive policy only narrows what it may do inside the tenant; the application cannot widen the tenant except through the scope helper (ADR-0002).
 
 ### Key Interfaces
 
@@ -129,21 +170,32 @@ TenantConnectionResolver (port, app layer)
     // Today: the shared pool for every tenant.
     // Failure: unknown or suspended tenant -> typed error, no fallback pool.
 
-Global (non-tenant) tables: an explicit allow-list kept next to the migrations;
-the catalogue test fails on any table without tenant_id that is not on it.
+Table classes (TD, CP, G, PL): one list kept next to the migrations, one entry per table;
+the catalogue test fails on any table without a class, on a G table not on the global
+allow-list, and on any table whose policies break its class's rules.
+
+Pre-context lookups (PL, app-layer ports backed by SECURITY DEFINER functions owned by auth_lookup):
+  DeviceCredentialLookup.find(keyId) -> {tenant, branch, device, status, credentialState} | NotFound
+  SessionLookup.find(tokenHash)      -> {session, user, tenant, status} | NotFound   // ADR-0003
+  EnrolmentCodeLookup.find(codeHash) -> {tenant, branch, seat, state} | NotFound
+  // Identity only, one key, no tenant data rows; everything after runs through the ADR-0002 helper.
 ```
 
 No HTTP contract is created here; `contracts/` does not exist yet.
 
 ### Implementation Guidelines
 
-- **Must:** every tenant table has `tenant_id NOT NULL`, `ENABLE` + `FORCE ROW LEVEL SECURITY` and at least one permissive policy per command, created in the same migration as the table (an enabled table with no policy is default-deny, `postgres/best-practices.md` § 1 item 8).
+- **Must:** every table has a class (TD, CP, G, PL) recorded in the same migration that creates it.
+- **Must:** every TD, CP and PL table has `tenant_id NOT NULL`, `ENABLE` + `FORCE ROW LEVEL SECURITY`, the restrictive `tenant_isolation` policy (no `TO` on TD; on CP and PL `TO` every inventory role except the class's one cross-tenant role) and, per role that uses it, a permissive policy `TO` that role for each command it needs, all created in the same migration as the table. With only restrictive policies a role sees nothing (default-deny, F408), so a role without its own permissive policy is locked out, not let in.
+- **Must never:** write a permissive policy without a `TO` role list on a TD, CP or PL table, or carry the tenant predicate only in a permissive policy.
+- **Must never:** use `USING (true)` or `WITH CHECK (true)` on a TD table; on CP tables only for `platform_rt`, on PL tables only for `auth_lookup`.
+- **Must:** pre-context lookups (PL) run only through the `SECURITY DEFINER` functions owned by `auth_lookup`, with a pinned `search_path` ending in `pg_temp` and `EXECUTE` revoked from `PUBLIC` in the creating migration; they return identity for one key and nothing else (F325).
 - **Must:** every unique index and primary key on a tenant table leads with `tenant_id`; every foreign key between tenant tables is composite with `tenant_id` and references a `UNIQUE (tenant_id, id)` (F105, F106).
 - **Must:** every view over tenant tables is created `WITH (security_invoker = true)` (F107, F108, F621).
 - **Must never:** expose a materialized view over tenant data to a runtime role; rollups are ordinary tables with `tenant_id`, `ENABLE` + `FORCE` and the same policies (F423).
-- **Must:** roles are `migrator` (NOLOGIN, owns every table, runs DDL only) and LOGIN runtime roles that are `NOSUPERUSER`, `NOBYPASSRLS`, own no table and hold DML grants only (F103, F104).
-- **Must never:** give any runtime role, job role or support role `BYPASSRLS` or superuser. This agrees with `docs/stack-reference/postgres/best-practices.md` line 11, where an `admin_batch` (`BYPASSRLS`) role is optional and exists only if an ADR accepts it; this ADR accepts none. How Kodelix operators read across tenants for guided installs and support is the next ADR to write; until it is accepted, no support or admin tooling is built.
-- **Must:** CI runs the catalogue queries (C1 ENABLE+FORCE, C2 policies, C3 tables without `tenant_id` against the allow-list, C4 roles, C5 owners, C8 views) on every migration and fails the build on a finding (F111, F617; tests DB-01…DB-06, DB-10).
+- **Must:** the database roles are exactly the inventory in Decision 1b: `migrator` (NOLOGIN, owns every table, runs DDL only), the bootstrap superuser (cluster administration only) and LOGIN or NOLOGIN roles that are `NOSUPERUSER`, `NOBYPASSRLS`, own no table and hold only the grants their purpose needs (F103, F104).
+- **Must never:** give any runtime role, job role or support role `BYPASSRLS` or superuser. This agrees with `docs/stack-reference/postgres/best-practices.md` line 11, where an `admin_batch` (`BYPASSRLS`) role is optional and exists only if an ADR accepts it; this ADR accepts none. How Kodelix operators reach tenant data for guided installs and support is ADR-0004; until it is accepted, no support or admin tooling is built.
+- **Must:** CI runs the catalogue queries on every migration and fails the build on a finding (F111, F617; tests DB-01…DB-06, DB-10): **C1** ENABLE + FORCE on every TD, CP and PL table; **C2, per role**: every TD, CP and PL table has the restrictive `tenant_isolation` policy with the exact predicate and the role coverage of its class; every permissive policy names roles (none applies to `PUBLIC`); every role in the inventory that has a grant on a table has a permissive policy there for exactly the commands granted; no `USING (true)` / `WITH CHECK (true)` outside the CP and PL class roles; **C3** every table has a class and G tables are on the allow-list; **C4** roles equal the inventory, attributes as listed (no `BYPASSRLS`, superuser only for the bootstrap role, `REPLICATION` only for `backup_rt`), no membership in `pg_read_all_data`, `pg_write_all_data` or the server-file roles; **C5** `migrator` owns every table, `SECURITY DEFINER` functions are owned only by `auth_lookup`, `support_fn` or `audit_writer`, each with a pinned `search_path` and no `PUBLIC` `EXECUTE`; **C8** views are `security_invoker`.
 - **Must:** RLS tests connect as the real runtime role, never as a superuser or owner (a superuser passes vacuously).
 - **Must:** server and client PostgreSQL tools are 18.6 or later (F124).
 - **Must:** `app` code reaches tenant data only through `TenantConnectionResolver`; `domain` imports nothing from the database layer (clean architecture).
@@ -188,7 +240,7 @@ No HTTP contract is created here; `contracts/` does not exist yet.
 ### Positive
 
 - One schema, one migration target, one pool set, one backup stream; tenant count does not change the operating model.
-- Isolation is enforced by the database for the runtime role and proven by catalogue and negative tests in CI.
+- Isolation is enforced by the database for every role (restrictive tenant predicate) and proven by catalogue and negative tests in CI.
 - A tenant can move to its own database later without caller changes.
 
 ### Negative
@@ -196,7 +248,8 @@ No HTTP contract is created here; `contracts/` does not exist yet.
 - Largest blast radius: one table without the policy, one view owned by a bypass-capable role or one single-column FK exposes every tenant at once (F106, F108, F621). The CI catalogue test and schema rules are the mitigation, not the structure.
 - Restoring one tenant alone is row-level work after a side restore; PITR is cluster-wide (F118).
 - Noisy neighbours share the cluster (limits are a separate ADR).
-- Kodelix support cannot read across tenants until the operator-access ADR exists.
+- Kodelix support reaches tenant data only through ADR-0004's owner grant.
+- Every role needs its own permissive policy on every table it uses, and the class list and role inventory must be kept current: more policy text per table, checked by C2/C3/C4.
 
 ### Neutral
 
@@ -209,7 +262,10 @@ No HTTP contract is created here; `contracts/` does not exist yet.
 | A new table ships without `FORCE` or a policy | Medium | High (cross-tenant leak) | Catalogue test C1/C2 fails the build (DB-01, DB-10) |
 | Unique key or FK leaks existence across tenants | Medium | Medium | Tenant-leading keys and composite FKs; C5 check (DB-06) |
 | A view or rollup bypasses RLS | Low | High | `security_invoker` rule; no runtime-readable matviews; C8 check (DB-04) |
-| Support needs cross-tenant access and someone adds a BYPASSRLS role | Medium | High | Forbidden here; operator-access ADR is next; C4 role check (DB-02) |
+| Support needs cross-tenant access and someone adds a BYPASSRLS role | Medium | High | Forbidden here; ADR-0004 gives the grant-gated path; C4 role check (DB-02) |
+| A later permissive policy (sharing, support, a mistake) widens past the tenant | Medium | High | Tenant predicate is restrictive for every role (Decision 1); C2 per role |
+| A pre-context lookup function leaks more than identity, or is executable by any role | Low | High | Owned by `auth_lookup`, one key per call, no `PUBLIC` `EXECUTE`; C5 |
+| A table is created without a class, or a new role without an inventory entry | Medium | Medium | C3 and C4 fail the build |
 | Growth makes the shared cluster a noisy-neighbour problem | Low (3 venues) | Medium | Limits ADR; resolver port exit to a dedicated database |
 | PostgreSQL row-security engine bug | Low | High | Pin 18.6 or later (CVE-2026-14666 fixed); re-validate on every pin change |
 
@@ -237,7 +293,7 @@ No HTTP contract is created here; `contracts/` does not exist yet.
 
 Greenfield: no existing data.
 
-1. The first migration creates `migrator` and the runtime roles, revokes `CREATE` on `public` and global `EXECUTE` defaults, and adds the catalogue test to CI before any tenant table exists.
+1. The first migration creates the roles of the inventory (Decision 1b) that the first stories need, the class list, revokes `CREATE` on `public` and global `EXECUTE` defaults, and adds the catalogue test to CI before any tenant table exists.
 2. Every later migration that adds a tenant table adds `ENABLE` + `FORCE` + policies in the same transaction; production migrations are forward-only.
 3. Moving one tenant to its own database (only on a trigger, Decision 2): provision the database from the same migrations, copy that tenant's rows as the runtime role with its context set, switch the resolver entry, verify, then delete the rows from the shared database. A runbook is written when the first trigger occurs.
 
@@ -248,6 +304,9 @@ Greenfield: no existing data.
 - [ ] The catalogue test fails on each planted defect (table without FORCE, without policy, view without `security_invoker`, BYPASSRLS runtime role, non-tenant-leading unique key) and passes on the real schema.
 - [ ] As the runtime role with tenant A's context: reads of tenant B return 0 rows; writes carrying tenant B's id fail; with no context, 0 rows and writes fail (DB-07, DB-08).
 - [ ] No runtime, job or support role has `BYPASSRLS`, superuser or table ownership (DB-02, DB-03).
+- [ ] A planted permissive policy `USING (true)` for a new role on a TD table still returns only the context tenant's rows (the restrictive predicate holds), and C2 fails on it.
+- [ ] A planted permissive policy with no `TO` clause, a table with no class and a role not in the inventory each fail the catalogue test.
+- [ ] Each PL lookup returns identity for a known key and 0 rows for an unknown key; a runtime role cannot select the PL table directly (F325).
 - [ ] Every tenant-data access in `app` goes through `TenantConnectionResolver` (architecture test once the backend track is chosen).
 - [ ] Performance: checked against `perf-budgets.md` once it exists; not checked until then.
 
@@ -258,8 +317,9 @@ Foundational — no spec requirement (no feature specs exist yet). Enables: ever
 ## Related
 
 - Research: `docs/research/tenant-isolation.md` (part 1 F101–F129; § 4.2; § 5 founder decisions 2026-10-17); `docs/research/licensing.md` Part 1 (seats, per-device pricing, device binding); `docs/research/desktop-client-adr-followups.md` § 5 (owner app = web dashboard as a Play-wrapped PWA).
-- ADR-0002 (tenant context helper) and ADR-0003 (branch scope and session) depend on this ADR.
-- Next ADR to write: operator cross-tenant access for Kodelix guided installs and support (research § 9.1 item 11; ASVS 8.4.2).
+- ADR-0002 (tenant context helper), ADR-0003 (branch scope and session) and ADR-0004 (operator access) depend on this ADR; ADR-0004 adds `support_rt`, `support_fn`, `audit_writer` and `backup_rt` to the inventory above and uses the CP class for its emergency path.
+- Licensing threat model M35 (`docs/architecture/threat-models/licensing.md`): the licensing tables are class TD (seats, seat licences, devices, seat moves, approvals, lease log) or PL (device credentials, enrolment codes), all with `ENABLE` + `FORCE`.
+- Review: independent `/architecture-review` of ADR-0001–0004 (2026-10-18, FAIL, text fixes B1 and B2) — applied in this revision.
 - Separate ADRs, flagged in the research: device credential (D2-B on S31/S32), server sync state and restore (D5-C on S33), key custody and re-registration (B4/B3 on S41/S43), retention and deletion, sync limits.
 - Threat model: `docs/architecture/threat-models/tenant-isolation.md` (to be written, `/threat-model`).
 - `project.yaml` `tenancy.model` is set by `/setup-stack` after acceptance, not by this ADR.

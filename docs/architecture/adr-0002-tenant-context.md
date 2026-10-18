@@ -22,11 +22,11 @@ Proposed
 
 ## Last Verified
 
-2026-10-17
+2026-10-18
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
@@ -43,7 +43,7 @@ Row-level security (ADR-0001) is only as good as the transaction-local setting i
 | **References Consulted** | `docs/stack-reference/go/VERSION.md`, `go/best-practices.md` line 55; `docs/stack-reference/ktor/VERSION.md`, `ktor/best-practices.md` line 55; `docs/stack-reference/postgres/best-practices.md` § 1 (set_config); `docs/research/tenant-isolation.md` part 2 (F201–F243), part 1 (F110, F115), part 4 (F420) |
 | **Pinned versions relied on** | `postgres:18.6`; Go 1.27.2, pgx 5.11.0; Kotlin 2.4.21, kotlinx.coroutines 1.11.0, Ktor 3.6.0, Exposed 1.5.1, HikariCP 7.1.0 (`pins.yaml`) |
 | **Post-Cutoff APIs Used** | pgx 5.11.0 `pgx.BeginTxFunc` (package-level, takes the pool; F202) and `pgxpool.Config.PrepareConn` (replaces deprecated `BeforeAcquire`; F205); Exposed 1.5.1 `suspendTransaction` (documented path; `newSuspendedTransaction` deprecated; F238) |
-| **Verification Required** | Port the part-2 tests to the chosen track: forgotten context fails closed; local context does not survive commit, rollback, panic or cancellation; session-level set leaks (negative control); second set refused by the helper; same tests through PgBouncer if a pooler is adopted |
+| **Verification Required** | Port the part-2 tests to the chosen track: forgotten context fails closed; local context does not survive commit, rollback, panic or cancellation; session-level set leaks (negative control); second set refused by the helper; same tests through PgBouncer if a pooler is adopted. Support kind (research spikes S73, S74, PENDING): the access record survives a client rollback; `NoLiveGrant` before any query; `transaction_timeout` set locally ends a support transaction that runs too long |
 
 Critical ADR: yes — part of the tenancy decision (Foundation).
 
@@ -54,7 +54,7 @@ Stack-reference facts this ADR relies on (updated by studio 220bc6f): `docs/stac
 | Field | Value |
 |-------|-------|
 | **Depends On** | ADR-0001 (tenancy model) |
-| **Enables** | ADR-0003 (branch scope uses the same helper); device credential and sync write-path ADRs (device scope set by the helper); sync limits ADR (per-plan `statement_timeout` set by the helper) |
+| **Enables** | ADR-0003 (branch scope uses the same helper); ADR-0004 (support scope kind); device credential and sync write-path ADRs (device scope set by the helper); sync limits ADR (per-plan `statement_timeout` set by the helper) |
 | **Blocks** | The first backend story that touches tenant data |
 | **Ordering Note** | Accept with or after ADR-0001. `/setup-stack` then keeps only the rule for the chosen track; the other track's rule stays as the record of the alternative. |
 
@@ -72,7 +72,7 @@ No backend code. The backend track (Go or Ktor) is undecided (OQ7, `/setup-stack
 
 - Both tracks must be covered until `/setup-stack` decides.
 - Pooled connections everywhere; an external transaction-mode pooler may be added later.
-- Scope values come from an authenticated source: a session lookup (ADR-0003) or a device credential (credential ADR), never from the request.
+- Scope values come from an authenticated source: a session lookup (ADR-0003), a device credential (credential ADR) or a live support grant plus the authenticated operator session (ADR-0004), never from the request. The lookups that find the session, credential or enrolment code run before any scope exists, through ADR-0001's pre-context lookup functions (class PL); they are the only database reads outside this helper and return identity, not tenant data.
 
 ### Requirements
 
@@ -85,7 +85,14 @@ Research note: `docs/research/tenant-isolation.md` (part 2; § 5).
 
 ## Decision
 
-**One scope helper per backend.** All tenant-scoped database work runs inside a transaction opened by a single helper. Its first statements set every scope value with `set_config(name, value, true)` — `app.tenant_id`, and as applicable `app.branch_ids` / `app.branch_all` (ADR-0003), `app.device_id` and `app.branch_id` (device requests), and the per-plan `statement_timeout` (`SET LOCAL`, limits ADR). It sets them **exactly once**: a second call in the same transaction is refused by the helper. Values are parsed (UUID) before binding and come only from the authenticated server-side scope object.
+**One scope helper per backend.** All tenant-scoped database work runs inside a transaction opened by a single helper. Its first statements set every scope value with `set_config(name, value, true)` — `app.tenant_id`, and as applicable `app.branch_ids` / `app.branch_all` (ADR-0003), `app.device_id` and `app.branch_id` (device requests), `app.operator_id` (support, ADR-0004), the per-plan `statement_timeout` (limits ADR) and, for support, `transaction_timeout`. It sets them **exactly once**: a second call in the same transaction is refused by the helper. Values are parsed (UUID) before binding and come only from the authenticated server-side scope object.
+
+**Three scope kinds.** The scope object is one of:
+- **Staff** (dashboard, ADR-0003): tenant from the session lookup; `app.branch_ids` from the principal's assigned branches, or `app.branch_all = 'on'` only when the verified role is owner.
+- **Device** (sync endpoint): tenant, branch and device from the verified credential. The helper sets **both** `app.branch_id` (the single branch, used by the device tables' `WITH CHECK` on all three ids, research F322) **and** `app.branch_ids` (a one-element list of the same branch, read by ADR-0003's restrictive branch policy), from the one credential value, so the two cannot disagree. It never sets `app.branch_all` for a device.
+- **Support** (Kodelix operator console, ADR-0004): `{grantId, operatorId}`. The helper loads the grant and refuses with `NoLiveGrant` — before any query on tenant data — unless it is approved, not revoked and not expired. It then sets `app.tenant_id` and `app.branch_ids` from the grant (an explicit list; never `app.branch_all`), `app.operator_id` from the authenticated operator session, and `transaction_timeout` locally from configuration (`transaction_timeout` exists from PostgreSQL 17, `docs/stack-reference/postgres/best-practices.md` line 53; its effect when set inside the running transaction is checked in S74).
+
+**Support kind: audit record committed before the read.** For the Support kind the helper works in two steps: (1) a short transaction, with the tenant context set from the grant, that calls the journal's append function (ADR-0004; owned by `audit_writer`) to write the "access opened" record, and **commits**; (2) the scoped transaction for the read or verb, where scope is set once as above, followed by an appended outcome and row count. A record written only inside the reading transaction would vanish on a client rollback (research F717). Each step is one transaction with its scope set exactly once; the rule "one set per transaction" is unchanged.
 
 **Go track (G1).** `WithScope(ctx, pool, scope, fn)` built on `pgx.BeginTxFunc`; repositories accept only the transaction type the helper hands out, so code outside it does not compile against tenant repositories. Optional G2 alarm: a `PrepareConn` hook that destroys a connection carrying a non-empty setting or an open transaction and increments a metric — an alarm, not the control.
 
@@ -93,7 +100,7 @@ Research note: `docs/research/tenant-isolation.md` (part 2; § 5).
 
 **Pooler.** P1: the driver pool only, until a connection limit is shown. If PgBouncer is adopted: version 1.26.1 or later (SCRAM impersonation fix, F114), and either `max_prepared_statements` > 0 or pgx `QueryExecModeExec` / pgjdbc `prepareThreshold=0` (F213, F232). The transaction-local setting itself is safe behind it (F115, F213a).
 
-**One contract for names.** Setting names (`app.tenant_id`, `app.branch_ids`, `app.branch_all`, `app.device_id`, `app.branch_id`) live in one constants module that the helper, the migrations' policies and the tests share.
+**One contract for names.** Setting names (`app.tenant_id`, `app.branch_ids`, `app.branch_all`, `app.device_id`, `app.branch_id`, `app.operator_id`) live in one constants module that the helper, the migrations' policies and the tests share. No other `app.*` setting exists.
 
 ### Architecture
 
@@ -118,16 +125,18 @@ sequenceDiagram
 ### Key Interfaces
 
 ```text
-Scope (app layer value)
-  tenant: TenantId
-  branches: All | List<BranchId>      // ADR-0003; devices: List of one
-  device: DeviceId?                   // device requests only
-  planTimeout: Duration?              // limits ADR
+Scope (app layer value) = Staff | Device | Support
+  Staff   { tenant: TenantId, branches: All | List<BranchId> }          // ADR-0003; All only for a verified owner
+  Device  { tenant: TenantId, branch: BranchId, device: DeviceId }      // sets app.branch_id AND app.branch_ids = [branch]
+  Support { grant: SupportGrantId, operator: OperatorId }               // ADR-0004; tenant and branch list come from the live grant
+  planTimeout: Duration?                                                // limits ADR (Staff, Device)
 
 Go:    func WithScope[T any](ctx context.Context, src TenantDataSource, s Scope, fn func(ScopedTx) (T, error)) (T, error)
 Ktor:  suspend fun <T> withScope(src: TenantDataSource, s: Scope, block: suspend ScopedTransaction.() -> T): T
 // ScopedTx / ScopedTransaction: the only handle tenant repositories accept.
-// Errors: ScopeAlreadySet (second call), InvalidScope (unparseable id) — no query runs.
+// Errors: ScopeAlreadySet (second call), InvalidScope (unparseable id),
+//         NoLiveGrant (Support: grant missing, unapproved, revoked or expired) — no query on tenant data runs.
+// Support: the "access opened" record is committed in its own transaction before fn runs.
 ```
 
 `TenantDataSource` comes from `TenantConnectionResolver` (ADR-0001).
@@ -137,7 +146,10 @@ Ktor:  suspend fun <T> withScope(src: TenantDataSource, s: Scope, block: suspend
 - **Must:** open a transaction per unit of tenant work through the helper; first statements set the scope with `set_config(..., true)` as bound parameters.
 - **Must never:** call `set_config(..., false)`, plain `SET`, or set any scope setting outside the helper (F115, F210).
 - **Must never:** set the scope twice in one transaction; the helper refuses (F110, F212, F420).
-- **Must never:** take tenant, branch or device ids from a request body, query string or header; the scope comes from the session lookup (ADR-0003) or the verified device credential (credential ADR).
+- **Must never:** take tenant, branch, device or operator ids from a request body, query string or header; the scope comes from the session lookup (ADR-0003), the verified device credential (credential ADR) or the live support grant plus the authenticated operator session (ADR-0004).
+- **Must (Device):** set `app.branch_id` and `app.branch_ids` from the same credential value; never `app.branch_all`.
+- **Must (Support):** refuse with `NoLiveGrant` before any tenant query; commit the "access opened" record in its own transaction before the scoped transaction; set `transaction_timeout` locally from configuration; never set `app.branch_all`.
+- **Must never:** cache grant liveness or session scope between transactions (ADR-0003, ADR-0004).
 - **Must (Go):** repositories accept only `ScopedTx`; acquire with a timeout and export pool saturation (F214).
 - **Must (Ktor):** use `suspendTransaction`; carry the scope explicitly or via `asContextElement`; no bare `ThreadLocal`/MDC tenant; no nested tenant transactions (F238–F240).
 - **Must:** policies cast with `NULLIF(current_setting(name, true), '')` (F110).
@@ -236,6 +248,8 @@ Greenfield.
 - [ ] After commit, rollback, panic and cancellation the next borrower of the same connection reads no scope.
 - [ ] A second scope call in one transaction is refused by the helper (no query runs).
 - [ ] Negative control: a session-level set is visible to the next borrower (proves the test can fail).
+- [ ] Device scope: a device sees branch-scoped rows of its own branch and 0 rows of a sibling branch; `app.branch_id` and `app.branch_ids` always hold the same branch.
+- [ ] Support scope: an expired, revoked or unapproved grant yields `NoLiveGrant` and no tenant query; a support read whose client rolls back still leaves its committed "access opened" record (S73).
 - [ ] Behind PgBouncer (if adopted): the same four checks pass.
 - [ ] Performance: checked against `perf-budgets.md` once it exists; not checked until then.
 
@@ -245,7 +259,9 @@ Foundational — no spec requirement. Enables: every backend use case that reads
 
 ## Related
 
-- Depends on ADR-0001. ADR-0003 builds on it.
+- Depends on ADR-0001. ADR-0003 and ADR-0004 build on it; ADR-0004's support kind is specified here, its grant and audit model there.
+- Review: independent `/architecture-review` of ADR-0001–0004 (2026-10-18, FAIL, text fixes) — applied in this revision.
+- Stack reference: `transaction_timeout` (PostgreSQL 17+) at `postgres/best-practices.md` line 53 and `postgres/deprecated-apis.md` line 13.
 - Research: `docs/research/tenant-isolation.md` part 2 (F201–F243, evidence `docs/research/evidence/tenant-isolation/part-2/`), part 1 F110/F115, part 4 F420.
 - Stack reference: `go/best-practices.md` line 55 and `ktor/best-practices.md` line 55 (studio 220bc6f) carry the pgx and Exposed facts this ADR uses; Exposed 1.6.0 exists and is not adopted.
 - Threat model: `docs/architecture/threat-models/tenant-isolation.md` (to be written).

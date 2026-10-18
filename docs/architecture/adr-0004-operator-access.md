@@ -22,11 +22,11 @@ Proposed
 
 ## Last Verified
 
-2026-10-17
+2026-10-18
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5, part 7: A + H + G, D on control-plane tables only, no break-glass) and set the values (grant 24 hours by default, 7 days at most; `clock_timestamp()`; audit committed before the read; superuser credential in the founder's Bitwarden; operator-id weak spot recorded, not fixed now). Drafted by `/architecture-decision`. Stack-lead validation: NOT ASSESSED — `stack.backend` and `stack.data` are unset; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Consulted roles named by the research (`cto`, `security-lead`): not spawned in this run. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5, part 7: A + H + G, D on control-plane tables only, no break-glass) and set the values (grant 24 hours by default, 7 days at most; `clock_timestamp()`; audit committed before the read; superuser credential in the founder's Bitwarden; operator-id weak spot recorded, not fixed now). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** owner-only grant insert, the 7-day ceiling and the one-way revoke are now enforced in the database; the transaction limit is `transaction_timeout`; table classes and roles refer to ADR-0001; seats and lease state are tenant data (licensing M35), not control plane; the scope mechanics live in ADR-0002. Stack-lead validation: NOT ASSESSED — `stack.backend` and `stack.data` are unset; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Consulted roles named by the research (`cto`, `security-lead`): not spawned in this run. Acceptance: the user.
 
 ## Summary
 
@@ -43,7 +43,7 @@ Kodelix (the platform operator, one founder today) must be able to support venue
 | **References Consulted** | `docs/stack-reference/postgres/VERSION.md`, `postgres/best-practices.md` § 1 (`admin_batch` only if an ADR accepts it — this ADR accepts none); `docs/research/tenant-isolation.md` part 7 (F701–F726, evidence `docs/research/evidence/tenant-isolation/part-7/`), part 1 (F101–F111), part 3 (F328), part 6 (F601); `docs/registry/architecture.yaml`; `docs/architecture/threat-models/licensing.md` TB3 and M15 (operator console) |
 | **Pinned versions relied on** | `postgres:18.6` (`pins.yaml`); Go 1.27.2 / pgx 5.11.0; Kotlin 2.4.21 / Exposed 1.5.1 (helper only, ADR-0002) |
 | **Post-Cutoff APIs Used** | None beyond ADR-0002. PostgreSQL features relied on: RLS policies with `TO <role>`, `clock_timestamp()` in a policy, column-level `UPDATE` grants, `SECURITY DEFINER` with a pinned `search_path`, `REVOKE EXECUTE ... FROM PUBLIC`, `pg_hba.conf` `local`/`peer`/`hostssl`/`replication`/`reject` records (F710, F711, F714–F716, F722) |
-| **Verification Required** | Branch-scoped grant composed with the ADR-0003 restrictive policy, and the cost of `clock_timestamp()` in a policy on a realistic table (S72 PENDING); an audit write that survives a client rollback (S73 PENDING); the `support` scope kind in the chosen track's helper, including second-set refusal (S74 PENDING); the `pg_hba.conf` record shapes for the superuser and the backup role (infra ADR) |
+| **Verification Required** | Branch-scoped grant composed with the ADR-0003 restrictive policy, and the cost of `clock_timestamp()` in a policy on a realistic table (S72 PENDING); an audit write that survives a client rollback (S73 PENDING); the `support` scope kind in the chosen track's helper, including second-set refusal and `transaction_timeout` set inside the running transaction (S74 PENDING); the grant table's insert and update policies and the 7-day `CHECK` (with the first support story); the `pg_hba.conf` record shapes for the superuser and the backup role (infra ADR). The spikes S70/S71 used a permissive tenant policy `TO app_rt` and `USING (true)` / `WITH CHECK (true)` on the journal; this ADR's shape (restrictive tenant predicate, journal written only through `audit_writer`'s function) differs and is re-tested with the first support story |
 
 Critical ADR: yes — privileged access across the tenant boundary decides whether ADR-0001's isolation holds for Kodelix itself (Foundation).
 
@@ -53,8 +53,8 @@ Critical ADR: yes — privileged access across the tenant boundary decides wheth
 |-------|-------|
 | **Depends On** | ADR-0001 (tenancy model; no bypass role), ADR-0002 (scope helper), ADR-0003 (branch scope and session) — all Proposed; this ADR cannot be Accepted before them |
 | **Enables** | Support-tooling epic (operator console read views and support verbs); the guided-install diagnostic bundle; `/threat-model tenant-isolation` (abuse cases AC1–AC13); the storage ADR's audit sink (grant and access journal); a team-growth amendment of this ADR when a second operator is added |
-| **Blocks** | Every support or admin tool that reads or writes tenant data (ADR-0001: none is built until this ADR is Accepted); the licensing operator console's tenant-data views (its control-plane actions — seats, moves, leases — are not tenant data, see Decision § 6) |
-| **Ordering Note** | Accept after ADR-0001–0003. The user plans `/architecture-review` of ADR-0001–0004 together in a fresh session. S72–S74 run before the first support story, not before acceptance. |
+| **Blocks** | Every support or admin tool that reads or writes tenant data (ADR-0001: none is built until this ADR is Accepted); the licensing operator console's views of tenant data. Seat issuance, moves and leases are tenant data (TD, licensing M35) handled by the licensing service roles under the licensing ADR, not by this ADR's support path (Decision § 7) |
+| **Ordering Note** | Accept after ADR-0001–0003. The first `/architecture-review` (2026-10-18) returned FAIL with text fixes, applied in this revision; a second independent review follows in a fresh session. S72–S74 run before the first support story, not before acceptance. |
 
 ## Context
 
@@ -87,19 +87,23 @@ Research note: `docs/research/tenant-isolation.md` (part 7; § 5 part 7 holds th
 
 ## Decision
 
-**1. Support grant (owner-approved).** A grant names tenant, an explicit branch list, scope (`read`, or one named write verb), reason, operator, request time, owner approver, approval time, expiry and revocation time. The **owner** approves it in the dashboard and can **revoke it at any time**. Expiry is **24 hours after approval by default and at most 7 days** (the 7-day ceiling exists for guided installs). An owner who picks "all branches" gets the current branch list written into the grant; a grant never sets `app.branch_all` (TR-BRANCH-SCOPE). Grants are rows in a tenant-scoped table: the owner role can insert a grant only for its own tenant and can update only `revoked_at` (F714); the support role can read only its own operator's grants and can change none (F714). Approval window (how long a request may wait) and session length inside a grant: open (P7-OQ1).
+**1. Support grant (owner-approved, enforced in the database).** A grant names tenant, an explicit branch list, scope (`read`, or one named write verb), reason, operator, request time, owner approver, approval time, expiry and revocation time. The **owner** approves it in the dashboard and can **revoke it at any time**. Expiry is **24 hours after approval by default and at most 7 days** (the 7-day ceiling exists for guided installs). An owner who picks "all branches" gets the current branch list written into the grant; a grant never sets `app.branch_all` (ADR-0003). `support_grants` is a TD table (ADR-0001) with these database rules, so a dashboard bug cannot widen a grant:
+- **Owner-only insert.** `app_rt`'s `INSERT` policy requires `current_setting('app.branch_all', true) = 'on'` — set by the helper only for a verified owner (ADR-0003) — so a manager's dashboard session cannot create a grant, and the restrictive tenant predicate keeps it inside the owner's tenant (F714). The same policy requires `approved_at` to lie within the inserting transaction (`approved_at >= transaction_timestamp() AND approved_at <= clock_timestamp()`), so an approval cannot be back- or forward-dated.
+- **7-day ceiling as a constraint.** `CHECK (expires_at > approved_at AND expires_at <= approved_at + interval '7 days')`. The 24-hour default stays configuration with a typed default; the ceiling is a security bound and changes only by migration.
+- **Revoke is one-way.** `app_rt` has column-level `UPDATE` on `revoked_at` only; its `UPDATE` policy requires `app.branch_all = 'on'` and has `WITH CHECK (revoked_at IS NOT NULL)`, so a revoked grant cannot be reopened.
+- `support_rt` reads only its own operator's grants and can change none (F714). Approval window (how long a request may wait) and session length inside a grant: open (P7-OQ1).
 
-**2. Database grant gate.** A dedicated login role `support_rt` (NOSUPERUSER, NOBYPASSRLS, owns nothing) has `SELECT` only on tenant tables. Its policies, written `TO support_rt`, require both the tenant context and a live grant: approved, not revoked, `expires_at > clock_timestamp()` — **`clock_timestamp()`, not `now()`**, because `now()` keeps a grant alive for the rest of a transaction that started before expiry (F715b). With no live grant the role reads 0 rows of that tenant although it can set any tenant context (F714). The runtime roles' policies are unchanged.
+**2. Database grant gate.** `support_rt` (ADR-0001 inventory: LOGIN, NOSUPERUSER, NOBYPASSRLS, owns nothing) has `SELECT` only on TD tables. ADR-0001's restrictive tenant predicate and ADR-0003's restrictive `branch_scope` policy both bind it, so the grant's branch list limits it like an assignment limits a manager. Its own permissive policy on each TD table, written `TO support_rt`, requires a live grant for the context tenant and operator: approved, not revoked, `expires_at > clock_timestamp()` — **`clock_timestamp()`, not `now()`**, because `now()` keeps a grant alive for the rest of a transaction that started before expiry (F715b). With no live grant the role reads 0 rows of that tenant although it can set any tenant context (F714). Because the tenant predicate is restrictive for every role, no other role's permissive policy gives `support_rt` a way around the gate (the first draft's permissive tenant policy did — review B1).
 
-**3. Scope through the ADR-0002 helper.** The operator console calls the same helper with a `support` scope kind built from the live grant: it sets `app.tenant_id`, `app.branch_ids` (the grant's list) and `app.operator_id` once, first, from the grant and the authenticated operator session — never from the request. No second helper exists. The helper bounds the length of a support transaction (setting chosen when sourced, F726c).
+**3. Scope through the ADR-0002 helper.** The operator console uses the helper's **Support** scope kind (specified in ADR-0002): it refuses with `NoLiveGrant` before any tenant query, sets `app.tenant_id`, `app.branch_ids` (the grant's list) and `app.operator_id` once, first, from the grant and the authenticated operator session — never from the request — and bounds the support transaction with **`transaction_timeout`** set locally from configuration (PostgreSQL 17+, confirmed in `docs/stack-reference/postgres/best-practices.md` line 53; behaviour inside the running transaction checked in S74). No second helper exists.
 
-**4. Audit committed before the read.** Before any support read or verb, the helper writes an "access opened" record (grant, operator, tenant, branch list, scope, purpose) in **its own committed transaction**, then runs the read; outcome and row count are appended afterwards. A record written inside the reading transaction disappears when the client rolls back (F717). The mechanism — application-side commit or a `dblink` loopback — is chosen with S73. Records hold IDs only: no staff names, no row contents, no secrets.
+**4. Audit committed before the read.** Before any support read or verb, the helper writes an "access opened" record (grant, operator, tenant, branch list, scope, purpose) in **its own committed transaction**, then runs the read; outcome and row count are appended afterwards (ADR-0002, Support kind). A record written inside the reading transaction disappears when the client rolls back (F717). The mechanism — application-side commit or a `dblink` loopback — is chosen with S73. Records hold IDs only: no staff names, no row contents, no secrets.
 
-**5. Three audit layers.** (i) A per-tenant, append-only grant and access journal with a hash chain (INSERT only for the writer roles; the owner reads its own tenant's journal) — the same control journal as the device and deletion records (tenant-isolation § 4.2 item 3; its home outside the restorable database is the storage ADR's, flagged on S33). (ii) The pre-read commit of § 4. (iii) The PostgreSQL server log for support, superuser and replication sessions, shipped off-host to a logically separate system (ASVS 16.4.3) as the check on (i), because a superuser can edit (i) and a chain does not detect deletion of its newest row (F718); the latest chain hash is anchored off-host. Retention: open (P7-OQ4).
+**5. Three audit layers.** (i) A per-tenant, append-only grant and access journal with a hash chain — a TD table (ADR-0001). It is written only through `SECURITY DEFINER` append functions owned by `audit_writer` (NOLOGIN; `INSERT` only, through its own permissive policy); `support_rt` has `EXECUTE` on those functions and no direct grant on the table; `app_rt` reads it only as the owner (`SELECT` policy requiring `app.branch_all = 'on'`); no role may `UPDATE` or `DELETE`, and no policy is `USING (true)` or `WITH CHECK (true)` (unlike spike S70). It is the same control journal as the device and deletion records (tenant-isolation § 4.2 item 3); its home outside the restorable database is the storage ADR's, flagged on S33. (ii) The pre-read commit of § 4. (iii) The PostgreSQL server log for support, superuser and replication sessions, shipped off-host to a logically separate system (ASVS 16.4.3) as the check on (i), because a superuser can edit (i) and a chain does not detect deletion of its newest row (F718); the latest chain hash is anchored off-host. Retention: open (P7-OQ4).
 
-**6. Writes only through support verbs (Option H).** Each write is a named `SECURITY DEFINER` function (for example "reset enrolment code", "resend lease", "mark review item") owned by a NOLOGIN, non-bypass role that does not own the tables and whose own policies are gated by a live grant whose scope names that verb (F716). Each verb has `SET search_path = <schema>, pg_temp`, `EXECUTE` revoked from `PUBLIC` and granted only to `support_rt` in the same migration (F710, F716), its own test, and its own audit record. `support_rt` has no `INSERT`, `UPDATE` or `DELETE` on tenant tables.
+**6. Writes only through support verbs (Option H).** Each write is a named `SECURITY DEFINER` function (for example "reset enrolment code", "resend lease", "mark review item") owned by `support_fn` (ADR-0001 inventory: NOLOGIN, non-bypass, owns no table), whose own permissive policies are gated by a live grant whose scope names that verb (F716); the restrictive tenant and `branch_scope` policies bind it too. Each verb has `SET search_path = <schema>, pg_temp`, `EXECUTE` revoked from `PUBLIC` and granted only to `support_rt` in the same migration (F710, F716), its own test, and its own audit record. `support_rt` has no `INSERT`, `UPDATE` or `DELETE` on tenant tables.
 
-**7. Owner unreachable: control plane only, no break-glass.** Without a live owner grant Kodelix never reads tenant data. In an emergency the operator acts only on **control-plane tables that hold no tenant data** (tenants, seats, plans, lease state, restore watermark) through roles whose policies match all rows (`USING (true)`, Option D) — allowed only on those tables and only with a catalogue test that lists every such policy — and on infrastructure (restart, suspend, restore service). Reopening a consent-free path needs the founder and counsel (P7-OQ2, P7-OQ3).
+**7. Owner unreachable: control plane only, no break-glass.** Without a live owner grant Kodelix never reads tenant data. In an emergency the operator acts only on ADR-0001's **class CP** tables — tenant status and suspension, plan assignment and limit values, restore watermark — through `platform_rt`, the one role with a `USING (true)` policy, on CP tables only (Option D), and on infrastructure (restart, suspend, restore service). **Seats, seat licences, devices, seat moves, approvals and lease state are tenant data (class TD)**, as the licensing threat model M35 places them under tenant RLS: Kodelix reaches them only through the licensing service roles, working per tenant with the context set as the licensing ADR defines, or through a grant-gated support verb such as "resend lease". Reopening a consent-free path needs the founder and counsel (P7-OQ2, P7-OQ3).
 
 **8. Guided installs: diagnostic bundle first (Option G).** The device or the owner produces a redacted bundle (allow-listed fields: versions, sync state, error codes, device ids); the operator works from it. Where hosted tenant data is needed during a guided install, the owner grants a support grant of up to 7 days. Whether guided installs need hosted data at all in the first release: P7-OQ12.
 
@@ -134,16 +138,17 @@ Trust boundaries: operator console ↔ hosted backend (licensing TB3); support r
 ### Key Interfaces
 
 ```text
-SupportGrant (tenant-scoped table; owner inserts, owner updates revoked_at only)
+SupportGrant (class TD table support_grants; owner-only insert and one-way revoke enforced by policy)
   id, tenant_id, branch_ids: List<BranchId>   // explicit, never "all"
   scope: read | verb:<name>
   operator_id, reason
-  requested_at, approved_by (owner user id), approved_at
-  expires_at  // approved_at + default 24 h; <= approved_at + 7 d (values as data, typed defaults)
-  revoked_at?
+  requested_at, approved_by (owner user id)
+  approved_at  // within the inserting transaction (policy)
+  expires_at   // default approved_at + 24 h (config); CHECK expires_at <= approved_at + interval '7 days'
+  revoked_at?  // UPDATE only to non-null (WITH CHECK revoked_at IS NOT NULL)
 
-Scope (ADR-0002) gains:  kind = Support { grantId, operatorId }
-  // the helper derives tenant and branch list from the live grant; errors: NoLiveGrant, ScopeAlreadySet, InvalidScope
+Scope kind Support { grantId, operatorId } — specified in ADR-0002
+  // errors: NoLiveGrant, ScopeAlreadySet, InvalidScope; access record committed before the read
 
 Support verbs: SECURITY DEFINER functions support.<verb>(...)
   // owned by a NOLOGIN non-bypass role; EXECUTE only for support_rt; each appends its audit record
@@ -155,13 +160,14 @@ No HTTP contract is fixed here; the console's API goes to `contracts/` with the 
 
 ### Implementation Guidelines
 
-- **Must (adapters, data):** create `support_rt` NOSUPERUSER, NOBYPASSRLS, owning nothing, with `SELECT` only on tenant tables; generate its grant-gated policy for every tenant table in the same migration that creates the table.
+- **Must (adapters, data):** create `support_rt`, `support_fn`, `audit_writer` and `backup_rt` exactly as ADR-0001's role inventory lists them; `support_rt` has `SELECT` only on TD tables; generate its grant-gated permissive policy `TO support_rt` for every TD table in the same migration that creates the table.
+- **Must (adapters, data):** `support_grants` has `app_rt` `INSERT` and `UPDATE` policies requiring `app.branch_all = 'on'`, the `approved_at` window check, `WITH CHECK (revoked_at IS NOT NULL)` on update, column-level `UPDATE` on `revoked_at` only, and `CHECK (expires_at > approved_at AND expires_at <= approved_at + interval '7 days')`.
 - **Must (adapters, data):** test grant liveness with `clock_timestamp()` in every support policy; never `now()` or `current_timestamp`.
 - **Must (app):** open every support access through the ADR-0002 helper with the `support` scope kind; the helper commits the "access opened" record in its own transaction before the read.
 - **Must (app):** take tenant, branch list and operator from the live grant and the authenticated operator session only (FP-SCOPE-FROM-REQUEST).
 - **Must (adapters, data):** write support verbs as `SECURITY DEFINER` functions owned by a NOLOGIN non-bypass, non-owner role, with a pinned `search_path` ending in `pg_temp`, `EXECUTE` revoked from `PUBLIC` in the creating migration, one test and one audit record each.
-- **Must (app, config):** grant default (24 h) and ceiling (7 days) come from configuration with typed defaults, not literals.
-- **Must (CI):** extend the ADR-0001 catalogue checks: no `USING (true)` policy on a tenant table; every `USING (true)` policy listed and on an allow-listed control-plane table; no `PUBLIC` `EXECUTE` on a `SECURITY DEFINER` function; no unexpected role membership (`pg_read_all_data`, `pg_write_all_data`, server-file roles, `REPLICATION` other than the backup role) (P7-OQ14).
+- **Must (app, config):** the grant default (24 h) and the support `transaction_timeout` come from configuration with typed defaults; the 7-day ceiling is the database `CHECK` above and the app validates against the same value before insert.
+- **Must (CI):** ADR-0001's catalogue checks cover this ADR (P7-OQ14): `USING (true)` only for `platform_rt` on CP tables and `auth_lookup` on PL tables; every TD table has a permissive policy `TO support_rt` gated by the grant; `SECURITY DEFINER` functions owned only by `auth_lookup`, `support_fn` or `audit_writer`, none `PUBLIC`-executable; no unexpected role membership (`pg_read_all_data`, `pg_write_all_data`, server-file roles, `REPLICATION` other than `backup_rt`).
 - **Must never:** give `support_rt` or any support path `INSERT`, `UPDATE` or `DELETE` on tenant tables, `BYPASSRLS`, superuser, or membership in `pg_read_all_data` / `pg_write_all_data`.
 - **Must never:** let the operator sign in as the owner or mint an owner session ("log in as"); a view-as keeps the operator's own identity.
 - **Must never:** create per-grant database logins for support; human SQL sessions are for superuser DBA work only.
@@ -229,7 +235,7 @@ No HTTP contract is fixed here; the console's API goes to `contracts/` with the 
 
 ### Neutral
 
-- The licensing operator console's control-plane actions (seats, moves, leases) are untouched by this ADR; its tenant-data views fall under it.
+- The licensing operator console's issuance and approval actions (seats, moves, leases) run through the licensing service roles under the licensing ADR, per tenant with the context set; any operator view of a tenant's data in that console falls under this ADR.
 
 ## Risks
 
@@ -241,7 +247,8 @@ No HTTP contract is fixed here; the console's API goes to `contracts/` with the 
 | Superuser edits or truncates the journal (AC4) | Low | High | Off-host log; hash anchored off-host; superuser logins page |
 | Second operator uses another's grant (AC2) | Low today | High | Recorded; fixed before a second operator (§ 10, P7-OQ6) |
 | Attacker poses as the owner to approve a grant (AC7) | Medium | High | Owner step-up on approval (ASVS 7.5.3, P7-OQ9); notify every owner contact; grant shows scope and expiry |
-| `USING (true)` policy lands on a tenant table (AC12) | Low | High | Catalogue test; allow-list of control-plane tables |
+| A dashboard bug lets a manager create a grant, writes a long grant or reopens a revoked one | Low | High | Insert and update policies require `app.branch_all = 'on'`; 7-day `CHECK`; `WITH CHECK (revoked_at IS NOT NULL)` |
+| `USING (true)` policy lands on a tenant table (AC12) | Low | High | Restrictive tenant predicate still holds (ADR-0001); catalogue test C2 allows `USING (true)` only for `platform_rt` on CP and `auth_lookup` on PL |
 | Definer verb executable by `PUBLIC` or with an open `search_path` (AC9) | Low | High | Migration rule; catalogue test |
 | Backup or replication credential stolen (AC8) | Low | High | Encrypted medium; address-limited record; alert on unexpected replication connections |
 | Counsel rules a dashboard grant is not a "written instruction" (P7-OQ3) | Unknown | Medium | Contract text names the grant as the instruction; revisit on counsel's answer |
@@ -287,7 +294,11 @@ Greenfield.
 - [ ] A support read whose client rolls back still leaves its "access opened" record (S73).
 - [ ] The journal's chain verification detects an edited row; the off-host log shows the superuser session that made it (F718).
 - [ ] Catalogue checks fail on a planted `USING (true)` policy on a tenant table, a `PUBLIC`-executable definer function and an unexpected `pg_read_all_data` membership.
-- [ ] A grant request longer than the 7-day ceiling is refused; the default is 24 hours.
+- [ ] A grant with `expires_at` more than 7 days after `approved_at` fails the `CHECK` constraint, whatever the application sends; the default is 24 hours.
+- [ ] As a manager (`app.branch_all` unset), inserting a grant fails in the database; as the owner it succeeds; a back- or forward-dated `approved_at` fails.
+- [ ] Setting `revoked_at` back to NULL fails (`WITH CHECK`); changing any other column fails (`permission denied`).
+- [ ] `support_rt` with a grant for branch A1 reads 0 rows of A2 on branch-scoped tables (ADR-0003 `branch_scope`).
+- [ ] A support transaction that runs past the configured `transaction_timeout` is ended by the server (S74).
 - [ ] Performance: support policy cost measured on a realistic table (S72); checked against `perf-budgets.md` once it exists, not checked until then.
 
 ## Spec Requirements Addressed
@@ -296,7 +307,8 @@ Foundational — no spec requirement. Enables: the support-tooling epic (operato
 
 ## Related
 
-- Depends on ADR-0001 (no bypass role; "the next ADR to write"), ADR-0002 (scope helper), ADR-0003 (branch scope; `app.branch_all` only for a verified owner).
+- Depends on ADR-0001 (no bypass role; restrictive tenant predicate; table classes TD/CP/G/PL; role inventory), ADR-0002 (scope helper; Support kind), ADR-0003 (`branch_scope` binds `support_rt` and `support_fn`; `app.branch_all` only for a verified owner).
+- Review: independent `/architecture-review` of ADR-0001–0004 (2026-10-18, FAIL, text fixes) — applied in this revision; a second independent review follows in a fresh session.
 - Research: `docs/research/tenant-isolation.md` part 7 (F701–F726; evidence `docs/research/evidence/tenant-isolation/part-7/`; S70 partly a wrong test, labelled; S71 corrected), § 5 part 7 (decision and founder values), § 9 part 7 (P7-OQ1–P7-OQ14).
 - Licensing: `docs/architecture/threat-models/licensing.md` TB3 and M15 (operator console identity, WebAuthn, step-up — relied on, not decided here); `docs/architecture/licence-model.md` § 12 (Draft).
 - Privacy: `docs/architecture/privacy/pdpl-counsel-brief-2026-10.md` (Q1 roles; Q2 answered by counsel; Q6.9 remote support).

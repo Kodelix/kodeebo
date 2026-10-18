@@ -2,6 +2,8 @@
 # (Step 3a) before any new ADR. Append only; a changing stance gets
 # `status: superseded_by: ADR-NNNN` and a new entry. Never edit an entry's text.
 # `adr_status` mirrors the ADR's Status at the time the entry was written.
+# 2026-10-18: ADR-0001..0004 revised in place (still Proposed) after /architecture-review
+# (FAIL, text fixes B1, B2 and per-ADR items); changed stances superseded by "-R2" entries.
 
 data_ownership: []
 
@@ -10,7 +12,7 @@ tenancy_rules:
     rule: "Every table holding tenant data has tenant_id uuid NOT NULL, ENABLE + FORCE ROW LEVEL SECURITY and a permissive policy tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid per command; unique keys and PKs lead with tenant_id; FKs between tenant tables are composite with tenant_id."
     adr: ADR-0001
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0001 revision 2026-10-18 -> TR-RLS-RESTRICTIVE-TENANT"
   - id: TR-TENANT-UNIT
     rule: "Tenant = owner organisation; branch = venue, keyed (tenant_id, id); device = cashier PC, keyed (tenant_id, branch_id, id). Seats, pricing and device binding: docs/research/licensing.md Part 1 and the licensing ADR."
     adr: ADR-0001
@@ -20,14 +22,49 @@ tenancy_rules:
     rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets app.tenant_id (and branch list, device, plan timeout) with set_config(..., true) exactly once, first, from a server-side source (session lookup or verified device credential)."
     adr: ADR-0002
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0002 revision 2026-10-18 -> TR-SCOPE-ONCE-PER-TX-R2"
   - id: TR-BRANCH-SCOPE
     rule: "Branch-scoped tables carry branch_id with a composite FK to branches and a RESTRICTIVE policy on app.branch_ids / app.branch_all; app.branch_all = 'on' only for a verified owner role; application-layer function permissions through one deny-by-default Authorizer."
     adr: ADR-0003
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0003 revision 2026-10-18 -> TR-BRANCH-SCOPE-R2"
   - id: TR-SUPPORT-GRANT-GATE
     rule: "Kodelix support reads tenant data only as support_rt (NOSUPERUSER, NOBYPASSRLS, owns nothing, SELECT only on tenant tables) whose policies TO support_rt require the tenant context AND a live owner grant (approved, revoked_at IS NULL, expires_at > clock_timestamp()); the grant carries an explicit branch list and never sets app.branch_all; support writes only through SECURITY DEFINER verbs gated by a grant naming the verb; the helper commits the access record before the read."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: "superseded_by: ADR-0004 revision 2026-10-18 -> TR-SUPPORT-GRANT-GATE-R2"
+  - id: TR-RLS-RESTRICTIVE-TENANT
+    rule: "Every TD, CP and PL table has tenant_id uuid NOT NULL, ENABLE + FORCE ROW LEVEL SECURITY and a RESTRICTIVE FOR ALL policy tenant_isolation: tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::uuid (USING and WITH CHECK); on TD tables it has no TO clause (binds every role); each role gets its own permissive policy TO that role for the commands it needs. Unique keys and PKs lead with tenant_id; FKs between tenant tables are composite with tenant_id."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-TABLE-CLASSES
+    rule: "Every table is in one class recorded with the migrations: TD tenant data (incl. licensing seats, seat_licences, devices, seat_moves, approvals, lease_log per licensing M35; support grants and journal), no USING (true); CP tenant-keyed control plane without personal, sales, tax or licensing data (tenant status, plan, restore watermark), restrictive tenant policy TO every inventory role except platform_rt, which alone has USING (true); G global, no tenant_id, on the allow-list, no RLS; PL pre-context lookups (device_credentials, enrolment_codes, sessions), restrictive tenant policy TO every inventory role except auth_lookup, read only through SECURITY DEFINER functions owned by auth_lookup that return identity for one key."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-ROLE-INVENTORY
+    rule: "Database roles are exactly: migrator (NOLOGIN owner, DDL), bootstrap superuser (local only, cluster admin), app_rt, device_rt, job_rt, licensing service roles (named by the licensing ADR), platform_rt (CP only), auth_lookup (NOLOGIN, PL lookups), support_rt, support_fn (NOLOGIN), audit_writer (NOLOGIN), backup_rt (REPLICATION only). All but the bootstrap superuser are NOSUPERUSER, NOBYPASSRLS and own nothing; a new role needs an ADR amendment; catalogue C4 fails on any other role."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-SCOPE-ONCE-PER-TX-R2
+    rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets its settings with set_config(..., true) exactly once, first, from a server-side source; kinds Staff (session lookup), Device (verified credential: app.branch_id AND app.branch_ids = [same branch], never app.branch_all), Support (live grant + operator session: app.tenant_id, app.branch_ids from the grant, app.operator_id, transaction_timeout; access record committed in its own transaction before the read). Settings: app.tenant_id, app.branch_ids, app.branch_all, app.device_id, app.branch_id, app.operator_id only. Only PL lookup functions run before a scope exists."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: TR-BRANCH-SCOPE-R2
+    rule: "Branch-scoped tables carry branch_id with a composite FK to branches and a RESTRICTIVE policy branch_scope on app.branch_ids / app.branch_all written TO app_rt, device_rt, support_rt, support_fn; app.branch_all = 'on' only for a verified owner (never a device or a support grant); staff_roles and staff_branches are tenant-wide; application-layer function permissions through one deny-by-default Authorizer."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: TR-ROLE-ASSIGNMENT-GUARD
+    rule: "app_rt's INSERT, UPDATE and DELETE policies on staff_roles and staff_branches require current_setting('app.branch_all', true) = 'on' (owner only), as database defence in depth behind the Authorizer (research F421)."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: TR-SUPPORT-GRANT-GATE-R2
+    rule: "Kodelix support reads TD data only as support_rt (SELECT only), bound by the restrictive tenant and branch_scope policies, through a permissive policy TO support_rt requiring a live owner grant (approved, revoked_at IS NULL, expires_at > clock_timestamp()); support_grants: app_rt INSERT and UPDATE require app.branch_all = 'on', approved_at within the inserting transaction, CHECK expires_at <= approved_at + interval '7 days', UPDATE on revoked_at only WITH CHECK (revoked_at IS NOT NULL); writes only through support_fn verbs gated by a grant naming the verb; journal written only through audit_writer functions; access record committed before the read; support transactions bounded by transaction_timeout."
     adr: ADR-0004
     adr_status: Proposed
     status: active
@@ -42,14 +79,34 @@ interface_contracts:
     contract: "WithScope (Go) / withScope (Ktor) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope."
     adr: ADR-0002
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0002 revision 2026-10-18 -> IC-SCOPE-HELPER-R2"
   - id: IC-SESSION-AUTHORIZER
     contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}, read from the database per request; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
     adr: ADR-0003
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0003 revision 2026-10-18 -> IC-SESSION-AUTHORIZER-R2"
   - id: IC-SUPPORT-GRANT
     contract: "SupportGrant {id, tenant_id, branch_ids (explicit), scope read | verb:<name>, operator_id, reason, requested_at, approved_by, approved_at, expires_at (default 24 h, max 7 d, from config), revoked_at?}; owner inserts and updates revoked_at only. ADR-0002 Scope gains kind Support {grantId, operatorId}; helper errors NoLiveGrant, ScopeAlreadySet, InvalidScope."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: "superseded_by: ADR-0004 revision 2026-10-18 -> IC-SUPPORT-GRANT-R2"
+  - id: IC-PRE-CONTEXT-LOOKUPS
+    contract: "DeviceCredentialLookup.find(keyId), SessionLookup.find(tokenHash), EnrolmentCodeLookup.find(codeHash) -> identity {tenant, branch/user/device, status} | NotFound; SECURITY DEFINER functions owned by auth_lookup, pinned search_path, no PUBLIC EXECUTE; the only DB reads before a scope exists."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: IC-SCOPE-HELPER-R2
+    contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query)."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: IC-SESSION-AUTHORIZER-R2
+    contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}: SessionLookup.find(tokenHash) (PL) then a tenant-scoped read of staff_roles and staff_branches, per request; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: IC-SUPPORT-GRANT-R2
+    contract: "SupportGrant (TD table support_grants) {id, tenant_id, branch_ids (explicit), scope read | verb:<name>, operator_id, reason, requested_at, approved_by, approved_at (within the inserting transaction), expires_at (default 24 h from config; CHECK <= approved_at + 7 days), revoked_at? (one-way)}; owner-only insert and revoke enforced by policy. Scope kind Support {grantId, operatorId} specified in ADR-0002."
     adr: ADR-0004
     adr_status: Proposed
     status: active
@@ -98,7 +155,7 @@ forbidden_patterns:
     pattern: "A USING (true) policy on a table that holds tenant data (allowed only on allow-listed control-plane tables, each listed by a catalogue test)."
     adr: ADR-0004
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0004 revision 2026-10-18 -> FP-USING-TRUE-TENANT-TABLE-R2"
   - id: FP-OPERATOR-ID-FROM-REQUEST
     pattern: "Taking the operator id from a request rather than the authenticated operator session (per-operator database identity required before a second operator)."
     adr: ADR-0004
@@ -118,9 +175,29 @@ forbidden_patterns:
     pattern: "Kodelix reading tenant data without a live owner grant, including break-glass, a superuser read or a per-grant database login."
     adr: ADR-0004
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0004 revision 2026-10-18 -> FP-TENANT-READ-WITHOUT-GRANT-R2"
   - id: FP-CACHED-GRANT-STATE
     pattern: "Caching support-grant state (a cached grant outlives the owner's revoke)."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-PERMISSIVE-POLICY-WITHOUT-ROLE
+    pattern: "A permissive policy without a TO role list on a TD, CP or PL table, or a tenant predicate carried only in a permissive policy."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: FP-UNLISTED-DB-ROLE
+    pattern: "A database role, or a role membership in pg_read_all_data, pg_write_all_data or the server-file roles, that is not in ADR-0001's role inventory."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: FP-USING-TRUE-TENANT-TABLE-R2
+    pattern: "USING (true) or WITH CHECK (true) on any TD table; on CP tables for any role other than platform_rt; on PL tables for any role other than auth_lookup."
+    adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-TENANT-READ-WITHOUT-GRANT-R2
+    pattern: "A Kodelix person reading tenant data without a live owner grant, including break-glass, a superuser read or a per-grant database login. Service roles acting under their own ADR (licensing service roles, job_rt) are not operator reads."
     adr: ADR-0004
     adr_status: Proposed
     status: active
