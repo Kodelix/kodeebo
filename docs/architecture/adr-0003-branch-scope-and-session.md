@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 > **Who may move this to `Accepted`: the user, or `cto` on the user's explicit
 > confirmation. No other agent, and no skill on its own.**
@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: B1-B + B2-A). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** the restrictive branch policy names the roles it binds (including `support_rt` and `support_fn`); the session is found through a pre-context lookup (ADR-0001 class PL); role and branch-assignment writes get a database-side guard (research F421). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** person-started exports under Staff scope; session ends through § 1c; principal-read scope named; performance row corrected. **Third review (2026-10-18):** a background export refuses a disabled user or lost permission; Cost row corrected. **Fourth review (2026-10-18, CONCERNS):** the export re-check names its source (`Logins.statusOf` plus the principal read); logout does not cancel an export. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.backend`, `stack.web` unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: B1-B + B2-A). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** the restrictive branch policy names the roles it binds (including `support_rt` and `support_fn`); the session is found through a pre-context lookup (ADR-0001 class PL); role and branch-assignment writes get a database-side guard (research F421). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** person-started exports under Staff scope; session ends through § 1c; principal-read scope named; performance row corrected. **Third review (2026-10-18):** a background export refuses a disabled user or lost permission; Cost row corrected. **Fourth review (2026-10-18, CONCERNS):** the export re-check names its source (`Logins.statusOf` plus the principal read); logout does not cancel an export. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.backend`, `stack.web` unset). CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
 
 ## Summary
 

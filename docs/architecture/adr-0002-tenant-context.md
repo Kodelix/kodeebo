@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 > **Who may move this to `Accepted`: the user, or `cto` on the user's explicit
 > confirmation. No other agent, and no skill on its own.**
@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Also 2026-10-18: a **Job** scope kind for `job_rt` (the closed list of kinds had none; needed by the usage counts of ADR-0004 § 7a and by every background job). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** grant loaded through `SupportGrantLookup`; principal read = Staff with an empty branch list; PL functions are the only access outside the helper. **Third review (2026-10-18):** that claim narrowed to TD and PL rows (CP, deploy and backup access named); outcome appended as the last statement. **Fourth review (2026-10-18, CONCERNS):** the claim names the § 1c functions; no licensing scope kind until the licensing ADR amends this ADR. Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Also 2026-10-18: a **Job** scope kind for `job_rt` (the closed list of kinds had none; needed by the usage counts of ADR-0004 § 7a and by every background job). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** grant loaded through `SupportGrantLookup`; principal read = Staff with an empty branch list; PL functions are the only access outside the helper. **Third review (2026-10-18):** that claim narrowed to TD and PL rows (CP, deploy and backup access named); outcome appended as the last statement. **Fourth review (2026-10-18, CONCERNS):** the claim names the § 1c functions; no licensing scope kind until the licensing ADR amends this ADR. Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
 
 ## Summary
 

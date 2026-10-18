@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 > **Who may move this to `Accepted`: the user, or `cto` on the user's explicit
 > confirmation. No other agent, and no skill on its own.**
@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. **2026-10-18, founder decision (ADR-0004 § 7a):** the CP class allows derived counts without money, names, items or contents; usage counts added as a CP example. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** PL writes and sign-in lookup (§ 1c), `deploy_rt`, data migrations as `job_rt`, tenant list via `platform_rt`, M27/M38 as a future amendment. **Third review (2026-10-18):** deploy option A (privileged migrations as the bootstrap superuser); licensing revoke split; `EnrolmentCodeLookup` listed. **Fourth review (2026-10-18, CONCERNS):** stale superuser line; enrolment label stored on the code; `Logins.statusOf`; C5 planted test; ALTER FUNCTION source; deploy runbook stop. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided the options on 2026-10-17 (`docs/research/tenant-isolation.md` § 5). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (verdict FAIL, text fixes only):** B1 — the tenant predicate is now a RESTRICTIVE policy for every role, with one permissive policy per role (the user chose the stack reference's option); B2 — table classes and one role inventory added. **2026-10-18, founder decision (ADR-0004 § 7a):** the CP class allows derived counts without money, names, items or contents; usage counts added as a CP example. **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** PL writes and sign-in lookup (§ 1c), `deploy_rt`, data migrations as `job_rt`, tenant list via `platform_rt`, M27/M38 as a future amendment. **Third review (2026-10-18):** deploy option A (privileged migrations as the bootstrap superuser); licensing revoke split; `EnrolmentCodeLookup` listed. **Fourth review (2026-10-18, CONCERNS):** stale superuser line; enrolment label stored on the code; `Logins.statusOf`; C5 planted test; ALTER FUNCTION source; deploy runbook stop. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.data` and `stack.backend` are unset). CTO-ADR: skipped — lean mode. Acceptance: the user — **Accepted by the founder, 2026-10-18.**
 
 ## Summary
 
