@@ -126,6 +126,15 @@
 #      not moved: monotonic readings of two boots are subtracted), no_alive_update (the checkpoint is not refreshed
 #      at start), notice_outside_txn (the notice is written after the adjustment commits), notice_every_restart
 #      (a notice even for a restart inside the tick interval).
+# Phase 3 (SC-31, End Day; founder rule 2026-10-17/18, sync note OQ8 (4)), ENDDAY=1:
+#   The business day is a device counter, not a calendar date. Every bill carries the day it was paid in (bday).
+#   end_day is refused while any bill (open tab), session or shift is open, naming them. Otherwise one transaction
+#   writes the End Day command (kind end_day: the day, its bill count and total, an ordinary command in the device
+#   sequence) and closes the day; the next action opens the next day. A kill during it leaves the day closed with
+#   its command, or still open without one. End Day on a day already closed is refused (no_open_day).
+#      MUTANT also: end_day_ignores_sessions (running sessions do not block End Day), refuse_without_names (the
+#      refusal does not say what is open), end_day_two_txns (the day is closed, then the command written in a second
+#      transaction), bill_old_day (after End Day a bill is stamped with the closed day).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -158,6 +167,7 @@ PREMIGRATE = DB + ".premigrate"
 RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
 EDITS_ON = os.environ.get("EDITS") == "1"  # SC-28
 CLOCKED = os.environ.get("CLOCKED") == "1"  # SC-30
+ENDDAY = os.environ.get("ENDDAY") == "1"  # SC-31
 TESTCLOCK = DB + ".testclock"
 TICK_S = 60  # the app's last-alive timer (spike value)
 fp_count = 0
@@ -516,6 +526,14 @@ def open_store():
             "mono_at REAL NOT NULL, accum_s REAL NOT NULL)",  # SC-30
             "CREATE TABLE IF NOT EXISTS outages (id INTEGER PRIMARY KEY, kind TEXT, from_wall REAL, to_wall REAL, "
             "open_sessions INTEGER, seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",
+            "CREATE TABLE IF NOT EXISTS business_day (id INTEGER PRIMARY KEY CHECK (id = 1), day_no INTEGER NOT NULL, "
+            "opened INTEGER NOT NULL)",  # SC-31
+            "INSERT OR IGNORE INTO business_day VALUES (1, 1, 1)",
+            "CREATE TABLE IF NOT EXISTS bill_days (action_id TEXT PRIMARY KEY, bday INTEGER NOT NULL, piasters INTEGER)",
+            "CREATE TABLE IF NOT EXISTS tabs (tab_id TEXT PRIMARY KEY)",
+            "CREATE TABLE IF NOT EXISTS shifts (shift_id TEXT PRIMARY KEY)",
+            "CREATE TABLE IF NOT EXISTS day_closes (bday INTEGER PRIMARY KEY, n_bills INTEGER, total INTEGER, "
+            "seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",
         ]:
             c.execute(stmt).fetchall()
         check_marker(c)
@@ -561,6 +579,8 @@ def close_and_pay(a, priced=None, also=None):
         sale, extra = session + a["cafe_piasters"], {}
     payload = {"action_id": a["action_id"], "session_id": a["session_id"], "minutes": mins,
                "sale_piasters": sale, "payment_piasters": sale, **extra}
+    if ENDDAY:  # SC-31: the business day this bill is paid in (a closed day means the next one opens now)
+        payload["bday"] = next_bday()
     body = json.dumps(payload, sort_keys=True, separators=(",", ":"))
     h = hashlib.sha256(body.encode()).hexdigest()
     cmd_id = "cmd-" + a["action_id"]
@@ -575,6 +595,9 @@ def close_and_pay(a, priced=None, also=None):
         if priced:
             q("DELETE FROM sessions WHERE session_id = ?", (a["session_id"],))
             q("DELETE FROM session_clock WHERE session_id = ?", (a["session_id"],))
+        if ENDDAY:
+            open_day()
+            q("INSERT INTO bill_days VALUES (?,?,?)", (a["action_id"], payload["bday"], sale))
         if also:
             also()
 
@@ -634,7 +657,8 @@ def rollback():
 # Every retained command, bills and SC-28 edit results alike: a server restore can ask for any of them again.
 RETAINED = ("SELECT seq, command_id, payload, payload_hash FROM bills WHERE seq IS NOT NULL "
             "UNION ALL SELECT seq, command_id, payload, payload_hash FROM edits WHERE seq IS NOT NULL "
-            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM outages WHERE seq IS NOT NULL")
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM outages WHERE seq IS NOT NULL "
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM day_closes WHERE seq IS NOT NULL")
 
 
 def report():
@@ -912,6 +936,8 @@ def start_session(m):
     start = 0 if clocked else m["start_min"]
     seg = [{"from": start, "tier": m["tier"], "rate": price_of(prices, m["tier"]), "v": v}]
     q("BEGIN IMMEDIATE")
+    if ENDDAY:
+        open_day()
     q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], start, json.dumps(prices), v, json.dumps(seg)))
     if clocked:
         c = test_clock()
@@ -990,6 +1016,85 @@ def change_tier(m):
     segs = json.loads(segs) + [{"from": m["at_min"], "tier": m["tier"], "rate": rate, "v": v}]
     q("UPDATE sessions SET segments = ? WHERE session_id = ?", (json.dumps(segs), m["session_id"]))
     reply({"ok": True, "op": "change_tier", "rate": rate, "v": v})
+
+
+def next_bday():
+    """SC-31: the day a new action belongs to (the instance lock makes this process the store's only writer)."""
+    day_no, opened = q("SELECT day_no, opened FROM business_day WHERE id = 1")[0]
+    return day_no if opened or MUTANT == "bill_old_day" else day_no + 1
+
+
+def open_day():
+    """SC-31, inside the caller's transaction: the first action after End Day opens the next business day."""
+    if MUTANT != "bill_old_day":
+        q("UPDATE business_day SET day_no = day_no + 1, opened = 1 WHERE id = 1 AND opened = 0")
+
+
+def end_day():
+    """SC-31: refused while anything is open; otherwise the day's command and the close in one transaction."""
+    open_now = {"bills": [r[0] for r in q("SELECT tab_id FROM tabs ORDER BY tab_id")],
+                "sessions": [] if MUTANT == "end_day_ignores_sessions" else
+                [r[0] for r in q("SELECT session_id FROM sessions ORDER BY session_id")],
+                "shifts": [r[0] for r in q("SELECT shift_id FROM shifts ORDER BY shift_id")]}
+    if any(open_now.values()):
+        return reply({"ok": False, "op": "end_day", "error": "day_has_open_items", "warning": "day_has_open_items",
+                      **({} if MUTANT == "refuse_without_names" else {"open": open_now})})
+    day_no, opened = q("SELECT day_no, opened FROM business_day WHERE id = 1")[0]
+    if not opened:
+        return reply({"ok": False, "op": "end_day", "error": "no_open_day"})
+    n, total = q("SELECT count(*), coalesce(sum(piasters), 0) FROM bill_days WHERE bday = ?", (day_no,))[0]
+    payload = {"kind": "end_day", "bday": day_no, "n_bills": n, "total": total}
+    body = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    h = hashlib.sha256(body.encode()).hexdigest()
+    q("BEGIN IMMEDIATE")
+    q("UPDATE business_day SET opened = 0 WHERE id = 1")
+    if MUTANT == "end_day_two_txns":  # planted defect: the close and its command in two transactions
+        q("COMMIT")
+        failpoint("client:end_day_mid")
+        q("BEGIN IMMEDIATE")
+    seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
+    cmd_id = f"cmd-endday-{day_no}"
+    q("INSERT INTO outbox (seq, command_id, payload, payload_hash, status) VALUES (?,?,?,?, 'pending')",
+      (seq, cmd_id, body, h))
+    q("INSERT INTO day_closes VALUES (?,?,?,?,?,?,?)", (day_no, n, total, seq, cmd_id, body, h))
+    if MUTANT != "end_day_two_txns":
+        failpoint("client:end_day_mid")  # inside the transaction: a kill leaves the day open, nothing queued
+    q("COMMIT")
+    failpoint("client:end_day_after_commit")  # closed and queued; the reply is lost
+    try:
+        write_marker(seq)
+    except OSError as e:
+        record_event("marker_behind", e, at="end_day")
+    reply({"ok": True, "op": "end_day", "bday": day_no, "n_bills": n, "total": total, "seq": seq})
+
+
+def day_state():
+    day_no, opened = q("SELECT day_no, opened FROM business_day WHERE id = 1")[0]
+    reply({"ok": True, "op": "day_state", "day_no": day_no, "opened": bool(opened),
+           "closes": [list(r) for r in q("SELECT bday, n_bills, total FROM day_closes ORDER BY bday")]})
+
+
+def open_item(table, key, value):
+    """SC-31: open a tab (an open bill) or a shift; the first action after End Day opens the next day."""
+    q("BEGIN IMMEDIATE")
+    open_day()
+    q(f"INSERT INTO {table} VALUES (?)", (value,))
+    q("COMMIT")
+    reply({"ok": True, "op": f"open_{key}"})
+
+
+def close_shift(m):
+    q("DELETE FROM shifts WHERE shift_id = ?", (m["shift_id"],))
+    reply({"ok": True, "op": "close_shift"})
+
+
+def pay_tab(m):
+    """SC-31: an open bill is paid: a cafe sale priced at the device's list, the tab removed in the bill's transaction."""
+    v, prices = device_prices()
+    n, price = int(m["n"]), price_of(prices, "cafe")
+    extra = {"cfg_version": v, "segments": [], "cafe": {"n": n, "price": price}}
+    a = {"action_id": m["action_id"], "session_id": m["tab_id"], "day": m.get("day", 0)}
+    close_and_pay(a, priced=([], n * price, extra), also=lambda: q("DELETE FROM tabs WHERE tab_id = ?", (m["tab_id"],)))
 
 
 def round_half_up(units, step):
@@ -1191,6 +1296,18 @@ for line in sys.stdin:
             except handled as e:  # no price list, a price missing, an unknown session: refuse the action, not the store
                 code = getattr(e, "code", "unknown_session" if isinstance(e, (KeyError, IndexError)) else "invalid")
                 reply({"ok": False, "op": op, "error": code, "warning": code, "detail": str(e)[:100]})
+        elif op == "end_day":  # SC-31
+            end_day()
+        elif op == "day_state":
+            day_state()
+        elif op == "open_tab":
+            open_item("tabs", "tab", msg["tab_id"])
+        elif op == "open_shift":
+            open_item("shifts", "shift", msg["shift_id"])
+        elif op == "close_shift":
+            close_shift(msg)
+        elif op == "pay_tab":
+            pay_tab(msg)
         elif op == "tick":  # SC-30: the app's last-alive timer
             tick()
         elif op == "advance_mono":  # SC-25b test hook: time passes on the device's monotonic counter

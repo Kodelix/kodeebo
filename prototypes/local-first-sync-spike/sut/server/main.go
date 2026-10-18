@@ -67,6 +67,12 @@
 // books). "PC was off" (boot id changed) and "app was closed while the PC was on" (same boot id) are told apart, and
 // the second is marked suspicious. MUTANT=idle_outage_hidden drops outages with no open session;
 // MUTANT=all_outages_notify sends every outage as a notice; MUTANT=app_down_not_flagged does not mark app_down.
+//
+// SC-31 (End Day, founder rule 2026-10-17/18, sync note OQ8 (4)): every bill carries its business day (bday, a device
+// counter). The device's end_day command (day, bill count, total) is applied in sequence order, so every bill of that
+// day is already applied; the server recomputes count and total from the bills it holds for the day, records both,
+// and flags a mismatch (day_close_mismatch). A bill for a day already closed is flagged (bill_after_day_close): a
+// bill and its session always belong to the day in which the bill was paid.
 package main
 
 import (
@@ -92,7 +98,8 @@ import (
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
-  corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs;
+  corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs, bill_bdays,
+  day_closes;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -143,6 +150,9 @@ CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, de
   command_id text NOT NULL, off_kind text NOT NULL, from_wall double precision NOT NULL, to_wall double precision NOT NULL,
   open_sessions int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, channel text NOT NULL,
   suspicious boolean NOT NULL, message text NOT NULL);
+CREATE TABLE bill_bdays (device_id text NOT NULL, action_id text NOT NULL, bday int NOT NULL, PRIMARY KEY (device_id, action_id));
+CREATE TABLE day_closes (device_id text NOT NULL, bday int NOT NULL, n_device int NOT NULL, total_device bigint NOT NULL,
+  n_server int NOT NULL, total_server bigint NOT NULL, PRIMARY KEY (device_id, bday));
 CREATE TABLE stock_receipts (receipt_id text PRIMARY KEY, item_id text NOT NULL, qty int NOT NULL);
 CREATE TABLE stock_moves (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   action_id text NOT NULL, item_id text NOT NULL, qty int NOT NULL);
@@ -163,6 +173,9 @@ type payload struct {
 	EditID          string    `json:"edit_id"`
 	Result          string    `json:"result"`
 	Reason          *string   `json:"reason"`
+	Bday            *int      `json:"bday"`          // SC-31: business day the bill was paid in, or the day closed
+	NBills          int       `json:"n_bills"`       // SC-31: the device's count for the day
+	Total           int64     `json:"total"`         // SC-31: the device's total for the day
 	OffKind         string    `json:"off_kind"`      // SC-30: power_off | app_down
 	FromWall        float64   `json:"from_wall"`     // SC-30: device wall time of the last-alive checkpoint
 	ToWall          float64   `json:"to_wall"`       // SC-30: device wall time at restart
@@ -328,6 +341,27 @@ func failpoint(name string) {
 
 func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error {
 	p := c.Payload
+	if p.Kind == "end_day" && p.Bday != nil { // SC-31: recompute the day from the bills the server holds
+		var n int
+		var total int64
+		if err := tx.QueryRow(ctx, `SELECT count(*), coalesce(sum(l.amount_piasters), 0) FROM ledger l
+			JOIN bill_bdays b ON b.action_id = l.action_id AND b.device_id = l.device_id
+			WHERE l.kind = 'sale' AND l.device_id = $1 AND b.bday = $2`, dev, *p.Bday).Scan(&n, &total); err != nil {
+			return err
+		}
+		tag, err := tx.Exec(ctx, `INSERT INTO day_closes VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`,
+			dev, *p.Bday, p.NBills, p.Total, n, total)
+		if err != nil {
+			return err
+		}
+		if tag.RowsAffected() == 0 {
+			return flag(ctx, tx, "day_closed_twice", dev, c)
+		}
+		if n != p.NBills || total != p.Total {
+			return flag(ctx, tx, "day_close_mismatch", dev, c)
+		}
+		return nil
+	}
 	if p.Kind == "device_off" { // SC-30: every outage stays visible; open sessions make it a notice at once
 		if p.OpenSessions == 0 && mutant == "idle_outage_hidden" { // planted defect: nothing recorded, nothing shown
 			return nil
@@ -395,6 +429,21 @@ func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error 
 	for _, l := range p.Lines { // SC-29: the stock mirror moves with the applied sale
 		if _, err := tx.Exec(ctx, `INSERT INTO stock_moves (device_id, action_id, item_id, qty) VALUES ($1,$2,$3,$4)`,
 			dev, p.ActionID, l.Item, -l.N); err != nil {
+			return err
+		}
+	}
+	if p.Bday != nil { // SC-31: the bill's business day; a bill for a closed day is flagged
+		var closed bool
+		if err := tx.QueryRow(ctx, `SELECT EXISTS (SELECT 1 FROM day_closes WHERE device_id = $1 AND bday = $2)`,
+			dev, *p.Bday).Scan(&closed); err != nil {
+			return err
+		}
+		if closed {
+			if err := flag(ctx, tx, "bill_after_day_close", dev, c); err != nil {
+				return err
+			}
+		}
+		if _, err := tx.Exec(ctx, `INSERT INTO bill_bdays VALUES ($1,$2,$3)`, dev, p.ActionID, *p.Bday); err != nil {
 			return err
 		}
 	}
@@ -1011,6 +1060,8 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
 			FROM items i ORDER BY i.item_id`,
 		"stock_alerts": "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
+		"day_closes":   "SELECT device_id, bday, n_device, total_device, n_server, total_server FROM day_closes ORDER BY bday",
+		"bill_bdays":   "SELECT action_id, bday FROM bill_bdays ORDER BY action_id",
 		"device_offs":  "SELECT device_id, command_id, off_kind, from_wall, to_wall, open_sessions, owner_alert, channel, suspicious, message FROM device_offs ORDER BY id",
 		"price_summaries": `WITH b AS (SELECT s.*,
 			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,

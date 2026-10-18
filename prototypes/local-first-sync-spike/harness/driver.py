@@ -3060,6 +3060,267 @@ def sc30(seeds=20, mutant_budget=25):
     return ok
 
 
+SC31_CELLS = ["a_nothing_open", "b_open_bill", "c_running_session", "d_open_shift", "e_offline", "f_kill_end_day"]
+SC31_MUTANTS = ["end_day_ignores_sessions", "refuse_without_names", "end_day_two_txns", "bill_old_day"]
+SC31_PRICES = {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 1}
+
+
+def sc31_script(cell):
+    def script(run):
+        toxi = run.net.toxi
+        st = run.sc31 = {"cell": cell, "mismatch": [], "closes": {}, "bill_day": {}, "exercised": False}
+        m = {"day": 1, "opened": True, "bills": set(), "sessions": set(), "shifts": set(), "totals": {}}
+        n = [0]
+
+        def nid(p_):
+            n[0] += 1
+            return f"s{run.seed}-{p_}{n[0]}"
+
+        def touch():  # the first action after End Day opens the next day
+            if not m["opened"]:
+                m["day"] += 1
+                m["opened"] = True
+
+        def billed(aid, amount, r, op, **extra):
+            if r and r.get("ok"):
+                touch()
+                st["bill_day"][aid] = m["day"]
+                t = m["totals"].setdefault(m["day"], [0, 0])
+                t[0] += 1
+                t[1] += amount
+                a = {"op": op, "action_id": aid, "start_min": extra.get("start_min", 0),
+                     "end_min": extra.get("end_min", 0), "expected_piasters": amount}
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+                run.seq_of[aid] = r.get("seq")
+            return r
+
+        def sell(k=1):
+            aid = nid("x")
+            return billed(aid, k * SC31_PRICES["cafe"], run.send({"op": "sell_items", "action_id": aid, "n": k}),
+                          "sell_items")
+
+        def start():
+            sid = nid("sess")
+            if (run.send({"op": "start_session", "session_id": sid, "start_min": 0, "tier": "std"}) or {}).get("ok"):
+                touch()
+                m["sessions"].add(sid)
+            return sid
+
+        def close(sid):
+            aid = nid("a")
+            r = run.send({"op": "close_session", "action_id": aid, "session_id": sid, "start_min": 0, "end_min": 45})
+            if r and r.get("ok"):
+                m["sessions"].discard(sid)
+            return billed(aid, (45 * SC31_PRICES["std"] + 30) // 60, r, "close_session", end_min=45)
+
+        def open_tab():
+            t = nid("tab")
+            if (run.send({"op": "open_tab", "tab_id": t}) or {}).get("ok"):
+                touch()
+                m["bills"].add(t)
+            return t
+
+        def pay_tab(t, k=2):
+            aid = nid("x")
+            r = run.send({"op": "pay_tab", "tab_id": t, "action_id": aid, "n": k})
+            if r and r.get("ok"):
+                m["bills"].discard(t)
+            return billed(aid, k * SC31_PRICES["cafe"], r, "pay_tab")
+
+        def open_shift():
+            sh = nid("shift")
+            if (run.send({"op": "open_shift", "shift_id": sh}) or {}).get("ok"):
+                touch()
+                m["shifts"].add(sh)
+            return sh
+
+        def close_shift(sh):
+            run.send({"op": "close_shift", "shift_id": sh})
+            m["shifts"].discard(sh)
+
+        def end_day(label):
+            r = run.send({"op": "end_day"})
+            want_open = {k: sorted(m[k]) for k in ("bills", "sessions", "shifts")}
+            if any(want_open.values()):
+                if not r or r.get("ok") or r.get("error") != "day_has_open_items" or r.get("open") != want_open:
+                    st["mismatch"].append(("R44", f"{label}: model refuses naming {want_open}, device answered {r}"))
+                    if r and r.get("ok"):
+                        m["opened"] = False  # the device closed it anyway; follow it so later checks stay meaningful
+                st["refused"] = st.get("refused", 0) + 1
+                return r
+            if not m["opened"]:
+                if not r or r.get("ok") or r.get("error") != "no_open_day":
+                    st["mismatch"].append(("R44", f"{label}: the day is already closed, device answered {r}"))
+                return r
+            want = m["totals"].get(m["day"], [0, 0])
+            if not r or not r.get("ok") or [r.get("n_bills"), r.get("total")] != want or r.get("bday") != m["day"]:
+                st["mismatch"].append(("R45", f"{label}: model closes day {m['day']} with {want}, device answered {r}"))
+            if r and r.get("ok"):
+                st["closes"][m["day"]] = want
+                m["opened"] = False
+            return r
+
+        def drain():
+            for _ in range(10):
+                r = run.send({"op": "sync"})
+                if r and r.get("ok") and r.get("pending") == 0:
+                    return r
+
+        post_json("/config", {"prices": SC31_PRICES})
+        run.send({"op": "pull_config"})
+        if cell == "a_nothing_open":
+            sell(1)
+            sell(3)
+            s1 = start()
+            close(s1)
+            end_day("day 1, nothing open")
+            end_day("pressed again: no open day")
+            sell(2)  # opens day 2
+            end_day("day 2")
+            st["exercised"] = len(st["closes"]) == 2
+        elif cell == "b_open_bill":
+            t = open_tab()
+            sell(1)
+            end_day("an open bill")
+            pay_tab(t)
+            end_day("bill paid")
+            st["exercised"] = st.get("refused") == 1
+        elif cell == "c_running_session":
+            s1 = start()
+            sell(1)
+            end_day("a running session")
+            close(s1)  # the session's bill belongs to the day it is paid in
+            end_day("session closed")
+            st["exercised"] = st.get("refused") == 1
+        elif cell == "d_open_shift":
+            sh = open_shift()
+            end_day("an open shift")
+            t, s1 = open_tab(), start()
+            end_day("bill, session and shift open")
+            pay_tab(t)
+            close(s1)
+            end_day("only the shift open")
+            close_shift(sh)
+            end_day("nothing open")
+            st["exercised"] = st.get("refused") == 3
+        elif cell == "e_offline":
+            drain()
+            toxi.apply("down")
+            sell(2)
+            s1 = start()
+            close(s1)
+            end_day("day 1 offline")
+            sell(1)
+            end_day("day 2 offline")
+            toxi.clear()
+            drain()  # both days reach the server once, in order
+            st["exercised"] = len(st["closes"]) == 2
+        elif cell == "f_kill_end_day":
+            point = "client:end_day_mid" if run.seed % 2 else "client:end_day_after_commit"
+            sell(2)
+            run.client_env["FP"] = f"{point}:1"
+            run.client.kill()
+            run.client.wait()
+            r = run.send({"op": "day_state"})  # restarts the app with the failpoint armed
+            r = run.send({"op": "end_day"})
+            run.client_env.pop("FP")
+            killed = r is None
+            ds = run.send({"op": "day_state"})
+            closed_days = [c[0] for c in ds["closes"]]
+            half = (not ds["opened"]) != (ds["day_no"] in closed_days)
+            if half:
+                st["mismatch"].append(("R46", f"after a kill during End Day the day is half closed: {ds}"))
+            if not ds["opened"] and ds["day_no"] in closed_days:  # the close committed; its reply was lost
+                st["closes"][m["day"]] = m["totals"].get(m["day"], [0, 0])
+                m["opened"] = False
+            end_day("End Day again after the kill")
+            sell(1)
+            end_day("the next day")
+            st["exercised"] = killed  # the app died at the failpoint inside End Day
+        drain()
+        st["model_totals"] = {k: v for k, v in m["totals"].items()}
+    return script
+
+
+def sc31_extra(run, dump):
+    """R44 End Day is refused while a bill, session or shift is open, naming each, and refused again on a closed day;
+    R45 every closed day reaches the server once with the model's bill count and total, and the server's own
+    recomputation agrees (a mismatch or a late bill is a server flag, so I8); R46 a kill during End Day leaves the day
+    closed with its command, or open without one; R47 every bill belongs to the day the model paid it in."""
+    st = run.sc31
+    v = list(st["mismatch"])
+    have = {r["bday"]: [r["n_device"], r["total_device"], r["n_server"], r["total_server"]] for r in dump.get("day_closes", [])}
+    want = {d: [t[0], t[1], t[0], t[1]] for d, t in st["closes"].items()}
+    if have != want:
+        v.append(("R45", f"server day closes {have}, model {want}"))
+    days = {r["action_id"]: r["bday"] for r in dump.get("bill_bdays", [])}
+    for aid, d in st["bill_day"].items():
+        if days.get(aid) != d:
+            v.append(("R47", f"{aid} in business day {days.get(aid)}, model {d}"))
+    st["server_closes"] = have
+    return v, frozenset()
+
+
+def sc31_run(seed, cell, toxi, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc31-{cell}", net=Net(toxi, "none"), client_env={**RETENTION_ENV, "ENDDAY": "1"})
+    run.script, run.extra = sc31_script(cell), sc31_extra
+    r = run.go()
+    r["sc31"] = run.sc31
+    return r
+
+
+def sc31(seeds=20, mutant_budget=24):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 SC-31 (End Day), commit {summary['harness_commit']}", flush=True)
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        for cell in SC31_CELLS:
+            t1 = time.time()
+            bad, exercised, sample = [], 0, None
+            for s in range(1, seeds + 1):
+                r = sc31_run(s, cell, toxi)
+                exercised += bool(r["sc31"].get("exercised"))
+                if s <= 2:
+                    sample = (sample or []) + [{"seed": s, "closes": r["sc31"].get("server_closes"),
+                                                "refused": r["sc31"].get("refused", 0)}]
+                if r["violations"]:
+                    bad.append({"seed": s, "violations": r["violations"][:3]})
+            res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+            ok &= res == "PASS"
+            summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                     "first_bad": bad[:3], "samples": sample,
+                                     "seconds": round(time.time() - t1, 1), "result": res})
+            print(f"  {cell:18s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  {sample}", flush=True)
+        for mu in SC31_MUTANTS:
+            t1 = time.time()
+            caught = None
+            for k in range(mutant_budget):
+                s, cell = k // len(SC31_CELLS) + 1, SC31_CELLS[k % len(SC31_CELLS)]
+                r = sc31_run(s, cell, toxi, mutant=mu, label=f"sc31-mutant-{mu}")
+                if r["violations"]:
+                    caught = (s, cell, r["violations"][0])
+                    break
+            summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                      "seed_cell": caught[:2] if caught else None,
+                                      "first_violation": caught[2] if caught else None,
+                                      "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {mu:24s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+                  f"{caught[2] if caught else '-'}", flush=True)
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc31-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-31: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -3069,6 +3330,17 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc31":  # sc31 [seeds_per_cell]
+        sys.exit(0 if sc31(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay31":  # replay31 <seed> <cell> [mutant]
+        t = Toxi(RUNS)
+        try:
+            r = sc31_run(int(sys.argv[2]), sys.argv[3], t, mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                         label="replay31", verbose=True)
+            print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc31", "violations")},
+                             indent=1, default=str))
+        finally:
+            t.stop()
     if sys.argv[1] == "sc30":  # sc30 [seeds_per_cell]
         sys.exit(0 if sc30(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay30":  # replay30 <seed> <cell> [mutant]

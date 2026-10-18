@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on the dev run;, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -221,6 +221,16 @@ bash prototypes/local-first-sync-spike/run.sh sc30 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay30 <seed> <cell> [mutant]
+```
+
+SC-31 (End Day):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc31 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay31 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1170,6 +1180,62 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **Tampered clocks:** phase 5. A wall clock set back during the outage shortens the bill.
 - **Real reboots, sleep and hibernate on Windows:** the boot id and monotonic behaviour, S301–S305 in phase 4. The founder's split between "PC was off" and "app was closed" rests on the boot id, so S301/S302 must confirm it.
 - **The daily summary itself:** the spike records the channel; the summary's content and schedule are for the dashboard spec.
+
+### Phase 3 — SC-31: End Day
+
+**Founder rule under test (2026-10-17, confirmed 2026-10-18; sync note OQ8 (4)):**
+1. There is no cut-off hour. The business day is opened and closed by an explicit **End Day**, independent of the calendar.
+2. End Day is **refused while any bill, session or shift is open**, so a session and its bill always belong to the same business day.
+
+**Design under test (`ENDDAY=1`):**
+- **Business day:** a device counter, not a date. Every bill carries the day it was paid in (`bday`). After End Day, the first action (a sale, a session, a tab or a shift) opens the next day.
+- **`end_day`:**
+  - Refused with `day_has_open_items` while a tab (an open bill), a session or a shift is open. The reply names each one.
+  - Otherwise one transaction writes the End Day command (kind `end_day`: the day, its bill count and total) as an ordinary command in the device sequence, and closes the day.
+  - On a day already closed it is refused with `no_open_day`; pressing it twice creates no empty day.
+- **Server:** applies the End Day command in sequence order, so every bill of that day is already applied. It recomputes count and total from the bills it holds for the day and records both. A mismatch is flagged (`day_close_mismatch`), and so is a bill for a day already closed (`bill_after_day_close`).
+- **Not modelled:** what a shift contains (the shift spec). Tabs and shifts here are only open or closed.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_nothing_open` | Day 1: 2 cafe sales and a session closed; End Day; End Day again; a sale; End Day | Day 1 closes with 3 bills; the second press is refused (`no_open_day`); the sale opens day 2, which closes with 1 bill |
+| `b_open_bill` | A tab open, a sale; End Day; the tab paid; End Day | Refused naming the tab; then day 1 closes with both bills |
+| `c_running_session` | A session running, a sale; End Day; the session closed; End Day | Refused naming the session; the session's bill is in day 1, the day it was paid in |
+| `d_open_shift` | A shift open; End Day; then a tab and a session as well; End Day; tab paid and session closed; End Day; shift closed; End Day | Refused three times, each naming exactly what is open; then day 1 closes |
+| `e_offline` | Offline: day 1 (sales and a session) closed, day 2 (a sale) closed; reconnect | Both days reach the server once, in order; server and device totals agree for each |
+| `f_kill_end_day` | A kill inside the End Day transaction (odd seeds) or just after its commit with the reply lost (even seeds); then End Day again, a sale, End Day | After the kill the day is either still open with nothing queued (then End Day closes it) or closed with its command (then End Day is refused as already closed). Never half. The next day closes normally |
+
+**Checks added:**
+- **R44:** End Day is refused while a bill, session or shift is open, naming each one, and refused again on a closed day.
+- **R45:** every closed day reaches the server once with the model's bill count and total, and the server's own recomputation agrees. A mismatch or a late bill is a server flag, so I8 reports it too.
+- **R46:** a kill during End Day leaves the day closed with its command, or open without one.
+- **R47:** every bill belongs to the day the model paid it in.
+
+**Mutants:**
+- `end_day_ignores_sessions` (client): running sessions do not block End Day.
+- `refuse_without_names` (client): the refusal does not say what is open.
+- `end_day_two_txns` (client): the day is closed, then the command written in a second transaction.
+- `bill_old_day` (client): after End Day a bill is stamped with the closed day.
+
+#### Run 1 (dev, uncommitted harness on `a66621b`) — PASS
+
+`evidence/phase3-sc31-run1-dev*`, 44 s.
+- **Cells:** all 6 PASS, 20 seeds each, 0 violations. In every closed day the device's count and total equal the server's recomputation (seed 1 of `a`: day 1 = 3 bills, 10,500; day 2 = 1 bill, 3,000).
+- **Mutants:** all four caught.
+  - `end_day_ignores_sessions` after 3 runs (R44: End Day closed the day with a session running).
+  - `refuse_without_names` after 2 (R44).
+  - `end_day_two_txns` after 6, in `f` (R46: the day was closed with no End Day command).
+  - `bill_old_day` after 1 (I8: the server flagged a bill for a closed day).
+- **Smoke on the changed client and server:** SC-23 (2 seeds), SC-30 (3) and SC-29 (3) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Not covered:**
+- **What a shift is** (cashier hand-over, cash count): the shift spec.
+- **The day-close report content and the cash count against it** (brief F3): the billing and reporting specs. The spike only checks that the device's and the server's counts and totals agree.
+- **Several devices in one branch closing one business day:** S203, after Tier 1.
+- **End Day under tampered clocks:** not needed, because the business day uses no clock.
+
 - **The owner's minimum and increment:** billing spec.
 
 

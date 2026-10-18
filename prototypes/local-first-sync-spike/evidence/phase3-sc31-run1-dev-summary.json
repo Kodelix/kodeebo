@@ -1,0 +1,308 @@
+{
+ "harness_commit": "a66621b+dirty",
+ "started": "2026-10-18 12:49:49",
+ "cells": [
+  {
+   "cell": "a_nothing_open",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "closes": {
+      "1": [
+       3,
+       10500,
+       3,
+       10500
+      ],
+      "2": [
+       1,
+       3000,
+       1,
+       3000
+      ]
+     },
+     "refused": 0
+    },
+    {
+     "seed": 2,
+     "closes": {
+      "1": [
+       3,
+       10500,
+       3,
+       10500
+      ],
+      "2": [
+       1,
+       3000,
+       1,
+       3000
+      ]
+     },
+     "refused": 0
+    }
+   ],
+   "seconds": 6.6,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_open_bill",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "closes": {
+      "1": [
+       2,
+       4500,
+       2,
+       4500
+      ]
+     },
+     "refused": 1
+    },
+    {
+     "seed": 2,
+     "closes": {
+      "1": [
+       2,
+       4500,
+       2,
+       4500
+      ]
+     },
+     "refused": 1
+    }
+   ],
+   "seconds": 6.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_running_session",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "closes": {
+      "1": [
+       2,
+       6000,
+       2,
+       6000
+      ]
+     },
+     "refused": 1
+    },
+    {
+     "seed": 2,
+     "closes": {
+      "1": [
+       2,
+       6000,
+       2,
+       6000
+      ]
+     },
+     "refused": 1
+    }
+   ],
+   "seconds": 6.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_open_shift",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "closes": {
+      "1": [
+       2,
+       7500,
+       2,
+       7500
+      ]
+     },
+     "refused": 3
+    },
+    {
+     "seed": 2,
+     "closes": {
+      "1": [
+       2,
+       7500,
+       2,
+       7500
+      ]
+     },
+     "refused": 3
+    }
+   ],
+   "seconds": 6.3,
+   "result": "PASS"
+  },
+  {
+   "cell": "e_offline",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "closes": {
+      "1": [
+       2,
+       7500,
+       2,
+       7500
+      ],
+      "2": [
+       1,
+       1500,
+       1,
+       1500
+      ]
+     },
+     "refused": 0
+    },
+    {
+     "seed": 2,
+     "closes": {
+      "1": [
+       2,
+       7500,
+       2,
+       7500
+      ],
+      "2": [
+       1,
+       1500,
+       1,
+       1500
+      ]
+     },
+     "refused": 0
+    }
+   ],
+   "seconds": 5.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "f_kill_end_day",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "samples": [
+    {
+     "seed": 1,
+     "closes": {
+      "1": [
+       1,
+       3000,
+       1,
+       3000
+      ],
+      "2": [
+       1,
+       1500,
+       1,
+       1500
+      ]
+     },
+     "refused": 0
+    },
+    {
+     "seed": 2,
+     "closes": {
+      "1": [
+       1,
+       3000,
+       1,
+       3000
+      ],
+      "2": [
+       1,
+       1500,
+       1,
+       1500
+      ]
+     },
+     "refused": 0
+    }
+   ],
+   "seconds": 8.7,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "end_day_ignores_sessions": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_running_session"
+   ],
+   "first_violation": [
+    "R44",
+    "a running session: model refuses naming {'bills': [], 'sessions': ['s1-sess1'], 'shifts': []}, device answered {'ok': True, 'op': 'end_day', 'bday': 1, 'n_bills': 1, 'total': 1500, 'seq': 2}"
+   ],
+   "seconds": 0.9
+  },
+  "refuse_without_names": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_open_bill"
+   ],
+   "first_violation": [
+    "R44",
+    "an open bill: model refuses naming {'bills': ['s1-tab1'], 'sessions': [], 'shifts': []}, device answered {'ok': False, 'op': 'end_day', 'error': 'day_has_open_items', 'warning': 'day_has_open_items'}"
+   ],
+   "seconds": 0.6
+  },
+  "end_day_two_txns": {
+   "caught": true,
+   "runs_to_catch": 6,
+   "seed_cell": [
+    1,
+    "f_kill_end_day"
+   ],
+   "first_violation": [
+    "R46",
+    "after a kill during End Day the day is half closed: {'ok': True, 'op': 'day_state', 'day_no': 1, 'opened': False, 'closes': []}"
+   ],
+   "seconds": 2.1
+  },
+  "bill_old_day": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_nothing_open"
+   ],
+   "first_violation": [
+    "I8",
+    "server flag bill_after_day_close for cmd-s1-x5 seq 5"
+   ],
+   "seconds": 0.3
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 44.2
+}
