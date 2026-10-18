@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5, part 7: A + H + G, D on control-plane tables only, no break-glass) and set the values (grant 24 hours by default, 7 days at most; `clock_timestamp()`; audit committed before the read; superuser credential in the founder's Bitwarden; operator-id weak spot recorded, not fixed now). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** owner-only grant insert, the 7-day ceiling and the one-way revoke are now enforced in the database; the transaction limit is `transaction_timeout`; table classes and roles refer to ADR-0001; seats and lease state are tenant data (licensing M35), not control plane; the scope mechanics live in ADR-0002. Stack-lead validation: NOT ASSESSED — `stack.backend` and `stack.data` are unset; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Consulted roles named by the research (`cto`, `security-lead`): not spawned in this run. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5, part 7: A + H + G, D on control-plane tables only, no break-glass) and set the values (grant 24 hours by default, 7 days at most; `clock_timestamp()`; audit committed before the read; superuser credential in the founder's Bitwarden; operator-id weak spot recorded, not fixed now). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** owner-only grant insert, the 7-day ceiling and the one-way revoke are now enforced in the database; the transaction limit is `transaction_timeout`; table classes and roles refer to ADR-0001; seats and lease state are tenant data (licensing M35), not control plane; the scope mechanics live in ADR-0002. **Founder decision 2026-10-18 added (§ 7a):** grant-free per-tenant usage counts (no money, names, items or bill contents), computed by `job_rt` in each tenant's scope and written to a CP table that `platform_rt` reads; the customer terms must disclose them. Stack-lead validation: NOT ASSESSED — `stack.backend` and `stack.data` are unset; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Consulted roles named by the research (`cto`, `security-lead`): not spawned in this run. Acceptance: the user.
 
 ## Summary
 
@@ -105,6 +105,13 @@ Research note: `docs/research/tenant-isolation.md` (part 7; § 5 part 7 holds th
 
 **7. Owner unreachable: control plane only, no break-glass.** Without a live owner grant Kodelix never reads tenant data. In an emergency the operator acts only on ADR-0001's **class CP** tables — tenant status and suspension, plan assignment and limit values, restore watermark — through `platform_rt`, the one role with a `USING (true)` policy, on CP tables only (Option D), and on infrastructure (restart, suspend, restore service). **Seats, seat licences, devices, seat moves, approvals and lease state are tenant data (class TD)**, as the licensing threat model M35 places them under tenant RLS: Kodelix reaches them only through the licensing service roles, working per tenant with the context set as the licensing ADR defines, or through a grant-gated support verb such as "resend lease". Reopening a consent-free path needs the founder and counsel (P7-OQ2, P7-OQ3).
 
+**7a. Usage counts without a grant (founder, 2026-10-18).** Kodelix may see aggregated per-tenant usage statistics without an owner grant, as **counts only**: bills per business day, sessions, active devices and data size. **Never** money amounts, names, items or bill contents. They are produced this way:
+- A job computes them per tenant **inside that tenant's scope**: `job_rt` through the ADR-0002 helper, one transaction per tenant with the tenant context set, under the restrictive tenant predicate like any other job. Nothing reads tenant data across tenants.
+- The job writes **only the counts** to a class CP table (ADR-0001), for example `tenant_usage_daily (tenant_id, business_day, bills, sessions, active_devices, data_bytes, computed_at)`. Its columns are integers and dates by schema; no column can hold an amount, a name or text from a bill. `job_rt` writes its own tenant's row under the CP restrictive tenant policy; `platform_rt` reads all rows through its CP `USING (true)` policy.
+- Data size is a per-tenant estimate; the method is chosen in the story (no per-tenant size function is sourced).
+- **Money totals are not collected.** They would need an owner grant or a contract clause; neither is decided (founder, 2026-10-18).
+- **Customer terms must state that Kodelix collects these counts** (what is counted, why, retention), so the collection is disclosed to the owner as controller before the first production tenant (PDPL roles: owner = controller, Kodelix = processor). Whether the counts are processing on the owner's instruction or Kodelix's own purpose is for counsel with P7-OQ3.
+
 **8. Guided installs: diagnostic bundle first (Option G).** The device or the owner produces a redacted bundle (allow-listed fields: versions, sync state, error codes, device ids); the operator works from it. Where hosted tenant data is needed during a guided install, the owner grants a support grant of up to 7 days. Whether guided installs need hosted data at all in the first release: P7-OQ12.
 
 **9. Privileged database roles.** The **bootstrap superuser** exists for DDL, role creation, extensions, major upgrades and restore — never as a support path. Its credential is **held by the founder in Bitwarden** (zero-cost custody, as for the licensing root); `pg_hba.conf` allows it only through a local `peer` record, with remote logins rejected (F722); every login pages and is reviewed. Reading tenant data through it is misuse (AC10). The **backup role** has `REPLICATION` only (no superuser, no BYPASSRLS), connects through an address-limited `hostssl replication` record, and its output is encrypted at rest: a physical copy holds every tenant in clear (F721). Tool, encryption and address list: storage ADR (P7-OQ7). Rotation and drill cadence of the superuser credential: open (P7-OQ8).
@@ -173,6 +180,9 @@ No HTTP contract is fixed here; the console's API goes to `contracts/` with the 
 - **Must never:** create per-grant database logins for support; human SQL sessions are for superuser DBA work only.
 - **Must never:** cache grant state (a cached grant outlives the owner's revoke).
 - **Must never:** read tenant data without a live owner grant, including in an emergency; use the superuser for support reads.
+- **Must (jobs, data):** compute usage counts only as `job_rt` through the ADR-0002 helper, one tenant per transaction, and write only integer counts and dates to the CP usage table; `platform_rt` reads that table only.
+- **Must never:** put money amounts, names, items, bill contents or any free text in the usage table, or compute usage statistics across tenants in one query; money totals need a grant or a contract clause (not decided).
+- **Must (legal):** the customer terms state that Kodelix collects the usage counts before the first production tenant.
 - **Must never:** build support or admin tooling that touches tenant data before this ADR is Accepted.
 
 ## Alternatives Considered
@@ -232,6 +242,7 @@ No HTTP contract is fixed here; the console's API goes to `contracts/` with the 
 - A grant-gated policy per tenant table, a support verb per write action and an owner approval screen are extra work before the first support ticket.
 - Three audit layers; layers (i) and (iii) depend on the storage and observability decisions.
 - Until a second operator, the operator id is trusted from the helper (recorded weak spot, § 10).
+- Usage counts (§ 7a) are a grant-free view of every tenant's activity level; the customer terms must disclose them, and the column list is the only thing keeping money and contents out.
 
 ### Neutral
 
@@ -257,7 +268,7 @@ No HTTP contract is fixed here; the console's API goes to `contracts/` with the 
 
 | Concern | Impact |
 |---------|--------|
-| **Security / tenancy** | New trust boundary (support role ↔ tenant tables) and the operator console boundary (licensing TB3). ASVS 5.0.0: 8.4.1, 8.4.2, 8.3.1, 8.3.2, 8.2.2, 13.2.2, 13.3.1/13.3.2, 16.2.1, 16.3.2, 16.3.3, 16.4.2, 16.4.3, 7.3.2, 7.4.1, 7.4.5, 7.5.3, 6.3.2, 6.3.3, 2.3.5 (exception while one operator). Abuse cases AC1–AC13 to `docs/architecture/threat-models/tenant-isolation.md` (to be written) |
+| **Security / tenancy** | New trust boundary (support role ↔ tenant tables) and the operator console boundary (licensing TB3). ASVS 5.0.0: 8.4.1, 8.4.2, 8.3.1, 8.3.2, 8.2.2, 13.2.2, 13.3.1/13.3.2, 16.2.1, 16.3.2, 16.3.3, 16.4.2, 16.4.3, 7.3.2, 7.4.1, 7.4.5, 7.5.3, 6.3.2, 6.3.3, 2.3.5 (exception while one operator). Abuse cases AC1–AC13 to `docs/architecture/threat-models/tenant-isolation.md` (to be written). Usage counts (§ 7a): counts only, computed in each tenant's scope, disclosed in the customer terms |
 | **Observability** | Spans `support.grant.request/approve/revoke`, `support.session`, `support.verb.<name>`, `audit.chain.verify`, `db.tenant_tx` with `scope.kind = support`; metrics `support_grant_total{state}`, `support_session_active`, `support_access_total{outcome}`, `support_grant_duration_seconds`, `audit_chain_verify_failures_total`; page on chain-verify failure, any superuser login, unexpected replication connection, denied support access, a grant past 7 days; runbooks: operator access and revoke, superuser custody and drill, backup credential rotation, restore drill. IDs only, no row data |
 | **Caching** | No cache for grant state: a cached grant outlives the owner's revoke |
 | **Self-hosted** | None — hosted only |
@@ -298,6 +309,8 @@ Greenfield.
 - [ ] As a manager (`app.branch_all` unset), inserting a grant fails in the database; as the owner it succeeds; a back- or forward-dated `approved_at` fails.
 - [ ] Setting `revoked_at` back to NULL fails (`WITH CHECK`); changing any other column fails (`permission denied`).
 - [ ] `support_rt` with a grant for branch A1 reads 0 rows of A2 on branch-scoped tables (ADR-0003 `branch_scope`).
+- [ ] The usage job, run with tenant A's context, writes only tenant A's row; a write for tenant B is refused; the usage table has no money, name, item or text column (schema test); `platform_rt` reads the usage table and nothing on TD tables.
+- [ ] The customer terms carry the usage-count disclosure before the first production tenant (release checklist item).
 - [ ] A support transaction that runs past the configured `transaction_timeout` is ended by the server (S74).
 - [ ] Performance: support policy cost measured on a realistic table (S72); checked against `perf-budgets.md` once it exists, not checked until then.
 

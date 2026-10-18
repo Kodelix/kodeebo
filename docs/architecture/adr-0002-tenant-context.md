@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Also 2026-10-18: a **Job** scope kind for `job_rt` (the closed list of kinds had none; needed by the usage counts of ADR-0004 § 7a and by every background job). Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
@@ -87,7 +87,8 @@ Research note: `docs/research/tenant-isolation.md` (part 2; § 5).
 
 **One scope helper per backend.** All tenant-scoped database work runs inside a transaction opened by a single helper. Its first statements set every scope value with `set_config(name, value, true)` — `app.tenant_id`, and as applicable `app.branch_ids` / `app.branch_all` (ADR-0003), `app.device_id` and `app.branch_id` (device requests), `app.operator_id` (support, ADR-0004), the per-plan `statement_timeout` (limits ADR) and, for support, `transaction_timeout`. It sets them **exactly once**: a second call in the same transaction is refused by the helper. Values are parsed (UUID) before binding and come only from the authenticated server-side scope object.
 
-**Three scope kinds.** The scope object is one of:
+**Four scope kinds.** The scope object is one of:
+- **Job** (background jobs as `job_rt`: export, retention, limits, provisioning, usage counts): `{tenant}` from the job's own server-side work list, one tenant per transaction. The helper sets `app.tenant_id` only; no branch setting, because jobs act for the whole tenant and ADR-0003's `branch_scope` does not bind `job_rt`. A job that touches several tenants opens one helper transaction per tenant; it never reads across tenants in one query.
 - **Staff** (dashboard, ADR-0003): tenant from the session lookup; `app.branch_ids` from the principal's assigned branches, or `app.branch_all = 'on'` only when the verified role is owner.
 - **Device** (sync endpoint): tenant, branch and device from the verified credential. The helper sets **both** `app.branch_id` (the single branch, used by the device tables' `WITH CHECK` on all three ids, research F322) **and** `app.branch_ids` (a one-element list of the same branch, read by ADR-0003's restrictive branch policy), from the one credential value, so the two cannot disagree. It never sets `app.branch_all` for a device.
 - **Support** (Kodelix operator console, ADR-0004): `{grantId, operatorId}`. The helper loads the grant and refuses with `NoLiveGrant` — before any query on tenant data — unless it is approved, not revoked and not expired. It then sets `app.tenant_id` and `app.branch_ids` from the grant (an explicit list; never `app.branch_all`), `app.operator_id` from the authenticated operator session, and `transaction_timeout` locally from configuration (`transaction_timeout` exists from PostgreSQL 17, `docs/stack-reference/postgres/best-practices.md` line 53; its effect when set inside the running transaction is checked in S74).
@@ -125,11 +126,12 @@ sequenceDiagram
 ### Key Interfaces
 
 ```text
-Scope (app layer value) = Staff | Device | Support
+Scope (app layer value) = Job | Staff | Device | Support
+  Job     { tenant: TenantId }                                          // job_rt; app.tenant_id only, one tenant per transaction
   Staff   { tenant: TenantId, branches: All | List<BranchId> }          // ADR-0003; All only for a verified owner
   Device  { tenant: TenantId, branch: BranchId, device: DeviceId }      // sets app.branch_id AND app.branch_ids = [branch]
   Support { grant: SupportGrantId, operator: OperatorId }               // ADR-0004; tenant and branch list come from the live grant
-  planTimeout: Duration?                                                // limits ADR (Staff, Device)
+  planTimeout: Duration?                                                // limits ADR (Staff, Device, Job)
 
 Go:    func WithScope[T any](ctx context.Context, src TenantDataSource, s Scope, fn func(ScopedTx) (T, error)) (T, error)
 Ktor:  suspend fun <T> withScope(src: TenantDataSource, s: Scope, block: suspend ScopedTransaction.() -> T): T
@@ -148,6 +150,7 @@ Ktor:  suspend fun <T> withScope(src: TenantDataSource, s: Scope, block: suspend
 - **Must never:** set the scope twice in one transaction; the helper refuses (F110, F212, F420).
 - **Must never:** take tenant, branch, device or operator ids from a request body, query string or header; the scope comes from the session lookup (ADR-0003), the verified device credential (credential ADR) or the live support grant plus the authenticated operator session (ADR-0004).
 - **Must (Device):** set `app.branch_id` and `app.branch_ids` from the same credential value; never `app.branch_all`.
+- **Must (Job):** one helper transaction per tenant with `app.tenant_id` only; never a query across tenants.
 - **Must (Support):** refuse with `NoLiveGrant` before any tenant query; commit the "access opened" record in its own transaction before the scoped transaction; set `transaction_timeout` locally from configuration; never set `app.branch_all`.
 - **Must never:** cache grant liveness or session scope between transactions (ADR-0003, ADR-0004).
 - **Must (Go):** repositories accept only `ScopedTx`; acquire with a timeout and export pool saturation (F214).
