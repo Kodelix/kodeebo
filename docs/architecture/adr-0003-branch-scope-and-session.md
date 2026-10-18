@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: B1-B + B2-A). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** the restrictive branch policy names the roles it binds (including `support_rt` and `support_fn`); the session is found through a pre-context lookup (ADR-0001 class PL); role and branch-assignment writes get a database-side guard (research F421). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** person-started exports under Staff scope; session ends through § 1c; principal-read scope named; performance row corrected. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.backend`, `stack.web` unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: B1-B + B2-A). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** the restrictive branch policy names the roles it binds (including `support_rt` and `support_fn`); the session is found through a pre-context lookup (ADR-0001 class PL); role and branch-assignment writes get a database-side guard (research F421). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** person-started exports under Staff scope; session ends through § 1c; principal-read scope named; performance row corrected. **Third review (2026-10-18):** a background export refuses a disabled user or lost permission; Cost row corrected. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.backend`, `stack.web` unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
@@ -91,7 +91,7 @@ Research note: `docs/research/tenant-isolation.md` (part 4; § 5).
 - **Database guard on role and assignment writes (F421).** Roles live in `staff_roles (tenant_id, staff_id, role)` and assignments in `staff_branches (tenant_id, staff_id, branch_id)`. The `INSERT`, `UPDATE` and `DELETE` policies of `app_rt` on both tables require `current_setting('app.branch_all', true) = 'on'`, which the helper sets only for a verified owner. A bug that lets a manager write a role or an assignment through the dashboard fails in the database, not only in the `Authorizer`. Research F421 used a separate `app.actor_role` setting; the existing owner-only setting expresses the same check without a new one. A tenant's first owner is written by the tenant-provisioning job under `job_rt`'s own policy.
 - The application owns function-level permissions (owner / manager / cashier), deny by default, through one authorization module every route calls (API5:2023, F412).
 - Reports run as `security_invoker` views or queries under the caller's scope (F422); pre-aggregated rollups are ordinary tables with the same policies, never materialized views (F423).
-- **Exports a person starts run under that person's Staff scope**, as `app_rt` through the helper, even when they run in the background. The worker carries the requesting principal, resolved again when the export starts, and never runs a person's export as `job_rt`, which `branch_scope` does not bind. ASVS 5.0.0 8.3.3: access is decided on the originating subject's permissions (research F601). `job_rt` runs only tenant-wide exports (owner-started, retention or legal), whose requester already sees every branch.
+- **Exports a person starts run under that person's Staff scope**, as `app_rt` through the helper, even when they run in the background. The worker carries the requesting principal, resolved again when the export starts; **a disabled user, or one who has lost the permission or the branch, is refused**. It never runs a person's export as `job_rt`, which `branch_scope` does not bind. ASVS 5.0.0 8.3.3: access is decided on the originating subject's permissions (research F601). `job_rt` runs only tenant-wide exports (owner-started, retention or legal), whose requester already sees every branch.
 - Devices: the same policy with a one-element branch list taken from the device credential (credential ADR).
 
 **2. Session: opaque reference token, scope resolved per request (B2-A).**
@@ -218,7 +218,7 @@ Scope (ADR-0002) is built from Principal: branches=All only when role=Owner.
 | **Observability** | `auth.session.resolve` span; metrics `branch_scope_set_total{kind}`, `branch_scope_missing_total`, `branch_scope_switch_refused_total`, `authz_denied_total{layer}`, `session_invalidated_total{reason}`; log `branch_scope.refused`, `staff.assignment_changed` (audit) |
 | **Caching** | No cache of session scope at Tier 1 (reason: immediate revocation, ASVS 8.3.2); rollup keys carry tenant and branch |
 | **Self-hosted** | None — hosted only |
-| **Cost** | One indexed read per request; one policy evaluation per row |
+| **Cost** | One pre-context session lookup and one principal-read transaction per request; one policy evaluation per row |
 
 ## Performance Implications
 
