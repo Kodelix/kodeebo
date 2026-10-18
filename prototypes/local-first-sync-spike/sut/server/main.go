@@ -58,6 +58,15 @@
 // lacked the current config (keyed by the old cfg_version), counting all sales under that version (n_sales) and,
 // among them, the sales of an item whose policy at that version differs from its policy now (n_policy, with the
 // items). Each item's policy is kept per config version. MUTANT=summary_ignores_policy leaves n_policy at 0.
+//
+// SC-30 (device off while sessions run, founder rule 2026-10-17, sync note OQ8 (3)): the device's "device was off from
+// X to Y" notice arrives as a command (kind device_off) and is recorded once; the inbox keeps it single. X and Y are
+// device wall time, shown as such. Founder decisions 2026-10-18: every outage longer than a minute stays visible.
+// With open sessions it is an owner notice at once (money affected); with none it goes into the owner's daily
+// summary only (a PC switched off in business hours with nothing recorded is a known way to take cash off the
+// books). "PC was off" (boot id changed) and "app was closed while the PC was on" (same boot id) are told apart, and
+// the second is marked suspicious. MUTANT=idle_outage_hidden drops outages with no open session;
+// MUTANT=all_outages_notify sends every outage as a notice; MUTANT=app_down_not_flagged does not mark app_down.
 package main
 
 import (
@@ -83,7 +92,7 @@ import (
 const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
-  corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history;
+  corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
@@ -130,6 +139,10 @@ CREATE TABLE corrections (correction_id text PRIMARY KEY, action_id text NOT NUL
 CREATE TABLE items (item_id text PRIMARY KEY, price int NOT NULL, policy text);
 CREATE TABLE item_policy_history (version int NOT NULL, item_id text NOT NULL, policy text,
   PRIMARY KEY (version, item_id));
+CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
+  command_id text NOT NULL, off_kind text NOT NULL, from_wall double precision NOT NULL, to_wall double precision NOT NULL,
+  open_sessions int NOT NULL, owner_alert boolean NOT NULL DEFAULT true, channel text NOT NULL,
+  suspicious boolean NOT NULL, message text NOT NULL);
 CREATE TABLE stock_receipts (receipt_id text PRIMARY KEY, item_id text NOT NULL, qty int NOT NULL);
 CREATE TABLE stock_moves (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   action_id text NOT NULL, item_id text NOT NULL, qty int NOT NULL);
@@ -150,8 +163,12 @@ type payload struct {
 	EditID          string    `json:"edit_id"`
 	Result          string    `json:"result"`
 	Reason          *string   `json:"reason"`
-	Lines           []line    `json:"lines"`      // SC-29: catalogue items sold
-	NegAlerts       []string  `json:"neg_alerts"` // SC-29: items whose stock crossed below zero with this sale
+	OffKind         string    `json:"off_kind"`      // SC-30: power_off | app_down
+	FromWall        float64   `json:"from_wall"`     // SC-30: device wall time of the last-alive checkpoint
+	ToWall          float64   `json:"to_wall"`       // SC-30: device wall time at restart
+	OpenSessions    int       `json:"open_sessions"` // SC-30
+	Lines           []line    `json:"lines"`         // SC-29: catalogue items sold
+	NegAlerts       []string  `json:"neg_alerts"`    // SC-29: items whose stock crossed below zero with this sale
 }
 
 type line struct {
@@ -311,6 +328,32 @@ func failpoint(name string) {
 
 func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error {
 	p := c.Payload
+	if p.Kind == "device_off" { // SC-30: every outage stays visible; open sessions make it a notice at once
+		if p.OpenSessions == 0 && mutant == "idle_outage_hidden" { // planted defect: nothing recorded, nothing shown
+			return nil
+		}
+		channel := "daily_summary"
+		if p.OpenSessions > 0 || mutant == "all_outages_notify" {
+			channel = "notice"
+		}
+		suspicious := p.OffKind == "app_down" && mutant != "app_down_not_flagged"
+		from := time.Unix(int64(p.FromWall), 0).UTC().Format("2006-01-02 15:04")
+		to := time.Unix(int64(p.ToWall), 0).UTC().Format("2006-01-02 15:04")
+		msg := fmt.Sprintf("PC was off from %s to %s (device time)", from, to)
+		if p.OffKind == "app_down" {
+			msg = fmt.Sprintf("App was closed while the PC was on, from %s to %s (device time)", from, to)
+			if suspicious {
+				msg += " - unusual: check why the app was closed"
+			}
+		}
+		if p.OpenSessions > 0 {
+			msg += fmt.Sprintf("; %d session(s) were running", p.OpenSessions)
+		}
+		_, err := tx.Exec(ctx, `INSERT INTO device_offs (device_id, command_id, off_kind, from_wall, to_wall, open_sessions,
+			owner_alert, channel, suspicious, message) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+			dev, c.CommandID, p.OffKind, p.FromWall, p.ToWall, p.OpenSessions, channel == "notice", channel, suspicious, msg)
+		return err
+	}
 	if p.Kind == "edit_result" { // SC-28: the device decided; the edit ends here
 		tag, err := tx.Exec(ctx, `UPDATE edits SET state = $2, reason = $3, resolved_at = $4, resolved_by = 'device'
 			WHERE edit_id = $1 AND device_id = $5 AND state = 'pending'`, p.EditID, p.Result, p.Reason, nowS(), dev)
@@ -968,6 +1011,7 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
 			FROM items i ORDER BY i.item_id`,
 		"stock_alerts": "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
+		"device_offs":  "SELECT device_id, command_id, off_kind, from_wall, to_wall, open_sessions, owner_alert, channel, suspicious, message FROM device_offs ORDER BY id",
 		"price_summaries": `WITH b AS (SELECT s.*,
 			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,
 			  (SELECT min(p.at) FROM device_pulls p WHERE p.device_id = s.device_id AND p.version > s.period_key) AS to_ts

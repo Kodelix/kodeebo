@@ -111,6 +111,21 @@
 #   server's inbox dedupe keeps it single across resends and restores.
 #      MUTANT also: refuse_ignored (the refuse policy is not enforced), alert_every_sale (every negative sale alerts),
 #      default_refuse (a new item defaults to refuse), stale_policy (a policy once held is never updated).
+# Phase 3 (SC-30, device off while sessions run; founder rule 2026-10-17, sync note OQ8 (3)), CLOCKED=1:
+#   Mechanics with an injected clock: <db>.testclock holds {boot, mono, wall}, written by the driver (a new boot id
+#   and a restarted monotonic counter = the PC was powered off). A session started without start_min is anchored
+#   at (boot, mono) and accumulates time across outages (D1-B). The app's one-minute timer (op tick) writes a
+#   last-alive checkpoint (boot, mono, wall). At start, if the checkpoint is from an earlier boot, every open session
+#   gets (checkpoint mono - its anchor) + (wall now - checkpoint wall), and its anchor moves to the new boot; the same
+#   boot (the app was killed, the PC stayed on) needs no adjustment, the monotonic counter kept running. If the gap
+#   since the checkpoint is longer than the tick interval, an owner notice "device was off from X to Y" (kind
+#   power_off | app_down, open session count) is queued as a command in the device sequence. The adjustment, the
+#   notice and the refreshed checkpoint are one transaction, so a kill during it leaves all or nothing. The outage
+#   bounds rest on device wall time: trusting them is the clock question of Part D (phase 5).
+#      MUTANT also: outage_not_counted (the wall-clock part of an outage is dropped), mono_across_boot (the anchor is
+#      not moved: monotonic readings of two boots are subtracted), no_alive_update (the checkpoint is not refreshed
+#      at start), notice_outside_txn (the notice is written after the adjustment commits), notice_every_restart
+#      (a notice even for a restart inside the tick interval).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -142,6 +157,9 @@ INSPECT = os.environ.get("INSPECT") == "1"
 PREMIGRATE = DB + ".premigrate"
 RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
 EDITS_ON = os.environ.get("EDITS") == "1"  # SC-28
+CLOCKED = os.environ.get("CLOCKED") == "1"  # SC-30
+TESTCLOCK = DB + ".testclock"
+TICK_S = 60  # the app's last-alive timer (spike value)
 fp_count = 0
 MARKER_FAIL = os.environ.get("MARKER_FAIL", "")  # SC-20: write | fsync | replace
 unreported = []  # SC-20: events not yet reported to the server (kept in memory when the disk is full)
@@ -170,12 +188,18 @@ clocks = {"mono_offset": 0.0, "wall_offset": 0.0}  # SC-25b test hooks
 lease = {}
 
 
+def test_clock():
+    """SC-30: the injected device clock {boot, mono, wall}."""
+    with open(TESTCLOCK) as f:
+        return json.load(f)
+
+
 def device_mono():
-    return time.monotonic() + clocks["mono_offset"]
+    return test_clock()["mono"] if CLOCKED else time.monotonic() + clocks["mono_offset"]
 
 
 def device_wall():
-    return time.time() + clocks["wall_offset"]
+    return test_clock()["wall"] if CLOCKED else time.time() + clocks["wall_offset"]
 
 
 def take_lease(l):
@@ -487,6 +511,11 @@ def open_store():
             "CREATE TABLE IF NOT EXISTS items (item_id TEXT PRIMARY KEY, price INTEGER NOT NULL, policy TEXT)",  # SC-29
             "CREATE TABLE IF NOT EXISTS stock (item_id TEXT PRIMARY KEY, qty INTEGER NOT NULL)",
             "CREATE TABLE IF NOT EXISTS receipts (receipt_id TEXT PRIMARY KEY)",
+            "CREATE TABLE IF NOT EXISTS alive (id INTEGER PRIMARY KEY CHECK (id = 1), boot INTEGER, mono REAL, wall REAL)",
+            "CREATE TABLE IF NOT EXISTS session_clock (session_id TEXT PRIMARY KEY, boot INTEGER NOT NULL, "
+            "mono_at REAL NOT NULL, accum_s REAL NOT NULL)",  # SC-30
+            "CREATE TABLE IF NOT EXISTS outages (id INTEGER PRIMARY KEY, kind TEXT, from_wall REAL, to_wall REAL, "
+            "open_sessions INTEGER, seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",
         ]:
             c.execute(stmt).fetchall()
         check_marker(c)
@@ -545,6 +574,7 @@ def close_and_pay(a, priced=None, also=None):
             q("INSERT INTO minutes VALUES (?,?,?)", (a["action_id"], a["session_id"], m))
         if priced:
             q("DELETE FROM sessions WHERE session_id = ?", (a["session_id"],))
+            q("DELETE FROM session_clock WHERE session_id = ?", (a["session_id"],))
         if also:
             also()
 
@@ -603,7 +633,8 @@ def rollback():
 
 # Every retained command, bills and SC-28 edit results alike: a server restore can ask for any of them again.
 RETAINED = ("SELECT seq, command_id, payload, payload_hash FROM bills WHERE seq IS NOT NULL "
-            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM edits WHERE seq IS NOT NULL")
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM edits WHERE seq IS NOT NULL "
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM outages WHERE seq IS NOT NULL")
 
 
 def report():
@@ -877,9 +908,76 @@ def price_of(prices, key):
 
 def start_session(m):
     v, prices = device_prices()
-    seg = [{"from": m["start_min"], "tier": m["tier"], "rate": price_of(prices, m["tier"]), "v": v}]
-    q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], m["start_min"], json.dumps(prices), v, json.dumps(seg)))
+    clocked = CLOCKED and "start_min" not in m  # SC-30: anchored on the device clock
+    start = 0 if clocked else m["start_min"]
+    seg = [{"from": start, "tier": m["tier"], "rate": price_of(prices, m["tier"]), "v": v}]
+    q("BEGIN IMMEDIATE")
+    q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], start, json.dumps(prices), v, json.dumps(seg)))
+    if clocked:
+        c = test_clock()
+        q("INSERT INTO session_clock VALUES (?,?,?,0)", (m["session_id"], c["boot"], c["mono"]))
+    q("COMMIT")
     reply({"ok": True, "op": "start_session", "rate": seg[0]["rate"], "v": v})
+
+
+def session_elapsed_s(session_id):
+    """SC-30: time accumulated before the current boot plus the monotonic time since the anchor."""
+    boot, mono_at, accum = q("SELECT boot, mono_at, accum_s FROM session_clock WHERE session_id = ?", (session_id,))[0]
+    return accum + (test_clock()["mono"] - mono_at)
+
+
+def tick():
+    """SC-30: the app's one-minute timer writes the last-alive checkpoint."""
+    c = test_clock()
+    q("INSERT INTO alive VALUES (1,?,?,?) ON CONFLICT (id) DO UPDATE SET boot = excluded.boot, mono = excluded.mono, "
+      "wall = excluded.wall", (c["boot"], c["mono"], c["wall"]))
+    reply({"ok": True, "op": "tick"})
+
+
+def check_outage():
+    """SC-30, at start: account the time the device or the app was down to every open session, and queue one owner
+    notice, in one transaction with the refreshed checkpoint."""
+    c = test_clock()
+    row = q("SELECT boot, mono, wall FROM alive WHERE id = 1")
+    q("BEGIN IMMEDIATE")
+    notice = None
+    if row:
+        boot0, mono0, wall0 = row[0]
+        gap = c["wall"] - wall0
+        if boot0 != c["boot"] and MUTANT != "mono_across_boot":  # powered off: the monotonic counter restarted
+            down = 0 if MUTANT == "outage_not_counted" else gap
+            for sid, mono_at in q("SELECT session_id, mono_at FROM session_clock WHERE boot = ?", (boot0,)):
+                q("UPDATE session_clock SET accum_s = accum_s + ? + ?, boot = ?, mono_at = ? WHERE session_id = ?",
+                  (mono0 - mono_at, down, c["boot"], c["mono"], sid))
+        if gap > TICK_S or MUTANT == "notice_every_restart":
+            n_open = q("SELECT count(*) FROM sessions")[0][0]
+            notice = {"kind": "device_off", "off_kind": "power_off" if boot0 != c["boot"] else "app_down",
+                      "from_wall": wall0, "to_wall": c["wall"], "open_sessions": n_open}
+    if MUTANT != "no_alive_update":
+        q("INSERT INTO alive VALUES (1,?,?,?) ON CONFLICT (id) DO UPDATE SET boot = excluded.boot, "
+          "mono = excluded.mono, wall = excluded.wall", (c["boot"], c["mono"], c["wall"]))
+    if MUTANT == "notice_outside_txn":  # planted defect: the notice is a second transaction
+        q("COMMIT")
+        failpoint("client:outage_mid")
+        q("BEGIN IMMEDIATE")
+    if notice:
+        body = json.dumps(notice, sort_keys=True, separators=(",", ":"))
+        h = hashlib.sha256(body.encode()).hexdigest()
+        seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
+        cmd_id = f"cmd-off-{c['boot']}-{int(c['wall'])}"
+        q("INSERT INTO outbox (seq, command_id, payload, payload_hash, status) VALUES (?,?,?,?, 'pending')",
+          (seq, cmd_id, body, h))
+        q("INSERT INTO outages (kind, from_wall, to_wall, open_sessions, seq, command_id, payload, payload_hash) "
+          "VALUES (?,?,?,?,?,?,?,?)", (notice["off_kind"], notice["from_wall"], notice["to_wall"],
+                                       notice["open_sessions"], seq, cmd_id, body, h))
+    if MUTANT != "notice_outside_txn":
+        failpoint("client:outage_mid")  # inside the transaction: a kill here leaves nothing
+    q("COMMIT")
+    if notice:
+        try:
+            write_marker(q("SELECT seq FROM counter WHERE id = 1")[0][0])
+        except OSError as e:
+            record_event("marker_behind", e, at="outage")
 
 
 def change_tier(m):
@@ -901,6 +999,8 @@ def round_half_up(units, step):
 
 def close_session(m):
     v, prices = device_prices()
+    if CLOCKED and "end_min" not in m:  # SC-30: billable minutes from the device clock (whole minutes, floor)
+        m = {**m, "end_min": int(session_elapsed_s(m["session_id"]) // 60)}
     start, segs = q("SELECT start_min, segments FROM sessions WHERE session_id = ?", (m["session_id"],))[0]
     segs = json.loads(segs)
     if MUTANT == "retroactive_price":  # planted defect: today's list applied to the whole session
@@ -1023,6 +1123,12 @@ def checkpoint():
 
 
 refused = open_error is not None
+if CLOCKED and not refused and not INSPECT:
+    try:
+        check_outage()
+    except (*STORE_ERRORS, RuntimeError) as e:
+        record_event("store_error_during_operation", e)
+        refused = True
 for line in sys.stdin:
     msg = json.loads(line)
     op = msg["op"]
@@ -1085,6 +1191,8 @@ for line in sys.stdin:
             except handled as e:  # no price list, a price missing, an unknown session: refuse the action, not the store
                 code = getattr(e, "code", "unknown_session" if isinstance(e, (KeyError, IndexError)) else "invalid")
                 reply({"ok": False, "op": op, "error": code, "warning": code, "detail": str(e)[:100]})
+        elif op == "tick":  # SC-30: the app's last-alive timer
+            tick()
         elif op == "advance_mono":  # SC-25b test hook: time passes on the device's monotonic counter
             clocks["mono_offset"] += float(msg["seconds"])
             clocks["wall_offset"] += float(msg["seconds"])  # the wall clock runs too, unless moved separately

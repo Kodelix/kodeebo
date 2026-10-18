@@ -2824,6 +2824,242 @@ def sc29(seeds=20, mutant_budget=25):
     return ok
 
 
+SC30_CELLS = ["a_off_minutes", "b_off_hours", "c_app_kill", "d_two_outages", "e_kill_mid_notice", "f_idle_outages"]
+SC30_MUTANTS = ["outage_not_counted", "mono_across_boot", "no_alive_update", "notice_outside_txn",
+                "notice_every_restart", "idle_outage_hidden", "all_outages_notify", "app_down_not_flagged"]
+SC30_PRICES = {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 1}
+SC30_TICK = 60
+
+
+def sc30_script(cell):
+    def script(run):
+        st = run.sc30 = {"cell": cell, "sessions": {}, "notices": [], "exercised": False}
+        clk = run.sc30_clock
+        last_tick = [None]
+
+        def write():
+            with open(run.db + ".testclock", "w") as f:
+                json.dump(clk, f)
+
+        def advance(sec, ticks=True):
+            """Time passes with the app running; its timer writes a checkpoint each minute (the last one counts)."""
+            whole = int(sec // SC30_TICK)
+            for _ in range(whole):
+                clk["mono"] += SC30_TICK
+                clk["wall"] += SC30_TICK
+                write()
+                if ticks:
+                    run.send({"op": "tick"})
+                    last_tick[0] = clk["wall"]
+            rest = sec - whole * SC30_TICK
+            clk["mono"] += rest
+            clk["wall"] += rest
+            write()
+
+        def kill():
+            run.client.kill()
+            run.client.wait()
+
+        def restart(off_kind, n_open, op="tick"):
+            """The next op restarts the app; the model expects one notice if the gap exceeds the tick interval. The
+            start itself refreshes the checkpoint, whatever the first op is."""
+            frm = last_tick[0]
+            r = run.send({"op": op})
+            last_tick[0] = clk["wall"]
+            if clk["wall"] - frm > SC30_TICK:
+                st["notices"].append({"off_kind": off_kind, "from_wall": frm, "to_wall": clk["wall"],
+                                      "open_sessions": n_open})
+            return r
+
+        def power_off(sec, boot_s=30):
+            kill()
+            clk["boot"] += 1
+            clk["wall"] += sec + boot_s
+            clk["mono"] = boot_s  # the monotonic counter restarts with the PC
+            write()
+
+        def app_kill(sec):
+            kill()
+            clk["wall"] += sec
+            clk["mono"] += sec  # the PC stayed on
+            write()
+
+        def start(name):
+            sid = f"s{run.seed}-{name}"
+            run.send({"op": "start_session", "session_id": sid, "tier": "std"})
+            st["sessions"][sid] = {"start_wall": clk["wall"]}
+            return sid
+
+        def close(sid):
+            aid = f"s{run.seed}-a-{sid.rsplit('-', 1)[1]}"
+            r = run.send({"op": "close_session", "action_id": aid, "session_id": sid})
+            mins = int((clk["wall"] - st["sessions"][sid]["start_wall"]) // 60)  # the true elapsed time
+            st["sessions"][sid].update(close_wall=clk["wall"], mins=mins, reply=r)
+            if r and r.get("ok"):
+                a = {"op": "close_session", "action_id": aid, "session_id": sid, "start_min": 0, "end_min": mins,
+                     "expected_piasters": (mins * SC30_PRICES["std"] + 30) // 60}
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+                run.seq_of[aid] = r.get("seq")
+            return r
+
+        post_json("/config", {"prices": SC30_PRICES})
+        run.send({"op": "pull_config"})
+        run.send({"op": "tick"})
+        last_tick[0] = clk["wall"]
+        jitter = run.seed % 7 * 5  # seconds between the last checkpoint and the cut, varied by seed
+        if cell in ("a_off_minutes", "b_off_hours", "e_kill_mid_notice"):
+            s1 = start("s1")
+            advance(20 * 60 + jitter)
+            power_off(7 * 60 if cell != "b_off_hours" else 3 * 3600 + 17 * 60)
+            if cell == "e_kill_mid_notice":  # the restart is killed inside the outage write, then restarts cleanly
+                run.client_env["FP"] = "client:outage_mid:1"
+                run.send({"op": "tick"})
+                run.client_env.pop("FP")
+                st["killed_mid"] = any("client died" in f for f in run.fired)
+            if cell == "e_kill_mid_notice":
+                restart("power_off", 1, op="stats")
+                advance(20, ticks=False)  # the app crashes again before its first timer tick
+                app_kill(5)
+                restart("app_down", 1, op="stats")  # 25 s since the start's checkpoint: no notice, nothing added
+            else:
+                restart("power_off", 1)
+            advance(15 * 60 + 20)
+            close(s1)
+            st["exercised"] = cell != "e_kill_mid_notice" or st.get("killed_mid")
+        elif cell == "c_app_kill":
+            s1 = start("s1")
+            advance(12 * 60 + jitter)
+            app_kill(5 * 60)
+            restart("app_down", 1)
+            advance(3 * 60)
+            app_kill(10)  # a quick restart inside the tick interval: no notice
+            restart("app_down", 1)
+            advance(6 * 60 + 15)
+            close(s1)
+            st["exercised"] = True
+        elif cell == "d_two_outages":
+            s1 = start("s1")
+            advance(10 * 60 + jitter)
+            power_off(4 * 60)
+            restart("power_off", 1)
+            s2 = start("s2")
+            advance(10 * 60 + 30)
+            power_off(2 * 3600)
+            restart("power_off", 2)
+            advance(5 * 60 + 10)
+            close(s1)
+            advance(3 * 60)
+            close(s2)
+            st["exercised"] = True
+        elif cell == "f_idle_outages":  # nothing open: both kinds go to the daily summary, never dropped
+            advance(10 * 60 + jitter)
+            power_off(30 * 60)
+            restart("power_off", 0)
+            advance(5 * 60)
+            app_kill(10 * 60)
+            restart("app_down", 0)
+            advance(2 * 60)
+            s1 = start("s1")
+            advance(5 * 60)
+            close(s1)
+            st["exercised"] = True
+        for _ in range(5):
+            r = run.send({"op": "sync"})
+            if r and r.get("ok") and r.get("pending") == 0:
+                break
+    return script
+
+
+def sc30_extra(run, dump):
+    """R41 every session is billed its true elapsed time across outages (no minute lost or counted twice; I5 and I3
+    check the same on the server rows); R42 exactly one owner notice per outage longer than the tick interval, with
+    the last checkpoint and the restart as its bounds and the open session count, and none for a quicker restart;
+    R43 a kill inside the outage write changes neither (cell e)."""
+    st, v = run.sc30, []
+    for sid, ss in st["sessions"].items():
+        got = sum(1 for m in dump["minutes"] if m["session_id"] == sid)
+        if not (ss.get("reply") or {}).get("ok"):
+            v.append(("R41", f"{sid}: close refused {ss.get('reply')}"))
+        elif got != ss["mins"]:
+            v.append(("R41", f"{sid}: billed {got} min, true elapsed {ss['mins']} min"))
+    have = [{k: r[k] for k in ("off_kind", "from_wall", "to_wall", "open_sessions")} for r in dump.get("device_offs", [])]
+    if have != st["notices"]:
+        rule = "R43" if st["cell"] == "e_kill_mid_notice" else "R42"
+        v.append((rule, f"owner notices {have}, model {st['notices']}"))
+    # Founder decisions 2026-10-18: open sessions -> a notice at once; none -> the daily summary only, never dropped;
+    # "app closed while the PC was on" (same boot) is marked suspicious, "PC was off" (boot changed) is not.
+    for r in dump.get("device_offs", []):
+        want_ch = "notice" if r["open_sessions"] > 0 else "daily_summary"
+        if r["channel"] != want_ch or bool(r["owner_alert"]) != (want_ch == "notice"):
+            v.append(("R42", f"outage with {r['open_sessions']} open sessions went to {r['channel']} "
+                             f"(alert {r['owner_alert']}), expected {want_ch}"))
+        if bool(r["suspicious"]) != (r["off_kind"] == "app_down"):
+            v.append(("R42", f"{r['off_kind']} outage marked suspicious={r['suspicious']}: {r['message']}"))
+    st["owner_notices"] = have
+    st["owner_view"] = [{k: r[k] for k in ("channel", "suspicious", "message")} for r in dump.get("device_offs", [])]
+    return v, frozenset()
+
+
+def sc30_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc30-{cell}", client_env={**RETENTION_ENV, "CLOCKED": "1"})
+    run.sc30_clock = {"boot": 1, "mono": 1000.0, "wall": 1_800_000_000.0}
+    with open(run.db + ".testclock", "w") as f:  # the injected device clock exists before the app first starts
+        json.dump(run.sc30_clock, f)
+    run.script, run.extra = sc30_script(cell), sc30_extra
+    r = run.go()
+    r["sc30"] = run.sc30
+    return r
+
+
+def sc30(seeds=20, mutant_budget=25):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "tick_s": SC30_TICK,
+               "cells": [], "mutants": {}}
+    print(f"phase 3 SC-30 (device off while sessions run, injected clock), commit {summary['harness_commit']}", flush=True)
+    ok = True
+    for cell in SC30_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = sc30_run(s, cell)
+            exercised += bool(r["sc30"].get("exercised"))
+            if s == 1:
+                sample = {"notices": r["sc30"].get("owner_notices"), "owner_view": r["sc30"].get("owner_view"),
+                          "minutes": {k: x.get("mins") for k, x in r["sc30"]["sessions"].items()}}
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:18s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in SC30_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(SC30_CELLS) + 1, SC30_CELLS[k % len(SC30_CELLS)]
+            r = sc30_run(s, cell, mutant=mu, label=f"sc30-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:20s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc30-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print(f"SC-30: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -2833,6 +3069,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc30":  # sc30 [seeds_per_cell]
+        sys.exit(0 if sc30(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay30":  # replay30 <seed> <cell> [mutant]
+        r = sc30_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay30", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc30", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "sc29":  # sc29 [seeds_per_cell]
         sys.exit(0 if sc29(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay29":  # replay29 <seed> <cell> [mutant]

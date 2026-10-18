@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on the dev run; SC-31, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -211,6 +211,16 @@ bash prototypes/local-first-sync-spike/run.sh sc29 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay29 <seed> <cell> [mutant]
+```
+
+SC-30 (device off while sessions run, injected clock):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc30 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay30 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1078,5 +1088,80 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **Stock counts and adjustments by the owner** other than receipts (damage, count corrections).
 - **Recipes:** an item that uses up other stock.
 - **The refusal message in Arabic and English:** the desktop spike's G3 and the UI spec.
+
+### Phase 3 — SC-30: the cashier PC is off while sessions run (mechanics, injected clock)
+
+**Founder rule under test (2026-10-17, sync note OQ8 (3)):**
+1. If the cashier PC is off while a session runs, the time keeps counting.
+2. The owner sees a "device was off from X to Y" notice when it restarts.
+3. No session minute is lost or counted twice.
+
+**Design under test (`CLOCKED=1`; D1-B from Part D):**
+- **Injected clock:** `<db>.testclock` holds `{boot, mono, wall}`, written by the driver. A new boot id with a restarted monotonic counter means the PC was powered off. The same boot id with the counter still running means only the app was killed.
+- **Session time:** a session is anchored at (boot, monotonic reading) and accumulates time across outages. Billable minutes are whole minutes, rounded down; the owner's minimum and increment are not exercised (billing spec).
+- **Last-alive checkpoint:** the app's one-minute timer (`tick`) writes (boot, monotonic, wall) to the store.
+- **At start, in one transaction:**
+  - **Earlier boot:** every open session gets (checkpoint monotonic − its anchor) + (wall now − checkpoint wall), and its anchor moves to the new boot. The two parts meet at the checkpoint, so nothing is counted twice.
+  - **Same boot:** nothing to add; the monotonic counter kept running.
+  - **Gap longer than the tick interval (60 s):** a `device_off` record (`power_off` or `app_down`, from = checkpoint wall, to = restart wall, open session count) is queued as a command in the device sequence. The server records it once; the inbox keeps it single.
+  - **The checkpoint is refreshed** in the same transaction.
+- **What the owner sees (founder, 2026-10-18):** every outage longer than a minute stays visible.
+  - **With open sessions:** an owner notice at once, because money is affected.
+  - **With no open session:** the owner's daily summary only, no notice. A PC switched off in business hours with nothing recorded is a known way to take cash off the books.
+  - **Two kinds, told apart:** "PC was off" (the boot id changed) and "App was closed while the PC was on" (same boot id). The second is the more suspicious one and says so ("unusual: check why the app was closed").
+  - **Phase 4:** the boot-id signal on Windows (which value changes on a reboot, and how sleep and hibernate behave) is still to be confirmed (S301/S302).
+- **Trust:** the outage bounds rest on device wall time. Phase 5 tests them with tampered clocks.
+
+**Cells** (seeds vary the time between the last checkpoint and the cut by 0–30 s):
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_off_minutes` | Session open 20 min, PC off 7 min (30 s boot), then 15 min more, close | Bill = true elapsed minutes. One "PC was off" notice at once, from the last checkpoint to the restart, 1 open session |
+| `b_off_hours` | As `a` with the PC off 3 h 17 min | The same, over hours |
+| `c_app_kill` | Session open 12 min, app killed 5 min, restart; 3 min later killed for 10 s, restart; close | One "app was closed while the PC was on" notice, marked unusual, for the 5-minute outage; nothing for the 10-second restart; the bill covers the whole time |
+| `d_two_outages` | s1 open; off 4 min; s2 starts; off 2 h; both close | Two notices (1, then 2 open sessions); each session billed its own true time |
+| `e_kill_mid_notice` | As `a`, but the first restart is killed inside the outage write; then the app restarts, crashes again 20 s later before its first timer tick, and restarts | One notice; the outage counted once; the second crash adds nothing and raises no notice |
+| `f_idle_outages` | Nothing open: PC off 30 min, later the app closed 10 min with the PC on; then a session runs 5 min | Both outages in the daily summary only, no notice; the app closure marked unusual; the later session billed normally |
+
+**Checks added:**
+- **R41:** every session is billed its true elapsed time across outages. I5 and I3 check the same on the server rows.
+- **R42:** exactly one record per outage longer than the tick interval, with the checkpoint and the restart as its bounds and the open session count; none for a quicker restart. With open sessions it is a notice (owner alert); with none it goes to the daily summary only. App closures (same boot) are marked suspicious; PC power-offs are not.
+- **R43:** a kill inside the outage write, or a crash before the first tick after a restart, changes neither.
+
+**Mutants:**
+- `outage_not_counted` (client): the wall-clock part of an outage is dropped.
+- `mono_across_boot` (client): the anchor is not moved, so monotonic readings from two boots are subtracted.
+- `no_alive_update` (client): the checkpoint is not refreshed at start.
+- `notice_outside_txn` (client): the notice is written after the adjustment commits.
+- `notice_every_restart` (client): a notice even for a restart inside the tick interval.
+- `idle_outage_hidden` (server): an outage with no open session is dropped.
+- `all_outages_notify` (server): every outage is sent as a notice.
+- `app_down_not_flagged` (server): an app closure is not marked suspicious.
+
+#### Run 1 (dev, uncommitted harness on `68ad1e1`) — PASS
+
+`evidence/phase3-sc30-run1-dev*`, 78 s (rerun after the founder's answers added `f_idle_outages` and the routing checks).
+- **Cells:** all 6 PASS, 20 seeds each, 0 violations. Seed 1 billed 42 min in `a`, 232 min in `b`, 26 min in `c`, 150 + 139 min in `d` and 43 min in `e`, each equal to the true elapsed time.
+- **Mutants:** all eight caught.
+  - `outage_not_counted` after 1 run (I3: 35 min billed against 42).
+  - `mono_across_boot` after 1 (I3: a negative amount).
+  - `no_alive_update` after 5, in `e` (R43: a second notice and the outage counted again).
+  - `notice_outside_txn` after 5, in `e` (R43: the notice was lost).
+  - `notice_every_restart` after 3, in `c` (R42).
+  - `idle_outage_hidden` after 6, in `f` (R42: the outages were missing).
+  - `all_outages_notify` after 6, in `f` (R42).
+  - `app_down_not_flagged` after 3, in `c` (R42).
+- **Smoke on the changed client and server:** SC-23 (2 seeds), SC-25b (3), SC-28 (4), SC-29 (3) and SC-19 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Design consequence (shown by the `no_alive_update` mutant):** the checkpoint must be refreshed in the start-up transaction, not left to the first timer tick. In the first draft every restart was followed at once by a tick, which hid the defect. An app that crashes again before its first tick would then count the same outage a second time and repeat the notice.
+
+**Founder decisions (2026-10-18):** (1) every outage longer than a minute is shown: a notice at once with open sessions, the daily summary only without; (2) "PC was off" and "app was closed while the PC was on" are separate, and the second is marked unusual. The Windows boot-id signal is to be confirmed in phase 4 (S301/S302).
+
+**Not covered:**
+- **Tampered clocks:** phase 5. A wall clock set back during the outage shortens the bill.
+- **Real reboots, sleep and hibernate on Windows:** the boot id and monotonic behaviour, S301–S305 in phase 4. The founder's split between "PC was off" and "app was closed" rests on the boot id, so S301/S302 must confirm it.
+- **The daily summary itself:** the spike records the channel; the summary's content and schedule are for the dashboard spec.
+- **The owner's minimum and increment:** billing spec.
+
 
 
