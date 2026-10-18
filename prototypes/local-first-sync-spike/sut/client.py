@@ -135,6 +135,11 @@
 #      MUTANT also: end_day_ignores_sessions (running sessions do not block End Day), refuse_without_names (the
 #      refusal does not say what is open), end_day_two_txns (the day is closed, then the command written in a second
 #      transaction), bill_old_day (after End Day a bill is stamped with the closed day).
+# Phase 3 (SC-13, TS-01a; founder policy OQ7, 2026-10-17): MACHINE_ID (read from outside the store; on Windows a
+#   hardware-bound id, phase 4) rides every batch. A "quarantined" result means the server stored the command without
+#   applying it: it counts as acknowledged, and the counter keeps selling. Replies say whether the identity is
+#   quarantined and whether this copy has been retired by the owner's choice; the client shows it, never stops.
+#      MUTANT also: block_on_quarantine (the counter refuses sales while the identity is quarantined).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -168,6 +173,8 @@ RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
 EDITS_ON = os.environ.get("EDITS") == "1"  # SC-28
 CLOCKED = os.environ.get("CLOCKED") == "1"  # SC-30
 ENDDAY = os.environ.get("ENDDAY") == "1"  # SC-31
+MACHINE_ID = os.environ.get("MACHINE_ID", "")  # SC-13
+sync_flags = {"quarantined": False, "retired": False}
 TESTCLOCK = DB + ".testclock"
 TICK_S = 60  # the app's last-alive timer (spike value)
 fp_count = 0
@@ -672,13 +679,16 @@ def report():
 
 def post(cmds):
     req = urllib.request.Request(SERVER + "/batch", method="POST",
-                                 data=json.dumps({"device_id": DEVICE, "commands": cmds, **report()}).encode(),
+                                 data=json.dumps({"device_id": DEVICE, "commands": cmds, **report(),
+                                                  **({"machine_id": MACHINE_ID} if MACHINE_ID else {})}).encode(),
                                  headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
         body = json.loads(r.read())  # an empty or cut body raises here: never acknowledge on the status code (P2-F1)
     if not isinstance(body, dict) or not isinstance(body.get("results"), list):
         raise ValueError("reply without a results list")
     take_lease(body.get("lease"))  # a parsed reply from the server renews the lease
+    if MACHINE_ID:
+        sync_flags.update(quarantined=bool(body.get("quarantined")), retired=bool(body.get("retired")))
     return body
 
 
@@ -773,7 +783,7 @@ def finish_sync(resp):
         except OSError as e:
             record_event("marker_behind", e, at="edit")
     reply({"ok": True, "op": "sync", "results": resp["results"], "pending": pending_count(), "batch": batch,
-           **({"edits": decided} if decided else {})})
+           **({"edits": decided} if decided else {}), **(dict(sync_flags) if MACHINE_ID else {})})
 
 
 def apply_edits(resp):
@@ -812,7 +822,7 @@ def apply_reply(resp):
     """Inside the caller's transaction: acknowledge from a fully parsed reply, then (retention mode) record the
     server's resend request and archive confirmation, and prune what the rule allows."""
     for r in resp["results"] or []:
-        if r["result"] in ("applied", "duplicate"):
+        if r["result"] in ("applied", "duplicate", "quarantined"):  # quarantined = stored by the server (SC-13)
             if RETENTION:
                 q("DELETE FROM outbox WHERE command_id = ?", (r["command_id"],))
                 q("UPDATE sync_state SET acked_seq = max(acked_seq, ?) WHERE id = 1", (r["seq"],))
@@ -1247,6 +1257,9 @@ for line in sys.stdin:
             reply({"ok": False, "op": op, "error": "another_instance", "warning": "another_instance"})
         else:
             reply({"ok": False, "op": op, "store": "refused"})
+        continue
+    if MUTANT == "block_on_quarantine" and sync_flags["quarantined"] and op in ("sale", "sell_items", "start_session"):
+        reply({"ok": False, "op": op, "error": "sync_quarantined"})  # planted defect: the counter stops
         continue
     gated = ("sale", "start_session", "sell_items", "sell_stock") + (("close_session",) if MUTANT == "expiry_blocks_close" else ())
     if LEASE_ON and op in gated and lease_status()["status"] in ("expired", "none"):

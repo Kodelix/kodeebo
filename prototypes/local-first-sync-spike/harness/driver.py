@@ -3321,6 +3321,277 @@ def sc31(seeds=20, mutant_budget=24):
     return ok
 
 
+SC13_CELLS = ["a_clone_keep_original", "b_clone_keep_clone", "c_rollback_ts01a"]
+SC13_MUTANTS = ["drop_conflicting", "no_machine_check", "resolve_drops_other", "alert_each_batch", "block_on_quarantine",
+                "review_not_in_totals", "held_hidden"]
+SC13_PRICES = {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 1}
+
+
+def spawn_at(run, db, extra_env):
+    """Start a client on another store (a cloned disk), with its own environment."""
+    e = run.env("client", False)
+    e.update(run.client_env)
+    e.update(extra_env)
+    return subprocess.Popen([sys.executable, CLIENT_PY, db, SERVER_URL], env=e, stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, text=True, bufsize=1,
+                            stderr=open(os.path.join(os.path.dirname(db), "client.log"), "a"))
+
+
+def copy_store(src_dir, dst_dir):
+    """Copy the store files of a stopped client (database and commit marker; never the lock or the event log)."""
+    os.makedirs(dst_dir, exist_ok=True)
+    for name in os.listdir(src_dir):
+        p_ = os.path.join(src_dir, name)
+        if name.startswith("client.db") and os.path.isfile(p_) and not name.endswith((".lock", ".events.jsonl")):
+            shutil.copy2(p_, os.path.join(dst_dir, name))
+
+
+def sc13_script(cell):
+    def script(run):
+        st = run.sc13 = {"cell": cell, "mismatch": [], "stream": {}, "review": set(), "pre_ledger": set(),
+                         "quarantined": set(), "replies": {}, "exercised": False}
+        n = [0]
+        procs = {"m1": None, "m2": None}  # m1 = run.client (the original store), m2 = the clone
+
+        def send(who, msg):
+            return run.send(msg) if who == "m1" else talk(procs["m2"], msg)
+
+        def sell(who, label):
+            aid = f"s{run.seed}-{who}-{n[0]}"
+            n[0] += 1
+            r = send(who, {"op": "sell_items", "action_id": aid, "n": 1})
+            if not r or not r.get("ok"):
+                st["mismatch"].append(("R49", f"{label}: the counter on {who} refused a sale: {r}"))
+                return None
+            a = {"op": "sell_items", "action_id": aid, "start_min": 0, "end_min": 0,
+                 "expected_piasters": SC13_PRICES["cafe"]}
+            run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+            run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+            return aid
+
+        def sync(who):
+            r = None
+            for _ in range(6):
+                r = send(who, {"op": "sync"})
+                if r and r.get("ok") and r.get("pending") == 0:
+                    break
+            return r
+
+        def dump():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=60).read())
+
+        def report():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/owner_report", timeout=30).read())
+
+        def owner_reports():
+            """After the choice: the owner's report, then again once every retired stream is marked reviewed."""
+            st["report_after"] = report()
+            for stream in sorted({x for x in st["stream"].values() if x != "dev-1"}):
+                dash("POST", "/review/ack", {"stream_id": stream})
+            st["report_reviewed"] = report()
+
+        def stop_m1():
+            run.send({"op": "exit"})
+            run.client.wait()
+
+        post_json("/config", {"prices": SC13_PRICES})
+        run.send({"op": "pull_config"})
+        if cell in ("a_clone_keep_original", "b_clone_keep_clone"):
+            keep = "m1" if cell == "a_clone_keep_original" else "m2"
+            pre = [sell("m1", "before the copy") for _ in range(2)]
+            sync("m1")
+            pend = [sell("m1", "pending at the copy") for _ in range(2)]  # cloned as pending commands
+            stop_m1()
+            copy_store(run.dir, os.path.join(run.dir, "clone"))
+            procs["m2"] = spawn_at(run, os.path.join(run.dir, "clone", "client.db"), {"MACHINE_ID": "m2"})
+            sync("m1")  # the original uploads its pending commands
+            a_post = [sell("m1", "original after the copy") for _ in range(2)]
+            sync("m1")  # applied normally: the clone has not been seen yet
+            b_new = [sell("m2", "clone") for _ in range(3)]
+            st["replies"]["clone_first_sync"] = sync("m2")  # first contact of a second machine: quarantine
+            d = dump()
+            st["pre_ledger"] = {r["action_id"] for r in d["ledger"] if r["kind"] == "sale"}
+            st["want_pre_ledger"] = set(pre + pend + a_post)
+            a_q = [sell("m1", "original during quarantine") for _ in range(2)]
+            sync("m1")
+            b_q = [sell("m2", "clone during quarantine")]
+            sync("m2")
+            d = dump()
+            st["quarantined"] = {r["command_id"][4:] for r in d.get("quarantine_cmds", [])}
+            st["want_quarantined"] = set(b_new + a_q + b_q)
+            st["ledger_during"] = {r["action_id"] for r in d["ledger"] if r["kind"] == "sale"}
+            st["report_quar"] = report()
+            st["resolve"] = dash("POST", "/quarantine/resolve", {"device_id": "dev-1", "keep": keep})[1]
+            a_after, b_after = sell("m1", "original after the choice"), sell("m2", "clone after the choice")
+            st["replies"]["m1_after"], st["replies"]["m2_after"] = sync("m1"), sync("m2")
+            stop(procs["m2"])
+            ident = set(pre + pend)
+            if keep == "m1":
+                ident |= set(a_post + a_q + [a_after])
+                other, ostream = set(b_new + b_q + [b_after]), "dev-1@m2"
+            else:
+                ident |= set(b_new + b_q + [b_after])
+                other, ostream = set(a_post + a_q + [a_after]), "dev-1@m1"
+            st["stream"] = {**{x: "dev-1" for x in ident}, **{x: ostream for x in other}}
+            st["review"] = other
+            st["retired_copy"] = "m2" if keep == "m1" else "m1"
+            owner_reports()
+            st["want_reason"] = "second_machine"
+            st["exercised"] = bool(st["resolve"].get("ok"))
+        else:  # TS-01a: the store and its commit marker restored together on the same PC
+            base = [sell("m1", "before the snapshot") for _ in range(2)]
+            sync("m1")
+            stop_m1()
+            copy_store(run.dir, os.path.join(run.dir, "snapshot"))
+            future = [sell("m1", "after the snapshot, synced") for _ in range(3)]
+            sync("m1")
+            stop_m1()
+            for name in os.listdir(run.dir):  # restore: the old database and its marker replace the current ones
+                if name.startswith("client.db") and os.path.isfile(os.path.join(run.dir, name)) \
+                        and not name.endswith((".lock", ".events.jsonl")):
+                    os.remove(os.path.join(run.dir, name))
+            copy_store(os.path.join(run.dir, "snapshot"), run.dir)
+            d = dump()
+            st["want_pre_ledger"] = set(base + future)
+            st["pre_ledger"] = {r["action_id"] for r in d["ledger"] if r["kind"] == "sale"}
+            new = [sell("m1", "restored device") for _ in range(2)]
+            st["replies"]["restored_first_sync"] = sync("m1")  # reuses sequence numbers the server holds
+            new += [sell("m1", "restored device during quarantine")]
+            sync("m1")
+            d = dump()
+            st["quarantined"] = {r["command_id"][4:] for r in d.get("quarantine_cmds", [])}
+            st["want_quarantined"] = set(new)
+            st["ledger_during"] = {r["action_id"] for r in d["ledger"] if r["kind"] == "sale"}
+            st["report_quar"] = report()
+            st["resolve"] = dash("POST", "/quarantine/resolve", {"device_id": "dev-1", "keep": "m1"})[1]
+            after = sell("m1", "after the choice")
+            st["replies"]["m1_after"] = sync("m1")
+            st["stream"] = {**{x: "dev-1" for x in base + new + [after]}, **{x: "dev-1@overwritten" for x in future}}
+            st["review"] = set(future)
+            st["retired_copy"] = None
+            owner_reports()
+            st["want_reason"] = "sequence_reused"
+            st["exercised"] = bool(st["resolve"].get("ok"))
+    return script
+
+
+def sc13_extra(run, dump):
+    """R48 the identity is quarantined for the right reason (a second machine at its first contact; a reused sequence
+    number from the same machine) with exactly one owner alert; R49 every counter keeps selling throughout; R50 in
+    quarantine every command from every copy is stored and none reaches the ledger; R51 after the owner's choice the
+    kept copy continues the identity, every other copy and any overwritten timeline sit in retired streams and the
+    owner's review queue (I1 checks none is dropped), and the retired copy is told so."""
+    st, v = run.sc13, list(run.sc13["mismatch"])
+    for k in ("want_pre_ledger", "want_quarantined", "review", "pre_ledger", "quarantined", "ledger_during"):
+        st[k] = {x for x in (st.get(k) or set()) if x}  # a refused sale (R49) leaves no action id
+    st["stream"] = {k: x for k, x in st.get("stream", {}).items() if k}
+    q = (dump.get("quarantine") or [{}])[0]
+    if q.get("reason") != st.get("want_reason"):
+        v.append(("R48", f"quarantine reason {q.get('reason')}, model {st.get('want_reason')}"))
+    alerts = [e for e in dump.get("device_events", []) if e["kind"] == "identity_quarantined"]
+    if len(alerts) != 1:
+        v.append(("R48", f"{len(alerts)} owner alerts for one quarantine"))
+    if st.get("pre_ledger") != st.get("want_pre_ledger"):
+        v.append(("R50", f"ledger before quarantine {sorted(st.get('pre_ledger', []))}, model {sorted(st.get('want_pre_ledger', []))}"))
+    if st.get("quarantined") != st.get("want_quarantined"):
+        v.append(("R50", f"quarantined {sorted(st.get('quarantined', []))}, model {sorted(st.get('want_quarantined', []))}"))
+    leaked = (st.get("ledger_during") or set()) & (st.get("want_quarantined") or set())
+    if leaked:
+        v.append(("R50", f"quarantined commands reached the ledger: {sorted(leaked)}"))
+    got = {r["action_id"]: r["device_id"] for r in dump["ledger"] if r["kind"] == "sale"}
+    for aid, stream in st.get("stream", {}).items():
+        if aid in got and got[aid] != stream:
+            v.append(("R51", f"{aid} in stream {got[aid]}, model {stream}"))
+    review = {r["action_id"] for r in dump.get("review_queue", [])}
+    if review != st.get("review"):
+        v.append(("R51", f"review queue {sorted(review)}, model {sorted(st.get('review', []))}"))
+    rc = st.get("retired_copy")
+    for who in ("m1", "m2"):
+        r = st["replies"].get(f"{who}_after")
+        if r is None:
+            continue
+        if bool(r.get("retired")) != (who == rc) or r.get("quarantined"):
+            v.append(("R51", f"{who} after the choice: retired={r.get('retired')} quarantined={r.get('quarantined')}"))
+    if not (st.get("resolve") or {}).get("ok"):
+        v.append(("R51", f"the owner's choice failed: {st.get('resolve')}"))
+    # Founder decisions 2026-10-18. R52: during quarantine the owner sees "held: N sales, X EGP" with the alert.
+    # R53: after the choice the totals include the review-queue cash at once, on its own labelled line until the
+    # owner marks it reviewed; then the line goes and the total stays.
+    price = SC13_PRICES["cafe"]
+    held = (st.get("report_quar") or {}).get("held") or []
+    nq = len(st["want_quarantined"])
+    if [(h.get("n"), h.get("piasters"), bool(h.get("alert"))) for h in held] != [(nq, nq * price, True)] or \
+            not held[0]["label"].startswith(f"held: {nq} sales"):
+        v.append(("R52", f"held line during quarantine {held}, model {nq} sales, {nq * price} piasters"))
+    n_all = len(run.intent.execute("SELECT action_id FROM acks").fetchall())
+    for key, want_pending in (("report_after", len(st["review"]) * price), ("report_reviewed", 0)):
+        rep_ = st.get(key) or {}
+        pend = sum(p_["piasters"] for p_ in rep_.get("pending_review") or [])
+        if rep_.get("total_piasters") != n_all * price or pend != want_pending or \
+                any("pending your review" not in p_.get("label", "") for p_ in rep_.get("pending_review") or []):
+            v.append(("R53", f"{key}: total {rep_.get('total_piasters')} (model {n_all * price}), pending review {pend} "
+                             f"(model {want_pending}): {rep_.get('pending_review')}"))
+    st["owner_view"] = {"quarantine": q, "review": len(review), "streams": sorted(set(got.values())),
+                        "held": [h.get("label") for h in held],
+                        "after": [p_.get("label") for p_ in (st.get("report_after") or {}).get("pending_review") or []]}
+    return v, frozenset()
+
+
+def sc13_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"sc13-{cell}", client_env={**RETENTION_ENV, "MACHINE_ID": "m1"},
+              server_env={"CLONE_POLICY": "1"})
+    run.script, run.extra = sc13_script(cell), sc13_extra
+    r = run.go()
+    r["sc13"] = run.sc13
+    return r
+
+
+def sc13(seeds=20, mutant_budget=15):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 SC-13 + TS-01a (cloned disk, rollback; OQ7 policy), commit {summary['harness_commit']}", flush=True)
+    ok = True
+    for cell in SC13_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = sc13_run(s, cell)
+            exercised += bool(r["sc13"].get("exercised"))
+            if s == 1:
+                sample = r["sc13"].get("owner_view")
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:22s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in SC13_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(SC13_CELLS) + 1, SC13_CELLS[k % len(SC13_CELLS)]
+            r = sc13_run(s, cell, mutant=mu, label=f"sc13-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:20s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "sc13-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"SC-13 + TS-01a: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -3330,6 +3601,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "sc13":  # sc13 [seeds_per_cell]
+        sys.exit(0 if sc13(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay13":  # replay13 <seed> <cell> [mutant]
+        r = sc13_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay13", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "sc13", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "sc31":  # sc31 [seeds_per_cell]
         sys.exit(0 if sc31(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay31":  # replay31 <seed> <cell> [mutant]

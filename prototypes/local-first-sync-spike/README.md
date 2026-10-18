@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`;, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on the dev run;, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -231,6 +231,16 @@ bash prototypes/local-first-sync-spike/run.sh sc31 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay31 <seed> <cell> [mutant]
+```
+
+SC-13 and TS-01a (cloned disk; rollback; OQ7 policy):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh sc13 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay13 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1244,6 +1254,89 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **The day-close report content and the cash count against it** (brief F3): the billing and reporting specs. The spike only checks that the device's and the server's counts and totals agree.
 - **Several devices in one branch closing one business day:** S203, after Tier 1.
 - **End Day under tampered clocks:** not needed, because the business day uses no clock.
+
+### Phase 3 — SC-13 and TS-01a: a cloned disk, and a rollback that reuses synced sequence numbers (OQ7 policy)
+
+**Founder policy under test (2026-10-17, sync note OQ7; confirmation at the sync threat model):**
+1. The counter keeps selling locally.
+2. Sync for that device identity is quarantined.
+3. Every money command from both copies is stored, and none is dropped (as OQ6).
+4. The owner is alerted and chooses in the dashboard which copy is the real device.
+
+**Design under test (`CLONE_POLICY=1` on the server, `MACHINE_ID` on the client):**
+- **Machine id:** every batch carries the machine id it came from, read from outside the store. On Windows it would be a hardware-bound id (phase 4). The first machine seen is registered for the device identity.
+- **Detection:**
+  - **Clone (SC-13):** a second machine id under one identity quarantines it at that copy's first contact, before any of its commands is applied.
+  - **Rollback (TS-01a):** the store and its commit marker are restored together on the same PC, so the device starts normally. It then sends a sequence number the server holds with different content. That quarantines the identity at that command, which is stored, not flagged and dropped as before.
+  - **Marker not restored:** a store restored without its marker is refused at start by the OQ28 marker check (tamper suite, `store_older_than_marker`).
+- **In quarantine:**
+  - Every command from every copy is stored (idempotent per copy) and acknowledged to the device as stored. Nothing reaches the ledger.
+  - A clone's copy of a command applied before the fork is a plain duplicate.
+  - The owner gets one alert. Every counter keeps selling, and replies tell the device it is quarantined.
+- **The owner's choice (`POST /quarantine/resolve {device_id, keep}`):**
+  - **Fork:** the kept copy's first quarantined sequence minus one.
+  - **Refiled:** commands applied to the identity after the fork belong to the other copy, or to the timeline a rollback overwrote. They are refiled, with identical amounts, into a retired stream (`dev-1@<machine>` or `dev-1@overwritten`).
+  - **Kept copy:** its quarantined commands are applied to the identity in order, and it continues normally.
+  - **Other copies:** their quarantined commands are applied into their retired stream.
+  - **Review queue:** every retired-stream sale is listed in the owner's review queue. Money is never dropped (OQ6).
+  - **Retired copy:** its later batches go to its stream, and the reply tells it it is retired.
+- **What the owner sees (founder, 2026-10-18), `GET /owner_report`:**
+  - **Totals:** review-queue sales count in revenue and day-close totals at once, because the cash was taken and the totals must match the drawer. Until the owner marks them reviewed (`POST /review/ack`), they also show on their own labelled line, for example "of which 75.00 EGP from a retired copy, pending your review" (or "from a timeline a restore overwrote").
+  - **During quarantine:** the device shows "held: N sales, X EGP" with the alert, so the owner sees the money is safe and acts.
+- **Oracle:** per-device order (I4) is checked per stream.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_clone_keep_original` | The original sells and syncs; 2 sales pending; the store is copied to a second machine (m2). The original syncs and sells 2 more (applied). The clone sells 3 and syncs. Both keep selling and syncing. The owner keeps m1; then each sells once more | Quarantine reason `second_machine` at the clone's first contact; the clone's copies of the 2 pending commands are duplicates. During quarantine nothing new reaches the ledger and every new command is stored. After the choice the original's quarantined sales join `dev-1`, and the clone's 5 sales sit in `dev-1@m2` and the review queue. The clone is told it is retired |
+| `b_clone_keep_clone` | As `a`, but the owner keeps the clone (m2) | The original's 2 sales applied after the fork are refiled into `dev-1@m1` with its quarantined and later sales (5 in review). The clone continues `dev-1`, and the original is told it is retired |
+| `c_rollback_ts01a` | 2 sales synced; snapshot of the store and marker; 3 more synced; the snapshot is restored over the live store on the same PC; the device sells 3 and syncs; the owner keeps m1 | Quarantine reason `sequence_reused` at the first reused number. The 3 restored-device sales are stored, then applied to `dev-1` after the choice. The 3 sales of the overwritten timeline stay on the server in `dev-1@overwritten` and the review queue |
+
+**Checks added:**
+- **R48:** the identity is quarantined for the right reason, with exactly one owner alert.
+- **R49:** every counter keeps selling throughout.
+- **R50:** in quarantine every command from every copy is stored, and none reaches the ledger.
+- **R51:** after the owner's choice each sale sits in the stream the model expects. The review queue holds exactly the other copy's (or the overwritten) sales, and the retired copy is told so. I1 checks that none is dropped, I2 that none is doubled.
+- **R52:** during quarantine the owner report shows "held: N sales, X EGP" with the alert, N and X as the model expects.
+- **R53:** after the choice the report's total includes every sale of every copy, and the pending-review line equals the review queue. After the owner marks the streams reviewed, the line is gone and the total is unchanged.
+
+**Mutants:**
+- `drop_conflicting` (server): the old behaviour; a reused sequence is flagged and the command not stored.
+- `no_machine_check` (server): the machine id is ignored.
+- `resolve_drops_other` (server): the other copy's commands are discarded at the choice.
+- `alert_each_batch` (server): an owner alert on every quarantined batch.
+- `block_on_quarantine` (client): the counter refuses sales while quarantined.
+- `review_not_in_totals` (server): retired streams left out of the totals.
+- `held_hidden` (server): the held line omitted.
+
+#### Run 1 (dev, uncommitted harness on `a1d820e`) — PASS
+
+`evidence/phase3-sc13-run1-dev*`, 46 s.
+- **Cells:** all 3 PASS, 20 seeds each, 0 violations. Rerun after the founder's answers added R52 and R53.
+  - Seed 1 of `a`: 14 sales from two copies, each on the server once; the clone's 5 in `dev-1@m2` and in review. The owner saw "held: 6 sales, 90.00 EGP", then "of which 75.00 EGP from a retired copy, pending your review".
+  - Seed 1 of `c`: 9 sales, the 3 overwritten ones in `dev-1@overwritten` and in review, shown as "of which 45.00 EGP from a timeline a restore overwrote, pending your review".
+- **Mutants:** all seven caught.
+  - `drop_conflicting` after 3 runs, in `c` (I1: the restored device's sales never reached the server). This is the behaviour before OQ7, and it loses money in a rollback.
+  - `no_machine_check` after 1 (R48: the clone was caught only later, by a reused number).
+  - `resolve_drops_other` after 1 (I1).
+  - `alert_each_batch` after 1 (R48).
+  - `block_on_quarantine` after 1 (R49).
+  - `review_not_in_totals` after 1 (R53: total 135.00 EGP against 210.00).
+  - `held_hidden` after 1 (R52).
+- **Harness fixes during the dev run:** a failed owner choice raised an HTTP error mid-script; it now reads the refusal as an answer. A refused sale left an empty action id in the model's sets.
+- **Smoke on the changed client, server and oracle:** the phase 0 self-test, SC-19 (2 seeds), SC-23 (2), SC-28 (4) and SC-31 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Finding P3-F11 — before OQ7, a rollback that reuses synced sequence numbers lost the restored device's sales.** The server flagged the reused number and kept nothing, so the sales made after the restore never reached it (`drop_conflicting` is that behaviour). Under OQ7 they are stored, and after the owner's choice they are applied. Nothing is lost either way round.
+
+**Founder decisions (2026-10-18):** (1) review-queue sales count in revenue and day-close totals at once, on their own labelled line until the owner reviews them; (2) during quarantine the dashboard shows "held: N sales, X EGP" with the alert (R52, R53).
+
+**Not covered:**
+- **TS-01b** (sales that never reached the server, erased by a restore): no mechanism detects it. OQ27, the founder's position on accepting it, waits for the threat model.
+- **The machine id on Windows** and a clone onto an identical VM image that reports the same id: phase 4. A clone with the same machine id is still caught, later, by its first reused sequence number.
+- **Re-enrolling the retired copy as a new device:** the device enrolment spec.
+- **Refiling the stock moves and business days of a retired stream:** these SC-29/SC-31 records are not run with the clone policy.
+
 
 - **The owner's minimum and increment:** billing spec.
 

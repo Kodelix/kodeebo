@@ -73,6 +73,24 @@
 // day is already applied; the server recomputes count and total from the bills it holds for the day, records both,
 // and flags a mismatch (day_close_mismatch). A bill for a day already closed is flagged (bill_after_day_close): a
 // bill and its session always belong to the day in which the bill was paid.
+//
+// SC-13 and TS-01a (cloned disk; rollback reusing synced sequence numbers), CLONE_POLICY=1, founder policy OQ7
+// (2026-10-17): every batch carries the machine id it came from. A second machine id under one device identity
+// (a clone) quarantines the identity at that copy's first contact; a reused sequence number with different content
+// from the registered machine (a rollback) quarantines it at that command. In quarantine every command from every
+// copy is stored (quarantine_cmds, idempotent per copy) and acknowledged as stored; nothing reaches the ledger; one
+// owner alert. POST /quarantine/resolve {device_id, keep} is the owner's choice: the kept copy continues the
+// identity's sequence (its quarantined commands applied in order); every other copy, and the timeline a rollback
+// overwrote, is applied into a retired stream "<device>@<machine|overwritten>" and listed in the owner's review
+// queue: money is never dropped (OQ6). A retired copy's later batches go to its stream and are told "retired".
+// MUTANT=drop_conflicting keeps the old behaviour (a reused sequence is flagged, the command not stored);
+// MUTANT=no_machine_check ignores the machine id; MUTANT=resolve_drops_other discards the other copies at
+// resolution; MUTANT=alert_each_batch alerts on every quarantined batch.
+// Founder decisions 2026-10-18: GET /owner_report counts review-queue sales in the totals at once (the cash was
+// taken, so totals match the drawer) and shows them on their own labelled line ("of which X EGP from a retired copy,
+// pending your review") until the owner marks them reviewed (POST /review/ack). During quarantine it shows "held:
+// N sales, X EGP" for the device, with the alert. MUTANT=review_not_in_totals leaves retired streams out of the
+// totals; MUTANT=held_hidden omits the held line.
 package main
 
 import (
@@ -99,10 +117,10 @@ const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
   corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs, bill_bdays,
-  day_closes;
+  day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
-  seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL,
+  seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL, machine_id text,
   PRIMARY KEY (tenant_id, device_id, command_id),
   UNIQUE (tenant_id, device_id, seq));
 CREATE TABLE cursor_ (tenant_id int NOT NULL, device_id text NOT NULL, last_seq bigint NOT NULL,
@@ -153,6 +171,17 @@ CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, de
 CREATE TABLE bill_bdays (device_id text NOT NULL, action_id text NOT NULL, bday int NOT NULL, PRIMARY KEY (device_id, action_id));
 CREATE TABLE day_closes (device_id text NOT NULL, bday int NOT NULL, n_device int NOT NULL, total_device bigint NOT NULL,
   n_server int NOT NULL, total_server bigint NOT NULL, PRIMARY KEY (device_id, bday));
+CREATE TABLE device_machine (device_id text PRIMARY KEY, machine_id text NOT NULL);
+CREATE TABLE quarantine (device_id text PRIMARY KEY, since double precision NOT NULL, reason text NOT NULL,
+  state text NOT NULL, kept text);
+CREATE TABLE quarantine_cmds (device_id text NOT NULL, machine_id text NOT NULL, command_id text NOT NULL, seq bigint NOT NULL,
+  payload_hash text NOT NULL, payload jsonb NOT NULL, arrived bigint GENERATED ALWAYS AS IDENTITY,
+  PRIMARY KEY (device_id, machine_id, command_id));
+CREATE TABLE retired_streams (device_id text NOT NULL, machine_id text NOT NULL, stream_id text NOT NULL,
+  PRIMARY KEY (device_id, machine_id));
+CREATE TABLE review_queue (stream_id text NOT NULL, action_id text NOT NULL, command_id text NOT NULL, seq bigint NOT NULL,
+  amount_piasters bigint NOT NULL, reason text NOT NULL, reviewed boolean NOT NULL DEFAULT false,
+  PRIMARY KEY (stream_id, command_id));
 CREATE TABLE stock_receipts (receipt_id text PRIMARY KEY, item_id text NOT NULL, qty int NOT NULL);
 CREATE TABLE stock_moves (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, device_id text NOT NULL,
   action_id text NOT NULL, item_id text NOT NULL, qty int NOT NULL);
@@ -212,8 +241,9 @@ type command struct {
 type batch struct {
 	DeviceID string    `json:"device_id"`
 	Commands []command `json:"commands"`
-	AckedSeq *int64    `json:"acked_seq"` // SC-19: highest sequence the device holds an ack for
-	LowSeq   *int64    `json:"low_seq"`   // SC-19: lowest sequence the device still retains (H+1 if none)
+	AckedSeq *int64    `json:"acked_seq"`  // SC-19: highest sequence the device holds an ack for
+	LowSeq   *int64    `json:"low_seq"`    // SC-19: lowest sequence the device still retains (H+1 if none)
+	Machine  string    `json:"machine_id"` // SC-13: the machine the batch came from (outside the store)
 }
 
 type result struct {
@@ -530,6 +560,330 @@ func applyOne(ctx context.Context, tx pgx.Tx, dev string, c command) (string, er
 	return "applied", insertEffects(ctx, tx, dev, c)
 }
 
+var clonePolicy = os.Getenv("CLONE_POLICY") == "1" // SC-13 / TS-01a (OQ7)
+
+// machineRoute decides where a batch's commands go (SC-13): the device's own stream, or a retired copy's stream. It
+// registers the first machine seen and returns a quarantine reason when a second machine appears.
+func machineRoute(ctx context.Context, tx pgx.Tx, b batch) (stream, reason string, err error) {
+	if !clonePolicy || b.Machine == "" {
+		return b.DeviceID, "", nil
+	}
+	var sid string
+	err = tx.QueryRow(ctx, `SELECT stream_id FROM retired_streams WHERE device_id = $1 AND machine_id = $2`, b.DeviceID, b.Machine).Scan(&sid)
+	if err == nil {
+		return sid, "", nil
+	}
+	if !errors.Is(err, pgx.ErrNoRows) {
+		return "", "", err
+	}
+	var reg string
+	err = tx.QueryRow(ctx, `SELECT machine_id FROM device_machine WHERE device_id = $1`, b.DeviceID).Scan(&reg)
+	if errors.Is(err, pgx.ErrNoRows) {
+		_, err = tx.Exec(ctx, `INSERT INTO device_machine VALUES ($1,$2)`, b.DeviceID, b.Machine)
+		return b.DeviceID, "", err
+	}
+	if err != nil {
+		return "", "", err
+	}
+	if reg != b.Machine && mutant != "no_machine_check" {
+		return b.DeviceID, "second_machine", nil
+	}
+	return b.DeviceID, "", nil
+}
+
+func isQuarantined(ctx context.Context, tx pgx.Tx, dev string) (bool, error) {
+	var q bool
+	err := tx.QueryRow(ctx, `SELECT EXISTS (SELECT 1 FROM quarantine WHERE device_id = $1 AND state = 'quarantined')`, dev).Scan(&q)
+	return q, err
+}
+
+// startQuarantine quarantines the device identity and raises one owner alert per quarantine episode.
+func startQuarantine(ctx context.Context, tx pgx.Tx, dev, reason string) error {
+	tag, err := tx.Exec(ctx, `INSERT INTO quarantine VALUES ($1,$2,$3,'quarantined',NULL) ON CONFLICT (device_id)
+		DO UPDATE SET since = $2, reason = $3, state = 'quarantined', kept = NULL WHERE quarantine.state = 'resolved'`,
+		dev, nowS(), reason)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 1 || mutant == "alert_each_batch" {
+		detail, _ := json.Marshal(map[string]string{"reason": reason})
+		_, err = tx.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'identity_quarantined',$2,true)`,
+			dev, detail)
+	}
+	return err
+}
+
+// storeQuarantined keeps a command from a quarantined identity without applying it; an identical resend of a command
+// already applied (a clone's copy of a pre-fork command) is a duplicate.
+func storeQuarantined(ctx context.Context, tx pgx.Tx, dev, machine string, c command) (string, error) {
+	var h string
+	err := tx.QueryRow(ctx, `SELECT payload_hash FROM inbox WHERE tenant_id = 1 AND device_id = $1 AND command_id = $2`,
+		dev, c.CommandID).Scan(&h)
+	if err == nil && h == c.PayloadHash {
+		return "duplicate", nil
+	}
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return "", err
+	}
+	pj, _ := json.Marshal(c.Payload)
+	_, err = tx.Exec(ctx, `INSERT INTO quarantine_cmds (device_id, machine_id, command_id, seq, payload_hash, payload)
+		VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING`, dev, machine, c.CommandID, c.Seq, c.PayloadHash, string(pj))
+	return "quarantined", err
+}
+
+func reviewApplied(ctx context.Context, tx pgx.Tx, stream, reason string) error {
+	_, err := tx.Exec(ctx, `INSERT INTO review_queue SELECT device_id, action_id, command_id, seq, amount_piasters, $2, false
+		FROM ledger WHERE device_id = $1 AND kind = 'sale' ON CONFLICT DO NOTHING`, stream, reason)
+	return err
+}
+
+func quarantinedCmds(ctx context.Context, tx pgx.Tx, dev, machine string) ([]command, error) {
+	rows, err := tx.Query(ctx, `SELECT command_id, seq, payload_hash, payload FROM quarantine_cmds
+		WHERE device_id = $1 AND machine_id = $2 ORDER BY seq`, dev, machine)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []command
+	for rows.Next() {
+		var c command
+		var pj []byte
+		if err := rows.Scan(&c.CommandID, &c.Seq, &c.PayloadHash, &pj); err != nil {
+			return nil, err
+		}
+		if err := json.Unmarshal(pj, &c.Payload); err != nil {
+			return nil, err
+		}
+		out = append(out, c)
+	}
+	return out, rows.Err()
+}
+
+// handleResolve is the owner's choice of the real copy (SC-13, OQ7).
+func handleResolve(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	var b struct {
+		DeviceID string `json:"device_id"`
+		Keep     string `json:"keep"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&b); err != nil || b.Keep == "" {
+		http.Error(w, "resolve", http.StatusBadRequest)
+		return
+	}
+	fail := func(err error) { http.Error(w, err.Error(), http.StatusInternalServerError) }
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		fail(err)
+		return
+	}
+	defer tx.Rollback(context.Background())
+	dev := b.DeviceID
+	if q, err := isQuarantined(ctx, tx, dev); err != nil || !q {
+		http.Error(w, `{"error":"not quarantined"}`, http.StatusConflict)
+		return
+	}
+	kept, err := quarantinedCmds(ctx, tx, dev, b.Keep)
+	if err != nil {
+		fail(err)
+		return
+	}
+	var fork int64
+	if len(kept) > 0 {
+		fork = kept[0].Seq - 1
+	} else if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id = 1 AND device_id = $1`, dev).Scan(&fork); err != nil {
+		fail(err)
+		return
+	}
+	// Commands applied to the identity after the fork belong to another copy, or to the timeline a rollback
+	// overwrote: refile them, unchanged, into a retired stream.
+	moved, err := dumpRowsTx(ctx, tx, `SELECT command_id, seq, coalesce(machine_id, '') AS machine_id FROM inbox
+		WHERE tenant_id = 1 AND device_id = $1 AND seq > $2 ORDER BY seq`, dev, fork)
+	if err != nil {
+		fail(err)
+		return
+	}
+	streams := map[string]int64{}
+	reasons := map[string]string{}
+	for _, m := range moved {
+		mach := m["machine_id"].(string)
+		sid, why := dev+"@overwritten", "overwritten"
+		if mach != "" && mach != b.Keep {
+			sid, why = dev+"@"+mach, "other_copy"
+			if _, err := tx.Exec(ctx, `INSERT INTO retired_streams VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`, dev, mach, sid); err != nil {
+				fail(err)
+				return
+			}
+		}
+		for _, q := range []string{`UPDATE inbox SET device_id = $3 WHERE tenant_id = 1 AND device_id = $1 AND command_id = $2`,
+			`UPDATE ledger SET device_id = $3 WHERE device_id = $1 AND command_id = $2`} {
+			if _, err := tx.Exec(ctx, q, dev, m["command_id"], sid); err != nil {
+				fail(err)
+				return
+			}
+		}
+		if s := m["seq"].(int64); s > streams[sid] {
+			streams[sid] = s
+		}
+		reasons[sid] = why
+	}
+	for sid, mx := range streams {
+		if _, err := tx.Exec(ctx, `INSERT INTO cursor_ VALUES (1,$1,$2) ON CONFLICT (tenant_id, device_id)
+			DO UPDATE SET last_seq = greatest(cursor_.last_seq, $2)`, sid, mx); err != nil {
+			fail(err)
+			return
+		}
+		if err := reviewApplied(ctx, tx, sid, reasons[sid]); err != nil {
+			fail(err)
+			return
+		}
+	}
+	if _, err := tx.Exec(ctx, `UPDATE cursor_ SET last_seq = $2 WHERE tenant_id = 1 AND device_id = $1`, dev, fork); err != nil {
+		fail(err)
+		return
+	}
+	apply := func(stream, machine string, cmds []command) error {
+		for _, c := range cmds {
+			out, err := applyOne(ctx, tx, stream, c)
+			if err != nil {
+				return err
+			}
+			if out != "applied" && out != "duplicate" {
+				return fmt.Errorf("resolve: %s seq %d -> %s in %s", c.CommandID, c.Seq, out, stream)
+			}
+			if _, err := tx.Exec(ctx, `UPDATE inbox SET machine_id = $3 WHERE tenant_id = 1 AND device_id = $1 AND command_id = $2`,
+				stream, c.CommandID, machine); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	if err := apply(dev, b.Keep, kept); err != nil {
+		fail(err)
+		return
+	}
+	others, err := dumpRowsTx(ctx, tx, `SELECT DISTINCT machine_id FROM quarantine_cmds WHERE device_id = $1 AND machine_id <> $2`, dev, b.Keep)
+	if err != nil {
+		fail(err)
+		return
+	}
+	for _, o := range others {
+		mach := o["machine_id"].(string)
+		sid := dev + "@" + mach
+		if _, err := tx.Exec(ctx, `INSERT INTO retired_streams VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`, dev, mach, sid); err != nil {
+			fail(err)
+			return
+		}
+		if mutant == "resolve_drops_other" { // planted defect: the other copy's money is discarded
+			continue
+		}
+		cmds, err := quarantinedCmds(ctx, tx, dev, mach)
+		if err != nil {
+			fail(err)
+			return
+		}
+		if len(cmds) > 0 {
+			if _, err := tx.Exec(ctx, `INSERT INTO cursor_ VALUES (1,$1,$2) ON CONFLICT DO NOTHING`, sid, cmds[0].Seq-1); err != nil {
+				fail(err)
+				return
+			}
+		}
+		if err := apply(sid, mach, cmds); err != nil {
+			fail(err)
+			return
+		}
+		if err := reviewApplied(ctx, tx, sid, "other_copy"); err != nil {
+			fail(err)
+			return
+		}
+	}
+	for _, q := range []string{`UPDATE device_machine SET machine_id = $2 WHERE device_id = $1`,
+		`UPDATE quarantine SET state = 'resolved', kept = $2 WHERE device_id = $1`} {
+		if _, err := tx.Exec(ctx, q, dev, b.Keep); err != nil {
+			fail(err)
+			return
+		}
+	}
+	if err := tx.Commit(ctx); err != nil {
+		fail(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"ok":true,"fork":%d,"refiled":%d,"kept_applied":%d}`, fork, len(moved), len(kept))
+}
+
+func egp(piasters int64) string { return fmt.Sprintf("%d.%02d EGP", piasters/100, piasters%100) }
+
+// handleOwnerReport is the owner's view of totals, money pending review and money held in quarantine (SC-13).
+func handleOwnerReport(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	fail := func(err error) { http.Error(w, err.Error(), http.StatusInternalServerError) }
+	var total int64
+	q := `SELECT coalesce(sum(amount_piasters), 0) FROM ledger WHERE kind = 'sale'`
+	if mutant == "review_not_in_totals" { // planted defect: the retired copies' cash is missing from the totals
+		q += ` AND device_id NOT LIKE '%@%'`
+	}
+	if err := pool.QueryRow(ctx, q).Scan(&total); err != nil {
+		fail(err)
+		return
+	}
+	pending, err := dumpRows(ctx, `SELECT reason, count(*) AS n, sum(amount_piasters)::bigint AS piasters FROM review_queue
+		WHERE NOT reviewed GROUP BY reason ORDER BY reason`)
+	if err != nil {
+		fail(err)
+		return
+	}
+	for _, p := range pending {
+		from := "a retired copy"
+		if p["reason"] == "overwritten" {
+			from = "a timeline a restore overwrote"
+		}
+		p["label"] = fmt.Sprintf("of which %s from %s, pending your review", egp(p["piasters"].(int64)), from)
+	}
+	held, err := dumpRows(ctx, `SELECT q.device_id, count(c.command_id) AS n,
+		coalesce(sum((c.payload->>'sale_piasters')::bigint), 0)::bigint AS piasters
+		FROM quarantine q JOIN quarantine_cmds c ON c.device_id = q.device_id
+		WHERE q.state = 'quarantined' AND coalesce(c.payload->>'action_id', '') <> '' GROUP BY q.device_id`)
+	if err != nil {
+		fail(err)
+		return
+	}
+	for _, h := range held {
+		h["label"] = fmt.Sprintf("held: %d sales, %s", h["n"], egp(h["piasters"].(int64)))
+		h["alert"] = true
+	}
+	if mutant == "held_hidden" {
+		held = nil
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{"total_piasters": total, "total": egp(total), "pending_review": pending, "held": held})
+}
+
+// handleReviewAck is the owner marking a retired stream's sales as reviewed (SC-13).
+func handleReviewAck(w http.ResponseWriter, r *http.Request) {
+	var b struct {
+		StreamID string `json:"stream_id"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	tag, err := pool.Exec(r.Context(), `UPDATE review_queue SET reviewed = true WHERE stream_id = $1 AND NOT reviewed`, b.StreamID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, `{"ok":true,"reviewed":%d}`, tag.RowsAffected())
+}
+
+func dumpRowsTx(ctx context.Context, tx pgx.Tx, q string, args ...any) ([]map[string]any, error) {
+	rows, err := tx.Query(ctx, q, args...)
+	if err != nil {
+		return nil, err
+	}
+	return pgx.CollectRows(rows, pgx.RowToMap)
+}
+
 var errReconcileRequired = errors.New("reconcile required")
 
 // reconcile compares the device's acknowledged high-water mark with the server cursor (SC-19). It returns the
@@ -616,7 +970,27 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer tx.Rollback(context.Background())
-	resendFrom, err := reconcile(ctx, tx, b)
+	stream, qReason, err := machineRoute(ctx, tx, b) // SC-13
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	retired := stream != b.DeviceID
+	if qReason != "" {
+		if err := startQuarantine(ctx, tx, b.DeviceID, qReason); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	quar, err := isQuarantined(ctx, tx, b.DeviceID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	var resendFrom int64
+	if !(clonePolicy && (retired || quar)) { // a copy's acknowledged mark says nothing about the identity's cursor
+		resendFrom, err = reconcile(ctx, tx, b)
+	}
 	if errors.Is(err, errReconcileRequired) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"results":[],"reconcile_required":true}`))
@@ -637,7 +1011,30 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 	policyN := map[int]int{}          // old version -> sales of an item whose policy changed since (SC-29)
 	policyItems := map[int][]string{} // old version -> those items
 	for _, c := range b.Commands {
-		out, err := applyOne(ctx, tx, b.DeviceID, c)
+		var out string
+		var err error
+		switch {
+		case retired: // a retired copy: its money goes to its own stream and the owner's review queue
+			if out, err = applyOne(ctx, tx, stream, c); err == nil && out == "applied" {
+				err = reviewApplied(ctx, tx, stream, "other_copy")
+			}
+		case quar:
+			out, err = storeQuarantined(ctx, tx, b.DeviceID, b.Machine, c)
+		default:
+			out, err = applyOne(ctx, tx, b.DeviceID, c)
+			if err == nil && clonePolicy && (out == "seq_conflict" || out == "payload_mismatch") && mutant != "drop_conflicting" {
+				// a reused sequence number: a rollback or a clone; quarantine and keep the command (OQ7)
+				if _, err = tx.Exec(ctx, "ROLLBACK TO SAVEPOINT cmd"); err == nil {
+					if err = startQuarantine(ctx, tx, b.DeviceID, "sequence_reused"); err == nil {
+						quar = true
+						out, err = storeQuarantined(ctx, tx, b.DeviceID, b.Machine, c)
+					}
+				}
+			} else if err == nil && out == "applied" && b.Machine != "" {
+				_, err = tx.Exec(ctx, `UPDATE inbox SET machine_id = $3 WHERE tenant_id = 1 AND device_id = $1 AND command_id = $2`,
+					b.DeviceID, c.CommandID, b.Machine)
+			}
+		}
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -748,7 +1145,8 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(ms) * time.Millisecond)
 	}
 	resp, _ := json.Marshal(map[string]any{"results": results, "cursor": cur, "resend_from": resendFrom,
-		"archived_seq": archived, "lease": issueLease(ctx, b.DeviceID), "edits": offered, "server_time": now})
+		"archived_seq": archived, "lease": issueLease(ctx, b.DeviceID), "edits": offered, "server_time": now,
+		"quarantined": quar, "retired": retired})
 	w.Header().Set("Content-Type", "application/json")
 	if mutant == "ack_before_commit" {
 		// Planted defect: the client is told "applied" before the commit is durable.
@@ -1059,10 +1457,14 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 			  coalesce((SELECT sum(qty) FROM stock_receipts r WHERE r.item_id = i.item_id), 0)
 			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
 			FROM items i ORDER BY i.item_id`,
-		"stock_alerts": "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
-		"day_closes":   "SELECT device_id, bday, n_device, total_device, n_server, total_server FROM day_closes ORDER BY bday",
-		"bill_bdays":   "SELECT action_id, bday FROM bill_bdays ORDER BY action_id",
-		"device_offs":  "SELECT device_id, command_id, off_kind, from_wall, to_wall, open_sessions, owner_alert, channel, suspicious, message FROM device_offs ORDER BY id",
+		"stock_alerts":    "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
+		"quarantine":      "SELECT device_id, reason, state, kept FROM quarantine ORDER BY device_id",
+		"quarantine_cmds": "SELECT device_id, machine_id, command_id, seq FROM quarantine_cmds ORDER BY arrived",
+		"review_queue":    "SELECT stream_id, action_id, command_id, seq, amount_piasters, reason, reviewed FROM review_queue ORDER BY stream_id, seq",
+		"retired_streams": "SELECT device_id, machine_id, stream_id FROM retired_streams ORDER BY machine_id",
+		"day_closes":      "SELECT device_id, bday, n_device, total_device, n_server, total_server FROM day_closes ORDER BY bday",
+		"bill_bdays":      "SELECT action_id, bday FROM bill_bdays ORDER BY action_id",
+		"device_offs":     "SELECT device_id, command_id, off_kind, from_wall, to_wall, open_sessions, owner_alert, channel, suspicious, message FROM device_offs ORDER BY id",
 		"price_summaries": `WITH b AS (SELECT s.*,
 			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,
 			  (SELECT min(p.at) FROM device_pulls p WHERE p.device_id = s.device_id AND p.version > s.period_key) AS to_ts
@@ -1133,6 +1535,9 @@ func main() {
 	mux.HandleFunc("GET /edit", handleEdit)
 	mux.HandleFunc("POST /correction", handleCorrection)
 	mux.HandleFunc("POST /stock", handleStock)
+	mux.HandleFunc("POST /quarantine/resolve", handleResolve)
+	mux.HandleFunc("GET /owner_report", handleOwnerReport)
+	mux.HandleFunc("POST /review/ack", handleReviewAck)
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })

@@ -74,12 +74,17 @@ def check(intent, acked, client, server, quiesced, integrity, allowed_missing=fr
     if got_sum != want_sum:
         v.append(("I3", f"server sales total {got_sum} != expected {want_sum}"))
 
-    # I4 - per-device order: server apply order follows the device sequence
-    seqs = [r["seq"] for r in server["ledger"] if r["kind"] == "sale"]
-    for prev, cur in zip(seqs, seqs[1:]):
-        if cur <= prev:
-            v.append(("I4", f"apply order seq {cur} after seq {prev}"))
-            break
+    # I4 - per-device order: server apply order follows the device sequence, per stream (one stream per device
+    # identity; SC-13 adds the retired streams of a cloned or rolled-back identity)
+    by_stream = defaultdict(list)
+    for r in server["ledger"]:
+        if r["kind"] == "sale":
+            by_stream[r.get("device_id", "dev-1")].append(r["seq"])
+    for stream, seqs in by_stream.items():
+        for prev, cur in zip(seqs, seqs[1:]):
+            if cur <= prev:
+                v.append(("I4", f"apply order seq {cur} after seq {prev} in {stream}"))
+                break
 
     # I5 - each session minute billed once, and every played minute billed
     by_session = defaultdict(list)
