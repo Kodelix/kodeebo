@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Also 2026-10-18: a **Job** scope kind for `job_rt` (the closed list of kinds had none; needed by the usage counts of ADR-0004 § 7a and by every background job). Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: G1 / J1, P1). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** ADR-0004's extensions are folded in here (Support scope kind, `NoLiveGrant`, `app.operator_id`, the audit record committed before the read, `transaction_timeout`), and devices get both `app.branch_id` and `app.branch_ids`. Also 2026-10-18: a **Job** scope kind for `job_rt` (the closed list of kinds had none; needed by the usage counts of ADR-0004 § 7a and by every background job). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** grant loaded through `SupportGrantLookup`; principal read = Staff with an empty branch list; PL functions are the only access outside the helper. Stack-lead validation: NOT ASSESSED — `stack.backend` is unset, so neither `go-lead` nor `ktor-lead` applies yet; it runs when `/setup-stack` picks the track. CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
@@ -72,7 +72,7 @@ No backend code. The backend track (Go or Ktor) is undecided (OQ7, `/setup-stack
 
 - Both tracks must be covered until `/setup-stack` decides.
 - Pooled connections everywhere; an external transaction-mode pooler may be added later.
-- Scope values come from an authenticated source: a session lookup (ADR-0003), a device credential (credential ADR) or a live support grant plus the authenticated operator session (ADR-0004), never from the request. The lookups that find the session, credential or enrolment code run before any scope exists, through ADR-0001's pre-context lookup functions (class PL); they are the only database reads outside this helper and return identity, not tenant data.
+- Scope values come from an authenticated source: a session lookup (ADR-0003), a device credential (credential ADR) or a live support grant plus the authenticated operator session (ADR-0004), never from the request. The lookups that find the session, credential or enrolment code run before any scope exists, through ADR-0001's PL access functions (§ 1c). **They are the only database access, reads or writes, outside this helper**, and they touch PL tables only.
 
 ### Requirements
 
@@ -89,9 +89,9 @@ Research note: `docs/research/tenant-isolation.md` (part 2; § 5).
 
 **Four scope kinds.** The scope object is one of:
 - **Job** (background jobs as `job_rt`: export, retention, limits, provisioning, usage counts): `{tenant}` from the job's own server-side work list, one tenant per transaction. The helper sets `app.tenant_id` only; no branch setting, because jobs act for the whole tenant and ADR-0003's `branch_scope` does not bind `job_rt`. A job that touches several tenants opens one helper transaction per tenant; it never reads across tenants in one query.
-- **Staff** (dashboard, ADR-0003): tenant from the session lookup; `app.branch_ids` from the principal's assigned branches, or `app.branch_all = 'on'` only when the verified role is owner.
+- **Staff** (dashboard, ADR-0003): tenant from the session lookup; `app.branch_ids` from the principal's assigned branches, or `app.branch_all = 'on'` only when the verified role is owner. The **principal read** of ADR-0003 (before the principal's branches are known) uses **Staff with an empty branch list**: `app.branch_ids` is empty, so branch-scoped tables return nothing and only tenant-wide tables (`staff_roles`, `staff_branches`) are read.
 - **Device** (sync endpoint): tenant, branch and device from the verified credential. The helper sets **both** `app.branch_id` (the single branch, used by the device tables' `WITH CHECK` on all three ids, research F322) **and** `app.branch_ids` (a one-element list of the same branch, read by ADR-0003's restrictive branch policy), from the one credential value, so the two cannot disagree. It never sets `app.branch_all` for a device.
-- **Support** (Kodelix operator console, ADR-0004): `{grantId, operatorId}`. The helper loads the grant and refuses with `NoLiveGrant` — before any query on tenant data — unless it is approved, not revoked and not expired. It then sets `app.tenant_id` and `app.branch_ids` from the grant (an explicit list; never `app.branch_all`), `app.operator_id` from the authenticated operator session, and `transaction_timeout` locally from configuration (`transaction_timeout` exists from PostgreSQL 17, `docs/stack-reference/postgres/best-practices.md` line 53; its effect when set inside the running transaction is checked in S74).
+- **Support** (Kodelix operator console, ADR-0004): `{grantId, operatorId}`. Before any tenant is set, the helper loads the grant through ADR-0001's PL function **`SupportGrantLookup.find(grantId, operatorId)`** (`support_grants` is class PL; owner `auth_lookup`). It refuses with `NoLiveGrant`, before any query on tenant data, unless the grant exists for that operator and is approved, not revoked and not expired. The operator console lists one operator's grants across tenants with `SupportGrantLookup.listByOperator(operatorId)`. The helper then sets `app.tenant_id` and `app.branch_ids` from the grant (an explicit list; never `app.branch_all`), `app.operator_id` from the authenticated operator session, and `transaction_timeout` locally from configuration (`transaction_timeout` exists from PostgreSQL 17, `docs/stack-reference/postgres/best-practices.md` line 53; its effect when set inside the running transaction is checked in S74).
 
 **Support kind: audit record committed before the read.** For the Support kind the helper works in two steps: (1) a short transaction, with the tenant context set from the grant, that calls the journal's append function (ADR-0004; owned by `audit_writer`) to write the "access opened" record, and **commits**; (2) the scoped transaction for the read or verb, where scope is set once as above, followed by an appended outcome and row count. A record written only inside the reading transaction would vanish on a client rollback (research F717). Each step is one transaction with its scope set exactly once; the rule "one set per transaction" is unchanged.
 
@@ -128,7 +128,7 @@ sequenceDiagram
 ```text
 Scope (app layer value) = Job | Staff | Device | Support
   Job     { tenant: TenantId }                                          // job_rt; app.tenant_id only, one tenant per transaction
-  Staff   { tenant: TenantId, branches: All | List<BranchId> }          // ADR-0003; All only for a verified owner
+  Staff   { tenant: TenantId, branches: All | List<BranchId> }          // ADR-0003; All only for a verified owner; the empty list is the ADR-0003 principal read
   Device  { tenant: TenantId, branch: BranchId, device: DeviceId }      // sets app.branch_id AND app.branch_ids = [branch]
   Support { grant: SupportGrantId, operator: OperatorId }               // ADR-0004; tenant and branch list come from the live grant
   planTimeout: Duration?                                                // limits ADR (Staff, Device, Job)
@@ -253,6 +253,8 @@ Greenfield.
 - [ ] Negative control: a session-level set is visible to the next borrower (proves the test can fail).
 - [ ] Device scope: a device sees branch-scoped rows of its own branch and 0 rows of a sibling branch; `app.branch_id` and `app.branch_ids` always hold the same branch.
 - [ ] Support scope: an expired, revoked or unapproved grant yields `NoLiveGrant` and no tenant query; a support read whose client rolls back still leaves its committed "access opened" record (S73).
+- [ ] `SupportGrantLookup.find` with another operator's id returns nothing; a live grant loads without a tenant context.
+- [ ] **The tenant-isolation threat model (`docs/architecture/threat-models/tenant-isolation.md`, `/threat-model tenant-isolation`) blocks the first story that stores tenant data; it does not block acceptance of this ADR (founder, 2026-10-18).**
 - [ ] Behind PgBouncer (if adopted): the same four checks pass.
 - [ ] Performance: checked against `perf-budgets.md` once it exists; not checked until then.
 

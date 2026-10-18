@@ -47,7 +47,7 @@ tenancy_rules:
     rule: "Database roles are exactly: migrator (NOLOGIN owner, DDL), bootstrap superuser (local only, cluster admin), app_rt, device_rt, job_rt, licensing service roles (named by the licensing ADR), platform_rt (CP only), auth_lookup (NOLOGIN, PL lookups), support_rt, support_fn (NOLOGIN), audit_writer (NOLOGIN), backup_rt (REPLICATION only). All but the bootstrap superuser are NOSUPERUSER, NOBYPASSRLS and own nothing; a new role needs an ADR amendment; catalogue C4 fails on any other role."
     adr: ADR-0001
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0001 revision 2026-10-18 (second review) -> TR-ROLE-INVENTORY-R2"
   - id: TR-SCOPE-ONCE-PER-TX-R2
     rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets its settings with set_config(..., true) exactly once, first, from a server-side source; kinds Staff (session lookup), Device (verified credential: app.branch_id AND app.branch_ids = [same branch], never app.branch_all), Support (live grant + operator session: app.tenant_id, app.branch_ids from the grant, app.operator_id, transaction_timeout; access record committed in its own transaction before the read). Settings: app.tenant_id, app.branch_ids, app.branch_all, app.device_id, app.branch_id, app.operator_id only. Only PL lookup functions run before a scope exists."
     adr: ADR-0002
@@ -57,7 +57,7 @@ tenancy_rules:
     rule: "Branch-scoped tables carry branch_id with a composite FK to branches and a RESTRICTIVE policy branch_scope on app.branch_ids / app.branch_all written TO app_rt, device_rt, support_rt, support_fn; app.branch_all = 'on' only for a verified owner (never a device or a support grant); staff_roles and staff_branches are tenant-wide; application-layer function permissions through one deny-by-default Authorizer."
     adr: ADR-0003
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0003 revision 2026-10-18 (second review) -> TR-BRANCH-SCOPE-R3"
   - id: TR-ROLE-ASSIGNMENT-GUARD
     rule: "app_rt's INSERT, UPDATE and DELETE policies on staff_roles and staff_branches require current_setting('app.branch_all', true) = 'on' (owner only), as database defence in depth behind the Authorizer (research F421)."
     adr: ADR-0003
@@ -67,7 +67,7 @@ tenancy_rules:
     rule: "Kodelix support reads TD data only as support_rt (SELECT only), bound by the restrictive tenant and branch_scope policies, through a permissive policy TO support_rt requiring a live owner grant (approved, revoked_at IS NULL, expires_at > clock_timestamp()); support_grants: app_rt INSERT and UPDATE require app.branch_all = 'on', approved_at within the inserting transaction, CHECK expires_at <= approved_at + interval '7 days', UPDATE on revoked_at only WITH CHECK (revoked_at IS NOT NULL); writes only through support_fn verbs gated by a grant naming the verb; journal written only through audit_writer functions; access record committed before the read; support transactions bounded by transaction_timeout."
     adr: ADR-0004
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0004 revision 2026-10-18 (second review) -> TR-SUPPORT-GRANT-GATE-R3"
   - id: TR-USAGE-COUNTS
     rule: "Kodelix sees per-tenant usage counts without a grant (founder 2026-10-18): bills per business day, sessions, active devices, data size, counts only. job_rt computes them through the ADR-0002 helper, one tenant per transaction in that tenant's scope, and writes only integer counts and dates to a CP table (e.g. tenant_usage_daily) that platform_rt reads. Customer terms must disclose the collection."
     adr: ADR-0004
@@ -77,10 +77,35 @@ tenancy_rules:
     rule: "Every table is in one class recorded with the migrations: TD tenant data (incl. licensing seats, seat_licences, devices, seat_moves, approvals, lease_log per licensing M35; support grants and journal), no USING (true); CP tenant-keyed control plane without personal data or sales, tax or licensing records (tenant status, plan, restore watermark, usage counts per tenant and business day: derived counts allowed only without money amounts, names, items, bill contents or free text), restrictive tenant policy TO every inventory role except platform_rt, which alone has USING (true); G global, no tenant_id, on the allow-list, no RLS; PL pre-context lookups (device_credentials, enrolment_codes, sessions), restrictive tenant policy TO every inventory role except auth_lookup, read only through SECURITY DEFINER functions owned by auth_lookup that return identity for one key."
     adr: ADR-0001
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0001 revision 2026-10-18 (second review) -> TR-TABLE-CLASSES-R4"
   - id: TR-SCOPE-ONCE-PER-TX-R3
     rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets its settings with set_config(..., true) exactly once, first, from a server-side source; kinds Job (job_rt: app.tenant_id only, one tenant per transaction, no cross-tenant query), Staff (session lookup), Device (verified credential: app.branch_id AND app.branch_ids = [same branch], never app.branch_all), Support (live grant + operator session: app.tenant_id, app.branch_ids from the grant, app.operator_id, transaction_timeout; access record committed in its own transaction before the read). Settings: app.tenant_id, app.branch_ids, app.branch_all, app.device_id, app.branch_id, app.operator_id only. Only PL lookup functions run before a scope exists."
     adr: ADR-0002
+    adr_status: Proposed
+    status: "superseded_by: ADR-0002 revision 2026-10-18 (second review) -> TR-SCOPE-ONCE-PER-TX-R4"
+  - id: TR-TABLE-CLASSES-R4
+    rule: "Every table is in one class recorded with the migrations: TD tenant data (incl. licensing seats, seat_licences, devices, seat_moves, approvals, lease_log per licensing M35; the support access journal), no USING (true); CP tenant-keyed control plane without personal data or sales, tax or licensing records (tenant status, plan, restore watermark, usage counts without money, names, items, bill contents or free text), restrictive tenant policy TO every inventory role except platform_rt, which alone has USING (true); G global, no tenant_id, on the allow-list, no RLS; PL pre-context (login_identities, sessions, enrolment_codes, device_credentials, support_grants), restrictive tenant policy TO every inventory role except auth_lookup; access across tenants, reads and writes, only through the ADR-0001 § 1c SECURITY DEFINER functions owned by auth_lookup; in-tenant permissive policies only where an ADR names them."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-ROLE-INVENTORY-R2
+    rule: "Database roles are exactly: migrator (NOLOGIN owner, DDL only, no permissive policy), deploy_rt (LOGIN, member of migrator with SET, deploy pipeline only), bootstrap superuser (local only, cluster admin), app_rt, device_rt, job_rt (one tenant per transaction via the Job kind; also runs backfills; tenant list read by the scheduler as platform_rt from CP tenant_status), licensing service roles (named by the licensing ADR), platform_rt (CP only), auth_lookup (NOLOGIN, § 1c functions), support_rt, support_fn (NOLOGIN), audit_writer (NOLOGIN), backup_rt (REPLICATION only). All but the bootstrap superuser are NOSUPERUSER, NOBYPASSRLS and own nothing; a new role needs an ADR amendment (licensing M27/M38 single-purpose cross-tenant roles: future amendment with the licensing ADR)."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: TR-SCOPE-ONCE-PER-TX-R4
+    rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets its settings with set_config(..., true) exactly once, first, from a server-side source; kinds Job (job_rt: app.tenant_id only, one tenant per transaction), Staff (session lookup; the empty branch list is the ADR-0003 principal read), Device (verified credential: app.branch_id AND app.branch_ids = [same branch], never app.branch_all), Support (grant loaded before any tenant through SupportGrantLookup.find(grantId, operatorId); sets app.tenant_id, app.branch_ids from the grant, app.operator_id, transaction_timeout; access record committed in its own transaction before the read). Settings: app.tenant_id, app.branch_ids, app.branch_all, app.device_id, app.branch_id, app.operator_id only. The ADR-0001 § 1c PL functions are the only DB access, reads or writes, outside the helper."
+    adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: TR-BRANCH-SCOPE-R3
+    rule: "Branch-scoped tables carry branch_id with a composite FK to branches and a RESTRICTIVE policy branch_scope on app.branch_ids / app.branch_all written TO app_rt, device_rt, support_rt, support_fn; app.branch_all = 'on' only for a verified owner (never a device or a support grant); staff_roles and staff_branches are tenant-wide; exports a person starts run as app_rt under that person's Staff scope, never as job_rt (ASVS 8.3.3); application-layer function permissions through one deny-by-default Authorizer."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: TR-SUPPORT-GRANT-GATE-R3
+    rule: "Kodelix support reads TD data only as support_rt (SELECT only), bound by the restrictive tenant and branch_scope policies, through a permissive policy TO support_rt requiring a live owner grant with scope 'read' (approved, revoked_at IS NULL, expires_at > clock_timestamp()) and the session's app.branch_ids contained in the grant's branch_ids; support_grants is PL: loaded before any tenant only through SupportGrantLookup, owner INSERT/UPDATE in-tenant require app.branch_all = 'on', approved_at within the inserting transaction, CHECK expires_at <= approved_at + interval '7 days', UPDATE on revoked_at only WITH CHECK (revoked_at IS NOT NULL); writes only through support_fn verbs gated by a grant naming the verb (same branch check); journal appended only through audit_writer functions, which read their own tenant's chain head under a per-tenant transaction-level advisory lock; access record committed before the read; support transactions bounded by transaction_timeout."
+    adr: ADR-0004
     adr_status: Proposed
     status: active
 
@@ -109,7 +134,7 @@ interface_contracts:
     contract: "DeviceCredentialLookup.find(keyId), SessionLookup.find(tokenHash), EnrolmentCodeLookup.find(codeHash) -> identity {tenant, branch/user/device, status} | NotFound; SECURITY DEFINER functions owned by auth_lookup, pinned search_path, no PUBLIC EXECUTE; the only DB reads before a scope exists."
     adr: ADR-0001
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0001 revision 2026-10-18 (second review) -> IC-PRE-CONTEXT-LOOKUPS-R2"
   - id: IC-SCOPE-HELPER-R2
     contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query)."
     adr: ADR-0002
@@ -119,15 +144,30 @@ interface_contracts:
     contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}: SessionLookup.find(tokenHash) (PL) then a tenant-scoped read of staff_roles and staff_branches, per request; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
     adr: ADR-0003
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0003 revision 2026-10-18 (second review) -> IC-SESSION-AUTHORIZER-R3"
   - id: IC-SUPPORT-GRANT-R2
     contract: "SupportGrant (TD table support_grants) {id, tenant_id, branch_ids (explicit), scope read | verb:<name>, operator_id, reason, requested_at, approved_by, approved_at (within the inserting transaction), expires_at (default 24 h from config; CHECK <= approved_at + 7 days), revoked_at? (one-way)}; owner-only insert and revoke enforced by policy. Scope kind Support {grantId, operatorId} specified in ADR-0002."
     adr: ADR-0004
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0004 revision 2026-10-18 (second review) -> IC-SUPPORT-GRANT-R3"
   - id: IC-SCOPE-HELPER-R3
     contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Job | Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query)."
     adr: ADR-0002
+    adr_status: Proposed
+    status: active
+  - id: IC-PRE-CONTEXT-LOOKUPS-R2
+    contract: "ADR-0001 § 1c, SECURITY DEFINER functions owned by auth_lookup, pinned search_path, EXECUTE only for the named roles: LoginLookup.find(identifier), Logins.create/disable (owner, app_rt), Logins.changeOwnVerifier(tokenHash, verifier) (app_rt, after the app re-verifies the current password); SessionLookup.find, Sessions.create, Sessions.end (app_rt), Sessions.endAllForUser (owner, app_rt), Sessions.endAllForTenant (platform_rt); Enrolment.createCode (owner, app_rt), Enrolment.redeem (device_rt); DeviceCredentialLookup.find, Devices.rotateCredential (device_rt), Devices.revokeCredential (owner app_rt, licensing service roles); SupportGrantLookup.find(grantId, operatorId), listByOperator(operatorId) (support_rt). Account recovery is added by the staff-auth ADR."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: IC-SESSION-AUTHORIZER-R3
+    contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}: SessionLookup.find(tokenHash) (PL), then a principal read in a Staff scope with an empty branch list (staff_roles, staff_branches), per request; sessions are created and ended only through ADR-0001 § 1c functions; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: IC-SUPPORT-GRANT-R3
+    contract: "SupportGrant (PL table support_grants) {id, tenant_id, branch_ids (explicit), scope read | verb:<name>, operator_id, reason, requested_at, approved_by, approved_at (within the inserting transaction), expires_at (default 24 h from config; CHECK <= approved_at + 7 days), revoked_at? (one-way)}; owner-only insert and revoke enforced by policy; SupportGrantLookup.find(grantId, operatorId) and listByOperator(operatorId) before any tenant. Scope kind Support {grantId, operatorId} specified in ADR-0002."
+    adr: ADR-0004
     adr_status: Proposed
     status: active
 
@@ -224,5 +264,20 @@ forbidden_patterns:
   - id: FP-USAGE-STATS-BEYOND-COUNTS
     pattern: "Money amounts, names, items, bill contents or free text in the grant-free usage statistics; usage statistics computed across tenants in one query or outside the ADR-0002 helper; money totals without an owner grant or a contract clause."
     adr: ADR-0004
+    adr_status: Proposed
+    status: active
+  - id: FP-PL-ACCESS-OUTSIDE-FUNCTIONS
+    pattern: "Reading or writing a PL table across tenants other than through an ADR-0001 § 1c function; any role other than auth_lookup with an all-rows policy on a PL table."
+    adr: ADR-0001
+    adr_status: Proposed
+    status: active
+  - id: FP-PERSON-EXPORT-AS-JOB
+    pattern: "An export a person started, run as job_rt or under any scope wider than that person's Staff scope."
+    adr: ADR-0003
+    adr_status: Proposed
+    status: active
+  - id: FP-DATA-MIGRATION-AS-OWNER
+    pattern: "A data migration (backfill) run as migrator or the bootstrap superuser instead of job_rt per tenant through the ADR-0002 helper."
+    adr: ADR-0001
     adr_status: Proposed
     status: active

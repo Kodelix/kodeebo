@@ -26,7 +26,7 @@ Proposed
 
 ## Decision Makers
 
-The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: B1-B + B2-A). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** the restrictive branch policy names the roles it binds (including `support_rt` and `support_fn`); the session is found through a pre-context lookup (ADR-0001 class PL); role and branch-assignment writes get a database-side guard (research F421). Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.backend`, `stack.web` unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
+The founder (user) decided on 2026-10-17 (`docs/research/tenant-isolation.md` § 5: B1-B + B2-A). Drafted by `/architecture-decision`. **Revised 2026-10-18 at the user's instruction after an independent `/architecture-review` (FAIL, text fixes):** the restrictive branch policy names the roles it binds (including `support_rt` and `support_fn`); the session is found through a pre-context lookup (ADR-0001 class PL); role and branch-assignment writes get a database-side guard (research F421). **Second review (2026-10-18, FAIL, text fixes), applied at the user's instruction:** person-started exports under Staff scope; session ends through § 1c; principal-read scope named; performance row corrected. Stack-lead validation: NOT ASSESSED — no stack layer configured (`stack.backend`, `stack.web` unset). CTO-ADR: skipped — lean mode. Acceptance: the user.
 
 ## Summary
 
@@ -91,14 +91,15 @@ Research note: `docs/research/tenant-isolation.md` (part 4; § 5).
 - **Database guard on role and assignment writes (F421).** Roles live in `staff_roles (tenant_id, staff_id, role)` and assignments in `staff_branches (tenant_id, staff_id, branch_id)`. The `INSERT`, `UPDATE` and `DELETE` policies of `app_rt` on both tables require `current_setting('app.branch_all', true) = 'on'`, which the helper sets only for a verified owner. A bug that lets a manager write a role or an assignment through the dashboard fails in the database, not only in the `Authorizer`. Research F421 used a separate `app.actor_role` setting; the existing owner-only setting expresses the same check without a new one. A tenant's first owner is written by the tenant-provisioning job under `job_rt`'s own policy.
 - The application owns function-level permissions (owner / manager / cashier), deny by default, through one authorization module every route calls (API5:2023, F412).
 - Reports run as `security_invoker` views or queries under the caller's scope (F422); pre-aggregated rollups are ordinary tables with the same policies, never materialized views (F423).
+- **Exports a person starts run under that person's Staff scope**, as `app_rt` through the helper, even when they run in the background. The worker carries the requesting principal, resolved again when the export starts, and never runs a person's export as `job_rt`, which `branch_scope` does not bind. ASVS 5.0.0 8.3.3: access is decided on the originating subject's permissions (research F601). `job_rt` runs only tenant-wide exports (owner-started, retention or legal), whose requester already sees every branch.
 - Devices: the same policy with a one-element branch list taken from the device credential (credential ADR).
 
 **2. Session: opaque reference token, scope resolved per request (B2-A).**
 - The dashboard (web and Play-wrapped) authenticates with an opaque session token: CSPRNG, at least 128 bits (ASVS 7.2.3), stored hashed server-side, new token on every authentication (7.2.4).
 - The token carries no tenant, role or branch claim. On every request the backend resolves session → user → tenant → role → assigned branches from the database and builds the scope for the ADR-0002 helper, in two steps:
   1. **Pre-context lookup.** No tenant context exists yet, so the session row is found by `SessionLookup.find(tokenHash)`, a `SECURITY DEFINER` function owned by `auth_lookup` (ADR-0001 class PL; same pattern as the device credential lookup, research F325). It returns session, user, tenant and status for one token hash and 0 rows for an unknown one; `app_rt` cannot select `sessions` directly.
-  2. **Principal read in the tenant.** A short transaction through the helper with only the tenant set reads `staff_roles` and `staff_branches` (tenant-wide tables, not branch-scoped) to build the principal; the request's own transaction then sets tenant and branch scope once.
-- Logout, user disable and tenant suspension invalidate the session row (7.4.1, 7.4.2); role and assignment changes apply on the next request (F421).
+  2. **Principal read in the tenant.** A short transaction through the helper with the **Staff kind and an empty branch list** (ADR-0002) reads `staff_roles` and `staff_branches` (tenant-wide tables, not branch-scoped) to build the principal; the request's own transaction then sets tenant and branch scope once.
+- Logout, user disable and tenant suspension invalidate the session row through ADR-0001's § 1c functions: `Sessions.end`, `Sessions.endAllForUser` (owner) and `Sessions.endAllForTenant` (`platform_rt`) (7.4.1, 7.4.2). Role and assignment changes apply on the next request (F421), and a role change also calls `Sessions.endAllForUser`.
 - No cache of session scope at Tier 1 (revocation must be immediate, ASVS 8.3.2); if load requires one later: per process, short configurable TTL, key = session id, explicit invalidation on role, assignment, branch change and logout.
 - Transport and storage of the token in the browser and the Play wrapper (cookie vs bearer, MASVS storage) are decided with the auth/session spec and the owner-client ADR; they must not change rule 2.
 
@@ -189,7 +190,7 @@ Scope (ADR-0002) is built from Principal: branches=All only when role=Owner.
 
 ### Negative
 
-- One extra session lookup per request; no cache at Tier 1.
+- One pre-context session lookup and one principal-read transaction per request; no cache at Tier 1.
 - The branch predicate stayed a filter, not an index condition, in the small test (F424): a small branch in a large tenant reads the tenant's range. Re-measure at size (S42).
 - Every branch-scoped table needs the restrictive policy and a composite key.
 
@@ -224,7 +225,7 @@ Scope (ADR-0002) is built from Principal: branches=All only when role=Owner.
 | Metric | Before | Expected After | Budget (`perf-budgets.md`) |
 |--------|--------|---------------|--------|
 | Latency p95 (dashboard lists) | n/a | branch filter 3.0–3.5 ms vs 0.7 ms owner on 15,000 rows, one warm run (F424) | budget not yet set |
-| DB queries per request | n/a | +1 session/scope lookup | budget not yet set |
+| DB queries per request | n/a | +1 pre-context call (`SessionLookup.find`) and +1 short transaction for the principal read, per request (unmeasured) | budget not yet set |
 | Memory (service RSS) | n/a | unchanged | budget not yet set |
 | Storage growth | n/a | session table | budget not yet set |
 | Network / payload | n/a | token size constant | budget not yet set |
@@ -248,6 +249,8 @@ Greenfield.
 - [ ] As a manager (`app.branch_ids` set, `app.branch_all` unset), inserting or changing a row of `staff_roles` or `staff_branches` fails in the database; as the owner it succeeds (F421).
 - [ ] `support_rt` with a grant for branch A1 sees 0 rows of A2 on branch-scoped tables.
 - [ ] `app_rt` cannot select `sessions`; `SessionLookup` returns one session for a known token hash and nothing for an unknown one.
+- [ ] As a manager of A1, an export (including one run in the background) contains no A2 rows (DA-08).
+- [ ] **The tenant-isolation threat model (`docs/architecture/threat-models/tenant-isolation.md`, `/threat-model tenant-isolation`) blocks the first story that stores tenant data; it does not block acceptance of this ADR (founder, 2026-10-18).**
 - [ ] Performance: checked against `perf-budgets.md` once it exists; not checked until then.
 
 ## Spec Requirements Addressed

@@ -4,7 +4,7 @@
 > **From:** Kodelix — [FOUNDER TO FILL: legal form], an Egyptian company; contact [FOUNDER TO FILL]
 > **Date:** 2026-10-17 · **Status:** Draft for the founder to review and send
 > **Prepared by:** Kodelix engineering (privacy-compliance-specialist role). The authors are not lawyers.
-> **Answered by founder decision, not counsel (2026-10-17):** Q1, Q4, Q5 and Q6 — see the marked block under each question. Source: founder statement, until the founder adds counsel's written answer. **Answered by counsel (2026-10-17):** Q2 — counsel told the founder that no PDPL licence is needed now (marked block under Q2). **Still open for counsel:** Q3 (the exact end of the compliance period) and the written confirmation of the founder-recorded answers.
+> **Answered by founder decision, not counsel (2026-10-17):** Q1, Q4, Q5 and Q6 — see the marked block under each question. Source: founder statement, until the founder adds counsel's written answer. **Answered by counsel (2026-10-17):** Q2 — counsel told the founder that no PDPL licence is needed now (marked block under Q2). ~~**Still open for counsel:** Q3 (the exact end of the compliance period) and the written confirmation of the founder-recorded answers.~~ **Closed by founder statement (2026-10-18):** counsel told the founder there are no issues; Q3 and the written confirmation are closed.
 
 ## How to read this brief
 
@@ -130,6 +130,9 @@ data has its own licence route (Law Art. 12; Regulation Art. 14).
 *Superseded by counsel's answer above (2026-10-17).*
 
 ### Q3. Does the one-year compliance period end on 2026-11-01?
+
+> **Closed by founder statement (2026-10-18).** Counsel told the founder there are no issues. The reading
+> and questions below are kept as the record of what was asked.
 
 **Reading [S2] (Law, promulgation Art. 6).** Entities subject to the Law must regularise their status
 within **one year from the date of issuance of the Regulation**. **Reading [S1] (Decree Art. 2).** The
@@ -270,7 +273,7 @@ much more after launch.
 | Your answer to | Decides | Default until answered |
 |---|---|---|
 | Q1 — **answered by founder decision, not counsel (2026-10-17)**; Q2 — **answered by counsel (2026-10-17)** | Customer contract terms; incident runbook (72-hour clock) | Venue owner = controller, Kodelix = processor on the owner's written instruction; no PDPL licence needed now (counsel) |
-| Q3 | What Kodelix must have done by 2026-11-01 | Open for counsel |
+| Q3 — **closed by founder statement (2026-10-18)** | What Kodelix must have done by 2026-11-01 | Counsel told the founder there are no issues |
 | Q4, Q5 — **answered by founder decision, not counsel (2026-10-17)** | Retention and deletion design; backup policy; key destruction | Staged deletion; backups expire under 60 days; key destruction counts as erasure (escalation, not built); staff records exported to the owner, then deleted. Open: which archive fields stay identifiable |
 | Q6 — **answered by founder decision, not counsel (2026-10-17)** | Hosting location in our hosting decision record | Hosting outside Egypt cleared; Germany (current plan) or Egypt decided in the hosting ADR |
 | § 5 | Consent screens, staff notices, contract text | No staff consent screen for storage abroad in the current release (founder decision, 2026-10-17); others none built |
