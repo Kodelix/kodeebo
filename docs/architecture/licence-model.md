@@ -250,7 +250,7 @@ Full analysis: [threat model](threat-models/licensing.md), 66 threats and 19 abu
 
 - **Server**: counters and events for activation, approval, seat move (released or not, within allowance or not), release, refusal (reason enum), `clone_suspected`, `device_hardware_changed`, `sold_after_seat_moved`, calendar-span alert, issuance, unknown artefact, sign-count mismatch. Kodelix and the owner are notified of every activation and move.
 - **Device**: `lease_remaining_seconds` and the tamper journal (`wall_backward`, large `wall_forward`, `restore_suspected`, `tpm_mode_downgrade`, key-tier change), sent at the next contact with device detection time and server receipt time. No other outbound traffic.
-- **Audit**: issuance log hash-chained in the control journal outside the restorable database; append-only; reviewed monthly against signed contracts.
+- **Audit**: issuance log hash-chained in the control journal (defined in ADR-0005 Decision 3) outside the restorable database; append-only; reviewed monthly against signed contracts.
 - **Privacy (condition for PII being out of scope)**: every licensing event carries **IDs only** (tenant, branch, device, seat, move, staff, kid, sequence, hashes). No names, contact details, computer names, raw serials, licence or lease bodies, or signatures (threat-model M17, M43).
 
 ## 12. Operations
