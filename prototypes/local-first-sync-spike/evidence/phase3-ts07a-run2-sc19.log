@@ -1,0 +1,14 @@
+phase 3 SC-19, commit 79de922, 50 seeds per cell
+  a_before     outcomes {'in_sync': 50, 'resend': 50}  pruned 200  violating 0  PASS
+  a_inside     outcomes {'in_sync': 50, 'resend': 50}  pruned 200  inside 50/50  violating 0  PASS
+  a_after      outcomes {'in_sync': 50, 'resend': 50}  pruned 250  violating 0  PASS
+  b_older      outcomes {'in_sync': 50, 'resend': 50}  pruned 250  violating 0  PASS
+  b_expired    outcomes {'in_sync': 50, 'lost_range': 50, 'resend': 50}  pruned 250  violating 0  PASS
+  c_offline    outcomes {'in_sync': 50, 'resend': 50}  pruned 250  violating 0  PASS
+  d_config     outcomes {'in_sync': 50, 'resend': 50}  pruned 250  violating 0  PASS
+  e_unverified outcomes {'in_sync': 50, 'resend': 50}  pruned 100  violating 0  PASS
+  mutant prune_unconfirmed    CAUGHT after 8 runs: ('R2', 'seq 4 lost although no verified backup holds it (watermark 3)')
+  mutant no_reconcile         CAUGHT after 1 runs: ('I1', 's1-a10 acknowledged but missing on the server')
+  mutant rebuild_new_ids      CAUGHT after 1 runs: ('R4', 'seq 6 came back as cmd-r-s1-a5 / 3aa8d7c9, was cmd-s1-a5 / 3aa8d7c9')
+  mutant config_version_only  CAUGHT after 1 runs: ('R5', "device config ('e0', 4, 9076) != server ('r1-a_before', 2, 9098)")
+SC-19: PASS  (total 1057.4 s)

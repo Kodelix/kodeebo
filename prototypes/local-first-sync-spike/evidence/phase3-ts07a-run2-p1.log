@@ -1,0 +1,18 @@
+phase 1, commit 3830eb4, 50 seeds per cell
+  chacha20  client:before_local_commit           fired 50/50  violating 0  PASS
+  chacha20  client:mid_local_txn                 fired 50/50  violating 0  PASS
+  chacha20  client:after_local_commit            fired 50/50  violating 0  PASS
+  chacha20  client:before_send                   fired 48/50  violating 0  PASS
+  chacha20  client:after_response_before_mark    fired 48/50  violating 0  PASS
+  chacha20  client:mid_mark                      fired 48/50  violating 0  PASS
+  chacha20  client:after_mark                    fired 48/50  violating 0  PASS
+  chacha20  mutant separate_outbox_txn fired 50/50, caught 50  PASS
+  sqlcipher client:before_local_commit           fired 50/50  violating 0  PASS
+  sqlcipher client:mid_local_txn                 fired 50/50  violating 0  PASS
+  sqlcipher client:after_local_commit            fired 50/50  violating 0  PASS
+  sqlcipher client:before_send                   fired 48/50  violating 0  PASS
+  sqlcipher client:after_response_before_mark    fired 48/50  violating 0  PASS
+  sqlcipher client:mid_mark                      fired 48/50  violating 0  PASS
+  sqlcipher client:after_mark                    fired 48/50  violating 0  PASS
+  sqlcipher mutant separate_outbox_txn fired 50/50, caught 50  PASS
+GATE (process-kill part): PASS  (total 416.6 s)

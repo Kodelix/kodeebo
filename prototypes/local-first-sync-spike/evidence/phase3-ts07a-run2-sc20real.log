@@ -1,0 +1,2 @@
+phase 3 SC-20 real tmpfs leg, commit 43f2c5e, 50 seeds
+  d_real_tmpfs      exercised 50/50  violating 0  PASS  (14.9 s)
