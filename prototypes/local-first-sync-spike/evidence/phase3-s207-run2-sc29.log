@@ -1,0 +1,13 @@
+phase 3 SC-29 (stock policy per item), commit 31b853d
+  a_allow_offline    exercised 20/20  violating 0  PASS  seed 1: {'alerts': {'snack': 2, 'gum': 1}, 'owner_alerts': {'snack': 2, 'gum': 1}, 'model_stock': {'snack': -1, 'gum': -2}, 'device_stock': {'snack': -1, 'gum': -2}, 'server_stock': {'gum': -2, 'snack': -1}, 'refused': 0, 'negative': 3, 'summaries': {}}
+  b_refuse_offline   exercised 20/20  violating 0  PASS  seed 1: {'alerts': {'snack': 1}, 'owner_alerts': {'snack': 1}, 'model_stock': {'cola': 0, 'snack': -1}, 'device_stock': {'cola': 0, 'snack': -1}, 'server_stock': {'cola': 0, 'snack': -1}, 'refused': 3, 'negative': 1, 'summaries': {}}
+  c_restore          exercised 20/20  violating 0  PASS  seed 1: {'alerts': {'snack': 1}, 'owner_alerts': {'snack': 1}, 'model_stock': {'snack': -2, 'cola': 0}, 'device_stock': {'snack': -2, 'cola': 0}, 'server_stock': {'cola': 0, 'snack': -2}, 'refused': 1, 'negative': 1, 'summaries': {}}
+  d_policy_change    exercised 20/20  violating 0  PASS  seed 1: {'alerts': {'snack': 1, 'gum': 1, 'cola': 1}, 'owner_alerts': {'snack': 1, 'gum': 1, 'cola': 1}, 'model_stock': {'snack': -1, 'gum': -1, 'cola': -1}, 'device_stock': {'snack': -1, 'gum': -1, 'cola': -1}, 'server_stock': {'cola': -1, 'gum': -1, 'snack': -1}, 'refused': 2, 'negative': 3, 'summaries': {2: {'n_sales': 2, 'n_policy': 1, 'items': ['snack']}}}
+  e_dup_reply        exercised 20/20  violating 0  PASS  seed 1: {'alerts': {'snack': 1}, 'owner_alerts': {'snack': 1}, 'model_stock': {'snack': -1}, 'device_stock': {'snack': -1}, 'server_stock': {'snack': -1}, 'refused': 0, 'negative': 1, 'summaries': {}}
+  mutant refuse_ignored       CAUGHT after 2 runs: ('I8', 's1-x2 on the server was never submitted')
+  mutant alert_every_sale     CAUGHT after 1 runs: ('R36', "owner stock alerts {'snack': 4, 'gum': 2}, model {'snack': 2, 'gum': 1}")
+  mutant default_refuse       CAUGHT after 1 runs: ('R37', "gum 0 -> -1 (default allow): model allows, device answered {'ok': False, 'op': 'sell_stock', 'error': 'out_of_stock', 'warning': 'out_of_stock', 'items': ['gum']}")
+  mutant stale_policy         CAUGHT after 4 runs: ('I8', 's1-x3 on the server was never submitted')
+  mutant alert_outside_inbox  CAUGHT after 5 runs: ('R36', "owner stock alerts {'snack': 2}, model {'snack': 1}")
+  mutant summary_ignores_policy CAUGHT after 4 runs: ('R40', "owner summaries {2: {'n_sales': 2, 'n_policy': 0, 'items': []}}, model {2: {'n_sales': 2, 'n_policy': 1, 'items': ['snack']}}")
+SC-29: PASS  (total 49.5 s)

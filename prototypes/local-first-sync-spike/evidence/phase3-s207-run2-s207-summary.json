@@ -1,0 +1,111 @@
+{
+ "harness_commit": "31b853d",
+ "started": "2026-10-19 04:26:33",
+ "cells": [
+  {
+   "cell": "a_old_protocol",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "before_update": 0,
+    "upgrade_alerts": 1,
+    "feed_events": 0,
+    "alert_text": [
+     "this device needs an app update before it can sync; its sales are kept on the device"
+    ]
+   },
+   "seconds": 7.5,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_unreadable_feed",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "before_update": 4,
+    "upgrade_alerts": 0,
+    "feed_events": 1,
+    "alert_text": []
+   },
+   "seconds": 8.2,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_both",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "before_update": 0,
+    "upgrade_alerts": 1,
+    "feed_events": 1,
+    "alert_text": [
+     "this device needs an app update before it can sync; its sales are kept on the device"
+    ]
+   },
+   "seconds": 8.0,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "drop_on_refusal": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_old_protocol"
+   ],
+   "first_violation": [
+    "I1",
+    "s1-x0 acknowledged but missing on the server"
+   ],
+   "seconds": 0.5
+  },
+  "stop_on_upgrade_required": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_old_protocol"
+   ],
+   "first_violation": [
+    "R60",
+    "while out of date: the counter refused a sale: {'ok': False, 'op': 'sell_items', 'error': 'upgrade_required'}"
+   ],
+   "seconds": 0.4
+  },
+  "apply_unknown_feed": {
+   "caught": true,
+   "runs_to_catch": 2,
+   "seed_cell": [
+    1,
+    "b_unreadable_feed"
+   ],
+   "first_violation": [
+    "R62",
+    "an unreadable feed was not refused: {'ok': True, 'op': 'pull_config', 'applied': False, 'version': 3, 'prices': {'cafe': {'amount': 2000, 'currency': 'EGP'}, 'round_piasters': {'amount': 1, 'currency': 'EGP'}, 'std': {'amount': 7000, 'currency': 'EGP'}, 'vip': {'amount': 10000, 'currency': 'EGP'}}}"
+   ],
+   "seconds": 0.9
+  },
+  "apply_old_protocol": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_old_protocol"
+   ],
+   "first_violation": [
+    "R61",
+    "an old protocol was not refused with the queue kept: {'ok': True, 'op': 'sync', 'results': [{'command_id': 'cmd-s1-x0', 'seq': 1, 'result': 'applied'}, {'command_id': 'cmd-s1-x1', 'seq': 2, 'result': 'applied'}], 'pending': 0, 'batch': 50}"
+   ],
+   "seconds": 0.5
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 25.9
+}

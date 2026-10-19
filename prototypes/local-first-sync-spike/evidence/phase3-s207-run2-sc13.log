@@ -1,0 +1,12 @@
+phase 3 SC-13 + TS-01a (cloned disk, rollback; OQ7 policy), commit 31b853d
+  a_clone_keep_original  exercised 20/20  violating 0  PASS  seed 1: {'quarantine': {'device_id': 'dev-1', 'kept': 'm1', 'reason': 'second_machine', 'state': 'resolved'}, 'review': 5, 'streams': ['dev-1', 'dev-1@m2'], 'held': ['held: 6 sales, 90.00 EGP'], 'after': ['of which 75.00 EGP from a retired copy, pending your review']}
+  b_clone_keep_clone     exercised 20/20  violating 0  PASS  seed 1: {'quarantine': {'device_id': 'dev-1', 'kept': 'm2', 'reason': 'second_machine', 'state': 'resolved'}, 'review': 5, 'streams': ['dev-1', 'dev-1@m1'], 'held': ['held: 6 sales, 90.00 EGP'], 'after': ['of which 75.00 EGP from a retired copy, pending your review']}
+  c_rollback_ts01a       exercised 20/20  violating 0  PASS  seed 1: {'quarantine': {'device_id': 'dev-1', 'kept': 'm1', 'reason': 'sequence_reused', 'state': 'resolved'}, 'review': 3, 'streams': ['dev-1', 'dev-1@overwritten'], 'held': ['held: 3 sales, 45.00 EGP'], 'after': ['of which 45.00 EGP from a timeline a restore overwrote, pending your review']}
+  mutant drop_conflicting     CAUGHT after 3 runs: ('I1', 's1-m1-5 acknowledged but missing on the server')
+  mutant no_machine_check     CAUGHT after 1 runs: ('R48', 'quarantine reason sequence_reused, model second_machine')
+  mutant resolve_drops_other  CAUGHT after 1 runs: ('I1', 's1-m2-11 acknowledged but missing on the server')
+  mutant alert_each_batch     CAUGHT after 1 runs: ('R48', '2 owner alerts for one quarantine')
+  mutant block_on_quarantine  CAUGHT after 1 runs: ('R49', "clone during quarantine: the counter on m2 refused a sale: {'ok': False, 'op': 'sell_items', 'error': 'sync_quarantined'}")
+  mutant review_not_in_totals CAUGHT after 1 runs: ('R53', "report_after: total 13500 (model 21000), pending review 7500 (model 7500): [{'label': 'of which 75.00 EGP from a retired copy, pending your review', 'n': 5, 'piasters': 7500, 'reason': 'other_copy'}]")
+  mutant held_hidden          CAUGHT after 1 runs: ('R52', 'held line during quarantine [], model 6 sales, 9000 piasters')
+SC-13 + TS-01a: PASS  (total 37.1 s)
