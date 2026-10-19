@@ -1,0 +1,11 @@
+phase 3 TS-01b + TS-10 + OQ27 (restore after offline sales, drawer count, offline alert, USB restore), commit fe2b237
+  a_restore_drawer_kept    exercised 20/20  violating 0  PASS  seed 1: {'blind_spot_confirmed': True, 'drawer': ['drawer surplus of 45.00 EGP at shift close']}
+  b_restore_cash_removed   exercised 20/20  violating 0  PASS  seed 1: {'blind_spot_confirmed': True, 'drawer': []}
+  c_offline_alert          exercised 20/20  violating 0  PASS  seed 1: {'alert_text': ['device offline for more than 6 h: its sales since then are only on the device'], 'cashier': 'no connection to the server for 7 h'}
+  d_usb_restore            exercised 20/20  violating 0  PASS  seed 1: {'lost': 2, 'review': ['s1-x3', 's1-x4'], 'quarantine': 'second_machine'}
+  mutant no_drawer_check      CAUGHT after 1 runs: ('R64', 'shift close difference [0], model 4500')
+  mutant offline_alert_never  CAUGHT after 3 runs: ('R65', 'offline alerts at 2 h 0, 7 h 0, after reconnect 0; model 0, 1, 1')
+  mutant offline_alert_repeat CAUGHT after 3 runs: ('R65', 'offline alerts at 2 h 0, 7 h 2, after reconnect 2; model 0, 1, 1')
+  mutant no_offline_warning   CAUGHT after 3 runs: ('R65', 'cashier warning at 2 h False, 7 h False, after reconnect False; model False, True, False')
+  mutant no_machine_check     CAUGHT after 4 runs: ('R66', 'restore on a new PC: quarantine reason sequence_reused, model second_machine')
+TS-01b + TS-10 + OQ27: PASS  (total 47.4 s)

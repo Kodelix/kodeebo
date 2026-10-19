@@ -1,0 +1,13 @@
+phase 3 S206 + TS-03b + TS-06a/b (re-bootstrap after a lost or damaged store; no resurrected deletes), commit 87dabc8
+  a_ts06a_deleted_closed     exercised 20/20  violating 0  PASS  seed 1: {'lost': [(3, 4, 'store_lost', True)], 'alert': ["the device's local store was lost or damaged and rebuilt from the server; 2 sales it had recorded never reached the server"], 'aside': ['client.db.damaged-0']}
+  b_ts06b_unlinked_running   exercised 20/20  violating 0  PASS  seed 1: {'lost': [], 'alert': ["the device's local store was lost or damaged and rebuilt from the server; 0 sales it had recorded never reached the server"], 'aside': ['client.db.damaged-0']}
+  c_ts03b_corrupted          exercised 20/20  violating 0  PASS  seed 1: {'lost': [(3, 4, 'store_lost', True)], 'alert': ["the device's local store was lost or damaged and rebuilt from the server; 2 sales it had recorded never reached the server"], 'aside': ['client.db.damaged-0']}
+  d_marker_also_gone         exercised 20/20  violating 0  PASS  seed 1: {'lost': [], 'alert': ["the device's local store and its marker were lost; 0 sales known to be missing, and any sales after its last contact (2026-10-19 14:34, server time) cannot be counted"], 'aside': []}
+  e_s206_deleted_item        exercised 20/20  violating 0  PASS  seed 1: {'cola_after_delete': 'price_missing'}
+  f_g5f4_hot_journal_page1   exercised 20/20  violating 0  PASS  seed 1: {'lost': [(3, 4, 'store_lost', True)], 'alert': ["the device's local store was lost or damaged and rebuilt from the server; 2 sales it had recorded never reached the server"], 'aside': ['client.db.damaged-0']}
+  mutant recreate_silently      CAUGHT after 1 runs: ('I1', 's1-x2 acknowledged but missing on the server')
+  mutant overwrite_damaged      CAUGHT after 3 runs: ('R68', "the damaged store was not kept aside unchanged: ['client.db.damaged-0']")
+  mutant silent_rebootstrap     CAUGHT after 1 runs: ('I1', 's1-x2 acknowledged but missing on the server')
+  mutant catalogue_upsert_only  CAUGHT after 5 runs: ('R70', "an item deleted on the server was sold after the device came back: {'ok': True, 'op': 'sale', 'action_id': 's1-x0', 'seq': 1}")
+  mutant copy_after_open        CAUGHT after 6 runs: ('R68', 'the store as it was before SQLite replayed the damaged journal was not kept')
+S206 + TS-03b + TS-06: PASS  (total 78.7 s)

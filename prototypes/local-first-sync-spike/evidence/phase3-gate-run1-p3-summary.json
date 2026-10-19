@@ -1,0 +1,78 @@
+{
+ "harness_commit": "0f13d43",
+ "started": "2026-10-19 15:47:41",
+ "retention": {
+  "RETENTION": "1",
+  "RETAIN_DAYS": "60"
+ },
+ "campaign": {
+  "runs": 3000,
+  "kills_fired": {
+   "client": 1480,
+   "server": 1188,
+   "both": 585
+  },
+  "faulted_ops": 18820,
+  "failed_ops": 15355,
+  "duplicates_seen": 12955,
+  "concurrent_both_parsed": 1895,
+  "violating_runs": 0,
+  "first_bad": [],
+  "seconds": 2809.6,
+  "result": "PASS"
+ },
+ "mutants": {
+  "separate_outbox_txn": {
+   "caught": true,
+   "runs_to_catch": 12,
+   "budget": 400,
+   "first_violation": [
+    "I1",
+    "s12-a1 recorded on the device but missing on the server"
+   ],
+   "seconds": 12.0
+  },
+  "no_dedupe": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "budget": 400,
+   "first_violation": [
+    "I2",
+    "s1-a0 has 25 sale rows"
+   ],
+   "seconds": 2.3
+  },
+  "ack_before_commit": {
+   "caught": true,
+   "runs_to_catch": 271,
+   "budget": 400,
+   "first_violation": [
+    "I1",
+    "s271-a6 acknowledged but missing on the server"
+   ],
+   "seconds": 272.2
+  },
+  "double_minute": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "budget": 400,
+   "first_violation": [
+    "I3",
+    "s1-a0 sale 21550 != expected 21400"
+   ],
+   "seconds": 1.1
+  },
+  "drop_on_send": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "budget": 400,
+   "first_violation": [
+    "I1",
+    "s1-a3 acknowledged but missing on the server"
+   ],
+   "seconds": 1.2
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 3098.3
+}

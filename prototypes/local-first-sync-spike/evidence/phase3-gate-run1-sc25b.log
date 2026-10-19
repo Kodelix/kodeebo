@@ -1,0 +1,10 @@
+phase 3 SC-25b (N5 lease expiry, injected clocks), commit 2b81274
+  a_expiry_mid_shift   exercised 20/20  violating 0  PASS
+  b_wall_clock_back    exercised 20/20  violating 0  PASS
+  c_warning_boundary   exercised 20/20  violating 0  PASS
+  mutant wall_clock_lease     CAUGHT after 2 runs: ('I8', 's1-x1 on the server was never submitted')
+  mutant expiry_blocks_close  CAUGHT after 1 runs: ('R26', "an open session could not be closed and paid after expiry: {'ok': False, 'op': 'close_session', 'error': 'lease_expired', 'warning': 'lease_expired', 'lease': {'status': 'expired', 'remaining_s': -3600, 'server_now_estimate': 1793029377.1754591}}")
+  mutant no_warning           CAUGHT after 1 runs: ('R24', '6 d 22 h: device lease ok, model warning')
+  mutant reject_after_expiry  CAUGHT after 1 runs: ('I1', 's1-a0 acknowledged but missing on the server')
+  mutant no_heartbeat         CAUGHT after 3 runs: ('R28', "after reconnect the lease was not renewed in full: {'status': 'warning', 'remaining_s': 86340, 'server_now_estimate': 1792939439.3512762}")
+SC-25b: PASS  (total 28.7 s)

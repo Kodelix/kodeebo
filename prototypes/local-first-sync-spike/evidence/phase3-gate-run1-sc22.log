@@ -1,0 +1,7 @@
+phase 3 SC-22 (two instances), commit f6bc3d7, 50 seeds per cell
+  a_simultaneous  exercised 50/50  second instance refused 250x  violating 0  PASS
+  b_second_later  exercised 50/50  second instance refused 100x  violating 0  PASS
+  c_kill_holder   exercised 50/50  second instance refused 50x  violating 0  PASS
+  mutant no_instance_lock     CAUGHT after 1 runs: ('R16', 'two instances served the store (rounds [2, 2, 2, 2, 2], second accepted [True, True, True, True, True, True, True, True, True, True])')
+  mutant lock_released_early  CAUGHT after 1 runs: ('R16', 'two instances served the store (rounds [1, 2, 1, 1, 1], second accepted [True, True])')
+SC-22: PASS  (total 89.9 s)
