@@ -1,0 +1,58 @@
+date=2026-10-18T20:12:23Z go=go version go1.27.1-X:nodwarf5 linux/amd64
+=== control: OSV query with versions known to be old (expect advisories) ===
+control -> 2 advisories ['GHSA-j88v-2chj-qfwx', 'GO-2026-5004']
+control -> 23 advisories ['GHSA-269q-hmxg-m83q', 'GHSA-38f8-5428-x5cv', 'GHSA-4mp9-239f-g9hg', 'GHSA-57rv-r2g8-2cj3']
+control -> 101 advisories ['GO-2023-1568', 'GO-2023-1569', 'GO-2023-1570', 'GO-2023-1571']
+=== install pinned scanners ===
+go: downloading golang.org/x/tools v0.50.0
+go: downloading golang.org/x/mod v0.41.0
+go: downloading golang.org/x/sync v0.23.0
+govulncheck_install_ms=7686
+go: downloading modernc.org/mathutil v1.7.1
+go: downloading github.com/dustin/go-humanize v1.0.1
+go: downloading github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec
+osv_scanner_install_ms=322835
+total 98128
+drwxr-xr-x 1 kiko kiko       44 Oct 18 23:17 .
+drwxr-xr-x 1 kiko kiko       94 Oct 18 23:12 ..
+-rwxr-xr-x 1 kiko kiko 16363374 Oct 18 23:12 govulncheck
+-rwxr-xr-x 1 kiko kiko 84118788 Oct 18 23:17 osv-scanner
+Go: go1.27.1-X:nodwarf5
+Scanner: govulncheck@v1.8.0
+DB: https://vuln.go.dev
+DB updated: 2026-10-08 22:31:09 +0000 UTC
+osv-scanner version: 2.6.0
+osv-scalibr version: 0.5.2
+commit: n/a
+=== govulncheck on the Go probe (source mode and binary mode) ===
+No vulnerabilities found.
+No vulnerabilities found.
+=== osv-scanner on the Ktor probe lockfile and verification metadata ===
+Scanning dir /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s14/ktor
+Starting filesystem walk for root: /
+Scanned /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s14/ktor/gradle.lockfile file and found 123 packages
+Scanned /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s14/ktor/gradle/verification-metadata.xml file and found 149 packages
+End status: 2 dirs visited, 4 inodes visited, 2 Extract calls, 3.389647ms elapsed, 3.389693ms wall time
+
+No issues found
+=== osv-scanner control: lockfile with an old Netty (expect findings) ===
+| https://osv.dev/GHSA-fghv-69vj-qj49 |      | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.125.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-gcjf-9mgh-3p7g | 5.7  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.136.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-hvcg-qmg6-jm4c | 5.3  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.135.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-jppx-w49h-x2qq | 8.7  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.136.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-m4cv-j2px-7723 | 6.5  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.133.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-mvh2-crg5-v77c | 7.5  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.136.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-pwqr-wmgm-9rr8 | 7.5  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.132.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-q4f6-jm68-57ww | 6.9  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.136.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-v8h7-rr48-vmmv | 5.3  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.133.Final | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-wx5j-54mm-rqqq | 6.5  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.71.Final  | scratch/s14/control/gradle.lockfile |
+| https://osv.dev/GHSA-xxqh-mfjm-7mv9 | 5.8  | Maven     | io.netty:netty-codec-http | 4.1.0.Final | 4.1.133.Final | scratch/s14/control/gradle.lockfile |
++-------------------------------------+------+-----------+---------------------------+-------------+---------------+-------------------------------------+
+=== go.sum / GOFLAGS=-mod=readonly / GONOSUMDB behaviour: go env of verification settings ===
+
+
+
+sum.golang.org
+https://proxy.golang.org,direct
+
+done

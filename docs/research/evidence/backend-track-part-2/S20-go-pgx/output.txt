@@ -1,0 +1,87 @@
+### date (UTC): 2026-10-18T20:35:55Z
+go: downloading go1.27.2 (linux/amd64)
+### go version go1.27.2 linux/amd64; Docker version 29.9.1, build dfc520dcc2
+### image: postgres:18.6 sha256:74935e722416
+### server: postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)
+   rolname   | rolsuper | rolbypassrls 
+-------------+----------+--------------
+ app_rt      | f        | f
+ auth_lookup | f        | f
+ job_rt      | f        | f
+ migrator    | f        | f
+ platform_rt | f        | f
+(5 rows)
+
+ orders  | outbox | tenants 
+---------+--------+---------
+ 1001000 |     30 |     203
+(1 row)
+
+go: downloading github.com/jackc/pgx/v5 v5.11.0
+go: downloading github.com/jackc/pgpassfile v1.0.0
+go: downloading github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761
+go: downloading golang.org/x/text v0.29.0
+go: downloading github.com/jackc/puddle/v2 v2.2.2
+go: downloading golang.org/x/sync v0.17.0
+=== RUN   TestT0Versions
+    spike_test.go:118: server: PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+    spike_test.go:119: go: go1.27.2
+    spike_test.go:123: pgx: github.com/jackc/pgx/v5 v5.11.0
+--- PASS: TestT0Versions (0.00s)
+=== RUN   TestT1SecurityDefiner
+    spike_test.go:136: T1a lookup with no tenant context: tenant=11111111-1111-4111-8111-111111111111 err=<nil> (want 11111111-1111-4111-8111-111111111111)
+    spike_test.go:140: T1b direct select on PL table, no context, as app_rt: 0 rows (want 0)
+    spike_test.go:143: T1c direct select on PL table inside scope B as app_rt: 1 rows err=<nil> (want 1)
+    spike_test.go:150: T1d lookup of another tenant's token inside scope A: 22222222-2222-4222-8222-222222222222 err=<nil> (functions take a key, not the context; by design)
+    spike_test.go:153: T1e job_rt direct select on PL table inside scope A: 42501 permission denied for table sessions (severity ERROR) (want 42501 permission denied)
+    spike_test.go:156: T1f app_rt calling the job-only function: 42501 permission denied for function closure_end_sessions (severity ERROR) (want 42501)
+    spike_test.go:159: T1g job_rt calling it with no tenant context: 42501 no tenant context (severity ERROR) (want 42501 no tenant context)
+    spike_test.go:162: T1h job_rt calling it inside scope A: deleted=2 err=<nil> (want 2; the function reads the caller's local setting)
+    spike_test.go:165: T1i tenant B sessions after A's closure call: 1 err=<nil> (want 1)
+--- PASS: TestT1SecurityDefiner (0.01s)
+=== RUN   TestT2HelperRules
+    spike_test.go:173: T2a second scope in one transaction: scope already set (want ErrScopeAlreadySet: true)
+    spike_test.go:175: T2b unparseable tenant: invalid scope (want ErrInvalidScope: true)
+    spike_test.go:178: T2c next borrower reads app.tenant_id = ""
+--- PASS: TestT2HelperRules (0.00s)
+=== RUN   TestT3TransactionTimeout
+    spike_test.go:190: T3a transaction_timeout=300ms set first, then pg_sleep(2): elapsed=304ms err=25P04 terminating connection due to transaction timeout (severity FATAL)
+    spike_test.go:204: T3b timeout 300ms set 0.5 s into the transaction, then a 0.1 s statement: elapsed=611ms err=<nil>
+    spike_test.go:208: T3c next borrower reads transaction_timeout = "0" err=<nil>
+--- PASS: TestT3TransactionTimeout (0.92s)
+=== RUN   TestT4CopyExport
+    spike_test.go:289: T4a scope A, no WHERE clause: tag="COPY 1000000" err=<nil> lines=1000001 (want 1000001 = header + A's 1,000,000 rows, not B's 1,000) bytes=14777800 elapsed=407ms
+    spike_test.go:290: T4a first bytes: "id,note\n1,a1\n2,a2\n3,a3\n4,a4\n5,a5\n6,a6\n7,a7\n8,a8\n9,a9\n10,a10\n11,a11\n12,a12\n13,a13"
+    spike_test.go:291: T4a heap before=555936 B, peak during export=658160 B (output was 14777800 B)
+    spike_test.go:300: T4b same COPY with no scope set (forgotten context): tag="COPY 0" err=<nil> lines=1 (want 1 = header only)
+    spike_test.go:309: T4c context cancelled after ~5 MiB: elapsed=148ms bytes=5246708 err=context canceled
+    spike_test.go:312: T4c next query on the pool: 1 err=<nil>
+    spike_test.go:320: T4d writer errors after ~1 MiB: elapsed=33ms bytes seen by writer=1048580 err=client went away
+    spike_test.go:322: T4d next query on the pool: 1 err=<nil>
+--- PASS: TestT4CopyExport (0.63s)
+=== RUN   TestT5aGlobalClaim
+    spike_test.go:364: T5a job_rt claim with NO tenant context: 0 rows err=<nil> (want 0: a global poll sees nothing)
+--- PASS: TestT5aGlobalClaim (0.00s)
+=== RUN   TestT5bConcurrentClaim
+    spike_test.go:412: T5b two workers on tenant C (10 rows, worker 1 holds its 6 locks): worker1=6 worker2=4 overlap=0 err=<nil> (want 6, 4, 0)
+--- PASS: TestT5bConcurrentClaim (0.01s)
+=== RUN   TestT5cTenantSweep
+    spike_test.go:429: T5c platform_rt lists 203 tenants (ids only)
+    spike_test.go:451: T5c sweep 1: processed=10 total=31ms per-tenant tx p50=120µs p95=180µs max=3.92ms
+    spike_test.go:451: T5c sweep 2: processed=10 total=24ms per-tenant tx p50=100µs p95=140µs max=2.1ms
+    spike_test.go:451: T5c sweep 3: processed=0 total=25ms per-tenant tx p50=110µs p95=160µs max=950µs
+    spike_test.go:451: T5c sweep 4: processed=0 total=24ms per-tenant tx p50=110µs p95=160µs max=390µs
+--- PASS: TestT5cTenantSweep (0.11s)
+=== RUN   TestT5dIdempotentConsumer
+    spike_test.go:469: T5d attempt 1 inserted 1 row, then fails
+    spike_test.go:472: T5d attempt 1 error: handler failed after the effect
+    spike_test.go:475: T5d attempt 2: effect rows=1 err=<nil> (want 1 then 0: the dedup row rolled back with the failed attempt, then blocks the replay)
+    spike_test.go:475: T5d attempt 3: effect rows=0 err=<nil> (want 1 then 0: the dedup row rolled back with the failed attempt, then blocks the replay)
+--- PASS: TestT5dIdempotentConsumer (0.01s)
+=== RUN   TestT5eAtomicWriteAndEnqueue
+    spike_test.go:498: T5e rolled-back tx err=true; committed tx err=<nil>; orders rolled-back=0 committed=1; outbox rows kind order.created=1 (want 0, 1, 1)
+--- PASS: TestT5eAtomicWriteAndEnqueue (0.04s)
+PASS
+ok  	bt2spike	1.731s
+### module cache size: 374M
+### done 2026-10-18T20:36:54Z

@@ -1,0 +1,30 @@
+# s45-run 2026-10-18T20:05:32Z
+go version go1.27.2 linux/amd64
+openjdk version "21.0.12.1" 2026-08-18
+v24.21.0
+## JVM
+java 21.0.12.1 locale.providers=null
+ar-EG currency(1234567.5)=‏١٬٢٣٤٬٥٦٧٫٥٠ ج.م.‏  currency(0.5)=‏٠٫٥٠ ج.م.‏  number(1234567.5)=١٬٢٣٤٬٥٦٧٫٥
+ar-EG date=18‏/10‏/2026، 11:05:00 م
+ar-EG-u-nu-latn currency(1234567.5)=‏1,234,567.50 ج.م.‏  currency(0.5)=‏0.50 ج.م.‏  number(1234567.5)=1,234,567.5
+ar-EG-u-nu-latn date=18‏/10‏/2026، 11:05:00 م
+en-EG currency(1234567.5)=EGP1,234,567.50  currency(0.5)=EGP0.50  number(1234567.5)=1,234,567.5
+en-EG date=Oct 18, 2026, 11:05:00 PM
+en-US currency(1234567.5)=EGP1,234,567.50  currency(0.5)=EGP0.50  number(1234567.5)=1,234,567.5
+en-US date=Oct 18, 2026, 11:05:00 PM
+tz Africa/Cairo offset 2026-10-18 = +03:00
+## Node
+node v24.21.0 icu 78.3 cldr 48.0 unicode 17.0
+ar-EG currency(1234567.5)=‏١٬٢٣٤٬٥٦٧٫٥٠ ج.م.‏  currency(0.5)=‏٠٫٥٠ ج.م.‏  number(1234567.5)=١٬٢٣٤٬٥٦٧٫٥
+ar-EG date=١٩‏/١٠‏/٢٠٢٦، ١٢:٠٥:٠٠ ص
+ar-EG-u-nu-latn currency(1234567.5)=‏1,234,567.50 ج.م.‏  currency(0.5)=‏0.50 ج.م.‏  number(1234567.5)=1,234,567.5
+ar-EG-u-nu-latn date=19‏/10‏/2026، 12:05:00 ص
+en-EG currency(1234567.5)=EGP 1,234,567.50  currency(0.5)=EGP 0.50  number(1234567.5)=1,234,567.5
+en-EG date=Oct 19, 2026, 12:05:00 AM
+en-US currency(1234567.5)=EGP 1,234,567.50  currency(0.5)=EGP 0.50  number(1234567.5)=1,234,567.5
+en-US date=Oct 19, 2026, 12:05:00 AM
+## Go
+go: downloading go1.27.2 (linux/amd64)
+go: downloading golang.org/x/text v0.43.0
+# fmtprobe
+./main.go:16:133: undefined: currency.EGP

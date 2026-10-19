@@ -1,0 +1,5 @@
+control log4j-core 2.14.1 -> 7 advisories
+io.ktor:ktor-server-core (all versions) -> 0 advisories: 
+io.ktor:ktor-server-netty (all versions) -> 0 advisories: 
+io.ktor:ktor-client-core (all versions) -> 1 advisories: GHSA-xwgq-pcqx-hpmv (2023-11-08T04:01:29.038593Z)
+org.jetbrains.exposed:exposed-core (all versions) -> 0 advisories: 

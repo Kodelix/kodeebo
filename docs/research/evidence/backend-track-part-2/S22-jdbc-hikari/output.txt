@@ -1,0 +1,32 @@
+### date (UTC): 2026-10-18T20:40:06Z
+### openjdk version "21.0.12.1" 2026-08-18; Docker version 29.9.1, build dfc520dcc2
+### server: postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2)
+### java 21.0.12.1 maxMemory=32 MiB
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+J0 server: PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+J0 driver: PostgreSQL JDBC Driver 42.7.14
+J1a lookup with no tenant context (autocommit): tenant=11111111-1111-4111-8111-111111111111 (want 11111111-1111-4111-8111-111111111111)
+J1b direct select on PL table, no context: 0 rows (want 0)
+J1c job_rt calls closure function with no context: ERROR PSQLException state=42501 msg=ERROR: no tenant context
+  Where: PL/pgSQL function auth.closure_end_sessions() line 4 at RAISE
+J1d app_rt calls the job-only function in scope A: ERROR PSQLException state=42501 msg=ERROR: permission denied for function closure_end_sessions
+J1e job_rt calls it in scope A: deleted=2 (want 2)
+J1f tenant B sessions after: 1 (want 1)
+J2a unparseable tenant: ERROR IllegalArgumentException msg=invalid scope
+J3a transaction_timeout=300ms set first, then pg_sleep(2): elapsed=304 ms result: ERROR PSQLException state=25P04 msg=FATAL: terminating connection due to transaction timeout
+J3b next borrower #1 transaction_timeout: 0
+J3b next borrower #2 transaction_timeout: 0
+J3b next borrower #3 transaction_timeout: 0
+J3c timeout 300ms set 0.5 s into a running transaction, then a 0.1 s statement: elapsed=604 ms result: no error
+J4a scope A, no WHERE clause (unwrap PGConnection.getCopyAPI on the Hikari proxy): rows=1000000 lines=1000001 (want 1000001) bytes=14777800 elapsed=448 ms
+J4a heap used before=8331520 B, peak while exporting=22107728 B (JVM -Xmx is small; GC noise included)
+J4b same COPY with no scope: rows=0 lines=1 (want 1 = header only)
+J4c writer throws after ~1 MiB: elapsed=35 ms bytes seen=1048580 result: ERROR IOException msg=client went away
+J4c next query on the pool: ERROR PSQLException state=02000 msg=No results were returned by the query.
+J5a job_rt claim with no tenant context: ERROR NoSuchElementException msg=null rows (want 0)
+Exception in thread "main" java.util.concurrent.TimeoutException
+	at java.base/java.util.concurrent.CompletableFuture.timedGet(CompletableFuture.java:1960)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2095)
+	at Spike.main(Spike.java:191)

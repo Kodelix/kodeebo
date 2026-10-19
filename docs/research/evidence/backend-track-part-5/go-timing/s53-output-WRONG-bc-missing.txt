@@ -1,0 +1,12 @@
+host: 16 cpus, go version go1.27.1-X:nodwarf5 linux/amd64
+scripts/s53-go-timing.sh: line 7: bc: command not found
+ s rc=0 : go mod download -C /home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/server
+scripts/s53-go-timing.sh: line 7: bc: command not found
+ s rc=0 : go build -C /home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/server -o /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-5/go-timing/scratch/server-bin
+scripts/s53-go-timing.sh: line 7: bc: command not found
+ s rc=0 : go build -C /home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/server -o /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-5/go-timing/scratch/server-bin
+scripts/s53-go-timing.sh: line 7: bc: command not found
+ s rc=0 : go vet -C /home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/server ./...
+scripts/s53-go-timing.sh: line 7: bc: command not found
+ s rc=0 : go vet -C /home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/sut/server ./...
+binary size: 16640604 bytes

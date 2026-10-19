@@ -1,0 +1,11 @@
+Maven io.ktor:ktor-server-core 3.6.0 -> 0 advisories 
+Maven io.ktor:ktor-server-netty 3.6.0 -> 0 advisories 
+Maven org.jetbrains.exposed:exposed-core 1.5.1 -> 0 advisories 
+Maven org.jetbrains.kotlin:kotlin-stdlib 2.4.21 -> 0 advisories 
+Maven com.zaxxer:HikariCP 7.1.0 -> 0 advisories 
+Go stdlib 1.27.2 -> 0 advisories 
+Go stdlib 1.27.0 -> 13 advisories GO-2026-6599,GO-2026-6600,GO-2026-6603,GO-2026-6604,GO-2026-6605,GO-2026-6607,GO-2026-6608,GO-2026-6609,GO-2026-6610,GO-2026-6611,GO-2026-6612,GO-2026-6613,GO-2026-6617
+npm electron 44.8.0 -> 0 advisories 
+-- control queries (older versions, must return advisories if the endpoint answers) --
+Maven io.ktor:ktor-server-core 1.0.0 -> 0 advisories 
+Go stdlib 1.20.0 -> 101 advisories GO-2023-1568,GO-2023-1569,GO-2023-1570,GO-2023-1571,GO-2023-1621,GO-2023-1702,GO-2023-1703,GO-2023-1704,GO-2023-1705,GO-2023-1751,GO-2023-1752,GO-2023-1753,GO-2023-1840,GO-2023-1878,GO-2023-1987,GO-2023-2041,GO-2023-2043,GO-2023-2102,GO-2023-2185,GO-2023-2186,GO-2023-2382,GO-2024-2598,GO-2024-2599,G

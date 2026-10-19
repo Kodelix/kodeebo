@@ -1,0 +1,26 @@
+### date (UTC): 2026-10-18T20:38:55Z
+## Go proxy @latest
+github.com/riverqueue/river -> {"Version":"v0.49.0","Time":"2026-10-05T15:49:49Z","Origin":{"VCS":"git","URL":"https://github.com/riverqueue/river","Hash":"da5a26e21c18c706e0cd48cef3e1e5016e00492c","Ref":"refs/tags/v0.49.0"}}
+github.com/riverqueue/river/riverdriver/riverpgxv5 -> {"Version":"v0.49.0","Time":"2026-10-05T15:49:49Z","Origin":{"VCS":"git","URL":"https://github.com/riverqueue/river","Subdir":"riverdriver/riverpgxv5","Hash":"da5a26e21c18c706e0cd48cef3e1e5016e00492c","Ref":"refs/tags/riverdriver/riverpgxv5/v0.49.0"}}
+github.com/jackc/pgx/v5 -> {"Version":"v5.11.0","Time":"2026-09-07T23:39:32Z","Origin":{"VCS":"git","URL":"https://github.com/jackc/pgx","Hash":"5e583fa7aabfa88b796292f849fc9d7d75ac159d","Ref":"refs/tags/v5.11.0"}}
+## Maven metadata (latest/release/lastUpdated)
+org.postgresql/postgresql: <latest>42.7.14</latest> <release>42.7.14</release> <lastUpdated>20261007215823</lastUpdated> 
+com.github.kagkarlsson/db-scheduler: <latest>16.12.0</latest> <release>16.12.0</release> <lastUpdated>20260529142018</lastUpdated> 
+com.zaxxer/HikariCP: <latest>7.1.0</latest> <release>7.1.0</release> <lastUpdated>20260614185921</lastUpdated> 
+org.slf4j/slf4j-api: <latest>2.1.0-alpha1</latest> <release>2.1.0-alpha1</release> <lastUpdated>20260922145706</lastUpdated> 
+## OSV queries (api.osv.dev /v1/query); a response of {} means no record
+Go github.com/jackc/pgx/v5 5.11.0 -> 0 records: {}
+Go github.com/riverqueue/river 0.49.0 -> 0 records: {}
+Maven org.postgresql:postgresql 42.7.14 -> 0 records: {}
+Maven com.zaxxer:HikariCP 7.1.0 -> 0 records: {}
+Maven org.jetbrains.exposed:exposed-core 1.5.1 -> 0 records: {}
+Maven com.github.kagkarlsson:db-scheduler 16.12.0 -> 0 records: {}
+## jar sizes (HEAD) then fetch, each jar in its own new directory
+postgresql-42.7.14.jar: 1221004 bytes
+73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c  /home/kiko/saas-products/kodeebo/production/session-state/cache/backend-track/part-2/jars/postgresql-42.7.14/postgresql-42.7.14.jar
+HikariCP-7.1.0.jar: 172996 bytes
+2be45c641b841e81df87292e181f2c203500c5f0e9a1676f135927387f3cf40b  /home/kiko/saas-products/kodeebo/production/session-state/cache/backend-track/part-2/jars/HikariCP-7.1.0/HikariCP-7.1.0.jar
+slf4j-api-2.1.0-alpha1.jar: 70922 bytes
+9ab7ffa646202b499d05995a3ec82f31bccb7a50345c1514d8cb42ec8ccea353  /home/kiko/saas-products/kodeebo/production/session-state/cache/backend-track/part-2/jars/slf4j-api-2.1.0-alpha1/slf4j-api-2.1.0-alpha1.jar
+### jars total: 1.5M
+### done 2026-10-18T20:39:02Z

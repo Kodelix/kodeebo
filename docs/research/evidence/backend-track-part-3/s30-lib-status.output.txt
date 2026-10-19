@@ -1,0 +1,32 @@
+date_utc: 2026-10-18T20:33:57Z
+== GitHub repo metadata (archived, pushed_at, licence) ==
+{"repo":"exaring/otelpgx","archived":false,"pushed_at":"2026-10-08T09:33:42Z","license":"Apache-2.0"}
+{"repo":"XSAM/otelsql","archived":false,"pushed_at":"2026-10-16T16:07:35Z","license":"Apache-2.0"}
+{"repo":"mozilla-services/pkcs7","archived":false,"pushed_at":"2026-07-21T20:21:43Z","license":"MIT"}
+{"repo":"smallstep/pkcs7","archived":false,"pushed_at":"2026-07-29T13:00:51Z","license":"MIT"}
+{"repo":"hhrutter/pkcs7","archived":true,"pushed_at":"2026-07-28T14:40:33Z","license":"MIT"}
+{"repo":"unidoc/pkcs7","archived":false,"pushed_at":"2026-10-14T05:44:00Z","license":"MIT"}
+{"repo":"OpenICP-BR/libICP","archived":false,"pushed_at":"2018-09-24T14:51:54Z","license":"AGPL-3.0"}
+{"repo":"bcgit/bc-java","archived":false,"pushed_at":"2026-10-07T13:13:53Z","license":"MIT"}
+{"repo":"PeculiarVentures/PKI.js","archived":false,"pushed_at":"2026-10-18T11:37:33Z","license":"NOASSERTION"}
+{"repo":"digitalbazaar/forge","archived":false,"pushed_at":"2026-09-25T01:51:38Z","license":"NOASSERTION"}
+== Go proxy latest ==
+github.com/exaring/otelpgx {"Version":"v0.13.0","Time":"2026-10-08T09:33:03Z"}
+github.com/XSAM/otelsql no-answer
+github.com/smallstep/pkcs7 {"Version":"v0.2.3","Time":"2026-07-29T13:00:13Z"}
+github.com/hhrutter/pkcs7 {"Version":"v0.2.3","Time":"2026-07-28T14:39:17Z"}
+github.com/OpenICP-BR/libICP no-answer
+== Maven Central latest (search API) ==
+org.bouncycastle:bcpkix-jdk18on org.bouncycastle:bcprov-jdk18on {"latestVersion":"1.80","timestamp":1736884833465}
+eu.europa.ec.joinup.sd-dss:dss-cades == npm latest ==
+pkijs {"v":"3.4.1","license":"BSD-3-Clause"}
+asn1js {"v":"3.1.0","license":"BSD-3-Clause"}
+node-forge {"v":"1.4.0","license":"(BSD-3-Clause OR GPL-2.0)"}
+== OSV querybatch (advisory count per pinned package; 0 = none returned) ==
+{"q":"go otel 1.47.0","n":0}
+{"q":"otelpgx (all versions)","ids":[]}
+{"q":"bcpkix 1.86","ids":[]}
+{"q":"pkijs (all versions)","ids":[]}
+{"q":"node-forge (all versions)","n":16}
+{"q":"smallstep/pkcs7 (all versions)","ids":[]}
+{"q":"go.mozilla.org/pkcs7 (all versions)","ids":[]}

@@ -1,0 +1,26 @@
+# s43-run 2026-10-18T19:58:10Z
+go version go1.27.2 linux/amd64
+openjdk version "21.0.12.1" 2026-08-18
+v24.21.0
+gcc (GCC) 16.2.1 20260810
+Linux 7.2.9-2-cachyos
+cases=5007 float_shortcut_disagreements_with_integer=137
+5007 docs/research/evidence/backend-track-part-4/s43-data/vectors.jsonl
+## build
+wasm build ok
+c-shared build ok
+total 8376
+-rwxr-xr-x 1 kiko kiko 4490210 Oct 18 22:58 bill.wasm
+-rw-r--r-- 1 kiko kiko    2010 Oct 18 22:58 libbill.h
+-rw-r--r-- 1 kiko kiko 4078616 Oct 18 22:58 libbill.so
+## run: Node + Go WASM
+node v24.21.0 wasm_load_ms=21.702595 calls_ms=92.179455 n=5007
+## run: JVM FFM + Go c-shared
+Note: docs/research/evidence/backend-track-part-4/s43-src/Harness.java uses preview features of Java SE 21.
+Note: Recompile with -Xlint:preview for details.
+java 21.0.12.1 calls_ms=29.866805 n=5007
+wasm lines=5007 sha256=387a9692c2fdf43d
+python reference == wasm: identical
+jvm lines=5007 sha256=387a9692c2fdf43d
+python reference == jvm: identical
+python lines=5007 sha256=387a9692c2fdf43d

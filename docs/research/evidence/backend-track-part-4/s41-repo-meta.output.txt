@@ -1,0 +1,44 @@
+# s41-repo-meta 2026-10-18T19:55:44Z
+go-chi/chi	MIT archived=false pushed=2026-10-18T13:50:22Z stars=22963
+labstack/echo	MIT archived=false pushed=2026-10-12T15:06:45Z stars=32774
+danielgtaylor/huma	MIT archived=false pushed=2026-10-15T13:07:08Z stars=4466
+oapi-codegen/oapi-codegen	Apache-2.0 archived=false pushed=2026-10-16T12:25:56Z stars=8627
+ogen-go/ogen	Apache-2.0 archived=false pushed=2026-10-16T07:04:25Z stars=2146
+getkin/kin-openapi	MIT archived=false pushed=2026-10-18T19:14:18Z stars=3305
+nicksnyder/go-i18n	MIT archived=false pushed=2026-10-01T06:06:55Z stars=3548
+alexedwards/scs	MIT archived=false pushed=2025-11-20T02:36:46Z stars=2632
+pquerna/otp	Apache-2.0 archived=false pushed=2025-08-07T16:15:45Z stars=2964
+minio/minio-go	Apache-2.0 archived=false pushed=2026-10-12T23:47:57Z stars=3007
+aws/aws-sdk-go-v2	Apache-2.0 archived=false pushed=2026-10-14T23:08:06Z stars=3668
+firebase/firebase-admin-go	Apache-2.0 archived=false pushed=2026-10-14T22:31:38Z stars=1292
+SherClockHolmes/webpush-go	MIT archived=false pushed=2026-04-22T05:22:27Z stars=455
+wneessen/go-mail	MIT archived=false pushed=2026-10-13T13:44:24Z stars=1499
+go-playground/validator	MIT archived=false pushed=2026-10-14T19:40:15Z stars=20201
+testcontainers/testcontainers-go	MIT archived=false pushed=2026-10-18T03:03:34Z stars=5015
+signintech/gopdf	MIT archived=false pushed=2026-10-13T02:00:46Z stars=2938
+johnfercher/maroto	MIT archived=false pushed=2026-10-06T13:36:42Z stars=2770
+phpdave11/gofpdf	MIT archived=false pushed=2026-04-16T00:25:20Z stars=272
+fe3dback/go-arch-lint	MIT archived=false pushed=2026-09-07T18:21:58Z stars=596
+arch-go/arch-go	MIT archived=false pushed=2026-10-15T15:11:21Z stars=276
+alexedwards/argon2id	MIT archived=false pushed=2025-10-28T18:07:42Z stars=713
+matthewhartstonge/argon2	Apache-2.0 archived=false pushed=2026-10-15T23:12:38Z stars=151
+bcgit/bc-java	MIT archived=false pushed=2026-10-07T13:13:53Z stars=2703
+phxql/argon2-jvm	LGPL-3.0 archived=false pushed=2025-11-24T20:35:36Z stars=370
+Password4j/password4j	Apache-2.0 archived=false pushed=2026-04-16T13:40:56Z stars=435
+samdjstevens/java-totp	MIT archived=false pushed=2024-07-30T15:46:23Z stars=554
+eatthepath/java-otp	{"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/repos#get-a-repository","status":"404"}gh: Not Found (HTTP 404)
+minio/minio-java	Apache-2.0 archived=false pushed=2026-09-27T05:54:46Z stars=1311
+firebase/firebase-admin-java	Apache-2.0 archived=false pushed=2026-10-16T22:52:18Z stars=620
+web-push-libs/webpush-java	MIT archived=false pushed=2026-10-07T17:43:24Z stars=357
+simple-java-mail/simple-java-mail	{"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/repos#get-a-repository","status":"404"}gh: Not Found (HTTP 404)
+unicode-org/icu	NOASSERTION archived=false pushed=2026-10-18T15:46:53Z stars=3616
+testcontainers/testcontainers-java	MIT archived=false pushed=2026-10-18T19:53:57Z stars=8754
+konform-kt/konform	MIT archived=false pushed=2026-10-14T22:36:16Z stars=822
+LemonAppDev/konsist	Apache-2.0 archived=false pushed=2026-10-15T11:26:24Z stars=1744
+TNG/ArchUnit	Apache-2.0 archived=false pushed=2026-10-16T15:20:56Z stars=3865
+LibrePDF/OpenPDF	NOASSERTION archived=false pushed=2026-10-12T09:06:56Z stars=4378
+apache/pdfbox	Apache-2.0 archived=false pushed=2026-10-18T14:05:38Z stars=3130
+itext/itext-java	NOASSERTION archived=false pushed=2026-10-16T12:19:26Z stars=2260
+awslabs/aws-sdk-kotlin	Apache-2.0 archived=false pushed=2026-10-16T07:16:57Z stars=506
+OpenAPITools/openapi-generator	Apache-2.0 archived=false pushed=2026-10-18T13:23:08Z stars=26806
+ktorio/ktor	Apache-2.0 archived=false pushed=2026-10-16T15:55:55Z stars=14548

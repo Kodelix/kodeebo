@@ -1,0 +1,7 @@
+host: 16 cpus, go version go1.27.1-X:nodwarf5 linux/amd64
+6914 ms rc=0 : go mod download -C prototypes/local-first-sync-spike/sut/server
+4915 ms rc=0 : go build -C prototypes/local-first-sync-spike/sut/server -o docs/research/evidence/backend-track-part-5/go-timing/scratch-run2/server-bin
+84 ms rc=0 : go build -C prototypes/local-first-sync-spike/sut/server -o docs/research/evidence/backend-track-part-5/go-timing/scratch-run2/server-bin
+943 ms rc=0 : go vet -C prototypes/local-first-sync-spike/sut/server ./...
+85 ms rc=0 : go vet -C prototypes/local-first-sync-spike/sut/server ./...
+binary size: 16640540 bytes

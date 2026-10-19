@@ -1,0 +1,40 @@
+# s42-osv 2026-10-18T19:56:33Z
+Go github.com/jackc/pgx/v5 5.9.0	GHSA-j88v-2chj-qfwx(2026-09-10),GO-2026-5004(2026-06-25)
+Go github.com/go-chi/chi/v5 5.5.0	none
+Go github.com/labstack/echo/v4 4.16.0	none
+Go github.com/labstack/echo/v5 5.4.0	none
+Go github.com/danielgtaylor/huma/v2 2.39.1	none
+Go github.com/oapi-codegen/oapi-codegen/v2 2.8.0	none
+Go github.com/ogen-go/ogen 1.24.0	none
+Go github.com/getkin/kin-openapi 0.151.0	none
+Go golang.org/x/crypto 0.58.0	GO-2026-5932(2026-07-10)
+Go golang.org/x/text 0.43.0	none
+Go github.com/alexedwards/scs/v2 2.9.0	none
+Go github.com/pquerna/otp 1.5.0	none
+Go github.com/minio/minio-go/v7 7.4.1	none
+Go github.com/aws/aws-sdk-go-v2/service/s3 1.114.3	none
+Go firebase.google.com/go/v4 4.22.0	none
+Go github.com/wneessen/go-mail 0.8.1	none
+Go github.com/go-playground/validator/v10 10.30.5	none
+Go github.com/testcontainers/testcontainers-go 0.44.0	none
+Go github.com/signintech/gopdf 0.38.2	none
+Go github.com/johnfercher/maroto/v2 2.4.3	none
+Maven io.ktor:ktor-server-core 3.6.0	none
+Maven io.ktor:ktor-server-netty 3.6.0	none
+Maven org.bouncycastle:bcprov-jdk18on 1.86	none
+Maven de.mkammerer:argon2-jvm 2.12	none
+Maven com.password4j:password4j 1.8.4	none
+Maven software.amazon.awssdk:s3 2.56.0	none
+Maven io.minio:minio 9.0.3	none
+Maven com.google.firebase:firebase-admin 9.11.0	none
+Maven nl.martijndwars:web-push 5.1.2	none
+Maven org.simplejavamail:simple-java-mail 9.3.6	none
+Maven com.ibm.icu:icu4j 78.3	none
+Maven org.testcontainers:testcontainers 2.0.5	none
+Maven org.apache.pdfbox:pdfbox 3.0.8	none
+Maven com.github.librepdf:openpdf 3.0.5	none
+Maven com.itextpdf:itext-core 9.8.0	none
+Maven org.openapitools:openapi-generator 7.26.0	none
+## proxy retry for webpush-go with Go proxy case-encoding (upper-case letters escaped as !lower); first run used the raw path and got 404 = wrong test, see s40-versions.output.txt
+{"Version":"v1.4.0","Time":"2025-01-02T22:52:52Z","Origin":{"VCS":"git","URL":"https://github.com/SherClockHolmes/webpush-go","Hash":"f5c3e9f7b642a8dd66cb844050
+

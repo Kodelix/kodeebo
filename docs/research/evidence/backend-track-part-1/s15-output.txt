@@ -1,0 +1,86 @@
+date=2026-10-18T20:18:54Z
+temurin-jre base: Ubuntu 26.04.1 LTS
+=== (1) AppCDS: -XX:+AutoCreateSharedArchive -XX:SharedArchiveFile on a bind-mounted dir; first run creates, later runs use ===
+Unable to find image 'cds_run1_creates_archive:latest' locally
+docker: Error response from daemon: pull access denied for cds_run1_creates_archive, repository does not exist or may require 'docker login'
+
+Run 'docker run --help' for more information
+error: no such object: kprobe-run
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+Error response from daemon: No such container: kprobe-run
+cds_run1_creates_archive wall_ms_to_first_200=33897 VmRSS_kB= VmHWM_kB= threads= cgroup_mem=
+Error response from daemon: No such container: kprobe-run
+drwxrwxrwx 1 kiko kiko  0 Oct 18 23:18 .
+drwxr-xr-x 1 kiko kiko 10 Oct 18 23:18 ..
+Unable to find image 'cds_run2_uses_archive:latest' locally
+docker: Error response from daemon: pull access denied for cds_run2_uses_archive, repository does not exist or may require 'docker login'
+
+Run 'docker run --help' for more information
+error: no such object: kprobe-run
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+Error response from daemon: No such container: kprobe-run
+cds_run2_uses_archive wall_ms_to_first_200=35366 VmRSS_kB= VmHWM_kB= threads= cgroup_mem=
+Error response from daemon: No such container: kprobe-run
+Unable to find image 'cds_run3_uses_archive:latest' locally
+docker: Error response from daemon: pull access denied for cds_run3_uses_archive, repository does not exist or may require 'docker login'
+
+Run 'docker run --help' for more information
+error: no such object: kprobe-run
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+Error response from daemon: No such container: kprobe-run
+cds_run3_uses_archive wall_ms_to_first_200=34534 VmRSS_kB= VmHWM_kB= threads= cgroup_mem=
+Error response from daemon: No such container: kprobe-run
+Unable to find image 'no_cds_baseline:latest' locally
+docker: Error response from daemon: pull access denied for no_cds_baseline, repository does not exist or may require 'docker login'
+
+Run 'docker run --help' for more information
+error: no such object: kprobe-run
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+Error response from daemon: No such container: kprobe-run
+no_cds_baseline wall_ms_to_first_200=34034 VmRSS_kB= VmHWM_kB= threads= cgroup_mem=
+Error response from daemon: No such container: kprobe-run
+Unable to find image 'no_cds_baseline_again:latest' locally
+docker: Error response from daemon: pull access denied for no_cds_baseline_again, repository does not exist or may require 'docker login'
+
+Run 'docker run --help' for more information
+error: no such object: kprobe-run
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+awk: fatal: cannot open file `/proc//status' for reading: No such file or directory
+Error response from daemon: No such container: kprobe-run
+no_cds_baseline_again wall_ms_to_first_200=33468 VmRSS_kB= VmHWM_kB= threads= cgroup_mem=
+Error response from daemon: No such container: kprobe-run
+=== (2) jlink runtime image on ubuntu:24.04 (modules from jdeps) ===
+#11 [jlink 3/3] RUN MODS=$(jdeps --print-module-deps --ignore-missing-deps --multi-release 21 --class-path '/app/lib/*' /app/lib/probe-ktor.jar)  && echo "jdeps modules: $MODS"  && jlink --add-modules "$MODS,jdk.unsupported,java.management,jdk.management" --strip-debug --no-man-pages --no-header-files --compress zip-6 --output /jre
+#11 1.768 jdeps modules: java.base,java.desktop,java.instrument,java.logging,java.management,java.naming,jdk.jfr,jdk.unsupported
+Error response from daemon: No such image: ubuntu:24.04
+jlink_image_size_bytes=280013716 temurin_jre_image_size_bytes=517914045 ubuntu_2404_bytes=
+jlink wall_ms_to_first_200=1131 VmRSS_kB=93140 VmHWM_kB=93140 threads=19 cgroup_mem=65.35MiB / 512MiB
+=== S16: distZip reproducibility with -Prepro, both dirs, keep both zips ===
+zip_a sha256=e6a2b22cf19abb5d bytes=30020936
+zip_b sha256=ad755a523f855fa4 bytes=30020936
+extracted content diff (files whose bytes differ):
+Files /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s15/z/xa/probe-ktor/bin/probe-ktor and /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s15/z/xb/probe-ktor/bin/probe-ktor differ
+Files /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s15/z/xa/probe-ktor/bin/probe-ktor.bat and /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s15/z/xb/probe-ktor/bin/probe-ktor.bat differ
+entry list diff:
+39a40,42
+> probe-ktor/lib/annotations-23.0.0.jar
+> probe-ktor/lib/slf4j-api-2.0.19.jar
+> probe-ktor/lib/config-1.4.9.jar
+41,42d43
+entry timestamps (a / b, first 3):
+drwxr-xr-x  2.0 unx        0 b- defN 19800201.000000 probe-ktor/
+drwxr-xr-x  2.0 unx        0 b- defN 19800201.000000 probe-ktor/lib/
+-rw-r--r--  2.0 unx    22656 b- defN 19800201.000000 probe-ktor/lib/probe-ktor.jar
+drwxr-xr-x  2.0 unx        0 b- defN 19800201.000000 probe-ktor/
+drwxr-xr-x  2.0 unx        0 b- defN 19800201.000000 probe-ktor/lib/
+-rw-r--r--  2.0 unx    22656 b- defN 19800201.000000 probe-ktor/lib/probe-ktor.jar
+done

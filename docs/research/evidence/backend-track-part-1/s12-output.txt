@@ -1,0 +1,48 @@
+date=2026-10-18T20:05:24Z docker=Docker version 29.9.1, build dfc520dcc2 host_cpus=16
+base_image=eclipse-temurin:21-jre digest=eclipse-temurin@sha256:227118764cccd3c3294617061aaa93a08309c63a395eefa83e6b35032992ea99 size_bytes=455101007
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)
+ktor_image_size_bytes=517914045 go_image_size_bytes=9488646
+--- image=kprobe-go case=go_512m_2cpu args='--memory=512m --cpus=2' wall_ms_from_before_docker_run_to_first_200=365 (poll loop ms=13)
+idle_5s:   VmRSS_kB=9396 VmHWM_kB=9396 threads=4 cgroup_mem=11.11MiB / 512MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":8093696,"heap_inuse":688128,"sys":12278024,"num_gc":0}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":20,"requests":654622,"errors":0,"rps":32731,"p50_ms":0.85,"p95_ms":2.20,"p99_ms":2.99}
+after_load: VmRSS_kB=15016 VmHWM_kB=15284 threads=5 cgroup_mem=14.29MiB / 512MiB
+idle_15s_after_load: VmRSS_kB=15016 VmHWM_kB=15284 threads=5 cgroup_mem=13.95MiB / 512MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":12058624,"heap_inuse":3440640,"sys":17213720,"num_gc":2367}
+--- image=kprobe-ktor case=ktor_1g_2cpu_defaults args='--memory=1g --cpus=2' wall_ms_from_before_docker_run_to_first_200=964 (poll loop ms=720)
+idle_5s:   VmRSS_kB=88344 VmHWM_kB=89124 threads=19 cgroup_mem=87.7MiB / 1GiB
+info: {"procs":2,"max_heap":259522560,"total_heap":16252928,"free_heap":6638152,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":20,"requests":469409,"errors":0,"rps":23470,"p50_ms":0.71,"p95_ms":2.52,"p99_ms":24.61}
+after_load: VmRSS_kB=129204 VmHWM_kB=133488 threads=20 cgroup_mem=127.9MiB / 1GiB
+idle_15s_after_load: VmRSS_kB=129068 VmHWM_kB=133488 threads=20 cgroup_mem=115.5MiB / 1GiB
+info: {"procs":2,"max_heap":259522560,"total_heap":16252928,"free_heap":6099328,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+--- image=kprobe-ktor case=ktor_512m_2cpu_defaults args='--memory=512m --cpus=2' wall_ms_from_before_docker_run_to_first_200=944 (poll loop ms=716)
+idle_5s:   VmRSS_kB=89272 VmHWM_kB=89272 threads=19 cgroup_mem=66.81MiB / 512MiB
+info: {"procs":2,"max_heap":129761280,"total_heap":14180352,"free_heap":3305024,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":20,"requests":435655,"errors":0,"rps":21783,"p50_ms":0.75,"p95_ms":2.93,"p99_ms":22.40}
+after_load: VmRSS_kB=130864 VmHWM_kB=134204 threads=20 cgroup_mem=107.8MiB / 512MiB
+idle_15s_after_load: VmRSS_kB=113396 VmHWM_kB=134204 threads=20 cgroup_mem=90.25MiB / 512MiB
+info: {"procs":2,"max_heap":129761280,"total_heap":14180352,"free_heap":1405360,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+--- image=kprobe-ktor case=ktor_256m_1cpu_defaults args='--memory=256m --cpus=1' wall_ms_from_before_docker_run_to_first_200=1560 (poll loop ms=1199)
+idle_5s:   VmRSS_kB=89868 VmHWM_kB=89868 threads=19 cgroup_mem=104.2MiB / 256MiB
+info: {"procs":1,"max_heap":127729664,"total_heap":14180352,"free_heap":3448328,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":20,"requests":195581,"errors":0,"rps":9779,"p50_ms":1.17,"p95_ms":4.97,"p99_ms":64.94}
+after_load: VmRSS_kB=124896 VmHWM_kB=127092 threads=18 cgroup_mem=101.8MiB / 256MiB
+idle_15s_after_load: VmRSS_kB=124912 VmHWM_kB=127092 threads=18 cgroup_mem=101.5MiB / 256MiB
+info: {"procs":1,"max_heap":127729664,"total_heap":14180352,"free_heap":3248128,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+--- image=kprobe-ktor case=ktor_512m_2cpu_serialgc_xmx192m args='--memory=512m --cpus=2 -e JAVA_OPTS=-XX:+UseSerialGC -Xmx192m -XX:MaxMetaspaceSize=96m -XX:ReservedCodeCacheSize=48m -Xss512k' wall_ms_from_before_docker_run_to_first_200=850 (poll loop ms=600)
+idle_5s:   VmRSS_kB=89968 VmHWM_kB=89968 threads=19 cgroup_mem=67.52MiB / 512MiB
+info: {"procs":2,"max_heap":194641920,"total_heap":14180352,"free_heap":2525832,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":20,"requests":491881,"errors":0,"rps":24594,"p50_ms":0.59,"p95_ms":2.42,"p99_ms":22.83}
+after_load: VmRSS_kB=136764 VmHWM_kB=136764 threads=20 cgroup_mem=113.5MiB / 512MiB
+idle_15s_after_load: VmRSS_kB=136772 VmHWM_kB=136772 threads=20 cgroup_mem=113.3MiB / 512MiB
+info: {"procs":2,"max_heap":194641920,"total_heap":23461888,"free_heap":9343288,"java":"21.0.12.1","gc":"Copy,MarkSweepCompact"}
+--- image=kprobe-ktor case=ktor_unlimited_defaults args='' wall_ms_from_before_docker_run_to_first_200=794 (poll loop ms=544)
+idle_5s:   VmRSS_kB=137512 VmHWM_kB=138296 threads=33 cgroup_mem=114MiB / 15.32GiB
+info: {"procs":16,"max_heap":4112515072,"total_heap":260046848,"free_heap":243772776,"java":"21.0.12.1","gc":"G1 Young Generation,G1 Concurrent GC,G1 Old Generation"}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":20,"requests":1137795,"errors":0,"rps":56890,"p50_ms":0.46,"p95_ms":1.19,"p99_ms":2.14}
+after_load: VmRSS_kB=602588 VmHWM_kB=626528 threads=58 cgroup_mem=569.8MiB / 15.32GiB
+idle_15s_after_load: VmRSS_kB=587996 VmHWM_kB=626528 threads=55 cgroup_mem=564MiB / 15.32GiB
+info: {"procs":16,"max_heap":4112515072,"total_heap":463470592,"free_heap":386628376,"java":"21.0.12.1","gc":"G1 Young Generation,G1 Concurrent GC,G1 Old Generation"}

@@ -1,0 +1,106 @@
+# s40-versions 2026-10-18T19:54:51Z
+## Go modules (proxy.golang.org @latest: Version, Time)
+github.com/go-chi/chi/v5	{"Version":"v5.5.0","Time":"2026-10-14T13:20:04Z","Origin":{"VCS":"git","URL":"https://github.com/go-chi/chi","Hash":"3a33ba578e0dd93444e0ff386cc26e665d92e31e","Ref":"refs/tags/v5.5.0"}}
+github.com/labstack/echo/v4	{"Version":"v4.16.0","Time":"2026-09-27T22:45:34Z","Origin":{"VCS":"git","URL":"https://github.com/labstack/echo","Hash":"e75c6c6d0c99602336fcf2c6bf6c8475ee160683","Ref":"refs/tags/v4.16.0"}}
+github.com/labstack/echo/v5	{"Version":"v5.4.0","Time":"2026-09-27T22:25:02Z","Origin":{"VCS":"git","URL":"https://github.com/labstack/echo","Hash":"fc410094b2f3415cf2bf5204082137b205bfd5af","Ref":"refs/tags/v5.4.0"}}
+github.com/danielgtaylor/huma/v2	{"Version":"v2.39.1","Time":"2026-07-29T13:42:03Z","Origin":{"VCS":"git","URL":"https://github.com/danielgtaylor/huma","Hash":"198225eaac0c8be4aaa1962d5a9a075d3a6fd062","Ref":"refs/tags/v2.39.1"}}
+github.com/oapi-codegen/oapi-codegen/v2	{"Version":"v2.8.0","Time":"2026-07-17T14:01:16Z","Origin":{"VCS":"git","URL":"https://github.com/oapi-codegen/oapi-codegen","Hash":"de2d8b2b0afb287198554eb305bb0d2687d26a85","Ref":"refs/tags/v2.8.0"}}
+github.com/ogen-go/ogen	{"Version":"v1.24.0","Time":"2026-08-07T15:40:01Z","Origin":{"VCS":"git","URL":"https://github.com/ogen-go/ogen","Hash":"0d865e7e568f1b36e5e6788e39aa5cd14e02999f","Ref":"refs/tags/v1.24.0"}}
+github.com/getkin/kin-openapi	{"Version":"v0.151.0","Time":"2026-10-15T10:00:58Z","Origin":{"VCS":"git","URL":"https://github.com/getkin/kin-openapi","Hash":"a07ec19d37147af7933ba13196504276f9227074","Ref":"refs/tags/v0.151.0"}}
+golang.org/x/crypto	{"Version":"v0.58.0","Time":"2026-10-09T16:24:17Z","Origin":{"VCS":"git","URL":"https://go.googlesource.com/crypto","Hash":"8fdf07b3114278fb3b78c1cf1814e08bd851eb4c","Ref":"refs/tags/v0.58.0"}}
+golang.org/x/text	{"Version":"v0.43.0","Time":"2026-10-09T15:18:32Z","Origin":{"VCS":"git","URL":"https://go.googlesource.com/text","Hash":"ac40b0f06c159afb5bfca4d1860f8b4b60dbc160","Ref":"refs/tags/v0.43.0"}}
+github.com/nicksnyder/go-i18n/v2	{"Version":"v2.6.1","Time":"2026-01-01T01:21:16Z","Origin":{"VCS":"git","URL":"https://github.com/nicksnyder/go-i18n","Hash":"4d19ec6ddbb40b67e6a3cff1055b1ef004f1d48e","Ref":"refs/tags/v2.6.1"}}
+github.com/alexedwards/scs/v2	{"Version":"v2.9.0","Time":"2025-04-17T08:29:27Z","Origin":{"VCS":"git","URL":"https://github.com/alexedwards/scs","Hash":"ab20b3feb5e9981c1f79cee8a97a289810134163","Ref":"refs/tags/v2.9.0"}}
+github.com/pquerna/otp	{"Version":"v1.5.0","Time":"2024-12-31T23:15:27Z","Origin":{"VCS":"git","URL":"https://github.com/pquerna/otp","Hash":"5971b1ef1d6652fec2caed37f11e5cacd9249f78","Ref":"refs/tags/v1.5.0"}}
+github.com/aws/aws-sdk-go-v2/service/s3	{"Version":"v1.114.3","Time":"2026-10-09T22:59:52Z","Origin":{"VCS":"git","URL":"https://github.com/aws/aws-sdk-go-v2","Subdir":"service/s3","Hash":"c8f4a4457aa933bd6c8ce60bc2ca2a0599b77478","Ref":"refs/tags/service/s3/v1.114.3"}}
+github.com/minio/minio-go/v7	{"Version":"v7.4.1","Time":"2026-10-12T23:47:54Z","Origin":{"VCS":"git","URL":"https://github.com/minio/minio-go","Hash":"1a663bb8410192408632982a36bd36d72e28d5d1","Ref":"refs/tags/v7.4.1"}}
+firebase.google.com/go/v4	{"Version":"v4.22.0","Time":"2026-09-23T19:59:40Z","Origin":{"VCS":"git","URL":"https://github.com/firebase/firebase-admin-go","Hash":"66a72c371b4dbc592317ab7e7f99ce00d76c62ae","Ref":"refs/tags/v4.22.0"}}
+github.com/SherClockHolmes/webpush-go	curl: (22) The requested URL returned error: 404
+
+github.com/wneessen/go-mail	{"Version":"v0.8.1","Time":"2026-07-09T15:42:53Z","Origin":{"VCS":"git","URL":"https://github.com/wneessen/go-mail","Hash":"2ac36f08567b2a215ebaffdfebcd8f82f165f256","Ref":"refs/tags/v0.8.1"}}
+github.com/go-playground/validator/v10	{"Version":"v10.30.5","Time":"2026-09-20T18:18:55Z","Origin":{"VCS":"git","URL":"https://github.com/go-playground/validator","Hash":"6a9b66661aec1c9f9172781187b6638b7a3f7d31","Ref":"refs/tags/v10.30.5"}}
+github.com/testcontainers/testcontainers-go	{"Version":"v0.44.0","Time":"2026-08-07T10:52:31Z","Origin":{"VCS":"git","URL":"https://github.com/testcontainers/testcontainers-go","Hash":"007bd6b1407fe3f2ab9487479e8bd841e16a1c97","Ref":"refs/tags/v0.44.0"}}
+github.com/signintech/gopdf	{"Version":"v0.38.2","Time":"2026-10-13T01:59:50Z","Origin":{"VCS":"git","URL":"https://github.com/signintech/gopdf","Hash":"a7b7299a69cd05bd28bbc979c5298c8eb5fc6e56","Ref":"refs/tags/v0.38.2"}}
+github.com/johnfercher/maroto/v2	{"Version":"v2.4.3","Time":"2026-10-04T01:04:17Z","Origin":{"VCS":"git","URL":"https://github.com/johnfercher/maroto","Hash":"4393fe1e9e7870f9bc53532b235e15ede34a0dfa","Ref":"refs/tags/v2.4.3"}}
+github.com/phpdave11/gofpdf	{"Version":"v1.4.3","Time":"2025-05-01T18:39:20Z","Origin":{"VCS":"git","URL":"https://github.com/phpdave11/gofpdf","Hash":"cb47a268fb6d3af7c24bb522c912b80a43a3d09f","Ref":"refs/tags/v1.4.3"}}
+github.com/jung-kurt/gofpdf	{"Version":"v1.16.2","Time":"2019-11-19T19:55:53Z"}
+github.com/fe3dback/go-arch-lint	{"Version":"v1.19.0","Time":"2026-09-07T18:17:50Z","Origin":{"VCS":"git","URL":"https://github.com/fe3dback/go-arch-lint","Hash":"bf473afb033c7c3eb7aba68dc399cf919287131e","Ref":"refs/tags/v1.19.0"}}
+github.com/arch-go/arch-go	{"Version":"v1.7.0","Time":"2025-02-25T15:28:23Z","Origin":{"VCS":"git","URL":"https://github.com/arch-go/arch-go","Hash":"004817e149f6122b3704e2a4e3b2ac7090f1f5a5","Ref":"refs/tags/v1.7.0"}}
+github.com/matthewhartstonge/argon2	{"Version":"v1.6.4","Time":"2026-10-15T21:47:53Z","Origin":{"VCS":"git","URL":"https://github.com/matthewhartstonge/argon2","Hash":"9f9a0097e479cb3019ddbe3601cd30fa05748a07","Ref":"refs/tags/v1.6.4"}}
+github.com/alexedwards/argon2id	{"Version":"v1.0.0","Time":"2023-10-21T16:59:11Z","Origin":{"VCS":"git","URL":"https://github.com/alexedwards/argon2id","Ref":"refs/tags/v1.0.0","Hash":"a70dd9d8745f3527ea06c007f9c3a4e0a3a91d00"}}
+## Maven Central (maven-metadata.xml: latest/release/lastUpdated)
+io.ktor/ktor-server-core	latest=3.6.0 release=3.6.0 lastUpdated=20260916113545
+
+io.ktor/ktor-server-sessions	latest=3.6.0 release=3.6.0 lastUpdated=20260916113548
+
+io.ktor/ktor-server-auth	latest=3.6.0 release=3.6.0 lastUpdated=20260916113539
+
+io.ktor/ktor-server-status-pages	latest=3.6.0 release=3.6.0 lastUpdated=20260916113547
+
+io.ktor/ktor-server-request-validation	latest=3.6.0 release=3.6.0 lastUpdated=20260916113554
+
+io.ktor/ktor-server-openapi	latest=3.6.0 release=3.6.0 lastUpdated=20260916113546
+
+io.ktor/ktor-server-routing-openapi	latest=3.6.0 release=3.6.0 lastUpdated=20260916113549
+
+org.openapitools/openapi-generator	latest=7.26.0 release=7.26.0 lastUpdated=20261006102748
+
+org.bouncycastle/bcprov-jdk18on	latest=1.86 release=1.86 lastUpdated=20260911045244
+
+de.mkammerer/argon2-jvm	latest=2.12 release=2.12 lastUpdated=20250304133041
+
+com.password4j/password4j	latest=1.8.4 release=1.8.4 lastUpdated=20250630212133
+
+org.springframework.security/spring-security-crypto	latest=7.2.0-M2 release=7.2.0-M2 lastUpdated=20260924064317
+
+dev.samstevens.totp/totp	latest=1.7.1 release=1.7.1 lastUpdated=20201105213747
+
+com.eatthepath/java-otp	latest=1.0.0 release=1.0.0 lastUpdated=20260818153736
+
+software.amazon.awssdk/s3	latest=2.56.0 release=2.56.0 lastUpdated=20261014205229
+
+aws.sdk.kotlin/s3	latest=1.9.20 release=1.9.20 lastUpdated=20261014193803
+
+io.minio/minio	latest=9.0.3 release=9.0.3 lastUpdated=20260612054518
+
+com.google.firebase/firebase-admin	latest=9.11.0 release=9.11.0 lastUpdated=20260924225840
+
+nl.martijndwars/web-push	latest=5.1.2 release=5.1.2 lastUpdated=20250217093423
+
+org.simplejavamail/simple-java-mail	latest=9.3.6 release=9.3.6 lastUpdated=20261017120809
+
+org.eclipse.angus/angus-mail	latest=2.1.0-M1 release=2.1.0-M1 lastUpdated=20250923081138
+
+com.ibm.icu/icu4j	latest=78.3 release=78.3 lastUpdated=20260317204313
+
+org.testcontainers/testcontainers	latest=2.0.5 release=2.0.5 lastUpdated=20260420182013
+
+org.testcontainers/postgresql	latest=1.21.4 release=1.21.4 lastUpdated=20251216003926
+
+io.konform/konform-jvm	latest=0.11.1 release=0.11.1 lastUpdated=20250331103837
+
+org.hibernate.validator/hibernate-validator	latest=9.2.0.Beta1 release=9.2.0.Beta1 lastUpdated=20261013142751
+
+com.github.librepdf/openpdf	latest=3.0.5 release=3.0.5 lastUpdated=20260522065320
+
+org.apache.pdfbox/pdfbox	latest=3.0.8 release=3.0.8 lastUpdated=20260715095645
+
+com.itextpdf/itext-core	latest=9.8.0 release=9.8.0 lastUpdated=20260930091807
+
+com.lemonappdev/konsist	latest=0.18.1 release=0.18.1 lastUpdated=20261010090732
+
+com.tngtech.archunit/archunit	latest=1.5.1 release=1.5.1 lastUpdated=20260925070754
+
+com.github.ajalt.clikt/clikt	latest=5.1.0 release=5.1.0 lastUpdated=20260116050715
+
+io.insert-koin/koin-core	latest=4.2.2 release=4.2.2 lastUpdated=20260615080541
+
+org.jetbrains.kotlinx/kotlinx-datetime	latest=0.8.0-0.6.x-compat release=0.8.0-0.6.x-compat lastUpdated=20260507142927
+
+org.jetbrains.kotlinx/kotlinx-serialization-json	latest=1.12.0-RC release=1.12.0-RC lastUpdated=20260904153434
+
+## npm (dist-tags.latest)
+openapi-typescript	7.13.0 2026-02-11T16:02:25.378Z
+openapi-fetch	0.17.0 2026-02-11T16:02:21.454Z
+@hey-api/openapi-ts	0.99.0 2026-06-22T06:38:34.730Z
+electron	44.9.0 2026-10-17T05:50:07.885Z

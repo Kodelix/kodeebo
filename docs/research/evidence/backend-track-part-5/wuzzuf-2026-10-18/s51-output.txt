@@ -1,0 +1,9 @@
+Kotlin http=200 bytes=477958 <title>{{keyword}} jobs in {{locationName}}</title>
+Golang http=200 bytes=410542 <title>{{keyword}} jobs in {{locationName}}</title>
+Go http=200 bytes=410208 <title>{{keyword}} jobs in {{locationName}}</title>
+TypeScript http=200 bytes=622201 <title>{{keyword}} jobs in {{locationName}}</title>
+Ktor http=200 bytes=374963 <title>{{keyword}} jobs in {{locationName}}</title>
+Android http=301 bytes=84 
+Java http=200 bytes=746501 <title>{{keyword}} jobs in {{locationName}}</title>
+Node-js http=200 bytes=851564 <title>{{keyword}} jobs in {{locationName}}</title>
+React http=200 bytes=799814 <title>{{keyword}} jobs in {{locationName}}</title>

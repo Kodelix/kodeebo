@@ -1,0 +1,8 @@
+date=2026-10-18T20:24:26Z
+no_cds_baseline wall_ms_to_first_200=1395 VmRSS_kB=89756 VmHWM_kB=89756 threads=19 cgroup_mem=68.19MiB / 512MiB
+no_cds_baseline_again wall_ms_to_first_200=866 VmRSS_kB=89216 VmHWM_kB=89216 threads=19 cgroup_mem=65.93MiB / 512MiB
+cds_run1_creates_archive wall_ms_to_first_200=796 VmRSS_kB=95676 VmHWM_kB=95676 threads=19 cgroup_mem=70.76MiB / 512MiB
+-r--r--r-- 1 65532 65532 21905408 Oct 18 23:24 app.jsa
+cds_run2_uses_archive wall_ms_to_first_200=452 VmRSS_kB=81164 VmHWM_kB=81164 threads=19 cgroup_mem=54.07MiB / 512MiB
+cds_run3_uses_archive wall_ms_to_first_200=433 VmRSS_kB=81032 VmHWM_kB=81032 threads=19 cgroup_mem=54.08MiB / 512MiB
+cds_plus_tiered1_serial wall_ms_to_first_200=394 VmRSS_kB=77776 VmHWM_kB=77776 threads=18 cgroup_mem=52.82MiB / 512MiB

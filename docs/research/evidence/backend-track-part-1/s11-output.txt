@@ -1,0 +1,41 @@
+date=2026-10-18T19:58:54Z java=Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir=/home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/tmp host_cpus=16
+gradle_download_ms=50610
+published_sha256=84fbba45c7f4c64abc77460e1c00f541e9f960e3c7ed2538f1ede19eacd873ae
+actual_sha256=84fbba45c7f4c64abc77460e1c00f541e9f960e3c7ed2538f1ede19eacd873ae
+Gradle 9.7.0
+Kotlin:        2.4.0
+Launcher JVM:  21.0.12.1 (Arch Linux 21.0.12.1+1)
+Daemon JVM:    /usr/lib/jvm/java-21-openjdk (no Daemon JVM specified, using current Java home)
+OS:            Linux 7.2.9-2-cachyos amd64
+=== write locks (resolves + downloads) ===
+write_locks_cold_ms=74257 exit=0
+lockfile_lines=124 lockfile_entries_unique=124
+=== write verification metadata + first build ===
+verification_metadata_plus_build_cold_ms=67278 exit=0
+verification_components=149 artifacts=257
+=== warm rebuild (clean + installDist, deps cached, no daemon) ===
+rebuild_warm_no_daemon_ms=7736
+install_lib_jars=65 install_lib_bytes=32076084 app_jar_bytes=22656
+3633922	build/install/probe-ktor/lib/kotlin-reflect-2.3.21.jar
+2749569	build/install/probe-ktor/lib/netty-codec-native-quic-4.2.17.Final-linux-x86_64.jar
+2600232	build/install/probe-ktor/lib/netty-codec-native-quic-4.2.17.Final-linux-aarch_64.jar
+2470522	build/install/probe-ktor/lib/netty-codec-native-quic-4.2.17.Final-osx-x86_64.jar
+2322840	build/install/probe-ktor/lib/netty-codec-native-quic-4.2.17.Final-osx-aarch_64.jar
+1853315	build/install/probe-ktor/lib/kotlin-stdlib-2.4.21.jar
+1577052	build/install/probe-ktor/lib/kotlinx-coroutines-core-jvm-1.11.0.jar
+1547250	build/install/probe-ktor/lib/netty-codec-native-quic-4.2.17.Final-windows-x86_64.jar
+=== Ktor 3.6.0 Gradle module metadata: JVM level and Kotlin ===
+      2           "module": "kotlin-reflect",
+      2           "module": "kotlin-stdlib",
+      2           "module": "kotlinx-coroutines-core",
+ktor-server-core-jvm first_class=io/ktor/server/application/Application$disposeAndJoin$1.class class_major=52 (52=Java8 55=11 61=17 65=21)
+ktor-server-netty-jvm first_class=io/ktor/server/netty/CIOKt.class class_major=52 (52=Java8 55=11 61=17 65=21)
+=== reproducibility: default archive settings (a vs b, different dirs) ===
+sha256sum: /home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/scratch/s11/a/build/install/probe-ktor/lib/probe-ktor.jar: No such file or directory
+default a jar= zip=e6a2b22cf19abb5d
+default b jar=8f6de5e20a7c749a zip=ad755a523f855fa4
+=== reproducibility: -Prepro (no timestamps, reproducible order) ===
+repro a jar=8f6de5e20a7c749a zip=e6a2b22cf19abb5d
+repro b jar=8f6de5e20a7c749a zip=ad755a523f855fa4
+done
+finished

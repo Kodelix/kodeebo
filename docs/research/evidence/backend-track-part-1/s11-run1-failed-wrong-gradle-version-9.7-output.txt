@@ -1,0 +1,4 @@
+date=2026-10-18T19:58:37Z java=Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir=/home/kiko/saas-products/kodeebo/docs/research/evidence/backend-track-part-1/tmp host_cpus=16
+curl: (22) The requested URL returned error: 404
+GRADLE_DOWNLOAD_FAILED
+finished

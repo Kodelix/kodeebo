@@ -1,0 +1,35 @@
+date=2026-10-18T19:54:48Z go=go version go1.27.1-X:nodwarf5 linux/amd64 docker=Docker version 29.9.1, build dfc520dcc2 host_cpus=16 host_mem_MB=15684
+go_build_cold_cache_ms=4711
+go_build_warm_cache_ms=150
+sha256_a=8f26fc782c6301c2de770cb7c57cfd76d39c841429893d2d118baea77ff91deb
+sha256_b=8f26fc782c6301c2de770cb7c57cfd76d39c841429893d2d118baea77ff91deb
+binary_bytes=6590624
+image_size_bytes=9488646
+--- case=512m_2cpu args='--memory=512m --cpus=2' startup_ms_to_first_200=7 (includes docker run overhead)
+idle_5s:   VmRSS_kB=9392 VmHWM_kB=9392 threads=4 cgroup_mem=4.797MiB / 512MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":8093696,"heap_inuse":761856,"sys":12278024,"num_gc":0}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":15,"requests":595466,"errors":0,"rps":39698,"p50_ms":0.71,"p95_ms":1.78,"p99_ms":2.29}
+after_load: VmRSS_kB=15108 VmHWM_kB=15340 threads=4 cgroup_mem=12.66MiB / 512MiB
+idle_15s_after_load: VmRSS_kB=13852 VmHWM_kB=15340 threads=4 cgroup_mem=12.05MiB / 512MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":12058624,"heap_inuse":2424832,"sys":17144072,"num_gc":2160}
+--- case=128m_1cpu args='--memory=128m --cpus=1' startup_ms_to_first_200=7 (includes docker run overhead)
+idle_5s:   VmRSS_kB=9392 VmHWM_kB=9392 threads=4 cgroup_mem=4.797MiB / 128MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":3899392,"heap_inuse":688128,"sys":8083720,"num_gc":0}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":15,"requests":173010,"errors":0,"rps":11534,"p50_ms":1.18,"p95_ms":5.66,"p99_ms":45.16}
+after_load: VmRSS_kB=15568 VmHWM_kB=15676 threads=5 cgroup_mem=13.13MiB / 128MiB
+idle_15s_after_load: VmRSS_kB=15568 VmHWM_kB=15676 threads=5 cgroup_mem=12.44MiB / 128MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":7831552,"heap_inuse":2588672,"sys":13211912,"num_gc":629}
+--- case=512m_2cpu_gomemlimit_100MiB args='--memory=512m --cpus=2 -e GOMEMLIMIT=100MiB' startup_ms_to_first_200=8 (includes docker run overhead)
+idle_5s:   VmRSS_kB=9388 VmHWM_kB=9388 threads=4 cgroup_mem=4.797MiB / 512MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":104857600,"heap_sys":3899392,"heap_inuse":540672,"sys":7821576,"num_gc":0}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":15,"requests":632894,"errors":0,"rps":42193,"p50_ms":0.67,"p95_ms":1.67,"p99_ms":2.09}
+after_load: VmRSS_kB=15504 VmHWM_kB=15504 threads=5 cgroup_mem=12.84MiB / 512MiB
+idle_15s_after_load: VmRSS_kB=15504 VmHWM_kB=15504 threads=5 cgroup_mem=12.75MiB / 512MiB
+info: {"gomaxprocs":2,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":104857600,"heap_sys":7831552,"heap_inuse":3661824,"sys":13211912,"num_gc":2282}
+--- case=unlimited args='' startup_ms_to_first_200=6 (includes docker run overhead)
+idle_5s:   VmRSS_kB=9440 VmHWM_kB=9440 threads=5 cgroup_mem=4.867MiB / 15.32GiB
+info: {"gomaxprocs":16,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":8060928,"heap_inuse":1032192,"sys":12802312,"num_gc":0}
+{"url":"http://127.0.0.1:18080/orders","clients":32,"seconds":15,"requests":591567,"errors":0,"rps":39438,"p50_ms":0.59,"p95_ms":2.12,"p99_ms":3.10}
+after_load: VmRSS_kB=17720 VmHWM_kB=19148 threads=21 cgroup_mem=20.69MiB / 15.32GiB
+idle_15s_after_load: VmRSS_kB=17720 VmHWM_kB=19148 threads=21 cgroup_mem=19.92MiB / 15.32GiB
+info: {"gomaxprocs":16,"numcpu":16,"go":"go1.27.1-X:nodwarf5","gomemlimit":9223372036854775807,"heap_sys":14090240,"heap_inuse":4923392,"sys":24598792,"num_gc":15405}

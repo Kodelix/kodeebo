@@ -1,0 +1,29 @@
+date_utc: 2026-10-18T20:35:50Z
+openjdk version "21.0.12.1" 2026-08-18
+OpenSSL 3.6.5 29 Sep 2026 (Library: OpenSSL 3.6.5 29 Sep 2026)
+total 9140
+-rw-r--r-- 1 kiko kiko 1341621 Oct 18 23:35 bcpkix-jdk18on-1.86.jar
+-rw-r--r-- 1 kiko kiko 7224011 Oct 18 23:35 bcprov-jdk18on-1.86.jar
+-rw-r--r-- 1 kiko kiko  789287 Oct 18 23:35 bcutil-jdk18on-1.86.jar
+8d8b41a4b149bdae8d331f059a578870954d1e3ff29f8269a9eb3ee19a7e4ef7  /home/kiko/saas-products/kodeebo/production/session-state/cache/backend-track/part-3/downloads/bc186/bcpkix-jdk18on-1.86.jar
+2af190b300cbb0b35e248ccf5f4a06b6072030aeb3da7a98ec73abe5b4cb371f  /home/kiko/saas-products/kodeebo/production/session-state/cache/backend-track/part-3/downloads/bc186/bcprov-jdk18on-1.86.jar
+1c268e15f785aafb1e4670d8d6e5f856f69475e96c162dadcd1ff9b350e9139f  /home/kiko/saas-products/kodeebo/production/session-state/cache/backend-track/part-3/downloads/bc186/bcutil-jdk18on-1.86.jar
+BC round-trip verify = true; digestAlg=2.16.840.1.101.3.4.2.1; encAlg=1.2.840.113549.1.1.11; signedAttrs=4; unsignedAttrs=0
+SHA-256(data)=9540b04216b1e28f024ce9384a564252357b5e504a3dac7372630a3aba30da44
+sig.der bytes=1253
+== openssl cms -cmsout -print (attributes) ==
+    digestAlgorithms:
+        digestAlgorithm: 
+        signedAttrs:
+            object: contentType (1.2.840.113549.1.9.3)
+            object: signingTime (1.2.840.113549.1.9.5)
+            object: messageDigest (1.2.840.113549.1.9.4)
+            object: id-smime-aa-signingCertificateV2 (1.2.840.113549.1.9.16.2.47)
+        signatureAlgorithm: 
+        unsignedAttrs:
+== openssl cms -verify (signature only, -noverify skips chain; self-signed throwaway cert) ==
+CMS Verification successful
+openssl verify OK (exit 0)
+== tamper check ==
+009469133A7F0000:error:1700006D:CMS routines:CMS_verify:content verify error:crypto/cms/cms_smime.c:501:
+tamper exit=0
