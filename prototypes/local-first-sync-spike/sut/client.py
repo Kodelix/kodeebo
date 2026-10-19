@@ -150,6 +150,13 @@
 #   (an NTP correction) is not reported.
 #      MUTANT also: bill_from_wall (session time from the wall clock), no_wall_move_event (the move is not recorded),
 #      app_down_gap_from_wall (an app closure measured on the wall clock: the SC-30 first draft).
+# Phase 3 (S207, old client against a newer server): PROTO (the sync protocol version) rides every batch. An
+#   upgrade_required answer applies nothing: the commands stay queued, the counter keeps selling, and sync reports
+#   upgrade_required until the app is updated. FEED_SCHEMA_MAX is the newest config feed schema this app can read; a
+#   feed with a newer schema is not applied at all (the device keeps the price list it holds) and feed_unreadable is
+#   recorded once per feed version. Schema 2 sends prices as objects {"amount": n}.
+#      MUTANT also: drop_on_refusal (queued commands deleted on upgrade_required), stop_on_upgrade_required (the
+#      counter refuses sales until updated), apply_unknown_feed (a newer feed applied as if readable).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -184,6 +191,9 @@ EDITS_ON = os.environ.get("EDITS") == "1"  # SC-28
 CLOCKED = os.environ.get("CLOCKED") == "1"  # SC-30
 ENDDAY = os.environ.get("ENDDAY") == "1"  # SC-31
 MACHINE_ID = os.environ.get("MACHINE_ID", "")  # SC-13
+PROTO = int(os.environ.get("PROTO", "0"))  # S207 (0 = not sent)
+FEED_SCHEMA_MAX = int(os.environ.get("FEED_SCHEMA_MAX", "0"))  # S207 (0 = no check)
+upgrade = {"needed": False, "unreadable_seen": set()}
 sync_flags = {"quarantined": False, "retired": False}
 TESTCLOCK = DB + ".testclock"
 TICK_S = 60  # the app's last-alive timer (spike value)
@@ -690,7 +700,8 @@ def report():
 def post(cmds):
     req = urllib.request.Request(SERVER + "/batch", method="POST",
                                  data=json.dumps({"device_id": DEVICE, "commands": cmds, **report(),
-                                                  **({"machine_id": MACHINE_ID} if MACHINE_ID else {})}).encode(),
+                                                  **({"machine_id": MACHINE_ID} if MACHINE_ID else {}),
+                                                  **({"protocol": PROTO} if PROTO else {})}).encode(),
                                  headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
         body = json.loads(r.read())  # an empty or cut body raises here: never acknowledge on the status code (P2-F1)
@@ -767,6 +778,16 @@ def sync():
             batch = max(1, batch // 2)  # too big for this link: shrink, never retry the same batch forever
         return reply({"ok": False, "op": "sync", "error": str(e)[:120], "pending": pending_count(), "batch": batch})
     batch = min(BATCH_MAX, batch + max(1, batch // 4))
+    if resp.get("upgrade_required"):  # S207: nothing was applied; keep every command queued, keep selling
+        upgrade["needed"] = True
+        if MUTANT == "drop_on_refusal":  # planted defect: the queue is thrown away
+            q("BEGIN IMMEDIATE")
+            for r in rows:
+                q("DELETE FROM outbox WHERE command_id = ?", (r[1],))
+            q("COMMIT")
+        return reply({"ok": False, "op": "sync", "error": "upgrade_required", "pending": pending_count(),
+                      "protocol_min": resp.get("protocol_min")})
+    upgrade["needed"] = False
     return finish_sync(resp)
 
 
@@ -1235,10 +1256,22 @@ def pull_config():
         with urllib.request.urlopen(f"{SERVER}/config?device={DEVICE}", timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
             cfg = json.loads(r.read())
         epoch, version, price = str(cfg["epoch"]), int(cfg["version"]), int(cfg["price"])
-        prices = json.dumps(cfg.get("prices") or {})
         take_lease(cfg.get("lease"))
     except (*NET_ERRORS, KeyError) as e:
         return reply({"ok": False, "op": "pull_config", "error": str(e)[:80]})
+    schema = int(cfg.get("feed_schema") or 1)
+    if FEED_SCHEMA_MAX and schema > FEED_SCHEMA_MAX and MUTANT != "apply_unknown_feed":
+        # S207: a feed this app cannot read is not applied at all; the price list it holds stays in force
+        if (schema, version) not in upgrade["unreadable_seen"]:
+            upgrade["unreadable_seen"].add((schema, version))
+            record_event("feed_unreadable", RuntimeError(f"config feed schema {schema} > {FEED_SCHEMA_MAX}"),
+                         schema=schema, version=version)
+            report_events()
+        return reply({"ok": False, "op": "pull_config", "error": "feed_unreadable", "schema": schema})
+    raw = cfg.get("prices") or {}
+    if schema >= 2 and MUTANT != "apply_unknown_feed":  # the schema-2 shape, read by an app that knows it
+        raw = {k: (v["amount"] if isinstance(v, dict) else v) for k, v in raw.items()}
+    prices = json.dumps(raw)
     le, lv = q("SELECT cfg_epoch, cfg_version FROM sync_state WHERE id = 1")[0]
     if MUTANT == "config_version_only":  # planted defect: version numbers only
         take = lv is None or version > lv
@@ -1288,6 +1321,9 @@ for line in sys.stdin:
             reply({"ok": False, "op": op, "error": "another_instance", "warning": "another_instance"})
         else:
             reply({"ok": False, "op": op, "store": "refused"})
+        continue
+    if MUTANT == "stop_on_upgrade_required" and upgrade["needed"] and op in ("sale", "sell_items", "start_session"):
+        reply({"ok": False, "op": op, "error": "upgrade_required"})  # planted defect: the counter stops
         continue
     if MUTANT == "block_on_quarantine" and sync_flags["quarantined"] and op in ("sale", "sell_items", "start_session"):
         reply({"ok": False, "op": op, "error": "sync_quarantined"})  # planted defect: the counter stops

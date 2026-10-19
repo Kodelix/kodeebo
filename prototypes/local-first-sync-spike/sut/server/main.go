@@ -100,6 +100,11 @@
 // POST /gap/accept is the owner accepting the gap: the missing numbers are recorded permanently as a lost range and
 // the held commands apply once. MUTANT=gap_silent never alerts; MUTANT=gap_auto_skip skips the gap without the owner;
 // MUTANT=gap_refused keeps the old behaviour (a gap is refused, nothing stored).
+//
+// S207 (old client against a newer server): a batch carries the client's protocol version. Below PROTO_MIN the
+// server applies nothing and answers upgrade_required (an empty result list, so the client keeps its queue); the
+// owner gets one "app update needed" alert per episode. The config feed carries feed_schema; schema 2 sends prices as
+// objects {"amount": n}, which a schema-1 client must not apply. MUTANT=apply_old_protocol ignores PROTO_MIN.
 package main
 
 import (
@@ -127,7 +132,8 @@ const schema = `
 DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, meta, device_epoch, archive_mark,
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
   corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs, bill_bdays,
-  day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue, gaps, held_cmds, lost_seqs;
+  day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue, gaps, held_cmds, lost_seqs,
+  protocol_refusals;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL, machine_id text,
@@ -154,7 +160,7 @@ CREATE TABLE reconcile_events (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KE
   outcome text NOT NULL, lost_from bigint, lost_to bigint, owner_alert boolean NOT NULL,
   UNIQUE (device_id, epoch, server_cursor, outcome));
 CREATE TABLE config (id int PRIMARY KEY CHECK (id = 1), version int NOT NULL, price int NOT NULL,
-  prices jsonb NOT NULL);
+  prices jsonb NOT NULL, feed_schema int NOT NULL DEFAULT 1);
 INSERT INTO config VALUES (1, 1, 6000, '{"std": 6000, "vip": 9000, "cafe": 1500}');
 CREATE TABLE config_history (version int PRIMARY KEY, prices jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
 INSERT INTO config_history (version, prices) SELECT version, prices FROM config;
@@ -181,6 +187,7 @@ CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, de
 CREATE TABLE bill_bdays (device_id text NOT NULL, action_id text NOT NULL, bday int NOT NULL, PRIMARY KEY (device_id, action_id));
 CREATE TABLE day_closes (device_id text NOT NULL, bday int NOT NULL, n_device int NOT NULL, total_device bigint NOT NULL,
   n_server int NOT NULL, total_server bigint NOT NULL, PRIMARY KEY (device_id, bday));
+CREATE TABLE protocol_refusals (device_id text PRIMARY KEY, protocol int NOT NULL, since double precision NOT NULL);
 CREATE TABLE gaps (device_id text PRIMARY KEY, missing_from bigint NOT NULL, first_seen double precision NOT NULL,
   alerted boolean NOT NULL DEFAULT false, state text NOT NULL, resolved_by text);
 CREATE TABLE held_cmds (device_id text NOT NULL, command_id text NOT NULL, seq bigint NOT NULL, payload_hash text NOT NULL,
@@ -261,6 +268,7 @@ type batch struct {
 	AckedSeq *int64    `json:"acked_seq"`  // SC-19: highest sequence the device holds an ack for
 	LowSeq   *int64    `json:"low_seq"`    // SC-19: lowest sequence the device still retains (H+1 if none)
 	Machine  string    `json:"machine_id"` // SC-13: the machine the batch came from (outside the store)
+	Protocol int       `json:"protocol"`   // S207: the client's sync protocol version (0 = not sent)
 }
 
 type result struct {
@@ -1119,6 +1127,26 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 	}
 	period := contact(ctx, b.DeviceID)
 	seen(b.DeviceID)
+	if protoMin := envSeconds("PROTO_MIN", 0); protoMin > 0 && b.Protocol > 0 && int64(b.Protocol) < protoMin && mutant != "apply_old_protocol" {
+		// S207: an old client; apply nothing, keep its queue on the device, tell the owner once per episode
+		tag, err := pool.Exec(ctx, `INSERT INTO protocol_refusals VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`, b.DeviceID, b.Protocol, nowS())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if tag.RowsAffected() == 1 {
+			detail, _ := json.Marshal(map[string]any{"protocol": b.Protocol, "min": protoMin, "pending": len(b.Commands),
+				"text": "this device needs an app update before it can sync; its sales are kept on the device"})
+			pool.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'upgrade_required',$2,true)`,
+				b.DeviceID, detail)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"results":[],"upgrade_required":true,"protocol_min":%d}`, protoMin)
+		return
+	}
+	if b.Protocol > 0 {
+		pool.Exec(ctx, `DELETE FROM protocol_refusals WHERE device_id = $1`, b.DeviceID) // upgraded: the episode ends
+	}
 	if mutant == "reject_after_expiry" && leaseExpired(ctx, b.DeviceID) { // planted defect: the backlog is refused
 		http.Error(w, `{"error":"lease_expired"}`, http.StatusForbidden)
 		return
@@ -1405,15 +1433,19 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 				prices = jsonb_set(prices, '{std}', to_jsonb($1::int)) WHERE id = 1`, price)
 		} else { // SC-23: the owner edits the price list
 			var body struct {
-				Prices map[string]int64 `json:"prices"`
+				Prices     map[string]int64 `json:"prices"`
+				FeedSchema int              `json:"feed_schema"`
 			}
 			if derr := json.NewDecoder(r.Body).Decode(&body); derr != nil || len(body.Prices) == 0 {
 				http.Error(w, "prices", http.StatusBadRequest)
 				return
 			}
 			pj, _ := json.Marshal(body.Prices)
+			if body.FeedSchema == 0 {
+				body.FeedSchema = 1
+			}
 			_, err = pool.Exec(ctx, `UPDATE config SET version = version + 1, price = coalesce(($1::jsonb->>'std')::int, price),
-				prices = $1::jsonb WHERE id = 1`, string(pj))
+				prices = $1::jsonb, feed_schema = $2 WHERE id = 1`, string(pj), body.FeedSchema)
 		}
 		if err == nil {
 			_, err = pool.Exec(ctx, `INSERT INTO config_history (version, prices) SELECT version, prices FROM config
@@ -1429,13 +1461,20 @@ func handleConfig(w http.ResponseWriter, r *http.Request) {
 		defer pool.Exec(context.Background(), `INSERT INTO device_pulls (device_id, version) SELECT $1, version FROM config`, dev)
 	}
 	var epoch string
-	var version, price int
+	var version, price, schema int
 	var prices map[string]int64
-	if err := pool.QueryRow(ctx, `SELECT m.epoch, c.version, c.price, c.prices FROM meta m, config c`).Scan(&epoch, &version, &price, &prices); err != nil {
+	if err := pool.QueryRow(ctx, `SELECT m.epoch, c.version, c.price, c.prices, c.feed_schema FROM meta m, config c`).Scan(&epoch, &version, &price, &prices, &schema); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	out := map[string]any{"epoch": epoch, "version": version, "price": price, "prices": prices}
+	out := map[string]any{"epoch": epoch, "version": version, "price": price, "prices": prices, "feed_schema": schema}
+	if schema >= 2 { // S207: the newer feed shape; a schema-1 client cannot read it
+		v2 := map[string]any{}
+		for k, v := range prices {
+			v2[k] = map[string]any{"amount": v, "currency": "EGP"}
+		}
+		out["prices"] = v2
+	}
 	items, err := dumpRows(ctx, `SELECT item_id, price, policy FROM items ORDER BY item_id`) // SC-29 catalogue
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -1639,17 +1678,18 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 			  coalesce((SELECT sum(qty) FROM stock_receipts r WHERE r.item_id = i.item_id), 0)
 			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
 			FROM items i ORDER BY i.item_id`,
-		"stock_alerts":    "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
-		"gaps":            "SELECT device_id, missing_from, alerted, state, resolved_by FROM gaps ORDER BY device_id",
-		"held_cmds":       "SELECT device_id, command_id, seq FROM held_cmds ORDER BY seq",
-		"lost_seqs":       "SELECT device_id, from_seq, to_seq, owner_alert FROM lost_seqs ORDER BY from_seq",
-		"quarantine":      "SELECT device_id, reason, state, kept FROM quarantine ORDER BY device_id",
-		"quarantine_cmds": "SELECT device_id, machine_id, command_id, seq FROM quarantine_cmds ORDER BY arrived",
-		"review_queue":    "SELECT stream_id, action_id, command_id, seq, amount_piasters, reason, reviewed FROM review_queue ORDER BY stream_id, seq",
-		"retired_streams": "SELECT device_id, machine_id, stream_id FROM retired_streams ORDER BY machine_id",
-		"day_closes":      "SELECT device_id, bday, n_device, total_device, n_server, total_server FROM day_closes ORDER BY bday",
-		"bill_bdays":      "SELECT action_id, bday FROM bill_bdays ORDER BY action_id",
-		"device_offs":     "SELECT device_id, command_id, off_kind, from_wall, to_wall, open_sessions, owner_alert, channel, suspicious, message FROM device_offs ORDER BY id",
+		"stock_alerts":      "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
+		"protocol_refusals": "SELECT device_id, protocol FROM protocol_refusals ORDER BY device_id",
+		"gaps":              "SELECT device_id, missing_from, alerted, state, resolved_by FROM gaps ORDER BY device_id",
+		"held_cmds":         "SELECT device_id, command_id, seq FROM held_cmds ORDER BY seq",
+		"lost_seqs":         "SELECT device_id, from_seq, to_seq, owner_alert FROM lost_seqs ORDER BY from_seq",
+		"quarantine":        "SELECT device_id, reason, state, kept FROM quarantine ORDER BY device_id",
+		"quarantine_cmds":   "SELECT device_id, machine_id, command_id, seq FROM quarantine_cmds ORDER BY arrived",
+		"review_queue":      "SELECT stream_id, action_id, command_id, seq, amount_piasters, reason, reviewed FROM review_queue ORDER BY stream_id, seq",
+		"retired_streams":   "SELECT device_id, machine_id, stream_id FROM retired_streams ORDER BY machine_id",
+		"day_closes":        "SELECT device_id, bday, n_device, total_device, n_server, total_server FROM day_closes ORDER BY bday",
+		"bill_bdays":        "SELECT action_id, bday FROM bill_bdays ORDER BY action_id",
+		"device_offs":       "SELECT device_id, command_id, off_kind, from_wall, to_wall, open_sessions, owner_alert, channel, suspicious, message FROM device_offs ORDER BY id",
 		"price_summaries": `WITH b AS (SELECT s.*,
 			  (SELECT h.created_at FROM config_history h WHERE h.version = s.period_key + 1) AS from_ts,
 			  (SELECT min(p.at) FROM device_pulls p WHERE p.device_id = s.device_id AND p.version > s.period_key) AS to_ts

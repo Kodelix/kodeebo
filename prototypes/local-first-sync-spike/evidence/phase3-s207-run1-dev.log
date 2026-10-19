@@ -1,0 +1,9 @@
+phase 3 S207 (old client against a newer server), commit ac4bdec+dirty
+  a_old_protocol     exercised 20/20  violating 0  PASS  seed 1: {'before_update': 0, 'upgrade_alerts': 1, 'feed_events': 0, 'alert_text': ['this device needs an app update before it can sync; its sales are kept on the device']}
+  b_unreadable_feed  exercised 20/20  violating 0  PASS  seed 1: {'before_update': 4, 'upgrade_alerts': 0, 'feed_events': 1, 'alert_text': []}
+  c_both             exercised 20/20  violating 0  PASS  seed 1: {'before_update': 0, 'upgrade_alerts': 1, 'feed_events': 1, 'alert_text': ['this device needs an app update before it can sync; its sales are kept on the device']}
+  mutant drop_on_refusal          CAUGHT after 1 runs: ('I1', 's1-x0 acknowledged but missing on the server')
+  mutant stop_on_upgrade_required CAUGHT after 1 runs: ('R60', "while out of date: the counter refused a sale: {'ok': False, 'op': 'sell_items', 'error': 'upgrade_required'}")
+  mutant apply_unknown_feed       CAUGHT after 2 runs: ('R62', "an unreadable feed was not refused: {'ok': True, 'op': 'pull_config', 'applied': False, 'version': 3, 'prices': {'cafe': {'amount': 2000, 'currency': 'EGP'}, 'round_piasters': {'amount': 1, 'currency': 'EGP'}, 'std': {'amount': 7000, 'currency': 'EGP'}, 'vip': {'amount': 10000, 'currency': 'EGP'}}}")
+  mutant apply_old_protocol       CAUGHT after 1 runs: ('R61', "an old protocol was not refused with the queue kept: {'ok': True, 'op': 'sync', 'results': [{'command_id': 'cmd-s1-x0', 'seq': 1, 'result': 'applied'}, {'command_id': 'cmd-s1-x1', 'seq': 2, 'result': 'applied'}], 'pending': 0, 'batch': 50}")
+S207: PASS  (total 26.9 s)

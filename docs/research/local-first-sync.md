@@ -1246,7 +1246,7 @@ Every spike from the parts is PENDING except the reduced S101 (F124–F128). Whe
 | S204 | Scheme C (tenant counter row lock): confirm sequence order equals commit order, measure contention and gaps after rollback | Order equals commit order; contention acceptable | Cursor fallback |
 | S205 | Fault injection on batch apply: cut the network mid-batch, resend, duplicate replays, crash after commit before ack | Zero lost or duplicated facts over N randomized runs (brief risk 1) | Dedup design (with parts B and E) |
 | S206 | Re-bootstrap: device with local data loss and unsynced outbox; device offline past the tombstone window | No resurrected deletes; unsynced facts never silently discarded | Bootstrap and tombstones |
-| S207 | Old client against a newer server: unsupported protocol and schema versions | Client keeps selling and queuing; applies no feed it cannot read | Versioning |
+| S207 | Old client against a newer server: unsupported protocol and schema versions | Client keeps selling and queuing; applies no feed it cannot read. **Dev run PASS (2026-10-18, tier E, spike README):** below the server's minimum protocol nothing is applied and the queue stays on the device, with one owner alert ("this device needs an app update before it can sync; its sales are kept on the device"); a feed with a newer schema is not applied and the held prices stay in force; after the update the backlog applies once and the feed is read | Versioning |
 
 #### 9.3.4 Part D
 

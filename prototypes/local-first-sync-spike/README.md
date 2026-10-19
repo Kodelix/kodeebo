@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on committed harness `3253ba0`, finding P3-F13, (b2) blind spot confirmed; remaining phase 3 legs in order A (founder, 2026-10-18): S207, TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on committed harness `3253ba0`, finding P3-F13, (b2) blind spot confirmed; S207 (old client against a newer server) PASS on the dev run; remaining phase 3 legs in order A (founder, 2026-10-18): TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -261,6 +261,16 @@ bash prototypes/local-first-sync-spike/run.sh ts02 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay02 <seed> <cell> [mutant]
+```
+
+S207 (old client against a newer server):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh s207 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay207 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1478,6 +1488,56 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **A forged `low_seq`:** an insider who also edits what the device reports as its lowest retained sequence could make SC-19's lost-range path record a skip without the owner. It is recorded and alerted, but automatic. That belongs to the sync threat model.
 - **What the owner sees when a gap is accepted:** the amount of the lost sale is unknown to the server. The dashboard spec decides the wording.
 - **The threshold value:** 600 s here; the spec sets it.
+
+### Phase 3 — S207: an old client against a newer server
+
+**Pass signal (sync note § 9.1, S207):** the client keeps selling and queuing, and applies no feed it cannot read.
+
+**Design under test:**
+- **Protocol version:**
+  - Every batch carries the client's sync protocol version (`PROTO`). Below the server's minimum (`PROTO_MIN`), the server applies nothing and answers `upgrade_required` with an empty result list, so the client keeps its whole queue.
+  - The owner gets one alert per episode: "this device needs an app update before it can sync; its sales are kept on the device".
+  - The counter keeps selling. After the update the backlog syncs once.
+- **Feed schema version:**
+  - The config feed carries `feed_schema`; schema 2 sends prices as objects (`{"amount": n, "currency": "EGP"}`).
+  - An app that reads only schema 1 (`FEED_SCHEMA_MAX=1`) applies nothing from a newer feed. It keeps the price list it holds and records `feed_unreadable` once per feed version.
+  - The updated app reads the schema-2 shape.
+
+**Cells** (each: 2 sales, then the out-of-date period with 2 more, then the update and 1 sale):
+
+| Cell | Out of date | Expected |
+|---|---|---|
+| `a_old_protocol` | Protocol 1 against a server that needs 2 | Sync answers `upgrade_required` with the 2 (then 4) commands kept queued; nothing on the server; one owner alert. After the update all 5 sales apply once |
+| `b_unreadable_feed` | The owner publishes a schema-2 feed with new prices | The pull is refused (`feed_unreadable`, recorded once over two pulls); the 2 sales in this period use the held price (15.00 EGP), and sync works normally. After the update the feed is read and the next sale uses 20.00 EGP |
+| `c_both` | Both at once | Both behaviours; after the update the backlog applies once and the new feed is read |
+
+**Checks added:**
+- **R60:** the counter keeps selling and queuing throughout, and nothing is dropped (I1).
+- **R61:** an unsupported protocol is refused with nothing applied and one owner alert; the backlog syncs once after the update.
+- **R62:** an unreadable feed is not applied, so sales keep the held price (I3 against the model); it is recorded once, and the updated app reads it.
+
+**Mutants:**
+- `drop_on_refusal` (client): queued commands deleted on `upgrade_required`.
+- `stop_on_upgrade_required` (client): the counter refuses sales until updated.
+- `apply_unknown_feed` (client): a newer feed applied as if readable.
+- `apply_old_protocol` (server): the minimum ignored.
+
+#### Run 1 (dev, uncommitted harness on `ac4bdec`) — PASS
+
+`evidence/phase3-s207-run1-dev*`, 27 s.
+- **Cells:** all 3 PASS, 20 seeds each, 0 violations.
+- **Mutants:** all four caught.
+  - `drop_on_refusal` after 1 run (I1).
+  - `stop_on_upgrade_required` after 1 (R60).
+  - `apply_unknown_feed` after 2 (R62).
+  - `apply_old_protocol` after 1 (R61).
+- **Smoke on the changed client and server:** SC-19, SC-23 and SC-29 (2 seeds each, the cases that read the config feed) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Not covered:**
+- **How the app gets updated:** the desktop updater, the desktop spike's G4 and S10.
+- **An old server against a newer client** (a server rollback): the release process.
+- **Command payloads in a newer format sent by an updated client to a server not yet updated:** the deployment order (server first) is a release rule.
+
 
 
 

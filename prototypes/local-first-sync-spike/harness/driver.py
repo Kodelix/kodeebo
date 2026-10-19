@@ -3951,6 +3951,159 @@ def ts02(seeds=20, mutant_budget=12):
     return ok
 
 
+S207_CELLS = ["a_old_protocol", "b_unreadable_feed", "c_both"]
+S207_MUTANTS = ["drop_on_refusal", "stop_on_upgrade_required", "apply_unknown_feed", "apply_old_protocol"]
+S207_V1 = {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 1}
+S207_V2 = {"std": 7000, "vip": 10000, "cafe": 2000, "round_piasters": 1}
+
+
+def s207_script(cell):
+    def script(run):
+        st = run.s207 = {"cell": cell, "mismatch": [], "exercised": False}
+        n, price = [0], [S207_V1["cafe"]]  # the cafe price the device holds, per the model
+
+        def sell(label):
+            aid = f"s{run.seed}-x{n[0]}"
+            n[0] += 1
+            r = run.send({"op": "sell_items", "action_id": aid, "n": 1})
+            if not r or not r.get("ok"):
+                st["mismatch"].append(("R60", f"{label}: the counter refused a sale: {r}"))
+                return None
+            a = {"op": "sell_items", "action_id": aid, "start_min": 0, "end_min": 0, "expected_piasters": price[0]}
+            run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+            run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+            return aid
+
+        def upgrade(**env):  # the app is updated: restarted on the same store with newer versions
+            run.send({"op": "exit"})
+            run.client.wait()
+            run.client_env.update(env)
+
+        def dump():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=60).read())
+
+        old_proto = cell in ("a_old_protocol", "c_both")
+        new_feed = cell in ("b_unreadable_feed", "c_both")
+        post_json("/config", {"prices": S207_V1})
+        run.send({"op": "pull_config"})
+        for _ in range(2):
+            sell("before")
+        r = run.send({"op": "sync"})
+        st["first_sync"] = r
+        if old_proto and (not r or r.get("ok") or r.get("error") != "upgrade_required" or r.get("pending") != 2):
+            st["mismatch"].append(("R61", f"an old protocol was not refused with the queue kept: {r}"))
+        if new_feed:
+            post_json("/config", {"prices": S207_V2, "feed_schema": 2})  # the owner publishes a newer feed
+            for _ in range(2):
+                r = run.send({"op": "pull_config"})
+            st["pull_unreadable"] = r
+            if not r or r.get("ok") or r.get("error") != "feed_unreadable":
+                st["mismatch"].append(("R62", f"an unreadable feed was not refused: {r}"))
+        for _ in range(2):
+            sell("while out of date")  # still the held price list
+        run.send({"op": "sync"})
+        d = dump()
+        st["ledger_before_upgrade"] = len([x for x in d["ledger"] if x["kind"] == "sale"])
+        st["upgrade_alerts"] = len([e for e in d.get("device_events", []) if e["kind"] == "upgrade_required"])
+        st["feed_events"] = len([e for e in d.get("device_events", []) if e["kind"] == "feed_unreadable"])
+        upgrade(**({"PROTO": "2"} if old_proto else {}), **({"FEED_SCHEMA_MAX": "2"} if new_feed else {}))
+        r = run.send({"op": "pull_config"})
+        if new_feed:
+            if r and r.get("ok") and r.get("applied"):
+                price[0] = S207_V2["cafe"]
+            else:
+                st["mismatch"].append(("R62", f"the updated app did not read the newer feed: {r}"))
+        sell("after the update")
+        for _ in range(5):
+            r = run.send({"op": "sync"})
+            if r and r.get("ok") and r.get("pending") == 0:
+                break
+        st["exercised"] = True
+    return script
+
+
+def s207_extra(run, dump):
+    """R60 the counter keeps selling and queuing throughout, and nothing is dropped (I1); R61 an unsupported protocol
+    is refused with nothing applied, one owner alert, and the backlog syncs once after the update; R62 an unreadable
+    feed is not applied (sales keep the held price, I3), recorded once, and the updated app reads it."""
+    st, v = run.s207, list(run.s207["mismatch"])
+    old_proto = st["cell"] in ("a_old_protocol", "c_both")
+    new_feed = st["cell"] in ("b_unreadable_feed", "c_both")
+    if old_proto:
+        if st["ledger_before_upgrade"]:
+            v.append(("R61", f"{st['ledger_before_upgrade']} sales applied from an unsupported protocol"))
+        if st["upgrade_alerts"] != 1:
+            v.append(("R61", f"{st['upgrade_alerts']} 'app update needed' alerts, model 1"))
+    elif st["ledger_before_upgrade"] != 4:
+        v.append(("R60", f"{st['ledger_before_upgrade']} sales on the server before the update, model 4"))
+    if new_feed and st["feed_events"] != 1:
+        v.append(("R62", f"{st['feed_events']} feed_unreadable events, model 1"))
+    st["owner_view"] = {"before_update": st["ledger_before_upgrade"], "upgrade_alerts": st["upgrade_alerts"],
+                        "feed_events": st["feed_events"],
+                        "alert_text": [(e.get("detail") or {}).get("text") for e in dump.get("device_events", [])
+                                       if e["kind"] == "upgrade_required"]}
+    return v, frozenset()
+
+
+def s207_run(seed, cell, mutant=None, label=None, verbose=False):
+    old_proto = cell in ("a_old_protocol", "c_both")
+    new_feed = cell in ("b_unreadable_feed", "c_both")
+    env = {**RETENTION_ENV, "PROTO": "1"}
+    if new_feed:
+        env["FEED_SCHEMA_MAX"] = "1"
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"s207-{cell}", client_env=env, server_env={"PROTO_MIN": "2" if old_proto else "1"})
+    run.script, run.extra = s207_script(cell), s207_extra
+    r = run.go()
+    r["s207"] = run.s207
+    return r
+
+
+def s207(seeds=20, mutant_budget=12):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 S207 (old client against a newer server), commit {summary['harness_commit']}", flush=True)
+    ok = True
+    for cell in S207_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = s207_run(s, cell)
+            exercised += bool(r["s207"].get("exercised"))
+            if s == 1:
+                sample = r["s207"].get("owner_view")
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:18s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in S207_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(S207_CELLS) + 1, S207_CELLS[k % len(S207_CELLS)]
+            r = s207_run(s, cell, mutant=mu, label=f"s207-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:24s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "s207-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"S207: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -3960,6 +4113,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "s207":  # s207 [seeds_per_cell]
+        sys.exit(0 if s207(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay207":  # replay207 <seed> <cell> [mutant]
+        r = s207_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay207", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "s207", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "ts02":  # ts02 [seeds_per_cell]
         sys.exit(0 if ts02(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay02":  # replay02 <seed> <cell> [mutant]
