@@ -1,0 +1,3 @@
+probe 1 (one NMI crash from clean-ssh2): baseline up 20:54:48; NMI 20:55:20; back 20:55:43 (LastBootUpTime 20:55:31): booted
+probe 2 (next event: power-off 30 s after ssh answered, right after the NMI boot): NOT booted after 300 s, Recovery screen (p4-f1-event1-power.png)
+smoke run (3 power-offs then an NMI, each within about a minute of boot): Recovery screen after the NMI (p4-f1-recovery-screen-after-nmi.png)

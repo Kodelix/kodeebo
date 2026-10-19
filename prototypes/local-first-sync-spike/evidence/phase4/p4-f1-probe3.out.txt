@@ -1,0 +1,14 @@
+a cut 1 (+10 s after ssh) 21:05:10: booted
+a cut 2 (+10 s after ssh) 21:13:08: NOT booted after 300 s (Recovery? screenshot)
+Domain snapshot clean-ssh2 reverted
+
+(b) baseline up
+The operation completed successfully.
+The operation completed successfully.
+recoveryenabled         No
+bootstatuspolicy        IgnoreAllFailures
+b cut 1 (+10 s after ssh) 21:14:31: booted
+b cut 2 (+10 s after ssh) 21:14:56: booted
+b cut 3 (+10 s after ssh) 21:15:22: booted
+
+[exited with code 0]

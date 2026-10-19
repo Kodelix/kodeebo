@@ -1766,3 +1766,48 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **Earlier phases:** phase 0 PASS (the four mutants caught); phase 1 kill matrix PASS (the outbox mutant caught 50 of 50 on each cipher); tamper 38 of 38 PASS, `hot_journal_page1_flip` included, the pinned-list guard passed.
 
 **Phase 3 gate: PASS.** Not run: S109 (key custody not ready). Phase 3 also leaves these limits, each recorded in its section: the TS-01b and TS-02 (b2) blind spots (OQ27), Windows-only behaviour (phase 4), and P3-F17 (a product rule).
+
+### Phase 4 — the same client on Windows 10 (shared VM)
+
+**Plan (founder approved, 2026-10-19).**
+- **System under test:** the phase 0–3 client (`sut/client.py`), unchanged except for three Windows ports:
+  - the instance lock uses `msvcrt.locking` instead of `fcntl.flock`;
+  - the marker rename uses `MoveFileExW(MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)`, because Windows has no directory fsync;
+  - the kill failpoint uses `TerminateProcess`.
+- **Runtime on the VM:** Python 3.14.8 (embeddable) and `apsw-sqlite3mc` 3.54.0.0 (SQLite 3.54.0), the same binding as on Linux.
+- **Server and oracle:** the Go server, PostgreSQL 18.6 and the phase 0 oracle stay on the host, bound to 127.0.0.1. The VM reaches the server through an SSH reverse tunnel (VM `127.0.0.1:18471` → host `127.0.0.1:18471`), which dies at every power cut.
+- **Network faults:** host-side Toxiproxy, as in phase 2. S410 (clumsy/WinDivert on Windows) is not needed, so no unsigned network driver goes on the VM.
+- **VM:** the shared `kodeebo-win10`, Windows 10 22H2, 4 GB, 2 vCPU, disk throttled to 100 IOPS + 80 MiB/s.
+  - Claimed in the checkpoint; `clean-ssh2` is restored after each run.
+  - Reached with the desktop spike's dedicated key **by path only**: `harness/p4.sh` passes the path to ssh and never reads, prints or copies the key.
+- **Not run:**
+  - TS-04b and TS-08: they need key custody (desktop-note S11), which is not ready (the same reason as S109).
+  - S410: replaced, see above.
+- **The 2.68 s close-bill outlier (runtime A):** the founder chose the desktop session to rerun A with GC logging under Windows Performance Recorder, in a VM slot claimed in the checkpoint. That session was not running on 2026-10-19, so the request is recorded in the sync block of the checkpoint.
+
+**Tools fetched (2026-10-19, founder approved; in `tools/win-python-3.14.8/`, not committed):**
+
+| File | Source | Bytes | SHA-256 | Check |
+|---|---|---|---|---|
+| `python-3.14.8-embed-amd64.zip` | python.org/ftp/python/3.14.8/ | 12,601,679 | `a93abe456ab01bd96d7a085b3cdb6566b3063f4241360d114142fbdb07f0a310` | equals the SHA-256 on the python.org 3.14.8 release page |
+| `apsw_sqlite3mc-3.54.0.0-cp314-cp314-win_amd64.whl` | PyPI | 3,866,072 | `ce02879c647746af870ee6081fa1b1882b1bd6b9ab559a31008cb887a7726815` | equals PyPI's digest |
+
+**S104 design (`run.sh p4 s104 <power-offs> <crashes>`):**
+- **Each run:** 60 sales with syncs and duplicate resends, a cut, the reboot, 5 more sales, a drain, then the phase 0 oracle (I1–I10) against every sale the client acknowledged before the cut.
+- **Cuts:**
+  - **Power-off:** `virsh destroy`, so the guest's page cache is lost.
+  - **OS crash:** an NMI turned into a bugcheck (`NMICrashDump=1`, no dump file, automatic restart).
+- **When the cut lands:** half of each kind at a held failpoint. The client sleeps inside the point and the harness cuts once the VM shows the hold file: before or inside the local transaction, after the commit, before the send, before or inside the acknowledgement write, after it. The other half land at a seeded moment, 0–0.8 s after a seeded sale was sent.
+- **Exercised:** each run records whether the client found a hot journal at restart (the `.recovery` copy, P1-F3), and the boot time.
+- **Not emulated:** the disk's own write cache. QEMU keeps everything the guest already wrote, so this tests the Windows cache and SQLite's flushes, not a disk that acknowledges a flush it did not do; that is for the pilot PC.
+
+Commands: `bash harness/p4.sh up` (revert `clean-ssh2`, boot, throttle), `bash harness/p4.sh install`, `bash run.sh p4 s104 <power-offs> <crashes>`, `bash harness/p4.sh down` (shut off, revert).
+
+**Finding P4-F1 — a power flicker can leave the counter PC stuck at Windows' Recovery screen, waiting for a person.**
+- **What happened:** during the first S104 smoke run, after three power-offs and an OS crash in quick succession, the VM did not boot. It stopped at "Recovery — It looks like Windows didn't load correctly", with two buttons (`evidence/phase4/p4-f1-recovery-screen-after-nmi.png`).
+- **Reproduced from `clean-ssh2` (`evidence/phase4/p4-f1-probe3.*`):** two power-offs, each 10 s after the VM answered ssh. The first boot was normal; after the second Windows stopped at the Recovery screen and stayed there for 300 s (`p4-f1-a-cut2.png`). One OS crash on its own rebooted normally (probe 1). A crash followed by a power-off 30 s after the boot stopped at the Recovery screen (probe 2).
+- **Microsoft's documented rule:** WinRE "starts automatically" after "Two consecutive unexpected shutdowns that occur within two minutes of boot completion", among other triggers ([Windows RE technical reference](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference), fetched 2026-10-19).
+- **At a venue:** this is a power cut that comes back and drops again within two minutes. The counter then stays down, with the app unable to start, until someone presses "Restart my PC". The cashier may not know to do that.
+- **Mitigation tested:** `bcdedit /set {current} recoveryenabled No` and `bcdedit /set {current} bootstatuspolicy IgnoreAllFailures` ("The computer will attempt to boot normally after an error occurs", [BCDEdit /set](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/bcdedit--set)). After them, three power-offs 10 s after boot all booted normally (probe 3 (b)).
+- **Cost:** a PC that really cannot boot no longer offers automatic repair; repair then needs recovery media or the Advanced startup menu. Setting it needs administrator rights, once, at installation or onboarding.
+- **For the founder:** should the counter PC setup (installer or onboarding checklist) apply this? The S104 runs below apply it, as the product would, so that a run measures the store and not the Recovery screen.

@@ -179,7 +179,14 @@
 #   partial batch; the rest follows on a later sync. replay {k, reverse} resends acknowledged commands in reverse order.
 # The spike's binding is not the product decision (README).
 import errno
-import fcntl
+import sys as _sys
+
+WINDOWS = _sys.platform == "win32"  # phase 4: the same client on the Windows VM
+if WINDOWS:
+    import ctypes
+    import msvcrt
+else:
+    import fcntl
 import hashlib
 import hmac
 import http.client
@@ -237,9 +244,13 @@ def failpoint(name):
     if name != FP_NAME:
         return
     fp_count += 1
+    if fp_count == FP_AT and os.environ.get("FP_HOLD") == "1":  # phase 4: hold here so the harness cuts power now
+        with open(DB + ".hold", "w") as f:
+            f.write(name)
+        time.sleep(900)
     if fp_count == FP_AT:
         sys.stdout.flush()
-        os.kill(os.getpid(), signal.SIGKILL)
+        os.kill(os.getpid(), signal.SIGTERM if WINDOWS else signal.SIGKILL)  # Windows: TerminateProcess
 
 
 LEASE_ON = os.environ.get("LEASE") == "1"
@@ -355,11 +366,42 @@ def take_instance_lock():
     """SC-22: one app instance per store. Returns the locked descriptor, or None if another instance holds it."""
     fd = os.open(DB + ".lock", os.O_RDWR | os.O_CREAT, 0o600)
     try:
-        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
+        if WINDOWS:
+            msvcrt.locking(fd, msvcrt.LK_NBLCK, 1)  # byte-range lock on byte 0; the file stays empty
+        else:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except (BlockingIOError, PermissionError, OSError) as e:
+        if not WINDOWS and not isinstance(e, BlockingIOError):
+            raise
         os.close(fd)
         return None
     return fd
+
+
+def unlock_instance(fd):
+    if WINDOWS:
+        os.lseek(fd, 0, os.SEEK_SET)
+        msvcrt.locking(fd, msvcrt.LK_UNLCK, 1)
+    else:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+
+
+MOVEFILE_REPLACE_EXISTING, MOVEFILE_WRITE_THROUGH = 0x1, 0x8
+
+
+def durable_replace(src, dst):
+    """Rename src over dst so the rename itself survives a power cut. Linux: rename, then fsync the directory.
+    Windows has no directory fsync: MoveFileExW with MOVEFILE_WRITE_THROUGH returns only after the move is flushed."""
+    if WINDOWS:
+        ok = ctypes.windll.kernel32.MoveFileExW(ctypes.c_wchar_p(os.path.abspath(src)), ctypes.c_wchar_p(os.path.abspath(dst)),
+                                               MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)
+        if not ok:
+            raise ctypes.WinError()
+        return
+    os.replace(src, dst)
+    d = os.open(os.path.dirname(os.path.abspath(dst)), os.O_RDONLY)
+    os.fsync(d)
+    os.close(d)
 
 
 def _mac(seq):
@@ -385,10 +427,7 @@ def write_marker(seq):
         _marker_fault("fsync")
         os.fsync(f.fileno())
     _marker_fault("replace")
-    os.replace(tmp, MARKER)
-    d = os.open(os.path.dirname(os.path.abspath(MARKER)), os.O_RDONLY)
-    os.fsync(d)
-    os.close(d)
+    durable_replace(tmp, MARKER)
 
 
 def check_marker(c):
@@ -683,7 +722,7 @@ else:
                 open_error = open_error or e
             recovery_copy = None
     if MUTANT == "lock_released_early" and instance_lock >= 0:  # planted defect: lock only while opening
-        fcntl.flock(instance_lock, fcntl.LOCK_UN)
+        unlock_instance(instance_lock)
 if isinstance(open_error, InstanceBusy):
     record_event("second_instance_refused", open_error)
 elif isinstance(open_error, DowngradeError):
