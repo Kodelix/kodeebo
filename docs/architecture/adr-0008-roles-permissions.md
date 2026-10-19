@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 > **Who may move this to `Accepted`: the user, or `cto` on the user's explicit
 > confirmation. No other agent, and no skill on its own.**
@@ -55,7 +55,7 @@ The founder also added the dashboard-issued temporary PIN for remote onboarding 
 - R5: activation codes also serve as a remote reset, under the owner-only key `staff.activation_code`;
 - L-R6: the code lifetime has a compiled ceiling of 72 hours.
 
-Drafted by `/architecture-decision`. Stack-lead validation: **NOT ASSESSED — no stack layer configured**. CTO-ADR: **skipped — lean mode**. Acceptance: the user.
+Drafted by `/architecture-decision`. Stack-lead validation: **NOT ASSESSED — no stack layer configured**. CTO-ADR: **skipped — lean mode**. **Accepted by the founder (Kamel Mohamed), 2026-10-19.** The dated amendments it carries to ADR-0001 (Migration Plan 1), ADR-0003 (§ 9), ADR-0005 (§ 7) and ADR-0007 (§ 10) are in effect from that date and are written into those ADRs.
 
 ## Summary
 
