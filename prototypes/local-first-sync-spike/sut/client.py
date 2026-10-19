@@ -301,7 +301,15 @@ def lease_status():
     return {"status": status, "remaining_s": round(remaining), "server_now_estimate": lease["server_time"] + mono_elapsed}
 
 
+TIMING = os.environ.get("TIMING") == "1"  # phase 4: per-op timings in the reply (ms, measured in the client)
+timing = {}
+
+
 def reply(obj):
+    if TIMING and "t0" in timing:
+        t0 = timing.pop("t0")
+        obj["ms"] = {"total": round((time.perf_counter() - t0) * 1000, 2), **timing}
+        timing.clear()
     if LEASE_ON and "lease" not in obj:
         obj["lease"] = lease_status()
     if OFFLINE_WARN_S and MUTANT != "no_offline_warning" and contact["mono"] is not None \
@@ -781,11 +789,16 @@ def close_and_pay(a, priced=None, also=None):
             failpoint("client:after_business_commit")  # P3 exists only here
             q("BEGIN IMMEDIATE"); seq = outbox(); q("COMMIT")
         else:
+            t_b = time.perf_counter()
             q("BEGIN IMMEDIATE")
             business()
             seq = outbox()
             failpoint("client:mid_local_txn")  # P2: before COMMIT
+            t_c = time.perf_counter()
             q("COMMIT")
+            if TIMING:
+                timing.update(txn=round((time.perf_counter() - t_b) * 1000, 2),
+                              commit=round((time.perf_counter() - t_c) * 1000, 2))
     except STORE_ERRORS as e:
         if MUTANT == "full_refuses" or not disk_full(e):
             raise  # a damaged store: refuse (old behaviour for disk full in the full_refuses mutant)
@@ -798,8 +811,11 @@ def close_and_pay(a, priced=None, also=None):
                       "warning": "disk_full"})
     failpoint("client:after_local_commit")  # P4: committed, marker not yet written, not yet acknowledged
     warning = None
+    t_m = time.perf_counter()
     try:
         write_marker(seq)
+        if TIMING:
+            timing["marker"] = round((time.perf_counter() - t_m) * 1000, 2)
     except OSError as e:  # the sale is committed: it stays saved; the marker catches up later (fail safe)
         if MUTANT == "marker_crash":
             raise
@@ -1484,6 +1500,9 @@ if CLOCKED and not refused and not INSPECT:
 for line in sys.stdin:
     msg = json.loads(line)
     op = msg["op"]
+    if TIMING:
+        timing.clear()
+        timing["t0"] = time.perf_counter()
     if op == "exit":
         if con is not None:
             con.close()
