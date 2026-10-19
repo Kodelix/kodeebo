@@ -15,24 +15,127 @@ const PRINTER = 'KSPIKE-SINK';
 const now = () => Number(process.hrtime.bigint()) / 1e6;   // monotonic ms
 const append = (f, s) => fs.appendFileSync(path.join(dataDir, f), s);
 
-// ---------- store (SPEC.md "The store") ----------
+// ---------- store (SPEC.md "The store"; round 4 rules: README "Round 4") ----------
 let Database = null;
-function openStore() {
-  Database = Database || require('better-sqlite3-multiple-ciphers');
-  const keyFile = path.join(dataDir, 'key.bin');
-  if (!fs.existsSync(keyFile)) fs.writeFileSync(keyFile, crypto.randomBytes(32));
-  const hex = fs.readFileSync(keyFile).toString('hex');
-  const db = new Database(path.join(dataDir, 'store.db'));
-  db.pragma(`hexkey='${hex}'`);                       // first statement after open (A-F1)
-  db.prepare('SELECT count(*) AS n FROM sqlite_master').get();   // verifies the key
+const pkg = require('./package.json');
+const SCHEMA_MAX = Number(pkg.kspikeSchema || 1);    // 1.0.1 = 1, 1.0.2 = 2 (set per build: -c.extraMetadata.kspikeSchema)
+const P = (f) => path.join(dataDir, f);
+const STORE = P('store.db'), COPY = P('store.db.premigrate'), COPY_TMP = P('store.db.premigrate.tmp');
+// a line written and synced to disk before returning (round 3 G4.5: unsynced lines vanish in a power cut)
+function appendSync(f, s) { const fd = fs.openSync(P(f), 'a'); try { fs.writeSync(fd, s); fs.fsyncSync(fd); } finally { fs.closeSync(fd); } }
+function event(name, detail) { appendSync('events.txt', `event=${name} ms=${Date.now()} app=${app.getVersion()} ${detail || ''}\n`); }
+class Refused extends Error {}
+// hold point (round 4 G5.1): if hold.txt names this point, record it on disk and wait for the power cut
+function hold(point) {
+  let want = '';
+  try { want = fs.readFileSync(P('hold.txt'), 'utf8').trim(); } catch (_) { return; }
+  if (want !== point) return;
+  appendSync('hold-reached.txt', `point=${point} ms=${Date.now()} pid=${process.pid}\n`);
+  for (;;) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 60000);
+}
+function fsyncFile(f) { const fd = fs.openSync(f, 'r+'); try { fs.fsyncSync(fd); } finally { fs.closeSync(fd); } }
+function openRaw(hex, file) {
+  const db = new Database(file || STORE, { fileMustExist: true });
+  try {
+    db.pragma(`hexkey='${hex}'`);                       // first statement after open (A-F1)
+    db.prepare('SELECT count(*) AS n FROM sqlite_master').get();   // verifies the key
+  } catch (e) { db.close(); throw e; }
   db.pragma('journal_mode=DELETE');
   db.pragma('synchronous=FULL');
   db.pragma('temp_store=MEMORY');
-  db.exec(`CREATE TABLE IF NOT EXISTS bill(id INTEGER PRIMARY KEY, opened_ms INTEGER, closed_ms INTEGER, total_piastres INTEGER);
-           CREATE TABLE IF NOT EXISTS bill_line(id INTEGER PRIMARY KEY, bill_id INTEGER, name TEXT, qty INTEGER, price_piastres INTEGER);
-           CREATE TABLE IF NOT EXISTS payment(id INTEGER PRIMARY KEY, bill_id INTEGER, method TEXT, amount_piastres INTEGER);
-           CREATE TABLE IF NOT EXISTS outbox(seq INTEGER PRIMARY KEY, bill_id INTEGER, payload TEXT);`);
   return db;
+}
+const userVersion = (db) => Number(db.pragma('user_version', { simple: true }));
+const integrity = (db) => db.pragma('integrity_check').map((r) => r.integrity_check).join('|');
+function openStore() {
+  Database = Database || require('better-sqlite3-multiple-ciphers');
+  if (fs.existsSync(P('quarantine.txt'))) { event('store_quarantined_refused'); throw new Refused('store quarantined: recovery from the server needed'); }
+  const keyFile = P('key.bin'), idFile = P('store.id');
+  const storeExists = fs.existsSync(STORE);
+  if (!storeExists) {
+    // TS-06c: a store existed once (store.id) -> never start again as a new install
+    if (fs.existsSync(idFile)) { event('store_missing', `store.id=${fs.readFileSync(idFile, 'utf8').trim()}`); throw new Refused('store missing: re-bootstrap from the server needed'); }
+    if (fs.existsSync(keyFile)) { event('store_missing_key_present'); throw new Refused('key present but no store: refusing to start as a new install'); }
+    // new install: key, then the store at schema SCHEMA_MAX, then store.id
+    fs.writeFileSync(keyFile, crypto.randomBytes(32)); fsyncFile(keyFile);
+    const db0 = new Database(STORE);
+    db0.pragma(`hexkey='${fs.readFileSync(keyFile).toString('hex')}'`);
+    db0.pragma('journal_mode=DELETE'); db0.pragma('synchronous=FULL');
+    db0.exec(`CREATE TABLE bill(id INTEGER PRIMARY KEY, opened_ms INTEGER, closed_ms INTEGER, total_piastres INTEGER);
+              CREATE TABLE bill_line(id INTEGER PRIMARY KEY, bill_id INTEGER, name TEXT, qty INTEGER, price_piastres INTEGER);
+              CREATE TABLE payment(id INTEGER PRIMARY KEY, bill_id INTEGER, method TEXT, amount_piastres INTEGER);
+              CREATE TABLE outbox(seq INTEGER PRIMARY KEY, bill_id INTEGER, payload TEXT);`);
+    if (SCHEMA_MAX >= 2) schema2(db0);
+    db0.pragma(`user_version=${SCHEMA_MAX}`); db0.close();
+    fs.writeFileSync(idFile, crypto.randomBytes(8).toString('hex')); fsyncFile(idFile);
+    event('store_created', `schema=${SCHEMA_MAX}`);
+  }
+  if (!fs.existsSync(keyFile)) { event('key_missing'); throw new Refused('store present but key.bin missing'); }
+  const key = fs.readFileSync(keyFile);
+  let db;
+  try { db = openRaw(key.toString('hex')); }
+  catch (e) {
+    // wrong key and a damaged page 1 look the same here (both "not a database"): keep the file aside, never touch it
+    const d = P(`damaged-${Date.now()}`); fs.mkdirSync(d); fs.copyFileSync(STORE, path.join(d, 'store.db'));
+    event('store_open_failed', `key_bytes=${key.length} copy=${path.basename(d)} err=${JSON.stringify(e.message)}`);
+    throw new Refused(`store cannot be opened (wrong key or damaged page 1): ${e.message}`);
+  }
+  if (!fs.existsSync(idFile)) { fs.writeFileSync(idFile, crypto.randomBytes(8).toString('hex')); fsyncFile(idFile); }  // stores from rounds 1-3
+  return migrate(db, key.toString('hex'));
+}
+function schema2(db) {
+  db.exec('ALTER TABLE bill ADD COLUMN shift_id INTEGER');
+  hold('mid-transaction');
+  db.exec('CREATE TABLE shift(id INTEGER PRIMARY KEY, opened_ms INTEGER, closed_ms INTEGER); CREATE INDEX bill_shift ON bill(shift_id);');
+}
+// M1 migration, SC-21a design (followups section 4.2): copy aside, one transaction, verify, delete the copy
+function migrate(db, hex) {
+  let v = userVersion(db) || 1;                          // stores from rounds 1-3 have user_version 0 = schema 1
+  const found = `found user_version=${v} copy=${fs.existsSync(COPY)} copy_tmp=${fs.existsSync(COPY_TMP)} journal_after_open=${fs.existsSync(STORE + '-journal')}`;
+  if (v > SCHEMA_MAX) { db.close(); event('store_newer_than_app', `schema=${v} app_max=${SCHEMA_MAX}`); throw new Refused(`store schema ${v} is newer than this app (max ${SCHEMA_MAX})`); }
+  if (fs.existsSync(COPY_TMP)) { fs.unlinkSync(COPY_TMP); appendSync('migration.txt', `${Date.now()} removed incomplete copy (cut during the copy)\n`); }
+  if (fs.existsSync(COPY)) {
+    let ok; try { ok = integrity(db) === 'ok'; } catch (_) { ok = false; }
+    if (ok && v === SCHEMA_MAX) { fs.unlinkSync(COPY); appendSync('migration.txt', `${Date.now()} ${found} integrity=ok -> migration was committed; copy removed now\n`); }
+    else if (ok) { fs.unlinkSync(COPY); appendSync('migration.txt', `${Date.now()} ${found} integrity=ok -> store still schema ${v}; copy removed, migrating again\n`); }
+    else {
+      db.close(); fs.copyFileSync(COPY, STORE); fsyncFile(STORE);
+      appendSync('migration.txt', `${Date.now()} ${found} integrity=FAILED -> store restored from the copy\n`);
+      db = openRaw(hex); v = userVersion(db) || 1;
+    }
+  }
+  if (v >= SCHEMA_MAX) { appendSync('migration.txt', `${Date.now()} ${found} -> no migration (schema ${v})\n`); return db; }
+  const t0 = now();
+  appendSync('migration.txt', `${Date.now()} ${found} -> migrating ${v} to ${SCHEMA_MAX}\n`);
+  hold('before-copy');
+  const buf = fs.readFileSync(STORE);
+  const fd = fs.openSync(COPY_TMP, 'w');
+  try {
+    const half = Math.floor(buf.length / 2);
+    fs.writeSync(fd, buf, 0, half);
+    hold('during-copy');
+    fs.writeSync(fd, buf, half, buf.length - half);
+    fs.fsyncSync(fd);
+  } finally { fs.closeSync(fd); }
+  fs.renameSync(COPY_TMP, COPY);
+  hold('after-copy');
+  db.exec('BEGIN IMMEDIATE');
+  try { schema2(db); db.pragma(`user_version=${SCHEMA_MAX}`); db.exec('COMMIT'); }
+  catch (e) { try { db.exec('ROLLBACK'); } catch (_) { /* rolled back */ } throw e; }
+  hold('after-commit');
+  const iv = integrity(db), nv = userVersion(db);
+  if (iv !== 'ok' || nv !== SCHEMA_MAX) throw new Error(`migration verify failed: integrity=${iv} user_version=${nv}`);
+  fs.unlinkSync(COPY);
+  hold('after-delete');
+  appendSync('migration.txt', `${Date.now()} migrated to ${SCHEMA_MAX} in ${(now() - t0).toFixed(1)} ms; verified; copy removed\n`);
+  return db;
+}
+// TS-03c: a store that fails its check after a good key is kept aside, never written over, and quarantined
+function quarantine(why) {
+  const d = P(`damaged-${Date.now()}`); fs.mkdirSync(d);
+  for (const f of ['store.db', 'store.db-journal']) if (fs.existsSync(P(f))) fs.copyFileSync(P(f), path.join(d, f));
+  appendSync('quarantine.txt', `${Date.now()} ${why}\n`);
+  event('store_damaged_quarantined', `copy=${path.basename(d)} why=${JSON.stringify(why)}`);
 }
 
 function closeBillTx(db) {
@@ -53,10 +156,19 @@ function closeBillTx(db) {
   }
 }
 
+// SHA-256 over the queued rows' stored bytes (seq|bill_id|payload, in seq order): byte-identical across the migration
+function outboxSha(db) {
+  const h = crypto.createHash('sha256');
+  for (const r of db.prepare('SELECT seq, bill_id, payload FROM outbox ORDER BY seq').raw().iterate()) h.update(`${r[0]}|${r[1]}|${r[2]}\n`);
+  return h.digest('hex').slice(0, 16);
+}
 function checkStore() {
   const db = openStore();
   const one = (sql) => Object.values(db.prepare(sql).get())[0];
-  const integrity = db.pragma('integrity_check').map((r) => r.integrity_check).join('|');
+  let integrity;
+  try { integrity = db.pragma('integrity_check').map((r) => r.integrity_check).join('|'); }
+  catch (e) { db.close(); quarantine(`integrity_check threw: ${e.message}`); throw new Refused(`store damaged: ${e.message}`); }
+  if (integrity !== 'ok') { db.close(); quarantine(`integrity_check: ${integrity.slice(0, 200)}`); throw new Refused('store damaged: integrity_check failed'); }
   const bad = one(`SELECT count(*) FROM bill b WHERE
       (SELECT count(*) FROM bill_line l WHERE l.bill_id=b.id)<>5 OR
       (SELECT count(*) FROM payment p WHERE p.bill_id=b.id)<>1 OR
@@ -66,9 +178,55 @@ function checkStore() {
       (SELECT count(*) FROM payment WHERE bill_id NOT IN (SELECT id FROM bill)) +
       (SELECT count(*) FROM outbox WHERE bill_id NOT IN (SELECT id FROM bill))`);
   const line = `integrity=${integrity} bills=${one('SELECT count(*) FROM bill')} lines=${one('SELECT count(*) FROM bill_line')} ` +
-    `payments=${one('SELECT count(*) FROM payment')} outbox=${one('SELECT count(*) FROM outbox')} consistent=${bad === 0 && orphans === 0}`;
+    `payments=${one('SELECT count(*) FROM payment')} outbox=${one('SELECT count(*) FROM outbox')} consistent=${bad === 0 && orphans === 0}` +
+    ` schema=${userVersion(db) || 1} outbox_sha=${outboxSha(db)} app=${app.getVersion()}`;
   db.close();
   return line;
+}
+
+// TS-05b: n opens with random wrong keys in one process; none may return a row or change the file
+function keyAttempts(n) {
+  Database = Database || require('better-sqlite3-multiple-ciphers');
+  let opened = 0, failed = 0, firstErr = '';
+  for (let i = 0; i < n; i++) {
+    try { const db = openRaw(crypto.randomBytes(32).toString('hex')); opened++; db.close(); }
+    catch (e) { failed++; if (!firstErr) firstErr = e.message; }
+  }
+  event('key_attempts', `n=${n} opened=${opened} failed=${failed} err=${JSON.stringify(firstErr)}`);
+  append('keyattempts.txt', `n=${n} opened=${opened} failed=${failed} err=${firstErr}\n`);
+}
+
+// TS-03c journal leg: a transaction big enough that SQLite writes uncommitted pages into store.db before COMMIT (cache of
+// 2 pages), stopped at hold point 'spill-before-commit', so a power cut leaves a hot journal that the next open must use
+function spillHold() {
+  const db = openStore();
+  db.pragma('cache_size=2');
+  db.exec('BEGIN IMMEDIATE');
+  db.exec('CREATE TABLE IF NOT EXISTS spill(id INTEGER PRIMARY KEY, pad TEXT)');
+  db.exec("UPDATE bill SET total_piastres = total_piastres");   // touches the bill pages too
+  const ins = db.prepare('INSERT INTO spill(pad) VALUES (?)');
+  for (let i = 0; i < 1000; i++) ins.run('x'.repeat(400));
+  appendSync('spill.txt', `spilled ms=${Date.now()} store_bytes=${fs.statSync(STORE).size} journal_bytes=${fs.existsSync(STORE + '-journal') ? fs.statSync(STORE + '-journal').size : 0}\n`);
+  hold('spill-before-commit');
+  db.exec('ROLLBACK');   // without a hold: undo, the store keeps no spill table
+  db.close();
+}
+
+// TS-03c / TS-06c "while it runs": hold the store open and read it every 2 s; on a failed read, quarantine and stop
+function serve(seconds) {
+  const db = openStore();
+  const end = Date.now() + seconds * 1000;
+  append('serve.txt', `start pid=${process.pid} ms=${Date.now()}\n`);
+  while (Date.now() < end) {
+    let r;
+    try { r = integrity(db); if (r === 'ok') db.prepare('SELECT sum(total_piastres) FROM bill').get(); }
+    catch (e) { r = `threw: ${e.message}`; }
+    if (r !== 'ok') { append('serve.txt', `read failed ms=${Date.now()} ${r}\n`); try { db.close(); } catch (_) { /* closed */ } quarantine(`while serving: ${r}`); return; }
+    append('serve.txt', `ok ms=${Date.now()} store_exists=${fs.existsSync(STORE)}\n`);
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 2000);
+  }
+  db.close();
+  append('serve.txt', `end ms=${Date.now()}\n`);
 }
 
 // ---------- Win32 through koffi 2.16.3 (prebuilt; koffi 3 compiles at install: B-F1) ----------
@@ -188,8 +346,14 @@ function guarded(mode, body) {
 }
 
 const args = process.argv.slice(1).filter((a) => a.startsWith('--') || /^\d+$/.test(a));
-const mode = args.find((a) => ['--close-bench', '--print-once', '--kill-loop', '--check', '--arabic', '--arabic-system', '--version', '--self-update'].includes(a));
-if (mode === '--close-bench') {
+const mode = args.find((a) => ['--close-bench', '--print-once', '--kill-loop', '--check', '--arabic', '--arabic-system', '--version', '--self-update', '--key-attempts', '--serve', '--spill-hold'].includes(a));
+if (mode === '--spill-hold') {
+  process.exit(guarded('spill', spillHold));
+} else if (mode === '--key-attempts') {
+  process.exit(guarded('keyattempts', () => keyAttempts(Number(args[args.indexOf('--key-attempts') + 1]))));
+} else if (mode === '--serve') {
+  process.exit(guarded('serve', () => serve(Number(args[args.indexOf('--serve') + 1]))));
+} else if (mode === '--close-bench') {
   const n = Number(args[args.indexOf('--close-bench') + 1]);
   process.exit(guarded('bench', () => bench(n, args.includes('--warmup'))));
 } else if (mode === '--print-once') {

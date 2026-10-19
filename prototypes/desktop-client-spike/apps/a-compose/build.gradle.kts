@@ -21,11 +21,13 @@ dependencies {
 // Round 3 (G4): one project builds 1.0.0 and 1.0.1 (gradle -PappVersion=1.0.1 packageMsi); the running app reads
 // its version from the kspike.version system property (written to version.txt by --version).
 val appVersion = (findProperty("appVersion") ?: "1.0.0").toString()
+// Round 4 (G5): the store schema this build understands (1.0.1 = 1, 1.0.2 = 2; gradle -PschemaMax=2)
+val schemaMax = (findProperty("schemaMax") ?: "1").toString()
 
 compose.desktop {
     application {
         mainClass = "MainKt"
-        jvmArgs += listOf("-Dkspike.version=$appVersion")
+        jvmArgs += listOf("-Dkspike.version=$appVersion", "-Dkspike.schema=$schemaMax")
         nativeDistributions {
             targetFormats(TargetFormat.Msi)
             packageName = "KodeeboSpikeA"
