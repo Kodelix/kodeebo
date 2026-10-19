@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 > **Who may move this to `Accepted`: the user, or `cto` on the user's explicit
 > confirmation. No other agent, and no skill on its own.**
@@ -28,7 +28,7 @@ Proposed
 
 The founder (user) decided on 2026-10-19 (`docs/research/backend-track.md` § 5): the backend track is **Ktor/Kotlin** (`stack.backend: ktor`, `core.track: kotlin`, `saas-core-kotlin`), on the note's recommendation, with the VPS facts that answer Q2 (8 GB RAM, 2 vCPU, 240 GB SSD, 1 Gbps unmetered; builds on the founder's machine through the AI-agent CI, not on the VPS). The founder confirmed that none of the note's open items blocks the decision (§ 5, "COMPLETE WITH GAPS"). Drafted by `cto` at the orchestrator's request; this ADR records the decision, it does not re-open it.
 **Stack-lead validation: NOT ASSESSED** — `stack.backend` is unset in `project.yaml` (resolved 2026-10-19: `backend=unset`), so `ktor-lead` has no configured layer to validate against. It runs after `/setup-stack` sets `stack.backend: ktor` (after acceptance, as for ADR-0002).
-**CTO-ADR:** the author is `cto`; the second review the gate asks for (`cto-adr.md` check 10) was **performed as an independent `/architecture-review` in a fresh session on 2026-10-19** at the user's instruction (verdict CONCERNS, B1–B4 and C1–C12 fixed in this revision); a short independent re-check follows. Lean review mode otherwise skips the gate. Acceptance: the user.
+**CTO-ADR:** the author is `cto`; the second review the gate asks for (`cto-adr.md` check 10) was **performed as an independent `/architecture-review` in a fresh session on 2026-10-19** at the user's instruction (verdict CONCERNS, B1–B4 and C1–C12 fixed in this revision); a short independent re-check follows. Lean review mode otherwise skips the gate. Acceptance: the user — **Accepted by the founder, 2026-10-19.** With this acceptance the dated 2026-10-19 J1 addendum to ADR-0002 takes effect.
 **Revised 2026-10-19 at the user's instruction after that review:** the JDBC carrier is export-only and recorded as a dated ADR-0002 J1 addendum (founder: one stated exception; jobs stay in Exposed); eviction, not close, after a `COPY` error; threads and pools (Decision 5a); postgres stack reference cited; ETA signing worded as conditional; registry entries moved to their sections.
 
 ## Summary

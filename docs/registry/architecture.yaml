@@ -9,6 +9,7 @@
 # 2026-10-18: second ADR-0005 review (FAIL, text fixes) applied; ADR-0001/0004 amendment stances say they take effect only when ADR-0005 is Accepted.
 # 2026-10-18: third ADR-0005 round (re-review CONCERNS) applied: 6 superseded, TR-DEVICE-ERASURE new.
 # 2026-10-18: ADR-0005 Accepted by the founder; adr_status set to Accepted on every ADR-0005 entry (superseded entries keep their superseded_by status); the ADR-0001/0004 amendments it carries are in effect.
+# 2026-10-19: ADR-0006 Accepted by the founder; adr_status set to Accepted on every active ADR-0006 entry (superseded ADR-0006 entries left as they were); the ADR-0002 J1 export-carrier addendum it carries is in effect.
 
 data_ownership: []
 
@@ -399,12 +400,12 @@ interface_contracts:
   - id: IC-OUTBOX-SWEEP-R2
     contract: "Jobs direction (details in the jobs/outbox ADR): own transactional outbox in TD under the tenant policy; platform_rt lists tenant ids from CP tenant_status; one job_rt transaction per tenant through withScope on Exposed suspendTransaction (raw SQL via Exposed exec) claims work with FOR UPDATE SKIP LOCKED; the dedup row is written in the effect's transaction; traceparent stored on work rows; a CP pending-work list before tenant counts grow."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: IC-BILLING-VECTORS
     contract: "Device and server billing: integer money in piasters and integer milliseconds, no floating point (F401); billing rules as data where possible; one shared vector suite in contracts/ or tools/ that the server CI runs (and the device CI), with a drift test (S47)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: IC-SCOPE-HELPER-R5
     contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Job | Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query). Ktor track (ADR-0002 J1 addendum 2026-10-19, revised after the re-check; effective when ADR-0006 is Accepted): the helper module also offers exportSession(src, Scope = Job | Staff, block: ExportSession.() -> T) with ExportSession.copyOut(sql, OutputStream): Long, for the EXP-2 export only - one REPEATABLE READ transaction per session, scope set once and first, Support and Device refused, no Connection, CopyManager or statement exposed, connection evicted on any exception."
@@ -414,7 +415,7 @@ interface_contracts:
   - id: IC-JDBC-COPY-CARRIER-R3
     contract: "EXP-2 export only (ADR-0002 J1 addendum 2026-10-19, revised after the re-check, approved with ADR-0006): a small plain-JDBC carrier inside the ADR-0002 scope-helper module, until S23 shows a supported route from Exposed suspendTransaction to the JDBC Connection. Job and Staff scopes only (ADR-0005 Decision 4); Support and Device refused. One REPEATABLE READ transaction, auto-commit off, for the whole export; first statement the same set-once routine from the same constants module; reads back current_setting('app.tenant_id', true) and refuses if null; refuses a second scope; every table's copyOut runs in that transaction, so all tables come from one snapshot and the manifest row counts agree. Exposes only exportSession { copyOut(sql, OutputStream): Long }, never a Connection, CopyManager or statement; on any exception the connection is evicted from the pool (close() on the pool proxy does not count). Removed when S23 passes. Apart from the EXP-2 COPY statements, jobs and the outbox claim and sweep stay inside Exposed transactions."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
 performance_budgets: []
 
@@ -550,62 +551,62 @@ forbidden_patterns:
   - id: FP-POOLED-CONN-AFTER-COPY-ERROR-R2
     pattern: "Returning a pooled JDBC connection to HikariCP after any exception from a streaming COPY (copyOut); calling close() on the pool's proxy counts as returning it. The connection must be evicted so the physical connection is discarded and never reused (S22b confirms the HikariCP 7.1.0 eviction API)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-UNLOCKED-GRADLE-BUILD-R2
     pattern: "A Gradle build without committed dependency locks (project and buildscript) and strict verification metadata, with version ranges, or with a dependency, lockfile or verification-metadata change auto-merged by the AI-agent CI without the founder's review."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-JVM-DEFAULT-HEAP-R2
     pattern: "Running the backend JVM container with the default heap sizing: no explicit -Xmx or MaxRAMPercentage, or no Compose memory limit (both sized from S18)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-QUEUE-WITHOUT-ADR-R2
     pattern: "Adopting a job-queue library (for example db-scheduler) or an external broker before an ADR fixes the ADR-0001 table class of its tables; work rows outside the tenant policy."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-SECOND-OTEL-SDK-R2
     pattern: "A second OpenTelemetry SDK or an SDK version in application code beside the Java agent; claiming no PII in telemetry before the Collector capture test shows that SQL parameter values, URL query strings and request headers do not reach it."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-RAW-JDBC-OUTSIDE-HELPER
     pattern: "Opening a raw JDBC transaction or using a raw java.sql.Connection, CopyManager or statement for tenant data outside the ADR-0002 scope-helper module (the only JDBC path is the helper's export carrier)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-NEW-SUSPENDED-TRANSACTION
     pattern: "Using Exposed's deprecated newSuspendedTransaction, or a nested tenant transaction, instead of suspendTransaction through withScope (ktor/best-practices.md line 55)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-ARGON2-JVM
     pattern: "Importing argon2-jvm (LGPL-3.0, F409) for password hashing; use Bouncy Castle or Password4j."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-SIGNING-ORACLE
     pattern: "An endpoint or use case that signs caller-chosen bytes with the licence key or the ETA e-seal key; signing is a purpose-tagged use case only (lic- F222)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-OTEL-LIBRARY-INSTRUMENTATION-WITH-AGENT
     pattern: "Installing KtorServerTelemetry or another OpenTelemetry library-instrumentation plugin beside the Java agent (it needs its own SDK instance and doubles the spans; ktor/best-practices.md lines 42-43)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-JDBC-ON-DEFAULT-DISPATCHER
     pattern: "Running blocking JDBC work (Exposed transactions, pgjdbc, copyOut) on Dispatchers.Default or an unbounded dispatcher; use a named two-argument limitedParallelism dispatcher no wider than its pool."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
   - id: FP-JOOQ-UNCONFIRMED
     pattern: "Using jOOQ for PostgreSQL before its licence for the open-source edition is confirmed (ti-F241; ADR-0002 J2)."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
 # 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
 # 2026-10-19 (ADR-0006 review): only TECH-* entries belong here; the IC-* and FP-* entries first placed here are superseded by copies in interface_contracts and forbidden_patterns.
@@ -653,5 +654,5 @@ technology_choices:
   - id: TECH-BACKEND-KTOR-R2
     choice: "Backend track Ktor on Kotlin/JVM (stack.backend: ktor, core.track: kotlin, saas-core-kotlin; founder 2026-10-19): Kotlin 2.4.21, kotlinx.coroutines 1.11.0, Ktor 3.6.0 exact, Exposed 1.5.1 with ADR-0002 J1 suspendTransaction (plus the J1 export-carrier addendum), HikariCP 7.1.0, OpenTelemetry Java agent 2.32.0. Ed25519 with the JDK built-in provider or Bouncy Castle 1.86; the licensing ADR picks one and runs the edge-vector suite. ETA CAdES-BES with Bouncy Castle bcpkix 1.86 (C1) if signing stays on the backend; acceptance pending the ETA ADR. Still to pin: pgjdbc (42.7.14 seen 2026-10-18, with a stack-reference row recording getCopyAPI/copyOut), an SLF4J 2 binding, Bouncy Castle; JDK 21 or 25 and its distribution open (Q8); Gradle wrapper 9.7.0 (\"9.7\" does not resolve) or 9.8.x per Q7. Mandatory in CI: dependency locking incl. buildscript, strict verification metadata, OSV-Scanner on every PR, base images by digest; no backend image before an image scanner and SBOM generator are pinned (Q6). Explicit heap and Compose memory limit from S18 before the first deploy. Blocking JDBC on bounded Dispatchers.IO.limitedParallelism(n, name) dispatchers; one HikariCP pool per LOGIN role, sizes from S18. Billing: rules as data and one shared vector suite in every combination, one Kotlin module only if the desktop ADR picks Compose Desktop (S46). Switch-to-Go conditions recorded in ADR-0006 Decision 12; Compose Desktop x Go rejected."
     adr: ADR-0006
-    adr_status: Proposed
+    adr_status: Accepted
     status: active
