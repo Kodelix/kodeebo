@@ -329,7 +329,7 @@ Standard: `.claude/docs/observability-standard.md` (OTel span per endpoint and j
 | Q-503 | Does the founder want to learn Go? | The B-only switch-to-Go condition (with S32) | user | only if the desktop ADR picks B |
 | S18 | Realistic Ktor service footprint (Exposed/Hikari pool against PG 18.6, Java agent, real JSON load, startup incl. pool) to size the container limit and heap; throughput effect of `TieredStopAtLevel=1` | Compose memory limit and `-Xmx` for the backend on the 8 GB VPS (no longer blocks the track choice) | `researcher` / `performance-engineer` (user approval for any download over 100 MB) | before the first deploy |
 | S32 | Go CAdES-BES with `smallstep/pkcs7` or `unidoc/pkcs7`, checked by OpenSSL like F307 | Go as the server-side ETA signer | `researcher` | before the ADR if Go is chosen |
-| Q-agent | Java agent 2.32.0 defaults (F308) for SQL values, URL query and header capture (read the configuration pages or test through the Collector) | The "no PII in telemetry" claim on Ktor | `observability-engineer` | before the backend ADR if Ktor is chosen |
+| Q-agent | Java agent 2.32.0 defaults (F308) for SQL values, URL query and header capture (read the configuration pages or test through the Collector) | The "no PII in telemetry" claim on Ktor | `observability-engineer` | before the first "no PII in telemetry" claim (founder 2026-10-19: not a blocker to ADR-0006) |
 | S46 | A x Ktor shared Gradle module; Kotlin/JS module consumed from a pnpm/Electron build | Moving the A x Ktor sharing claim from inference to evidence | `researcher` | before the billing implementation |
 | S45 | Windows 4 GB reference PC: Go DLL via FFM, Go WASM in Electron | Any S-1 bridge row | `researcher` with the Windows VM (claim it in the checkpoint) | only if a bridge is chosen |
 | S47 | Rewrite-twice drift test (a rule changed in one language must fail the vectors) | Confidence in S-2 + S-3 | `researcher` / `qa-lead` | with the billing implementation |
@@ -343,7 +343,7 @@ Standard: `.claude/docs/observability-standard.md` (OTel span per endpoint and j
 | Q7 | Gradle pin: `9.7` → `9.7.0`, or a 9.8.x line | Wrapper and CI on the Kotlin track | user (pins) with `platform-lead` | before the Kotlin track is set up |
 | Q-lint | ktlint/detekt path for Kotlin 2.4 (three options in `tooling/VERSION.md`) | Kotlin lint gate | `cto` (ADR) | before the first Kotlin story |
 | Q6 | Container-image scanner and SBOM generator to pin | Gate 7 for both tracks | `security-lead` / `platform-lead` | before the first image ships |
-| Q-506 | Ktor support policy and Ktor 4.0 timing | Upgrade-cadence statement for Ktor | `researcher` | before the backend ADR |
+| Q-506 | Ktor support policy and Ktor 4.0 timing | Upgrade-cadence statement for Ktor | `researcher` | at each Ktor pin change |
 | Q8 | Ktor 3.6.0 minimum JDK and Kotlin (F112 is a bytecode observation only) | JDK 21 vs 25 | `researcher` (stack-reference refresh) | before the Kotlin track is set up |
 | Q5 | Go `go.sum` and checksum-database behaviour from go.dev/ref/mod; `go mod verify` | Supply-chain claim on Go | `researcher` | before the Go track is set up |
 | Q4 | S17 reproducible `distZip` with lockfiles on both sides; S19 Gradle 9.8.x with KGP 2.4.21 | Reproducibility claim on Kotlin; the Gradle pin | `researcher`, `platform-lead` | before the Kotlin track is set up |
