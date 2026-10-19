@@ -27,7 +27,7 @@ Proposed
 ## Decision Makers
 
 The founder (user) decided on 2026-10-19 (`docs/research/backend-track.md` § 5): the backend track is **Ktor/Kotlin** (`stack.backend: ktor`, `core.track: kotlin`, `saas-core-kotlin`), on the note's recommendation, with the VPS facts that answer Q2 (8 GB RAM, 2 vCPU, 240 GB SSD, 1 Gbps unmetered; builds on the founder's machine through the AI-agent CI, not on the VPS). The founder confirmed that none of the note's open items blocks the decision (§ 5, "COMPLETE WITH GAPS"). Drafted by `cto` at the orchestrator's request; this ADR records the decision, it does not re-open it.
-**Stack-lead validation: NOT ASSESSED** — `stack.backend` is unset in `project.yaml` (resolved 2026-10-19: `backend=unset`), so `ktor-lead` has no configured layer to validate against. It runs after `/setup-stack` sets `stack.backend: ktor`, before this ADR is Accepted.
+**Stack-lead validation: NOT ASSESSED** — `stack.backend` is unset in `project.yaml` (resolved 2026-10-19: `backend=unset`), so `ktor-lead` has no configured layer to validate against. It runs after `/setup-stack` sets `stack.backend: ktor` (after acceptance, as for ADR-0002).
 **CTO-ADR:** the author is `cto`; the second review the gate asks for (`cto-adr.md` check 10) was **performed as an independent `/architecture-review` in a fresh session on 2026-10-19** at the user's instruction (verdict CONCERNS, B1–B4 and C1–C12 fixed in this revision); a short independent re-check follows. Lean review mode otherwise skips the gate. Acceptance: the user.
 **Revised 2026-10-19 at the user's instruction after that review:** the JDBC carrier is export-only and recorded as a dated ADR-0002 J1 addendum (founder: one stated exception; jobs stay in Exposed); eviction, not close, after a `COPY` error; threads and pools (Decision 5a); postgres stack reference cited; ETA signing worded as conditional; registry entries moved to their sections.
 
@@ -125,8 +125,8 @@ Research note: `docs/research/backend-track.md` (Status Draft, verdict COMPLETE 
 - Runtime base (Temurin JRE 518 MB image vs jlink 280 MB, F117, F125; distroless not measured) is `platform-lead`'s choice under Decision 3; a jlink image must pin matching OS releases for build and run stages and add modules that reflection or `ServiceLoader` need (agent, JDBC driver) by hand (F125).
 
 **5. Data access.**
-- **Use cases, the job loop and the outbox claim and sweep** reach tenant data only through ADR-0002's `withScope` on Exposed `suspendTransaction` (J1), with raw SQL through Exposed `exec` inside the helper (ti-F238), and `transaction_timeout` set locally first by the helper (F213 J3a–J3c: `25P04` FATAL, Hikari then hands out clean connections; `postgres/best-practices.md` line 53; transaction-local `set_config`, lines 35–37). No evidence ties the job loop to JDBC: F213's JDBC claim and sweep (J5b, J5c) did not run, and design 2-a is plain SQL (F208).
-- **EXP-2 export only** uses a small plain-JDBC carrier under the **ADR-0002 J1 addendum (2026-10-19)**, approved by the founder with this ADR: inside the scope-helper module; same `Scope`, same set-once routine from the same constants module as the first statement; auto-commit off before it; reads back `current_setting('app.tenant_id', true)` and refuses if null (a missing scope otherwise yields a silently empty export, F213 J4b); refuses a second scope; exposes only `copyOut(sql, OutputStream)`, never a `Connection`, `CopyManager` or statement; removed when S23 shows a supported route from `suspendTransaction` to the JDBC `Connection` for `CopyManager` (F214 NOT SOURCEABLE).
+- **Apart from the EXP-2 `COPY` statements, use cases, the job loop and the outbox claim and sweep** reach tenant data only through ADR-0002's `withScope` on Exposed `suspendTransaction` (J1), with raw SQL through Exposed `exec` inside the helper (ti-F238), and `transaction_timeout` set locally first by the helper (F213 J3a–J3c: `25P04` FATAL, Hikari then hands out clean connections; `postgres/best-practices.md` line 53; transaction-local `set_config`, lines 35–37). No evidence ties the job loop to JDBC: F213's JDBC claim and sweep (J5b, J5c) did not run, and design 2-a is plain SQL (F208).
+- **EXP-2 export only** uses a small plain-JDBC carrier under the **ADR-0002 J1 addendum (2026-10-19)**, approved by the founder with this ADR: inside the scope-helper module; **Job and Staff scopes only** (ADR-0005 Decision 4), Support and Device refused; **one `REPEATABLE READ` transaction for the whole export** (founder, 2026-10-19), auto-commit off, whose first statement is the same set-once routine from the same constants module; reads back `current_setting('app.tenant_id', true)` and refuses if null (a missing scope otherwise yields a silently empty export, F213 J4b); refuses a second scope; runs every table's `copyOut` inside that one transaction, so all tables come from one snapshot and the manifest's row counts agree; exposes only an export session with `copyOut(sql, OutputStream)`, never a `Connection`, `CopyManager` or statement; a long export holds one snapshot open, which delays vacuum cleanup on busy tables (analysis, not sourced here), so its transaction limits are set by Q-export (ADR-0005 M16); removed when S23 shows a supported route from `suspendTransaction` to the JDBC `Connection` for `CopyManager` (F214 NOT SOURCEABLE).
 - **On any exception from a streaming `COPY`, the connection is evicted from the pool, so the physical connection is discarded and never reused.** Calling `close()` on the pool's proxy returns it to the pool and does **not** satisfy this rule (the F213 failure: the next statement failed and a worker hung). S22b confirms the HikariCP 7.1.0 eviction API (NOT SOURCEABLE here). Metric: connections evicted after a `COPY` error (note § 8).
 - **S23 and S22b pass before the export story** (with ADR-0005's S52). jOOQ (1K-c) is not used (licence gap, ti-F241).
 - `COPY FROM` does not support row security (`postgres/best-practices.md` line 43): **no import or restore into RLS tables uses `COPY FROM` as a runtime role.**
@@ -173,7 +173,7 @@ flowchart LR
       DM[domain<br/>no framework imports]
       SH[scope helper<br/>withScope: Exposed suspendTransaction<br/>+ JDBC carrier for EXP-2 COPY only]
       JB[job loop<br/>per-tenant sweep 2-a]
-      SG[signer port<br/>BC 1.86: Ed25519, CAdES-BES]
+      SG[signer port<br/>Ed25519: JDK or BC 1.86, licensing ADR<br/>CAdES-BES: BC 1.86 if the ETA ADR keeps it]
       HP[HikariCP 7.1.0 + pgjdbc]
     end
     PG[(PostgreSQL 18.6<br/>RLS, no published port)]
@@ -196,10 +196,12 @@ suspend fun <T> withScope(src: TenantDataSource, s: Scope, block: suspend Scoped
 //   errors: ScopeAlreadySet, InvalidScope, NoLiveGrant
 
 // Inside the scope-helper module only (Decision 5; ADR-0002 J1 addendum; until S23 passes):
-suspend fun copyOut(src: TenantDataSource, s: Scope, sql: String, out: OutputStream): Long
-//   EXP-2 only; same Scope and set-once routine; auto-commit off first; refuses a null
-//   app.tenant_id read-back and a second scope; exposes no Connection, CopyManager or
-//   statement; on any exception evicts the connection (never close() back to the pool).
+suspend fun <T> exportSession(src: TenantDataSource, s: Scope /* Job | Staff */,
+                              block: suspend ExportSession.() -> T): T
+interface ExportSession { suspend fun copyOut(sql: String, out: OutputStream): Long }
+//   EXP-2 only; one REPEATABLE READ transaction per session, auto-commit off; scope set once,
+//   first; refuses Support/Device, a null app.tenant_id read-back and a second scope; exposes
+//   no Connection, CopyManager or statement; on any exception evicts the connection.
 
 // Product-local ports, each liftable into saas-core-kotlin unchanged (coordination-rules.md):
 //   Signer (purpose-tagged), PasswordHasher, Clock, IdGenerator, Outbox/WorkQueue (jobs ADR)
@@ -321,7 +323,7 @@ Greenfield: no backend code or data exists.
 1. The user accepts this ADR; `/setup-stack` sets `stack.backend: ktor` and `core.track: kotlin` in `project.yaml`; `ktor-lead` validates this ADR and the result is noted here.
 2. The user applies the pin changes (Q7 Gradle `9.7.0` or 9.8.x; Q-pins pgjdbc, SLF4J 2 binding, Bouncy Castle 1.86) with stack-reference rows; Q8 fixes JDK 21 or 25 and the distribution.
 3. `platform-lead` creates the Gradle wrapper, locking, strict verification and CI (OSV-Scanner, gitleaks); Q6 adds the image scanner and SBOM before the first image.
-4. ADR-0002 carries the dated J1 addendum (2026-10-19, appended, decision text untouched), approved with this ADR: J1, **with its export-carrier addendum**, is the only active rule; G1 stays as the record for the switch conditions.
+4. ADR-0002 carries the dated J1 addendum (2026-10-19, appended, decision text untouched), approved with this ADR. After `/setup-stack` sets `stack.backend: ktor`, J1 with its export-carrier addendum is the rule that applies on this track; G1 stays in ADR-0002 as written, as the record for the switch conditions.
 5. S18 before the first deploy; S23/S22b before the export story; Q-agent before the first "no PII" claim; S46/S47 with billing.
 
 **Rollback plan (cost to reverse):** today about zero (no backend code). After stories exist, switching to Go means rewriting backend code and any `saas-core-kotlin` modules — weeks, in proportion to the code written. **No data and no client contract moves** provided schema migrations stay plain SQL files and `contracts/` stays spec-first; that is why both are kept language-neutral. Triggers to revisit: Decision 12 (a) or (b); S23 and S22b both failing; Q-lint finding no workable lint path; Ktor announcing an end of support for 3.x without a migration path.
@@ -332,7 +334,8 @@ Greenfield: no backend code or data exists.
 - [ ] CI fails on a planted dependency missing from `gradle.lockfile`, on a planted checksum mismatch in verification metadata, and on a planted vulnerable version (OSV-Scanner control like F121).
 - [ ] The backend Dockerfile references base images by digest; the image scan and SBOM run in CI (after Q6).
 - [ ] The backend container runs with an explicit heap flag and memory limit from S18; a load test at that limit shows no OOM kill.
-- [ ] The carrier API gives export code no `Connection`, `CopyManager` or statement (compile-level check).
+- [ ] The carrier API gives export code no `Connection`, `CopyManager` or statement (compile-level check), and refuses Support and Device scopes.
+- [ ] A two-table export with an insert committed between the two `copyOut` calls reports row counts from one snapshot (the insert is absent from both tables).
 - [ ] As the runtime role: the carrier refuses a second scope and an invalid scope (ADR-0002 K-series), and refuses when `current_setting('app.tenant_id', true)` reads back null.
 - [ ] After a writer error in `copyOut`, the evicted connection's backend PID is never handed out again, the pool refills and the next pooled statement works (S22b).
 - [ ] A `copyOut` of at least 1 GB under a small fixed heap (e.g. `-Xmx256m`) completes with no heap growth proportional to the export size (S22b extension or ADR-0005's S52 on the JVM).
@@ -353,4 +356,4 @@ Foundational — no spec requirement (no feature specs exist yet; `design/specs/
 - Depends on ADR-0001…0005 (Accepted). Narrows ADR-0002 to J1 once `/setup-stack` runs; does not supersede it.
 - Follow-up ADRs this one requires: jobs/outbox (Q-jobs); Kotlin lint and architecture tests (Q-lint); desktop runtime (Q-desk); API style (Decision 10); ETA (Q-eta); licensing signer choice (Decision 8); one ADR per product-local adapter until `saas-core-kotlin` has the module.
 - Threat models: `docs/architecture/threat-models/tenant-isolation.md` (M65), `docs/architecture/threat-models/licensing.md`.
-- **CTO sign-off recommendation (author's, not a gate verdict):** the decision is sound for an 8 GB hosted VPS and a Kotlin-speaking team, and no finding makes it unsafe. Recommend acceptance after the short re-check of this revision (the second review was the independent review of 2026-10-19, and the carrier is now an explicit ADR-0002 J1 addendum), with `ktor-lead` validation after `/setup-stack`. Items due "before the backend ADR" in the note that remain open — Q-agent and Q-506 — are carried as gated items (Decision 7, Risks), not as blockers to acceptance.
+- **CTO sign-off recommendation (author's, not a gate verdict):** the decision is sound for an 8 GB hosted VPS and a Kotlin-speaking team, and no finding makes it unsafe. Recommend acceptance after the short re-check of this revision (re-check 2026-10-19: CONCERNS, N1, N2, N3, N9 and L1–L5 fixed) (the second review was the independent review of 2026-10-19, and the carrier is now an explicit ADR-0002 J1 addendum), with `ktor-lead` validation after `/setup-stack`. Items due "before the backend ADR" in the note that remain open — Q-agent and Q-506 — are carried as gated items (Decision 7, Risks), not as blockers to acceptance.

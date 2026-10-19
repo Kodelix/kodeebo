@@ -249,7 +249,7 @@ Hosted only, so L1–L3 (customer-bundle licences) do not apply; L4 (Collector o
 | 1G-a | 2 | Go: pgx + pgxpool + `WithScope` on `BeginTxFunc`, `PgConn().CopyTo` | executed, all green (F204–F208) |
 | 1G-b | 2 | Go: pgx through `database/sql` | not researched; adds a layer without stated gain |
 | 1K-a | 2 | Ktor: Exposed `suspendTransaction` + HikariCP + pgjdbc (ADR-0002 J1) | JDBC level executed (F213); Exposed→JDBC route NOT SOURCEABLE (F214) |
-| 1K-b | 2 | Ktor: plain JDBC helper for export and job loop beside Exposed | executed except the error path (F213, S22b) |
+| 1K-b | 2 | Ktor: plain-JDBC export carrier (EXP-2 `COPY` only; jobs stay in Exposed; ADR-0002 J1 addendum) | executed except the error path (F213, S22b) |
 | 1K-c | 2 | Ktor: jOOQ | licence gap (ti-F241); not researched further |
 | 2-a | 2 | Own outbox + per-tenant sweep (both tracks) | executed on Go (F208); recommended |
 | 2-b / 2-c | 2 | River (Go) / db-scheduler (JVM) | candidates; ADR-0001 table-class question open |
@@ -278,7 +278,7 @@ Why, weighing the parts against the user's brief (one developer, few languages w
 What the recommendation costs, stated plainly (parts 1 and 2 recommend Go on their own areas):
 - **Footprint:** about 75–115 MB more resident memory per backend process, a 2–4x slower start and a 518 MB image (F114, F116, F117), decisive only on a 1–2 GB VPS (F118).
 - **Build and supply chain:** slower Gradle builds; dependency locking and verification metadata must be **mandatory in CI** (opt-in by default, F110); the `gradle: "9.7"` pin must become `9.7.0` or move to 9.8.x (F108, Q7); the ktlint/detekt gap needs a `cto` ADR (F130, F416, F520).
-- **Data access:** before the export story, S23 (Exposed → JDBC connection for `CopyManager`) and S22b (evict the connection after a `COPY` error) must pass; until then the export and the job loop use a small plain-JDBC adapter (1K-b) that closes the connection on any `COPY` error (F213, F214).
+- **Data access:** before the export story, S23 (Exposed → JDBC connection for `CopyManager`) and S22b (evict the connection after a `COPY` error) must pass; until then the EXP-2 export uses a small plain-JDBC carrier (1K-b) that evicts the connection on any `COPY` error; jobs stay in Exposed (ADR-0006 Decision 5; F213, F214).
 - **Upgrade churn:** several independent upgrade lines and no published Ktor support window (F519, Q-506).
 
 **Conditions that switch the recommendation to Go:**
@@ -327,14 +327,14 @@ Standard: `.claude/docs/observability-standard.md` (OTel span per endpoint and j
 | Q-desk | Desktop runtime A or B (desktop ADR) | Which combination applies (A x Ktor or B x Ktor); the code-sharing row; the B-only switch-to-Go condition | user / `cto` | before the billing implementation |
 | Q2 | VPS memory and vCPU count | **Answered (founder, 2026-10-19):** 8 GB RAM, 2 vCPU, 240 GB SSD, 1 Gbps unmetered; builds on the founder's machine | — | closed |
 | Q-503 | Does the founder want to learn Go? | The B-only switch-to-Go condition (with S32) | user | only if the desktop ADR picks B |
-| S18 | Realistic Ktor service footprint (Exposed/Hikari pool against PG 18.6, Java agent, real JSON load, startup incl. pool) to size the container limit and heap; throughput effect of `TieredStopAtLevel=1` | Compose memory limit and `-Xmx` for the backend on the 8 GB VPS (no longer blocks the track choice) | `researcher` / `performance-engineer` (user approval for any download over 100 MB) | before the first deploy |
+| S18 | Realistic Ktor service footprint (Exposed/Hikari pool against PG 18.6, Java agent, real JSON load, startup incl. pool) to size the container limit and heap; pool count and sizing per LOGIN role (one HikariCP pool per role, ADR-0006 Decision 5a); throughput effect of `TieredStopAtLevel=1` | Compose memory limit and `-Xmx` for the backend on the 8 GB VPS (no longer blocks the track choice) | `researcher` / `performance-engineer` (user approval for any download over 100 MB) | before the first deploy |
 | S32 | Go CAdES-BES with `smallstep/pkcs7` or `unidoc/pkcs7`, checked by OpenSSL like F307 | Go as the server-side ETA signer | `researcher` | before the ADR if Go is chosen |
 | Q-agent | Java agent 2.32.0 defaults (F308) for SQL values, URL query and header capture (read the configuration pages or test through the Collector) | The "no PII in telemetry" claim on Ktor | `observability-engineer` | before the first "no PII in telemetry" claim (founder 2026-10-19: not a blocker to ADR-0006) |
 | S46 | A x Ktor shared Gradle module; Kotlin/JS module consumed from a pnpm/Electron build | Moving the A x Ktor sharing claim from inference to evidence | `researcher` | before the billing implementation |
 | S45 | Windows 4 GB reference PC: Go DLL via FFM, Go WASM in Electron | Any S-1 bridge row | `researcher` with the Windows VM (claim it in the checkpoint) | only if a bridge is chosen |
 | S47 | Rewrite-twice drift test (a rule changed in one language must fail the vectors) | Confidence in S-2 + S-3 | `researcher` / `qa-lead` | with the billing implementation |
 | S23 | Exposed 1.5.1 `suspendTransaction` → JDBC connection for `CopyManager`, in one transaction with the scope helper | Ktor EXP-2 export design | `ktor-lead` / `researcher` | before the export story, if Ktor |
-| S22b | JDBC spike re-run with eviction after a `COPY` error; JDBC outbox claim and sweep | Ktor export error path; any JVM job-latency figure | `researcher` | before the export story, if Ktor |
+| S22b | JDBC export-carrier re-run: eviction after a `COPY` error, ≥ 1 GB streaming under a small heap, the one-snapshot check (the outbox claim and sweep move to the jobs ADR, on Exposed) | Ktor export error path and streaming | `researcher` | before the export story, if Ktor |
 | Q-jobs | Where the work list lives (TD outbox, CP pending list, or a library table) and which ADR-0001 class a library queue table takes | Jobs/outbox ADR; any River or db-scheduler adoption | `cto`, `domain-architect` consulted | the jobs/outbox ADR |
 | Q-export | Export `statement_timeout`/`transaction_timeout` for `job_rt` vs the per-plan request values; export concurrency cap | EXP-2 story; ADR-0005 M16 | `data-lead`, `performance-engineer` | before the export story |
 | Q-recompute | Does the server recompute amounts (S-5) or store the device amount and compare totals? | Whether a server-side engine is needed; S308 scope | user with `product-manager`, `pricing-billing-designer` | before the billing spec |

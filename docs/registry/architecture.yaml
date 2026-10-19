@@ -273,6 +273,11 @@ tenancy_rules:
     rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets its settings with set_config(..., true) exactly once, first, from a server-side source; kinds Job (job_rt: app.tenant_id only, one tenant per transaction), Staff (session lookup; the empty branch list is the ADR-0003 principal read), Device (verified credential: app.branch_id AND app.branch_ids = [same branch], never app.branch_all), Support (grant loaded before any tenant through SupportGrantLookup.find(grantId, operatorId); sets app.tenant_id, app.branch_ids from the grant, app.operator_id, transaction_timeout; access record committed in its own transaction before the read; outcome appended as the last statement of the scoped transaction). No licensing scope kind yet: the licensing ADR adds it by amending ADR-0002, with M27/M38; until then no licensing service role runs. Settings: app.tenant_id, app.branch_ids, app.branch_all, app.device_id, app.branch_id, app.operator_id only. The ADR-0001 § 1c functions are the only access to TD and PL rows outside the helper; also outside it and never on TD or PL rows: platform_rt on CP tables, DDL by deploy_rt and privileged migrations by the bootstrap superuser, physical backup by backup_rt. Ktor track (ADR-0002 J1 addendum 2026-10-19, effective when ADR-0006 is Accepted): one stated exception, the EXP-2 export carrier inside the helper module - a plain-JDBC transaction with auto-commit off whose first statement is the same set-once scope routine; it refuses a null app.tenant_id read-back and a second scope, exposes only copyOut, and is removed when S23 passes. Jobs stay inside Exposed transactions."
     adr: ADR-0002
     adr_status: Accepted
+    status: "superseded_by: ADR-0006 re-check revision 2026-10-19 -> TR-SCOPE-ONCE-PER-TX-R8"
+  - id: TR-SCOPE-ONCE-PER-TX-R8
+    rule: "All tenant-scoped DB work runs in a transaction opened by the one scope helper, which sets its settings with set_config(..., true) exactly once, first, from a server-side source; kinds Job (job_rt: app.tenant_id only, one tenant per transaction), Staff (session lookup; the empty branch list is the ADR-0003 principal read), Device (verified credential: app.branch_id AND app.branch_ids = [same branch], never app.branch_all), Support (grant loaded before any tenant through SupportGrantLookup.find(grantId, operatorId); sets app.tenant_id, app.branch_ids from the grant, app.operator_id, transaction_timeout; access record committed in its own transaction before the read; outcome appended as the last statement of the scoped transaction). No licensing scope kind yet: the licensing ADR adds it by amending ADR-0002, with M27/M38; until then no licensing service role runs. Settings: app.tenant_id, app.branch_ids, app.branch_all, app.device_id, app.branch_id, app.operator_id only. The ADR-0001 § 1c functions are the only access to TD and PL rows outside the helper; also outside it and never on TD or PL rows: platform_rt on CP tables, DDL by deploy_rt and privileged migrations by the bootstrap superuser, physical backup by backup_rt. Ktor track (ADR-0002 J1 addendum 2026-10-19, revised after the re-check; effective when ADR-0006 is Accepted): one stated exception, the EXP-2 export carrier inside the helper module - Job and Staff scopes only (Support and Device refused); one REPEATABLE READ transaction with auto-commit off for the whole export, whose first statement is the same set-once scope routine; it refuses a null app.tenant_id read-back and a second scope, runs every table's copyOut in that transaction (one snapshot), exposes only an export session with copyOut, and is removed when S23 passes. Apart from the EXP-2 COPY statements, jobs and the outbox claim and sweep stay inside Exposed transactions. The relaxed reading of J1 applies to this carrier only."
+    adr: ADR-0002
+    adr_status: Accepted
     status: active
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
@@ -385,12 +390,12 @@ interface_contracts:
     contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Job | Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query). Ktor track (ADR-0002 J1 addendum 2026-10-19): the helper module also offers copyOut(src, Scope, sql, OutputStream): Long for the EXP-2 export only - same Scope and set-once routine, no Connection, CopyManager or statement exposed, connection evicted on any exception."
     adr: ADR-0002
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0006 re-check revision 2026-10-19 -> IC-SCOPE-HELPER-R5"
   - id: IC-JDBC-COPY-CARRIER-R2
     contract: "EXP-2 export only (ADR-0002 J1 addendum 2026-10-19, approved with ADR-0006): a small plain-JDBC carrier inside the ADR-0002 scope-helper module, until S23 shows a supported route from Exposed suspendTransaction to the JDBC Connection. Same Scope; same set-once routine from the same constants module as the first statement; auto-commit off before it; reads back current_setting('app.tenant_id', true) and refuses if null; refuses a second scope; exposes only copyOut(src, Scope, sql, OutputStream): Long, never a Connection, CopyManager or statement; on any exception the connection is evicted from the pool (close() on the pool proxy does not count). Removed when S23 passes. Jobs do not use it."
     adr: ADR-0006
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0006 re-check revision 2026-10-19 -> IC-JDBC-COPY-CARRIER-R3"
   - id: IC-OUTBOX-SWEEP-R2
     contract: "Jobs direction (details in the jobs/outbox ADR): own transactional outbox in TD under the tenant policy; platform_rt lists tenant ids from CP tenant_status; one job_rt transaction per tenant through withScope on Exposed suspendTransaction (raw SQL via Exposed exec) claims work with FOR UPDATE SKIP LOCKED; the dedup row is written in the effect's transaction; traceparent stored on work rows; a CP pending-work list before tenant counts grow."
     adr: ADR-0006
@@ -398,6 +403,16 @@ interface_contracts:
     status: active
   - id: IC-BILLING-VECTORS
     contract: "Device and server billing: integer money in piasters and integer milliseconds, no floating point (F401); billing rules as data where possible; one shared vector suite in contracts/ or tools/ that the server CI runs (and the device CI), with a drift test (S47)."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: IC-SCOPE-HELPER-R5
+    contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Job | Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query). Ktor track (ADR-0002 J1 addendum 2026-10-19, revised after the re-check; effective when ADR-0006 is Accepted): the helper module also offers exportSession(src, Scope = Job | Staff, block: ExportSession.() -> T) with ExportSession.copyOut(sql, OutputStream): Long, for the EXP-2 export only - one REPEATABLE READ transaction per session, scope set once and first, Support and Device refused, no Connection, CopyManager or statement exposed, connection evicted on any exception."
+    adr: ADR-0002
+    adr_status: Accepted
+    status: active
+  - id: IC-JDBC-COPY-CARRIER-R3
+    contract: "EXP-2 export only (ADR-0002 J1 addendum 2026-10-19, revised after the re-check, approved with ADR-0006): a small plain-JDBC carrier inside the ADR-0002 scope-helper module, until S23 shows a supported route from Exposed suspendTransaction to the JDBC Connection. Job and Staff scopes only (ADR-0005 Decision 4); Support and Device refused. One REPEATABLE READ transaction, auto-commit off, for the whole export; first statement the same set-once routine from the same constants module; reads back current_setting('app.tenant_id', true) and refuses if null; refuses a second scope; every table's copyOut runs in that transaction, so all tables come from one snapshot and the manifest row counts agree. Exposes only exportSession { copyOut(sql, OutputStream): Long }, never a Connection, CopyManager or statement; on any exception the connection is evicted from the pool (close() on the pool proxy does not count). Removed when S23 passes. Apart from the EXP-2 COPY statements, jobs and the outbox claim and sweep stay inside Exposed transactions."
     adr: ADR-0006
     adr_status: Proposed
     status: active
