@@ -1,0 +1,8 @@
+phase 3 TS-02 (outbox deletion and renumbering by an insider), commit 4094520
+  a1_outbox_row_deleted      exercised 20/20  violating 0  PASS  seed 1: {'gaps': [{'alerted': False, 'device_id': 'dev-1', 'missing_from': 5, 'resolved_by': 'device', 'state': 'closed'}], 'lost': [], 'alerts': [], 'blind_spot_confirmed': None}
+  a2_sale_erased             exercised 20/20  violating 0  PASS  seed 1: {'gaps': [{'alerted': True, 'device_id': 'dev-1', 'missing_from': 5, 'resolved_by': 'owner', 'state': 'closed'}], 'lost': [{'device_id': 'dev-1', 'from_seq': 5, 'owner_alert': True, 'to_seq': 5}], 'alerts': ['missing sequence 5, possibly deleted on the device'], 'blind_spot_confirmed': None}
+  b2_renumber_marker_forged  exercised 20/20  violating 0  PASS  seed 1: {'gaps': [], 'lost': [], 'alerts': [], 'blind_spot_confirmed': True}
+  mutant gap_silent       CAUGHT after 2 runs: ('R58', "owner report after the threshold: [{'alerted': False, 'device_id': 'dev-1', 'label': 'held: 3 sales, 45.00 EGP', 'missing_from': 5, 'n': 3, 'piasters': 4500}]")
+  mutant gap_auto_skip    CAUGHT after 1 runs: ('I1', 's1-x4 acknowledged but missing on the server')
+  mutant gap_refused      CAUGHT after 1 runs: ('I1', 's1-x4 acknowledged but missing on the server')
+TS-02: PASS  (total 36.8 s)

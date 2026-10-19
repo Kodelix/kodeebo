@@ -1,0 +1,23 @@
+phase 2, commit 4094520, 10 seeds per cell, campaign 300
+  down            faulted   92 failed   80 dup    0 both   0  violating 0  PASS
+  req_blackhole   faulted   92 failed   80 dup    0 both   0  violating 0  PASS
+  req_cut_10      faulted   92 failed   80 dup    0 both   0  violating 0  PASS
+  req_cut_120     faulted   92 failed   80 dup    0 both   0  violating 0  PASS
+  req_cut_400     faulted   92 failed   80 dup    0 both   0  violating 0  PASS
+  reset_peer      faulted   92 failed   80 dup   80 both   0  violating 0  PASS
+  resp_blackhole  faulted   92 failed   80 dup   80 both   0  violating 0  PASS
+  resp_cut_1      faulted   92 failed   80 dup   80 both   0  violating 0  PASS
+  resp_cut_150    faulted   92 failed   80 dup   80 both   0  violating 0  PASS
+  resp_cut_20     faulted   92 failed   80 dup   80 both   0  violating 0  PASS
+  slicer          faulted   92 failed    0 dup    0 both   0  violating 0  PASS
+  slow            faulted   92 failed    0 dup    0 both   0  violating 0  PASS
+  concurrent      faulted   92 failed    0 dup   80 both  80  violating 0  PASS
+  campaign 250/300  violating 0  (193 s)
+  campaign: 300 runs, 107 with a process kill, violating 0  PASS
+  mutant separate_outbox_txn    CAUGHT after 5 runs: ('I1', 's5-a2 recorded on the device but missing on the server')
+  mutant no_dedupe              CAUGHT after 1 runs: ('I2', 's1-a0 has 2 sale rows')
+  mutant ack_before_commit      CAUGHT after 147 runs: ('I1', 's147-a6 acknowledged but missing on the server')
+  mutant double_minute          CAUGHT after 1 runs: ('I3', 's1-a0 sale 21550 != expected 21400')
+  TS-09 business_hours=1: 2 periods, sales 16/16 on server, PASS []
+  TS-09 business_hours=0: 2 periods, sales 15/15 on server, PASS []
+GATE: PASS  (total 525.1 s)

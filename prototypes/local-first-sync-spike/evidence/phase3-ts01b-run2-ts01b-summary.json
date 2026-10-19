@@ -1,0 +1,135 @@
+{
+ "harness_commit": "4094520",
+ "started": "2026-10-19 10:41:29",
+ "cells": [
+  {
+   "cell": "a_restore_drawer_kept",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "blind_spot_confirmed": true,
+    "drawer": [
+     "drawer surplus of 45.00 EGP at shift close"
+    ]
+   },
+   "seconds": 10.0,
+   "result": "PASS"
+  },
+  {
+   "cell": "b_restore_cash_removed",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "blind_spot_confirmed": true,
+    "drawer": []
+   },
+   "seconds": 9.9,
+   "result": "PASS"
+  },
+  {
+   "cell": "c_offline_alert",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "alert_text": [
+     "device offline for more than 6 h: its sales since then are only on the device"
+    ],
+    "cashier": "no connection to the server for 7 h"
+   },
+   "seconds": 7.8,
+   "result": "PASS"
+  },
+  {
+   "cell": "d_usb_restore",
+   "runs": 20,
+   "exercised": 20,
+   "violating_runs": 0,
+   "first_bad": [],
+   "sample_seed_1": {
+    "lost": 2,
+    "review": [
+     "s1-x3",
+     "s1-x4"
+    ],
+    "quarantine": "second_machine"
+   },
+   "seconds": 10.7,
+   "result": "PASS"
+  }
+ ],
+ "mutants": {
+  "no_drawer_check": {
+   "caught": true,
+   "runs_to_catch": 1,
+   "seed_cell": [
+    1,
+    "a_restore_drawer_kept"
+   ],
+   "first_violation": [
+    "R64",
+    "shift close difference [0], model 4500"
+   ],
+   "seconds": 0.4
+  },
+  "offline_alert_never": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_offline_alert"
+   ],
+   "first_violation": [
+    "R65",
+    "offline alerts at 2 h 0, 7 h 0, after reconnect 0; model 0, 1, 1"
+   ],
+   "seconds": 1.3
+  },
+  "offline_alert_repeat": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_offline_alert"
+   ],
+   "first_violation": [
+    "R65",
+    "offline alerts at 2 h 0, 7 h 2, after reconnect 2; model 0, 1, 1"
+   ],
+   "seconds": 1.4
+  },
+  "no_offline_warning": {
+   "caught": true,
+   "runs_to_catch": 3,
+   "seed_cell": [
+    1,
+    "c_offline_alert"
+   ],
+   "first_violation": [
+    "R65",
+    "cashier warning at 2 h False, 7 h False, after reconnect False; model False, True, False"
+   ],
+   "seconds": 1.3
+  },
+  "no_machine_check": {
+   "caught": true,
+   "runs_to_catch": 4,
+   "seed_cell": [
+    1,
+    "d_usb_restore"
+   ],
+   "first_violation": [
+    "R66",
+    "restore on a new PC: quarantine reason sequence_reused, model second_machine"
+   ],
+   "seconds": 2.0
+  }
+ },
+ "gate": "PASS",
+ "seconds_total": 44.9
+}
