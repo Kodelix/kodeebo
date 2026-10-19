@@ -67,6 +67,13 @@ Rules you must follow:
   images, archives). If one download, or the run's total, would exceed 100 MB,
   do not fetch it: stop and return "needs approval: <what>, <size>" so the caller
   asks the user. The user's bandwidth is limited and paid.
+- Implicit downloads count: a tool that fetches on its own (Go toolchain
+  auto-switch, Gradle wrapper, Maven/Gradle dependency resolution, docker pull,
+  npx/pnpm dlx, pip) is a download. Run such tools in no-download mode by default
+  (GOTOOLCHAIN=local, GOFLAGS=-mod=mod with GOPROXY=off once modules are present,
+  gradle --offline, docker run --pull=never) and list what they would fetch
+  before switching it off. Relocating a cache can trigger a fresh fetch: check
+  first.
 - Never paste secrets, customer data or internal URLs into a search query or the
   note.
 - Recommend, do not decide: the Decision section holds your recommendation marked

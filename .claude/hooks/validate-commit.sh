@@ -246,6 +246,7 @@ done
 # (WT_FILES). core.quotePath=false: without it a non-ASCII path comes back
 # quoted ("assets/data/caf\303\251.json") and no pattern below matched it.
 _GIT="git -c core.quotePath=false"
+_VC_ONLY=0  # 1 = a path-limited commit: only the named paths are recorded
 COMMIT_ARGS=" ${COMMIT_SEG#*[[:space:]]commit}"
 INDEX_FILES=$($_GIT diff --cached --name-only 2>/dev/null)
 WT_FILES=""
@@ -439,7 +440,7 @@ for s, new, force in ([] if only else adds):
         more += git("ls-files", "--others", "--full-name", *([] if force else ["--exclude-standard"]), "--", *s).stdout
 sys.stdout.buffer.write((b"CCGS-ONLY\n" if only else b"CCGS-INDEX\n") + (out.stdout if out else b"") + more)
 ' "$_VC_AWAY" 2>/dev/null)
-    case "$_VC_TOK" in CCGS-ONLY*) INDEX_FILES="" ;; esac
+    case "$_VC_TOK" in CCGS-ONLY*) INDEX_FILES=""; _VC_ONLY=1 ;; esac
     WT_FILES=$(printf '%s\n%s' "$WT_FILES" "$(printf '%s\n' "$_VC_TOK" | tail -n +2)")
 else
     _AFTER=$(printf '%s' "$COMMAND" | LC_ALL=C awk '
@@ -531,8 +532,25 @@ fi
 # scan always runs, so a machine without gitleaks is still protected against
 # the obvious cases. The built-in list is deliberately short: every pattern
 # here BLOCKS, so it must not cry wolf.
+# Sessions share one index. A path-limited commit records only its named paths,
+# so another session's staged file must not block it: scan those paths' working
+# copies, not the whole index (dogfood #31).
 if command -v gitleaks >/dev/null 2>&1; then
-    if gitleaks git --help >/dev/null 2>&1; then
+    if [ "$_VC_ONLY" = 1 ]; then
+        _GL_OUT=""; _GL_RC=0
+        while IFS= read -r _f; do
+            [ -f "$_f" ] || continue
+            if gitleaks dir --help >/dev/null 2>&1; then
+                _o=$(gitleaks dir --redact --verbose --no-color --no-banner --exit-code 1 "$_f" 2>&1); _r=$?
+            else
+                _o=$(gitleaks detect --no-git --source "$_f" --redact --verbose --no-color --no-banner --exit-code 1 2>&1); _r=$?
+            fi
+            _GL_OUT=$(printf '%s\n%s' "$_GL_OUT" "$_o")
+            if [ "$_r" = 1 ]; then _GL_RC=1; elif [ "$_r" != 0 ] && [ "$_GL_RC" = 0 ]; then _GL_RC=$_r; fi
+        done <<EOF_VC_FILES
+$WT_FILES
+EOF_VC_FILES
+    elif gitleaks git --help >/dev/null 2>&1; then
         _GL_OUT=$(gitleaks git --pre-commit --staged --redact --verbose --no-color --no-banner --exit-code 1 . 2>&1); _GL_RC=$?
     else
         _GL_OUT=$(gitleaks protect --staged --redact --verbose --no-color --no-banner --exit-code 1 2>&1); _GL_RC=$?
@@ -554,7 +572,12 @@ fi
 # obviously-fake marker (EXAMPLE, FAKE, DUMMY, NOT A REAL, TEST ONLY, PLACEHOLDER,
 # REDACTED, XXXXXXXX): a fixture key that says it is fake is not a leak, a bare
 # one still blocks. Everything outside those directories is always scanned.
-_VC_ADDED=$($_GIT diff --cached -U0 --no-color 2>/dev/null; if [ -n "$WT_FILES" ]; then $_GIT diff -U0 --no-color 2>/dev/null; fi)
+if [ "$_VC_ONLY" = 1 ]; then
+    # Path-limited: the named paths' working copies against HEAD, nothing else.
+    _VC_ADDED=$(printf '%s\n' "$WT_FILES" | grep -v '^$' | tr '\n' '\0' | xargs -0 -r $_GIT diff HEAD -U0 --no-color -- 2>/dev/null)
+else
+    _VC_ADDED=$($_GIT diff --cached -U0 --no-color 2>/dev/null; if [ -n "$WT_FILES" ]; then $_GIT diff -U0 --no-color 2>/dev/null; fi)
+fi
 _VC_DIFF=$(printf '%s\n' "$_VC_ADDED" | LC_ALL=C awk '
     function flush(   i, fake, low) {
         if (file == "") return

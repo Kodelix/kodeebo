@@ -56,6 +56,7 @@ Per-type evidence and defaults are in **Test evidence by story type** below.
 - The body references the story or task ID (`Story: BILLING-003`).
 - No commit without the user's instruction.
 - Stage in one command, commit in the next. The commit hook's checks (the secret scan included) read the index before the command runs, so it blocks `git add … && git commit` in a single call.
+- Parallel sessions share one git index. Commit your own files by naming them (`git commit -m "..." -- <paths>`), which records only those paths, and do not leave files staged between turns: a plain commit scans and records everything staged, including another session's work.
 
 ## Test evidence by story type
 
