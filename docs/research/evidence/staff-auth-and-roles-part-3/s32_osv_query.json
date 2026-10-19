@@ -1,0 +1,8 @@
+{"queries":[
+ {"package":{"name":"io.ktor:ktor-server-auth-jvm","ecosystem":"Maven"},"version":"3.6.0"},
+ {"package":{"name":"io.ktor:ktor-server-sessions-jvm","ecosystem":"Maven"},"version":"3.6.0"},
+ {"package":{"name":"io.ktor:ktor-server-core-jvm","ecosystem":"Maven"},"version":"3.6.0"},
+ {"package":{"name":"org.jetbrains.exposed:exposed-core","ecosystem":"Maven"},"version":"1.5.1"},
+ {"package":{"name":"electron","ecosystem":"npm"},"version":"44.8.0"},
+ {"package":{"name":"electron","ecosystem":"npm"},"version":"22.3.27"}
+]}

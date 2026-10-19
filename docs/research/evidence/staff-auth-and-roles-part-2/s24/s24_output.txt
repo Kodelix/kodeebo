@@ -1,0 +1,22 @@
+date_utc: 2026-10-19T12:45:27Z
+== maven-metadata jna-platform (latest/release)
+    <latest>5.19.1</latest>
+    <release>5.19.1</release>
+    <lastUpdated>20260612165939</lastUpdated>
+== Maven org.bouncycastle:bcprov-jdk18on 1.86
+count: 0
+== Maven com.password4j:password4j 1.8.4
+count: 0
+== Maven net.java.dev.jna:jna-platform 5.17.0
+count: 0
+== Maven net.java.dev.jna:jna 5.17.0
+count: 0
+== npm electron 44.8.0
+count: 0
+
+== SANITY CHECK (added after the run above): a version known to be old, to prove the API returns advisories at all
+bcprov-jdk18on 1.70 count: 9
+  GHSA-4h8f-2wvx-gg5w | Bouncy Castle Java Cryptography API vulnerable to DNS poisoning
+  GHSA-574f-3g2m-x479 | Bouncy Castle for Java GOST 28147 CTR mode reuses keystream after 255 blocks
+  GHSA-67mf-3cr5-8w23 | Bouncy Castle for Java on All (API modules) allows Excessive Allocation
+  GHSA-8xfc-gm6g-vgpv | Bouncy Castle certificate parsing issues cause high CPU usage during parameter evaluation.

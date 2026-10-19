@@ -1,0 +1,33 @@
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+== scenario 1: app-style check, no lock
+
+[t1 B] check passed, deleted
+
+[t1 A] check passed, deleted
+owners left t1: 0
+== scenario 2: app-style check, tenant row FOR UPDATE
+1
+
+[t2 A] check passed, deleted
+1
+
+[t2 B] REFUSED: last owner
+owners left t2: 1
+== scenario 3: deferred constraint trigger, no lock
+[t3 B] commit statement finished
+[t3 A] commit statement finished
+owners left t3: 0
+== scenario 4: deferred constraint trigger + advisory lock
+[t4 B] commit statement finished
+ERROR:  last owner (tenant 4)
+CONTEXT:  PL/pgSQL function chk_lock() line 5 at RAISE
+[t4 A] commit statement finished
+owners left t4: 1
+== scenario 5: system owner role is immutable
+ERROR:  the owner role cannot be changed or deleted
+CONTEXT:  PL/pgSQL function roles_guard() line 3 at RAISE
+ERROR:  the owner role cannot be changed or deleted
+CONTEXT:  PL/pgSQL function roles_guard() line 3 at RAISE
+ERROR:  the owner role cannot be changed or deleted
+CONTEXT:  PL/pgSQL function roles_guard() line 3 at RAISE
+manager perms now: {void}

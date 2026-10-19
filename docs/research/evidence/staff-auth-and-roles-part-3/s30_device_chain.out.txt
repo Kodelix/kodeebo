@@ -1,0 +1,11 @@
+S30 results (100 entries; server acknowledged heads at seq 20, 50, 80; entries 81-100 never synced)
+0 control: untouched                                           internal check: ok                                 server head check: ok
+a edit synced entry 49 (void to discount), hashes not recomputed internal check: BROKEN at position 49 (seq 49)     server head check: ok
+b edit synced entry 63 (drop approver) and recompute later hashes internal check: ok                                 server head check: REFUSED: hash at seq 80 differs from the value acknowledged earlier (history rewritten)
+c delete synced entry 70 (middle)                              internal check: BROKEN at position 70 (seq 71)     server head check: REFUSED: hash at seq 80 differs from the value acknowledged earlier (history rewritten)
+d delete UNSYNCED entry 90 (middle)                            internal check: BROKEN at position 90 (seq 91)     server head check: ok
+e truncate UNSYNCED tail (entries 95-100)                      internal check: ok                                 server head check: ok
+f truncate a synced tail (entries 61-100)                      internal check: ok                                 server head check: REFUSED: device presents 60 entries, server already acknowledged seq 80 (truncation)
+g edit UNSYNCED entry 84 (void to discount) and recompute      internal check: ok                                 server head check: ok
+i swap two unsynced entries 85 and 86, hashes untouched        internal check: BROKEN at position 85 (seq 86)     server head check: ok
+j delete unsynced entries 91-95 and recompute later hashes     internal check: ok                                 server head check: ok

@@ -1,0 +1,2 @@
+ARGON2 ERROR: EVP_KDF_derive failed
+00D4ECA72A7F0000:error:1C8000EA:Provider routines:kdf_argon2_derive:invalid thread pool size:providers/implementations/kdfs/argon2.c:1077:requested 2 threads, available: 0

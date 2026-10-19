@@ -1,0 +1,10 @@
+process-start baseline (PBKDF2 iter=1 via the same CLI): min 0.002 s median 0.002 s
+Argon2id (OpenSSL 3.6.5 CLI, single core, threads=1)              min s  median s
+m=  19456 KiB (  19 MiB) t=2 p=1  -> 0.017 0.018
+m=  65536 KiB (  64 MiB) t=3 p=4  -> 0.086 0.088
+m=  65536 KiB (  64 MiB) t=3 p=1  -> 0.086 0.087
+m= 131072 KiB ( 128 MiB) t=2 p=1  -> 0.134 0.135
+m= 131072 KiB ( 128 MiB) t=3 p=1  -> 0.184 0.186
+m= 262144 KiB ( 256 MiB) t=1 p=1  -> 0.169 0.179
+m= 262144 KiB ( 256 MiB) t=2 p=1  -> 0.262 0.264
+m= 524288 KiB ( 512 MiB) t=1 p=1  -> 0.333 0.348

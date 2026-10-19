@@ -1,0 +1,2 @@
+# WRONG TEST (run 1, 2026-10-19T12:46Z): script wrote to /dev/stdin and sent no query; the {} below is not 'no advisories'. See run 2.
+{}

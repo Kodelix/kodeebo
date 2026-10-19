@@ -1,0 +1,35 @@
+# WRONG TEST (run 1, 2026-10-19): the seed INSERT used column t instead of id, so no owner rows existed and every count was 0. Nothing below is a finding. Kept per the evidence rule; corrected script is s31_last_owner.sh (run 2).
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+ERROR:  column "t" does not exist
+LINE 1: INSERT INTO staff_roles SELECT t,s,'owner' FROM tenants, (VA...
+                                       ^
+== scenario 1: app-style check, no lock
+
+[t1 A] REFUSED: last owner
+
+[t1 B] REFUSED: last owner
+owners left t1: 0
+== scenario 2: app-style check, tenant row FOR UPDATE
+1
+
+[t2 B] REFUSED: last owner
+1
+
+[t2 A] REFUSED: last owner
+owners left t2: 0
+== scenario 3: deferred constraint trigger, no lock
+[t3 A] commit statement finished
+[t3 B] commit statement finished
+owners left t3: 0
+== scenario 4: deferred constraint trigger + advisory lock
+[t4 B] commit statement finished
+[t4 A] commit statement finished
+owners left t4: 0
+== scenario 5: system owner role is immutable
+ERROR:  the owner role cannot be changed or deleted
+CONTEXT:  PL/pgSQL function roles_guard() line 3 at RAISE
+ERROR:  the owner role cannot be changed or deleted
+CONTEXT:  PL/pgSQL function roles_guard() line 3 at RAISE
+ERROR:  the owner role cannot be changed or deleted
+CONTEXT:  PL/pgSQL function roles_guard() line 3 at RAISE
+manager perms now: {void}

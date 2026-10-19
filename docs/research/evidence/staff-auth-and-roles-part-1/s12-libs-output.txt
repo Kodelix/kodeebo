@@ -1,0 +1,30 @@
+run (UTC): 2026-10-19T12:46:15.715527+00:00
+
+== com.webauthn4j:webauthn4j-core repo webauthn4j/webauthn4j
+maven latest 0.29.1.RELEASE 2025-05-01
+github licence Apache-2.0 archived False pushed 2026-10-08T00:39:29Z
+OSV hits at 0.29.1.RELEASE : []
+
+== com.yubico:webauthn-server-core repo Yubico/java-webauthn-server
+maven latest 2.8.0-alpha3 2025-05-05
+github licence NOASSERTION archived False pushed 2026-10-13T14:17:45Z
+OSV hits at 2.8.0-alpha3 : []
+
+== com.eatthepath:java-otp repo jchambers/java-otp
+maven latest 0.4.0 2022-07-31
+github licence MIT archived False pushed 2026-10-01T13:33:33Z
+OSV hits at 0.4.0 : []
+
+== dev.samstevens.totp:totp repo samdjstevens/java-totp
+maven latest 1.7.1 2020-11-05
+github licence MIT archived False pushed 2024-07-30T15:46:23Z
+OSV hits at 1.7.1 : []
+
+== npm @simplewebauthn/browser, @simplewebauthn/server
+@simplewebauthn/browser 14.0.0 2026-09-02 licence MIT
+OSV hits at 14.0.0 : []
+@simplewebauthn/server 14.0.3 2026-09-25 licence MIT
+OSV hits at 14.0.3 : []
+
+== control: OSV must return hits for a known-bad version
+log4j-core 2.14.1 hits: 7
