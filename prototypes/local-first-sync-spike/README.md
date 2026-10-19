@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on committed harness `3253ba0`, finding P3-F13, (b2) blind spot confirmed; S207 (old client against a newer server) PASS on committed harness `31b853d`; TS-01b + TS-10 + OQ27 items PASS on committed harness `4094520` (TS-01b blind spot confirmed, M3 limit confirmed); remaining phase 3 legs in order A (founder, 2026-10-18): TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on committed harness `3253ba0`, finding P3-F13, (b2) blind spot confirmed; S207 (old client against a newer server) PASS on committed harness `31b853d`; TS-01b + TS-10 + OQ27 items PASS on committed harness `4094520` (TS-01b blind spot confirmed, M3 limit confirmed); S206 + TS-03b + TS-06a/b PASS on the dev run, findings P3-F14 and P3-F15; next in order A (founder, 2026-10-18): TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -281,6 +281,16 @@ bash prototypes/local-first-sync-spike/run.sh ts01b [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay01b <seed> <cell> [mutant]
+```
+
+S206, TS-03b and TS-06a/b (re-bootstrap after a lost or damaged store; no resurrected deletes):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh s206 [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay206 <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1624,6 +1634,68 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **The offline threshold value and the copy interval:** the spec.
 - **The printed End Day summary:** the desktop spike's real-printer day (S50).
 - **A copy that is itself tampered with:** it carries the commit marker, so the TS-02 / OQ28 marker reasoning applies.
+
+### Phase 3 — S206, TS-03b and TS-06a/b: re-bootstrap after a lost or damaged store; no resurrected deletes
+
+**Pass signals (sync note § 9.1 S206; § 9.1.1 TS-03 (b), TS-06 (a), (b)):**
+- **S206:** no resurrected deletes; unsynced facts are never silently discarded.
+- **TS-03b (store damaged) and TS-06 (store deleted, while closed or while running):** the app detects it, never writes over the damaged data, and re-bootstraps from the server. Unsynced commands that were lost surface as a reported gap, never silently.
+
+**Design under test (`REBOOTSTRAP=1`):**
+- **Detection:** at start, a damaged store fails its integrity check, and a deleted database beside a valid commit marker fails the marker check. Both already refused the store.
+- **Re-bootstrap:**
+  - The refused files and the marker are moved aside into `client.db.damaged-N/`, never written over.
+  - The device asks `GET /bootstrap`, reporting the marker's sequence, the highest it ever committed.
+  - The server records the range between its cursor and that sequence as a **permanent lost range** (`store_lost`) with one owner alert. The cursor skips it, explicitly and on record, and the device is told where its sequence continues. Then it opens a fresh store at that sequence.
+- **Marker gone too:** every batch now reports the device's counter (`local_seq`), so the server knows the highest sequence committed at the last contact. Sales after that contact can't be counted, and the alert says so, with the last-contact time.
+- **First install:** a fresh store with no marker always asks the server, so a known identity never restarts silently at sequence 1. A genuine first install (no cursor, nothing reported) raises nothing.
+- **Deleted while running (TS-06b):** on Linux, SQLite refuses the next write to an unlinked database file ("attempt to write a readonly database"). That operation fails visibly, and the device re-bootstraps at once, in-process.
+- **S206, deletes:** the config feed's catalogue is a full snapshot, so items the owner deleted are removed from the device. Before this leg the device only added or updated items.
+
+**Cells** (each: 2 sales synced, then the loss):
+
+| Cell | Loss | Expected |
+|---|---|---|
+| `a_ts06a_deleted_closed` | 2 unsynced sales; the app stopped; the database deleted (marker kept) | At start: refused, re-bootstrapped; lost range 3–4 recorded with one alert ("2 sales it had recorded never reached the server"); the next sale applies normally |
+| `b_ts06b_unlinked_running` | The database deleted while the app runs | The next sale is refused visibly (SQLite: read-only, moved) and the device re-bootstraps in-process; nothing accepted, nothing lost; one alert (0 sales missing) |
+| `c_ts03b_corrupted` | 2 unsynced sales; the app stopped; 64 bytes overwritten in a page | Integrity check fails; the damaged database is kept aside unchanged (same hash); lost range 3–4; the next sale applies |
+| `d_marker_also_gone` | 2 unsynced sales; the database and the marker deleted | The fresh store asks the server; no countable range (the device last reported sequence 2); the alert says later sales cannot be counted, with the last contact time; the next sale applies, no conflict |
+| `e_s206_deleted_item` | The owner deletes an item; 30 days pass; the device pulls the feed | Selling the deleted item is refused (`price_missing`); the other item sells |
+
+**Checks added:**
+- **R67:** never a silent loss. The recorded range is exact when the marker survives; without it, the alert says later sales cannot be counted. One owner alert.
+- **R68:** a damaged store is kept aside unchanged.
+- **R69:** after the re-bootstrap the counter sells and syncs normally; nothing is applied twice and nothing conflicts (I2, I8).
+- **R70 (S206):** a deleted item is not resurrected.
+
+**Mutants:**
+- `recreate_silently` (client): a lost store recreated empty at sequence 0, no bootstrap.
+- `overwrite_damaged` (client): the damaged files deleted.
+- `silent_rebootstrap` (server): no loss recorded, no alert.
+- `catalogue_upsert_only` (client): the old feed handling.
+
+#### Run 1 (dev, uncommitted harness on `34cb848`) — PASS
+
+`evidence/phase3-s206-run1-dev*`, 62 s.
+- **Cells:** all 5 PASS, 20 seeds each, 0 violations.
+- **Mutants:** all four caught.
+  - `recreate_silently` after 1 run (I1: the new sales collided with sequences the server held and never reached it).
+  - `overwrite_damaged` after 3, in `c` (R68).
+  - `silent_rebootstrap` after 1 (I1).
+  - `catalogue_upsert_only` after 5, in `e` (R70).
+- **Smoke on the changed client and server:** SC-19, SC-29, SC-13 and SC-23 (2 seeds each) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**Finding P3-F14 — on Linux a database deleted under the running app refuses the next write, so nothing is accepted into a file about to vanish.** The first model expected the app to keep writing through its open file. SQLite instead detects the unlink and fails the write (`SQLITE_READONLY_DBMOVED`). The sale is refused visibly, which is safe. But the app then stayed refused until a restart, which breaks "the counter never waits". It now re-bootstraps at once. Windows' sharing rules behave differently (delete-while-open is the desktop spike's TS-06c).
+
+**Finding P3-F15 — the device kept catalogue items the owner deleted.** The config feed was applied as an upsert, so a deleted item stayed sellable on the device forever, however long ago it was deleted. That is a resurrected delete with no tombstone window involved. The feed is a snapshot, and the device now applies it as one.
+
+**For the founder:** a device that lost its store re-bootstraps only when the server is reachable. Until then the store stays refused and the counter cannot sell. With the marker intact, the device could instead continue offline at the marker's sequence and report the loss later. Should it?
+
+**Not covered:**
+- **Stock, business day and open sessions after a re-bootstrap** (the SC-29, SC-31 and SC-30 state): the fresh store starts empty except for the feed. Rebuilding that state from the server is for the bootstrap spec.
+- **Device identity kept outside the store:** the spike's device id is fixed. On Windows it must survive the store's loss (desktop-note S11 key custody, OQ7 machine id).
+- **The Windows store half of TS-03c and TS-06c:** the desktop spike's round 4 (G5).
+
 
 
 

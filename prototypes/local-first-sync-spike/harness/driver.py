@@ -365,7 +365,8 @@ class Run:
         extra, allowed = self.extra(self, dump) if self.extra else ([], frozenset())
         violations = oracle.check(intent, acked, client, dump, quiesced, integrity, allowed) + extra
         events = self.db + ".events.jsonl"
-        if os.path.exists(events):  # no tamper in these runs, so any store refusal is a store failure
+        if os.path.exists(events) and not getattr(self, "store_refusal_expected", False):
+            # no tamper in these runs, so any store refusal is a store failure (S206 legs check their own events)
             refusals = [ln for ln in open(events) if json.loads(ln).get("event", "").startswith("store_")]
             if refusals:
                 violations.append(("I9", f"client refused its store: {refusals[0][:200]}"))
@@ -4333,6 +4334,203 @@ def ts01b(seeds=20, mutant_budget=12):
     return ok
 
 
+S206_CELLS = ["a_ts06a_deleted_closed", "b_ts06b_unlinked_running", "c_ts03b_corrupted", "d_marker_also_gone",
+              "e_s206_deleted_item"]
+S206_MUTANTS = ["recreate_silently", "overwrite_damaged", "silent_rebootstrap", "catalogue_upsert_only"]
+
+
+def s206_script(cell):
+    def script(run):
+        st = run.s206 = {"cell": cell, "mismatch": [], "lost": [], "want_lost": None, "exercised": False}
+        n = [0]
+        price = SC13_PRICES["cafe"]
+
+        def sell(op="sell_items", **kw):
+            aid = f"s{run.seed}-x{n[0]}"
+            n[0] += 1
+            msg = {"op": op, "action_id": aid, "n": 1, **kw}
+            r = run.send(msg)
+            if r and r.get("ok"):
+                a = {"op": op, "action_id": aid, "start_min": 0, "end_min": 0, "expected_piasters": kw.get("price", price)}
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+                run.seq_of[aid] = r.get("seq")
+            return aid, r
+
+        def sync(k=3):
+            r = None
+            for _ in range(k):
+                r = run.send({"op": "sync"})
+            return r
+
+        def stop():
+            run.send({"op": "exit"})
+            run.client.wait()
+
+        def dbfiles():
+            return [x for x in os.listdir(run.dir) if x.startswith("client.db") and x.endswith(("db", "-journal"))
+                    and os.path.isfile(os.path.join(run.dir, x))]
+
+        post_json("/config", {"prices": SC13_PRICES})
+        run.send({"op": "pull_config"})
+        if cell == "e_s206_deleted_item":
+            post_json("/stock", {"items": {"snack": {"price": 1000, "policy": "allow_alert"},
+                                           "cola": {"price": 1500, "policy": "allow_alert"}}})
+            run.send({"op": "pull_config"})
+            post_json("/stock", {"delete": ["cola"]})  # the owner deletes cola while the device is away
+            post_json("/test/clock?advance=2592000", {})  # 30 days later
+            run.send({"op": "pull_config"})
+            _, r = sell("sell_stock", lines=[{"item": "cola", "n": 1}], price=1500)
+            st["cola_after_delete"] = r
+            if r and r.get("ok"):
+                st["mismatch"].append(("R70", f"an item deleted on the server was sold after the device came back: {r}"))
+            sell("sell_stock", lines=[{"item": "snack", "n": 1}], price=1000)
+            sync()
+            st["exercised"] = True
+            return
+        for _ in range(2):
+            sell()
+        sync()  # seq 1, 2 on the server; the device reports local_seq 2
+        if cell == "b_ts06b_unlinked_running":
+            for f in dbfiles():
+                os.remove(os.path.join(run.dir, f))  # unlinked while the app runs
+            _, r = sell()  # SQLite refuses to write to an unlinked file: this sale fails visibly
+            st["refused_after_unlink"] = r
+            if r and r.get("ok"):
+                st["mismatch"].append(("R69", f"a sale was accepted into an unlinked store: {r}"))
+            st["want_lost"], st["lost"] = (), []  # nothing was accepted, so nothing is lost
+        else:
+            a3, _ = sell()
+            a4, _ = sell()  # seq 3, 4 never synced
+            stop()
+            if cell == "a_ts06a_deleted_closed":
+                for f in dbfiles():
+                    os.remove(os.path.join(run.dir, f))
+                st["want_lost"], st["lost"] = (3, 4), [a3, a4]
+            elif cell == "c_ts03b_corrupted":
+                path = os.path.join(run.dir, "client.db")
+                with open(path, "r+b") as f:
+                    size = os.path.getsize(path)
+                    f.seek(max(4096, size // 2))
+                    f.write(os.urandom(64))  # flipped bytes in a page
+                st["damaged_sha"] = file_sha(path)
+                st["want_lost"], st["lost"] = (3, 4), [a3, a4]
+            elif cell == "d_marker_also_gone":
+                for f in dbfiles() + ["client.db.hwm"]:
+                    if os.path.exists(os.path.join(run.dir, f)):
+                        os.remove(os.path.join(run.dir, f))
+                st["want_lost"], st["lost"] = None, [a3, a4]  # uncountable: made after the last contact
+        st["restart"] = run.send({"op": "pull_config"})  # (re)start: re-bootstrap (b: already done in-process), the feed
+        st["after"] = sell()
+        sync()
+        aside = [x for x in os.listdir(run.dir) if ".damaged-" in x]
+        st["aside"] = aside
+        if cell == "c_ts03b_corrupted":
+            kept = [file_sha(os.path.join(run.dir, a_, "client.db")) for a_ in aside]
+            st["damaged_kept"] = st.get("damaged_sha") in kept
+        st["exercised"] = bool((st["after"][1] or {}).get("ok"))
+    return script
+
+
+def s206_extra(run, dump):
+    """R67 a lost or damaged store is never a silent loss: the server records the range it never received (exactly,
+    when the commit marker survives) with one owner alert; with the marker gone too, the alert says sales after the last
+    contact cannot be counted. R68 a damaged store is kept aside, never written over. R69 after re-bootstrap the counter
+    sells and syncs normally, nothing applied twice, no conflict flags (I2, I8). R70 (S206) an item deleted on the server
+    is not resurrected on a device that comes back after a long time."""
+    st, v = run.s206, list(run.s206["mismatch"])
+    allowed = frozenset()
+    if st["cell"] == "e_s206_deleted_item":
+        st["owner_view"] = {"cola_after_delete": (st.get("cola_after_delete") or {}).get("error")}
+        return v, allowed
+    lost = [(r["from_seq"], r["to_seq"], r["reason"], r["owner_alert"]) for r in dump.get("lost_seqs", [])]
+    alerts = [e for e in dump.get("device_events", []) if e["kind"] == "store_lost"]
+    if len(alerts) != 1 or not alerts[0]["owner_alert"]:
+        v.append(("R67", f"{len(alerts)} store_lost owner alerts, model 1"))
+    if st["want_lost"] == ():
+        if lost:
+            v.append(("R67", f"a lost range was recorded although nothing was accepted: {lost}"))
+        if (st.get("refused_after_unlink") or {}).get("store") != "rebootstrapped":
+            v.append(("R69", f"no in-process re-bootstrap after the unlink: {st.get('refused_after_unlink')}"))
+    elif st["want_lost"] is not None:
+        want = [(st["want_lost"][0], st["want_lost"][1], "store_lost", True)]
+        if lost != want:
+            v.append(("R67", f"lost ranges {lost}, model {want}"))
+        elif alerts:
+            allowed = frozenset(st["lost"])
+    else:
+        if lost:
+            v.append(("R67", f"a range was recorded without the marker: {lost}"))
+        text = ((alerts[0].get("detail") or {}).get("text") if alerts else "") or ""
+        if "cannot be counted" not in text:
+            v.append(("R67", f"the alert does not say later sales cannot be counted: {text!r}"))
+        elif alerts:
+            allowed = frozenset(st["lost"])
+    if not (st.get("after") and (st["after"][1] or {}).get("ok")):
+        v.append(("R69", f"the counter could not sell after the re-bootstrap: {st.get('after')}"))
+    if st["cell"] == "c_ts03b_corrupted" and not st.get("damaged_kept"):
+        v.append(("R68", f"the damaged store was not kept aside unchanged: {st.get('aside')}"))
+    st["owner_view"] = {"lost": lost, "alert": [(e.get("detail") or {}).get("text") for e in alerts],
+                        "aside": st.get("aside")}
+    return v, allowed
+
+
+def s206_run(seed, cell, mutant=None, label=None, verbose=False):
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"s206-{cell}", client_env={**RETENTION_ENV, "REBOOTSTRAP": "1"})
+    run.store_refusal_expected = True  # the refusal is the first step of a re-bootstrap; R67-R69 judge it
+    run.script, run.extra = s206_script(cell), s206_extra
+    r = run.go()
+    r["s206"] = run.s206
+    return r
+
+
+def s206(seeds=20, mutant_budget=15):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 S206 + TS-03b + TS-06a/b (re-bootstrap after a lost or damaged store; no resurrected deletes), "
+          f"commit {summary['harness_commit']}", flush=True)
+    ok = True
+    for cell in S206_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = s206_run(s, cell)
+            exercised += bool(r["s206"].get("exercised"))
+            if s == 1:
+                sample = r["s206"].get("owner_view")
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:26s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in S206_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(S206_CELLS) + 1, S206_CELLS[k % len(S206_CELLS)]
+            r = s206_run(s, cell, mutant=mu, label=f"s206-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:22s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "s206-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"S206 + TS-03b + TS-06: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -4342,6 +4540,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "s206":  # s206 [seeds_per_cell]
+        sys.exit(0 if s206(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay206":  # replay206 <seed> <cell> [mutant]
+        r = s206_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                     label="replay206", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "s206", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "ts01b":  # ts01b [seeds_per_cell]
         sys.exit(0 if ts01b(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay01b":  # replay01b <seed> <cell> [mutant]

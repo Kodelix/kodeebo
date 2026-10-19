@@ -111,6 +111,15 @@
 // with no contact for longer than OFFLINE_ALERT_S on the server's clock raises one owner alert per offline episode,
 // checked whenever the owner report is read, so it fires while the device stays silent (a stolen or burned device
 // never reconnects). MUTANT=offline_alert_never, MUTANT=offline_alert_repeat (an alert on every check).
+//
+// S206, TS-03b, TS-06 (re-bootstrap after a lost or damaged store): every batch reports the device's local counter
+// (local_seq), so the server knows the highest sequence the device had committed at its last contact.
+// GET /bootstrap?device=&marker_seq= is a device that lost its store: the commands between the server's cursor and the
+// device's last committed sequence (its commit marker, or failing that the last reported local_seq) are recorded
+// permanently as a lost range with one owner alert, the cursor skips them (explicit, recorded), and the device is told
+// where its sequence continues. Without a marker, sales after the last contact cannot be counted: the alert says so,
+// with the last contact time. POST /stock {"delete": [...]} removes items; the feed is a full snapshot.
+// MUTANT=silent_rebootstrap records no loss and raises no alert.
 package main
 
 import (
@@ -139,7 +148,7 @@ DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, me
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
   corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs, bill_bdays,
   day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue, gaps, held_cmds, lost_seqs,
-  protocol_refusals, shift_closes;
+  protocol_refusals, shift_closes, device_reported;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL, machine_id text,
@@ -193,6 +202,7 @@ CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, de
 CREATE TABLE bill_bdays (device_id text NOT NULL, action_id text NOT NULL, bday int NOT NULL, PRIMARY KEY (device_id, action_id));
 CREATE TABLE day_closes (device_id text NOT NULL, bday int NOT NULL, n_device int NOT NULL, total_device bigint NOT NULL,
   n_server int NOT NULL, total_server bigint NOT NULL, PRIMARY KEY (device_id, bday));
+CREATE TABLE device_reported (device_id text PRIMARY KEY, local_seq bigint NOT NULL, at double precision NOT NULL);
 CREATE TABLE shift_closes (device_id text NOT NULL, shift_id text NOT NULL, expected bigint NOT NULL, counted bigint NOT NULL,
   diff bigint NOT NULL, PRIMARY KEY (device_id, shift_id));
 CREATE TABLE protocol_refusals (device_id text PRIMARY KEY, protocol int NOT NULL, since double precision NOT NULL);
@@ -201,7 +211,8 @@ CREATE TABLE gaps (device_id text PRIMARY KEY, missing_from bigint NOT NULL, fir
 CREATE TABLE held_cmds (device_id text NOT NULL, command_id text NOT NULL, seq bigint NOT NULL, payload_hash text NOT NULL,
   payload jsonb NOT NULL, PRIMARY KEY (device_id, command_id));
 CREATE TABLE lost_seqs (device_id text NOT NULL, from_seq bigint NOT NULL, to_seq bigint NOT NULL,
-  accepted_at double precision NOT NULL, owner_alert boolean NOT NULL DEFAULT true, PRIMARY KEY (device_id, from_seq));
+  accepted_at double precision NOT NULL, owner_alert boolean NOT NULL DEFAULT true, reason text NOT NULL DEFAULT 'gap_accepted',
+  PRIMARY KEY (device_id, from_seq));
 CREATE TABLE device_machine (device_id text PRIMARY KEY, machine_id text NOT NULL);
 CREATE TABLE quarantine (device_id text PRIMARY KEY, since double precision NOT NULL, reason text NOT NULL,
   state text NOT NULL, kept text);
@@ -281,6 +292,7 @@ type batch struct {
 	LowSeq   *int64    `json:"low_seq"`    // SC-19: lowest sequence the device still retains (H+1 if none)
 	Machine  string    `json:"machine_id"` // SC-13: the machine the batch came from (outside the store)
 	Protocol int       `json:"protocol"`   // S207: the client's sync protocol version (0 = not sent)
+	LocalSeq *int64    `json:"local_seq"`  // S206: the device's local counter at this contact
 }
 
 type result struct {
@@ -1062,6 +1074,71 @@ func drainHeld(ctx context.Context, tx pgx.Tx, dev, closer string) (bool, error)
 	return true, nil
 }
 
+// handleBootstrap re-bootstraps a device that lost its store (S206, TS-03b, TS-06): it records the commands the server
+// never received as a permanent lost range with one owner alert and tells the device where its sequence continues.
+func handleBootstrap(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	dev := r.URL.Query().Get("device")
+	fail := func(err error) { http.Error(w, err.Error(), http.StatusInternalServerError) }
+	var marker *int64
+	if v, err := strconv.ParseInt(r.URL.Query().Get("marker_seq"), 10, 64); err == nil {
+		marker = &v
+	}
+	seen(dev)
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		fail(err)
+		return
+	}
+	defer tx.Rollback(context.Background())
+	var cur int64
+	if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id = 1 AND device_id = $1 FOR UPDATE`, dev).Scan(&cur); err != nil {
+		fail(err)
+		return
+	}
+	var reported int64
+	var at float64
+	tx.QueryRow(ctx, `SELECT local_seq, at FROM device_reported WHERE device_id = $1`, dev).Scan(&reported, &at)
+	high, exact := reported, false
+	if marker != nil {
+		high, exact = *marker, true // the commit marker: the highest sequence the store ever committed
+	}
+	out := map[string]any{"cursor": cur, "exact": exact}
+	if high > cur && mutant != "silent_rebootstrap" {
+		if _, err := tx.Exec(ctx, `INSERT INTO lost_seqs VALUES ($1,$2,$3,$4,true,'store_lost') ON CONFLICT DO NOTHING`,
+			dev, cur+1, high, nowS()); err != nil {
+			fail(err)
+			return
+		}
+		if _, err := tx.Exec(ctx, `UPDATE cursor_ SET last_seq = $2 WHERE tenant_id = 1 AND device_id = $1`, dev, high); err != nil {
+			fail(err)
+			return
+		}
+		out["lost_from"], out["lost_to"] = cur+1, high
+	}
+	if mutant != "silent_rebootstrap" && !(cur == 0 && high == 0) { // a first install is not a loss
+		text := fmt.Sprintf("the device's local store was lost or damaged and rebuilt from the server; %d sales it had recorded never reached the server",
+			max(0, high-cur))
+		if !exact {
+			text = fmt.Sprintf("the device's local store and its marker were lost; %d sales known to be missing, and any sales after its last contact (%s, server time) cannot be counted",
+				max(0, high-cur), time.Unix(int64(at), 0).UTC().Format("2006-01-02 15:04"))
+		}
+		detail, _ := json.Marshal(map[string]any{"text": text, "exact": exact, "cursor": cur, "high": high})
+		if _, err := tx.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'store_lost',$2,true)`,
+			dev, detail); err != nil {
+			fail(err)
+			return
+		}
+	}
+	out["start_seq"] = max(cur, high)
+	if err := tx.Commit(ctx); err != nil {
+		fail(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(out)
+}
+
 // handleGapAccept is the owner accepting a gap: the missing numbers become a permanent lost range, the held commands
 // apply once (TS-02a, founder decision 2026-10-18).
 func handleGapAccept(w http.ResponseWriter, r *http.Request) {
@@ -1087,7 +1164,7 @@ func handleGapAccept(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"error":"no open gap with held commands"}`, http.StatusConflict)
 		return
 	}
-	if _, err := tx.Exec(ctx, `INSERT INTO lost_seqs VALUES ($1,$2,$3,$4,true)`, b.DeviceID, cur+1, minHeld-1, nowS()); err != nil {
+	if _, err := tx.Exec(ctx, `INSERT INTO lost_seqs VALUES ($1,$2,$3,$4,true,'gap_accepted')`, b.DeviceID, cur+1, minHeld-1, nowS()); err != nil {
 		fail(err)
 		return
 	}
@@ -1183,6 +1260,10 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 	}
 	period := contact(ctx, b.DeviceID)
 	seen(b.DeviceID)
+	if b.LocalSeq != nil { // S206: the highest sequence the device had committed at its last contact
+		pool.Exec(ctx, `INSERT INTO device_reported VALUES ($1,$2,$3) ON CONFLICT (device_id)
+			DO UPDATE SET local_seq = greatest(device_reported.local_seq, $2), at = $3`, b.DeviceID, *b.LocalSeq, nowS())
+	}
 	if protoMin := envSeconds("PROTO_MIN", 0); protoMin > 0 && b.Protocol > 0 && int64(b.Protocol) < protoMin && mutant != "apply_old_protocol" {
 		// S207: an old client; apply nothing, keep its queue on the device, tell the owner once per episode
 		tag, err := pool.Exec(ctx, `INSERT INTO protocol_refusals VALUES ($1,$2,$3) ON CONFLICT DO NOTHING`, b.DeviceID, b.Protocol, nowS())
@@ -1654,6 +1735,7 @@ func handleStock(w http.ResponseWriter, r *http.Request) {
 			Price  int     `json:"price"`
 			Policy *string `json:"policy"`
 		} `json:"items"`
+		Delete  []string `json:"delete"` // S206: items the owner deletes
 		Receipt *struct {
 			ReceiptID string `json:"receipt_id"`
 			ItemID    string `json:"item_id"`
@@ -1673,6 +1755,12 @@ func handleStock(w http.ResponseWriter, r *http.Request) {
 	for id, it := range b.Items {
 		if _, err := tx.Exec(ctx, `INSERT INTO items VALUES ($1,$2,$3) ON CONFLICT (item_id)
 			DO UPDATE SET price = $2, policy = $3`, id, it.Price, it.Policy); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	for _, id := range b.Delete {
+		if _, err := tx.Exec(ctx, `DELETE FROM items WHERE item_id = $1`, id); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -1739,7 +1827,7 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 		"protocol_refusals": "SELECT device_id, protocol FROM protocol_refusals ORDER BY device_id",
 		"gaps":              "SELECT device_id, missing_from, alerted, state, resolved_by FROM gaps ORDER BY device_id",
 		"held_cmds":         "SELECT device_id, command_id, seq FROM held_cmds ORDER BY seq",
-		"lost_seqs":         "SELECT device_id, from_seq, to_seq, owner_alert FROM lost_seqs ORDER BY from_seq",
+		"lost_seqs":         "SELECT device_id, from_seq, to_seq, owner_alert, reason FROM lost_seqs ORDER BY from_seq",
 		"quarantine":        "SELECT device_id, reason, state, kept FROM quarantine ORDER BY device_id",
 		"quarantine_cmds":   "SELECT device_id, machine_id, command_id, seq FROM quarantine_cmds ORDER BY arrived",
 		"review_queue":      "SELECT stream_id, action_id, command_id, seq, amount_piasters, reason, reviewed FROM review_queue ORDER BY stream_id, seq",
@@ -1821,6 +1909,7 @@ func main() {
 	mux.HandleFunc("GET /owner_report", handleOwnerReport)
 	mux.HandleFunc("POST /review/ack", handleReviewAck)
 	mux.HandleFunc("POST /gap/accept", handleGapAccept)
+	mux.HandleFunc("GET /bootstrap", handleBootstrap)
 	mux.HandleFunc("GET /config", handleConfig)
 	mux.HandleFunc("POST /config", handleConfig)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) { fmt.Fprint(w, "ok") })

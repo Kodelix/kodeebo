@@ -166,6 +166,14 @@
 #   - op usb_backup {dir}: the hourly encrypted copy of the store and its commit marker to a removable drive, taken
 #     between operations, when no transaction is open.
 #      MUTANT also: no_drawer_check (the counted drawer is ignored), no_offline_warning (no cashier warning).
+# Phase 3 (S206, TS-03b, TS-06; REBOOTSTRAP=1): a store refused at start (a damaged store, or a deleted database beside
+#   a valid commit marker) is moved aside, never written over, and the device re-bootstraps: it reports its marker's
+#   sequence to GET /bootstrap; the server records what it never received as a lost range (owner alert) and returns the
+#   sequence to continue from. A fresh empty store with no marker (the marker lost too, or a first install) also asks
+#   the server, so a known identity never restarts silently at sequence 1. Every batch reports local_seq. The config
+#   feed's catalogue is a snapshot: items the owner deleted are removed from the device (S206: no resurrected deletes).
+#      MUTANT also: recreate_silently (a lost store recreated empty at sequence 0, no bootstrap), overwrite_damaged (the
+#      damaged files deleted instead of kept), catalogue_upsert_only (deleted items stay on the device).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -202,6 +210,7 @@ ENDDAY = os.environ.get("ENDDAY") == "1"  # SC-31
 OFFLINE_WARN_S = float(os.environ.get("OFFLINE_WARN_S", "0"))  # OQ27 (2): 0 = off
 contact = {"mono": None}  # last successful server contact, on the device's monotonic clock
 MACHINE_ID = os.environ.get("MACHINE_ID", "")  # SC-13
+REBOOTSTRAP = os.environ.get("REBOOTSTRAP") == "1"  # S206
 PROTO = int(os.environ.get("PROTO", "0"))  # S207 (0 = not sent)
 FEED_SCHEMA_MAX = int(os.environ.get("FEED_SCHEMA_MAX", "0"))  # S207 (0 = no check)
 upgrade = {"needed": False, "unreadable_seen": set()}
@@ -595,18 +604,81 @@ def open_store():
         return None, e, copy
 
 
+NET_ERRORS_EARLY = (urllib.error.URLError, ConnectionError, TimeoutError, OSError, http.client.HTTPException, ValueError)
+
+
+def marker_seq_if_valid():
+    """S206: the sequence in the commit marker, if the marker exists and its MAC is valid."""
+    try:
+        m = json.load(open(MARKER))
+        s_ = int(m["seq"])
+        return s_ if hmac.compare_digest(str(m["mac"]), _mac(s_)) else None
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def rebootstrap(err, mseq):
+    """S206: move the refused store aside (never written over), re-bootstrap from the server, open a fresh store that
+    continues the device's sequence. Returns (connection, error)."""
+    global con
+    aside = None
+    if err is not None:
+        d = os.path.dirname(os.path.abspath(DB))
+        aside = f"{DB}.damaged-{sum(1 for n in os.listdir(d) if '.damaged-' in n)}"
+        os.makedirs(aside)
+        for suffix in ("", "-journal", "-wal", "-shm", ".hwm"):
+            if os.path.exists(DB + suffix):
+                if MUTANT == "overwrite_damaged":  # planted defect: the damaged store is not kept
+                    os.remove(DB + suffix)
+                else:
+                    shutil.move(DB + suffix, aside)
+    start, resp = 0, {}
+    if MUTANT != "recreate_silently":
+        url = f"{SERVER}/bootstrap?device={DEVICE}" + (f"&marker_seq={mseq}" if mseq is not None else "")
+        with urllib.request.urlopen(url, timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
+            resp = json.loads(r.read())
+        start = int(resp["start_seq"])
+    c, e, _ = open_store()
+    if e is not None:
+        return None, e
+    con = c
+    if start:
+        q("UPDATE counter SET seq = ? WHERE id = 1", (start,))
+        write_marker(start)
+    if err is not None or resp.get("lost_from") or start:
+        record_event("store_rebootstrapped", err or RuntimeError("fresh store for a known device"), marker_seq=mseq,
+                     start_seq=start, lost_from=resp.get("lost_from"), lost_to=resp.get("lost_to"),
+                     damaged_kept_in=aside)
+        report_events()
+    return c, None
+
+
 instance_lock = -1 if MUTANT == "no_instance_lock" else take_instance_lock()
 if instance_lock is None:  # another instance holds the store: touch nothing
     con, open_error, recovery_copy = None, InstanceBusy("another app instance holds this store"), None
 else:
+    marker_existed = os.path.exists(MARKER)
+    pre_mseq = marker_seq_if_valid()
     con, open_error, recovery_copy = open_store()
+    if REBOOTSTRAP and not INSPECT:
+        fresh = open_error is None and not marker_existed and q("SELECT seq FROM counter WHERE id = 1")[0][0] == 0
+        if (open_error is not None and not isinstance(open_error, DowngradeError)) or fresh:
+            if open_error is not None:
+                record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
+                con = None
+            try:
+                con, open_error = rebootstrap(open_error, pre_mseq)
+            except (*NET_ERRORS_EARLY, *STORE_ERRORS, RuntimeError) as e:  # server unreachable: stay refused, retry at next start
+                record_event("rebootstrap_pending", e)
+                open_error = open_error or e
+            recovery_copy = None
     if MUTANT == "lock_released_early" and instance_lock >= 0:  # planted defect: lock only while opening
         fcntl.flock(instance_lock, fcntl.LOCK_UN)
 if isinstance(open_error, InstanceBusy):
     record_event("second_instance_refused", open_error)
 elif isinstance(open_error, DowngradeError):
     record_event("downgrade_refused", open_error)  # refused on purpose: the store was not touched
-elif open_error is not None:
+elif open_error is not None and not REBOOTSTRAP:  # with REBOOTSTRAP the refusal was recorded above
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
 
 
@@ -711,7 +783,8 @@ def report():
         return {}
     h = q("SELECT acked_seq FROM sync_state WHERE id = 1")[0][0]
     low = q(f"SELECT min(seq) FROM ({RETAINED})")[0][0]
-    return {"acked_seq": h, "low_seq": low if low is not None else h + 1}
+    return {"acked_seq": h, "low_seq": low if low is not None else h + 1,
+            "local_seq": q("SELECT seq FROM counter WHERE id = 1")[0][0]}  # S206: the highest committed sequence
 
 
 def post(cmds):
@@ -1280,6 +1353,9 @@ def sell_stock(m):
 
 def apply_catalogue(cfg):
     """SC-29, inside the caller's transaction: the catalogue as received, and each new stock receipt once."""
+    if "items" in cfg and MUTANT != "catalogue_upsert_only":  # S206: the feed is a snapshot; deleted items go
+        keep = list((cfg.get("items") or {}).keys())
+        q(f"DELETE FROM items WHERE item_id NOT IN ({','.join('?' * len(keep)) or 'NULL'})", tuple(keep))
     for item, it in (cfg.get("items") or {}).items():
         old = q("SELECT policy FROM items WHERE item_id = ?", (item,))
         policy = old[0][0] if old and MUTANT == "stale_policy" else it.get("policy")  # planted defect: keeps the old
@@ -1472,5 +1548,21 @@ for line in sys.stdin:
                    "integrity": q("PRAGMA integrity_check")[0][0]})
     except (*STORE_ERRORS, RuntimeError) as e:
         record_event("store_error_during_operation", e)
-        refused = True
-        reply({"ok": False, "op": op, "store": "refused"})
+        if REBOOTSTRAP and not INSPECT and ("readonly" in str(e).lower() or not os.path.exists(DB)):
+            # S206/TS-06b: the database file was deleted under the running app (SQLite refuses the write): this
+            # operation failed visibly; rebuild from the server now, so the counter does not wait for a restart
+            try:
+                con.close()
+            except STORE_ERRORS:
+                pass
+            con = None
+            try:
+                con, err2 = rebootstrap(e, marker_seq_if_valid())
+            except (*NET_ERRORS_EARLY, *STORE_ERRORS, RuntimeError) as e2:
+                record_event("rebootstrap_pending", e2)
+                err2 = e2
+            refused = err2 is not None
+            reply({"ok": False, "op": op, "store": "rebootstrapped" if not refused else "refused"})
+        else:
+            refused = True
+            reply({"ok": False, "op": op, "store": "refused"})
