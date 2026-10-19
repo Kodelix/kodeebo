@@ -14,6 +14,7 @@
 # 2026-10-19: ADR-0007 revised after its independent review (FAIL, text fixes): TR-TABLE-CLASSES-R5, IC-PRE-CONTEXT-LOOKUPS-R7, IC-PASSWORD-HASHER, IC-STEP-UP, IC-COUNTER-ENROLMENT, FP-SYNCED-PASSKEY-ON-CONSOLE superseded by R6/R8/R2 entries; FP-CONSOLE-CREDENTIAL-OUTSIDE-SCRIPT added. If ADR-0007 is rejected, the three Accepted entries it superseded (TR-TABLE-CLASSES-R4, TR-ROLE-INVENTORY-R5, IC-PRE-CONTEXT-LOOKUPS-R6) return to status active.
 # 2026-10-19: ADR-0007 re-check (CONCERNS) applied: TR-ROLE-INVENTORY-R6 superseded by R7 (bootstrap superuser purpose: console lock-out script; console process logins).
 # 2026-10-19: ADR-0007 Accepted by the founder; adr_status set to Accepted on every active ADR-0007 entry (superseded ADR-0007 entries left as they were); the ADR-0001 amendment it carries (class OP, console_rt, bootstrap superuser lock-out purpose, § 1c rows, C6) is in effect.
+# 2026-10-19: ADR-0008 roles, permissions and activity trail written (Proposed): 6 entries superseded (TR-ROLE-ASSIGNMENT-GUARD, TR-RETENTION-DEFAULTS-R3, TR-ROLE-INVENTORY-R7, IC-SESSION-AUTHORIZER-R3, IC-COUNTER-ENROLMENT-R2, FP-PIN-VERIFIER-OFF-DEVICE) and 11 added, every ADR-0008 part effective only when ADR-0008 is Accepted; if ADR-0008 is rejected, those six return to status active.
 
 data_ownership: []
 
@@ -72,7 +73,7 @@ tenancy_rules:
     rule: "app_rt's INSERT, UPDATE and DELETE policies on staff_roles and staff_branches require current_setting('app.branch_all', true) = 'on' (owner only), as database defence in depth behind the Authorizer (research F421)."
     adr: ADR-0003
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0008 (Proposed 2026-10-19; effective when ADR-0008 is Accepted) -> TR-ROLE-ASSIGNMENT-GUARD-R2"
   - id: TR-SUPPORT-GRANT-GATE-R2
     rule: "Kodelix support reads TD data only as support_rt (SELECT only), bound by the restrictive tenant and branch_scope policies, through a permissive policy TO support_rt requiring a live owner grant (approved, revoked_at IS NULL, expires_at > clock_timestamp()); support_grants: app_rt INSERT and UPDATE require app.branch_all = 'on', approved_at within the inserting transaction, CHECK expires_at <= approved_at + interval '7 days', UPDATE on revoked_at only WITH CHECK (revoked_at IS NOT NULL); writes only through support_fn verbs gated by a grant naming the verb; journal written only through audit_writer functions; access record committed before the read; support transactions bounded by transaction_timeout."
     adr: ADR-0004
@@ -248,7 +249,7 @@ tenancy_rules:
     rule: "One retention table, class G (runtime roles read only), every period configuration with a typed default, changed only through a reviewed migration that deploy_rt runs through SET ROLE migrator (ADR-0001 § 1b exception); a change takes effect at the next purge without a code change. Founder defaults 2026-10-18, which the feature spec may refine: closure cooling-off 15 days (must exceed the lease cap compiled into the app, 14 days; the licensing ADR keeps emergency unlock within it); export window 30 days; generated export files 7 days, then deleted; backup window 30 days (below the 60-day device retention); ended sessions 90 days; support access journal 2 years (compiled prune floor 365 days); technical logs 30 days, with no personal data; security events 1 year; usage counts 3 years; deletion journal 5 years (must exceed the backup window); Kodelix-started closure after 90 days of suspension. Fixed by other rules: tax archive 5 years after the tax period; device keeps 60 days; staff access requests answered within 6 working days. CI checks both invariants. Routine retention runs while a tenant is suspended; each purge job logs every run; no period is a literal in code."
     adr: ADR-0005
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0008 (Proposed 2026-10-19; effective when ADR-0008 is Accepted) -> TR-RETENTION-DEFAULTS-R4"
   - id: TR-SUPPORT-JOURNAL-PRUNE-R3
     rule: "The support grant and access journal is a TD table inside the database, a separate store from the deletion journal (founder 2026-10-18; departs from research § 4.2 item 3 because retention, location and deletion rules differ). It is never updated; its only DELETE path is SupportJournal.pruneBefore(cutoff), a SECURITY DEFINER function owned by audit_writer (privileged migration), EXECUTE by job_rt only, inside the tenant context: under the per-tenant advisory lock it refuses a cutoff later than clock_timestamp() minus the support-journal period read from the class-G retention table (default 2 years), refuses when that period is shorter than a floor compiled into the function body (365 days, founder 2026-10-18), deletes oldest-first only rows older than the cutoff, and in the same transaction writes a chain anchor (hash of the last pruned row, count, cutoff) that becomes the chain's new start and is shipped to the off-host log; it never touches a tombstone. At purged the whole journal is pruned once its retention ends, leaving a final anchor off-host. A restore can roll the journal back to the backup point; the off-host log records the gap. Effective only when ADR-0005 is Accepted."
     adr: ADR-0004
@@ -298,11 +299,36 @@ tenancy_rules:
     rule: "Database roles are exactly: migrator (NOLOGIN owner, DDL only, no permissive policy; one stated exception: writes data in class G tables (retention table, plan catalogue, tax rates; never tenant data) only inside a reviewed migration that deploy_rt runs through SET ROLE migrator), deploy_rt (LOGIN, member of migrator with SET; runs every migration not marked privileged), bootstrap superuser (local only; cluster admin, extensions, upgrades, restore, and the rare privileged migrations that create or alter roles or create, replace or re-own a function of auth_lookup, support_fn or audit_writer; effective when ADR-0007 is Accepted also the audited console lock-out script on OP tables only, never tenant credentials; run by the founder with the credential from Bitwarden, over SSH through Tailscale then local peer login; each marked privileged; the deploy pipeline stops for the founder to run them on the database host; its login pages), app_rt, device_rt, job_rt (one tenant per transaction via the Job kind; also runs backfills; tenant list read by the scheduler as platform_rt from CP tenant_status), licensing service roles (named by the licensing ADR; none runs until it adds their scope kind), platform_rt (CP only), auth_lookup (NOLOGIN, § 1c functions), support_rt, support_fn (NOLOGIN), audit_writer (NOLOGIN), backup_rt (REPLICATION only); effective when ADR-0007 is Accepted also console_rt (LOGIN, operator console, grants on OP only; the console process also holds support_rt, the licensing logins and platform_rt, each called only with a live OP session). All but the bootstrap superuser are NOSUPERUSER, NOBYPASSRLS and own nothing; a new role needs an ADR amendment (licensing M27/M38: future amendment with the licensing ADR)."
     adr: ADR-0007
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0008 (Proposed 2026-10-19; effective when ADR-0008 is Accepted) -> TR-ROLE-INVENTORY-R8"
   - id: TR-TABLE-CLASSES-R6
     rule: "Every table is in one class recorded with the migrations: TD tenant data (incl. licensing seats, seat_licences, devices, seat_moves, approvals, lease_log per licensing M35; the support access journal), no USING (true); CP tenant-keyed control plane without personal data or sales, tax or licensing records (tenant status, plan, restore watermark, usage counts without money, names, items, bill contents or free text), restrictive tenant policy TO every inventory role except platform_rt, which alone has USING (true); G global, no tenant_id, on the allow-list, no RLS; PL pre-context (login_identities, sessions, enrolment_codes, device_credentials, support_grants; effective when ADR-0007 is Accepted also login_contacts, second_factors, recovery_requests, step_up_grants, webauthn_challenges, auth_notices, enrolment_assertions), restrictive tenant policy TO every inventory role except auth_lookup; access across tenants, reads and writes, only through the ADR-0001 § 1c SECURITY DEFINER functions owned by auth_lookup; in-tenant permissive policies only where an ADR names them. Effective when ADR-0007 is Accepted: OP operator realm (operators, operator_credentials, operator_sessions, operator_step_up, operator_recovery_codes), no tenant_id, no RLS, no tenant data, granted to console_rt only; console_rt has grants on OP only (catalogue-checked both ways). Throttle and rate-limit state and unbound sign-in challenges are not tables: in-process state of the single backend instance (ADR-0007 § 3)."
     adr: ADR-0007
     adr_status: Accepted
+    status: active
+  - id: TR-ROLE-ASSIGNMENT-GUARD-R2
+    rule: "app_rt's INSERT, UPDATE and DELETE policies on roles, role_permissions, staff_roles and staff_branches require current_setting('app.branch_all', true) = 'on' (owner only), as database defence in depth behind the Authorizer (research F421; effective when ADR-0008 is Accepted: roles and role_permissions added). staff_roles is (tenant_id, staff_id, role_id) with a composite FK to roles. Every write is a step-up action (ADR-0007)."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: TR-OWNER-ROLE
+    rule: "effective when ADR-0008 is Accepted: exactly one owner role per tenant (roles.is_owner = true), written by the provisioning job; its permission set is the whole permission catalogue including keys added later, evaluated from is_owner (no role_permissions rows); a BEFORE UPDATE OR DELETE trigger refuses any change but the label (F322); holding it is what sets app.branch_all = 'on'. At least one active owner always remains: a CONSTRAINT TRIGGER ... DEFERRABLE INITIALLY DEFERRED on staff_roles and staff status takes pg_advisory_xact_lock keyed on the tenant before counting (F320, F321; transaction-level for PgBouncer, F325). Owner-only keys (roles.manage, staff.assign, staff.erase, support.grant, export.tenant, device.enrol/revoke, tenant settings) cannot be stored in a custom role (save-time check and trigger against permission_catalogue.owner_only)."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: TR-AUTHORITY-SNAPSHOT
+    rule: "effective when ADR-0008 is Accepted: a per-tenant authority_version is incremented in the same transaction as any change to roles, role_permissions, staff_roles, staff_branches, staff status, tenant ceilings or PIN floors; the config feed (sync ADR) delivers an immutable per-branch authority snapshot (active staff, role ids, effective permissions and limits, staff_version, and per ADR-0008 § 10 the PIN verifiers of that branch's people); every device fact that used authority carries authority_version; the server keeps delivered snapshots (authority_snapshots, TD, ids only, never verifiers) for at least the longest lease plus the feed retry window and judges facts against the held version and current authority, flagging, never rejecting a money fact. Owner setting override_offline_max_age (S2) default off."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: TR-RETENTION-DEFAULTS-R4
+    rule: "One retention table, class G (runtime roles read only), every period configuration with a typed default, changed only through a reviewed migration that deploy_rt runs through SET ROLE migrator (ADR-0001 § 1b exception); a change takes effect at the next purge without a code change. Founder defaults 2026-10-18, which the feature spec may refine: closure cooling-off 15 days (must exceed the lease cap compiled into the app, 14 days; the licensing ADR keeps emergency unlock within it); export window 30 days; generated export files 7 days, then deleted; backup window 30 days (below the 60-day device retention); ended sessions 90 days; support access journal 2 years (compiled prune floor 365 days); technical logs 30 days, with no personal data; security events 1 year; usage counts 3 years; deletion journal 5 years (must exceed the backup window); Kodelix-started closure after 90 days of suspension. Fixed by other rules: tax archive 5 years after the tax period; device keeps 60 days; staff access requests answered within 6 working days. CI checks both invariants. Routine retention runs while a tenant is suspended; each purge job logs every run; no period is a literal in code. Added by ADR-0008 (founder 2026-10-19; effective when ADR-0008 is Accepted): staff activity trail 5 years (oldest-first prune with chain anchor); control-journal kinds added by ADR-0007 and ADR-0008 (password reset, must_reset, factor add or remove, recovery-code use, login disable, role and authority changes, console lock-out runs) 1 year, which must exceed the backup window plus margin (CI-checked)."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: TR-ROLE-INVENTORY-R8
+    rule: "Database roles are exactly: migrator (NOLOGIN owner, DDL only, no permissive policy; one stated exception: writes data in class G tables (retention table, plan catalogue, tax rates, permission catalogue; never tenant data) only inside a reviewed migration that deploy_rt runs through SET ROLE migrator), deploy_rt (LOGIN, member of migrator with SET; runs every migration not marked privileged), bootstrap superuser (local only; cluster admin, extensions, upgrades, restore, and the rare privileged migrations that create or alter roles or create, replace or re-own a function of auth_lookup, support_fn or audit_writer; also the audited console lock-out script on OP tables only, never tenant credentials; run by the founder with the credential from Bitwarden, over SSH through Tailscale then local peer login; each marked privileged; the deploy pipeline stops for the founder to run them on the database host; its login pages), app_rt, device_rt, job_rt (one tenant per transaction via the Job kind; also runs backfills; tenant list read by the scheduler as platform_rt from CP tenant_status), licensing service roles (named by the licensing ADR; none runs until it adds their scope kind), platform_rt (CP only), auth_lookup (NOLOGIN, § 1c functions), support_rt, support_fn (NOLOGIN), audit_writer (NOLOGIN; support journal functions, and effective when ADR-0008 is Accepted also the ActivityTrail functions of ADR-0008), backup_rt (REPLICATION only), console_rt (LOGIN, operator console, grants on OP only; the console process also holds support_rt, the licensing logins and platform_rt, each called only with a live OP session). All but the bootstrap superuser are NOSUPERUSER, NOBYPASSRLS and own nothing; a new role needs an ADR amendment (licensing M27/M38: future amendment with the licensing ADR)."
+    adr: ADR-0008
+    adr_status: Proposed
     status: active
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
@@ -359,7 +385,7 @@ interface_contracts:
     contract: "SessionResolver.resolve(OpaqueToken) -> Principal {user, tenant, role, branches}: SessionLookup.find(tokenHash) (PL), then a principal read in a Staff scope with an empty branch list (staff_roles, staff_branches), per request; sessions are created and ended only through ADR-0001 § 1c functions; Authorizer.require(principal, permission, target branch?) -> Allowed | Denied."
     adr: ADR-0003
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0008 (Proposed 2026-10-19; effective when ADR-0008 is Accepted) -> IC-SESSION-AUTHORIZER-R4"
   - id: IC-SUPPORT-GRANT-R3
     contract: "SupportGrant (PL table support_grants) {id, tenant_id, branch_ids (explicit), scope read | verb:<name>, operator_id, reason, requested_at, approved_by, approved_at (within the inserting transaction), expires_at (default 24 h from config; CHECK <= approved_at + 7 days), revoked_at? (one-way)}; owner-only insert and revoke enforced by policy; SupportGrantLookup.find(grantId, operatorId) and listByOperator(operatorId) before any tenant. Scope kind Support {grantId, operatorId} specified in ADR-0002."
     adr: ADR-0004
@@ -480,6 +506,36 @@ interface_contracts:
     contract: "Per-device enrolment, device online. Password path: the counter calls the dashboard sign-in API (app_rt) with username, password and TOTP or one recovery code (no passkey on the counter); success returns a single-use enrolment assertion bound to the device credential (Enrolment.issueAssertion), never a session; the device consumes it over device_rt (Enrolment.consumeAssertion). Sponsored path: a sponsor signed in on that device, confirmed online (Device scope), holding staff.enrol_device, assigned to that branch, whose permission set is a strict superset of the target's (owner above every role; owner only until the ADR-0003 amendment) picks the person; the device shows a random one-time TemporaryPin once, which must be changed at first use and expires on the lease clock (monotonic plus persisted high-water mark), not the raw monotonic clock; a cashier needs no email or dashboard password. EnrolmentFact {person, device, path, sponsor?, at} is synced and never carries a PIN or verifier. PinVerifier: Argon2id, per-user random salt, start m=64 MiB t=3 p=1 fitted by S22/S23 (PBKDF2-SHA256 600k fallback), only inside the encrypted device store whose key plays the pepper's role; floors 6 / 8 as owner-visible settings, a raised floor forces a new PIN at next sign-in; lockout delay from 5, locked at 10 on the lease clock, override-dialog failures count (ASVS 6.1.1 deviation accepted by name); temporary PINs and idle lock on the lease clock."
     adr: ADR-0007
     adr_status: Accepted
+    status: "superseded_by: ADR-0008 (Proposed 2026-10-19; effective when ADR-0008 is Accepted) -> IC-COUNTER-ENROLMENT-R3"
+  - id: IC-SESSION-AUTHORIZER-R4
+    contract: "SessionResolver.resolve(OpaqueToken) -> Principal: SessionLookup.find(tokenHash) (PL), then a principal read in a Staff scope with an empty branch list (staff_roles, roles, role_permissions, staff_branches), per request, no cache; sessions are created and ended only through ADR-0001 § 1c functions. effective when ADR-0008 is Accepted: Principal = {user, tenant, roles: Set<RoleId>, isOwner, permissions: Map<PermissionKey, Limits>, branches: All | List<BranchId>}; branches = All exactly when isOwner; Limits = {amount?, percent?, minutes?}, absent = no authority except isOwner; a person's permissions are the union of their roles, each limit the largest granted. Authorizer.require(principal, key, target branch?, amount?) -> Allowed | Denied, deny by default."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: IC-PERMISSION-CATALOGUE
+    contract: "effective when ADR-0008 is Accepted: permission keys are defined in code and mirrored in the class-G table permission_catalogue (key, limit_kinds, approvable, owner_only, privileged, tier), written only by a reviewed migration; role_permissions.key references it. Tier-1 keys per ADR-0008 § 1, including report.x and report.z (split; report.z approvable as approve.report_z) and day.end (approvable as approve.day_end; refused while any bill, session or shift is open for every role, and that refusal is never approvable); staff.enrol_device, staff.reset_pin, staff.suspend_local; reserved Tier-2 keys bill.price_override, payment.refund, session.backdate (off in every template). privileged = any staff.* key, approve.*, review.decide, config.edit, catalogue.edit, activity_log.view, report.export and every owner-only key: a dashboard login holding one must have a second factor (ADR-0007). Templates owner (immutable), manager, cashier per ADR-0008 § 2; limits unset until install (unset = no authority)."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: IC-OVERRIDE
+    contract: "effective when ADR-0008 is Accepted: one-shot approval on the counter: the approver selects themselves and enters their own PIN; the device checks from its authority snapshot that the approver is active, assigned to the branch, holds approve.<action>, the amount is within their limit and they are not the requester; the action proceeds once. OverrideFact {overrideId, requester, approver, action, subjectIds, amount?, limitUsed?, reasonId, authorityVersion, deviceSeq, claimedAt, monotonic, outcome} is written in the same local transaction as the action; refused and locked attempts too. At sync FactAuthority.judge flags, never rejects: approver_authority_changed, approver_missing, limit_exceeded, self_approval, branch_not_assigned, staff_unknown, config_version_stale; flagged facts go to the owner review queue. Fallback O4: the approver acts under their own sign-in."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: IC-ACTIVITY-TRAIL
+    contract: "effective when ADR-0008 is Accepted: activity_trail (TD, branch_scope where the event has a branch), append-only, written only through SECURITY DEFINER functions owned by audit_writer: ActivityTrail.appendServer(event), acceptDeviceBatch(deviceId, entries, claimedHead) -> ackHead, verifyChains(), pruneBefore(cutoff) (oldest first, chain anchor). Device events arrive as audit facts in the sync outbox in the same local transaction as the business change; hash chain per device and per tenant for server events; acknowledged heads stored per batch; latest head anchored off-host. Record: ids and enums only (audit id, tenant, branch, device, actor staff id, action, outcome, UTC claim and receipt times, sequence, prev hash, hash, event ids, amounts, reason id). Readers: owner all; activity_log.view assigned branches; Kodelix only under an owner grant. Authority changes and review decisions also go to the control journal. Kept 5 years."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: IC-COUNTER-ENROLMENT-R3
+    contract: "effective when ADR-0008 is Accepted (amends ADR-0007): enrol once, valid on every device of the person's assigned branches. Password path: the counter calls the dashboard sign-in API (app_rt) with username, password and TOTP or one recovery code (no passkey on the counter); success returns a single-use enrolment assertion bound to the device credential (Enrolment.issueAssertion), never a session; the device consumes it over device_rt (Enrolment.consumeAssertion); the device refuses a PIN equal to the password just entered or contained in it, compared in memory only, never stored or sent. Sponsored path: a sponsor signed in on that device, confirmed online (Device scope), holding staff.enrol_device, assigned to that branch, whose permission set is a strict superset of the target's (owner above every role), picks the person; the device shows a random one-time TemporaryPin once, changed at first use, expiring on the lease clock. The device computes the Argon2id verifier (per-user salt, PHC, parameters fitted to the weakest supported PC by S40 = S22/S23, PBKDF2-SHA256 600k fallback, clamped on the device both ways) and uploads it; floors 6 / 8 as owner-visible settings, a raised floor forces a new PIN; lockout per device (delay from 5, lock at <= 10, override-dialog failures count) on the lease clock, failures reported at contact and summed per person into a lock on every device through the feed (aggregate budget a named deviation)."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: IC-PIN-VERIFIER-CUSTODY
+    contract: "effective when ADR-0008 is Accepted: PinVerifiers.accept(personId, phc, enrolmentFactId) -> VerifierVersion | Refused(no_enrolment_fact | stale_version), over device_rt, only against a single-use enrolment or reset fact; the server stores the verifier AEAD-encrypted under a per-tenant data key with AAD = tenant || person || verifierVersion and a verifier_key_id; per-tenant data keys are wrapped by a master key outside the database (encrypted secret file now, AWS KMS envelope at the first paying customer, decrypted once at start-up; 13.3.1 and 13.3.3 deviations accepted by name); rotation re-wraps or re-encrypts without any PIN; closing a tenant destroys its data key. The server never verifies a PIN or compares a hash and never caches decrypted verifiers. The staff feed delivers a verifier only to active, lease-valid devices of the person's assigned branches and removes it on disable, transfer, erasure, reset-required and a raised floor; erasure deletes the server ciphertext (backups lose it within the backup window, tombstone replay re-deletes). A key-and-database compromise is remediated by a PIN reset for every affected person, never by key rotation alone."
+    adr: ADR-0008
+    adr_status: Proposed
     status: active
 performance_budgets: []
 
@@ -686,7 +742,7 @@ forbidden_patterns:
     pattern: "A counter PIN, its verifier or its lockout state leaving the encrypted device store: in a synced fact, the server database, a log or a backup outside the store."
     adr: ADR-0007
     adr_status: Accepted
-    status: active
+    status: "superseded_by: ADR-0008 (Proposed 2026-10-19; effective when ADR-0008 is Accepted) -> FP-PIN-VERIFIER-OFF-DEVICE-R2"
   - id: FP-PEPPER-IN-DATABASE
     pattern: "Storing the password pepper (or the TOTP key-encryption key, or the KMS-unwrapped pepper) in the database, a log, a URL or a client bundle; calling KMS to compute a password hash."
     adr: ADR-0007
@@ -716,6 +772,36 @@ forbidden_patterns:
     pattern: "Changing an operator credential outside the console other than through the audited console lock-out script run as the bootstrap superuser (SSH over Tailscale, local peer login; control-journal entry, off-host log line, security event, runbook); the script never touches tenant credentials."
     adr: ADR-0007
     adr_status: Accepted
+    status: active
+  - id: FP-PIN-VERIFIER-OFF-DEVICE-R2
+    pattern: "effective when ADR-0008 is Accepted (replaces the device-only rule): a counter PIN or its plaintext anywhere outside the device; a PIN verifier stored unencrypted on the server, in a backup, a log, a trace, an authority_snapshots row or a synced fact other than the verifier upload; a verifier delivered to a device outside the person's assigned branches; a verifier upload accepted without a single-use enrolment or reset fact; per-device lockout state sent anywhere but the failure report at contact."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: FP-SERVER-PIN-VERIFY
+    pattern: "effective when ADR-0008 is Accepted: the server verifying a counter PIN or comparing a presented PIN hash, or caching decrypted verifiers; KMS called per verifier."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: FP-OWNER-ONLY-KEY-IN-CUSTOM-ROLE
+    pattern: "effective when ADR-0008 is Accepted: storing an owner-only permission key in a custom role, or editing the owner role beyond its label."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: FP-SELF-APPROVAL
+    pattern: "effective when ADR-0008 is Accepted: an override approved by the requester; an approval covering more than one action (elevated session)."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: FP-ABSENT-LIMIT-UNLIMITED
+    pattern: "effective when ADR-0008 is Accepted: treating an absent limit as unlimited outside the owner role; an approver limit below the do-limit in the same role."
+    adr: ADR-0008
+    adr_status: Proposed
+    status: active
+  - id: FP-TRAIL-WRITE-OUTSIDE-FUNCTIONS
+    pattern: "effective when ADR-0008 is Accepted: writing, updating or deleting activity_trail rows other than through the audit_writer ActivityTrail functions; typed text, names or contact data in a trail record; rejecting a device money fact because its actor's authority changed (flag it instead)."
+    adr: ADR-0008
+    adr_status: Proposed
     status: active
 # 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
 # 2026-10-19 (ADR-0006 review): only TECH-* entries belong here; the IC-* and FP-* entries first placed here are superseded by copies in interface_contracts and forbidden_patterns.
