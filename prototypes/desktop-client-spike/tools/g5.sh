@@ -187,20 +187,21 @@ ts03)
     log "TS03 $rt $case_ | before tamper: [$pj] | $mm | files: [$pa] | --check: $r | files after: [$pb] | second --check: $r2 | events: [$(since "$rt" events.txt "$e0")]"
   done
   ;;
-base3)   # r4-<rt>-s1v3: r4-<rt>-s1v2 plus 1.0.3 (schema 2 and --spill-hold) installed over 1.0.2, not started
-  rt=$1
+base3)   # r4-<rt>-s1v<n>: r4-<rt>-s1v2 plus 1.0.<n> (n=3: schema 2 and --spill-hold; n=4: plus the G5-F4 copy-aside fix)
+  rt=$1; n=${2:-3}
   case "$rt" in
-    a) I3="$D/.cache/r4-a/KodeeboSpikeA-1.0.3.msi"; k=msi ;;
-    b) I3="$D/.cache/build-b/dist-r4-103/KodeeboSpikeB Setup 1.0.3.exe"; k=exe ;;
+    a) I3="$D/.cache/r4-a/KodeeboSpikeA-1.0.$n.msi"; k=msi ;;
+    b) I3="$D/.cache/build-b/dist-r4-10$n/KodeeboSpikeB Setup 1.0.$n.exe"; k=exe ;;
   esac
   "$G4" snap-boot "r4-$rt-s1v2" || exit 1
+  for x in g5-probe.ps1 g5-mut.ps1; do "$VM" put cashier "$D/guest/$x" "C:/Users/cashier/$x"; done   # current helpers
   "$G4" install "$rt" "$I3" "$k"
-  log "g5 base3 $rt: 1.0.3 installed; $(probe "$rt")"
-  "$G4" snap-save "r4-$rt-s1v3"
+  log "g5 base3 $rt: 1.0.$n installed; $(probe "$rt")"
+  "$G4" snap-save "r4-$rt-s1v$n"
   ;;
 ts03j)   # TS-03c journal leg: spill, cut before COMMIT, then (flip|noflip) the hot journal, then --check
-  rt=$1; how=$2
-  "$G4" snap-boot "r4-$rt-s1v3" || exit 1
+  rt=$1; how=$2; n=${3:-3}
+  "$G4" snap-boot "r4-$rt-s1v$n" || exit 1
   log "g5 ts03j $rt $how: migrate first: $(run "$rt" "$(exe_of "$rt")" --check check.txt)"
   e0=$(cnt "$rt" events.txt)
   for i in 1 2 3 4 5; do mut "$rt" -what hold -point spill-before-commit >/dev/null; probe "$rt" | grep -q 'hold.txt=absent' || break; sleep 3; done
@@ -214,7 +215,7 @@ ts03j)   # TS-03c journal leg: spill, cut before COMMIT, then (flip|noflip) the 
   pa=$(probe "$rt")
   r=$(run "$rt" "$(exe_of "$rt")" --check check.txt); pb=$(probe "$rt")
   r2=$(run "$rt" "$(exe_of "$rt")" --check check.txt)
-  log "TS03J $rt $how | $sp | after the cut: [$pj] | $mm | files: [$pa] | --check: $r | files after: [$pb] | second --check: $r2 | events: [$(since "$rt" events.txt "$e0")]"
+  log "TS03J $rt $how v1.0.$n | $sp | after the cut: [$pj] | $mm | files: [$pa] | --check: $r | files after: [$pb] | second --check: $r2 | events: [$(since "$rt" events.txt "$e0")]"
   ;;
 ts06)
   rt=$1

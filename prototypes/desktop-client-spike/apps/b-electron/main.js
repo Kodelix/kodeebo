@@ -72,15 +72,27 @@ function openStore() {
   }
   if (!fs.existsSync(keyFile)) { event('key_missing'); throw new Refused('store present but key.bin missing'); }
   const key = fs.readFileSync(keyFile);
+  // G5-F4: SQLite replays a hot journal inside the open, before any check; keep the pre-open state aside first
+  let pre = null;
+  if (fs.existsSync(STORE + '-journal')) {
+    pre = P(`prejournal-${Date.now()}`); fs.mkdirSync(pre);
+    for (const n of ['store.db', 'store.db-journal']) { fs.copyFileSync(P(n), path.join(pre, n)); fsyncFile(path.join(pre, n)); }
+    event('hot_journal_found', `copy=${path.basename(pre)} journal_bytes=${fs.statSync(STORE + '-journal').size}`);
+  }
   let db;
   try { db = openRaw(key.toString('hex')); }
   catch (e) {
     // wrong key and a damaged page 1 look the same here (both "not a database"): keep the file aside, never touch it
     const d = P(`damaged-${Date.now()}`); fs.mkdirSync(d); fs.copyFileSync(STORE, path.join(d, 'store.db'));
-    event('store_open_failed', `key_bytes=${key.length} copy=${path.basename(d)} err=${JSON.stringify(e.message)}`);
+    event('store_open_failed', `key_bytes=${key.length} copy=${path.basename(d)} pre_open_copy=${pre ? path.basename(pre) : 'none'} err=${JSON.stringify(e.message)}`);
     throw new Refused(`store cannot be opened (wrong key or damaged page 1): ${e.message}`);
   }
   if (!fs.existsSync(idFile)) { fs.writeFileSync(idFile, crypto.randomBytes(8).toString('hex')); fsyncFile(idFile); }  // stores from rounds 1-3
+  if (pre) {   // after a replayed journal: verify before the copy goes; a failed check keeps it and quarantines
+    let iv; try { iv = integrity(db); } catch (e) { iv = `threw: ${e.message}`; }
+    if (iv !== 'ok') { db.close(); quarantine(`after hot-journal replay: ${iv}; pre-open copy in ${path.basename(pre)}`); throw new Refused('store damaged after journal replay: recovery from the server needed'); }
+    fs.rmSync(pre, { recursive: true }); event('hot_journal_replayed_ok', `copy removed=${path.basename(pre)}`);
+  }
   return migrate(db, key.toString('hex'));
 }
 function schema2(db) {

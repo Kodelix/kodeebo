@@ -97,13 +97,25 @@ fun openStore(): Connection {
     }
     if (!keyFile.exists()) { event("key_missing"); throw Refused("store present but key.bin missing") }
     val key = keyFile.readBytes()
+    // G5-F4: SQLite replays a hot journal inside the open, before any check; keep the pre-open state aside first
+    val jf = f("store.db-journal")
+    val pre = if (jf.exists()) f("prejournal-${System.currentTimeMillis()}").also { d ->
+        d.mkdirs()
+        for (n in listOf("store.db", "store.db-journal")) { f(n).copyTo(File(d, n)); fsyncFile(File(d, n)) }
+        event("hot_journal_found", "copy=${d.name} journal_bytes=${jf.length()}")
+    } else null
     val c = try { openRaw(key) } catch (e: Exception) {
         // wrong key and a damaged page 1 look the same here (both "not a database"): keep the file aside, never touch it
         val d = f("damaged-${System.currentTimeMillis()}").apply { mkdirs() }; STORE.copyTo(File(d, "store.db"))
-        event("store_open_failed", "key_bytes=${key.size} copy=${d.name} err=\"${e.message}\"")
+        event("store_open_failed", "key_bytes=${key.size} copy=${d.name} pre_open_copy=${pre?.name ?: "none"} err=\"${e.message}\"")
         throw Refused("store cannot be opened (wrong key or damaged page 1): ${e.message}")
     }
     if (!idFile.exists()) { idFile.writeText(hex(ByteArray(8).also { SecureRandom().nextBytes(it) })); fsyncFile(idFile) }   // stores from rounds 1-3
+    if (pre != null) {   // after a replayed journal: verify before the copy goes; a failed check keeps it and quarantines
+        val iv = runCatching { c.integrity() }.getOrElse { "threw: ${it.message}" }
+        if (iv != "ok") { c.close(); quarantine("after hot-journal replay: $iv; pre-open copy in ${pre.name}"); throw Refused("store damaged after journal replay: recovery from the server needed") }
+        pre.deleteRecursively(); event("hot_journal_replayed_ok", "copy removed=${pre.name}")
+    }
     return migrate(c, key)
 }
 // M1 migration, SC-21a design (followups section 4.2): copy aside, one transaction, verify, delete the copy
