@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+Accepted
 
 > **Who may move this to `Accepted`: the user, or `cto` on the user's explicit
 > confirmation. No other agent, and no skill on its own.**
@@ -51,7 +51,7 @@ The founder (Kamel Mohamed, user) decided every area on 2026-10-19 (`docs/resear
 - R7: until the ADR-0003 amendment, 2FA covers the owner and the manager role.
 - R8: a research-note addendum.
 
-Stack-lead validation: **NOT ASSESSED — no stack layer configured** (`stack.backend`, `stack.web` unset in `project.yaml` until `/setup-stack`; ADR-0006 chose Ktor). CTO-ADR: **skipped — lean mode**. Acceptance: the user.
+Stack-lead validation: **NOT ASSESSED — no stack layer configured** (`stack.backend`, `stack.web` unset in `project.yaml` until `/setup-stack`; ADR-0006 chose Ktor). CTO-ADR: **skipped — lean mode**. **Accepted by the founder (Kamel Mohamed), 2026-10-19**; the ADR-0001 amendment it carries (class OP, role `console_rt`, the bootstrap superuser's console lock-out purpose, the § 1c rows) is in effect from that date.
 
 ## Summary
 
