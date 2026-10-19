@@ -133,6 +133,11 @@ class Net:
         self.toxi, self.mode = toxi, mode
 
     def pick(self, rng):
+        if self.mode == "compound":  # phase 3 gate: reordered (partial) batches join the mix
+            x = rng.random()
+            op = "sync_concurrent" if x < 0.2 else ("sync_reordered" if x < 0.45 else "sync")
+            fault = None if rng.random() < 0.35 else rng.choice(sorted(TOXICS))
+            return op, fault
         if self.mode == "concurrent":
             return "sync_concurrent", "slow"
         if self.mode == "random":
@@ -190,8 +195,10 @@ class Run:
     def env(self, side, first):
         e = dict(os.environ, MUTANT=self.mutant or "")
         e.pop("FP", None)
-        if first and self.fault and self.fault[0].startswith(side):
-            e["FP"] = f"{self.fault[0]}:{self.fault[1]}"
+        faults = self.fault if isinstance(self.fault, list) else ([self.fault] if self.fault else [])
+        for f in faults:  # phase 3 gate: a client point and a server point may both be armed
+            if first and f[0].startswith(side):
+                e["FP"] = f"{f[0]}:{f[1]}"
         if side == "client" and self.store:
             e.update(STORE=self.store, CIPHER=self.cipher, SPIKE_DB_KEY=self.key, SQLITE_TMPDIR=self.tmp, TMPDIR=self.tmp)
         return e
@@ -282,7 +289,7 @@ class Run:
             st["faulted_ops"] += 1
             if not r or not r.get("ok") or any(isinstance(x, str) for x in r.get("replies", [])):
                 st["failed_ops"] += 1
-        if r and op in ("sync", "sync_concurrent"):
+        if r and op in ("sync", "sync_concurrent", "sync_reordered"):
             res = r.get("results") or [x for rep_ in r.get("replies", []) if isinstance(rep_, list) for x in rep_]
             st["duplicates_seen"] += sum(1 for x in res if x["result"] == "duplicate")
             if op == "sync_concurrent" and len([x for x in r.get("replies", []) if isinstance(x, list)]) == 2:
@@ -333,7 +340,10 @@ class Run:
                     self.net_op(op, fault)
                 if self.rng.random() < 0.2:
                     _, fault = self.net.pick(self.rng)
-                    self.net_op("replay", fault, {"op": "replay", "k": self.rng.randint(1, 3)})
+                    msg = {"op": "replay", "k": self.rng.randint(1, 3)}
+                    if self.net.mode == "compound" and self.rng.random() < 0.5:
+                        msg["reverse"] = True  # duplicates resent out of order
+                    self.net_op("replay", fault, msg)
                 continue
             if self.rng.random() < 0.5:
                 self.log("sync", self.send({"op": "sync"}))
@@ -4335,8 +4345,23 @@ def ts01b(seeds=20, mutant_budget=12):
 
 
 S206_CELLS = ["a_ts06a_deleted_closed", "b_ts06b_unlinked_running", "c_ts03b_corrupted", "d_marker_also_gone",
-              "e_s206_deleted_item"]
-S206_MUTANTS = ["recreate_silently", "overwrite_damaged", "silent_rebootstrap", "catalogue_upsert_only"]
+              "e_s206_deleted_item", "f_g5f4_hot_journal_page1"]
+
+
+def journal_page1_offset(journal):
+    """G5-F4: offset of the page-1 record's page data in a rollback journal, or None (same layout as tamper.py)."""
+    data = open(journal, "rb").read()
+    if len(data) < 28:
+        return None
+    sector, page = int.from_bytes(data[20:24], "big") or 512, int.from_bytes(data[24:28], "big")
+    off = sector
+    while page and off + 4 + page + 4 <= len(data):
+        if int.from_bytes(data[off:off + 4], "big") == 1:
+            return off + 4
+        off += 4 + page + 4
+    return None
+S206_MUTANTS = ["recreate_silently", "overwrite_damaged", "silent_rebootstrap", "catalogue_upsert_only",
+                "copy_after_open"]
 
 
 def s206_script(cell):
@@ -4415,6 +4440,24 @@ def s206_script(cell):
                     f.write(os.urandom(64))  # flipped bytes in a page
                 st["damaged_sha"] = file_sha(path)
                 st["want_lost"], st["lost"] = (3, 4), [a3, a4]
+            elif cell == "f_g5f4_hot_journal_page1":
+                # G5-F4: the app update's migration is killed mid-DDL (page 1 journaled), the journal's page-1 image
+                # is damaged, and the updated app starts again: SQLite would replay it inside the open call
+                run.client_env.update(SCHEMA_VERSION="2", FP="migrate:mid_ddl:1", CACHE_PAGES="5")
+                run.send({"op": "stats"})  # dies inside the migration at start
+                run.client_env.pop("FP")
+                run.client_env.pop("CACHE_PAGES")
+                j = os.path.join(run.dir, "client.db-journal")
+                off = journal_page1_offset(j) if os.path.exists(j) else None
+                st["journal_page1"] = off
+                if off is not None:
+                    with open(j, "r+b") as f:
+                        f.seek(off + 200)
+                        b_ = f.read(1)
+                        f.seek(off + 200)
+                        f.write(bytes([b_[0] ^ 0x01]))
+                    st["pre_open_sha"] = file_sha(os.path.join(run.dir, "client.db"))
+                st["want_lost"], st["lost"] = (3, 4), [a3, a4]
             elif cell == "d_marker_also_gone":
                 for f in dbfiles() + ["client.db.hwm"]:
                     if os.path.exists(os.path.join(run.dir, f)):
@@ -4428,6 +4471,10 @@ def s206_script(cell):
         if cell == "c_ts03b_corrupted":
             kept = [file_sha(os.path.join(run.dir, a_, "client.db")) for a_ in aside]
             st["damaged_kept"] = st.get("damaged_sha") in kept
+        if cell == "f_g5f4_hot_journal_page1":  # the pre-open store, copied before SQLite replayed the journal
+            rec = os.path.join(run.dir, "client.db.recovery")
+            copies = [os.path.join(rec, x, "client.db") for x in (os.listdir(rec) if os.path.isdir(rec) else [])]
+            st["pre_open_kept"] = st.get("pre_open_sha") in [file_sha(x) for x in copies]
         st["exercised"] = bool((st["after"][1] or {}).get("ok"))
     return script
 
@@ -4470,6 +4517,11 @@ def s206_extra(run, dump):
         v.append(("R69", f"the counter could not sell after the re-bootstrap: {st.get('after')}"))
     if st["cell"] == "c_ts03b_corrupted" and not st.get("damaged_kept"):
         v.append(("R68", f"the damaged store was not kept aside unchanged: {st.get('aside')}"))
+    if st["cell"] == "f_g5f4_hot_journal_page1":
+        if st.get("journal_page1") is None:
+            v.append(("R68", "no page-1 record in the hot journal: the G5-F4 case was not built"))
+        elif not st.get("pre_open_kept"):
+            v.append(("R68", "the store as it was before SQLite replayed the damaged journal was not kept"))
     st["owner_view"] = {"lost": lost, "alert": [(e.get("detail") or {}).get("text") for e in alerts],
                         "aside": st.get("aside")}
     return v, allowed
@@ -4531,6 +4583,89 @@ def s206(seeds=20, mutant_budget=15):
     return ok
 
 
+# Phase 3 gate (compound-fault campaign, sync note 9.1 phase 3): every run uses the retention rule; a client kill and
+# a server kill may both be armed (each in 60 % of runs, drawn from the seed's own RNG); every sync may cross a network
+# fault; a quarter of the syncs send the batch out of order (a partial batch), and some duplicate resends arrive in
+# reverse order. Phase 2's own cells and campaign are not touched (pinned; rerun at full size in the same gate).
+PHASE3_CLIENT_POINTS = [p for p in PHASE2_KILL_POINTS if p.startswith("client:")]
+PHASE3_SERVER_POINTS = [p for p in PHASE2_KILL_POINTS if p.startswith("server:")]
+PHASE3_MUTANTS = MUTANTS + ["drop_on_send"]
+
+
+def phase3_faults(seed):
+    r = random.Random(f"{seed}|p3")
+    faults = []
+    if r.random() < 0.6:
+        faults.append((r.choice(PHASE3_CLIENT_POINTS), r.randint(1, 3)))
+    if r.random() < 0.6:
+        faults.append((r.choice(PHASE3_SERVER_POINTS), r.randint(1, 3)))
+    return faults
+
+
+def p3run(seed, label, toxi, mutant=None):
+    return Run(seed, mutant, store="sqlite3mc", cipher="chacha20", fault=phase3_faults(seed), label=label,
+               net=Net(toxi, "compound"), client_env=dict(RETENTION_ENV))
+
+
+def phase3(campaign=3000, mutant_budget=400):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"),
+               "retention": RETENTION_ENV, "campaign": {}, "mutants": {}}
+    print(f"phase 3 gate campaign (compound faults, reordering, partial batches, retention), "
+          f"commit {summary['harness_commit']}, {campaign} runs", flush=True)
+    toxi = Toxi(RUNS)
+    ok = True
+    try:
+        t1 = time.time()
+        bad = []
+        tot = {"faulted_ops": 0, "failed_ops": 0, "duplicates_seen": 0, "concurrent_both_parsed": 0}
+        kills = {"client": 0, "server": 0, "both": 0}
+        for s in range(1, campaign + 1):
+            r = p3run(s, "phase3-campaign", toxi).go()
+            c = any("client died rc=-9" in x for x in r["fired"])
+            v = any("server died rc=-9" in x for x in r["fired"])
+            kills["client"] += c
+            kills["server"] += v
+            kills["both"] += c and v
+            for k in tot:
+                tot[k] += r["net"][k]
+            if r["violations"]:
+                bad.append({"seed": s, "fault": r["fault"], "violations": r["violations"][:3]})
+                print(f"  CAMPAIGN VIOLATION seed {s}: {r['violations'][:2]}", flush=True)
+            if s % 250 == 0:
+                print(f"  campaign {s}/{campaign}  violating {len(bad)}  kills {kills}  ({round(time.time() - t1)} s)",
+                      flush=True)
+        res = "PASS" if not bad else "FAIL"
+        ok &= res == "PASS"
+        summary["campaign"] = {"runs": campaign, "kills_fired": kills, **tot, "violating_runs": len(bad),
+                               "first_bad": bad[:5], "seconds": round(time.time() - t1, 1), "result": res}
+        print(f"  campaign: {campaign} runs, kills {kills}, faulted ops {tot['faulted_ops']}, duplicates "
+              f"{tot['duplicates_seen']}, violating {len(bad)}  {res}", flush=True)
+        for m in PHASE3_MUTANTS:
+            t1 = time.time()
+            caught = None
+            for s in range(1, mutant_budget + 1):
+                r = p3run(s, f"phase3-mutant-{m}", toxi, mutant=m).go()
+                if r["violations"]:
+                    caught = r
+                    break
+            summary["mutants"][m] = {"caught": bool(caught), "runs_to_catch": s if caught else None,
+                                     "budget": mutant_budget,
+                                     "first_violation": caught["violations"][0] if caught else None,
+                                     "seconds": round(time.time() - t1, 1)}
+            ok &= bool(caught)
+            print(f"  mutant {m:22s} {'CAUGHT' if caught else 'SURVIVED'} after {s} runs: "
+                  f"{caught['violations'][0] if caught else '-'}", flush=True)
+    finally:
+        toxi.stop()
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "phase3-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"PHASE 3 CAMPAIGN: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -4540,6 +4675,18 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "phase3":  # phase3 [campaign_runs]
+        sys.exit(0 if phase3(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay3":  # replay3 <seed> [mutant]
+        t = Toxi(RUNS)
+        try:
+            r = p3run(int(sys.argv[2]), "replay3", t, mutant=sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else None)
+            r.verbose = True
+            r = r.go()
+            print(json.dumps({k: r[k] for k in ("fault", "fired", "actions", "acked", "server_sales", "net", "violations")},
+                             indent=1, default=str))
+        finally:
+            t.stop()
     if sys.argv[1] == "s206":  # s206 [seeds_per_cell]
         sys.exit(0 if s206(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay206":  # replay206 <seed> <cell> [mutant]

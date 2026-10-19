@@ -174,6 +174,9 @@
 #   feed's catalogue is a snapshot: items the owner deleted are removed from the device (S206: no resurrected deletes).
 #      MUTANT also: recreate_silently (a lost store recreated empty at sequence 0, no bootstrap), overwrite_damaged (the
 #      damaged files deleted instead of kept), catalogue_upsert_only (deleted items stay on the device).
+# Phase 3 gate (compound-fault campaign): op sync_reordered sends the pending commands out of order (the second and
+#   third swapped, or reversed when fewer), so the server applies the in-order prefix and refuses the rest as a gap: a
+#   partial batch; the rest follows on a later sync. replay {k, reverse} resends acknowledged commands in reverse order.
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -422,11 +425,11 @@ def q(sql, params=()):
     return con.execute(sql, params).fetchall()
 
 
-def preserve_before_recovery():
+def preserve_before_recovery(force=False):
     """After a crash a hot journal or WAL makes SQLite rewrite the main file while opening it (rollback) or at
     close (checkpoint). Copy the store files aside first, so a store that then fails verification still has its
     untouched originals for recovery and evidence (spike finding P1-F3). Returns the copy's path or None."""
-    if not any(os.path.exists(p) and os.path.getsize(p) > 0 for p in (DB + "-journal", DB + "-wal")):
+    if not force and not any(os.path.exists(p) and os.path.getsize(p) > 0 for p in (DB + "-journal", DB + "-wal")):
         return None
     base = DB + ".recovery"
     os.makedirs(base, exist_ok=True)
@@ -530,13 +533,20 @@ def migrate(c):
 
 def open_store():
     """Open and verify the store. Returns (connection, None, copy) or (None, error, copy)."""
-    copy = preserve_before_recovery()
+    late_copy = MUTANT == "copy_after_open" and os.path.exists(DB + "-journal")
+    copy = None if MUTANT == "copy_after_open" else preserve_before_recovery()
     try:
         if STORE == "sqlite3mc":
             c = apsw.Connection(DB, vfs="fullshim") if os.environ.get("FULL_SHIM") == "1" else apsw.Connection(DB)
             c.set_busy_timeout(5000)
             c.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
             c.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()  # answers 'ok' even for a wrong key
+            if late_copy:  # planted defect (desktop G5-F4): the copy is taken after SQLite replayed the journal
+                try:
+                    c.execute("PRAGMA user_version").fetchall()
+                except apsw.Error:
+                    pass
+                copy = preserve_before_recovery(force=True)
         else:
             c = sqlite3.connect(DB, isolation_level=None, timeout=5)
         # Verification before any write: a wrong key or a damaged page fails here.
@@ -843,10 +853,12 @@ def select_rows():
     return sorted(rows)[:batch]
 
 
-def sync():
+def sync(reorder=False):
     global batch
     report_events()
     rows = select_rows()
+    if reorder and len(rows) >= 2:  # phase 3 gate: a reordered (and so partial) batch
+        rows = rows[:1] + [rows[2], rows[1]] + rows[3:] if len(rows) >= 3 else rows[::-1]
     if not rows:
         if (LEASE_ON or EDITS_ON) and MUTANT != "no_heartbeat":  # SC-25b/SC-28: a contact with nothing to send
             try:
@@ -1014,7 +1026,7 @@ def ping():
         reply({"ok": False, "op": "ping", "error": str(e)[:80]})
 
 
-def replay(k):
+def replay(k, reverse=False):
     # Duplicate resend (SC-04): send the last k acknowledged commands again, unchanged.
     if RETENTION:  # acknowledged outbox rows are gone; resend from the retained business records
         rows = q(f"SELECT * FROM ({RETAINED}) WHERE seq <= "
@@ -1024,6 +1036,8 @@ def replay(k):
                  "ORDER BY seq DESC LIMIT ?", (k,))[::-1]
     if not rows:
         return reply({"ok": True, "op": "replay", "sent": 0})
+    if reverse:  # phase 3 gate: duplicates resent out of order
+        rows = rows[::-1]
     try:
         resp = post(rows_to_cmds(rows))
     except NET_ERRORS as e:
@@ -1459,7 +1473,9 @@ for line in sys.stdin:
         elif op == "sync":
             sync()
         elif op == "replay":
-            replay(msg["k"])
+            replay(msg["k"], bool(msg.get("reverse")))
+        elif op == "sync_reordered":  # phase 3 gate
+            sync(reorder=True)
         elif op == "sync_concurrent":
             sync_concurrent()
         elif op == "ping":

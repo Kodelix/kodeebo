@@ -42,7 +42,7 @@ def sha(path):
 
 
 class Client:
-    def __init__(self, db, cipher, key, journal="delete", fp=None, cache_pages=None):
+    def __init__(self, db, cipher, key, journal="delete", fp=None, cache_pages=None, extra_env=None):
         tmp = os.path.join(os.path.dirname(db), "tmp")
         env = dict(os.environ, STORE="sqlite3mc", CIPHER=cipher, SPIKE_DB_KEY=key, SQLITE_TMPDIR=tmp, TMPDIR=tmp,
                    JOURNAL=journal)
@@ -52,6 +52,7 @@ class Client:
             env["FP"] = fp
         if cache_pages:
             env["CACHE_PAGES"] = str(cache_pages)
+        env.update(extra_env or {})
         self.err = open(db + ".stderr.txt", "a")
         self.p = subprocess.Popen([sys.executable, CLIENT_PY, db, "http://127.0.0.1:9"], env=env, text=True,
                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.err, bufsize=1)
@@ -106,6 +107,23 @@ def flip(path, offset):
         f.write(bytes([b[0] ^ 0x01]))
 
 
+def journal_page1_offset(journal):
+    """G5-F4: the file offset of the page-1 record's page data in a rollback journal (header: sector size at byte 20,
+    page size at byte 24; records of 4-byte page number, page, 4-byte checksum start one sector in). None if absent."""
+    data = open(journal, "rb").read()
+    if len(data) < 28:
+        return None
+    sector, page = int.from_bytes(data[20:24], "big") or 512, int.from_bytes(data[24:28], "big")
+    if not page:
+        return None
+    off = sector
+    while off + 4 + page + 4 <= len(data):
+        if int.from_bytes(data[off:off + 4], "big") == 1:
+            return off + 4
+        off += 4 + page + 4
+    return None
+
+
 def events(db):
     p = db + ".events.jsonl"
     return [json.loads(x)["event"] for x in open(p)] if os.path.exists(p) else []
@@ -113,7 +131,7 @@ def events(db):
 
 def store_hashes(d):
     return {n: sha(os.path.join(d, n)) for n in os.listdir(d)
-            if n.startswith("client.db") and not n.endswith(STORE_FILES_SKIP)}
+            if n.startswith("client.db") and not n.endswith(STORE_FILES_SKIP) and os.path.isfile(os.path.join(d, n))}
 
 
 def probe_after(db, cipher, key, journal="delete"):
@@ -190,6 +208,26 @@ def ts03(cipher):
             info += f", flipped @{off}"
         r = probe_after(db, cipher, KEY)
         rows.append(row(cipher, name, *classify(r, N_SALES), flipped=info))
+
+    # G5-F4 (desktop round 4): SQLite replays a hot journal inside the open call, before any app check, so a damaged
+    # image of page 1 is written over the store. A sale does not journal page 1 before COMMIT; a schema change does.
+    # Kill the app update's migration (SC-21a) mid-DDL, damage page 1's record in the hot journal, start the old app:
+    # the store must be refused and recorded, with the pre-open originals kept byte-identical (copied before open).
+    name = "hot_journal_page1_flip"
+    db, _ = build(os.path.join(base, name), cipher, "clean")
+    c = Client(db, cipher, KEY, fp="migrate:mid_ddl:1", cache_pages=5, extra_env={"SCHEMA_VERSION": "2"})
+    c.p.wait()  # the migration runs at start and is killed inside its transaction
+    journal = db + "-journal"
+    base_off = journal_page1_offset(journal) if os.path.exists(journal) else None
+    if base_off is None:
+        rows.append(row(cipher, name, "NOT ASSESSED", "no page-1 record in the hot journal after the kill"))
+    else:
+        off = base_off + 200
+        flip(journal, off)
+        r = probe_after(db, cipher, KEY)
+        rows.append(row(cipher, name, *classify(r, N_SALES),
+                        flipped=f"journal {os.path.getsize(journal) if os.path.exists(journal) else 0} bytes, "
+                                f"page-1 record flipped @{off}"))
 
     # Commit marker (B).
     for name in ("marker_flipped", "marker_deleted"):
@@ -279,6 +317,7 @@ def ts05(cipher):
 # The scenarios every cipher must produce, in order (checked against README "Pinned cell lists" before the run,
 # and against the rows actually produced after it).
 TAMPER_SCENARIOS = ["db_middle_page", "db_page1", "hot_journal_crash_control", "hot_journal_crash_flip",
+                    "hot_journal_page1_flip",
                     "marker_flipped", "marker_deleted", "store_older_than_marker", "db_page_while_running",
                     "walmode+marker-wal_header", "walmode+marker-wal_first_frame", "walmode+marker-wal_last_frame",
                     "wrong_key", "truncated_key", "empty_key", "right_key_wrong_cipher", "wrong_key_x20",

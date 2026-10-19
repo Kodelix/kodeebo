@@ -301,7 +301,7 @@ Phase 2 and the tamper suite check, before they run anything, that their cell li
 
 - `pinned phase2-cells: down, req_blackhole, req_cut_10, req_cut_120, req_cut_400, reset_peer, resp_blackhole, resp_cut_1, resp_cut_150, resp_cut_20, slicer, slow, concurrent`
 - `pinned phase2-campaign-toxics: down, req_blackhole, req_cut_10, req_cut_120, req_cut_400, reset_peer, resp_blackhole, resp_cut_1, resp_cut_150, resp_cut_20, slicer, slow`
-- `pinned tamper-scenarios: db_middle_page, db_page1, hot_journal_crash_control, hot_journal_crash_flip, marker_flipped, marker_deleted, store_older_than_marker, db_page_while_running, walmode+marker-wal_header, walmode+marker-wal_first_frame, walmode+marker-wal_last_frame, wrong_key, truncated_key, empty_key, right_key_wrong_cipher, wrong_key_x20, right_key_after_attempts, ts04a_plaintext_scan`
+- `pinned tamper-scenarios: db_middle_page, db_page1, hot_journal_crash_control, hot_journal_crash_flip, hot_journal_page1_flip, marker_flipped, marker_deleted, store_older_than_marker, db_page_while_running, walmode+marker-wal_header, walmode+marker-wal_first_frame, walmode+marker-wal_last_frame, wrong_key, truncated_key, empty_key, right_key_wrong_cipher, wrong_key_x20, right_key_after_attempts, ts04a_plaintext_scan`
 
 **Phase 3 gate campaign — required (founder, 2026-10-17):** it re-runs **phase 2 at full size** (50 seeds per cell, 3,000 campaign runs). After the toxic-table fix (SC-25a), phase 2 was re-checked only at reduced size (10 seeds, 300 runs).
 
@@ -704,7 +704,7 @@ The phase 2 log header says `commit c0e7fd2`. A desktop-spike commit landed on `
 **Finding P3-F4 — an update must never change the bytes of a stored command.** If the new version rewrites stored payloads, even only their JSON layout, a command the server applied before the update (its ack lost) no longer dedupes: the server sees the same command id with a different hash. Under OQ6 that is recorded and flagged for review, never applied twice, but every such sale lands in the owner's review queue. **Rule:** stored command payloads are immutable; the wire format may change only for new commands, behind the envelope version.
 
 **Not covered:**
-- **The real updater on Windows:** files locked by the running app, installer rollback. That is SC-21b in phase 4.
+- **The real updater on Windows:** files locked by the running app, installer rollback. That is SC-21b in phase 4. The Windows migration itself has since run under power cuts in the desktop spike's round 4 (G5.1, commit `4dfc169`, `prototypes/desktop-client-spike/evidence/g5/run-log-g5-20261019.txt`): a cut at each of the 6 migration steps, 24 of 24 cuts PASS in both runtimes; the schema never mixed, the queued rows' bytes unchanged, the copy removed only after the verify, and the old app refused the newer store untouched (G5-F1). Migration time 0.24–4.05 s on the throttled disk: runtime A can pass the 3 s ceiling (G5-F2). Still for phase 4: the sync half (byte-identical send and dedupe across versions after the real update).
 - **A failed verification after the migration:** there is no automatic restore from the copy yet; the copy is kept and the store refused.
 - **A two-step jump (schema 1 to 3).**
 - **The server rejecting an envelope version it no longer supports:** the stub ignores the envelope.
@@ -1661,10 +1661,11 @@ A device that goes offline right after receiving an edit keeps that edit open on
 | `c_ts03b_corrupted` | 2 unsynced sales; the app stopped; 64 bytes overwritten in a page | Integrity check fails; the damaged database is kept aside unchanged (same hash); lost range 3–4; the next sale applies |
 | `d_marker_also_gone` | 2 unsynced sales; the database and the marker deleted | The fresh store asks the server; no countable range (the device last reported sequence 2); the alert says later sales cannot be counted, with the last contact time; the next sale applies, no conflict |
 | `e_s206_deleted_item` | The owner deletes an item; 30 days pass; the device pulls the feed | Selling the deleted item is refused (`price_missing`); the other item sells |
+| `f_g5f4_hot_journal_page1` | Added for G5-F4 (section below): 2 unsynced sales; an app update's migration killed mid-DDL with page 1 journaled; one byte of page 1's image in the hot journal flipped; the updated app starts | SQLite replays the damaged journal inside the open call and the store fails; the store as it was **before** the open is in `client.db.recovery/` (same hash); lost range 3–4; the next sale applies |
 
 **Checks added:**
 - **R67:** never a silent loss. The recorded range is exact when the marker survives; without it, the alert says later sales cannot be counted. One owner alert.
-- **R68:** a damaged store is kept aside unchanged.
+- **R68:** a damaged store is kept aside unchanged. In cell `f`, the store as it was before SQLite replayed the journal is kept.
 - **R69:** after the re-bootstrap the counter sells and syncs normally; nothing is applied twice and nothing conflicts (I2, I8).
 - **R70 (S206):** a deleted item is not resurrected.
 
@@ -1673,6 +1674,7 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - `overwrite_damaged` (client): the damaged files deleted.
 - `silent_rebootstrap` (server): no loss recorded, no alert.
 - `catalogue_upsert_only` (client): the old feed handling.
+- `copy_after_open` (client, added with cell `f`): the desktop app's order in G5-F4, the copy taken after SQLite opened the store.
 
 #### Run 1 (dev, uncommitted harness on `34cb848`) — PASS
 
@@ -1703,15 +1705,48 @@ A device that goes offline right after receiving an edit keeps that edit open on
 **Not covered:**
 - **Stock, business day and open sessions after a re-bootstrap** (the SC-29, SC-31 and SC-30 state): the fresh store starts empty except for the feed. Rebuilding that state from the server is for the bootstrap spec.
 - **Device identity kept outside the store:** the spike's device id is fixed. On Windows it must survive the store's loss (desktop-note S11 key custody, OQ7 machine id).
-- **The Windows store half of TS-03c and TS-06c:** the desktop spike's round 4 (G5).
+- **The Windows store half of TS-03c and TS-06c:** the desktop spike's round 4 (G5). Its run 4 result is cited in the G5-F4 section below.
 
+### Phase 3 — G5-F4: a damaged hot journal is replayed at open, before the app can check it (Linux)
 
+**Source:** the desktop spike's round 4 (G5.3, commit `4dfc169`, `prototypes/desktop-client-spike/README.md` finding G5-F4). A power cut left a hot journal; 64 bytes flipped inside the journal's saved copy of page 1. SQLite played the damaged journal back while opening, so the store became unreadable before the app's check ran, in both runtimes. The desktop app copied the store only after open, so it kept the already-overwritten file.
 
+**Founder (2026-10-19):** add the mitigation to the store design in the note (before opening, if a hot journal exists, copy the store and the journal aside first) and a Linux tamper case for it in phase 3, before the gate campaign. The rule is now in the sync note's OQ28 row.
 
+**This client already does it** (P1-F3, phase 1): `preserve_before_recovery` copies the store, the journal and the marker into `client.db.recovery/` before the open, whenever a hot journal or WAL exists. What phase 1 did not cover is the desktop case itself: page 1's image in the journal. A sale journals only the pages it changes, never page 1, so a schema change is needed.
 
+**Tamper row `hot_journal_page1_flip`** (both ciphers; the suite now has 38 rows, pinned list updated):
+- Build the 5-sale store; start the client as the next app version (`SCHEMA_VERSION=2`) with a small page cache and failpoint `migrate:mid_ddl:1`, so it dies inside the migration with page 1 in the hot journal.
+- Find the page-1 record from the journal header (sector size, page size) and flip one byte 200 bytes into its page image.
+- Start the client: **detected, refused, recorded (`store_unusable_at_start`); SQLite's recovery rewrote the file; the originals preserved byte-identical** in `client.db.recovery/`. The same result under `chacha20` and `sqlcipher`.
 
+**S206 cell `f_g5f4_hot_journal_page1`** carries the same damage into the re-bootstrap: the refused store is moved aside, the device re-bootstraps, lost range 3–4 is recorded with one alert, and the pre-open copy is kept (R68). The `copy_after_open` mutant, the desktop app's order, is caught by R68.
 
-- **The owner's minimum and increment:** billing spec.
+#### Run 1 (dev, uncommitted harness on `4dfc169`) — PASS
 
+- **Tamper:** 38 of 38 rows PASS, `hot_journal_page1_flip` included under both ciphers.
+- **S206:** 6 cells × 20 seeds, 0 violations; cell `f` exercised 20 of 20 (a page-1 record in every hot journal). All five mutants caught: `copy_after_open` after 6 runs (R68, in cell `f`); the other four after the same number of runs as S206 run 2.
+- **The committed run** is part of the gate run below.
 
+**Finding P3-F16 — the copy before open has to be the rule, not the copy after a failure.** A hot journal is replayed during the first read, before any check the app can run. Whatever the app copies after that is the replayed file, so the only way to keep the evidence and the pre-crash state is to copy whenever a hot journal exists, before the first read. The copy is small (store plus journal) and is deleted after verification passes. It confirms G5-F4 on Linux and under both SQLite3MC ciphers: this is SQLite's recovery order, not the Windows binding's.
 
+**Not covered:** the Windows run of the same order (copy before open) is for the desktop spike's next build, which takes the rule from the note.
+
+### Phase 3 gate — the compound-fault campaign (`run.sh phase3 [runs]`, `replay3 <seed> [mutant]`)
+
+**Pass signal (sync note § 9.1 phase 3):** 0 violations in ≥ 3,000 runs (30,000 stretch); every planted defect caught. Order A (founder, 2026-10-18): every leg first, the campaign last, on the final code. S109 is NOT RUN: key custody is not ready.
+
+**Design** (phase 2's cells, campaign and RNG untouched; phase 2 reruns at full size in the same gate):
+- **Retention on:** every run uses `RETENTION=1` (the OQ29 rule, 60 days).
+- **Compound process faults:** a client kill and a server kill are each armed in 60 % of runs, drawn from the seed's own RNG; both are armed in about a third. The points and hit counts are phase 2's.
+- **A network fault on every sync:** each sync crosses one of phase 2's toxics in 65 % of cases.
+- **Reordering and partial batches:** a quarter of the syncs send the pending commands out of order (the second and third swapped, or the two reversed). The server applies the in-order prefix and refuses the rest as a gap, so the batch lands partly; the rest follows on a later sync. A fifth are concurrent syncs.
+- **Duplicates out of order:** half of the duplicate resends of acknowledged commands arrive in reverse order.
+- **Oracle:** I1–I10 and every leg's checks that apply to a plain run.
+- **Mutants (400-run budget each):** phase 2's four (`separate_outbox_txn`, `no_dedupe`, `ack_before_commit`, `double_minute`) plus `drop_on_send`, all under compound faults.
+
+#### Run 1 (dev, uncommitted harness on `7c17478`, 100 runs) — PASS
+
+- **Campaign:** 100 runs, 0 violations. Kills fired: client 56, server 35, both in the same run 21. 608 faulted operations, 491 failed operations, 404 duplicates seen, 63 concurrent syncs with both replies parsed. 96 s.
+- **Mutants:** all five caught: `no_dedupe`, `double_minute` and `drop_on_send` after 1 run, `separate_outbox_txn` after 12, `ack_before_commit` after 271.
+- **The gate run** (≥ 3,000 runs, with phase 2 at full size, the full regression of every leg and the tamper suite) follows on the committed harness.
