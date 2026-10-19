@@ -2,7 +2,8 @@
 # SC-24 store builder (host side): the phase 0-3 client sells at the OQ16 mix (1,200 sessions + 3,600 cafe orders a
 # day, derived from capacity, not measured) with the retention rule on, syncing every 1,000 sales so the outbox drains
 # as it would online. Uses its own server port and database (sc24), so it can run while the VM legs use 18471.
-#   sc24gen.py <commands> <out_dir>    -> <out_dir>/client.db (+ .hwm), <out_dir>/key.txt (random test key)
+#   sc24gen.py <commands> <out_dir> [offline]  -> <out_dir>/client.db (+ .hwm), <out_dir>/key.txt (random test key)
+#   offline (SC-26): nothing is synced, so the store holds a backlog of <commands> pending commands
 import json
 import os
 import random
@@ -19,7 +20,7 @@ driver.PG_DSN = "postgres://postgres@127.0.0.1:56432/sc24"
 SESSIONS, CAFE = 1200, 3600
 
 
-def build(n, out):
+def build(n, out, offline=False):
     run = driver.Run(24, None, store="sqlite3mc", cipher="chacha20", fault=[], label=f"sc24-build-{n}",
                      client_env={"RETENTION": "1", "RETAIN_DAYS": "60"})
     rng = random.Random(f"sc24|{n}")
@@ -38,13 +39,21 @@ def build(n, out):
             rep = r.send(a)
             if not (rep and rep.get("ok")):
                 raise RuntimeError(f"sale {k} failed: {rep}")
-            if k % 1000 == 999 or k == n - 1:
+            if not offline and (k % 1000 == 999 or k == n - 1):
                 while (r.send({"op": "sync"}) or {}).get("pending", 0) > 0:
                     pass
             if k % 20000 == 19999:
                 print(f"  {k + 1}/{n} ({round(time.time() - t0)} s)", flush=True)
 
     run.script = script
+    if offline:  # keep the backlog: stop the client before the driver's final drain
+        orig = run.send
+
+        def send(msg):
+            if msg.get("op") == "sync":
+                return {"ok": True, "pending": 0}
+            return orig(msg)
+        run.send = send
     res = run.go()
     os.makedirs(out, exist_ok=True)
     for suffix in ("", ".hwm"):
@@ -60,4 +69,4 @@ def build(n, out):
 
 
 if __name__ == "__main__":
-    build(int(sys.argv[1]), sys.argv[2])
+    build(int(sys.argv[1]), sys.argv[2], len(sys.argv) > 3 and sys.argv[3] == "offline")

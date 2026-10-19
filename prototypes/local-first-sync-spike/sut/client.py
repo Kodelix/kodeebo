@@ -259,8 +259,26 @@ clocks = {"mono_offset": 0.0, "wall_offset": 0.0}  # SC-25b test hooks
 lease = {}
 
 
+REALCLOCK = os.environ.get("REALCLOCK") == "1"  # phase 4 (TS-07b, S304): the device clock is the real one
+
+
 def test_clock():
-    """SC-30: the injected device clock {boot, mono, wall}."""
+    """SC-30: the injected device clock {boot, mono, wall}. REALCLOCK (phase 4): the real clocks of this PC, with the
+    boot identity from Windows' BootId counter (S302 decides the product's marker)."""
+    if REALCLOCK:
+        wall = time.time()
+        if WINDOWS:  # BootId counts boots (S302 candidate); it does not move when someone edits the wall clock
+            import winreg
+            try:
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SYSTEM\CurrentControlSet\Control\Session Manager"
+                                    r"\Memory Management\PrefetchParameters") as k:
+                    boot = int(winreg.QueryValueEx(k, "BootId")[0])
+            except OSError:
+                ctypes.windll.kernel32.GetTickCount64.restype = ctypes.c_ulonglong
+                boot = int((wall - ctypes.windll.kernel32.GetTickCount64() / 1000) // 10)
+        else:
+            boot = int((wall - time.clock_gettime(time.CLOCK_BOOTTIME)) // 10)
+        return {"boot": boot, "mono": time.monotonic(), "wall": wall}
     with open(TESTCLOCK) as f:
         return json.load(f)
 

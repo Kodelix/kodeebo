@@ -1,0 +1,717 @@
+{
+ "harness_commit": "b492b6a",
+ "started": "2026-10-19 22:37:53",
+ "runs": [
+  {
+   "seed": 1,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:before_local_commit",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 13.9,
+   "fired": [
+    "power cut while held at client:before_local_commit (hit 1)"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 218
+  },
+  {
+   "seed": 2,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:mid_local_txn",
+    1
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 13.6,
+   "fired": [
+    "power cut while held at client:mid_local_txn (hit 1)"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 150
+  },
+  {
+   "seed": 3,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_business_commit",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": null,
+   "fired": [],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 46
+  },
+  {
+   "seed": 4,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_local_commit",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 13.5,
+   "fired": [
+    "power cut while held at client:after_local_commit (hit 1)"
+   ],
+   "acked": 64,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 107
+  },
+  {
+   "seed": 5,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:before_send",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 11.9,
+   "fired": [
+    "power cut while held at client:before_send (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 134
+  },
+  {
+   "seed": 6,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_response_before_mark",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 11.6,
+   "fired": [
+    "power cut while held at client:after_response_before_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 172
+  },
+  {
+   "seed": 7,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_mark",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 12.7,
+   "fired": [
+    "power cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 144
+  },
+  {
+   "seed": 8,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:mid_mark",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 13.5,
+   "fired": [
+    "power cut while held at client:mid_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 136
+  },
+  {
+   "seed": 9,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:before_local_commit",
+    2
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 12.6,
+   "fired": [
+    "power cut while held at client:before_local_commit (hit 2)",
+    "client died rc=0"
+   ],
+   "acked": 63,
+   "server_sales": 63,
+   "violations": [],
+   "seconds": 163
+  },
+  {
+   "seed": 10,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:mid_local_txn",
+    2
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 11.8,
+   "fired": [
+    "power cut while held at client:mid_local_txn (hit 2)"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 171
+  },
+  {
+   "seed": 11,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_business_commit",
+    2
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": null,
+   "fired": [],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 44
+  },
+  {
+   "seed": 12,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_local_commit",
+    2
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 13.5,
+   "fired": [
+    "power cut while held at client:after_local_commit (hit 2)"
+   ],
+   "acked": 64,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 142
+  },
+  {
+   "seed": 13,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:before_send",
+    2
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 12.5,
+   "fired": [
+    "power cut while held at client:before_send (hit 2)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 137
+  },
+  {
+   "seed": 14,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_response_before_mark",
+    2
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 9.6,
+   "fired": [
+    "power cut while held at client:after_response_before_mark (hit 2)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 190
+  },
+  {
+   "seed": 15,
+   "kind": "power",
+   "cut": [
+    null,
+    "client:after_mark",
+    2
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 11.8,
+   "fired": [
+    "power cut while held at client:after_mark (hit 2)",
+    "client died rc=0"
+   ],
+   "acked": 65,
+   "server_sales": 7,
+   "violations": [
+    [
+     "I1",
+     "s15-a10 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s15-a11 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s15-a12 acknowledged but missing on the server"
+    ]
+   ],
+   "seconds": 298
+  },
+  {
+   "seed": 16,
+   "kind": "power",
+   "cut": [
+    44,
+    0.14
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 11.9,
+   "fired": [
+    "power cut 0.14 s after action 44 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 155
+  },
+  {
+   "seed": 17,
+   "kind": "power",
+   "cut": [
+    43,
+    0.11
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 12.5,
+   "fired": [
+    "power cut 0.11 s after action 43 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 94
+  },
+  {
+   "seed": 18,
+   "kind": "power",
+   "cut": [
+    14,
+    0.43
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 13.2,
+   "fired": [
+    "power cut 0.43 s after action 14 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 85
+  },
+  {
+   "seed": 19,
+   "kind": "power",
+   "cut": [
+    29,
+    0.12
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 13.7,
+   "fired": [
+    "power cut 0.12 s after action 29 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 88
+  },
+  {
+   "seed": 20,
+   "kind": "power",
+   "cut": [
+    4,
+    0.32
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 12.3,
+   "fired": [
+    "power cut 0.32 s after action 4 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 103
+  },
+  {
+   "seed": 21,
+   "kind": "power",
+   "cut": [
+    23,
+    0.52
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 12.4,
+   "fired": [
+    "power cut 0.52 s after action 23 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 130
+  },
+  {
+   "seed": 22,
+   "kind": "power",
+   "cut": [
+    28,
+    0.05
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 12.6,
+   "fired": [
+    "power cut 0.05 s after action 28 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 129
+  },
+  {
+   "seed": 23,
+   "kind": "power",
+   "cut": [
+    19,
+    0.74
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 9.5,
+   "fired": [
+    "power cut 0.74 s after action 19 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 178
+  },
+  {
+   "seed": 24,
+   "kind": "power",
+   "cut": [
+    35,
+    0.46
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 9.0,
+   "fired": [
+    "power cut 0.46 s after action 35 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 179
+  },
+  {
+   "seed": 25,
+   "kind": "power",
+   "cut": [
+    18,
+    0.31
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 12.3,
+   "fired": [
+    "power cut 0.31 s after action 18 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 235
+  },
+  {
+   "seed": 26,
+   "kind": "power",
+   "cut": [
+    37,
+    0.56
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 13.3,
+   "fired": [
+    "power cut 0.56 s after action 37 was sent"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 147
+  },
+  {
+   "seed": 27,
+   "kind": "power",
+   "cut": [
+    13,
+    0.79
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 12.6,
+   "fired": [
+    "power cut 0.79 s after action 13 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 134
+  },
+  {
+   "seed": 28,
+   "kind": "power",
+   "cut": [
+    46,
+    0.34
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 27.0,
+   "fired": [
+    "power cut 0.34 s after action 46 was sent"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 183
+  },
+  {
+   "seed": 29,
+   "kind": "power",
+   "cut": [
+    40,
+    0.78
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 14.0,
+   "fired": [
+    "power cut 0.78 s after action 40 was sent"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 214
+  },
+  {
+   "seed": 30,
+   "kind": "power",
+   "cut": [
+    36,
+    0.67
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 14.7,
+   "fired": [
+    "power cut 0.67 s after action 36 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 196
+  },
+  {
+   "seed": 1001,
+   "kind": "nmi",
+   "cut": [
+    null,
+    "client:before_local_commit",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 188.8,
+   "fired": [
+    "nmi cut while held at client:before_local_commit (hit 1)"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 385
+  },
+  {
+   "seed": 1002,
+   "kind": "nmi",
+   "cut": [
+    null,
+    "client:mid_local_txn",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": null,
+   "fired": [
+    "client died rc=1"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 135
+  },
+  {
+   "seed": 1003,
+   "kind": "nmi",
+   "cut": [
+    null,
+    "client:after_business_commit",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": null,
+   "fired": [],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 60
+  },
+  {
+   "seed": 1004,
+   "kind": "nmi",
+   "cut": [
+    null,
+    "client:after_local_commit",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 202.5,
+   "fired": [
+    "nmi cut while held at client:after_local_commit (hit 1)"
+   ],
+   "acked": 64,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 407
+  },
+  {
+   "seed": 1005,
+   "kind": "nmi",
+   "cut": [
+    null,
+    "client:before_send",
+    1
+   ],
+   "hot_journal_at_restart": false,
+   "boot_s": 185.2,
+   "fired": [
+    "nmi cut while held at client:before_send (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "violations": [],
+   "seconds": 434
+  },
+  {
+   "seed": 1006,
+   "kind": "nmi",
+   "cut": [
+    44,
+    0.26
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 178.8,
+   "fired": [
+    "nmi cut 0.26 s after action 44 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 420
+  },
+  {
+   "seed": 1007,
+   "kind": "nmi",
+   "cut": [
+    37,
+    0.09
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 176.2,
+   "fired": [
+    "nmi cut 0.09 s after action 37 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 381
+  },
+  {
+   "seed": 1008,
+   "kind": "nmi",
+   "cut": [
+    23,
+    0.59
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 189.2,
+   "fired": [
+    "nmi cut 0.59 s after action 23 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 393
+  },
+  {
+   "seed": 1009,
+   "kind": "nmi",
+   "cut": [
+    15,
+    0.07
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 190.6,
+   "fired": [
+    "nmi cut 0.07 s after action 15 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 400
+  },
+  {
+   "seed": 1010,
+   "kind": "nmi",
+   "cut": [
+    33,
+    0.33
+   ],
+   "hot_journal_at_restart": true,
+   "boot_s": 183.1,
+   "fired": [
+    "nmi cut 0.33 s after action 33 was sent"
+   ],
+   "acked": 64,
+   "server_sales": 64,
+   "violations": [],
+   "seconds": 378
+  }
+ ],
+ "hot_journal_runs": 19,
+ "result": "FAIL"
+}
