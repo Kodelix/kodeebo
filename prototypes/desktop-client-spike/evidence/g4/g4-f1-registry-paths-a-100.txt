@@ -1,0 +1,5 @@
+# G4-F1: A's uninstall entries with full registry paths (guest/g4-hive.ps1 v2, as admin), 1.0.0 installed per-user as cashier, app closed. VM snapshot r3-a-100, 2026-10-18 01:58.
+uninstall-entry area=machine-Uninstall path=[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{D7073FE5-1307-3E65-8A67-286D2085E3F1}] name=KodeeboSpikeA version=1.0.0 uninstall=[MsiExec.exe /X{D7073FE5-1307-3E65-8A67-286D2085E3F1}] location=[C:\Users\cashier\AppData\Local\KodeeboSpikeA\]
+uninstall-entry area=msi-UserData(sid=S-1-5-21-1592116777-1227029569-2689884476-1002) path=[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-21-1592116777-1227029569-2689884476-1002\Products\5EF3707D703156E3A87682D602583E1F\InstallProperties] name=KodeeboSpikeA version=1.0.0 uninstall=[MsiExec.exe /X{D7073FE5-1307-3E65-8A67-286D2085E3F1}] location=[C:\Users\cashier\AppData\Local\KodeeboSpikeA\]
+uninstall-entries found=2
+pending-file-renames: none

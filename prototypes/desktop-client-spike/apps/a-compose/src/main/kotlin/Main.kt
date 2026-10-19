@@ -237,6 +237,19 @@ fun main(args: Array<String>) {
             exitProcess(if (r.isSuccess) 0 else 1)
         }
         "--kill-loop" -> guarded("killloop") { killLoop() }
+        // round 3 (G4): version check and self-update (start the installer detached, then exit so files are free)
+        "--version" -> {
+            File(dataDir, "version.txt").appendText("version=${System.getProperty("kspike.version", "unknown")} pid=${ProcessHandle.current().pid()} ms=${System.currentTimeMillis()}\n")
+            exitProcess(0)
+        }
+        "--self-update" -> guarded("selfupdate") {
+            val msi = args[1]
+            val log = File(dataDir, "selfupdate-msi-${System.currentTimeMillis()}.log").path
+            // cmd /c start "" ... returns at once; msiexec keeps running after this process exits
+            ProcessBuilder("cmd.exe", "/c", "start", "\"\"", "msiexec.exe", "/i", msi, "/qn", "/l*v", log).start().waitFor()
+            File(dataDir, "selfupdate.txt").appendText("started msiexec for $msi at ${System.currentTimeMillis()} from version ${System.getProperty("kspike.version")}\n")
+            exitProcess(0)
+        }
         "--arabic" -> { arabicSheet(bundledFont = true); return }           // round 2 G3 (ArabicSheet.kt)
         "--arabic-system" -> { arabicSheet(bundledFont = false); return }
         "--check" -> {
@@ -248,7 +261,7 @@ fun main(args: Array<String>) {
     val procStart = ProcessHandle.current().info().startInstant().map { it.toEpochMilli() }.orElse(-1L)
     var painted = false
     application {
-        Window(onCloseRequest = ::exitApplication, title = "Kodeebo spike A") {
+        Window(onCloseRequest = ::exitApplication, title = "Kodeebo spike A ${System.getProperty("kspike.version", "")}") {
             var label by remember { mutableStateOf("Close bill") }
             Column(Modifier.fillMaxSize().background(Color.White).drawWithContent {
                 drawContent()

@@ -1,0 +1,11 @@
+# G4.4 cut offsets for B: D = 289.9 s (median of 289.9, 285.2, 343.3 s: throttled 1.0.0 -> 1.0.1 NSIS /S upgrade started right after a snapshot boot, exactly as the cuts start it; no flushed log, so D applies to the cut path). seed 20261021, offset_k = (k + u_k) * D / 10, u_k ~ U(0,1) from random.Random(seed)
+k=0 u=0.5462 offset_s=15.8 fraction=0.055
+k=1 u=0.3849 offset_s=40.1 fraction=0.138
+k=2 u=0.8518 offset_s=82.7 fraction=0.285
+k=3 u=0.0108 offset_s=87.3 fraction=0.301
+k=4 u=0.3812 offset_s=127.0 fraction=0.438
+k=5 u=0.3141 offset_s=154.1 fraction=0.531
+k=6 u=0.6431 offset_s=192.6 fraction=0.664
+k=7 u=0.4819 offset_s=216.9 fraction=0.748
+k=8 u=0.4057 offset_s=243.7 fraction=0.841
+k=9 u=0.9084 offset_s=287.2 fraction=0.991

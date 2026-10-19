@@ -1,0 +1,11 @@
+# G4.4 set 2 cut offsets for A: D = 459.0 s = A's full upgrade on the cut path itself (one probe run, evidence/g4/g44-a-cut-path-timeline-probe.txt: msiexec /i /qn /l*v! started right after snapshot boot, throttled; log opened +118 s, old files removed +186-265 s, new files written +330-402 s, log closed +459 s). Set 1 (cut-offsets-a.txt, D = 141.7 s from the unflushed timing runs) landed entirely before the log opened. seed 20261020, offset_k = (k + u_k) * D / 10, u_k ~ U(0,1) from random.Random(seed)
+k=0 u=0.7742 offset_s=35.5 fraction=0.077 expected_phase=pre-log
+k=1 u=0.7452 offset_s=80.1 fraction=0.175 expected_phase=pre-log
+k=2 u=0.8180 offset_s=129.3 fraction=0.282 expected_phase=planning
+k=3 u=0.2126 offset_s=147.5 fraction=0.321 expected_phase=planning
+k=4 u=0.0624 offset_s=186.5 fraction=0.406 expected_phase=REMOVING 1.0.0 FILES
+k=5 u=0.8593 offset_s=268.9 fraction=0.586 expected_phase=planning
+k=6 u=0.4952 offset_s=298.1 fraction=0.650 expected_phase=planning
+k=7 u=0.1480 offset_s=328.1 fraction=0.715 expected_phase=planning
+k=8 u=0.3225 offset_s=382.0 fraction=0.832 expected_phase=WRITING 1.0.1 FILES
+k=9 u=0.2036 offset_s=422.4 fraction=0.920 expected_phase=finishing

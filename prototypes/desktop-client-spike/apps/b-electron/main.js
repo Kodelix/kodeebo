@@ -188,7 +188,7 @@ function guarded(mode, body) {
 }
 
 const args = process.argv.slice(1).filter((a) => a.startsWith('--') || /^\d+$/.test(a));
-const mode = args.find((a) => ['--close-bench', '--print-once', '--kill-loop', '--check', '--arabic', '--arabic-system'].includes(a));
+const mode = args.find((a) => ['--close-bench', '--print-once', '--kill-loop', '--check', '--arabic', '--arabic-system', '--version', '--self-update'].includes(a));
 if (mode === '--close-bench') {
   const n = Number(args[args.indexOf('--close-bench') + 1]);
   process.exit(guarded('bench', () => bench(n, args.includes('--warmup'))));
@@ -199,6 +199,18 @@ if (mode === '--close-bench') {
   process.exit(code);
 } else if (mode === '--kill-loop') {
   process.exit(guarded('killloop', killLoop));
+} else if (mode === '--version') {
+  // round 3 (G4): the packaged version (package.json "version", set per build)
+  append('version.txt', `version=${app.getVersion()} pid=${process.pid} ms=${Date.now()}\n`);
+  process.exit(0);
+} else if (mode === '--self-update') {
+  // round 3 (G4): start the NSIS installer detached (/S = silent), then exit so the app's files are free.
+  // The path comes from the raw argv: the filter above keeps only flags and numbers.
+  const inst = process.argv[process.argv.indexOf('--self-update') + 1];
+  process.exit(guarded('selfupdate', () => {
+    require('child_process').spawn(inst, ['/S'], { detached: true, stdio: 'ignore' }).unref();
+    append('selfupdate.txt', `started ${inst} at ${Date.now()} from version ${app.getVersion()}\n`);
+  }));
 } else if (mode === '--check') {
   let line;
   try { line = checkStore(); } catch (e) { line = `open-failed: ${e.message}`; }
@@ -225,9 +237,10 @@ if (mode === '--close-bench') {
     ipcMain.on('painted', (_e, ms) => append('ready.txt', `arabic=${mode === '--arabic' ? 'naskh' : 'system'} pid=${process.pid} shown_ms=${ms}\n`));
   }
   app.whenReady().then(() => {
-    const win = new BrowserWindow({ width: 1024, height: 700, title: arabic ? `Kodeebo spike B — Arabic (${mode === '--arabic' ? 'Naskh' : 'system font'})` : 'Kodeebo spike B',
+    const win = new BrowserWindow({ width: 1024, height: 700, title: arabic ? `Kodeebo spike B — Arabic (${mode === '--arabic' ? 'Naskh' : 'system font'})` : `Kodeebo spike B ${app.getVersion()}`,
       webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true } });
     win.setMenuBarVisibility(false);
+    win.on('page-title-updated', (e) => e.preventDefault());   // keep the title set here (round 3 shows the version)
     if (arabic) { win.maximize(); win.loadFile(path.join(__dirname, 'arabic.html'), { hash: mode === '--arabic' ? 'naskh' : 'system' }); }
     else win.loadFile(path.join(__dirname, 'index.html'));
   });

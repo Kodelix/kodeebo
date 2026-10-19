@@ -1,0 +1,43 @@
+# G4.2a / G4-F3: A 1.0.0 open on screen, 1.0.1 MSI upgrade (msiexec /i /qn /l*v as cashier), 2026-10-18 02:07. Source install-a-020657.log (full log kept out of git). Then Windows' pending renames and A's uninstall entries (guest/g4-pending.ps1, g4-hive.ps1 v2).
+MSI (s) (B4:1C) [02:07:04:728]: MSI_LUA: Package is marked as LUA installation capable with no elevation required
+MSI (s) (B4:1C) [02:07:04:978]: RESTART MANAGER: Session opened.
+MSI (s) (B4:E0) [02:07:06:196]: MSI_LUA: Nested installation UAC elevation tracks that of parent (is not elevated)
+MSI (s) (B4:E0) [02:07:06:196]: MSI_LUA: Package is marked as LUA installation capable with no elevation required
+MSI (s) (B4:E0) [02:07:06:196]: RESTART MANAGER: Session opened.
+MSI (s) (B4:E0) [02:07:09:853]: RESTART MANAGER: Will attempt to shut down and restart applications in no UI modes.
+MSI (c) (B8:9C) [02:07:09:853]: RESTART MANAGER: Session opened.
+MSI (s) (B4:E0) [02:07:10:134]: RESTART MANAGER: Successfully shut down all applications in the service's session that held files in use.
+MSI (c) (B8:9C) [02:07:10:134]: RESTART MANAGER: Successfully shut down all applications that held files in use.
+MSI (s) (B4:E0) [02:07:11:712]: Scheduling file 'C:\Windows\Installer\6cecf.msi' for deletion during post-install cleanup (not post-reboot).
+MSI (s) (B4:E0) [02:07:11:743]: Scheduling file 'C:\Users\cashier\AppData\Roaming\Microsoft\Installer\{D7073FE5-1307-3E65-8A67-286D2085E3F1}\JpARPPRODUCTICON' for deletion during post-install cleanup (not post-reboot).
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82d91.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82db0.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82dba.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82de8.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82de9.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82dea.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82deb.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82ded.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82dee.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82def.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82df3.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82df4.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82df5.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82dfa.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82dfb.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82dfd.rbf. Must reboot to complete operation.
+Info 1903.Scheduling reboot operation: Deleting file C:\Config.Msi\82e4d.rbf. Must reboot to complete operation.
+MSI (s) (B4:1C) [02:07:33:212]: Product: KodeeboSpikeA -- Installation completed successfully.
+MSI (s) (B4:1C) [02:07:33:212]: Windows Installer installed the product. Product Name: KodeeboSpikeA. Product Version: 1.0.1. Product Language: 1033. Manufacturer: Unknown. Installation success or error status: 0.
+MSI (s) (B4:60) [02:07:33:212]: RESTART MANAGER: Session closed.
+MSI (s) (B4:60) [02:07:40:728]: RESTART MANAGER: Previously shut down applications have been restarted.
+MSI (s) (B4:60) [02:07:40:728]: RESTART MANAGER: Session closed.
+MSI (c) (B8:9C) [02:07:40:946]: RESTART MANAGER: Previously shut down applications have been restarted.
+MSI (c) (B8:9C) [02:07:40:946]: RESTART MANAGER: Session closed.
+== after the upgrade ==
+pending-file-renames: total-entries=34 kodeebo-entries=0
+
+Image Name                     PID Session Name        Session#    Mem Usage
+========================= ======== ================ =========== ============
+KodeeboSpikeA.exe             1512 Console                    1      1,652 K
+KodeeboSpikeA.exe             1572 Console                    1     59,904 K

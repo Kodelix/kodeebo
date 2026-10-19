@@ -1,0 +1,11 @@
+# G4.4 cut offsets for A: D = 141.7 s (median of 141.7, 142.9, 95.3 s; throttled 1.0.0 -> 1.0.1 upgrade), seed 20261018, offset_k = (k + u_k) * D / 10, u_k ~ U(0,1) from random.Random(seed) (Python 3.14.8)
+k=0 u=0.8568 offset_s=12.1 fraction=0.086
+k=1 u=0.2009 offset_s=17.0 fraction=0.120
+k=2 u=0.7809 offset_s=39.4 fraction=0.278
+k=3 u=0.8635 offset_s=54.7 fraction=0.386
+k=4 u=0.5023 offset_s=63.8 fraction=0.450
+k=5 u=0.5450 offset_s=78.6 fraction=0.555
+k=6 u=0.1156 offset_s=86.7 fraction=0.612
+k=7 u=0.2208 offset_s=102.3 fraction=0.722
+k=8 u=0.0560 offset_s=114.2 fraction=0.806
+k=9 u=0.2726 offset_s=131.4 fraction=0.927

@@ -1,0 +1,11 @@
+# G4.5 supplementary cut offsets for A (founder 2026-10-18: at least half inside the window that broke A in round 3, the rest spread over the launcher upgrade). D = 285.0 s = median of the five complete launcher-path upgrades in G4.5 (L5-L9: installer exit after 263, 273, 285, 288, 328 s). Window = round 3's failure span 268.9-382.0 s of D 459 s (0.59-0.83 D) scaled to this path: 168-237 s. seed 20261023, random.Random(seed): first 5 draws u -> window offsets 168 + (i + u) * 69 / 5, next 5 draws -> spread offsets (i + u) * D / 5; then sorted. Offsets are measured from the launcher's 'installer starting' line.
+k=0 set=spread u=0.4072 offset_s=23.2 fraction=0.081
+k=1 set=spread u=0.8744 offset_s=106.8 fraction=0.375
+k=2 set=spread u=0.7920 offset_s=159.1 fraction=0.558
+k=3 set=window u=0.2529 offset_s=171.5 fraction=0.602
+k=4 set=spread u=0.3120 offset_s=188.8 fraction=0.662
+k=5 set=window u=0.7789 offset_s=192.5 fraction=0.676
+k=6 set=window u=0.5337 offset_s=203.0 fraction=0.712
+k=7 set=window u=0.2407 offset_s=212.7 fraction=0.746
+k=8 set=window u=0.3670 offset_s=228.3 fraction=0.801
+k=9 set=spread u=0.2961 offset_s=244.9 fraction=0.859

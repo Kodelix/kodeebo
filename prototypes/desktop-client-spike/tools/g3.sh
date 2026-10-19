@@ -100,7 +100,7 @@ focus)   # focus <title prefix WITHOUT spaces, e.g. Kodeebo>: AppActivate inside
   ;;
 relogon)   # reboot; cashier auto-logon picks up the language list and the default input method
   "$VM" ssh admin 'shutdown /r /t 0' >/dev/null 2>&1; sleep 25
-  for i in $(seq 1 60); do "$VM" ssh admin 'query user' 2>/dev/null | grep -q -i 'cashier.*Active' && break; sleep 5; done
+  for i in $(seq 1 60); do { q=$("$VM" ssh admin 'query user' 2>/dev/null); grep -q -i 'cashier.*Active' <<<"$q"; } && break; sleep 5; done
   log "relogon: cashier Active ~$((25 + i * 5)) s after reboot; throttle $($V blkdeviotune $DOM sda --live | awk '/total_iops_sec /{print $3}') IOPS"
   sleep 30
   ;;
