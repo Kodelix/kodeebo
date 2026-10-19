@@ -261,6 +261,23 @@ Hosted only, so L1–L3 do not apply; L4 and T1 apply to everything alike. **No 
 
 The part files keep the original text until they are deleted.
 
+**Addendum 2026-10-19 — founder changes made in the ADR-0007 fix rounds.** These came from the independent review `docs/architecture/architecture-review-2026-10-19-adr-0007.md` and its re-check. ADR-0007 is the record; this note is not re-decided:
+
+| Topic | § 5.0 above | ADR-0007 (founder, 2026-10-19) |
+|---|---|---|
+| 2FA scope | owner mandatory, optional for staff | Also mandatory for every dashboard login whose role holds a staff-management, approval or export permission. Until the ADR-0003 amendment, that means the owner and the manager role. Counter-only people are not affected. Other staff without a factor are a 6.3.3 deviation accepted by name. |
+| Console credential | C-a: two hardware-bound passkeys | Target unchanged. Until two FIDO2 keys are bought, one synced passkey in the founder's Bitwarden is accepted, UV required, as a 6.3.3 L3 / AAL3 deviation accepted by name; review at the first paying customer. Recovery codes are kept offline, apart from it. |
+| Console lock-out | C-b (superuser path) not chosen | If every console credential is lost: an audited privileged script, run as the bootstrap superuser (SSH over Tailscale, local peer login), with a runbook; OP tables only. |
+
+Other fix-round decisions are recorded in ADR-0007 only:
+- owner notices sent through a job outbox;
+- the counter password path through the dashboard API;
+- the lost-factor reset by another person;
+- approver lockout as a 6.1.1 deviation accepted by name;
+- the 13.3.3 deviation accepted by name;
+- throttle state in memory;
+- no console password.
+
 ### 5.1 Recommended, by area
 
 1. **Dashboard and console sign-in (A):** 2FA **mandatory for the owner** (TOTP or passkey), optional for staff, recommended for managers; passkeys offered on the dashboard where WebAuthn is present and **required on the operator console** with user verification "required" and an RP ID equal to the console's own host (F114, F115). Do not promise passkeys inside the Play wrap until S11 runs; the dashboard must work with password + TOTP everywhere, and a WebView wrap needs an explicit "Use a passkey" button (F111, F116). Sessions: dashboard 24 h absolute / 1 h idle when a second factor was used, console 12 h / 15 min; longer is a signed ASVS 7.1.1 deviation; session ids renew on every privilege change and a password or factor change ends other sessions. Step-up: a fresh second factor bound to one action and target (A4-b), with a delay for removing the last factor. Passwords: policy in 4.1; Argon2id via Bouncy Castle 1.86 or Password4j (ADR-0006) with parameters from S13 on the 8 GB VPS and a cap on concurrent hashes.
