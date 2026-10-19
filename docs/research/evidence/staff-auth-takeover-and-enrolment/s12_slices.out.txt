@@ -1,0 +1,615 @@
+######## RFC 8628
+-------- slice: 3.2 response
+3.2.  Device Authorization Response
+
+   In response, the authorization server generates a unique device
+   verification code and an end-user code that are valid for a limited
+   time and includes them in the HTTP response body using the
+   "application/json" format [RFC8259] with a 200 (OK) status code.  The
+   response contains the following parameters:
+
+   device_code
+      REQUIRED.  The device verification code.
+
+   user_code
+      REQUIRED.  The end-user verification code.
+
+   verification_uri
+      REQUIRED.  The end-user verification URI on the authorization
+      server.  The URI should be short and easy to remember as end users
+      will be asked to manually type it into their user agent.
+
+   verification_uri_complete
+      OPTIONAL.  A verification URI that includes the "user_code" (or
+      other information with the same function as the "user_code"),
+      which is designed for non-textual transmission.
+
+   expires_in
+      REQUIRED.  The lifetime in seconds of the "device_code" and
+      "user_code".
+
+   interval
+      OPTIONAL.  The minimum amount of time in seconds that the client
+      SHOULD wait between polling requests to the token endpoint.  If no
+      value is provided, clients MUST use 5 as the default.
+
+   For example:
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+      Cache-Control: no-store
+
+      {
+        "device_code": "GmRhmhcxhwAzkoEqiMEg_DnyEysNkuNhszIySk9eS",
+        "user_code": "WDJB-MJHT",
+        "verification_uri": "https://example.com/device",
+        "verification_uri_complete":
+            "https://example.com/device?user_code=WDJB-MJHT",
+        "expires_in": 1800,
+        "interval": 5
+      }
+
+
+
+
+
+   In the event of an error (such as an invalidly configured client),
+   the authorization server responds in the same way as the token
+   endpoint specified in Section 5.2 of [RFC6749].
+
+
+-------- slice: 3.3.1 non-textual
+3.3.1.  Non-Textual Verification URI Optimization
+
+   When "verification_uri_complete" is included in the authorization
+   response (Section 3.2), clients MAY present this URI in a non-textual
+   manner using any method that results in the browser being opened with
+   the URI, such as with QR (Quick Response) codes or NFC (Near Field
+   Communication), to save the user from typing the URI.
+
+   For usability reasons, it is RECOMMENDED for clients to still display
+   the textual verification URI ("verification_uri") for users who are
+   not able to use such a shortcut.  Clients MUST still display the
+   "user_code", as the authorization server will require the user to
+   confirm it to disambiguate devices or as remote phishing mitigation
+   (see Section 5.4).
+
+   If the user starts the user interaction by navigating to
+   "verification_uri_complete", then the user interaction described in
+   Section 3.3 is still followed, with the optimization that the user
+   does not need to type in the "user_code".  The server SHOULD display
+   the "user_code" to the user and ask them to verify that it matches
+   the "user_code" being displayed on the device to confirm they are
+   authorizing the correct device.  As before, in addition to taking
+   steps to confirm the identity of the device, the user should also be
+   afforded the choice to approve or deny the authorization request.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            +-------------------------------------------------+
+            |                                                 |
+            |  Scan the QR code or, using     +------------+  |
+            |  a browser on another device,   |[_]..  . [_]|  |
+            |  visit:                         | .  ..   . .|  |
+            |  https://example.com/device     | . .  . ....|  |
+            |                                 |.   . . .   |  |
+            |  And enter the code:            |[_]. ... .  |  |
+            |  WDJB-MJHT                      +------------+  |
+            |                                                 |
+            +-------------------------------------------------+
+
+      Figure 3: Example User Instruction with QR Code Representation
+                     of the Complete Verification URI
+
+
+-------- slice: 3.5 polling
+3.5.  Device Access Token Response
+
+   If the user has approved the grant, the token endpoint responds with
+   a success response defined in Section 5.1 of [RFC6749]; otherwise, it
+   responds with an error, as defined in Section 5.2 of [RFC6749].
+
+   In addition to the error codes defined in Section 5.2 of [RFC6749],
+   the following error codes are specified for use with the device
+   authorization grant in token endpoint responses:
+
+   authorization_pending
+      The authorization request is still pending as the end user hasn't
+      yet completed the user-interaction steps (Section 3.3).  The
+      client SHOULD repeat the access token request to the token
+      endpoint (a process known as polling).  Before each new request,
+      the client MUST wait at least the number of seconds specified by
+      the "interval" parameter of the device authorization response (see
+      Section 3.2), or 5 seconds if none was provided, and respect any
+      increase in the polling interval required by the "slow_down"
+      error.
+
+   slow_down
+      A variant of "authorization_pending", the authorization request is
+      still pending and polling should continue, but the interval MUST
+      be increased by 5 seconds for this and all subsequent requests.
+
+   access_denied
+      The authorization request was denied.
+
+   expired_token
+      The "device_code" has expired, and the device authorization
+      session has concluded.  The client MAY commence a new device
+      authorization request but SHOULD wait for user interaction before
+      restarting to avoid unnecessary polling.
+
+
+
+
+
+
+
+
+   The "authorization_pending" and "slow_down" error codes define
+   particularly unique behavior, as they indicate that the OAuth client
+   should continue to poll the token endpoint by repeating the token
+   request (implementing the precise behavior defined above).  If the
+   client receives an error response with any other error code, it MUST
+   stop polling and SHOULD react accordingly, for example, by displaying
+   an error to the user.
+
+   On encountering a connection timeout, clients MUST unilaterally
+   reduce their polling frequency before retrying.  The use of an
+   exponential backoff algorithm to achieve this, such as doubling the
+   polling interval on each such connection timeout, is RECOMMENDED.
+
+   The assumption of this specification is that the separate device on
+   which the user is authorizing the request does not have a way to
+   communicate back to the device with the OAuth client.  This protocol
+   only requires a one-way channel in order to maximize the viability of
+   the protocol in restricted environments, like an application running
+   on a TV that is only capable of outbound requests.  If a return
+   channel were to exist for the chosen user-interaction interface, then
+   the device MAY wait until notified on that channel that the user has
+   completed the action before initiating the token request (as an
+   alternative to polling).  Such behavior is, however, outside the
+   scope of this specification.
+
+
+-------- slice: 5.1 user code brute forcing
+5.1.  User Code Brute Forcing
+
+   Since the user code is typed by the user, shorter codes are more
+   desirable for usability reasons.  This means the entropy is typically
+   less than would be used for the device code or other OAuth bearer
+   token types where the code length does not impact usability.
+   Therefore, it is recommended that the server rate-limit user code
+   attempts.
+
+
+
+
+
+
+   The user code SHOULD have enough entropy that, when combined with
+   rate-limiting and other mitigations, a brute-force attack becomes
+   infeasible.  For example, it's generally held that 128-bit symmetric
+   keys for encryption are seen as good enough today because an attacker
+   has to put in 2^96 work to have a 2^-32 chance of guessing correctly
+   via brute force.  The rate-limiting and finite lifetime on the user
+   code place an artificial limit on the amount of work an attacker can
+   "do".  If, for instance, one uses an 8-character base 20 user code
+   (with roughly 34.5 bits of entropy), the rate-limiting interval and
+   validity period would need to only allow 5 attempts in order to get
+   the same 2^-32 probability of success by random guessing.
+
+   A successful brute forcing of the user code would enable the attacker
+   to approve the authorization grant with their own credentials, after
+   which the device would receive a device authorization grant linked to
+   the attacker's account.  This is the opposite scenario to an OAuth
+   bearer token being brute forced, whereby the attacker gains control
+   of the victim's authorization grant.  Such attacks may not always
+   make economic sense.  For example, for a video app, the device owner
+   may then be able to purchase movies using the attacker's account
+   (though even in this case a privacy risk would still remain and thus
+   is important to protect against).  Furthermore, some uses of the
+   device flow give the granting account the ability to perform actions
+   that need to be protected, such as controlling the device.
+
+   The precise length of the user code and the entropy contained within
+   is at the discretion of the authorization server, which needs to
+   consider the sensitivity of their specific protected resources, the
+   practicality of the code length from a usability standpoint, and any
+   mitigations that are in place, such as rate-limiting, when
+   determining the user code format.
+
+
+-------- slice: 5.4 remote phishing
+5.4.  Remote Phishing
+
+   It is possible for the device flow to be initiated on a device in an
+   attacker's possession.  For example, an attacker might send an email
+   instructing the target user to visit the verification URL and enter
+   the user code.  To mitigate such an attack, it is RECOMMENDED to
+   inform the user that they are authorizing a device during the user-
+   interaction step (see Section 3.3) and to confirm that the device is
+   in their possession.  The authorization server SHOULD display
+   information about the device so that the user could notice if a
+   software client was attempting to impersonate a hardware device.
+
+   For authorization servers that support the
+   "verification_uri_complete" optimization discussed in Section 3.3.1,
+   it is particularly important to confirm that the device is in the
+   user's possession, as the user no longer has to type in the code
+   being displayed on the device manually.  One suggestion is to display
+   the code during the authorization flow and ask the user to verify
+   that the same code is currently being displayed on the device they
+   are setting up.
+
+   The user code needs to have a long enough lifetime to be useable
+   (allowing the user to retrieve their secondary device, navigate to
+   the verification URI, log in, etc.) but should be sufficiently short
+   to limit the usability of a code obtained for phishing.  This doesn't
+   prevent a phisher from presenting a fresh token, particularly if they
+   are interacting with the user in real time, but it does limit the
+   viability of codes sent over email or text message.
+
+
+
+
+
+
+
+
+
+
+
+
+-------- slice: 5.5 session spying
+5.5.  Session Spying
+
+   While the device is pending authorization, it may be possible for a
+   malicious user to physically spy on the device user interface (by
+   viewing the screen on which it's displayed, for example) and hijack
+   the session by completing the authorization faster than the user that
+   initiated it.  Devices SHOULD take into account the operating
+   environment when considering how to communicate the code to the user
+   to reduce the chances it will be observed by a malicious user.
+
+
+-------- slice: 6.1 user code recommendations
+6.1.  User Code Recommendations
+
+   For many users, their nearest Internet-connected device will be their
+   mobile phone; typically, these devices offer input methods that are
+   more time-consuming than a computer keyboard to change the case or
+   input numbers.  To improve usability (improving entry speed and
+   reducing retries), the limitations of such devices should be taken
+   into account when selecting the user code character set.
+
+   One way to improve input speed is to restrict the character set to
+   case-insensitive A-Z characters, with no digits.  These characters
+   can typically be entered on a mobile keyboard without using modifier
+   keys.  Further removing vowels to avoid randomly creating words
+   results in the base 20 character set "BCDFGHJKLMNPQRSTVWXZ".  Dashes
+   or other punctuation may be included for readability.
+
+   An example user code following this guideline, "WDJB-MJHT", contains
+   8 significant characters and has dashes added for end-user
+   readability.  The resulting entropy is 20^8.
+
+   Pure numeric codes are also a good choice for usability, especially
+   for clients targeting locales where A-Z character keyboards are not
+   used, though the length of such a code needs to be longer to maintain
+   high entropy.
+
+   An example numeric user code that contains 9 significant digits and
+   dashes added for end-user readability with an entropy of 10^9 is
+   "019-450-730".
+
+   When processing the inputted user code, the server should strip
+   dashes and other punctuation that it added for readability (making
+   the inclusion of such punctuation by the user optional).  For codes
+   using only characters in the A-Z range, as with the base 20 charset
+   defined above, the user's input should be uppercased before a
+   comparison to account for the fact that the user may input the
+   equivalent lowercase characters.  Further stripping of all characters
+   outside the chosen character set is recommended to reduce instances
+   where an errantly typed character (like a space character)
+   invalidates otherwise valid input.
+
+
+
+
+
+
+
+
+
+   It is RECOMMENDED to avoid character sets that contain two or more
+   characters that can easily be confused with each other, like "0" and
+   "O" or "1", "l" and "I".  Furthermore, to the extent practical, when
+   a character set contains a character that may be confused with
+   characters outside the character set, a character outside the set MAY
+   be substituted with the one in the character set with which it is
+   commonly confused; for example, "O" may be substituted for "0" when
+   using the numerical 0-9 character set.
+
+
+######## RFC 10027
+-------- slice: 6.1.2 short-lived
+6.1.2.  Short-Lived/Time-Bound QR or User Codes
+
+   The impact of an attack can be reduced by making QR or user codes
+   short-lived.  If an attacker obtains a short-lived code, the duration
+   during which the unauthenticated channel can be exploited is reduced,
+   potentially increasing the cost of a successful attack.  This
+   mitigation can be implemented on the Authorization Server without
+   changes to other system components.
+
+   *Limitations:* There is a practical limit to how short a user code
+   can be valid due to network latency and user experience limitations
+   (time taken to enter a code, time to complete authentication, or time
+   needed to re-enter codes or re-authenticate due to an error).  More
+   sophisticated CDCP attacks counter the effectiveness of short-lived
+   codes by convincing a user to respond to a phishing email and only
+   request the QR or user code once the user clicks on the link in the
+   phishing email [SQPHISH].
+
+
+-------- slice: 6.1.7 trusted devices
+6.1.7.  Trusted Devices
+
+   If an attacker is unable to initiate the protocol, they are unable to
+   obtain a QR code or user code that can be leveraged for the attacks
+   described in this document.  By restricting the protocol to only be
+   executed on devices trusted by the Authorization Server, it prevents
+   attackers from using arbitrary devices or mimicking devices to
+   initiate the protocol.
+
+   Authorization Servers MAY use different mechanisms to establish which
+   devices they trust for cross-device flows.  This includes limiting
+   cross-device flows to specific device types such as interactive
+   whiteboards or smart TVs, pre-registering devices with the
+   Authorization Server, or only allowing cross-device flows on devices
+   managed through device management systems.  Device management systems
+   may enforce policies that govern patching, version updates, on-device
+   anti-malware deployment, revocation status, and device location
+   amongst others.  Trusted devices MAY have their identities rooted in
+   hardware (e.g., a Trusted Platform Module (TPM) or equivalent
+   technology).
+
+   By only allowing trusted devices to initiate cross-device flows, it
+   requires the attacker to have access to such a device and maintain
+   access in a way that does not result in the device's trust status
+   from being revoked.
+
+   Mechanisms that identify a specific device SHOULD be evaluated for
+   their privacy implications within the context of a specific
+   application or deployment.
+
+   *Limitations:* An attacker may still be able to obtain access to a
+   trusted device and use it to initiate authorization requests, making
+   it necessary to apply additional controls and integrate with other
+   threat detection and management systems that can detect suspicious
+   behavior, such as repeated requests to initiate authorization or a
+   high volume of service activation on the same device.  An attacker
+   may also spoof device identities or device types that are not
+   cryptographically established or verified through attestation
+   mechanisms.
+
+
+-------- slice: 6.1.14 user experience
+6.1.14.  User Experience
+
+   The user experience SHOULD preserve the context within which the
+   protocols were initiated and communicate this clearly to the user
+   when they are asked to authorize, authenticate, or present a
+   credential.  In preserving the context, it should be clear to the
+   user who invoked the flow, why it was invoked, and what the
+   consequence of completing the authorization, authentication, or
+   credential presentation is.  The user experience SHOULD reinforce the
+   message that unless the user initiated the authorization request, or
+   was expecting it, they should decline the request.
+
+   This information MAY be communicated graphically or in a simple
+   message (e.g., "It looks like you are trying to access your files on
+   a digital whiteboard in your city center office.  Click here to grant
+   access to your files.  If you are not trying to access your files,
+   you should decline this request and notify the security department").
+
+   The user interface SHOULD provide an obvious and unambiguous way for
+   the user to decline or cancel a request.  To avoid accidental
+   authorization grants, the "decline" option SHOULD be the default
+   option or given similar prominence in the user experience as the
+   "grant" option.
+
+   If the user uses an application on a mobile device to scan a QR code,
+   the application MAY display information advising the user under which
+   conditions they should expect to be asked to scan a QR code and under
+   which circumstances they should never scan a QR code (e.g., display a
+   message that the QR code will only be displayed on kiosks within
+   trusted locations or on trusted websites hosted on a specific domain,
+   and never in email or other media and locations).
+
+   The user experience MAY include information to further educate the
+   user on CDCP attacks and reinforce the conditions under which
+   authorization grants may be requested.
+
+   *Limitations:* Improvements to user experience on their own are
+   unlikely to be sufficient and SHOULD be used in conjunction with
+   other controls described in this document.
+
+
+-------- slice: 6.1.15 authenticate then initiate
+6.1.15.  Authenticate then Initiate
+
+   By requiring a user to authenticate on the Consumption Device with a
+   phishing-resistant authentication method before initiating a cross-
+   device flow, the server can prevent an attacker from initiating a
+   cross-device flow and obtaining QR codes or user codes.  For example,
+   a banking application may initiate a cross-device authorization
+   request using the Backchannel-Transferred Session Pattern only after
+   the user is already authenticated and attempts a high-value
+   transaction.  This prevents the attacker from initiating a cross-
+   device authorization request and obtaining a QR code or a user code
+   that they can use to mislead an unsuspecting user.  This requires
+   that the Consumption Device has sufficient input capabilities to
+   support a phishing-resistant authentication mechanism, which may in
+   itself negate the need for a cross-device flow.
+
+   *Limitations:* This mitigation is limited to Consumption Devices
+   capable of supporting phishing-resistant authentication mechanisms.
+   Authenticating on the Consumption Device before starting a cross-
+   device flow does not prevent the attacks described in Sections 4.3.5
+   and 4.3.7, and it is RECOMMENDED that additional mitigations
+   described in this document be used if the cross-device flows are used
+   in scenarios such as those described in Sections 3.3.5 and 3.3.7.
+
+
+-------- slice: 6.1.16 request initiation verification
+6.1.16.  Request Initiation Verification
+
+   The user MAY be asked to confirm if they initiated an authentication
+   or authorization request by sending a one-time password (OTP) or PIN
+   to the user's Authorization Device and asking them to enter it on the
+   Consumption Device to confirm the request.  If the request was
+   initiated without the user's consent, they would receive an OTP or
+   PIN out of context, which may raise suspicion for the user.  In
+   addition, they would not have information on where to enter the OTP
+   or PIN.  The user experience on the Authorization Device MAY
+   reinforce the risk of receiving an out-of-context OTP or PIN and
+   provide information to the user on how to report an unauthorized
+   authentication or authorization request.
+
+   *Limitations:* The additional verification step may reduce the
+   overall usability of the system as it is one more thing users need to
+   do right.  Attackers may combine conventional phishing attacks and
+   target users who respond to those messages with an interactive attack
+   that sets the expectation with the user that they will have to
+   provide the OTP or PIN, in addition to granting authorization for the
+   request.
+
+
+-------- slice: 6.1.17 request binding
+6.1.17.  Request Binding with Out-of-Band Data
+
+   In the User-Transferred Session Data Pattern, users MAY enter out-of-
+   band information on the Consumption Device to start the authorization
+   process.  The out-of-band data entered by the user MAY then be
+   included in the QR code, which is displayed on the Consumption
+   Device.  When the QR code is scanned by the Authorization Device, the
+   out-of-band data is verified by the user or by the Authorization
+   Device.  The out-of-band data could be any attribute that the user or
+   Authorization Device can retrieve during the authorization process.
+   Examples include a serial number, OTP or PIN, location, or any other
+   data that the user or the Authorization Device can recall or retrieve
+   during the authorization process (see [MPRCS2020] and [PCRSM2023]).
+
+   *Limitations:* A sophisticated attacker may include an additional
+   step in their attack where they create a phishing attack that gathers
+   the out-of-band data from the user before initiating the
+   authorization request.  The additional step could also have a
+   negative impact on the usability level of the solution.
+
+
+-------- slice: 6.2.1 RFC 8628
+6.2.1.  IETF OAuth 2.0 Device Authorization Grant
+
+6.2.1.1.  Description
+
+   [RFC8628] is a standard to enable authorization on devices with
+   constrained input capabilities (e.g., smart TVs, printers, and
+   kiosks).  In this protocol, the user code or QR code is displayed or
+   made available on the Consumption Device (smart TV) and entered on a
+   second device (e.g., a mobile phone).
+
+6.2.1.2.  Susceptibility
+
+   There are several reports in the public domain outlining how the
+   unauthenticated channel may be exploited to execute a CDCP attack
+   (see [ARTDCPHISH], [DCFLOWPHISH], [NEWDCPHISH], [DEFCON29],
+   [DCATTACK], and [SQPHISH]).
+
+6.2.1.3.  Device Capabilities
+
+   There are no assumptions in the protocol about underlying
+   capabilities of the device, making it a "least common denominator"
+   protocol that is expected to work on the broadest set of devices and
+   environments.
+
+6.2.1.4.  Mitigations
+
+   In addition to the Security Considerations section in [RFC8628], it
+   is RECOMMENDED that one or more of the mitigations outlined in this
+   document be considered, especially mitigations that can help
+   establish proximity or prevent attackers from obtaining QR or user
+   codes.
+
+6.2.1.5.  When to Use
+
+   Only use this protocol if other cross-device protocols are not viable
+   due to device or system constraints.  Avoid using if the protected
+   resources are sensitive, high value, or business critical.  Always
+   deploy additional mitigations like proximity or only allow with pre-
+   registered devices.  Do not use for same-device scenarios (e.g., if
+   the Consumption Device and Authorization Device are the same device).
+
+
+-------- slice: 6.2.2 CIBA
+6.2.2.  OpenID Foundation Client-Initiated Backchannel Authentication
+        (CIBA)
+
+6.2.2.1.  Description
+
+   CIBA [CIBA] is a standard developed in the OpenID Foundation that
+   allows a device or service (e.g., a personal computer, smart TV, or
+   kiosk) to request the OpenID Provider to initiate an authentication
+   flow if it knows a valid identifier for the user.  The user completes
+   the authentication flow using a second device (e.g., a mobile phone).
+   In this flow, the user does not scan a QR code or obtain a user code
+   from the Consumption Device, but is instead contacted by the OpenID
+   Provider to complete the authentication using a push notification,
+   email, text message, or any other suitable mechanism.
+
+6.2.2.2.  Susceptibility
+
+   CIBA is less susceptible to unauthenticated channel attacks, but it
+   is still vulnerable to attackers who know or can guess the user
+   identifier and initiate an attack as described in Section 4.3.4.1.
+
+6.2.2.3.  Device Capabilities
+
+   There is no requirement on the Consumption Device to support specific
+   hardware.  The Authorization Device must be registered/associated
+   with the user, and it must be possible for the Authorization Server
+   to trigger an authorization on this device.
+
+6.2.2.4.  Mitigations
+
+   In addition to the Security Considerations section in [CIBA], it is
+   RECOMMENDED that one or more of the mitigations outlined in this
+   document be considered, especially mitigations that can help
+   establish proximity or prevent attackers from initiating
+   authorization requests.
+
+6.2.2.5.  When to Use
+
+   Use CIBA instead of the device authorization grant if it is possible
+   for the Consumption Device to obtain a user identifier on the
+   Consumption Device (e.g., through an input or selection mechanism)
+   and if the Authorization Server can trigger an authorization on the
+   Authorization Device.  Do not use for same-device scenarios (e.g., if
+   the Consumption Device and Authorization Device are the same device).
+
+

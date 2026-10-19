@@ -1,0 +1,15 @@
+run at 2026-10-19T19:34:04.808682+00:00
+SecLists repo: 200 {'key': 'mit', 'name': 'MIT License', 'spdx_id': 'MIT', 'url': 'https://api.github.com/licenses/mit', 'node_id': 'MDc6TGljZW5zZTEz'} pushed 2026-10-19T11:16:06Z
+  Pwdb_top-10000000.txt                                                      94461698 bytes
+  xato-net-10-million-passwords.txt                                          48312893 bytes
+  Pwdb_top-1000000.txt                                                        8755171 bytes
+  xato-net-10-million-passwords-1000000.txt                                   8557632 bytes
+  xato-net-10-million-passwords-dup.txt                                       6212177 bytes
+  100k-most-used-passwords-NCSC.txt                                            835538 bytes
+  Pwdb_top-100000.txt                                                          828498 bytes
+  xato-net-10-million-passwords-100000.txt                                     781879 bytes
+  1900-2020.txt                                                                405108 bytes
+  10k-most-common.txt                                                           73026 bytes
+  files listed: 39
+Maven Central bcprov-jdk18on 1.86 -> HTTP 200 Last-Modified: Fri, 11 Sep 2026 02:42:07 GMT
+Maven Central bcprov-jdk18on 1.85 -> HTTP 200 Last-Modified: Sun, 12 Jul 2026 06:33:58 GMT

@@ -1,0 +1,25 @@
+run at 2026-10-19T19:28:57.093506+00:00
+== GitHub repos ==
+altcha-org/altcha | licence: MIT | archived: False | pushed: 2026-10-19 | stars: 2833 | latest release: ('v3.4.1', '2026-10-19') | desc: GDPR, WCAG 2.2 AA, and EAA compliant, self-hosted CAPTCHA alternative with PoW mechanism.
+altcha-org/altcha-lib | licence: MIT | archived: False | pushed: 2026-10-05 | stars: 107 | latest release: ('v2.6.0', '2026-10-05') | desc: A JavaScript library for creating and verifying ALTCHA challenges.
+altcha-org/altcha-lib-java | licence: MIT | archived: False | pushed: 2026-10-02 | stars: 24 | latest release: ('v2.1.1', '2026-10-02') | desc: A lightweight Java library for creating and verifying ALTCHA challenges.
+altcha-org/altcha-lib-kotlin -> HTTP 404
+mCaptcha/mCaptcha | licence: AGPL-3.0 | archived: False | pushed: 2025-10-07 | stars: 2493 | latest release: ('v0.1.0', '2024-03-15') | desc: A no-nonsense CAPTCHA system with seamless UX | Backend component
+tiagozip/cap | licence: NOASSERTION | archived: False | pushed: 2026-10-12 | stars: 8099 | latest release: ('standalone@3.1.13', '2026-09-23') | desc: privacy-first, open-source and self-hosted CAPTCHA alternative with PoW and instrumentatio
+TecharoHQ/anubis | licence: MIT | archived: False | pushed: 2026-10-19 | stars: 23541 | latest release: ('v1.28.1', '2026-10-09') | desc: Weighs the soul of incoming HTTP requests to stop AI crawlers
+friendlycaptcha/friendly-challenge | licence: MIT | archived: False | pushed: 2026-06-30 | stars: 452 | latest release: ('no release', 404) | desc: The widget and docs for the proof of work challenge used in Friendly Captcha. Protect your
+friendlycaptcha/friendly-lite-server | licence: NOASSERTION | archived: False | pushed: 2024-02-02 | stars: 51 | latest release: ('0.2.1', '2024-02-02') | desc: Lite server for Friendly Captcha
+== npm ==
+altcha latest 3.4.1 published 2026-10-19 licence MIT
+altcha-lib latest 2.6.0 published 2026-10-05 licence MIT
+@cap.js/widget latest 0.1.58 published 2026-09-23 licence Apache-2.0
+@cap.js/server latest 4.0.5 published 2025-12-14 licence Apache-2.0
+== Maven Central: bcprov-jdk18on 1.86 present? ==
+maven status 200 []
+== OSV ==
+Maven org.bouncycastle:bcprov-jdk18on 1.86 -> HTTP 200 advisories: []
+npm altcha 3.4.1 -> HTTP 200 advisories: []
+npm altcha-lib 2.6.0 -> HTTP 200 advisories: []
+npm @cap.js/widget 0.1.58 -> HTTP 200 advisories: []
+npm @cap.js/server 4.0.5 -> HTTP 200 advisories: []
+Maven org.apache.logging.log4j:log4j-core 2.14.1 -> HTTP 200 advisories: ['GHSA-3pxv-7cmr-fjr4', 'GHSA-6hg6-v5c8-fphq', 'GHSA-7rjr-3q55-vv33', 'GHSA-8489-44mv-ggj8', 'GHSA-jfh8-c2jp-5v3q', 'GHSA-p6xc-xr62-6r2g', 'GHSA-vc5p-v9hr-52mj']

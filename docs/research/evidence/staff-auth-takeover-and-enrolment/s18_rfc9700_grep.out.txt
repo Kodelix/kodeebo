@@ -1,0 +1,29 @@
+HTTP/2 200 
+content-type: text/plain;charset=utf-8
+curl exit: 0
+124673 /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/rfc9700/rfc9700.txt
+9919d061d40a97886ca866b51c69389b6c81c65cd4b979056c14fdbebfcf622a  /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/rfc9700/rfc9700.txt
+== grep -c '8628' ==
+0
+== grep -c '[Dd]evice [Aa]uthorization' ==
+1
+== grep -c '[Dd]evice [Cc]ode' ==
+0
+== grep -c '[Dd]evice [Gg]rant' ==
+0
+== grep -c 'user code' ==
+0
+== grep -c 'cross-device' ==
+0
+== grep -c 'RFC 8628' ==
+0
+== grep -c 'device flow' ==
+0
+== lines matching 8628 or device authorization (with context) ==
+2091-   To be effective, CSP must be used on the authorization endpoint and,
+2092-   if applicable, other endpoints used to authenticate the user and
+2093:   authorize the client (e.g., the device authorization endpoint, login
+2094-   pages, error pages, etc.).  This prevents framing by unauthorized
+2095-   origins in user agents that support CSP.  The client MAY permit being
+2096-   framed by some other origin than the one used in its redirection
+2097-   endpoint.  For this reason, authorization servers SHOULD allow

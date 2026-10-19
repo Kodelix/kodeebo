@@ -1,0 +1,14 @@
+== rfc8628 HEAD (size before download) ==
+HTTP/2 200 
+content-type: text/plain;charset=utf-8
+== rfc8628 download (cap 3000000 bytes) ==
+curl exit: 0
+46718 /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/rfc8628/rfc8628.txt
+ebd3c37415aa665b55b412fccd9571943e8dbd3f2bf0b18fee4924264252decd  /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/rfc8628/rfc8628.txt
+== rfc10027 HEAD (size before download) ==
+HTTP/2 200 
+content-type: text/plain;charset=utf-8
+== rfc10027 download (cap 3000000 bytes) ==
+curl exit: 0
+145481 /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/rfc10027/rfc10027.txt
+6dbc22add43407cb07f1b665a94f63fdd6302f99fcc42978527d6767a442ffc1  /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/rfc10027/rfc10027.txt

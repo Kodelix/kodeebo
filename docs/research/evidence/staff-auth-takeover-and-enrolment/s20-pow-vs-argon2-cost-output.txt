@@ -1,0 +1,13 @@
+node v24.21.0 | cpu Intel(R) Core(TM) 7 240H | logical cpus 16 | date 2026-10-19T19:32:23.423Z
+(a) SHA-256 (createHash per try): 783329 hashes/s single thread (2000000 tries in 2.55 s)
+    maxnumber 50000: expected 0.032 s mean to solve on this host (max/2 tries)
+    maxnumber 100000: expected 0.064 s mean to solve on this host (max/2 tries)
+    maxnumber 500000: expected 0.319 s mean to solve on this host (max/2 tries)
+    maxnumber 1000000: expected 0.638 s mean to solve on this host (max/2 tries)
+(b) PBKDF2-SHA256 1000 iterations: 0.150 ms per try
+(b) PBKDF2-SHA256 10000 iterations: 1.475 ms per try
+(b) PBKDF2-SHA256 100000 iterations: 14.560 ms per try
+(c) Argon2id m=19456 KiB t=2 p=1: median 13.32 ms, min 12.77, max 14.45 (30 runs, one at a time)
+    => one core verifies about 75/s; 16 logical cpus on this host (VPS has 2 vCPU: NOT measured here)
+    => ratio: one Argon2id verify = 10436 SHA-256 tries on this host
+    => memory: 19456 KiB = 19.0 MiB per concurrent verify; 8 concurrent = 152 MiB

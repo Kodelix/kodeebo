@@ -1,0 +1,8 @@
+run: 2026-10-19T19:37Z
+maven com.google.zxing:core 3.5.3 released 2024-01-31
+maven com.google.zxing:core 3.5.2 released 2023-07-30
+maven com.google.zxing:core 3.5.1 released 2022-11-02
+OSV Maven com.google.zxing:core 3.5.3 -> []
+npm qrcode latest 1.5.4 released 2024-08-05T21:52:58.518Z license MIT
+OSV npm qrcode 1.5.4 -> []
+CONTROL OSV Maven org.apache.logging.log4j:log4j-core 2.14.1 -> 7 advisories

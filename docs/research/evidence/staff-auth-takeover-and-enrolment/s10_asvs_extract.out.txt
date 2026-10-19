@@ -1,0 +1,55 @@
+file: /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-and-roles-part-3/asvs-download/asvs-5.0.0.csv
+sha256: 98c8fe911b9edb403af8ee05d3ce8201ecac2659e313b053890a62847cdcf680
+bytes: 105100
+V6.3.1 (L1): Verify that controls to prevent attacks such as credential stuffing and password brute force are implemented according to the application's security documentation.
+
+V6.3.3 (L2): Verify that either a multi-factor authentication mechanism or a combination of single-factor authentication mechanisms, must be used in order to access the application. For L3, one of the factors must be a hardware-based authentication mechanism which provides compromise and impersonation resistance against phishing attacks while verifying the intent to authenticate by requiring a user-initiated action (such as a button press on a FIDO hardware key or a mobile phone). Relaxing any of the considerations in this requirement requires a fully documented rationale and a comprehensive set of mitigating controls.
+
+V6.3.5 (L3): Verify that users are notified of suspicious authentication attempts (successful or unsuccessful). This may include authentication attempts from an unusual location or client, partially successful authentication (only one of multiple factors), an authentication attempt after a long period of inactivity or a successful authentication after several unsuccessful attempts.
+
+V6.3.7 (L3): Verify that users are notified after updates to authentication details, such as credential resets or modification of the username or email address.
+
+V6.4.1 (L1): Verify that system generated initial passwords or activation codes are securely randomly generated, follow the existing password policy, and expire after a short period of time or after they are initially used. These initial secrets must not be permitted to become the long term password.
+
+V6.4.4 (L2): Verify that if a multi-factor authentication factor is lost, evidence of identity proofing is performed at the same level as during enrollment.
+
+V6.5.1 (L2): Verify that lookup secrets, out-of-band authentication requests or codes, and time-based one-time passwords (TOTPs) are only successfully usable once.
+
+V6.5.2 (L2): Verify that, when being stored in the application's backend, lookup secrets with less than 112 bits of entropy (19 random alphanumeric characters or 34 random digits) are hashed with an approved password storage hashing algorithm that incorporates a 32-bit random salt. A standard hash function can be used if the secret has 112 bits of entropy or more.
+
+V6.5.3 (L2): Verify that lookup secrets, out-of-band authentication code, and time-based one-time password seeds, are generated using a Cryptographically Secure Pseudorandom Number Generator (CSPRNG) to avoid predictable values.
+
+V6.5.4 (L2): Verify that lookup secrets and out-of-band authentication codes have a minimum of 20 bits of entropy (typically 4 random alphanumeric characters or 6 random digits is sufficient).
+
+V6.5.5 (L2): Verify that out-of-band authentication requests, codes, or tokens, as well as time-based one-time passwords (TOTPs) have a defined lifetime. Out of band requests must have a maximum lifetime of 10 minutes and for TOTP a maximum lifetime of 30 seconds.
+
+V6.5.6 (L3): Verify that any authentication factor (including physical devices) can be revoked in case of theft or other loss.
+
+V6.6.1 (L2): Verify that authentication mechanisms using the Public Switched Telephone Network (PSTN) to deliver One-time Passwords (OTPs) via phone or SMS are offered only when the phone number has previously been validated, alternate stronger methods (such as Time based One-time Passwords) are also offered, and the service provides information on their security risks to users. For L3 applications, phone and SMS must not be available as options.
+
+V6.6.2 (L2): Verify that out-of-band authentication requests, codes, or tokens are bound to the original authentication request for which they were generated and are not usable for a previous or subsequent one.
+
+V6.6.3 (L2): Verify that a code based out-of-band authentication mechanism is protected against brute force attacks by using rate limiting. Consider also using a code with at least 64 bits of entropy.
+
+V6.6.4 (L3): Verify that, where push notifications are used for multi-factor authentication, rate limiting is used to prevent push bombing attacks. Number matching may also mitigate this risk.
+
+V6.7.2 (L3): Verify that the challenge nonce is at least 64 bits in length, and statistically unique or unique over the lifetime of the cryptographic device.
+
+V6.8.4 (L2): Verify that, if an application uses a separate Identity Provider (IdP) and expects specific authentication strength, methods, or recentness for specific functions, the application verifies this using the information returned by the IdP. For example, if OIDC is used, this might be achieved by validating ID Token claims such as 'acr', 'amr', and 'auth_time' (if present). If the IdP does not provide this information, the application must have a documented fallback approach that assumes that the minimum strength authentication mechanism was used (for example, single-factor authentication using username and password).
+
+V7.5.1 (L2): Verify that the application requires full re-authentication before allowing modifications to sensitive account attributes which may affect authentication such as email address, phone number, MFA configuration, or other information used in account recovery.
+
+V7.5.3 (L3): Verify that the application requires further authentication with at least one factor or secondary verification before performing highly sensitive transactions or operations.
+
+V2.3.5 (L3): Verify that high-value business logic flows require multi-user approval to prevent unauthorized or accidental actions. This could include but is not limited to large monetary transfers, contract approvals, access to classified information, or safety overrides in manufacturing.
+
+V2.4.1 (L2): Verify that anti-automation controls are in place to protect against excessive calls to application functions that could lead to data exfiltration, garbage-data creation, quota exhaustion, rate-limit breaches, denial-of-service, or overuse of costly resources.
+
+V16.3.1 (L2): Verify that all authentication operations are logged, including successful and unsuccessful attempts. Additional metadata, such as the type of authentication or factors used, should also be collected.
+
+V7.2.3 (L1): Verify that if reference tokens are used to represent user sessions, they are unique and generated using a cryptographically secure pseudo-random number generator (CSPRNG) and possess at least 128 bits of entropy.
+
+V7.2.4 (L1): Verify that the application generates a new session token on user authentication, including re-authentication, and terminates the current session token.
+
+V7.4.2 (L1): Verify that the application terminates all active sessions when a user account is disabled or deleted (such as an employee leaving the company).
+

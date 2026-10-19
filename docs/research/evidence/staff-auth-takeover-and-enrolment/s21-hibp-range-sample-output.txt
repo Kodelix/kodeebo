@@ -1,0 +1,32 @@
+unpadded samples: 24 status set: [200]
+bytes per reply: mean 77482 min 75659 max 80120; lines mean 1972.8 min 1926 max 2041
+estimated full corpus (mean bytes x 16^5): 81.2 GB (decimal)
+latency s: median 0.223 max 0.387
+padded samples (prefix, status, bytes, lines, zero-count lines, s):
+   ('A53DA', 200, 77034, 1961, 14, 0.19388941999932285)
+   ('3D966', 200, 83717, 2133, 164, 0.22603533499932382)
+   ('6C842', 200, 83663, 2131, 198, 0.25395282900717575)
+   ('F0AD9', 200, 84098, 2143, 102, 0.24768493299779948)
+   ('95D2A', 200, 82993, 2114, 107, 0.2340917690016795)
+   ('889B6', 200, 79166, 2016, 69, 0.21816585600026883)
+response headers of first unpadded reply:
+  Access-Control-Allow-Origin: *
+  Access-Control-Expose-Headers: Content-MD5, ETag
+  Age: 22227
+  CF-Cache-Status: HIT
+  CF-RAY: a4d22c775bab266e-MRS
+  Cache-Control: public, max-age=2678400
+  Cf-Placement: local-MRS
+  Connection: close
+  Content-Length: 76488
+  Content-MD5: LGU6Swtv5lNsSXMU1qhkUg==
+  Content-Type: text/plain; charset=utf-8
+  Date: Mon, 19 Oct 2026 19:26:18 GMT
+  ETag: "0x8DED134CA4826D5"
+  Server: cloudflare
+  Server-Timing: cfCacheStatus;desc="HIT"
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Vary: Add-Padding
+  X-Content-Type-Options: nosniff
+  alt-svc: h3=":443"; ma=86400
+  set-cookie: __cf_bm=kwo8apcHYM16.hSdW7tLqMdefpQmVOdg3oI4wpGe7rI-1792437978.7805614-1.0.1.1-btt5K0FnDLfPgWV1ZzO3OBrYdH6ZRzmOhBCt0_h9fZAh4XyJKbcflAn2t5p2tU7_IyPQiQJUZIrA4s8SD_sEusPffimohtvNeCYHSR5_DIn4pQ.YeJVhsq8aSj0ZIfdg; HttpOnly; SameSite=None; Secure; Path=/; Domain=pwnedpasswords.com; Expires=Mon, 19 Oct 2026 19:56:18 GMT

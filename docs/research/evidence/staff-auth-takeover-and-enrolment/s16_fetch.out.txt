@@ -1,0 +1,8 @@
+== HEAD ==
+HTTP/2 200 
+content-type: text/html
+last-modified: Tue, 26 Aug 2025 13:56:12 GMT
+== download (cap 5000000 bytes) ==
+curl exit: 0
+353757 /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/nist-800-63b-4/sp800-63b.html
+e77fb1e42ae9abcf8eba75bcd0a3ebf02de03e68712f95d8a7cf41c5fd6b6fc2  /home/kiko/saas-products/kodeebo/docs/research/evidence/staff-auth-takeover-and-enrolment/fetched/nist-800-63b-4/sp800-63b.html
