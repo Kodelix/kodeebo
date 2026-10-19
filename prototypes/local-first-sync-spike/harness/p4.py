@@ -61,7 +61,8 @@ def tunnel(tries=10):
                 pass
         time.sleep(2)
         sh("tunnel", "18471")
-        if "ok" in sh("cs", "curl.exe -s -m 5 http://127.0.0.1:18471/health", timeout=30):
+        # the forward must be bound on the VM side (the host server may not be running yet)
+        if "LISTENING" in sh("cs", "netstat -an -p TCP | findstr 127.0.0.1:18471", timeout=30):
             return True
         time.sleep(5)
     raise RuntimeError("reverse tunnel did not carry traffic after retries")
