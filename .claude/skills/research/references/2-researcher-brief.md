@@ -113,10 +113,22 @@ destination note **with the Write tool** (a script that builds the note was
 declined in two products; do not offer one), by section (Versions and Findings are concatenated — the
 disjoint ID blocks make the `F` and `S` numbers unique; check for duplicates
 before writing; Options, Decision and the rest are written once by you from the
-sections returned), then delete the temporary files **only after** the user
-approved the merged note. Before asking for that approval, check the merged file
-by content: its finding rows equal the sum of the parts' rows, no ID appears
-twice, and sections 4-9 are non-empty in the synthesis and in every per-part copy.
+sections returned). Your synthesis summarises; it never replaces a part's own
+text. Each part's sections 4-9 (options, decision, notes, open questions, and any
+table in them such as a catalogue or a template matrix) are carried **verbatim**
+into the merged note under `## Appendix: Part <n> detail (verbatim)`. Delete the
+temporary files **only after** the user approved the merged note. Before asking
+for that approval, check the merged file by content: its finding rows equal the
+sum of the parts' rows, no ID appears twice, sections 4-9 are non-empty in the
+synthesis and in every per-part copy, and **every non-blank line of each part's
+sections 4-9 occurs in the merged file** (a read-only comparison, for example
+`grep -Fxv -f <merged> <part-section-lines>`, which prints the lines missing).
+A missing line blocks the deletion: carry it, then check again. A comparison
+that could not run is reported as `not run - <reason>` and also blocks it. The
+deletion question names the files and reports this check's result. (A Kodeebo merge kept
+every finding row but only summarised part 3's catalogue and template tables;
+the part file was deleted and the tables had to be recovered from the session
+record for the ADR that needed them.)
 
 ## Brief template (`refresh` mode)
 

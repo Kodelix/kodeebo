@@ -111,7 +111,9 @@ writes each finding before the next fetch or run, refreshes provisional sections
 4–9 every 8 units and finalises them when the budget is spent. (A third run at 40
 turns still ended 4 of 4 parts with sections 4–9 empty; in a fourth, a part that
 ran seven spikes on a 20-fetch budget hit 40 turns with no finding written.) The
-merge is done with the Write tool and checked by content (`references/2-researcher-brief.md`).
+merge is done with the Write tool and checked by content (`references/2-researcher-brief.md`):
+each part's sections 4–9 are carried verbatim, and no part file is deleted until
+every line of them is shown to be in the merged note.
 
 **Disjoint IDs per part.** Give each parallel researcher its own ID block in the
 brief — part *n* (from 1) owns findings `F{n}01–F{n}99` and spikes
