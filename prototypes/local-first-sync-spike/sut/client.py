@@ -157,6 +157,15 @@
 #   recorded once per feed version. Schema 2 sends prices as objects {"amount": n}.
 #      MUTANT also: drop_on_refusal (queued commands deleted on upgrade_required), stop_on_upgrade_required (the
 #      counter refuses sales until updated), apply_unknown_feed (a newer feed applied as if readable).
+# Phase 3 (TS-10 and OQ27 founder input 2026-10-18):
+#   - close_shift with counted_piasters (with ENDDAY=1): the device compares the counted drawer with the cash taken
+#     during the shift (payments of bills sequenced after the shift opened) and queues a shift_close command carrying
+#     expected, counted and the difference; the server raises an owner event for any difference (M3).
+#   - OFFLINE_WARN_S: every reply carries offline_warning once the device has had no server contact for that long,
+#     counted on its monotonic clock (the cashier's warning; the owner's alert comes from the server's clock).
+#   - op usb_backup {dir}: the hourly encrypted copy of the store and its commit marker to a removable drive, taken
+#     between operations, when no transaction is open.
+#      MUTANT also: no_drawer_check (the counted drawer is ignored), no_offline_warning (no cashier warning).
 # The spike's binding is not the product decision (README).
 import errno
 import fcntl
@@ -190,6 +199,8 @@ RETAIN_DAYS = int(os.environ.get("RETAIN_DAYS", "60"))
 EDITS_ON = os.environ.get("EDITS") == "1"  # SC-28
 CLOCKED = os.environ.get("CLOCKED") == "1"  # SC-30
 ENDDAY = os.environ.get("ENDDAY") == "1"  # SC-31
+OFFLINE_WARN_S = float(os.environ.get("OFFLINE_WARN_S", "0"))  # OQ27 (2): 0 = off
+contact = {"mono": None}  # last successful server contact, on the device's monotonic clock
 MACHINE_ID = os.environ.get("MACHINE_ID", "")  # SC-13
 PROTO = int(os.environ.get("PROTO", "0"))  # S207 (0 = not sent)
 FEED_SCHEMA_MAX = int(os.environ.get("FEED_SCHEMA_MAX", "0"))  # S207 (0 = no check)
@@ -270,6 +281,9 @@ def lease_status():
 def reply(obj):
     if LEASE_ON and "lease" not in obj:
         obj["lease"] = lease_status()
+    if OFFLINE_WARN_S and MUTANT != "no_offline_warning" and contact["mono"] is not None \
+            and device_mono() - contact["mono"] > OFFLINE_WARN_S:
+        obj["offline_warning"] = f"no connection to the server for {int((device_mono() - contact['mono']) // 3600)} h"
     sys.stdout.write(json.dumps(obj) + "\n")
     sys.stdout.flush()
 
@@ -558,9 +572,11 @@ def open_store():
             "INSERT OR IGNORE INTO business_day VALUES (1, 1, 1)",
             "CREATE TABLE IF NOT EXISTS bill_days (action_id TEXT PRIMARY KEY, bday INTEGER NOT NULL, piasters INTEGER)",
             "CREATE TABLE IF NOT EXISTS tabs (tab_id TEXT PRIMARY KEY)",
-            "CREATE TABLE IF NOT EXISTS shifts (shift_id TEXT PRIMARY KEY)",
+            "CREATE TABLE IF NOT EXISTS shifts (shift_id TEXT PRIMARY KEY, open_seq INTEGER)",  # TS-10: open_seq
             "CREATE TABLE IF NOT EXISTS day_closes (bday INTEGER PRIMARY KEY, n_bills INTEGER, total INTEGER, "
             "seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",
+            "CREATE TABLE IF NOT EXISTS shift_closes (shift_id TEXT PRIMARY KEY, diff INTEGER, "
+            "seq INTEGER UNIQUE, command_id TEXT, payload TEXT, payload_hash TEXT)",  # TS-10
         ]:
             c.execute(stmt).fetchall()
         check_marker(c)
@@ -685,7 +701,8 @@ def rollback():
 RETAINED = ("SELECT seq, command_id, payload, payload_hash FROM bills WHERE seq IS NOT NULL "
             "UNION ALL SELECT seq, command_id, payload, payload_hash FROM edits WHERE seq IS NOT NULL "
             "UNION ALL SELECT seq, command_id, payload, payload_hash FROM outages WHERE seq IS NOT NULL "
-            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM day_closes WHERE seq IS NOT NULL")
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM day_closes WHERE seq IS NOT NULL "
+            "UNION ALL SELECT seq, command_id, payload, payload_hash FROM shift_closes WHERE seq IS NOT NULL")
 
 
 def report():
@@ -708,6 +725,7 @@ def post(cmds):
     if not isinstance(body, dict) or not isinstance(body.get("results"), list):
         raise ValueError("reply without a results list")
     take_lease(body.get("lease"))  # a parsed reply from the server renews the lease
+    contact["mono"] = device_mono()
     if MACHINE_ID:
         sync_flags.update(quarantined=bool(body.get("quarantined")), retired=bool(body.get("retired")))
     return body
@@ -1140,14 +1158,39 @@ def open_item(table, key, value):
     """SC-31: open a tab (an open bill) or a shift; the first action after End Day opens the next day."""
     q("BEGIN IMMEDIATE")
     open_day()
-    q(f"INSERT INTO {table} VALUES (?)", (value,))
+    if table == "shifts":  # TS-10: the drawer count covers bills sequenced after this point
+        q("INSERT INTO shifts VALUES (?, (SELECT seq FROM counter WHERE id = 1))", (value,))
+    else:
+        q(f"INSERT INTO {table} VALUES (?)", (value,))
     q("COMMIT")
     reply({"ok": True, "op": f"open_{key}"})
 
 
 def close_shift(m):
+    if "counted_piasters" not in m:  # SC-31: a shift is only open or closed
+        q("DELETE FROM shifts WHERE shift_id = ?", (m["shift_id"],))
+        return reply({"ok": True, "op": "close_shift"})
+    # TS-10: compare the counted drawer with the cash taken during the shift, in one transaction with the close
+    open_seq = q("SELECT open_seq FROM shifts WHERE shift_id = ?", (m["shift_id"],))[0][0] or 0
+    expected = q("SELECT coalesce(sum(p.piasters), 0) FROM payments p JOIN bills b ON b.action_id = p.action_id "
+                 "WHERE b.seq > ?", (open_seq,))[0][0]
+    counted = int(m["counted_piasters"])
+    diff = 0 if MUTANT == "no_drawer_check" else counted - expected
+    payload = {"kind": "shift_close", "shift_id": m["shift_id"], "expected": expected, "counted": counted, "diff": diff}
+    body = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    h = hashlib.sha256(body.encode()).hexdigest()
+    q("BEGIN IMMEDIATE")
     q("DELETE FROM shifts WHERE shift_id = ?", (m["shift_id"],))
-    reply({"ok": True, "op": "close_shift"})
+    seq = q("UPDATE counter SET seq = seq + 1 WHERE id = 1 RETURNING seq")[0][0]
+    q("INSERT INTO outbox (seq, command_id, payload, payload_hash, status) VALUES (?,?,?,?, 'pending')",
+      (seq, f"cmd-shift-{m['shift_id']}", body, h))
+    q("INSERT INTO shift_closes VALUES (?,?,?,?,?,?)", (m["shift_id"], diff, seq, f"cmd-shift-{m['shift_id']}", body, h))
+    q("COMMIT")
+    try:
+        write_marker(seq)
+    except OSError as e:
+        record_event("marker_behind", e, at="shift_close")
+    reply({"ok": True, "op": "close_shift", "expected": expected, "counted": counted, "diff": diff})
 
 
 def pay_tab(m):
@@ -1272,6 +1315,7 @@ def pull_config():
     if schema >= 2 and MUTANT != "apply_unknown_feed":  # the schema-2 shape, read by an app that knows it
         raw = {k: (v["amount"] if isinstance(v, dict) else v) for k, v in raw.items()}
     prices = json.dumps(raw)
+    contact["mono"] = device_mono()  # OQ27 (2): a parsed config pull is server contact
     le, lv = q("SELECT cfg_epoch, cfg_version FROM sync_state WHERE id = 1")[0]
     if MUTANT == "config_version_only":  # planted defect: version numbers only
         take = lv is None or version > lv
@@ -1386,6 +1430,11 @@ for line in sys.stdin:
             open_item("shifts", "shift", msg["shift_id"])
         elif op == "close_shift":
             close_shift(msg)
+        elif op == "usb_backup":  # OQ27 (3): copy the store and its marker; no transaction is open between ops
+            os.makedirs(msg["dir"], exist_ok=True)
+            for src in (DB, MARKER):
+                shutil.copy2(src, os.path.join(msg["dir"], os.path.basename(src)))
+            reply({"ok": True, "op": op, "seq": q("SELECT seq FROM counter WHERE id = 1")[0][0]})
         elif op == "pay_tab":
             pay_tab(msg)
         elif op == "tick":  # SC-30: the app's last-alive timer

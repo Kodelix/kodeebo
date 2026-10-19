@@ -4,7 +4,7 @@
 
 # Prototype: local-first sync spike
 
-**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on committed harness `3253ba0`, finding P3-F13, (b2) blind spot confirmed; S207 (old client against a newer server) PASS on committed harness `31b853d`; remaining phase 3 legs in order A (founder, 2026-10-18): TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
+**Status:** in-progress — phase 0 gate PASS; phase 1 gate PASS on run 2 after the OQ28 fix (run 1 failed: WAL silent loss P1-F1); phase 2 gate PASS (run 2 on committed harness `be3f49e`: 50 seeds per cell, 3,000 campaign runs, 0 violations); phase 3 in progress — SC-19 (server restore) PASS on committed harness `a65d6f8`; SC-20 (disk full) PASS on committed harness `daac687`; SC-21a (app update) PASS on committed harness `128cdea`; SC-22 (two instances) PASS on committed harness `db53f27` (tamper suite fixed in `74fac52`); SC-23 (prices while offline, widened rule 2, no-price-list refusal) PASS on committed harness `8cc8df6`; SC-25a (7-day backlog over cut windows) PASS on committed harness `a5900db` (phase 2 regression fixed in `be11ae1`); SC-25b (N5 lease expiry) PASS on committed harness `04996e2`; SC-28 (dashboard edit of an open bill) PASS on committed harness `a77dfa3`, finding P3-F10; SC-29 (stock policy per item) PASS on committed harness `6e2ecff`; SC-30 (device off while sessions run, mechanics) PASS on committed harness `c23f137`; SC-31 (End Day) PASS on committed harness `56c8dbc`; SC-13 + TS-01a (cloned disk, rollback, OQ7 policy) PASS on committed harness `245ddde`; TS-07a (clock change during an open session) PASS on committed harness `8350016`, finding P3-F12; TS-02 (outbox deletion, renumbering) PASS on committed harness `3253ba0`, finding P3-F13, (b2) blind spot confirmed; S207 (old client against a newer server) PASS on committed harness `31b853d`; TS-01b + TS-10 + OQ27 items PASS on the dev run (TS-01b blind spot confirmed, M3 limit confirmed); remaining phase 3 legs in order A (founder, 2026-10-18): TS-01b with TS-10, S206 with TS-03b and TS-06a/b, then the compound-fault campaign as the gate (S109 not run: key custody not ready);, SC-31 and SC-13 + TS-01a next
 **Risk tested:** `design/product-brief.md` risk 1, the product's top-ranked risk: "Local-first sync never loses or double-counts money or time".
 **Plan:** `docs/research/local-first-sync.md` § 9.1 (phases), § 9.1.1 (tamper scenarios TS-01–TS-10, invariant I10) and § 5.1.5 (Part E: invariants I1–I9, fault points P1–P12, scenarios SC-01–SC-18, pass/fail rules).
 **Path:** code spike (feasibility).
@@ -271,6 +271,16 @@ bash prototypes/local-first-sync-spike/run.sh s207 [seeds_per_cell]
 
 ```bash
 bash prototypes/local-first-sync-spike/run.sh replay207 <seed> <cell> [mutant]
+```
+
+TS-01b, TS-10 and the OQ27 founder input (restore after offline sales, drawer count, offline alert, USB restore):
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh ts01b [seeds_per_cell]
+```
+
+```bash
+bash prototypes/local-first-sync-spike/run.sh replay01b <seed> <cell> [mutant]
 ```
 
 `selftest` starts a throwaway `postgres:18.6` container on `127.0.0.1:56432`, builds the server and runs the correct stub and each mutant. `replay` re-runs one seed and prints its trace. `stop` removes the container. Run output goes to `runs/`, which is not committed.
@@ -1546,6 +1556,67 @@ A device that goes offline right after receiving an edit keeps that edit open on
 - **How the app gets updated:** the desktop updater, the desktop spike's G4 and S10.
 - **An old server against a newer client** (a server rollback): the release process.
 - **Command payloads in a newer format sent by an updated client to a server not yet updated:** the deployment order (server first) is a release rule.
+
+### Phase 3 — TS-01b, TS-10 and the OQ27 founder input: a restore that erases offline sales, the drawer count, the offline alert, and the USB copy
+
+**What is tested (sync note § 9.1.1 TS-01 (b) and TS-10; OQ27 founder input 2026-10-18):**
+- **TS-01b:** a copy of the store (file access only) is restored after offline sales that never reached the server. The note expects no mechanism to detect it (OQ27).
+- **TS-10 (M3):** the shift closes with a counted drawer. (a) The erased sales' cash is still in the drawer: the close must flag a surplus equal to it, as an owner event. (b) That cash was removed: expected not detected; that is M3's limit.
+- **OQ27 (2):** an offline-duration alert to the owner and the cashier after a threshold (founder example: 6 hours; the spec sets the value).
+- **OQ27 (3):** an hourly encrypted copy to a USB drive, restored on a new PC through the OQ7 quarantine and review queue.
+- **OQ27 (1)** is already SC-25a. **OQ27 (4)**, the printed End Day summary, cannot be tested here; its figures are SC-31's totals.
+
+**Design under test:**
+- **Shift close (TS-10, with `ENDDAY=1`):** `close_shift` with `counted_piasters` compares the counted drawer with the cash taken during the shift (payments of bills sequenced after the shift opened). It queues a `shift_close` command carrying expected, counted and the difference. The server raises one owner event for any difference ("drawer surplus of X EGP at shift close" or "shortage").
+- **Offline alert, owner (OQ27 (2)):** a device with no contact for longer than the threshold raises one alert per offline episode: "device offline for more than 6 h: its sales since then are only on the device". It uses the server's clock and is checked whenever the owner report is read, so it fires while the device stays silent, which matters because a stolen or burned device never reconnects. A contact ends the episode.
+- **Offline warning, cashier (OQ27 (2)):** every reply carries "no connection to the server for N h" past the threshold, counted on the device's monotonic clock.
+- **USB copy (OQ27 (3)):** `usb_backup` copies the store and its commit marker between operations. Restored on a new PC, it has a new machine id, so SC-13's quarantine takes over and the owner keeps the new PC.
+- **Not tested here:** the store key on the new PC. Escrowing it is the key-custody question (desktop-note S11, licensing note); the spike uses its test key.
+
+**Cells:**
+
+| Cell | Script | Expected |
+|---|---|---|
+| `a_restore_drawer_kept` | Shift open; 2 sales synced; the store and marker copied; 3 offline cash sales; the copy restored; sync; the shift closed with the 3 sales' cash still in the drawer | TS-01b: nothing on the server shows the restore, and the 3 sales are gone (blind spot confirmed). TS-10 (a): the shift close shows a difference of +45.00 EGP and one owner event "drawer surplus of 45.00 EGP at shift close" |
+| `b_restore_cash_removed` | As `a`, with that cash taken out of the drawer | Blind spot confirmed; difference 0, no event: M3's limit, as the note expects |
+| `c_offline_alert` | One sale synced; 2 h with no contact; 5 h more; the owner opens the dashboard twice; contact again; 1 h more | No alert at 2 h, one at 7 h (not repeated on the second look), none after the contact. The cashier is warned at 7 h, not at 2 h or after the contact |
+| `d_usb_restore` | 2 sales synced; 1 pending; the hourly copy; the pending one synced; 2 more synced; 2 more never synced; the PC burns; the copy restored on a new PC (new machine id), which sells 2; the owner keeps the new PC | Quarantine `second_machine`; "held: 2 sales" during it. After the choice everything in the copy and everything synced is on the server; the old PC's 2 sales synced after the copy are in the review queue, labelled as from a retired copy. Exactly the 2 sales after the copy that never synced are lost |
+
+**Checks added:**
+- **R63 (TS-01b):** the blind spot is recorded per run, not counted as a violation.
+- **R64 (TS-10):** the shift's difference and drawer events match the model: a surplus equal to the erased cash, or nothing.
+- **R65 (OQ27 (2)):** owner alerts 0 / 1 / 1 at 2 h, 7 h and after the contact; cashier warnings false / true / false.
+- **R66 (OQ27 (3)):** the lost sales are exactly the model's; the quarantine reason, the held line and the review queue are as expected.
+
+**Mutants:**
+- `no_drawer_check` (client): the counted drawer is ignored.
+- `offline_alert_never` (server).
+- `offline_alert_repeat` (server): an alert on every check.
+- `no_offline_warning` (client).
+- `no_machine_check` (server): the restored copy is caught only later, by a reused number.
+
+#### Run 1 (dev, uncommitted harness on `d1aea85`) — PASS
+
+`evidence/phase3-ts01b-run1-dev*`, 45 s.
+- **Cells:** all 4 PASS, 20 seeds each, 0 violations. TS-01b's blind spot was confirmed in every `a` and `b` run.
+- **Mutants:** all five caught.
+  - `no_drawer_check` after 1 run (R64).
+  - `offline_alert_never`, `offline_alert_repeat` and `no_offline_warning` after 3, in `c` (R65).
+  - `no_machine_check` after 4, in `d` (R66).
+- **Smoke on the changed client and server:** SC-31 (2 seeds) and SC-13 (2) PASS with every mutant caught. The full regression follows on the committed harness.
+
+**What this measures for OQ27 (input to the sync threat model, not a decision):**
+- **Rollback (TS-01b):** a restore erases offline sales without trace on the server.
+- **Drawer count (M3):** it catches the erasure only if the cash stays in the drawer.
+- **Offline alert:** it tells the owner, within the threshold, that the device was silent while it may have been selling.
+- **USB copy:** it bounds the loss of a stolen or burned PC to the sales after the last copy that never synced. With an hourly copy, that is at most one hour of offline sales.
+
+**Not covered:**
+- **Key escrow for the new PC:** key custody.
+- **The offline threshold value and the copy interval:** the spec.
+- **The printed End Day summary:** the desktop spike's real-printer day (S50).
+- **A copy that is itself tampered with:** it carries the commit marker, so the TS-02 / OQ28 marker reasoning applies.
+
 
 
 

@@ -4104,6 +4104,235 @@ def s207(seeds=20, mutant_budget=12):
     return ok
 
 
+TS01B_CELLS = ["a_restore_drawer_kept", "b_restore_cash_removed", "c_offline_alert", "d_usb_restore"]
+TS01B_MUTANTS = ["no_drawer_check", "offline_alert_never", "offline_alert_repeat", "no_offline_warning", "no_machine_check"]
+TS01B_OFFLINE_S = 6 * 3600  # founder example (OQ27 (2)); the spec sets the value
+
+
+def ts01b_script(cell):
+    def script(run):
+        st = run.ts01b = {"cell": cell, "mismatch": [], "erased": [], "lost": [], "exercised": False}
+        n = [0]
+        price = SC13_PRICES["cafe"]
+
+        def sell(tag="x"):
+            aid = f"s{run.seed}-{tag}{n[0]}"
+            n[0] += 1
+            r = run.send({"op": "sell_items", "action_id": aid, "n": 1})
+            if r and r.get("ok"):
+                a = {"op": "sell_items", "action_id": aid, "start_min": 0, "end_min": 0, "expected_piasters": price}
+                run.intent.execute("INSERT INTO actions VALUES (?,?)", (aid, json.dumps(a)))
+                run.intent.execute("INSERT INTO acks VALUES (?)", (aid,))
+            else:
+                st["mismatch"].append(("R60", f"a sale was refused: {r}"))
+            return aid, r
+
+        def sync(k=3):
+            r = None
+            for _ in range(k):
+                r = run.send({"op": "sync"})
+            return r
+
+        def dump():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/dump", timeout=60).read())
+
+        def report():
+            return json.loads(urllib.request.urlopen(SERVER_URL + "/owner_report", timeout=30).read())
+
+        def stop():
+            run.send({"op": "exit"})
+            run.client.wait()
+
+        def remove_store(d):
+            for name in os.listdir(d):
+                if name.startswith("client.db") and os.path.isfile(os.path.join(d, name)) \
+                        and not name.endswith((".lock", ".events.jsonl")):
+                    os.remove(os.path.join(d, name))
+
+        post_json("/config", {"prices": SC13_PRICES})
+        run.send({"op": "pull_config"})
+        if cell in ("a_restore_drawer_kept", "b_restore_cash_removed"):
+            sh = f"s{run.seed}-shift"
+            run.send({"op": "open_shift", "shift_id": sh})
+            for _ in range(2):
+                sell()
+            sync()
+            stop()
+            copy_store(run.dir, os.path.join(run.dir, "snapshot"))  # TS-01b: the copy (file access only)
+            st["erased"] = [sell()[0] for _ in range(3)]  # offline sales, never synced
+            stop()
+            remove_store(run.dir)
+            copy_store(os.path.join(run.dir, "snapshot"), run.dir)  # the old copy restored, marker and all
+            sync()
+            d = dump()
+            got = {r_["action_id"] for r_ in d["ledger"] if r_["kind"] == "sale"}
+            alerts = [e for e in d.get("device_events", []) if e["kind"] in ("missing_sequence", "identity_quarantined")]
+            st["blind_spot_confirmed"] = not alerts and not d.get("flags") and not (got & set(st["erased"]))
+            counted = 2 * price + (3 * price if cell == "a_restore_drawer_kept" else 0)
+            st["close"] = run.send({"op": "close_shift", "shift_id": sh, "counted_piasters": counted})
+            st["want_diff"] = 3 * price if cell == "a_restore_drawer_kept" else 0
+            sync()
+            st["exercised"] = st["blind_spot_confirmed"]
+        elif cell == "c_offline_alert":
+            sell()
+            sync()
+
+            def wait(hours):  # no contact: time passes for the device (monotonic) and the server alike
+                run.send({"op": "advance_mono", "seconds": hours * 3600})
+                post_json(f"/test/clock?advance={hours * 3600}", {})
+            wait(2)
+            st["report_2h"] = len([e for e in dump().get("device_events", []) if e["kind"] == "offline_too_long"]) \
+                if report() is not None else None
+            st["sale_2h"] = sell()[1]
+            wait(5)
+            report(), report()  # the owner opens the dashboard twice
+            st["alerts_7h"] = len([e for e in dump().get("device_events", []) if e["kind"] == "offline_too_long"])
+            st["sale_7h"] = sell()[1]
+            sync()  # contact again: the episode ends
+            st["sale_after"] = sell()[1]
+            wait(1)
+            report()
+            st["alerts_end"] = len([e for e in dump().get("device_events", []) if e["kind"] == "offline_too_long"])
+            st["alert_text"] = [(e.get("detail") or {}).get("text") for e in dump().get("device_events", [])
+                                if e["kind"] == "offline_too_long"]
+            sync()
+            st["exercised"] = True
+        elif cell == "d_usb_restore":
+            for _ in range(2):
+                sell()
+            sync()
+            sell()  # pending at the copy
+            run.send({"op": "usb_backup", "dir": os.path.join(run.dir, "usb")})  # the hourly copy
+            sync()  # the pending sale reaches the server after the copy
+            after_synced = [sell()[0] for _ in range(2)]
+            sync()
+            st["lost"] = [sell()[0] for _ in range(2)]  # after the copy, never synced: the PC burns
+            run.client.kill()
+            run.client.wait()
+            remove_store(run.dir)
+            newpc = os.path.join(run.dir, "newpc")
+            copy_store(os.path.join(run.dir, "usb"), newpc)
+            run.db = os.path.join(newpc, "client.db")  # the copy on a new PC: a new machine id
+            run.client_env["MACHINE_ID"] = "m2"
+            sync()
+            new = [sell("n")[0] for _ in range(2)]
+            sync()
+            st["held"] = [h for h in (report().get("held") or []) if "missing_from" not in h]
+            st["resolve"] = dash("POST", "/quarantine/resolve", {"device_id": "dev-1", "keep": "m2"})[1]
+            sync()
+            st["review_want"] = sorted(after_synced)
+            st["new"] = new
+            st["exercised"] = bool(st["resolve"].get("ok"))
+    return script
+
+
+def ts01b_extra(run, dump):
+    """R63 TS-01b: the restore after offline sales is not detected (the expected blind spot, recorded). R64 TS-10: the
+    shift close flags a drawer surplus equal to the erased cash as one owner event when that cash is still in the
+    drawer, and nothing when it was removed (M3's limit, recorded). R65 OQ27 (2): one owner alert per offline episode
+    once the device is silent past the threshold on the server's clock, none before; the cashier is warned past the
+    threshold only. R66 OQ27 (3): a USB copy restored on a new PC recovers everything synced and everything in the copy
+    through the OQ7 quarantine; exactly the sales after the copy that never synced are lost."""
+    st, v = run.ts01b, list(run.ts01b["mismatch"])
+    allowed = frozenset()
+    events = dump.get("device_events", [])
+    if st["cell"] in ("a_restore_drawer_kept", "b_restore_cash_removed"):
+        allowed = frozenset(st["erased"])  # the blind spot: erased by the restore, never sent
+        diffs = [e for e in events if e["kind"] == "drawer_difference"]
+        rows = dump.get("shift_closes", [])
+        if [r["diff"] for r in rows] != [st["want_diff"]]:
+            v.append(("R64", f"shift close difference {[r['diff'] for r in rows]}, model {st['want_diff']}"))
+        if len(diffs) != (1 if st["want_diff"] else 0):
+            v.append(("R64", f"{len(diffs)} drawer events, model {1 if st['want_diff'] else 0}"))
+        st["owner_view"] = {"blind_spot_confirmed": st.get("blind_spot_confirmed"),
+                            "drawer": [(e.get("detail") or {}).get("text") for e in diffs]}
+    elif st["cell"] == "c_offline_alert":
+        if st.get("report_2h") != 0 or st.get("alerts_7h") != 1 or st.get("alerts_end") != 1:
+            v.append(("R65", f"offline alerts at 2 h {st.get('report_2h')}, 7 h {st.get('alerts_7h')}, "
+                             f"after reconnect {st.get('alerts_end')}; model 0, 1, 1"))
+        w2, w7, wa = (bool((st.get(k) or {}).get("offline_warning")) for k in ("sale_2h", "sale_7h", "sale_after"))
+        if (w2, w7, wa) != (False, True, False):
+            v.append(("R65", f"cashier warning at 2 h {w2}, 7 h {w7}, after reconnect {wa}; model False, True, False"))
+        st["owner_view"] = {"alert_text": st.get("alert_text"),
+                            "cashier": (st.get("sale_7h") or {}).get("offline_warning")}
+    else:
+        allowed = frozenset(st["lost"])  # after the last copy and never synced: lost with the PC
+        got = {r["action_id"] for r in dump["ledger"] if r["kind"] == "sale"}
+        if got & set(st["lost"]):
+            v.append(("R66", f"sales the burned PC never sent are on the server: {sorted(got & set(st['lost']))}"))
+        q = (dump.get("quarantine") or [{}])[0]
+        if q.get("reason") != "second_machine":
+            v.append(("R66", f"restore on a new PC: quarantine reason {q.get('reason')}, model second_machine"))
+        review = sorted(r["action_id"] for r in dump.get("review_queue", []))
+        if review != st["review_want"]:
+            v.append(("R66", f"review queue {review}, model {st['review_want']} (the burned PC's sales after the copy)"))
+        held = st.get("held") or []
+        if [(h.get("n"), h.get("piasters")) for h in held] != [(2, 2 * SC13_PRICES["cafe"])]:
+            v.append(("R66", f"held during quarantine {held}, model 2 sales"))
+        st["owner_view"] = {"lost": len(st["lost"]), "review": review, "quarantine": q.get("reason")}
+    return v, allowed
+
+
+def ts01b_run(seed, cell, mutant=None, label=None, verbose=False):
+    env = {**RETENTION_ENV, "ENDDAY": "1", "OFFLINE_WARN_S": str(TS01B_OFFLINE_S)}
+    server_env = {"OFFLINE_ALERT_S": str(TS01B_OFFLINE_S)}
+    if cell == "d_usb_restore":
+        env["MACHINE_ID"] = "m1"
+        server_env["CLONE_POLICY"] = "1"
+    run = Run(seed, mutant, verbose=verbose, store="sqlite3mc", cipher="chacha20", fault=False,
+              label=label or f"ts01b-{cell}", client_env=env, server_env=server_env)
+    run.script, run.extra = ts01b_script(cell), ts01b_extra
+    r = run.go()
+    r["ts01b"] = run.ts01b
+    return r
+
+
+def ts01b(seeds=20, mutant_budget=12):
+    t0 = time.time()
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "cells": [], "mutants": {}}
+    print(f"phase 3 TS-01b + TS-10 + OQ27 (restore after offline sales, drawer count, offline alert, USB restore), "
+          f"commit {summary['harness_commit']}", flush=True)
+    ok = True
+    for cell in TS01B_CELLS:
+        t1 = time.time()
+        bad, exercised, sample = [], 0, None
+        for s in range(1, seeds + 1):
+            r = ts01b_run(s, cell)
+            exercised += bool(r["ts01b"].get("exercised"))
+            if s == 1:
+                sample = r["ts01b"].get("owner_view")
+            if r["violations"]:
+                bad.append({"seed": s, "violations": r["violations"][:3]})
+        res = "FAIL" if bad else ("PASS" if exercised == seeds else f"NOT ASSESSED ({seeds - exercised})")
+        ok &= res == "PASS"
+        summary["cells"].append({"cell": cell, "runs": seeds, "exercised": exercised, "violating_runs": len(bad),
+                                 "first_bad": bad[:3], "sample_seed_1": sample,
+                                 "seconds": round(time.time() - t1, 1), "result": res})
+        print(f"  {cell:24s} exercised {exercised}/{seeds}  violating {len(bad)}  {res}  seed 1: {sample}", flush=True)
+    for mu in TS01B_MUTANTS:
+        t1 = time.time()
+        caught = None
+        for k in range(mutant_budget):
+            s, cell = k // len(TS01B_CELLS) + 1, TS01B_CELLS[k % len(TS01B_CELLS)]
+            r = ts01b_run(s, cell, mutant=mu, label=f"ts01b-mutant-{mu}")
+            if r["violations"]:
+                caught = (s, cell, r["violations"][0])
+                break
+        summary["mutants"][mu] = {"caught": bool(caught), "runs_to_catch": k + 1 if caught else None,
+                                  "seed_cell": caught[:2] if caught else None,
+                                  "first_violation": caught[2] if caught else None,
+                                  "seconds": round(time.time() - t1, 1)}
+        ok &= bool(caught)
+        print(f"  mutant {mu:20s} {'CAUGHT' if caught else 'SURVIVED'} after {k + 1} runs: "
+              f"{caught[2] if caught else '-'}", flush=True)
+    summary["gate"] = "PASS" if ok else "FAIL"
+    summary["seconds_total"] = round(time.time() - t0, 1)
+    with open(os.path.join(RUNS, "ts01b-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1, default=str)
+    print(f"TS-01b + TS-10 + OQ27: {summary['gate']}  (total {summary['seconds_total']} s)")
+    return ok
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "selftest":
         sys.exit(0 if selftest() else 1)
@@ -4113,6 +4342,13 @@ if __name__ == "__main__":
         sys.exit(0 if sc19(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "sc20":  # sc20 [seeds_per_cell]
         sys.exit(0 if sc20(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "ts01b":  # ts01b [seeds_per_cell]
+        sys.exit(0 if ts01b(*(int(x) for x in sys.argv[2:3])) else 1)
+    if sys.argv[1] == "replay01b":  # replay01b <seed> <cell> [mutant]
+        r = ts01b_run(int(sys.argv[2]), sys.argv[3], mutant=sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else None,
+                      label="replay01b", verbose=True)
+        print(json.dumps({k: r.get(k) for k in ("actions", "acked", "server_sales", "fired", "ts01b", "violations")},
+                         indent=1, default=str))
     if sys.argv[1] == "s207":  # s207 [seeds_per_cell]
         sys.exit(0 if s207(*(int(x) for x in sys.argv[2:3])) else 1)
     if sys.argv[1] == "replay207":  # replay207 <seed> <cell> [mutant]

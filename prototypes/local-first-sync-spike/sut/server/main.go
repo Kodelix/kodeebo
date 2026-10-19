@@ -105,6 +105,12 @@
 // server applies nothing and answers upgrade_required (an empty result list, so the client keeps its queue); the
 // owner gets one "app update needed" alert per episode. The config feed carries feed_schema; schema 2 sends prices as
 // objects {"amount": n}, which a schema-1 client must not apply. MUTANT=apply_old_protocol ignores PROTO_MIN.
+//
+// TS-10 and OQ27 founder input (2026-10-18): a shift_close command (expected cash, counted drawer, difference) is
+// recorded, and any difference raises one owner event "drawer surplus/shortage of X EGP at shift close" (M3). A device
+// with no contact for longer than OFFLINE_ALERT_S on the server's clock raises one owner alert per offline episode,
+// checked whenever the owner report is read, so it fires while the device stays silent (a stolen or burned device
+// never reconnects). MUTANT=offline_alert_never, MUTANT=offline_alert_repeat (an alert on every check).
 package main
 
 import (
@@ -133,7 +139,7 @@ DROP TABLE IF EXISTS inbox, cursor_, ledger, minutes, flags, offline_periods, me
   reconcile_events, config, device_events, price_summaries, config_history, device_pulls, device_leases, edits,
   corrections, items, stock_receipts, stock_moves, stock_alerts, item_policy_history, device_offs, bill_bdays,
   day_closes, device_machine, quarantine, quarantine_cmds, retired_streams, review_queue, gaps, held_cmds, lost_seqs,
-  protocol_refusals;
+  protocol_refusals, shift_closes;
 CREATE TABLE inbox (
   tenant_id int NOT NULL, device_id text NOT NULL, command_id text NOT NULL,
   seq bigint NOT NULL, payload_hash text NOT NULL, outcome text NOT NULL, machine_id text,
@@ -187,6 +193,8 @@ CREATE TABLE device_offs (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, de
 CREATE TABLE bill_bdays (device_id text NOT NULL, action_id text NOT NULL, bday int NOT NULL, PRIMARY KEY (device_id, action_id));
 CREATE TABLE day_closes (device_id text NOT NULL, bday int NOT NULL, n_device int NOT NULL, total_device bigint NOT NULL,
   n_server int NOT NULL, total_server bigint NOT NULL, PRIMARY KEY (device_id, bday));
+CREATE TABLE shift_closes (device_id text NOT NULL, shift_id text NOT NULL, expected bigint NOT NULL, counted bigint NOT NULL,
+  diff bigint NOT NULL, PRIMARY KEY (device_id, shift_id));
 CREATE TABLE protocol_refusals (device_id text PRIMARY KEY, protocol int NOT NULL, since double precision NOT NULL);
 CREATE TABLE gaps (device_id text PRIMARY KEY, missing_from bigint NOT NULL, first_seen double precision NOT NULL,
   alerted boolean NOT NULL DEFAULT false, state text NOT NULL, resolved_by text);
@@ -228,6 +236,10 @@ type payload struct {
 	Bday            *int      `json:"bday"`          // SC-31: business day the bill was paid in, or the day closed
 	NBills          int       `json:"n_bills"`       // SC-31: the device's count for the day
 	Total           int64     `json:"total"`         // SC-31: the device's total for the day
+	ShiftID         string    `json:"shift_id"`      // TS-10
+	Expected        int64     `json:"expected"`      // TS-10: cash taken during the shift
+	Counted         int64     `json:"counted"`       // TS-10: the counted drawer
+	Diff            int64     `json:"diff"`          // TS-10: counted - expected
 	OffKind         string    `json:"off_kind"`      // SC-30: power_off | app_down
 	FromWall        float64   `json:"from_wall"`     // SC-30: device wall time of the last-alive checkpoint
 	ToWall          float64   `json:"to_wall"`       // SC-30: device wall time at restart
@@ -299,7 +311,33 @@ func seen(dev string) {
 	}
 	seenMu.Lock()
 	lastSeen[dev] = nowS()
+	offlineAlerted[dev] = false // a contact ends the offline episode (OQ27 (2))
 	seenMu.Unlock()
+}
+
+var offlineAlerted = map[string]bool{}
+
+// checkOffline raises one owner alert per offline episode for a device silent longer than OFFLINE_ALERT_S, on the
+// server's clock (OQ27 (2)).
+func checkOffline(ctx context.Context) {
+	limit := envSeconds("OFFLINE_ALERT_S", 0)
+	if limit == 0 || mutant == "offline_alert_never" {
+		return
+	}
+	seenMu.Lock()
+	var due []string
+	for dev, t := range lastSeen {
+		if nowS()-t > float64(limit) && (!offlineAlerted[dev] || mutant == "offline_alert_repeat") {
+			offlineAlerted[dev] = true
+			due = append(due, dev)
+		}
+	}
+	seenMu.Unlock()
+	for _, dev := range due {
+		detail, _ := json.Marshal(map[string]any{"limit_s": limit,
+			"text": fmt.Sprintf("device offline for more than %d h: its sales since then are only on the device", limit/3600)})
+		pool.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'offline_too_long',$2,true)`, dev, detail)
+	}
 }
 
 func connected(dev string) bool {
@@ -396,6 +434,23 @@ func failpoint(name string) {
 
 func insertEffects(ctx context.Context, tx pgx.Tx, dev string, c command) error {
 	p := c.Payload
+	if p.Kind == "shift_close" { // TS-10: the drawer against the cash the device recorded
+		if _, err := tx.Exec(ctx, `INSERT INTO shift_closes VALUES ($1,$2,$3,$4,$5)`, dev, p.ShiftID, p.Expected, p.Counted, p.Diff); err != nil {
+			return err
+		}
+		if p.Diff != 0 {
+			word, amt := "surplus", p.Diff
+			if p.Diff < 0 {
+				word, amt = "shortage", -p.Diff
+			}
+			detail, _ := json.Marshal(map[string]any{"shift_id": p.ShiftID, "diff": p.Diff,
+				"text": fmt.Sprintf("drawer %s of %s at shift close", word, egp(amt))})
+			_, err := tx.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'drawer_difference',$2,true)`,
+				dev, detail)
+			return err
+		}
+		return nil
+	}
 	if p.Kind == "end_day" && p.Bday != nil { // SC-31: recompute the day from the bills the server holds
 		var n int
 		var total int64
@@ -844,6 +899,7 @@ func egp(piasters int64) string { return fmt.Sprintf("%d.%02d EGP", piasters/100
 // handleOwnerReport is the owner's view of totals, money pending review and money held in quarantine (SC-13).
 func handleOwnerReport(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	checkOffline(ctx)
 	fail := func(err error) { http.Error(w, err.Error(), http.StatusInternalServerError) }
 	var total int64
 	q := `SELECT coalesce(sum(amount_piasters), 0) FROM ledger WHERE kind = 'sale'`
@@ -1679,6 +1735,7 @@ func handleDump(w http.ResponseWriter, r *http.Request) {
 			+ coalesce((SELECT sum(qty) FROM stock_moves m WHERE m.item_id = i.item_id), 0) AS qty
 			FROM items i ORDER BY i.item_id`,
 		"stock_alerts":      "SELECT device_id, action_id, item_id, owner_alert FROM stock_alerts ORDER BY id",
+		"shift_closes":      "SELECT device_id, shift_id, expected, counted, diff FROM shift_closes ORDER BY shift_id",
 		"protocol_refusals": "SELECT device_id, protocol FROM protocol_refusals ORDER BY device_id",
 		"gaps":              "SELECT device_id, missing_from, alerted, state, resolved_by FROM gaps ORDER BY device_id",
 		"held_cmds":         "SELECT device_id, command_id, seq FROM held_cmds ORDER BY seq",
