@@ -29,6 +29,7 @@ separately: APPLIED / NOT APPLIED / not run / refused - production.
 | File | Guaranteed content | Notes |
 |------|--------------------|-------|
 | `docs/architecture/migration-plans/<feature>.md` | step table with release, safe-alone reason, rollback; backfill design; skipped-release option; upgrade path; test matrix; lint results with resolutions | written after approval |
+| `docs/architecture/erd/<context>.md` | Mermaid `erDiagram` of the owning context's tables after the migration, plus one row per table: class (from the tenancy ADR, or `NOT CLASSIFIED`), tenant key, RLS, owner context; every table the migration touches is present | written after approval; not updated = `ERD not updated - <tables>`, never `COMPLETE` |
 | Migration file(s) in the project's layout | one logical change per file, `lock_timeout`, online forms, `down` for development | written by `migration-specialist` at approved paths |
 | `production/qa/evidence/<STORY-ID>/migration-<NNNN>.md` (or `production/qa/migration-<feature>-<date>.md`) | lint output, test-matrix result, apply record | written after approval |
 

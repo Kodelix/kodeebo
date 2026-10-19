@@ -45,6 +45,7 @@ file the product edited, and never reads or writes product-owned files.
 │   ├── architecture/            # ADRs, architecture doc, perf-budgets.md, slos.md
 │   │   ├── threat-models/       # /threat-model
 │   │   ├── migration-plans/     # /db-migration (template: templates/migration-plan.md)
+│   │   ├── erd/                 # one Mermaid ERD per bounded context, updated by every /db-migration
 │   │   ├── cache-designs/       # /cache-design
 │   │   └── observability-plans/ # /observability-plan
 │   ├── registry/                # architecture.yaml — architectural stances registry (/create-architecture, /architecture-review)

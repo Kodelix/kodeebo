@@ -34,6 +34,7 @@ batched, idempotent and resumable, a rollback story that is honest about
 production being forward-only, and the upgrade path for self-hosted installs.
 
 **Output:** a migration plan at `docs/architecture/migration-plans/<feature>.md`,
+the context's ERD updated at `docs/architecture/erd/<context>.md`,
 the migration file(s) in the layout the project's tool uses, the real output of
 `bash .claude/scripts/migration-lint.sh`, the test-matrix evidence, and, only
 with explicit approval, an apply against a **non-production** database.
@@ -51,6 +52,8 @@ test database the user names.
 > story. `NOT ASSESSED`: the lint or the test matrix did not run, the table size
 > is unknown (treated as hot until answered), the migration tool is undecided,
 > the supported upgrade-from range is unknown, or a store has no linter (Mongo).
+> `COMPLETE WITH GAPS` at best when the context's ERD was not updated
+> (`ERD not updated - <tables>`).
 > **`migration-lint.sh` emits observations, not a verdict, and covers `.sql`
 > files only**; a clean lint is not a clean migration. Each cause is named.
 
@@ -93,8 +96,27 @@ review, not a director gate; `lean` and `solo` record `data-lead review skipped 
 Present the consolidated plan and the findings. Decisions are the user's:
 which option for the skipped-release hazard, hot-table approach if size is
 unknown or large, which release carries the contract step, whether a
-destructive step is approved at all. Then ask: "May I write the migration plan
-to `docs/architecture/migration-plans/<feature>.md`?" Write only after approval.
+destructive step is approved at all.
+
+**ERD of the context.** Every migration also updates the entity-relationship
+diagram of the bounded context that owns the tables it creates or alters:
+`docs/architecture/erd/<context>.md`, the context named in
+`design/specs/domain-map.md` (no domain map yet: use the feature slug and say
+so). The file holds a Mermaid `erDiagram` of the context's tables after this
+migration (key columns, the tenant key, foreign keys and cardinality), followed
+by a table with one row per table: `Table | Class | Tenant key | RLS | Owner
+context`. **Class** is the tenancy class the product's ADRs define (for
+example a shared-schema ADR's table classes), or `NOT CLASSIFIED - no ADR
+defines classes` - never a guess. A table of another context is shown by name
+only, with a link to that context's ERD. Check it by content before asking:
+every table the migration creates or alters appears in both the diagram and the
+table with a class; a missing one is named and fixed first. An ERD left
+unchanged by a migration that touches tables is reported `ERD not updated -
+<tables>`, and the verdict cannot be `COMPLETE`.
+
+Then ask: "May I write the migration plan to
+`docs/architecture/migration-plans/<feature>.md` and update
+`docs/architecture/erd/<context>.md`?" Write only after approval.
 
 ## Phase 5: Migration Files, Lint, Tests
 
