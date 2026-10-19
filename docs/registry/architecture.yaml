@@ -506,3 +506,46 @@ forbidden_patterns:
     adr: ADR-0005
     adr_status: Accepted
     status: active
+
+# 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
+technology_choices:
+  - id: TECH-BACKEND-KTOR
+    choice: "Backend track Ktor on Kotlin/JVM (stack.backend: ktor, core.track: kotlin, saas-core-kotlin; founder 2026-10-19): Kotlin 2.4.21, kotlinx.coroutines 1.11.0, Ktor 3.6.0 exact, Exposed 1.5.1 with ADR-0002 J1 suspendTransaction, HikariCP 7.1.0, OpenTelemetry Java agent 2.32.0, Bouncy Castle 1.86 for Ed25519 and ETA CAdES-BES (C1). Still to pin: pgjdbc (42.7.14 seen 2026-10-18), an SLF4J 2 binding, Bouncy Castle; JDK 21 or 25 and its distribution open (Q8); Gradle wrapper 9.7.0 (\"9.7\" does not resolve) or 9.8.x per Q7. Mandatory in CI: dependency locking incl. buildscript, strict verification metadata, OSV-Scanner on every PR, base images by digest; no backend image before an image scanner and SBOM generator are pinned (Q6). Explicit heap and Compose memory limit from S18 before the first deploy. Billing: rules as data and one shared vector suite in every combination, one Kotlin module only if the desktop ADR picks Compose Desktop (S46). Switch-to-Go conditions recorded in ADR-0006 Decision 12; Compose Desktop x Go rejected."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: IC-JDBC-COPY-CARRIER
+    contract: "Until S23 shows a supported route from Exposed suspendTransaction to the JDBC Connection, the EXP-2 COPY export and the job loop use a small plain-JDBC carrier that lives inside the ADR-0002 scope-helper module, takes the same Scope, runs the same set-once scope routine and constants, passes the same helper tests and adds no scope kind or setting; on any exception from a streaming copyOut the connection is closed or evicted, never returned to the pool. S23 and S22b pass before the export story; if principal-engineer reads the carrier as a second helper, ADR-0002 is amended first."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: IC-OUTBOX-SWEEP
+    contract: "Jobs direction (details in the jobs/outbox ADR): own transactional outbox in TD under the tenant policy; platform_rt lists tenant ids from CP tenant_status; one job_rt helper transaction per tenant claims work with FOR UPDATE SKIP LOCKED; the dedup row is written in the effect's transaction; traceparent stored on work rows; a CP pending-work list before tenant counts grow."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: FP-POOLED-CONN-AFTER-COPY-ERROR
+    pattern: "Returning a pooled JDBC connection to HikariCP after any exception from a streaming COPY (copyOut); the connection must be closed or evicted."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: FP-UNLOCKED-GRADLE-BUILD
+    pattern: "A Gradle build without committed dependency locks (project and buildscript) and strict verification metadata, with version ranges, or with a dependency, lockfile or verification-metadata change auto-merged by the AI-agent CI without the founder's review."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: FP-JVM-DEFAULT-HEAP
+    pattern: "Running the backend JVM container with the default heap sizing: no explicit -Xmx or MaxRAMPercentage, or no Compose memory limit (both sized from S18)."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: FP-QUEUE-WITHOUT-ADR
+    pattern: "Adopting a job-queue library (for example db-scheduler) or an external broker before an ADR fixes the ADR-0001 table class of its tables; work rows outside the tenant policy."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
+  - id: FP-SECOND-OTEL-SDK
+    pattern: "A second OpenTelemetry SDK or an SDK version in application code beside the Java agent; claiming no PII in telemetry before the Collector capture test shows that SQL parameter values, URL query strings and request headers do not reach it."
+    adr: ADR-0006
+    adr_status: Proposed
+    status: active
