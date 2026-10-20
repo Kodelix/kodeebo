@@ -2,7 +2,7 @@
 
 > **Status**: Draft
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-20
+> **Last Updated**: 2026-10-20 (second pass: founder decisions on refunds, complaints, accessories, G9, discounts, tax hierarchy)
 > **Source**: design/product-brief.md (Tier 1/Tier 2 from the brief; founder decisions of 2026-10-19 and 2026-10-20 recorded below)
 
 ---
@@ -11,7 +11,7 @@
 
 Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds the capabilities any Kodelix SaaS needs (tenancy, identity, authorization, audit, operator access, licensing, plans and subscription, notifications, jobs, observability, analytics, storage). They are built inside Kodeebo behind the ports the future `saas-core-kotlin` will expose, and each is scheduled for `/core-extract` — never core-first. **Layer 2** holds the Kodeebo platform modules every vertical shares (venue configuration, sync, the Windows counter shell, catalogue, orders and bills, payments, tax and receipts, the money ledger, shifts and End Day, staff, inventory, customers, reports, fleet health, client surfaces, integrations). **Layer 3** holds the verticals, enabled per tenant by entitlement: Gaming Lounge and Café now; Restaurant and Retail later (placeholders, no specs). The customer is an owner-operator of a PlayStation or gaming lounge or a café in Egypt; the pricing model is an EGP subscription per venue (anchor 10,000 EGP/year, `/pricing-strategy` pending); the Tier 1 release must let the three founding lounges leave Glitch without losing anything.
 
-**What this map is.** 32 bounded contexts, 86 features (each a spec at `design/specs/<key>.md`), 3 cross-context items that are not contexts (two shared kernels and the vertical module contract), a dependency order, and the ordered list of ADRs and research the order implies. The 32 contexts are **logical boundaries**. Whether small contexts share a Gradle module, with the boundary enforced by an architecture test, is decided in the module-structure ADR, so the build stays light for one developer. Contexts are modules of one Ktor modular monolith, never separate services.
+**What this map is.** 32 bounded contexts, 89 features (each a spec at `design/specs/<key>.md`), 3 cross-context items that are not contexts (two shared kernels and the vertical module contract), a dependency order, and the ordered list of ADRs and research the order implies. The 32 contexts are **logical boundaries**. Whether small contexts share a Gradle module, with the boundary enforced by an architecture test, is decided in the module-structure ADR, so the build stays light for one developer. Contexts are modules of one Ktor modular monolith, never separate services.
 
 **Stack at the time of writing** (`project.yaml`, written by `/setup-stack` today): backend `ktor` (ADR-0006), data `postgres`, tenancy `shared-schema-rls` (ADR-0001), distribution `hosted`, deploy `compose-vps` (ADR-0009), `core.track: kotlin`. `core.version` is unset, so every Layer 1 context follows the "shared core absent" path (`coordination-rules.md`): a product-local module behind the port the core will expose, one umbrella ADR, `/core-extract` scheduled per module. Still pending, with their triggers: `stack.desktop` (desktop-runtime ADR, after the sync spike's phase 5), `stack.web` (dashboard real-time ADR and web stack), `stack.mobile` (spikes S32/S33; the owner Android app is a PWA wrapped for Google Play, provisional), `stack.site` (GTM plan), `stack.messaging` (jobs ADR). **Data stores:** PostgreSQL only. Elasticsearch and Kafka/RabbitMQ are excluded at start (founder, 2026-10-20). A cache — in-process, or Dragonfly/Valkey — is decided per story under DoD gate 5 when the first story needs one; no store is added by this map.
 
@@ -19,9 +19,9 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 
 **Gates not run.** `CTO-CONTEXT-BOUNDARY`, `PR-SCOPE` and `PD-FEATURES` were skipped — Lean review mode (not an approval). The brief's Tier 1 estimate (10–14 months, team of 2) is unvalidated; `/estimate` is the follow-up. `design/specs/pricing-model.md` and `design/registry/entities.yaml` do not exist yet, so plan, entitlement and quota keys are not reconciled with a catalogue.
 
-**Coverage check (idea pool).** Every `Keep` row of `design/glitch-idea-pool.md` maps to a spec key. One was missing and is added: **D2 coupons and promotions** (`coupons-promotions`). D3 in-app notifications is covered by `owner-alerts` (push is `push-notifications`, `[new]`). D1 is split into `counter-printing-drawer` (Tier 1) and `kitchen-bar-printers-displays` (Tier 2). I5 `expenses` sits in Shifts, Cash & End Day beside paid-outs. `Change` rows: P3 → `branches-settings` and `device-seats-enrolment`; G1 → `stations-catalogue`; O3 → `payments-tender`; F1 → `sync-protocol` and `counter-shell`; D6 → `owner-android-app`. `Later` and `Drop` rows have no spec by design (G3, G8, S8, C2, D7, V1, V2, S2, G13).
+**Coverage check (idea pool).** Every `Keep` row of `design/glitch-idea-pool.md` maps to a spec key. One was missing and is added: **D2 coupons and promotions** (`coupons-promotions`). D5 is split into Kodelix support tickets (`support-desk`) and venue customer complaints (`customer-complaints`, new, founder 2026-10-20). O5 partial refund moved to Tier 1 with full refund (`refunds`, founder 2026-10-20). G10 is split into the discount model (`discounts`) and the manual surcharge (`bill-exceptions`). D3 in-app notifications is covered by `owner-alerts` (push is `push-notifications`, `[new]`). D1 is split into `counter-printing-drawer` (Tier 1) and `kitchen-bar-printers-displays` (Tier 2). I5 `expenses` sits in Shifts, Cash & End Day beside paid-outs. `Change` rows: P3 → `branches-settings` and `device-seats-enrolment`; G1 → `stations-catalogue`; O3 → `payments-tender`; F1 → `sync-protocol` and `counter-shell`; D6 → `owner-android-app`. `Later` and `Drop` rows have no spec by design (G3, G8, S8, C2, D7, V1, V2, S2, G13).
 
-**Tags in the Feature cell** (the template's columns are a fixed contract, so the brief tier is a tag): `[T1]` brief Tier 1; `[T2]` brief Tier 2; `[Later]` brief Later; `[new]` not in the brief or the idea pool. `(inferred)` marks a feature the brief does not name. Three differences from the brief, to be applied to `design/product-brief.md`: `tips` is Tier 1 (founder, 2026-10-20); `plans-entitlements` (minimum: module flags and limits per tenant) and `owner-alerts` are pulled from Tier 2 into the MVP; `data-import` is a future onboarding spec for new venues, `[Later]`, and the brief's "no Glitch import tool — the founder moves the 3 customers by hand" stands unchanged.
+**Tags in the Feature cell** (the template's columns are a fixed contract, so the brief tier is a tag): `[T1]` brief Tier 1; `[T2]` brief Tier 2; `[Later]` brief Later; `[new]` not in the brief or the idea pool. `(inferred)` marks a feature the brief does not name. Differences from the brief of 2026-10-16, now applied to `design/product-brief.md` (decision log, 2026-10-20): `tips` is Tier 1; `plans-entitlements` (minimum: module flags and limits per tenant) and `owner-alerts` are pulled from Tier 2 into Tier 1; full and partial `refunds` and `recipes` are Tier 1; `data-import` is a future onboarding spec for new venues, `[Later]`, and the brief's "no Glitch import tool — the founder moves the 3 customers by hand" stands unchanged.
 
 **Contexts, one paragraph each.**
 
@@ -30,7 +30,7 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 - **Identity & Authentication** owns the three realms' credentials, sessions, second factors, passkeys, recovery and the counter PIN verifier (ADR-0007). Core module `identity`, with `otp` and `ratelimit` inside it.
 - **Roles & Permissions** owns roles as tenant rows, the permission catalogue and limits, the authority snapshot and one-shot overrides (ADR-0008). The mechanism is the core module `authz`; the Kodeebo catalogue stays product-only.
 - **Audit & Activity Trail** owns the hash-chained activity trail kept 5 years (ADR-0008). Core module `audit`.
-- **Operator Console & Support Access** owns the operator realm, owner-granted support sessions and journal, the redacted diagnostic bundle, support tickets (ADR-0004, ADR-0007). Core module `operator`.
+- **Operator Console & Support Access** owns the operator realm, owner-granted support sessions and journal, the redacted diagnostic bundle, and Kodelix support tickets (ADR-0004, ADR-0007). Venue customer complaints are not here: they are venue data in Customers, Loyalty & Complaints. Core module `operator`.
 - **Licensing & Device Seats** owns seats, devices, seat moves, the offline lease and its clock-tamper handling (`licence-model.md` is the module's spec). Core module `licensing`.
 - **Plans, Entitlements & Subscription** owns the plan catalogue (global), module entitlements per tenant, limits, subscription status (N5) and, later, invoices. Core module `billing`.
 - **Notifications** owns channels, templates (AR/EN), delivery tracking and the only mail/push clients. Core module `notify`. Provider choice pends research.
@@ -43,15 +43,15 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 - **Venue Configuration** owns branches, branch settings, owner-set limits and thresholds and reason lists: the owner-sets-the-rules principle as data.
 - **Sync** owns the command protocol, inbox, ordering, idempotency, server-to-device feeds, the review queue and clone/restore detection. A money fact is never rejected: it is recorded and flagged for review.
 - **Counter Shell** is the Windows client: encrypted local store, start check and salvage, printing and cash drawer, installer and updater, and PIN sign-in and override on the device. Runtime pends the desktop ADR.
-- **Catalogue** owns café products, categories, prices and tax class.
-- **Orders & Bills** owns bills, lines, tabs, daily order numbers, void, discount, open item.
-- **Payments & Tender** owns payments (method recorded only), tips and refunds.
-- **Tax & Receipts** owns the tax, service charge, minimum charge and rounding rules, receipt content and numbering, and later ETA submission.
+- **Catalogue** owns café products, categories and prices. Tax and service values for a category or item are not catalogue data: Tax & Receipts owns them (override hierarchy, below).
+- **Orders & Bills** owns bills, lines, tabs, daily order numbers, order types (data), void, manual surcharge, open item, and the one discount model (owner-defined discounts and every discount applied).
+- **Payments & Tender** owns payments (method recorded only), tips, and full and partial refunds.
+- **Tax & Receipts** owns the tax, service charge, minimum charge and rounding rules — their values at every level of the override hierarchy and their resolution — receipt content and numbering, and later ETA submission.
 - **Money Ledger** owns the append-only ledger of every money movement; a correction is a new entry.
 - **Shifts, Cash & End Day** owns shifts, cash counts, paid-outs, expenses, X and Z reports, the business day and End Day.
 - **Staff & Attendance** owns staff records, branch assignment, clock in/out, later contracts and payroll.
-- **Inventory** owns stock per branch, adjustments, transfers, later recipes and purchasing.
-- **Customers & Loyalty** owns customer records (PII), loyalty and price groups. Tier 2.
+- **Inventory** owns stock per branch, adjustments, transfers, recipes (Tier 1: stock is deducted through the recipe when an item has one), accessory units with a state per unit (Tier 2), later purchasing.
+- **Customers, Loyalty & Complaints** owns customer records (PII), loyalty, price groups and venue customer complaints. Tier 2. A complaint does not need a customer record (walk-ins complain too).
 - **Reports & Insights** owns the server-side read models behind owner reports.
 - **Fleet Health & Diagnostics** owns device heartbeat, version, sync lag, crash records carried through sync, and the console views (built by us; logs/metrics/traces stay on OpenTelemetry).
 - **Client Surfaces** is the owner web dashboard (PWA), the Android app (PWA wrapped for Google Play) and the marketing site. It owns no tables.
@@ -78,6 +78,34 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 
 **P-VERTICAL — platform never imports a vertical.** A vertical implements platform ports (`EndDayBlocker`, entitlement check, floor-view tiles); the platform defines them.
 
+## Recorded Feature Rules
+
+Founder decisions that bind the named specs. `/design-spec` writes each as testable rules; a spec may not contradict them without a new founder decision recorded here.
+
+**Business rules (founder, 2026-10-20, first pass).**
+- **End Day** is refused while any bill, session or shift is open (`business-day-end-day`, through the `EndDayBlocker` port). The business day is closed by End Day, not by the clock.
+- **Money facts are never rejected.** A money fact that happened at the counter is recorded as it happened and flagged for review (`sync-protocol`, `sync-review-conflicts`).
+- **Backdate limits are owner-set** (`owner-limits-reasons`; used by `backdated-start` and any backdated record).
+- **X report** for cashiers; **Z report** by a manager or a night-shift role (`x-z-reports`, permissions in `roles-permissions`).
+- **Staff add and disable are owner-only** (`staff-records`, `roles-permissions`; ADR-0008 owner-only keys).
+- **Remote approval** from the phone or the dashboard is decided; it is designed after the sync ADR and the notifications research (`remote-approval`).
+
+**Void, refund and partial refund (founder, 2026-10-20).** *Void* is before payment: no money was taken. *Refund* is the full amount, after payment. *Partial refund* is part of a paid bill, after payment. All three need a permission and a reason from the reason list. Full and partial refunds are Tier 1: money leaves the drawer and the cash count depends on it (`bill-exceptions` for void; `refunds` for both refunds; recorded in `money-ledger`, `shifts-cash`, `x-z-reports`, `owner-reports`).
+
+**One discount model (founder, 2026-10-20; `discounts`).** At the counter the cashier sees the fixed discounts the owner defined (each a percentage or an amount) and picks one, or chooses *open* and enters a percentage or an amount. Only the discounts the cashier's role allows are shown. Every discount needs a reason and respects the per-role maximum (a permission limit, ADR-0008). A discount applies to the bill or to a line. Every discount is recorded on the bill and the receipt, in the money ledger, the activity trail, the shift close, the Z report and the owner reports. Under P-ONCE, coupons (`coupons-promotions`) and G9's automatic discounts (`advanced-pricing`) apply through this model's port and are recorded the same way; the manual surcharge (G10) stays in `bill-exceptions`.
+
+**G9 time-based pricing (founder, 2026-10-20; `advanced-pricing`).** Covers both automatic discounts and automatic surcharges, by day of week or time of day.
+
+**Tax, service and minimum-charge override hierarchy (founder, 2026-10-20; `tax-service-rules`).** Tax, service charge and minimum charge resolve from the most specific level that sets them: branch default → order type → catalogue category → item (a POS menu item or an inventory item). The most specific wins. Order types are data (rows owned by Orders & Bills): takeaway, drive-thru, delivery, table, session, direct sale/retail, custom item; a restaurant type such as drive-thru or delivery needs no code change later. Each of tax, service charge, minimum charge and rounding is owner-configurable, on or off with its value. The minimum charge keeps its schedule (G11) and can differ by order type, for example on for tables and sessions and off for takeaway. Rounding is per branch only. Tax & Receipts owns the values at every level and their resolution; the caller passes branch, order type, category and item ids.
+
+**Item kinds and recipes (founder, 2026-10-20; `product-catalogue`, `stock-core`, `recipes`, `accessories`).** Every item has one kind, defined in the catalogue and inventory specs: (1) **sold without stock** — a service or station time; (2) **sold with 1:1 stock** — each sale deducts one unit of its stock item; (3) **sold through a recipe** — each sale deducts the recipe's ingredients; (4) **asset, not sold, with a state** — accessories (state per unit, Tier 2); (5) **custom item** — the open item (N1), no stock. Recipes are Tier 1 from day one: when an item has a recipe, stock is deducted through it. Catalogue owns the sellable kinds (1, 2, 3, 5) and the item-to-stock or item-to-recipe link; Inventory owns stock items, recipes and assets (4).
+
+**Venue customer complaints (founder, 2026-10-20; `customer-complaints`, Tier 2).** A complaint carries a reason from the reason list, links to a bill, a session or a station, and optionally to a compensation (a discount or a refund, through their ports). It is in the activity trail and the owner reports. It is venue data, not an Operator Console ticket. The link to a session or station is an opaque subject reference, so the platform does not import the Gaming vertical (P-VERTICAL).
+
+**Accessories (founder, 2026-10-20; `accessories`, Tier 2 with S9).** PS and PC controllers and headsets are stock per branch with a state per unit: available, with a customer, damaged, lost, under repair. `session-extras` (S9) changes a unit's state through the accessories port and charges for extras and for loss or damage.
+
+**Tips (founder, 2026-10-20; `tips`, Tier 1).** The owner enables tips per branch. A tip is recorded per bill and per payment method, is never sales revenue or in the taxable base, is distinct from the service charge, and is shown in the shift close and the Z report.
+
 ---
 
 ## Bounded Contexts
@@ -102,14 +130,14 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 | 14 | Sync | L2 · Product-specific | Local-first protocol between counter and server | inbox, command log, feeds, review queue | offline-sync-specialist / cto | — |
 | 15 | Counter Shell | L2 · Product-specific | The Windows client | local encrypted store, device settings | principal-engineer / ux-designer | — |
 | 16 | Catalogue | L2 · Product-specific | Café products and prices | products, categories, price lists | product-manager | — |
-| 17 | Orders & Bills | L2 · Product-specific | The bill, its lines and exceptions | bills, lines, tabs, order numbers | product-manager / domain-architect | — |
+| 17 | Orders & Bills | L2 · Product-specific | The bill, its lines and exceptions | bills, lines, tabs, order numbers, order types, discount definitions, applied discounts | product-manager / domain-architect | — |
 | 18 | Payments & Tender | L2 · Product-specific | How a bill is paid (method recorded only) | payments, tips, refunds | product-manager | — |
-| 19 | Tax & Receipts | L2 · Product-specific | Tax, service, minimum charge, rounding; receipts | tax settings use, receipts, receipt numbers | product-manager / domain-architect | — |
+| 19 | Tax & Receipts | L2 · Product-specific | Tax, service, minimum charge, rounding; receipts | tax, service and minimum-charge rule sets (four levels), rounding per branch, receipts, receipt numbers | product-manager / domain-architect | — |
 | 20 | Money Ledger | L2 · Product-specific | The append-only record of every money movement | ledger entries | domain-architect / security-lead | — |
 | 21 | Shifts, Cash & End Day | L2 · Product-specific | Drawer, shifts, X/Z, business day | shifts, cash counts, paid-outs, expenses, business days | product-manager | — |
 | 22 | Staff & Attendance | L2 · Product-specific | People, branch assignment, attendance | staff, branch assignment, attendance | product-manager | — |
-| 23 | Inventory | L2 · Product-specific | Stock per branch | stock levels, movements, recipes, purchases | product-manager | — |
-| 24 | Customers & Loyalty | L2 · Product-specific | Customer records and loyalty (PII) | customers, loyalty, price groups | product-manager / privacy-compliance-specialist | — |
+| 23 | Inventory | L2 · Product-specific | Stock per branch | stock levels, movements, accessory units, recipes, purchases | product-manager | — |
+| 24 | Customers, Loyalty & Complaints | L2 · Product-specific | Customer records, loyalty and venue complaints (PII) | customers, loyalty, price groups, complaints | product-manager / privacy-compliance-specialist | — |
 | 25 | Reports & Insights | L2 · Product-specific | Owner-facing read models | report read models | product-manager | — |
 | 26 | Fleet Health & Diagnostics | L2 · Product-specific | Device health and crash capture through sync | device heartbeats, crash records | sre-lead / offline-sync-specialist | — (device telemetry may be extracted later) |
 | 27 | Client Surfaces | L2 · Product-specific (client, no tables) | Owner web dashboard, Android app, marketing site | UI state only | web-lead / android-lead / design-director | — |
@@ -140,7 +168,7 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 | 11 | Activity trail (P6) [T1] | Audit & Activity Trail | Platform | MVP | Not Started | design/specs/activity-trail.md | tenant-foundation |
 | 12 | Operator console [new] (inferred) | Operator Console & Support Access | Admin & Support | MVP | Not Started | design/specs/operator-console.md | tenant-foundation, activity-trail |
 | 13 | Owner-granted support access and diagnostic bundle [new] (inferred) | Operator Console & Support Access | Admin & Support | MVP | Not Started | design/specs/support-access.md | operator-console, activity-trail |
-| 14 | Support tickets and complaints (D5) [T2] | Operator Console & Support Access | Admin & Support | Beta | Not Started | design/specs/support-desk.md | operator-console, owner-alerts |
+| 14 | Kodelix support tickets (D5) [T2] | Operator Console & Support Access | Admin & Support | Beta | Not Started | design/specs/support-desk.md | operator-console, owner-alerts |
 | 15 | Device seats and enrolment (D1-A) [T1] | Licensing & Device Seats | Billing & Licensing | MVP | Not Started | design/specs/device-seats-enrolment.md | tenant-foundation, dashboard-sign-in, plans-entitlements |
 | 16 | Offline lease and N5 grace [T1] | Licensing & Device Seats | Billing & Licensing | MVP | Not Started | design/specs/offline-lease.md | device-seats-enrolment, sync-protocol, subscription-control, money-time-rules |
 | 17 | Plans and entitlements, minimum: modules and limits per tenant (P1) [T2] | Plans, Entitlements & Subscription | Billing & Licensing | MVP | Not Started | design/specs/plans-entitlements.md | tenant-foundation |
@@ -166,53 +194,56 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 | 37 | Kitchen and bar printers, displays (D1) [T2] | Counter Shell | Client surfaces | Beta | Not Started | design/specs/kitchen-bar-printers-displays.md | counter-printing-drawer |
 | 38 | Product catalogue (I1) [T1] | Catalogue | Core domain | Vertical Slice | Not Started | design/specs/product-catalogue.md | tenant-foundation, branches-settings |
 | 39 | Bills and tabs: quick sale, open tab, daily order numbers (O1, O2, O7) [T1] | Orders & Bills | Core domain | Vertical Slice | Not Started | design/specs/bills-and-tabs.md | product-catalogue, tax-service-rules |
-| 40 | Void, discount and open item with reasons (O6, G10, N1) [T1] | Orders & Bills | Core domain | MVP | Not Started | design/specs/bill-exceptions.md | bills-and-tabs, roles-permissions, counter-overrides, owner-limits-reasons, activity-trail |
-| 41 | Move, split and merge orders (O4) [T2] | Orders & Bills | Core domain | Beta | Not Started | design/specs/order-restructure.md | bills-and-tabs, bill-exceptions |
-| 42 | Coupons and promotions (D2) [T2] | Orders & Bills | Core domain | Beta | Not Started | design/specs/coupons-promotions.md | bills-and-tabs, bill-exceptions, owner-limits-reasons |
-| 43 | Payments and tender, method recorded only (O3) [T1] | Payments & Tender | Core domain | Vertical Slice | Not Started | design/specs/payments-tender.md | bills-and-tabs, money-ledger |
-| 44 | Tips (gratuity) [T1] (founder, 2026-10-20; not yet in the brief's Tier 1 list) | Payments & Tender | Core domain | MVP | Not Started | design/specs/tips.md | payments-tender, money-ledger, tax-service-rules, branches-settings |
-| 45 | Partial refund against a payment (O5) [T2] | Payments & Tender | Core domain | Beta | Not Started | design/specs/refunds.md | payments-tender, bill-exceptions, money-ledger |
-| 46 | Tax, service charge, minimum charge and rounding rules (G11) [T1] | Tax & Receipts | Core domain | Vertical Slice | Not Started | design/specs/tax-service-rules.md | money-time-rules, branches-settings |
-| 47 | Receipt content, numbering and ETA-ready fields [T1] | Tax & Receipts | Core domain | MVP | Not Started | design/specs/receipts-numbering.md | tax-service-rules, counter-printing-drawer, localization-kernel |
-| 48 | ETA e-receipt submission [new] | Tax & Receipts | Integrations | Beta | Not Started | design/specs/eta-e-receipt.md | receipts-numbering, jobs-outbox |
-| 49 | Money ledger (O8) [T1] | Money Ledger | Core domain | Vertical Slice | Not Started | design/specs/money-ledger.md | tenant-foundation, money-time-rules, activity-trail |
-| 50 | Shifts and cash count (W1) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/shifts-cash.md | money-ledger, payments-tender, tips, roles-permissions |
-| 51 | Paid-outs from the drawer (W2) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/paid-outs.md | shifts-cash, owner-limits-reasons, bill-exceptions |
-| 52 | X and Z reports (W3) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/x-z-reports.md | shifts-cash, paid-outs, tips, roles-permissions |
-| 53 | Business day and End Day (W4) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/business-day-end-day.md | shifts-cash, x-z-reports, vertical-module-contract |
-| 54 | Expenses against approved reasons (I5) [T2] | Shifts, Cash & End Day | Core domain | Beta | Not Started | design/specs/expenses.md | paid-outs, owner-limits-reasons |
-| 55 | Staff records and branch assignment (W5) [T1] | Staff & Attendance | Platform | MVP | Not Started | design/specs/staff-records.md | tenant-foundation, branches-settings, dashboard-sign-in |
-| 56 | Clock in and out (W6) [T1] | Staff & Attendance | Core domain | MVP | Not Started | design/specs/clock-in-out.md | staff-records, counter-pin |
-| 57 | Work contracts, attendance summaries, payroll (W7) [T2] | Staff & Attendance | Core domain | Beta | Not Started | design/specs/payroll-contracts.md | clock-in-out |
-| 58 | Stock per branch, deduction, adjustments, transfers (I1) [T1] | Inventory | Core domain | MVP | Not Started | design/specs/stock-core.md | product-catalogue, bills-and-tabs, branches-settings |
-| 59 | Low-stock alerts (I2) [T2] | Inventory | Core domain | Beta | Not Started | design/specs/low-stock-alerts.md | stock-core, owner-alerts |
-| 60 | Recipes (I3) [T2] | Inventory | Core domain | Beta | Not Started | design/specs/recipes.md | stock-core |
-| 61 | Suppliers, purchase invoices, receiving, supplier payments (I4) [T2] | Inventory | Core domain | Beta | Not Started | design/specs/purchasing-suppliers.md | stock-core, money-ledger |
-| 62 | Customer records and walk-ins (C1) [T2] | Customers & Loyalty | Core domain | Beta | Not Started | design/specs/customers.md | tenant-foundation, bills-and-tabs |
-| 63 | Loyalty points and price groups (C3, C4) [T2] | Customers & Loyalty | Core domain | Beta | Not Started | design/specs/loyalty-price-groups.md | customers, session-pricing |
-| 64 | Owner reports: daily report and cash reconciliation [T1] | Reports & Insights | Insights | MVP | Not Started | design/specs/owner-reports.md | money-ledger, shifts-cash, business-day-end-day, sync-protocol |
-| 65 | Fleet health: heartbeat, version, sync lag, offline age [new] (inferred) | Fleet Health & Diagnostics | Admin & Support | MVP | Not Started | design/specs/fleet-health.md | sync-protocol, operator-console, telemetry-pipeline |
-| 66 | Crash capture through sync [new] (inferred) | Fleet Health & Diagnostics | Admin & Support | MVP | Not Started | design/specs/crash-capture.md | fleet-health, sync-protocol, counter-shell |
-| 67 | Owner dashboard shell and navigation (N2) [T1] | Client Surfaces | Client surfaces | Vertical Slice | Not Started | design/specs/dashboard-shell.md | dashboard-sign-in, localization-kernel, roles-permissions |
-| 68 | Dashboard: activity log and report views (N2) [T1] | Client Surfaces | Client surfaces | Vertical Slice | Not Started | design/specs/dashboard-reports-activity.md | dashboard-shell, activity-trail, money-ledger |
-| 69 | Dashboard: live floor and real-time updates (N2, S12) [T1] | Client Surfaces | Client surfaces | MVP | Not Started | design/specs/dashboard-live-floor.md | dashboard-shell, sync-feeds, sessions |
-| 70 | Dashboard: configuration screens (N2) [T1] | Client Surfaces | Client surfaces | MVP | Not Started | design/specs/dashboard-config.md | dashboard-shell, branches-settings, owner-limits-reasons, staff-records, roles-permissions |
-| 71 | Owner Android app, PWA in a Play wrapper (D6) [T1] | Client Surfaces | Client surfaces | MVP | Not Started | design/specs/owner-android-app.md | dashboard-shell |
-| 72 | Marketing site [new] (inferred) | Client Surfaces | Client surfaces | Beta | Not Started | design/specs/marketing-site.md | localization-kernel |
-| 73 | Webhooks (D4) [T2] | Integrations & Webhooks | Integrations | Beta | Not Started | design/specs/webhooks.md | jobs-outbox, roles-permissions |
-| 74 | Station catalogue: category, type, unit, PCs as timed stations (G1) [T1] | Gaming Lounge | Core domain | Vertical Slice | Not Started | design/specs/stations-catalogue.md | tenant-foundation, branches-settings, vertical-module-contract |
-| 75 | Hourly pricing, price tiers, minimum minutes, frozen prices, tier change (G2, G5, G12, N4) [T1] | Gaming Lounge | Core domain | Vertical Slice | Not Started | design/specs/session-pricing.md | stations-catalogue, money-time-rules, tax-service-rules |
-| 76 | Sessions: start, end, move, cancel, timer, café items on the tab (S1, S3–S6, S10) [T1] | Gaming Lounge | Core domain | Vertical Slice | Not Started | design/specs/sessions.md | session-pricing, bills-and-tabs, vertical-module-contract |
-| 77 | Live floor view on the counter (S12) [T1] | Gaming Lounge | Core domain | MVP | Not Started | design/specs/floor-view.md | sessions, counter-shell |
-| 78 | Fixed price, free minutes, unit price, time-of-day pricing (G4, G6, G7, G9) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/advanced-pricing.md | session-pricing |
-| 79 | Session extras and lost/damaged tracking (S9) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/session-extras.md | sessions |
-| 80 | Backdated start with an approver (S7) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/backdated-start.md | sessions, counter-overrides, owner-limits-reasons |
-| 81 | Station power and network control (S11) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/station-control.md | sessions |
-| 82 | Automatic PC lock and unlock agent (N6) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/pc-lock-agent.md | sessions, station-control |
-| 83 | Café table tab (N3) [T1] | Café | Core domain | MVP | Not Started | design/specs/cafe-table-tabs.md | bills-and-tabs, vertical-module-contract |
-| 84 | Money and time rules kernel [new] (inferred) | Shared kernel | Platform | MVP | Not Started | design/specs/money-time-rules.md | — |
-| 85 | Localization kernel: AR/EN, RTL, EGP, Africa/Cairo (P4) [T1] | Shared kernel | Platform | MVP | Not Started | design/specs/localization-kernel.md | — |
-| 86 | Vertical module contract [new] (inferred) | Shared kernel | Platform | MVP | Not Started | design/specs/vertical-module-contract.md | plans-entitlements, tenant-foundation |
+| 40 | Void, manual surcharge and open item with reasons (O6, G10 surcharge, N1) [T1] | Orders & Bills | Core domain | MVP | Not Started | design/specs/bill-exceptions.md | bills-and-tabs, roles-permissions, counter-overrides, owner-limits-reasons, activity-trail |
+| 41 | Discounts: one model — owner-defined fixed discounts and open discounts, per role, on the bill or a line (G10) [T1] | Orders & Bills | Core domain | MVP | Not Started | design/specs/discounts.md | bills-and-tabs, tax-service-rules, roles-permissions, owner-limits-reasons, money-ledger, activity-trail |
+| 42 | Move, split and merge orders (O4) [T2] | Orders & Bills | Core domain | Beta | Not Started | design/specs/order-restructure.md | bills-and-tabs, bill-exceptions |
+| 43 | Coupons and promotions (D2) [T2] | Orders & Bills | Core domain | Beta | Not Started | design/specs/coupons-promotions.md | bills-and-tabs, discounts, owner-limits-reasons |
+| 44 | Payments and tender, method recorded only (O3) [T1] | Payments & Tender | Core domain | Vertical Slice | Not Started | design/specs/payments-tender.md | bills-and-tabs, money-ledger |
+| 45 | Tips (gratuity) [T1] (founder, 2026-10-20) | Payments & Tender | Core domain | MVP | Not Started | design/specs/tips.md | payments-tender, money-ledger, tax-service-rules, branches-settings |
+| 46 | Full and partial refund after payment (O5) [T1] (founder, 2026-10-20; was Tier 2) | Payments & Tender | Core domain | MVP | Not Started | design/specs/refunds.md | payments-tender, bill-exceptions, money-ledger, roles-permissions, owner-limits-reasons, activity-trail |
+| 47 | Tax, service charge, minimum charge and rounding rules, with the override hierarchy (G11) [T1] | Tax & Receipts | Core domain | Vertical Slice | Not Started | design/specs/tax-service-rules.md | money-time-rules, branches-settings, product-catalogue |
+| 48 | Receipt content, numbering and ETA-ready fields [T1] | Tax & Receipts | Core domain | MVP | Not Started | design/specs/receipts-numbering.md | tax-service-rules, discounts, counter-printing-drawer, localization-kernel |
+| 49 | ETA e-receipt submission [new] | Tax & Receipts | Integrations | Beta | Not Started | design/specs/eta-e-receipt.md | receipts-numbering, jobs-outbox |
+| 50 | Money ledger (O8) [T1] | Money Ledger | Core domain | Vertical Slice | Not Started | design/specs/money-ledger.md | tenant-foundation, money-time-rules, activity-trail |
+| 51 | Shifts and cash count (W1) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/shifts-cash.md | money-ledger, payments-tender, tips, refunds, discounts, roles-permissions |
+| 52 | Paid-outs from the drawer (W2) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/paid-outs.md | shifts-cash, owner-limits-reasons, bill-exceptions |
+| 53 | X and Z reports (W3) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/x-z-reports.md | shifts-cash, paid-outs, tips, refunds, discounts, roles-permissions |
+| 54 | Business day and End Day (W4) [T1] | Shifts, Cash & End Day | Core domain | MVP | Not Started | design/specs/business-day-end-day.md | shifts-cash, x-z-reports, vertical-module-contract |
+| 55 | Expenses against approved reasons (I5) [T2] | Shifts, Cash & End Day | Core domain | Beta | Not Started | design/specs/expenses.md | paid-outs, owner-limits-reasons |
+| 56 | Staff records and branch assignment (W5) [T1] | Staff & Attendance | Platform | MVP | Not Started | design/specs/staff-records.md | tenant-foundation, branches-settings, dashboard-sign-in |
+| 57 | Clock in and out (W6) [T1] | Staff & Attendance | Core domain | MVP | Not Started | design/specs/clock-in-out.md | staff-records, counter-pin |
+| 58 | Work contracts, attendance summaries, payroll (W7) [T2] | Staff & Attendance | Core domain | Beta | Not Started | design/specs/payroll-contracts.md | clock-in-out |
+| 59 | Stock per branch, deduction, adjustments, transfers (I1) [T1] | Inventory | Core domain | MVP | Not Started | design/specs/stock-core.md | product-catalogue, bills-and-tabs, branches-settings |
+| 60 | Accessories: controllers and headsets as units per branch with a state per unit [new] [T2] (founder, 2026-10-20; with S9) | Inventory | Core domain | Beta | Not Started | design/specs/accessories.md | stock-core, branches-settings, activity-trail |
+| 61 | Low-stock alerts (I2) [T2] | Inventory | Core domain | Beta | Not Started | design/specs/low-stock-alerts.md | stock-core, owner-alerts |
+| 62 | Recipes, stock deducted through the recipe (I3) [T1] (founder, 2026-10-20; was Tier 2) | Inventory | Core domain | MVP | Not Started | design/specs/recipes.md | stock-core, product-catalogue |
+| 63 | Suppliers, purchase invoices, receiving, supplier payments (I4) [T2] | Inventory | Core domain | Beta | Not Started | design/specs/purchasing-suppliers.md | stock-core, money-ledger |
+| 64 | Customer records and walk-ins (C1) [T2] | Customers, Loyalty & Complaints | Core domain | Beta | Not Started | design/specs/customers.md | tenant-foundation, bills-and-tabs |
+| 65 | Loyalty points and price groups (C3, C4) [T2] | Customers, Loyalty & Complaints | Core domain | Beta | Not Started | design/specs/loyalty-price-groups.md | customers, session-pricing |
+| 66 | Venue customer complaints: reason, linked bill, session or station, optional compensation [new] [T2] (founder, 2026-10-20) | Customers, Loyalty & Complaints | Core domain | Beta | Not Started | design/specs/customer-complaints.md | owner-limits-reasons, bills-and-tabs, discounts, refunds, activity-trail |
+| 67 | Owner reports: daily report and cash reconciliation [T1] | Reports & Insights | Insights | MVP | Not Started | design/specs/owner-reports.md | money-ledger, shifts-cash, business-day-end-day, discounts, refunds, sync-protocol |
+| 68 | Fleet health: heartbeat, version, sync lag, offline age [new] (inferred) | Fleet Health & Diagnostics | Admin & Support | MVP | Not Started | design/specs/fleet-health.md | sync-protocol, operator-console, telemetry-pipeline |
+| 69 | Crash capture through sync [new] (inferred) | Fleet Health & Diagnostics | Admin & Support | MVP | Not Started | design/specs/crash-capture.md | fleet-health, sync-protocol, counter-shell |
+| 70 | Owner dashboard shell and navigation (N2) [T1] | Client Surfaces | Client surfaces | Vertical Slice | Not Started | design/specs/dashboard-shell.md | dashboard-sign-in, localization-kernel, roles-permissions |
+| 71 | Dashboard: activity log and report views (N2) [T1] | Client Surfaces | Client surfaces | Vertical Slice | Not Started | design/specs/dashboard-reports-activity.md | dashboard-shell, activity-trail, money-ledger |
+| 72 | Dashboard: live floor and real-time updates (N2, S12) [T1] | Client Surfaces | Client surfaces | MVP | Not Started | design/specs/dashboard-live-floor.md | dashboard-shell, sync-feeds, sessions |
+| 73 | Dashboard: configuration screens (N2) [T1] | Client Surfaces | Client surfaces | MVP | Not Started | design/specs/dashboard-config.md | dashboard-shell, branches-settings, owner-limits-reasons, staff-records, roles-permissions |
+| 74 | Owner Android app, PWA in a Play wrapper (D6) [T1] | Client Surfaces | Client surfaces | MVP | Not Started | design/specs/owner-android-app.md | dashboard-shell |
+| 75 | Marketing site [new] (inferred) | Client Surfaces | Client surfaces | Beta | Not Started | design/specs/marketing-site.md | localization-kernel |
+| 76 | Webhooks (D4) [T2] | Integrations & Webhooks | Integrations | Beta | Not Started | design/specs/webhooks.md | jobs-outbox, roles-permissions |
+| 77 | Station catalogue: category, type, unit, PCs as timed stations (G1) [T1] | Gaming Lounge | Core domain | Vertical Slice | Not Started | design/specs/stations-catalogue.md | tenant-foundation, branches-settings, vertical-module-contract |
+| 78 | Hourly pricing, price tiers, minimum minutes, frozen prices, tier change (G2, G5, G12, N4) [T1] | Gaming Lounge | Core domain | Vertical Slice | Not Started | design/specs/session-pricing.md | stations-catalogue, money-time-rules, tax-service-rules |
+| 79 | Sessions: start, end, move, cancel, timer, café items on the tab (S1, S3–S6, S10) [T1] | Gaming Lounge | Core domain | Vertical Slice | Not Started | design/specs/sessions.md | session-pricing, bills-and-tabs, vertical-module-contract |
+| 80 | Live floor view on the counter (S12) [T1] | Gaming Lounge | Core domain | MVP | Not Started | design/specs/floor-view.md | sessions, counter-shell |
+| 81 | Fixed price, free minutes, unit price, and automatic time-based pricing — discounts and surcharges by day of week or time of day (G4, G6, G7, G9) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/advanced-pricing.md | session-pricing, discounts |
+| 82 | Session extras and lost/damaged tracking (S9) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/session-extras.md | sessions, accessories |
+| 83 | Backdated start with an approver (S7) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/backdated-start.md | sessions, counter-overrides, owner-limits-reasons |
+| 84 | Station power and network control (S11) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/station-control.md | sessions |
+| 85 | Automatic PC lock and unlock agent (N6) [T2] | Gaming Lounge | Core domain | Beta | Not Started | design/specs/pc-lock-agent.md | sessions, station-control |
+| 86 | Café table tab (N3) [T1] | Café | Core domain | MVP | Not Started | design/specs/cafe-table-tabs.md | bills-and-tabs, vertical-module-contract |
+| 87 | Money and time rules kernel [new] (inferred) | Shared kernel | Platform | MVP | Not Started | design/specs/money-time-rules.md | — |
+| 88 | Localization kernel: AR/EN, RTL, EGP, Africa/Cairo (P4) [T1] | Shared kernel | Platform | MVP | Not Started | design/specs/localization-kernel.md | — |
+| 89 | Vertical module contract [new] (inferred) | Shared kernel | Platform | MVP | Not Started | design/specs/vertical-module-contract.md | plans-entitlements, tenant-foundation |
 
 ---
 
@@ -235,7 +266,7 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 
 | Tier | Definition | Target Milestone | Specification Urgency |
 |------|------------|------------------|----------------------|
-| **MVP** | Tier 1 of the brief (what the 3 customers need to switch) plus the foundations under it; 45 features | M2 private beta, M3 release | Foundations first (orders 1–19); breadth after the vertical slice (orders 34–59) |
+| **MVP** | Tier 1 of the brief (what the 3 customers need to switch) plus the foundations under it; 48 features | M2 private beta, M3 release | Foundations first (orders 1–19); breadth after the vertical slice (orders 34–62) |
 | **Vertical Slice** | The M1 journey: start session, add a café item, close and pay, sync, see it on the owner dashboard; 14 features | M1 vertical slice | Specify between the MVP foundations and the rest of the MVP, following the brief's build order |
 | **Beta** | Tier 2 of the brief and the post-Tier-1 increments (ETA, push, billing); 25 features | After the Tier 1 release | Specify third |
 | **Full Vision** | Later items with a spec (onboarding import, referral tracking); 2 features. Restaurant and Retail have no specs | M4+ | Specify as needed |
@@ -267,10 +298,10 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 ### Feature Layer (depends on core)
 
 1. `sessions`, `bills-and-tabs`, `tax-service-rules`, `payments-tender`, `money-ledger`, `counter-printing-drawer`, `cafe-table-tabs`.
-2. `counter-pin`, `counter-overrides`, `bill-exceptions`, `tips`, `receipts-numbering`.
+2. `counter-pin`, `counter-overrides`, `bill-exceptions`, `discounts`, `tips`, `refunds`, `receipts-numbering`.
 3. `shifts-cash`, `paid-outs`, `x-z-reports`, `business-day-end-day` — depend on the ledger, payments, roles and the `EndDayBlocker` port.
 4. `offline-lease` — depends on device seats, sync, subscription control.
-5. `sync-review-conflicts`, `stock-core`, `clock-in-out`, `floor-view`.
+5. `sync-review-conflicts`, `stock-core`, `recipes`, `clock-in-out`, `floor-view`.
 6. `fleet-health`, `crash-capture` — depend on sync, observability, the console.
 7. `tenant-provisioning`, `tenant-closure-export`, `counter-install-update`, `owner-reports`.
 
@@ -308,13 +339,16 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 | local encrypted store (device) | Counter Shell | — | device-local; synced only through Sync |
 | products, categories, price lists | Catalogue | Orders, Gaming, Inventory | catalogue port |
 | bills, lines, tabs, order numbers | Orders & Bills | Payments, Ledger, Reports | bill port; lines carry an opaque `source` id |
+| order types (data) | Orders & Bills | Tax & Receipts, verticals, Dashboard | order-type port; tax rules receive the id as a caller-passed value |
+| discount definitions, applied discounts | Orders & Bills | Tax & Receipts (receipt), Ledger, Shifts, Reports, Coupons, Gaming (G9) | `Discounts` port; entries to the ledger and the trail |
 | payments, tips, refunds | Payments & Tender | Ledger, Shifts, Reports | payment port; entries to the ledger |
-| tax and rounding rule *use*, receipts, receipt numbers | Tax & Receipts | Orders, Counter Shell, ETA adapter | rule engine (kernel); receipt port. Rule *values* stay in Venue Configuration |
+| tax, service and minimum-charge rule sets at four levels, rounding per branch, receipts, receipt numbers | Tax & Receipts | Orders, Gaming, Counter Shell, ETA adapter, Dashboard | rule resolution (most specific wins) with caller-passed branch, order type, category and item ids; receipt port. All rule values, branch level included, are owned here (moved from Venue Configuration, 2026-10-20) |
 | ledger entries | Money Ledger | Shifts, Reports, Dashboard | `Ledger.append` only; read models for views |
 | shifts, cash counts, paid-outs, expenses, business days | Shifts, Cash & End Day | Reports, Dashboard | shift port; `EndDayBlocker` implemented by verticals |
 | staff, branch assignment, attendance | Staff & Attendance | Roles, Identity, Shifts, Reports | staff port; staff feed |
-| stock levels, movements, recipes, purchases | Inventory | Orders, Reports | stock port; movements as commands |
-| customers, loyalty, price groups (PII) | Customers & Loyalty | Orders, Gaming | customer port |
+| stock levels, movements, accessory units, recipes, purchases | Inventory | Orders, Reports | stock port; movements as commands |
+| customers, loyalty, price groups (PII) | Customers, Loyalty & Complaints | Orders, Gaming | customer port |
+| complaints | Customers, Loyalty & Complaints | Reports, Dashboard, Audit | complaint port; opaque subject reference (bill, session, station); compensation through the `Discounts` and refund ports |
 | report read models | Reports & Insights | Dashboard | read-model API |
 | device heartbeats, crash records | Fleet Health & Diagnostics | Operator Console | read model for console views |
 | webhook endpoints, delivery log | Integrations & Webhooks | — | outbox-driven delivery |
@@ -368,56 +402,59 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 | 34 | counter-pin | MVP | Feature | auth-identity-specialist | M |
 | 35 | counter-overrides | MVP | Feature | auth-identity-specialist, product-manager | L |
 | 36 | bill-exceptions | MVP | Feature | product-manager | M |
-| 37 | tips | MVP | Feature | product-manager, domain-architect | M |
-| 38 | receipts-numbering | MVP | Feature | product-manager | M |
-| 39 | shifts-cash | MVP | Feature | product-manager | M |
-| 40 | paid-outs | MVP | Feature | product-manager | S |
-| 41 | x-z-reports | MVP | Feature | product-manager | M |
-| 42 | business-day-end-day | MVP | Feature | product-manager, domain-architect | L |
-| 43 | cafe-table-tabs | MVP | Feature | product-manager | S |
-| 44 | floor-view | MVP | Feature | product-manager, ux-designer | M |
-| 45 | offline-lease | MVP | Feature | licensing-specialist, security-lead | L |
-| 46 | sync-review-conflicts | MVP | Feature | offline-sync-specialist | L |
-| 47 | clock-in-out | MVP | Feature | product-manager | S |
-| 48 | stock-core | MVP | Feature | product-manager | L |
-| 49 | owner-reports | MVP | Feature | product-manager | M |
-| 50 | fleet-health | MVP | Feature | sre-lead, offline-sync-specialist | M |
-| 51 | crash-capture | MVP | Feature | sre-lead, offline-sync-specialist | M |
-| 52 | counter-install-update | MVP | Feature | principal-engineer, release-manager | M |
-| 53 | dashboard-live-floor | MVP | Presentation | web-lead | M |
-| 54 | dashboard-config | MVP | Presentation | web-lead, product-manager | L |
-| 55 | owner-android-app | MVP | Presentation | android-lead | M |
-| 56 | tenant-provisioning | MVP | Hardening | product-manager, customer-success | M |
-| 57 | backup-restore | MVP | Hardening | data-lead, sre-lead | M |
-| 58 | tenant-closure-export | MVP | Hardening | multitenancy-specialist, privacy-compliance-specialist | L |
-| 59 | slos-alerting | MVP | Hardening | sre-lead, observability-engineer | M |
-| 60 | refunds | Beta | Feature | product-manager | M |
-| 61 | order-restructure | Beta | Feature | product-manager | M |
-| 62 | coupons-promotions | Beta | Feature | product-manager | M |
-| 63 | customers | Beta | Feature | product-manager, privacy-compliance-specialist | M |
-| 64 | loyalty-price-groups | Beta | Feature | product-manager | M |
-| 65 | expenses | Beta | Feature | product-manager | S |
-| 66 | low-stock-alerts | Beta | Feature | product-manager | S |
-| 67 | recipes | Beta | Feature | product-manager | M |
-| 68 | purchasing-suppliers | Beta | Feature | product-manager | L |
-| 69 | payroll-contracts | Beta | Feature | product-manager | M |
-| 70 | advanced-pricing | Beta | Feature | product-manager, domain-architect | L |
-| 71 | session-extras | Beta | Feature | product-manager | M |
-| 72 | backdated-start | Beta | Feature | product-manager, security-lead | M |
-| 73 | station-control | Beta | Feature | product-manager, principal-engineer | M |
-| 74 | pc-lock-agent | Beta | Feature | principal-engineer, security-lead | L |
-| 75 | kitchen-bar-printers-displays | Beta | Feature | principal-engineer | M |
-| 76 | plan-tiers-overrides | Beta | Feature | pricing-billing-designer | M |
-| 77 | subscription-billing | Beta | Feature | pricing-billing-designer, integrations-engineer | L |
-| 78 | push-notifications | Beta | Feature | integrations-engineer | M |
-| 79 | remote-approval | Beta | Feature | auth-identity-specialist, product-manager | L |
-| 80 | support-desk | Beta | Feature | customer-success | M |
-| 81 | webhooks | Beta | Feature | integrations-engineer, api-designer | M |
-| 82 | eta-e-receipt | Beta | Feature | integrations-engineer | L |
-| 83 | demo-tenant | Beta | Feature | customer-success | S |
-| 84 | marketing-site | Beta | Presentation | astro-specialist, design-director | M |
-| 85 | data-import | Full Vision | Feature | product-manager, privacy-compliance-specialist | L |
-| 86 | referral-partners | Full Vision | Feature | sales-lead, product-manager | S |
+| 37 | discounts | MVP | Feature | product-manager, domain-architect | M |
+| 38 | tips | MVP | Feature | product-manager, domain-architect | M |
+| 39 | refunds | MVP | Feature | product-manager | M |
+| 40 | receipts-numbering | MVP | Feature | product-manager | M |
+| 41 | shifts-cash | MVP | Feature | product-manager | M |
+| 42 | paid-outs | MVP | Feature | product-manager | S |
+| 43 | x-z-reports | MVP | Feature | product-manager | M |
+| 44 | business-day-end-day | MVP | Feature | product-manager, domain-architect | L |
+| 45 | cafe-table-tabs | MVP | Feature | product-manager | S |
+| 46 | floor-view | MVP | Feature | product-manager, ux-designer | M |
+| 47 | offline-lease | MVP | Feature | licensing-specialist, security-lead | L |
+| 48 | sync-review-conflicts | MVP | Feature | offline-sync-specialist | L |
+| 49 | clock-in-out | MVP | Feature | product-manager | S |
+| 50 | stock-core | MVP | Feature | product-manager | L |
+| 51 | recipes | MVP | Feature | product-manager | M |
+| 52 | owner-reports | MVP | Feature | product-manager | M |
+| 53 | fleet-health | MVP | Feature | sre-lead, offline-sync-specialist | M |
+| 54 | crash-capture | MVP | Feature | sre-lead, offline-sync-specialist | M |
+| 55 | counter-install-update | MVP | Feature | principal-engineer, release-manager | M |
+| 56 | dashboard-live-floor | MVP | Presentation | web-lead | M |
+| 57 | dashboard-config | MVP | Presentation | web-lead, product-manager | L |
+| 58 | owner-android-app | MVP | Presentation | android-lead | M |
+| 59 | tenant-provisioning | MVP | Hardening | product-manager, customer-success | M |
+| 60 | backup-restore | MVP | Hardening | data-lead, sre-lead | M |
+| 61 | tenant-closure-export | MVP | Hardening | multitenancy-specialist, privacy-compliance-specialist | L |
+| 62 | slos-alerting | MVP | Hardening | sre-lead, observability-engineer | M |
+| 63 | order-restructure | Beta | Feature | product-manager | M |
+| 64 | coupons-promotions | Beta | Feature | product-manager | M |
+| 65 | customers | Beta | Feature | product-manager, privacy-compliance-specialist | M |
+| 66 | loyalty-price-groups | Beta | Feature | product-manager | M |
+| 67 | customer-complaints | Beta | Feature | product-manager, privacy-compliance-specialist | M |
+| 68 | expenses | Beta | Feature | product-manager | S |
+| 69 | low-stock-alerts | Beta | Feature | product-manager | S |
+| 70 | accessories | Beta | Feature | product-manager | S |
+| 71 | purchasing-suppliers | Beta | Feature | product-manager | L |
+| 72 | payroll-contracts | Beta | Feature | product-manager | M |
+| 73 | advanced-pricing | Beta | Feature | product-manager, domain-architect | L |
+| 74 | session-extras | Beta | Feature | product-manager | M |
+| 75 | backdated-start | Beta | Feature | product-manager, security-lead | M |
+| 76 | station-control | Beta | Feature | product-manager, principal-engineer | M |
+| 77 | pc-lock-agent | Beta | Feature | principal-engineer, security-lead | L |
+| 78 | kitchen-bar-printers-displays | Beta | Feature | principal-engineer | M |
+| 79 | plan-tiers-overrides | Beta | Feature | pricing-billing-designer | M |
+| 80 | subscription-billing | Beta | Feature | pricing-billing-designer, integrations-engineer | L |
+| 81 | push-notifications | Beta | Feature | integrations-engineer | M |
+| 82 | remote-approval | Beta | Feature | auth-identity-specialist, product-manager | L |
+| 83 | support-desk | Beta | Feature | customer-success | M |
+| 84 | webhooks | Beta | Feature | integrations-engineer, api-designer | M |
+| 85 | eta-e-receipt | Beta | Feature | integrations-engineer | L |
+| 86 | demo-tenant | Beta | Feature | customer-success | S |
+| 87 | marketing-site | Beta | Presentation | astro-specialist, design-director | M |
+| 88 | data-import | Full Vision | Feature | product-manager, privacy-compliance-specialist | L |
+| 89 | referral-partners | Full Vision | Feature | sales-lead, product-manager | S |
 
 [Effort: S = 1 session, M = 2–3 sessions, L = 4+ sessions. A spec that depends on a pending ADR (next section) waits for it. `eta-e-receipt` moves into Tier 1 if the ETA per-venue inquiry puts a founding venue on an e-receipt list (brief, risk 7).]
 
@@ -425,7 +462,7 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 
 ## Circular Dependencies
 
-No true cycle remains. Seven apparent cycles are broken by an explicit decision, recorded here (founder, 2026-10-20).
+No true cycle remains. Eight apparent cycles are broken by an explicit decision, recorded here (founder, 2026-10-20).
 
 | Apparent cycle | Resolution | Kind |
 |----------------|-----------|------|
@@ -436,6 +473,7 @@ No true cycle remains. Seven apparent cycles are broken by an explicit decision,
 | Plans ↔ Licensing | Licensing reads plan claims and subscribes to `tenant_suspended`; Plans does not depend on Licensing | One-direction event |
 | Identity ↔ Notifications | The caller passes the recipient; Notifications never looks up identity | Caller-passed value |
 | Fleet Health ↔ Operator Console | The console reads a Fleet Health read model; Fleet Health does not depend on the console | One-direction read model |
+| Tax & Receipts ↔ Orders & Bills (order types) | Bills need tax rules; tax rules resolve by order type, which Orders owns. The caller passes branch, order type, category and item ids; tax rules never import Orders (founder decision 2026-10-20, recorded with the hierarchy) | Caller-passed value |
 
 ---
 
@@ -450,7 +488,7 @@ Ordered by what unblocks the specification order. Every item is `NOT DONE`; none
 | 3 | Core-extraction policy (umbrella): what is local, why, extraction trigger per Layer 1 module | ADR | every Layer 1 story | Before the first Layer 1 story; `/core-extract` scheduled per module |
 | 4 | Module-structure and architecture-test ADR: which contexts share a Gradle module, P-ONCE enforcement (test tool by `/research`, for example Konsist or ArchUnit) | ADR + research | first backend story | Before the first backend story |
 | 5 | **Jobs / outbox ADR**: PostgreSQL scheduler and outbox, table class (registry `FP-QUEUE-WITHOUT-ADR-R2`); decides whether `stack.messaging` is set to `none` | ADR | jobs-outbox, owner-alerts, eta-e-receipt, webhooks | Before the jobs-outbox spec |
-| 6 | Money and time rules ADR (rules as data, one shared vector suite on device and server; OQ8, OQ23) | ADR | money-time-rules, tax-service-rules, session-pricing, tips | Before the money-time-rules spec |
+| 6 | Money and time rules ADR (rules as data, one shared vector suite on device and server; OQ8, OQ23) | ADR | money-time-rules, tax-service-rules, session-pricing, discounts, tips, refunds | Before the money-time-rules spec |
 | 7 | Localization architecture (`localization-lead`, `/localize`; glossary in `design/localization/`; pseudo-localization test) | Research + ADR | localization-kernel, every screen | Before the first screen |
 | 8 | **`/observability-plan`** (OpenTelemetry Collector pipelines, redaction, fleet health, crash capture, the thin Ktor plugin) | Plan | telemetry-pipeline, fleet-health, crash-capture, slos-alerting | Before the telemetry-pipeline spec |
 | 9 | **Event taxonomy** (`docs/analytics/`, `product-analytics-engineer`) | Plan | event-taxonomy-analytics | After the observability plan |
@@ -482,25 +520,25 @@ Ordered by what unblocks the specification order. Every item is `NOT DONE`; none
 | Owner Android app | Provider | PWA in a Play wrapper is provisional | Spikes S32/S33; owner-client ADR |
 | Dashboard real-time | Technical | One backend instance and no broker: fan-out lives in the process | Dashboard real-time ADR names the limit and the revisit trigger |
 | Crash capture, fleet health | Compliance | Diagnostics must stay PII-free (PDPL) | Telemetry/diagnostics threat model; redaction in the observability plan |
-| Staff attendance, customers, data-import | Compliance | Personal data (PDPL); import is an untrusted file upload | Privacy review; personal-data intake threat model before customers/data-import |
+| Staff attendance, customers, customer complaints, data-import | Compliance | Personal data (PDPL); import is an untrusted file upload | Privacy review; personal-data intake threat model before customers, customer-complaints and data-import |
 | ETA e-receipt | Compliance | Mandate depends on the venue's ETA list (brief, risk 7) | Tier 1 is ETA-ready; ETA ADR; trigger moves it into Tier 1 |
 | Jobs on PostgreSQL | Technical | Per-tenant sweep cost grows with tenant count | Jobs ADR; control-plane pending-work list (registry `IC-OUTBOX-SWEEP-R2`) |
-| Tier 1 scope | Scope | 10–14 months, team of 2, unvalidated; 59 Tier 1 and foundation specs | `/estimate`; the slice first; the build order |
+| Tier 1 scope | Scope | 10–14 months, team of 2, unvalidated; 62 Tier 1 and foundation specs | `/estimate`; the slice first; the build order |
 | Windows 10 end of support | Compliance | Consumer ESU ends 2027-10-12 | Brief decision; revisit before that date |
 | Caching | Technical | No cache decision exists yet | Decided per story under DoD gate 5; none assumed |
 
 ### Threat models
 
-Grouped so one model covers several features. **13 features are covered by existing threat models** (update at spec time if the spec changes the surface): tenant-isolation covers `tenant-foundation`, `tenant-provisioning`, `tenant-closure-export`; staff-auth covers `dashboard-sign-in`, `counter-pin`, `roles-permissions`, `counter-overrides`, `activity-trail`, `operator-console`, `support-access`, `staff-records`; licensing covers `device-seats-enrolment`, `offline-lease`. **20 features need 6 new models**, each written **before the first spec of its group**, not all now:
+Grouped so one model covers several features. **13 features are covered by existing threat models** (update at spec time if the spec changes the surface): tenant-isolation covers `tenant-foundation`, `tenant-provisioning`, `tenant-closure-export`; staff-auth covers `dashboard-sign-in`, `counter-pin`, `roles-permissions`, `counter-overrides`, `activity-trail`, `operator-console`, `support-access`, `staff-records`; licensing covers `device-seats-enrolment`, `offline-lease`. **22 features need 6 new models**, each written **before the first spec of its group**, not all now:
 
 | New threat model | Covers | Written before |
 |------------------|--------|----------------|
-| Sync and money trail | sync-protocol, sync-review-conflicts, bill-exceptions, payments-tender, tips, money-ledger, paid-outs, refunds, backdated-start (9) | spec 20, `sync-protocol` (refunds and backdated-start extend it when specified) |
-| Telemetry and diagnostics | fleet-health, crash-capture (2) | spec 50, `fleet-health` |
-| Owner clients and approvals | dashboard-live-floor, owner-android-app, remote-approval (3) | spec 53, `dashboard-live-floor` |
-| Personal-data intake | customers, data-import (2) | spec 63, `customers` |
-| External integrations | webhooks, eta-e-receipt, subscription-billing (3) | spec 77, `subscription-billing` (or earlier if the ETA trigger fires) |
-| PC lock agent | pc-lock-agent (1) | spec 74, `pc-lock-agent` |
+| Sync and money trail | sync-protocol, sync-review-conflicts, bill-exceptions, discounts, payments-tender, tips, refunds, money-ledger, paid-outs, backdated-start (10) | spec 20, `sync-protocol` (backdated-start extends it when specified) |
+| Telemetry and diagnostics | fleet-health, crash-capture (2) | spec 53, `fleet-health` |
+| Owner clients and approvals | dashboard-live-floor, owner-android-app, remote-approval (3) | spec 56, `dashboard-live-floor` |
+| Personal-data intake | customers, customer-complaints, data-import (3) | spec 65, `customers` |
+| External integrations | webhooks, eta-e-receipt, subscription-billing (3) | spec 80, `subscription-billing` (or earlier if the ETA trigger fires) |
+| PC lock agent | pc-lock-agent (1) | spec 77, `pc-lock-agent` |
 
 ---
 
@@ -509,12 +547,12 @@ Grouped so one model covers several features. **13 features are covered by exist
 | Metric | Count |
 |--------|-------|
 | Bounded contexts identified | 32 (30 live, 2 Later placeholders) |
-| Features identified | 86 (MVP 45, Vertical Slice 14, Beta 25, Full Vision 2) |
+| Features identified | 89 (MVP 48, Vertical Slice 14, Beta 25, Full Vision 2) |
 | Specs started | 0 |
 | Specs reviewed | 0 |
 | Specs approved | 0 |
-| MVP features specified | 0/45 (0/59 including the Vertical Slice) |
-| Features needing a threat model | 33 (13 covered by existing models, 20 need 6 new models) |
+| MVP features specified | 0/48 (0/62 including the Vertical Slice) |
+| Features needing a threat model | 35 (13 covered by existing models, 22 need 6 new models) |
 
 ---
 
