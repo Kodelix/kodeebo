@@ -1,7 +1,7 @@
 # Research Note: Staff auth — approve-on-phone counter enrolment (M21) and account-takeover protections (M22)
 
 > **Path**: `docs/research/staff-auth-takeover-and-enrolment.md` — written **before** the first line of enrolment or sign-in-protection code (`research-protocol.md`)
-> **Status**: Draft — `/research` verdict **COMPLETE WITH GAPS** (2026-10-20). The founder decided every option (§ 5). The gaps that keep it Draft: pending spikes S13, S14, S15, S19 (part 1) and S23, S24 (part 2), plus staff-auth-note S13; open question Q-counteronly; and peripheral NOT SOURCEABLE items, which the founder confirmed are non-blocking (§ 9). CTO-STACK-RISK skipped (lean mode).
+> **Status**: Draft — `/research` verdict **COMPLETE WITH GAPS** (2026-10-20). The founder decided every option (§ 5). The gaps that keep it Draft: pending spikes S13, S14, S15, S19 (part 1) and S23, S24 (part 2), plus staff-auth-note S13; Q-counteronly, decided 2026-10-20 (§ 9.1); and peripheral NOT SOURCEABLE items, which the founder confirmed are non-blocking (§ 9). CTO-STACK-RISK skipped (lean mode).
 > **Author**: `researcher` agent ×2 (part 1 M21, part 2 M22, in parallel), merged by the `/research` caller
 > **Date**: 2026-10-19
 > **Feature / story**: none (`design/specs/` absent); threat model `docs/architecture/threat-models/staff-auth.md` M21, M22, M2, M3, M43, R15, R22, T1.1, T1.17–T1.19, T1.26, T3.12, T7.11, T7.12, T10.7, AB27; ADR-0007 §§ 2–4, 7 and ADR-0008 § 10 as amended 2026-10-19
@@ -165,7 +165,7 @@ Why the main alternatives lose:
 - **M21 flow: B.** The counter shows the code, and the person approves on their phone (conditions 1–12 of Part 1 § 5). Reverse direction (C) stays the documented fallback if `security-lead` finds the remote-approver case unacceptable.
 - **Q-intended: name first.** An existing staff member picks their own name on the counter first. The consent screen says which counter claims to be them, and an approval by anyone else's session is refused and reported to the owner. The first owner at the guided install skips the pick.
 - **Q-fallback: no counter enrolment without a second device.** Once B ships, the password path is refused for the owner and for anyone holding a privileged key. A privileged person with a dashboard login but no second device cannot enrol on a counter.
-- **Q-matching: on for privileged people.** Number matching (B3) and a post-PIN "that was me" confirmation are on by default, and owner-visible, for anyone holding a privileged key. They are off for non-privileged people.
+- **Q-matching: on for privileged people.** *(Revised by the founder 2026-10-20 after the amendment's independent re-check: the post-PIN "that was me" step is dropped, because it had no state to wait in; number matching stays.)* Number matching (B3) and a post-PIN "that was me" confirmation are on by default, and owner-visible, for anyone holding a privileged key. They are off for non-privileged people.
 - **M22.1: 1C.** N = 10 consecutive wrong passwords on a known login, at most one notice per 24 h, with no action link. Another notice goes out when a correct password follows failures. Both numbers are configuration and no source gives them.
 - **M22.2: 2A now.** No challenge. A self-hosted proof-of-work (ALTCHA + `altcha-lib-java`, MIT) is designed and built only if staff-auth-note S13 or M43 shows the Argon2 cap fails, or the credential-stuffing alert fires.
 - **M22.3: 3A + 3C, failing open.** If HIBP is unreachable, the password is accepted when the bundled list passes. A `breach_check_skipped` event is written, and the password is rechecked at the next successful sign-in.
@@ -256,10 +256,10 @@ The caller merged the two parts' tables; the per-part tables are verbatim in the
 |----------|--------|-------|-----|
 | ~~Q-fallback~~ **Decided 2026-10-20:** no counter enrolment without a second device (§ 5) | — | user (founder) | closed |
 | ~~Q-intended~~ **Decided 2026-10-20:** name first (§ 5) | — | user (founder) | closed |
-| ~~Q-matching~~ **Decided 2026-10-20:** on for privileged people (§ 5) | — | user (founder) | closed |
-| **Q-counteronly:** a privileged counter-only person enrols on each counter separately (§ 5). Upload acceptance is compare-and-set on the person's `verifier_version` (ADR-0008 § 10 item 3), so a sponsored upload on counter 2 may supersede counter 1's pending verifier instead of standing beside it. Decide whether one pending verifier per (person, device) is allowed alongside the confirmed one, or the latest pending one wins and earlier counters lose theirs. Settle it with the feed rule for unconfirmed verifiers (minting device only) | the ADR-0008 amendment for M21; any multi-counter venue with a counter-only approver | cto, offline-sync-specialist | before the ADR-0008 amendment |
+| ~~Q-matching~~ **Decided 2026-10-20:** number matching on for privileged people; the post-PIN step dropped after the amendment re-check (§ 5) | — | user (founder) | closed |
+| Q-counteronly: per-counter pending PINs for a privileged counter-only person (§ 5) | the ADR-0008 amendment | cto, offline-sync-specialist | **decided 2026-10-20** — see § 9.1 |
 | Q-samedevice: detect or prevent an approval from a browser on the counter PC | closing R15 | security-lead, cto | before the ADR amendment |
-| Q-factkind: a new confirmed fact kind (`phone_assertion`) in ADR-0008 § 10 item 3; does it also confirm a pending verifier? | ADR-0008 amendment | cto | before the ADR amendment |
+| ~~Q-factkind~~ **Decided 2026-10-20:** `phone_assertion` is a fourth confirmed kind; it replaces every pending slot and never confirms one (ADR-0008 amendment) | — | cto | closed |
 | Q-numbers / Q-hmac / Q-ceiling / Q-qr / Q-nudge (Part 1 § 9) | auth spec, latency, B2 | security-lead, cto, user | before the spec |
 | N = 10 per 24 h **decided 2026-10-20**; the notice wording is still open | M22(a) story | user (founder), ux-designer | before the M22 story |
 | ~~Fail-open or fail-closed~~ **Decided 2026-10-20:** fail open with a recheck at next sign-in (§ 5) | — | user (founder) | closed |
@@ -269,6 +269,28 @@ The caller merged the two parts' tables; the per-part tables are verbatim in the
 | Throttle-table write cost (PENDING S24); refusal events carry the throttle HMAC or a login id? | M22.4 | postgres-specialist, auth-identity-specialist | before the auth build |
 | Per-file provenance and licence of the bundled common-password list | shipping the list | researcher follow-up | before the list is bundled |
 | Spikes PENDING: S13, S14, S15, S19 (part 1); S23, S24 (part 2) | acceptance | prototyper, qa-lead, researcher | before the related stories |
+
+### 9.1 Q-counteronly — decision record (2026-10-20)
+
+**Decided by the founder 2026-10-20, on `cto` advice; written into the ADR-0008 amendment for M21/M22 (accepted by the founder 2026-10-20):**
+- **Model: option (a), a pending slot per (person, device) beside the confirmed verifier, for every device-minted PIN.**
+  - `pin_verifiers.minting_device_id` is null when the row is confirmed.
+  - Partial unique indexes: one confirmed row per person, and one pending row per (person, device).
+  - The device is taken from the authenticated device context, never from the request.
+  - Compare-and-set runs against the device's own slot. One per-person `verifier_version` sequence is kept for M17.
+  - The feed delivers the confirmed verifier plus the device's own slot. Tombstones go per slot, with the causes `superseded` and device revoke added.
+  - A confirmed upload deletes every slot, in the same transaction.
+- **Person lock:** a counter reset clears it only on its own counter. A fleet-wide clear needs "reset required", then re-enrolment on each counter.
+- **Re-enrolment cost:** in an N-counter venue, a reset, a raised floor or a lock means N sponsored enrolments; this is accepted. The owner dashboard shows "PIN per counter, unconfirmed" and nudges owners to give approvers a dashboard login and a second device; `product-director` words the nudge.
+- **Why:** `cto` found that today's single compare-and-set refuses counter 2's upload as `stale_version`, or, on retry, lets one counter evict another's PIN. Option (a) closes that eviction path without reopening B1 or R1. Rejected: (b) latest pending wins; (c) pending PINs never uploaded.
+- **Device identity confirmed (`postgres-specialist`, 2026-10-20).** ADR-0002's Device scope sets `app.device_id` once, from the verified credential (ADR-0002 Decision), and the trigger takes the slot's device from it. `pin_upload_facts.device_id` is overwritten from the setting; an unset setting raises. This is the first consumer of `app.device_id`.
+  - **M13 gap, founder 2026-10-20:** the trigger had no trusted device key id to pass. The fix: `Enrolment.consumeReceipt(receiptHash, userId)` reads `app.device_id` itself and checks the receipt's device key in `device_credentials` (ADR-0001 § 1c).
+  - **Residual accepted by name (Kamel Mohamed, founder, 2026-10-20):** code running as `device_rt` with SQL access can change `app.device_id` within its own transaction (threat model R24).
+  - **Written** into the ADR-0007, ADR-0008 and ADR-0001 amendment of 2026-10-20 (accepted) and the threat model (T4.25, T4.26, T3.20, M57).
+
+
+**Original question:** a privileged counter-only person enrols on each counter separately (§ 5). Upload acceptance is compare-and-set on the person's `verifier_version` (ADR-0008 § 10 item 3), so a sponsored upload on counter 2 may supersede counter 1's pending verifier instead of standing beside it. Decide whether one pending verifier per (person, device) is allowed alongside the confirmed one, or the latest pending one wins and earlier counters lose theirs. Settle it with the feed rule for unconfirmed verifiers (minting device only)
+
 
 ---
 
