@@ -32,23 +32,23 @@ modes:
 # Every layer is validated against the enums in yaml-helper.sh. Unset layers
 # stay unset — skills must not guess a stack.
 stack:
-  backend: ""        # go | ktor | go+ktor
+  backend: "ktor"    # go | ktor | go+ktor
   web: ""            # vite-react | none        (product app: static SPA, no Node server in prod)
   site: ""           # astro | none             (marketing site: static output)
   mobile: ""         # compose | kmp | kmp+swiftui | swiftui | none
-  data: []           # any of: postgres, mongo, redis, dragonfly
+  data: [postgres]   # any of: postgres, mongo, redis, dragonfly
   messaging: ""      # decided by /research + ADR (nats | rabbitmq | kafka | none)
 
 # Pinned versions live in docs/stack-reference/<layer>/VERSION.md, not here.
 
 deploy:
-  target: ""         # compose-vps | kubernetes
+  target: "compose-vps"  # compose-vps | kubernetes
 
 distribution:
-  model: ""          # hosted | self-hosted | hybrid
+  model: "hosted"    # hosted | self-hosted | hybrid
 
 tenancy:
-  model: ""          # shared-schema-rls | schema-per-tenant | db-per-tenant | single-tenant
+  model: "shared-schema-rls"  # shared-schema-rls | schema-per-tenant | db-per-tenant | single-tenant
 
 # --- Monorepo layout ---------------------------------------------------------
 # Hooks that scan source iterate these roots. Empty = detect conventional dirs.
@@ -62,7 +62,7 @@ layout:
 # the core of its track. Products pin a released version and never edit core
 # code in place. The cores are built after the studio itself is finished.
 core:
-  track: ""          # go | kotlin  — follows stack.backend
+  track: "kotlin"    # go | kotlin  — follows stack.backend
   repo: ""           # git URL or local path of the track's core repo
   version: ""        # pinned release tag, e.g. v0.4.2
   modules: []        # modules this product consumes
