@@ -4,6 +4,8 @@
 #                                      the client runs integrity_check, the marker check and its schema steps first
 #   sc24probe.py integrity <db> <key>  open + key, time PRAGMA integrity_check alone
 #   sc24probe.py quick <db> <key>      open + key, time PRAGMA quick_check alone
+#   sc24probe.py ready <db> <key> <START_CHECK>   (P4-F5) the client's start with another check mode: quick, partial,
+#                                      or unclean (a clean-exit flag is placed first, so the client takes the partial path)
 # Prints one JSON line. The key is the random test key of the generated store.
 import json
 import os
@@ -16,6 +18,11 @@ here = os.path.dirname(os.path.abspath(__file__))
 out = {"mode": mode, "db_bytes": os.path.getsize(db)}
 if mode == "ready":
     env = dict(os.environ, STORE="sqlite3mc", CIPHER="chacha20", SPIKE_DB_KEY=key, RETENTION="1")
+    if len(sys.argv) > 4:
+        env["START_CHECK"] = out["start_check"] = sys.argv[4]
+        if sys.argv[4] == "unclean":
+            with open(db + ".clean", "w") as f:
+                f.write("clean")
     t0 = time.perf_counter()
     p = subprocess.Popen([sys.executable, os.path.join(here, "client.py"), db, "http://127.0.0.1:9"], env=env,
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1)

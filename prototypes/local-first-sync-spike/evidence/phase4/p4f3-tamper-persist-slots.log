@@ -1,0 +1,38 @@
+chacha20  db_middle_page                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  db_page1                           PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  hot_journal_crash_control          PASS (no loss)   opened normally with all 5 expected sales, consistent
+chacha20  hot_journal_crash_flip             PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical
+chacha20  hot_journal_page1_flip             PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical
+chacha20  marker_flipped                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  marker_deleted                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  store_older_than_marker            PASS             detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  db_page_while_running              PASS (at next start) runtime verify reply {'ok': True, 'op': 'verify'}; next start: detected, refused, recorded (store_unusable_at_start); file not written
+chacha20  walmode+marker-wal_header          PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the 
+chacha20  walmode+marker-wal_first_frame     PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the 
+chacha20  walmode+marker-wal_last_frame      PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the 
+chacha20  wrong_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+chacha20  truncated_key                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+chacha20  empty_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+chacha20  right_key_wrong_cipher             FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+chacha20  wrong_key_x20                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+chacha20  right_key_after_attempts           PASS (no loss)   opened normally with all 5 expected sales, consistent
+chacha20  ts04a_plaintext_scan               PASS             no canary in any store file
+sqlcipher db_middle_page                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher db_page1                           PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher hot_journal_crash_control          PASS (no loss)   opened normally with all 5 expected sales, consistent
+sqlcipher hot_journal_crash_flip             PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical
+sqlcipher hot_journal_page1_flip             PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical
+sqlcipher marker_flipped                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher marker_deleted                     PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher store_older_than_marker            PASS             detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher db_page_while_running              PASS (at next start) runtime verify reply {'ok': True, 'op': 'verify'}; next start: detected, refused, recorded (store_unusable_at_start); file not written
+sqlcipher walmode+marker-wal_header          PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the 
+sqlcipher walmode+marker-wal_first_frame     PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the 
+sqlcipher walmode+marker-wal_last_frame      PASS             detected, refused, recorded (store_unusable_at_start); SQLite recovery rewrote the file; originals preserved byte-identical (sales in the damaged WAL are still lost; the 
+sqlcipher wrong_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+sqlcipher truncated_key                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+sqlcipher empty_key                          FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+sqlcipher right_key_wrong_cipher             FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+sqlcipher wrong_key_x20                      FAIL             all refused and recorded=True; file unchanged=True; extra files=['client.db-journal']
+sqlcipher right_key_after_attempts           PASS (no loss)   opened normally with all 5 expected sales, consistent
+sqlcipher ts04a_plaintext_scan               PASS             no canary in any store file

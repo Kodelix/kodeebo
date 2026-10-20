@@ -4,6 +4,7 @@
 # as it would online. Uses its own server port and database (sc24), so it can run while the VM legs use 18471.
 #   sc24gen.py <commands> <out_dir> [offline]  -> <out_dir>/client.db (+ .hwm), <out_dir>/key.txt (random test key)
 #   offline (SC-26): nothing is synced, so the store holds a backlog of <commands> pending commands
+#   sc24gen.py <commands> <out_dir> online <page_size>  (P4-F5) the same store with a larger page size
 import json
 import os
 import random
@@ -20,9 +21,10 @@ driver.PG_DSN = "postgres://postgres@127.0.0.1:56432/sc24"
 SESSIONS, CAFE = 1200, 3600
 
 
-def build(n, out, offline=False):
-    run = driver.Run(24, None, store="sqlite3mc", cipher="chacha20", fault=[], label=f"sc24-build-{n}",
-                     client_env={"RETENTION": "1", "RETAIN_DAYS": "60"})
+def build(n, out, offline=False, page_size=None):
+    env = {"RETENTION": "1", "RETAIN_DAYS": "60", **({"PAGE_SIZE": str(page_size)} if page_size else {})}
+    run = driver.Run(24, None, store="sqlite3mc", cipher="chacha20", fault=[], label=f"sc24-build-{n}-{page_size or 4096}",
+                     client_env=env)
     rng = random.Random(f"sc24|{n}")
     per_day = SESSIONS + CAFE
     t0 = time.time()
@@ -60,7 +62,7 @@ def build(n, out, offline=False):
         os.replace(run.db + suffix, os.path.join(out, "client.db" + suffix))
     with open(os.path.join(out, "key.txt"), "w") as f:  # random test key of this generated store, never a secret
         f.write(run.key)
-    info = {"commands": n, "bytes": os.path.getsize(os.path.join(out, "client.db")), "violations_except_I8": [v for v in res["violations"] if v[0] != "I8"][:5],
+    info = {"commands": n, "page_size": page_size or 4096, "bytes": os.path.getsize(os.path.join(out, "client.db")), "violations_except_I8": [v for v in res["violations"] if v[0] != "I8"][:5],
             # I8 ("never submitted") is expected: the builder sends sales without the driver's intent log
             "server_sales": res["server_sales"], "seconds": round(time.time() - t0, 1)}
     with open(os.path.join(out, "info.json"), "w") as f:
@@ -69,4 +71,5 @@ def build(n, out, offline=False):
 
 
 if __name__ == "__main__":
-    build(int(sys.argv[1]), sys.argv[2], len(sys.argv) > 3 and sys.argv[3] == "offline")
+    build(int(sys.argv[1]), sys.argv[2], len(sys.argv) > 3 and sys.argv[3] == "offline",
+          int(sys.argv[4]) if len(sys.argv) > 4 else None)

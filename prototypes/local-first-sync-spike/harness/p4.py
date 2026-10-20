@@ -314,6 +314,44 @@ def pct(xs, q_):
     return xs[min(len(xs) - 1, int(round(q_ * (len(xs) - 1))))] if xs else None
 
 
+def sc24b(reps=2):
+    """P4-F5 options: the client's start (ready to sell) with the partial check, with the unclean-only rule after a
+    clean exit, and with larger pages (full check), on the 30k and 300k stores, cold after a reboot."""
+    assert vm_state() == "running"
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "rows": []}
+    print(f"phase 4 SC-24 options (P4-F5), commit {summary['harness_commit']}", flush=True)
+    sh("put", os.path.join(HERE, "guest", "sc24probe.py"), "C:/Users/cashier/p4/sc24probe.py")
+    sh("put", os.path.join(os.path.dirname(HERE), "sut", "client.py"), "C:/Users/cashier/p4/client.py")
+    stores = {}
+    for name in ("n30000", "n300000", "n30000-p16384", "n30000-p65536"):
+        src = os.path.join(RUNS, "sc24", name)
+        if not os.path.exists(os.path.join(src, "client.db")):
+            continue
+        stores[name] = open(os.path.join(src, "key.txt")).read().strip()
+        sh("cs", f"mkdir {WDIR}\\sc24\\{name}")
+        for f in ("client.db", "client.db.hwm"):
+            sh("put", os.path.join(src, f), f"C:/Users/cashier/p4/sc24/{name}/{f}", timeout=3600)
+    plan = [(n, m) for n in ("n30000", "n300000") for m in ("partial", "unclean")] + \
+           [(n, "full") for n in ("n30000-p16384", "n30000-p65536") if n in stores]
+    for rep in range(1, reps + 1):
+        for name, mode in plan:
+            boot = reboot_cold()
+            db = f"{WDIR}\\sc24\\{name}\\client.db"
+            out = sh("cs", f"{WDIR}\\py\\python.exe {WDIR}\\sc24probe.py ready {db} {stores[name]} {mode}", timeout=3600)
+            try:
+                r = json.loads([ln for ln in out.splitlines() if ln.startswith("{")][-1])
+            except (IndexError, ValueError):
+                r = {"error": out[-300:]}
+            row = {"rep": rep, "store": name, "start_check": mode, "boot_s": boot, "ms": r.get("ms"),
+                   "db_bytes": r.get("db_bytes"), "ready_ok": (r.get("reply") or {}).get("ok"), "error": r.get("error")}
+            summary["rows"].append(row)
+            print(f"  rep {rep} {name:16s} {mode:8s} {(row['db_bytes'] or 0) / 1e6:7.1f} MB  {row['ms']} ms  "
+                  f"ok {row['ready_ok']}", flush=True)
+    with open(os.path.join(RUNS, "p4-sc24b-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print("SC-24 options: done")
+
+
 class TimedRun(WinRun):
     """Counter-action timings (perf-budgets.md): the client with TIMING=1 on the throttled VM, server reachable."""
 
@@ -352,16 +390,86 @@ class TimedRun(WinRun):
                 self.op({"op": "end_day"}, rec)
 
 
-def timings(iterations=200):
+class BgRun(TimedRun):
+    """P4-F5 option 4 on the VM: the client opens a pre-built store with START_CHECK=background (a bounded check, then
+    the full check in the background while idle), sells one café sale every `gap_s` seconds, and polls the background
+    check until it finishes."""
+
+    def __init__(self, store, key, gap_s=5.0, limit_s=5400, mode="background", **kw):
+        super().__init__(240, 0, label=f"p4-sc24c-{store}-{mode}", **kw)
+        self.key, self.keep_dir = key, True
+        self.vdir = f"{WDIR}\\sc24\\{store}"
+        self.client_env.update(START_CHECK=mode, RETENTION="1")
+        self.client_env.pop("ENDDAY", None)
+        self.gap_s, self.limit_s, self.res = gap_s, limit_s, {}
+
+    def timed(self, run):
+        t0 = time.perf_counter()
+        r = self.send({"op": "stats"})  # the first reply: ready to sell (process start, open, bounded check)
+        self.res["ready_ms_host"] = round((time.perf_counter() - t0) * 1000, 1)
+        self.res["ready_reply_ok"] = (r or {}).get("ok")
+        driver.post_json("/config", {"prices": {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 25}})
+        self.op({"op": "pull_config"}, record=False)
+        t1, k, states = time.time(), 0, []
+        while time.time() - t1 < self.limit_s:
+            self.op({"op": "sell_items", "action_id": f"b{k}-{int(t1)}", "n": 1})
+            k += 1
+            st = self.send({"op": "bg_state"}) or {}
+            states.append({"t": round(time.time() - t1, 1), "state": st.get("state"), "pages": st.get("pages"),
+                           "total": st.get("total")})
+            if st.get("state") in ("ok", "fault", "off"):
+                break
+            time.sleep(self.gap_s)
+        self.res.update(bg_final=st, bg_elapsed_s=round(time.time() - t1, 1), sales=k, bg_trace=states[::10])
+
+
+def sc24c(reps=2, gap_s=5.0):
+    """P4-F5 option 4: ready time and sale latency with the background check, on the 30k and 300k stores, cold."""
+    assert vm_state() == "running"
+    tunnel()
+    sh("put", os.path.join(os.path.dirname(HERE), "sut", "client.py"), "C:/Users/cashier/p4/client.py")
+    summary = {"harness_commit": git_state(), "gap_s": gap_s, "rows": []}
+    print(f"phase 4 SC-24 option 4 (background check), commit {summary['harness_commit']}", flush=True)
+    for rep in range(1, reps + 1):
+        for name in ("n30000", "n300000"):
+            src = os.path.join(RUNS, "sc24", name)
+            key = open(os.path.join(src, "key.txt")).read().strip()
+            sh("cs", f"if not exist {WDIR}\\sc24\\{name}\\client.db mkdir {WDIR}\\sc24\\{name}")
+            if "YES" not in sh("cs", f"if exist {WDIR}\\sc24\\{name}\\client.db (echo YES) else (echo NO)"):
+                for f in ("client.db", "client.db.hwm"):
+                    sh("put", os.path.join(src, f), f"C:/Users/cashier/p4/sc24/{name}/{f}", timeout=3600)
+            boot = reboot_cold()
+            tunnel()
+            run = BgRun(name, key, gap_s)
+            r = run.go()
+            xs = run.samples.get("sell_items", [])
+            tot = [x["total"] for x in xs if "total" in x]
+            row = {"rep": rep, "store": name, "boot_s": boot, **{k_: v for k_, v in run.res.items() if k_ != "bg_trace"},
+                   "sale_total_ms": {"n": len(tot), "p50": pct(tot, 0.5), "p95": pct(tot, 0.95), "max": max(tot) if tot else None},
+                   "bg_trace": run.res.get("bg_trace"),
+                   "violations": [v for v in r["violations"] if v[0] != "I8"][:5]}
+            summary["rows"].append(row)
+            print(f"  rep {rep} {name:8s} ready {row.get('ready_ms_host')} ms  background {row.get('bg_final', {}).get('state')} "
+                  f"copy {row.get('bg_final', {}).get('copy_s')} s check {row.get('bg_final', {}).get('check_s')} s "
+                  f"(elapsed {row.get('bg_elapsed_s')} s)  sales {row['sale_total_ms']}", flush=True)
+    with open(os.path.join(RUNS, "p4-sc24c-summary.json"), "w") as f:
+        json.dump(summary, f, indent=1)
+    print("SC-24 option 4: done")
+
+
+def timings(iterations=200, journal="delete", marker="file"):
+    """Counter timings; P4-F3 variants: journal = delete | truncate | persist, marker = file | slots."""
     assert vm_state() == "running"
     tunnel()
     t0 = time.time()
-    run = TimedRun(1, iterations)
+    run = TimedRun(1, iterations, label=f"p4-timings-{journal}-{marker}")
+    run.client_env.update(JOURNAL=journal, MARKER_MODE=marker)
     r = run.go()
     # priced sales (close_session, sell_items) are not in the driver's intent log, so I8 is expected and skipped
-    out = {"harness_commit": git_state(), "iterations": iterations,
+    out = {"harness_commit": git_state(), "iterations": iterations, "journal": journal, "marker": marker,
            "violations": [v for v in r["violations"] if v[0] != "I8"][:5], "ops": {}}
-    print(f"phase 4 counter timings, commit {out['harness_commit']}, {iterations} iterations, throttled VM", flush=True)
+    print(f"phase 4 counter timings, commit {out['harness_commit']}, {iterations} iterations, journal {journal}, "
+          f"marker {marker}, throttled VM", flush=True)
     for op_, xs in run.samples.items():
         row = {"n": len(xs), "failed": sum(1 for x in xs if not x["ok"])}
         for f in ("total", "txn", "commit", "marker", "rt"):
@@ -373,7 +481,8 @@ def timings(iterations=200):
             f"{f} p50/p95/max {row[f]['p50']}/{row[f]['p95']}/{row[f]['max']}" for f in ("total", "commit", "marker", "rt")
             if f in row), flush=True)
     out["seconds"] = round(time.time() - t0)
-    with open(os.path.join(RUNS, "p4-timings-summary.json"), "w") as f:
+    name = "p4-timings-summary.json" if (journal, marker) == ("delete", "file") else f"p4-timings-{journal}-{marker}-summary.json"
+    with open(os.path.join(RUNS, name), "w") as f:
         json.dump({**out, "samples": run.samples}, f, indent=1)
     print(f"timings: violations {len(out['violations'])} ({out['seconds']} s)")
 
@@ -441,7 +550,10 @@ def sc26(reader_s=900):
     print(json.dumps(res, indent=1))
 
 
-def sc27(iterations=200):
+CONTEXTUAL_MIN = (4, 18, 2205, 7)  # Defender platform for contextual exclusions (Microsoft Learn, exclusions overview)
+
+
+def sc27(iterations=200, exclusion="none"):
     """SC-27: the counter-timings workload while Windows Defender scans: a full scan for the whole run plus a custom
     scan of the client's folder every 20 s (each opens the store, journal and marker files). Same oracle; latencies
     are compared with the plain `timings` run."""
@@ -449,6 +561,13 @@ def sc27(iterations=200):
     tunnel()
     status = sh("ad", "powershell -NoProfile -Command \"Get-MpComputerStatus | Select-Object AMServiceEnabled,"
                       "RealTimeProtectionEnabled,AntivirusSignatureVersion | ConvertTo-Json\"")
+    vdir = f"{WDIR}\\runs\\seed-27"
+    py = f"{WDIR}\\py\\python.exe"
+    excl_cmd = (f"powershell -NoProfile -ExecutionPolicy Bypass -File {WDIR}\\defender-excl.ps1 -Mode {exclusion} "
+                f"-Dir {vdir} -Proc {py} -Action")
+    if exclusion != "none":
+        sh("put", os.path.join(HERE, "guest", "defender-excl.ps1"), "C:/Users/cashier/p4/defender-excl.ps1")
+        status += sh("ad", f"{excl_cmd} add")
     stop = threading.Event()
     scans = {"custom": 0, "full": None}
 
@@ -469,10 +588,14 @@ def sc27(iterations=200):
         t.start()
     time.sleep(10)
     t0 = time.time()
-    run = TimedRun(27, iterations, label="p4-sc27")
+    run = TimedRun(27, iterations, label=f"p4-sc27-{exclusion}")
     r = run.go()
     stop.set()
-    out = {"harness_commit": git_state(), "defender": status, "iterations": iterations, "scans": scans,
+    sh("ad", '"C:\\Program Files\\Windows Defender\\MpCmdRun.exe" -Scan -Cancel')
+    if exclusion != "none":
+        status += sh("ad", f"{excl_cmd} remove")
+    out = {"harness_commit": git_state(), "defender": status, "exclusion": exclusion,
+           "iterations": iterations, "scans": scans,
            "violations": [v for v in r["violations"] if v[0] != "I8"][:5], "ops": {}}
     for op_, xs in run.samples.items():
         row = {"n": len(xs), "failed": sum(1 for x in xs if not x["ok"])}
@@ -484,7 +607,7 @@ def sc27(iterations=200):
     events = run.db + ".events.jsonl"
     out["client_events"] = open(events).read().splitlines()[:10] if os.path.exists(events) else []
     out["seconds"] = round(time.time() - t0)
-    with open(os.path.join(RUNS, "p4-sc27-summary.json"), "w") as f:
+    with open(os.path.join(RUNS, "p4-sc27-summary.json" if exclusion == "none" else f"p4-sc27-{exclusion}-summary.json"), "w") as f:
         json.dump({**out, "samples": run.samples}, f, indent=1)
     print(json.dumps({k: v for k, v in out.items()}, indent=1))
 
@@ -895,7 +1018,11 @@ if __name__ == "__main__":
     elif sys.argv[1] == "sc26":
         sc26(int(sys.argv[2]) if len(sys.argv) > 2 else 900)
     elif sys.argv[1] == "sc27":
-        sc27(int(sys.argv[2]) if len(sys.argv) > 2 else 200)
+        sc27(int(sys.argv[2]) if len(sys.argv) > 2 else 200, *(sys.argv[3:4]))
+    elif sys.argv[1] == "sc24c":
+        sc24c(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
+    elif sys.argv[1] == "sc24b":
+        sc24b(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
     elif sys.argv[1] == "s30x":
         s30x(int(sys.argv[2]) if len(sys.argv) > 2 else 10)
     elif sys.argv[1] == "ts07b":
@@ -909,6 +1036,6 @@ if __name__ == "__main__":
     elif sys.argv[1] == "ts01c":
         ts01c()
     elif sys.argv[1] == "timings":
-        timings(int(sys.argv[2]) if len(sys.argv) > 2 else 200)
+        timings(int(sys.argv[2]) if len(sys.argv) > 2 else 200, *(sys.argv[3:5]))
     elif sys.argv[1] == "sc24":
         sc24(int(sys.argv[2]) if len(sys.argv) > 2 else 3)

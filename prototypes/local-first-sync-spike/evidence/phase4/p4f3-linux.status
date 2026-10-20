@@ -1,0 +1,15 @@
+start 2026-10-20 06:27:42 901f3b8
+selftest rc=0 GATE: PASS  (total 188.6 s)
+tamper delete file rc=0 pass=38 06:31:00
+phase1 delete file rc=0 GATE (process-kill part): PASS  (total 452.7 s) 06:38:33
+tamper truncate file rc=1 pass=28 06:38:43
+phase1 truncate file rc=0 GATE (process-kill part): PASS  (total 456.9 s) 06:46:20
+tamper persist file rc=1 pass=28 06:46:29
+phase1 persist file rc=0 GATE (process-kill part): PASS  (total 526.6 s) 06:55:16
+tamper delete slots rc=0 pass=38 06:55:25
+phase1 delete slots rc=0 GATE (process-kill part): PASS  (total 418.9 s) 07:02:25
+tamper persist slots rc=1 pass=28 07:02:34
+phase1 persist slots rc=0 GATE (process-kill part): PASS  (total 440.4 s) 07:09:55
+tamper truncate slots rc=1 pass=28 07:10:05
+phase1 truncate slots rc=0 GATE (process-kill part): PASS  (total 434.2 s) 07:17:20
+DONE

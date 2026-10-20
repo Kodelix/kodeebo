@@ -624,6 +624,47 @@ def row_counts(c):
     return {t: c.execute(f"SELECT count(*) FROM {t}").fetchall()[0][0] for t in COUNTED}
 
 
+START_CHECK = os.environ.get("START_CHECK", "full")
+# phase 4, P4-F5: full | quick | partial | unclean | background | background_unclean
+BG_IDLE_S = float(os.environ.get("BG_IDLE_S", "1.0"))  # background check: only after this long without a counter op
+BG_STEP = int(os.environ.get("BG_STEP", "64"))  # pages copied per step (each step holds the store briefly)
+bg = {"wanted": False, "state": "off", "fault": None, "pages": 0, "total": None, "copy_s": None, "check_s": None}
+op_busy = threading.Event()  # set while the counter handles an operation (a sale commits inside one)
+last_op = {"t": time.monotonic()}
+CLEAN_FLAG = DB + ".clean"  # written at a clean exit, removed at start: its absence means the last run did not end cleanly
+HOT_TABLES = ("counter", "sync_state", "outbox", "business_day")
+
+
+def start_check(c, hot=False):
+    """The store check before the first write. full: integrity_check (the phase 0-3 rule). quick: quick_check.
+    partial: integrity_check of the hot tables only (outbox, counters, sync state). unclean: full after an unclean end
+    (no clean flag, or a recovery copy was needed), partial otherwise. Pages not checked stay protected by the
+    cipher's per-page authentication: a damaged page fails when it is read (P4-F5)."""
+    mode = START_CHECK
+    unclean = not os.path.exists(CLEAN_FLAG) or hot
+    if mode == "unclean":
+        mode = "full" if unclean else "partial"
+    elif mode == "background":
+        mode, bg["wanted"] = "partial", True
+    elif mode == "background_unclean":  # after a crash or power cut: the full check first, before any sale
+        mode = "full" if unclean else "partial"
+        bg["wanted"] = mode == "partial"
+    if os.path.exists(CLEAN_FLAG):
+        os.remove(CLEAN_FLAG)
+    if mode == "quick":
+        return c.execute("PRAGMA quick_check").fetchall()
+    if mode == "partial":
+        c.execute("PRAGMA user_version").fetchall()  # page 1: a wrong key or a damaged header fails here
+        names = {r[0] for r in c.execute("SELECT name FROM sqlite_schema WHERE type = 'table'").fetchall()}
+        for t in HOT_TABLES:
+            if t in names:
+                r = c.execute(f"PRAGMA integrity_check({t})").fetchall()
+                if r != [("ok",)]:
+                    return r
+        return [("ok",)]
+    return c.execute("PRAGMA integrity_check").fetchall()
+
+
 def verify_migrated(c, before):
     result = c.execute("PRAGMA integrity_check").fetchall()
     if result != [("ok",)]:
@@ -691,12 +732,14 @@ def open_store():
         else:
             c = sqlite3.connect(DB, isolation_level=None, timeout=5)
         # Verification before any write: a wrong key or a damaged page fails here.
-        result = c.execute("PRAGMA integrity_check").fetchall()
+        result = start_check(c, hot=copy is not None or late_copy)
         if result != [("ok",)]:
             raise RuntimeError(f"integrity_check: {result[:3]}")
         uv = c.execute("PRAGMA user_version").fetchall()[0][0]
         if uv > APP_SCHEMA and not INSPECT:  # SC-21a: an older app never touches a newer store
             raise DowngradeError(f"store schema {uv} is newer than this app ({APP_SCHEMA})")
+        if os.environ.get("PAGE_SIZE"):  # P4-F5: only takes effect on a new, empty store
+            c.execute(f"PRAGMA page_size = {int(os.environ['PAGE_SIZE'])}").fetchall()
         c.execute("PRAGMA temp_store=MEMORY").fetchall()
         c.execute(f"PRAGMA journal_mode={JOURNAL.upper()}").fetchall()
         if os.environ.get("CACHE_PAGES"):
@@ -829,6 +872,60 @@ elif isinstance(open_error, DowngradeError):
     record_event("downgrade_refused", open_error)  # refused on purpose: the store was not touched
 elif open_error is not None and not REBOOTSTRAP:  # with REBOOTSTRAP the refusal was recorded above
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
+
+
+def background_check(main):
+    """P4-F5 option 4: the full integrity check off the counter's path. The store is copied with SQLite's online
+    backup in small steps, only while the counter is idle (no operation for BG_IDLE_S) and never during one (a sale
+    commits inside an operation), at low I/O priority; the copy is then checked with integrity_check, which holds no
+    lock on the store. A damaged page fails during the copy (the cipher authenticates every page it reads); a
+    structural fault fails the check. Either stops new sales and is reported."""
+    if WINDOWS:  # THREAD_MODE_BACKGROUND_BEGIN: low I/O and memory priority for this thread
+        ctypes.windll.kernel32.SetThreadPriority(ctypes.windll.kernel32.GetCurrentThread(), 0x00010000)
+    path = DB + ".bgcheck"
+    for x in (path, path + "-journal"):
+        if os.path.exists(x):
+            os.remove(x)
+    bg["state"] = "copying"
+    t0 = time.monotonic()
+    try:
+        d = apsw.Connection(path)
+        d.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+        d.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+        for attempt in range(1000):  # the counter may hold the connection at any moment: retry from idle
+            try:
+                while op_busy.is_set() or time.monotonic() - last_op["t"] < BG_IDLE_S:
+                    time.sleep(0.05)
+                with d.backup("main", main, "main") as b:
+                    while not b.done:
+                        while op_busy.is_set() or time.monotonic() - last_op["t"] < BG_IDLE_S:
+                            time.sleep(0.05)
+                        b.step(BG_STEP)
+                        bg["pages"], bg["total"] = b.page_count - b.remaining, b.page_count
+                break
+            except (apsw.ThreadingViolationError, apsw.BusyError):
+                bg["retries"] = bg.get("retries", 0) + 1
+                time.sleep(0.1)
+        else:
+            raise RuntimeError("background copy never found the store idle")
+        bg["copy_s"] = round(time.monotonic() - t0, 1)
+        bg["state"] = "checking"
+        t1 = time.monotonic()
+        r = d.execute("PRAGMA integrity_check").fetchall()
+        d.close()
+        bg["check_s"] = round(time.monotonic() - t1, 1)
+        if r != [("ok",)]:
+            raise RuntimeError(f"integrity_check: {r[:3]}")
+        bg["state"] = "ok"
+    except Exception as e:  # noqa: BLE001 - any failure of the copy or the check is a store fault to report
+        bg["state"], bg["fault"] = "fault", f"{type(e).__name__}: {e}"[:200]
+        record_event("store_fault_background", e)
+    finally:
+        for x in (path, path + "-journal"):
+            try:
+                os.remove(x)
+            except OSError:
+                pass
 
 
 def close_and_pay(a, priced=None, also=None):
@@ -1589,15 +1686,37 @@ if CLOCKED and not refused and not INSPECT:
     except (*STORE_ERRORS, RuntimeError) as e:
         record_event("store_error_during_operation", e)
         refused = True
-for line in sys.stdin:
+if open_error is None and con is not None and bg["wanted"] and STORE == "sqlite3mc":
+    threading.Thread(target=background_check, args=(con,), daemon=True).start()
+
+
+def _ops():
+    """The counter's operations, one line each; between two operations the counter is idle (P4-F5 background check)."""
+    while True:
+        op_busy.clear()
+        last_op["t"] = time.monotonic()
+        line = sys.stdin.readline()
+        if not line:
+            return
+        yield line
+
+
+for line in _ops():
     msg = json.loads(line)
     op = msg["op"]
+    op_busy.set()
+    last_op["t"] = time.monotonic()
     if TIMING:
         timing.clear()
         timing["t0"] = time.perf_counter()
     if op == "exit":
         if con is not None:
             con.close()
+            if START_CHECK in ("unclean", "background_unclean"):
+                with open(CLEAN_FLAG, "w") as f:  # a clean end: the next start may skip the full check
+                    f.write("clean")
+                    f.flush()
+                    os.fsync(f.fileno())
         reply({"ok": True, "op": "exit"})
         break
     if refused:
@@ -1613,6 +1732,16 @@ for line in sys.stdin:
         reply({"ok": False, "op": op, "error": "sync_quarantined"})  # planted defect: the counter stops
         continue
     gated = ("sale", "start_session", "sell_items", "sell_stock") + (("close_session",) if MUTANT == "expiry_blocks_close" else ())
+    if bg["fault"] and op in gated + ("close_session",):  # P4-F5: the background check found a fault: no new sales
+        reply({"ok": False, "op": op, "error": "store_fault", "warning": "store_fault", "detail": bg["fault"]})
+        report_events()
+        op_busy.clear()
+        continue
+    if op == "bg_state":
+        reply({"ok": True, "op": op, **bg})
+        op_busy.clear()
+        last_op["t"] = time.monotonic()
+        continue
     if LEASE_ON and op in gated and lease_status()["status"] in ("expired", "none"):
         reply({"ok": False, "op": op, "error": "lease_expired", "warning": "lease_expired"})  # until the server is reached
         report_events()

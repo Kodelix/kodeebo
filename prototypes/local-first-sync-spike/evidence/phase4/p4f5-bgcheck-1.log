@@ -1,0 +1,5 @@
+{"case": "background-damaged-clean", "damaged_page": 1162, "ready_ms": 44.7, "store_at_start": "open", "sales_ok": 1, "sales_tried": 4, "first_refused_sale": 1, "bg_state": "fault", "bg_fault": "CorruptError: not an error", "events": ["store_fault_background"]}
+{"case": "partial-damaged-clean", "damaged_page": 1162, "ready_ms": 58.2, "store_at_start": "open", "sales_ok": 200, "sales_tried": 200, "first_refused_sale": null, "bg_state": "off", "bg_fault": null, "events": []}
+{"case": "full-damaged-clean", "damaged_page": 1162, "ready_ms": 50.8, "store_at_start": "refused", "sales_ok": 0, "sales_tried": 200, "first_refused_sale": null, "bg_state": null, "bg_fault": null, "events": ["store_unusable_at_start"]}
+{"case": "background_unclean-damaged-kill", "damaged_page": 1162, "ready_ms": 49.9, "store_at_start": "refused", "sales_ok": 0, "sales_tried": 200, "first_refused_sale": null, "bg_state": null, "bg_fault": null, "events": ["store_unusable_at_start"]}
+{"case": "background-clean-clean", "damaged_page": null, "ready_ms": 49.1, "store_at_start": "open", "sales_ok": 4, "sales_tried": 4, "first_refused_sale": null, "bg_state": "ok", "bg_fault": null, "events": []}

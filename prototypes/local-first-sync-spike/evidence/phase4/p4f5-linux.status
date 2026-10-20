@@ -1,0 +1,8 @@
+start 2026-10-20 07:48:33
+bgcheck 1 rc=0 5 cases 07:52:36
+bgcheck 2 rc=0 5 cases 07:56:49
+bgcheck 3 rc=0 5 cases 08:02:08
+selftest rc=0 GATE: PASS  (total 211.0 s)
+tamper rc=0 pass=38
+phase1 rc=0 GATE (process-kill part): PASS  (total 462.5 s)
+DONE

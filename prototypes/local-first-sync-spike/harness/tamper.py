@@ -292,6 +292,8 @@ def ts05(cipher):
     d = os.path.join(OUT, cipher, "ts05")
     db, _ = build(d, cipher, "clean")
     original = sha(db)
+    # P4-F3 variants: TRUNCATE / PERSIST leave a journal file from the build; it is a stray only if a probe changes it
+    before = {n: sha(os.path.join(d, n)) for n in os.listdir(d) if n.startswith("client.db-journal")}
     other = "sqlcipher" if cipher == "chacha20" else "chacha20"
     for name, ciph, key, times in [("wrong_key", cipher, WRONG, 1), ("truncated_key", cipher, KEY[:62], 1),
                                    ("empty_key", cipher, "", 1), ("right_key_wrong_cipher", other, KEY, 1),
@@ -302,7 +304,7 @@ def ts05(cipher):
         unchanged = sha(db) == original
         stray = sorted(n for n in os.listdir(d) if n.startswith("client.db") and
                        n not in ("client.db", "client.db.hwm", "client.db.events.jsonl", "client.db.stderr.txt", "client.db.recovery",
-                                 LOCK_NAME))
+                                 LOCK_NAME) and not (n in before and sha(os.path.join(d, n)) == before[n]))
         if not lock_is_empty(d):
             stray.append(LOCK_NAME + " (not empty)")
         rows.append(row(cipher, name, "PASS" if ok and unchanged and not stray else "FAIL",
