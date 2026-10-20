@@ -315,8 +315,9 @@ def pct(xs, q_):
 
 
 def sc24b(reps=2):
-    """P4-F5 options: the client's start (ready to sell) with the partial check, with the unclean-only rule after a
-    clean exit, and with larger pages (full check), on the 30k and 300k stores, cold after a reboot."""
+    """P4-F5 options: the client's start (ready to sell, first reply to the light "marker" op) with the full check,
+    the quick check, the partial check, the unclean-only rule after a clean exit, and larger pages (full check), on
+    the 30k and 300k stores, cold after a reboot."""
     assert vm_state() == "running"
     summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "rows": []}
     print(f"phase 4 SC-24 options (P4-F5), commit {summary['harness_commit']}", flush=True)
@@ -331,7 +332,7 @@ def sc24b(reps=2):
         sh("cs", f"mkdir {WDIR}\\sc24\\{name}")
         for f in ("client.db", "client.db.hwm"):
             sh("put", os.path.join(src, f), f"C:/Users/cashier/p4/sc24/{name}/{f}", timeout=3600)
-    plan = [(n, m) for n in ("n30000", "n300000") for m in ("partial", "unclean")] + \
+    plan = [(n, m) for n in ("n30000", "n300000") for m in ("full", "quick", "partial", "unclean")] + \
            [(n, "full") for n in ("n30000-p16384", "n30000-p65536") if n in stores]
     for rep in range(1, reps + 1):
         for name, mode in plan:
@@ -405,7 +406,8 @@ class BgRun(TimedRun):
 
     def timed(self, run):
         t0 = time.perf_counter()
-        r = self.send({"op": "stats"})  # the first reply: ready to sell (process start, open, bounded check)
+        r = self.send({"op": "marker"})  # the first reply: ready to sell (process start, open, bounded check);
+        # not "stats", which runs integrity_check (the set 2 sc24c ready times included it)
         self.res["ready_ms_host"] = round((time.perf_counter() - t0) * 1000, 1)
         self.res["ready_reply_ok"] = (r or {}).get("ok")
         driver.post_json("/config", {"prices": {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 25}})
@@ -457,16 +459,17 @@ def sc24c(reps=2, gap_s=5.0):
     print("SC-24 option 4: done")
 
 
-def timings(iterations=200, journal="delete", marker="file"):
-    """Counter timings; P4-F3 variants: journal = delete | truncate | persist, marker = file | slots."""
+def timings(iterations=200, journal="delete", marker="file", tag=""):
+    """Counter timings; P4-F3 variants: journal = delete | truncate | persist, marker = file | slots; `tag` names a
+    repeat (set 3 runs the leading variants alternately, r1 r2 r3, so drift on the VM hits each variant alike)."""
     assert vm_state() == "running"
     tunnel()
     t0 = time.time()
-    run = TimedRun(1, iterations, label=f"p4-timings-{journal}-{marker}")
+    run = TimedRun(1, iterations, label=f"p4-timings-{journal}-{marker}{'-' + tag if tag else ''}")
     run.client_env.update(JOURNAL=journal, MARKER_MODE=marker)
     r = run.go()
     # priced sales (close_session, sell_items) are not in the driver's intent log, so I8 is expected and skipped
-    out = {"harness_commit": git_state(), "iterations": iterations, "journal": journal, "marker": marker,
+    out = {"harness_commit": git_state(), "iterations": iterations, "journal": journal, "marker": marker, "tag": tag,
            "violations": [v for v in r["violations"] if v[0] != "I8"][:5], "ops": {}}
     print(f"phase 4 counter timings, commit {out['harness_commit']}, {iterations} iterations, journal {journal}, "
           f"marker {marker}, throttled VM", flush=True)
@@ -481,7 +484,8 @@ def timings(iterations=200, journal="delete", marker="file"):
             f"{f} p50/p95/max {row[f]['p50']}/{row[f]['p95']}/{row[f]['max']}" for f in ("total", "commit", "marker", "rt")
             if f in row), flush=True)
     out["seconds"] = round(time.time() - t0)
-    name = "p4-timings-summary.json" if (journal, marker) == ("delete", "file") else f"p4-timings-{journal}-{marker}-summary.json"
+    name = "p4-timings-summary.json" if (journal, marker, tag) == ("delete", "file", "") else \
+        f"p4-timings-{journal}-{marker}{'-' + tag if tag else ''}-summary.json"
     with open(os.path.join(RUNS, name), "w") as f:
         json.dump({**out, "samples": run.samples}, f, indent=1)
     print(f"timings: violations {len(out['violations'])} ({out['seconds']} s)")
@@ -1036,6 +1040,6 @@ if __name__ == "__main__":
     elif sys.argv[1] == "ts01c":
         ts01c()
     elif sys.argv[1] == "timings":
-        timings(int(sys.argv[2]) if len(sys.argv) > 2 else 200, *(sys.argv[3:5]))
+        timings(int(sys.argv[2]) if len(sys.argv) > 2 else 200, *(sys.argv[3:6]))
     elif sys.argv[1] == "sc24":
         sc24(int(sys.argv[2]) if len(sys.argv) > 2 else 3)

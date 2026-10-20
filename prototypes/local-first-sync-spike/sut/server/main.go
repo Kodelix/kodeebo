@@ -293,6 +293,60 @@ type batch struct {
 	Machine  string    `json:"machine_id"` // SC-13: the machine the batch came from (outside the store)
 	Protocol int       `json:"protocol"`   // S207: the client's sync protocol version (0 = not sent)
 	LocalSeq *int64    `json:"local_seq"`  // S206: the device's local counter at this contact
+	Salvage  *salvage  `json:"salvage"`    // OQ31: commands salvaged from a damaged store, uploaded before re-bootstrap
+}
+
+// OQ31: the device's store failed its check while offline. It salvaged every command whose pages passed the cipher's
+// authentication and declares the sequence ranges it could not read. The server applies the salvaged commands, puts
+// each one in the owner's review queue (OQ6: never rejected, flagged), records the unreadable ranges as lost with one
+// owner alert, and lets the cursor pass over exactly those ranges.
+type salvage struct {
+	Lost [][2]int64 `json:"lost"`
+}
+
+func salvageLost(ctx context.Context, tx pgx.Tx, b batch) error {
+	n := int64(0)
+	for _, r := range b.Salvage.Lost {
+		tag, err := tx.Exec(ctx, `INSERT INTO lost_seqs VALUES ($1,$2,$3,$4,true,'store_fault_unreadable') ON CONFLICT DO NOTHING`,
+			b.DeviceID, r[0], r[1], nowS())
+		if err != nil {
+			return err
+		}
+		n += tag.RowsAffected() * (r[1] - r[0] + 1)
+	}
+	if n == 0 && len(b.Salvage.Lost) > 0 {
+		return nil // already recorded by an earlier attempt of this upload
+	}
+	detail, _ := json.Marshal(map[string]any{"lost": b.Salvage.Lost, "salvaged": len(b.Commands),
+		"text": fmt.Sprintf("the device's store was damaged while it was offline; %d sales were saved from it and need your review; %d sales could not be read and are missing (reconcile them at End Day)",
+			len(b.Commands), n)})
+	_, err := tx.Exec(ctx, `INSERT INTO device_events (device_id, kind, detail, owner_alert) VALUES ($1,'store_fault_salvage',$2,true)`,
+		b.DeviceID, detail)
+	return err
+}
+
+// skipLost moves the cursor over a gap only when every missing sequence is in a range the device declared unreadable.
+func skipLost(ctx context.Context, tx pgx.Tx, b batch, seq int64) error {
+	var cur int64
+	if err := tx.QueryRow(ctx, `SELECT last_seq FROM cursor_ WHERE tenant_id = 1 AND device_id = $1`, b.DeviceID).Scan(&cur); err != nil {
+		return err
+	}
+	for s := cur + 1; s < seq; s++ {
+		covered := false
+		for _, r := range b.Salvage.Lost {
+			if s >= r[0] && s <= r[1] {
+				covered = true
+			}
+		}
+		if !covered {
+			return nil
+		}
+	}
+	if seq > cur+1 {
+		_, err := tx.Exec(ctx, `UPDATE cursor_ SET last_seq = $2 WHERE tenant_id = 1 AND device_id = $1`, b.DeviceID, seq-1)
+		return err
+	}
+	return nil
 }
 
 type result struct {
@@ -1329,6 +1383,12 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if b.Salvage != nil && mutant != "salvage_silent" {
+		if err := salvageLost(ctx, tx, b); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 	results := []result{} // always a list, also for an empty batch (an SC-25b lease heartbeat): never JSON null
 	stale := 0
 	lagged := map[int]int{}           // old version -> sales (rule 2 widened: online, the device had not pulled the new list)
@@ -1345,7 +1405,17 @@ func handleBatch(w http.ResponseWriter, r *http.Request) {
 		case quar:
 			out, err = storeQuarantined(ctx, tx, b.DeviceID, b.Machine, c)
 		default:
-			out, err = applyOne(ctx, tx, b.DeviceID, c)
+			if b.Salvage != nil {
+				err = skipLost(ctx, tx, b, c.Seq)
+			}
+			if err == nil {
+				out, err = applyOne(ctx, tx, b.DeviceID, c)
+			}
+			if err == nil && out == "applied" && b.Salvage != nil && mutant != "salvage_silent" {
+				_, err = tx.Exec(ctx, `INSERT INTO review_queue SELECT device_id, action_id, command_id, seq, amount_piasters,
+					'salvaged', false FROM ledger WHERE device_id = $1 AND command_id = $2 AND kind = 'sale' ON CONFLICT DO NOTHING`,
+					b.DeviceID, c.CommandID)
+			}
 			if err == nil && clonePolicy && (out == "seq_conflict" || out == "payload_mismatch") && mutant != "drop_conflicting" {
 				// a reused sequence number: a rollback or a clone; quarantine and keep the command (OQ7)
 				if _, err = tx.Exec(ctx, "ROLLBACK TO SAVEPOINT cmd"); err == nil {

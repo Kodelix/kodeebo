@@ -1,7 +1,7 @@
 # PROTOTYPE - NOT FOR PRODUCTION
 # Runs ON THE VM (phase 4, SC-24). One measurement per call, so each can run on a cold cache after a reboot:
-#   sc24probe.py ready <db> <key>      start the real client, time process start -> first reply (ready to sell);
-#                                      the client runs integrity_check, the marker check and its schema steps first
+#   sc24probe.py ready <db> <key>      start the real client, time process start -> first reply to the light "marker"
+#                                      op (ready to sell): the client's start check, marker check and schema steps
 #   sc24probe.py integrity <db> <key>  open + key, time PRAGMA integrity_check alone
 #   sc24probe.py quick <db> <key>      open + key, time PRAGMA quick_check alone
 #   sc24probe.py ready <db> <key> <START_CHECK>   (P4-F5) the client's start with another check mode: quick, partial,
@@ -26,7 +26,8 @@ if mode == "ready":
     t0 = time.perf_counter()
     p = subprocess.Popen([sys.executable, os.path.join(here, "client.py"), db, "http://127.0.0.1:9"], env=env,
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, bufsize=1)
-    p.stdin.write(json.dumps({"op": "stats"}) + "\n")
+    p.stdin.write(json.dumps({"op": "marker"}) + "\n")  # a light first op: "stats" reads every table and runs
+    # integrity_check, which made the ready times of set 1 and set 2 include a second full check (fixed for set 3)
     p.stdin.flush()
     line = p.stdout.readline()
     out["ms"] = round((time.perf_counter() - t0) * 1000, 1)

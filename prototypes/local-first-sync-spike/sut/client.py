@@ -630,6 +630,7 @@ BG_IDLE_S = float(os.environ.get("BG_IDLE_S", "1.0"))  # background check: only 
 BG_STEP = int(os.environ.get("BG_STEP", "64"))  # pages copied per step (each step holds the store briefly)
 bg = {"wanted": False, "state": "off", "fault": None, "pages": 0, "total": None, "copy_s": None, "check_s": None}
 op_busy = threading.Event()  # set while the counter handles an operation (a sale commits inside one)
+store_mx = threading.Lock()  # the counter's connection: one user at a time (the counter, or one background copy step)
 last_op = {"t": time.monotonic()}
 CLEAN_FLAG = DB + ".clean"  # written at a clean exit, removed at start: its absence means the last run did not end cleanly
 HOT_TABLES = ("counter", "sync_state", "outbox", "business_day")
@@ -809,6 +810,138 @@ def marker_seq_if_valid():
         return None
 
 
+SALVAGE = os.environ.get("SALVAGE") == "1"  # OQ31 (founder 2026-10-20): salvage before re-bootstrap
+SALVAGE_DB = DB + ".salvage"
+SALVAGE_TABLES = ("outbox", "bills", "edits", "outages", "day_closes", "shift_closes")
+
+
+def _ranges(seqs):
+    out = []
+    for x in sorted(seqs):
+        if out and x == out[-1][1] + 1:
+            out[-1][1] = x
+        else:
+            out.append([x, x])
+    return out
+
+
+def salvage_store(err):
+    """OQ31 method (A): the store failed its check. Keep the damaged files and a copy untouched; read every command
+    whose pages pass the cipher's authentication (normal queries, the MAC check on) from the outbox and the retained
+    records, in sequence ranges that split around unreadable pages; write them to a small fresh salvage store with
+    the sequence ranges that could not be read. Never sells from it. Idempotent: an existing salvage store is kept."""
+    if os.path.exists(SALVAGE_DB) or MUTANT == "rebootstrap_no_salvage":
+        return
+    copy = DB + ".fault-copy"
+    if not os.path.isdir(copy):
+        os.makedirs(copy)
+        for suffix in ("", "-journal", ".hwm"):
+            if os.path.exists(DB + suffix):
+                shutil.copy2(DB + suffix, os.path.join(copy, os.path.basename(DB) + suffix))
+    d = apsw.Connection(DB, flags=apsw.SQLITE_OPEN_READONLY)
+    d.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+    d.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+    high = marker_seq_if_valid()  # MAC'd: the highest sequence the store ever committed
+    try:
+        acked = d.execute("SELECT acked_seq FROM sync_state WHERE id = 1").fetchall()[0][0]
+    except (apsw.Error, IndexError):
+        acked = 0  # unreadable: salvage from the start; the server answers 'duplicate' for what it holds
+    if high is None:
+        try:
+            high = d.execute("SELECT seq FROM counter WHERE id = 1").fetchall()[0][0]
+        except (apsw.Error, IndexError):
+            high = None
+    got = {}
+
+    def rng(table, lo, hi, depth=0):
+        if lo > hi:
+            return
+        try:
+            for r in d.execute(f"SELECT seq, command_id, payload, payload_hash FROM {table} WHERE seq BETWEEN ? AND ?",
+                               (lo, hi)).fetchall():
+                if r[0] is not None:
+                    got.setdefault(r[0], r)
+        except apsw.Error:
+            if lo == hi:
+                return
+            mid = (lo + hi) // 2
+            rng(table, lo, mid, depth + 1)
+            rng(table, mid + 1, hi, depth + 1)
+
+    top = high if high is not None else 10 ** 9
+    for t in SALVAGE_TABLES:
+        rng(t, acked + 1, top)
+    d.close()
+    if high is None:
+        high = max(got) if got else acked
+    lost = _ranges(set(range(acked + 1, high + 1)) - set(got))
+    s_ = apsw.Connection(SALVAGE_DB)
+    s_.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+    s_.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+    s_.execute("PRAGMA journal_mode=DELETE").fetchall()
+    s_.execute("PRAGMA synchronous=FULL").fetchall()
+    s_.execute("BEGIN IMMEDIATE")
+    s_.execute("CREATE TABLE cmds (seq INTEGER PRIMARY KEY, command_id TEXT, payload TEXT, payload_hash TEXT, "
+               "uploaded INTEGER NOT NULL DEFAULT 0)")
+    s_.execute("CREATE TABLE meta (k TEXT PRIMARY KEY, v TEXT)")
+    s_.executemany("INSERT INTO cmds (seq, command_id, payload, payload_hash) VALUES (?,?,?,?)",
+                   [got[k] for k in sorted(got)])
+    s_.executemany("INSERT INTO meta VALUES (?,?)", [("lost", json.dumps(lost)), ("high", str(high)),
+                                                    ("acked", str(acked))])
+    s_.execute("COMMIT")
+    s_.close()
+    record_event("store_fault_salvaged", err, salvaged=len(got), lost=lost, high=high, acked=acked,
+                 damaged_copy=copy)
+
+
+def salvage_upload():
+    """OQ31: at the next contact, upload the salvaged commands (marked as salvaged, with the unreadable ranges) before
+    the re-bootstrap. Returns True when everything is on the server. Raises on a network error (stay refused)."""
+    if not os.path.exists(SALVAGE_DB):
+        return True
+    s_ = apsw.Connection(SALVAGE_DB)
+    s_.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+    s_.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+    meta = dict(s_.execute("SELECT k, v FROM meta").fetchall())
+    lost = json.loads(meta["lost"])
+    first = True
+    while True:
+        rows = s_.execute("SELECT seq, command_id, payload, payload_hash FROM cmds WHERE uploaded = 0 ORDER BY seq "
+                          "LIMIT 50").fetchall()
+        if not rows and not first:
+            break
+        cmds = [{"command_id": c, "seq": q_, "payload_hash": h, "payload": json.loads(p_)} for q_, c, p_, h in rows]
+        body = {"device_id": DEVICE, "commands": cmds, "salvage": {"lost": lost}}
+        req = urllib.request.Request(SERVER + "/batch", method="POST", data=json.dumps(body).encode(),
+                                     headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=float(os.environ.get("HTTP_TIMEOUT", "10"))) as r:
+            resp = json.loads(r.read())
+        done = [x["seq"] for x in resp.get("results", []) if x["result"] in ("applied", "duplicate")]
+        s_.execute("BEGIN IMMEDIATE")
+        s_.executemany("UPDATE cmds SET uploaded = 1 WHERE seq = ?", [(x,) for x in done])
+        s_.execute("COMMIT")
+        first = False
+        if rows and not done:
+            s_.close()
+            raise RuntimeError(f"salvage upload refused: {resp.get('results', [])[:3]}")
+        if not rows:
+            break
+    s_.close()
+    n = len(os.listdir(os.path.dirname(os.path.abspath(DB))))
+    os.replace(SALVAGE_DB, f"{SALVAGE_DB}-uploaded-{n}")
+    return True
+
+
+def recover_from_fault(err, mseq):
+    """OQ31 order: salvage (offline is fine), then at contact: upload the salvage first, then re-bootstrap."""
+    if MUTANT == "salvage_after_rebootstrap":  # planted defect: re-bootstrap first (the server marks them lost)
+        c, e = rebootstrap(err, mseq)
+        salvage_upload()
+        return c, e
+    salvage_upload()
+    return rebootstrap(err, mseq)
+
+
 def rebootstrap(err, mseq):
     """S206: move the refused store aside (never written over), re-bootstrap from the server, open a fresh store that
     continues the device's sequence. Returns (connection, error)."""
@@ -859,7 +992,10 @@ else:
                 record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
                 con = None
             try:
-                con, open_error = rebootstrap(open_error, pre_mseq)
+                if SALVAGE and open_error is not None and os.path.exists(DB) and not isinstance(open_error, InstanceBusy):
+                    salvage_store(open_error)  # offline is fine: the salvage store waits for the next contact
+                con, open_error = (recover_from_fault(open_error, pre_mseq) if SALVAGE and open_error is not None
+                                   else rebootstrap(open_error, pre_mseq))
             except (*NET_ERRORS_EARLY, *STORE_ERRORS, RuntimeError) as e:  # server unreachable: stay refused, retry at next start
                 record_event("rebootstrap_pending", e)
                 open_error = open_error or e
@@ -892,19 +1028,38 @@ def background_check(main):
         d = apsw.Connection(path)
         d.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
         d.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+        # its own read connection to the store (set 2 finding: sharing the counter's connection across threads made a
+        # sale that arrived during a copy step fail with ThreadingViolationError, and the store was refused). A step
+        # holds a read lock for its duration, so a commit arriving then waits for one step (busy_timeout); a write by
+        # the counter restarts the copy, which completes in the next idle stretch.
+        main = apsw.Connection(DB, flags=apsw.SQLITE_OPEN_READONLY)
+        main.set_busy_timeout(5000)
+        main.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+        main.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
         for attempt in range(1000):  # the counter may hold the connection at any moment: retry from idle
             try:
                 while op_busy.is_set() or time.monotonic() - last_op["t"] < BG_IDLE_S:
                     time.sleep(0.05)
-                with d.backup("main", main, "main") as b:
-                    while not b.done:
+                with store_mx:
+                    b = d.backup("main", main, "main")
+                try:
+                    while True:
                         while op_busy.is_set() or time.monotonic() - last_op["t"] < BG_IDLE_S:
                             time.sleep(0.05)
-                        b.step(BG_STEP)
-                        bg["pages"], bg["total"] = b.page_count - b.remaining, b.page_count
+                        with store_mx:  # a counter operation that arrives now waits for this one step, never fails
+                            if op_busy.is_set():
+                                continue
+                            b.step(BG_STEP)
+                            bg["pages"], bg["total"] = b.page_count - b.remaining, b.page_count
+                            if b.done:
+                                break
+                finally:
+                    with store_mx:
+                        b.finish()
                 break
-            except (apsw.ThreadingViolationError, apsw.BusyError):
+            except (apsw.ThreadingViolationError, apsw.BusyError) as e_:
                 bg["retries"] = bg.get("retries", 0) + 1
+                bg["last_retry"] = f"{type(e_).__name__}: {e_}"[:120]
                 time.sleep(0.1)
         else:
             raise RuntimeError("background copy never found the store idle")
@@ -920,6 +1075,11 @@ def background_check(main):
     except Exception as e:  # noqa: BLE001 - any failure of the copy or the check is a store fault to report
         bg["state"], bg["fault"] = "fault", f"{type(e).__name__}: {e}"[:200]
         record_event("store_fault_background", e)
+        if SALVAGE:  # OQ31: salvage at once, offline; the upload waits for the next contact
+            try:
+                salvage_store(e)
+            except Exception as e2:  # noqa: BLE001 - recorded; the next contact retries
+                record_event("salvage_failed", e2)
     finally:
         for x in (path, path + "-journal"):
             try:
@@ -1705,6 +1865,9 @@ for line in _ops():
     msg = json.loads(line)
     op = msg["op"]
     op_busy.set()
+    if store_mx.locked():
+        store_mx.acquire()  # a background copy step is running: wait for it (one step, bounded by BG_STEP)
+        store_mx.release()
     last_op["t"] = time.monotonic()
     if TIMING:
         timing.clear()
@@ -1719,6 +1882,31 @@ for line in _ops():
                     os.fsync(f.fileno())
         reply({"ok": True, "op": "exit"})
         break
+    if (refused or bg["fault"]) and SALVAGE and REBOOTSTRAP and op == "sync" and not isinstance(open_error, (InstanceBusy, DowngradeError)):
+        # OQ31: a contact after a store fault: upload the salvage first, then re-bootstrap; until then nothing sells
+        try:
+            if con is not None:
+                con.close()
+            con = None
+            if os.path.exists(DB):
+                salvage_store(open_error or RuntimeError(bg["fault"]))
+            con, err2 = recover_from_fault(open_error or RuntimeError(bg["fault"]), marker_seq_if_valid())
+        except (*NET_ERRORS_EARLY, *STORE_ERRORS, RuntimeError) as e2:
+            record_event("rebootstrap_pending", e2)
+            err2 = e2
+        refused, open_error = err2 is not None, err2
+        if err2 is None:
+            bg["fault"], bg["state"] = None, "off"
+        reply({"ok": err2 is None, "op": op, "store": "rebootstrapped" if err2 is None else "refused", "pending": 0})
+        report_events()
+        continue
+    if refused and MUTANT == "sell_on_fresh" and SALVAGE and con is None and op in ("sale", "sell_items"):
+        # planted defect: offline after a fault, the app opens a fresh empty store and sells (no catalogue, no PINs)
+        for suffix in ("", "-journal", ".hwm"):
+            if os.path.exists(DB + suffix):
+                shutil.move(DB + suffix, DB + suffix + ".mutant-aside")
+        con, open_error, _ = open_store()
+        refused = open_error is not None
     if refused:
         if isinstance(open_error, InstanceBusy):
             reply({"ok": False, "op": op, "error": "another_instance", "warning": "another_instance"})

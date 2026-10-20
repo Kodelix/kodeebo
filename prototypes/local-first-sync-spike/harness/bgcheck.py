@@ -50,8 +50,8 @@ def minutes_page_offset(db):
     return (pg - 1) * ps + ps // 2, pg
 
 
-def run(mode, damaged=True, end="clean"):
-    name = f"{mode}-{'damaged' if damaged else 'clean'}-{end}"
+def run(mode, damaged=True, end="clean", stress=False):
+    name = f"{mode}-{'damaged' if damaged else 'clean'}-{end}" + ("-stress" if stress else "")
     db, c = store(name, "open" if end == "kill" else "clean")
     if end == "kill":
         c.send({"op": "sale", "action_id": "k", "session_id": "k", "start_min": 0, "end_min": 5, "rate_per_hour": 6000,
@@ -62,7 +62,10 @@ def run(mode, damaged=True, end="clean"):
         off, pg = minutes_page_offset(db)
         t.flip(db, off)
     t0 = time.perf_counter()
-    cl = t.Client(db, "chacha20", t.KEY, extra_env={"START_CHECK": mode, "BG_IDLE_S": "0.2", "BG_STEP": "16"})
+    env = {"START_CHECK": mode, "BG_IDLE_S": "0.2", "BG_STEP": "16"}
+    if stress:  # set 2 finding: a sale that arrived during a copy step failed (ThreadingViolationError) and the store
+        env.update(BG_IDLE_S="0", BG_STEP="400")  # was refused; now it must wait for the step: long steps, short gaps
+    cl = t.Client(db, "chacha20", t.KEY, extra_env=env)
     first = cl.send({"op": "marker"})  # a light first op (stats reads every table)
     ready_ms = round((time.perf_counter() - t0) * 1000, 1)
     sales, refused_at, bg = [], None, {}
@@ -74,7 +77,7 @@ def run(mode, damaged=True, end="clean"):
         bg = cl.send({"op": "bg_state"}) or {}
         if bg.get("state") in ("ok", "fault") and k > 2 and (bg.get("state") == "ok" or refused_at is not None):
             break
-        time.sleep(0.3)
+        time.sleep(0.02 if stress else 0.3)
     _, rc = cl.exit()
     return {"case": name, "damaged_page": pg, "ready_ms": ready_ms, "store_at_start": "refused" if (first or {}).get("store") == "refused" else ("open" if first else "no reply"),
             "sales_ok": sum(sales), "sales_tried": len(sales), "first_refused_sale": refused_at,
@@ -83,7 +86,7 @@ def run(mode, damaged=True, end="clean"):
 
 if __name__ == "__main__":
     rows = [run("background"), run("partial"), run("full"), run("background_unclean", end="kill"),
-            run("background", damaged=False)]
+            run("background", damaged=False), run("background", damaged=False, stress=True)]
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "summary.json"), "w") as f:
         json.dump(rows, f, indent=1)
