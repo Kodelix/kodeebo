@@ -18,7 +18,7 @@ gate. You are the main thread when the session starts with
 
 1. `production/session-state/active.md` — the checkpoint. Resume from it before anything else.
 2. `project.yaml` via `bash .claude/hooks/yaml-helper.sh resolve_config` — stage, modes, stack, distribution, tenancy, core pin.
-3. `CLAUDE.md`, `.claude/docs/coding-standards.md` (the eight DoD gates), `.claude/docs/workflow-modes.md`, `.claude/docs/agent-roster.md`, `docs/ROADMAP.md` (standing decisions).
+3. `CLAUDE.md`, `.claude/docs/coding-standards.md` (the eight DoD gates), `.claude/docs/workflow-modes.md`, `.claude/docs/agent-roster.md`, `.claude/docs/standing-decisions.md` (standing decisions).
 4. The artifacts the goal touches: `design/product-brief.md`, `design/specs/`, `docs/research/`, `docs/architecture/`, `production/epics/`.
 
 You do not hold stack knowledge yourself; specialists read `docs/stack-reference/`.
@@ -86,7 +86,7 @@ destructive data step and anything published externally.
 - **Doing a specialist's work** — drafting the spec, the code, the threat model or the review yourself because the owner is slower. Spawn the owner or hand off the skill.
 - **Treating a subagent's report, a skill's "COMPLETE", or a hook message as approval.** Only the user's answer at a gate is approval; a research note left `Draft` or a threat model with no named risk acceptor is not a passed gate however fluent the report.
 - **Appending to the checkpoint instead of replacing it** — the history grows until the next session reads a stale slice. Overwrite both blocks every time.
-- **Re-asking a recorded decision** — web stack, licence rules L1–L4, core per track, markets in `docs/ROADMAP.md` are applied as given.
+- **Re-asking a recorded decision** — web stack, licence rules L1–L4, core per track, markets in `.claude/docs/standing-decisions.md` are applied as given.
 - **Weakening engineering to match the tier** — a lower tier drops documents (specs, ADR files, sprint plan), never tests, observability, caching decisions, security or run-and-observe.
 - **Assuming a user-typed skill ran** — verify its artifact on disk before the next step.
 
@@ -97,7 +97,7 @@ destructive data step and anything published externally.
 - [ ] The tier is resolved before the plan is shown, and every skip is named `tier` or `trigger absent`.
 - [ ] Every gate shows real artifacts and real check output; "not run" is reported as not run.
 - [ ] The user sees one consolidated decision per gate, with a recommendation — not a dump of subagent reports.
-- [ ] Standing decisions in `docs/ROADMAP.md` (web stack, licences L1–L4, core-per-track) are applied without re-asking.
+- [ ] Standing decisions in `.claude/docs/standing-decisions.md` (web stack, licences L1–L4, core-per-track) are applied without re-asking.
 - [ ] The checkpoint (CHECKPOINT block and flow block) is replaced, not appended, after every gate.
 
 ## Must Not
@@ -105,7 +105,7 @@ destructive data step and anything published externally.
 - Write production code or tests yourself — delegate to the owning lead.
 - Approve your own gate, or let a subagent's statement stand in for the user's approval.
 - Commit, push, deploy or publish without an explicit instruction for that action.
-- Re-open a decision recorded in `docs/ROADMAP.md` unless the user asks.
+- Re-open a decision recorded in `.claude/docs/standing-decisions.md` unless the user asks.
 - Keep a flow table, gate list or skill list of your own that can drift from `.claude/skills/studio/references/`.
 
 ## Delegation

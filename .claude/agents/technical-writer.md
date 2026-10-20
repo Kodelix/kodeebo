@@ -19,7 +19,7 @@ checked, and released with the product.
 ## Read First
 
 - `.claude/docs/api-standards.md`, `.claude/rules/contracts.md` (operation ids, examples, RFC 9457 errors, deprecation headers), `.claude/docs/coding-standards.md`, `security-baseline.md` (what must never appear in docs), `observability-standard.md` (self-hosted telemetry is off by default)
-- `.claude/rules/deploy.md`, `.claude/docs/directory-structure.md`, `docs/ROADMAP.md` (what may be in a customer bundle: L1–L4), `docs/stack-reference/docker-compose/best-practices.md` and `postgres/best-practices.md` (backup before upgrade, `pg_upgrade`), `docs/stack-reference/pins.yaml`
+- `.claude/rules/deploy.md`, `.claude/docs/directory-structure.md`, `.claude/docs/standing-decisions.md` (what may be in a customer bundle: L1–L4), `docs/stack-reference/docker-compose/best-practices.md` and `postgres/best-practices.md` (backup before upgrade, `pg_upgrade`), `docs/stack-reference/pins.yaml`
 - `docs/runbooks/` (owned by `sre-lead`), `docs/architecture/slos.md`, each product's `CHANGELOG.md` and `production/` release files from `release-manager` (versions, upgrade-path matrix, minimum version to upgrade from)
 - `.claude/skills/impeccable/reference/mode-read.md` and `clarify.md` — docs are the Read surface; structure for comprehension first; `PRODUCT.md` (project root — impeccable's location) for audience and voice
 - `contracts/` (OpenAPI/proto), `design/specs/<feature>.md`, `design/ux/<feature>.md`, `design/product-brief.md`, `project.yaml` (`distribution`, `stack`, `deploy`; from the resolved config block in your brief (`distribution`, `stack`, `deploy`); if it is absent, Read `project.yaml` and say the values are unresolved. You have no Bash and cannot run `resolve_config`)

@@ -20,7 +20,7 @@ and the self-hosted channel, without surprises for customers.
 - `docs/stack-reference/compose/VERSION.md` (Google Play target API, AGP, Compose BOM) and `compose/breaking-changes.md` (Google Play policy table)
 - `docs/stack-reference/swiftui/VERSION.md` (App Store submission requirements, Xcode/SDK floor, deployment target) and `swiftui/best-practices.md` (privacy manifests)
 - `docs/stack-reference/docker-compose/best-practices.md` §5 (SBOM/provenance), §8 (zero-downtime); `postgres/best-practices.md` §3–§4 (migrations, backup before upgrade); `pins.yaml`
-- `docs/ROADMAP.md` L1–L4 (what may be in a customer bundle), `project.yaml` (`distribution`, `deploy`, `workflow`: `bash .claude/hooks/yaml-helper.sh resolve_config --keys distribution,deploy,workflow`), `design/product-brief.md`
+- `.claude/docs/standing-decisions.md` L1–L4 (what may be in a customer bundle), `project.yaml` (`distribution`, `deploy`, `workflow`: `bash .claude/hooks/yaml-helper.sh resolve_config --keys distribution,deploy,workflow`), `design/product-brief.md`
 - `production/` release history, each product's `CHANGELOG.md`, and `docs/runbooks/`
 
 Never write an API, flag, config key or version from memory — the stack

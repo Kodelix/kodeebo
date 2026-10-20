@@ -78,7 +78,7 @@ researcher's starting point and it is read by you, not recalled:
    **Last verified** date. A layer whose reference is absent is
    `NOT SOURCEABLE — no stack reference for <layer>` and goes into the brief as
    such; do not fill it.
-3. `docs/ROADMAP.md` decisions **L1-L4 and T1** (Valkey in customer bundles,
+3. `.claude/docs/standing-decisions.md` decisions **L1-L4 and T1** (Valkey in customer bundles,
    Dragonfly hosted only, Mongo official image only, OTel Collector only,
    gitleaks). An option that breaks one is reported as `licence-blocked`, never
    silently dropped.
@@ -104,16 +104,22 @@ scope is grouped into sets of two or fewer, one researcher per set, even when
 the sets share mechanisms — the merge is cheaper than a note that never gets
 written. (Two Kodeebo runs with three areas per researcher ran out of turns in
 8 of 10 parts before writing sections 4–9.) A researcher cannot see its remaining
-turns, so each brief also sets a **budget** (default 20 units; up to 30 for
-primary-source-heavy areas such as law and regulation). Each WebFetch, WebSearch
-or spike command run spends one unit, because runs take turns too; the researcher
-writes each finding before the next fetch or run, refreshes provisional sections
-4–9 every 8 units and finalises them when the budget is spent. (A third run at 40
-turns still ended 4 of 4 parts with sections 4–9 empty; in a fourth, a part that
-ran seven spikes on a 20-fetch budget hit 40 turns with no finding written.) The
+turns, so each brief also sets a **budget**: default 12 units (up to 16 for
+primary-source-heavy areas such as law and regulation) **and turn 26**, whichever
+comes first. Each WebFetch, WebSearch or spike command run spends one unit, and a
+unit costs at least two turns (the action, then writing its finding), so the
+budget is set from `maxTurns` (40): 26 turns of work, 8 to finalise sections 4–9,
+6 spare. The researcher counts its own turns, writes each finding before the next
+fetch or run, refreshes provisional sections 4–9 at turns 12 and 20 and
+finalises them at turn 26. Never brief more than 16 units: a 20-unit budget alone
+fills 40 turns. (A third run at 40 turns still ended 4 of 4 parts with sections
+4–9 empty; in a fourth, a part that ran seven spikes on a 20-fetch budget hit 40
+turns with no finding written; in a fifth, a 20-unit part wrote 22 findings and
+hit 40 turns with sections 4–9 still placeholders.) The
 merge is done with the Write tool and checked by content (`references/2-researcher-brief.md`):
-each part's sections 4–9 are carried verbatim, and no part file is deleted until
-every line of them is shown to be in the merged note.
+everything in each part from section 4 to the end of the file is carried
+verbatim, and no part file is deleted until every line of it is shown to be in
+the merged note.
 
 **Disjoint IDs per part.** Give each parallel researcher its own ID block in the
 brief — part *n* (from 1) owns findings `F{n}01–F{n}99` and spikes
@@ -129,7 +135,9 @@ file is not on disk, the phase failed, however fluent the reply. Resume the
 agent once naming the unmet return contract; a second miss is `BLOCKED`. A reply
 "needs approval: <what>, <size>" is not a failure: ask the user (size and
 source), then resume the agent with the answer; never approve a download over
-100 MB on the user's behalf.
+100 MB on the user's behalf. Turning off a no-download mode (`gradle --offline`,
+`--pull=never`, `GOTOOLCHAIN=local`) is the same question: the researcher returns the
+missing-artifact list, and you ask the user before resuming it online.
 
 If `researcher` cannot be spawned, say why and write nothing yourself from
 memory: the verdict is `NOT ASSESSED - researcher unavailable`.

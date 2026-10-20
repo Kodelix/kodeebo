@@ -29,7 +29,7 @@ Before doing anything else, establish the stack environment:
    relevant domain that should not be used.
 
 6. If `distribution.model` is `hybrid` or `self-hosted`, read `.claude/rules/deploy.md`
-   and the licence decisions in `docs/ROADMAP.md`: a decision that picks a cache,
+   and the licence decisions in `.claude/docs/standing-decisions.md`: a decision that picks a cache,
    database or observability component must be valid for the customer bundle, not
    only for hosted.
 

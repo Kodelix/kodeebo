@@ -9,7 +9,7 @@ Read `deploy.target` and `distribution.model` from the config block. If either i
 empty, stop and send the user to `/setup-stack`. Follow `.claude/rules/deploy.md`:
 `deploy/hosted/` is our infrastructure (any engine in `pins.yaml` allowed);
 `deploy/self-hosted/` is the customer bundle and the licence decisions in
-`docs/ROADMAP.md` bind it.
+`.claude/docs/standing-decisions.md` bind it.
 
 ### 5a. Hosted topology (when `distribution.model` is `hosted` or `hybrid`)
 

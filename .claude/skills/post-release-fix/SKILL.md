@@ -101,7 +101,7 @@ For each open bug, evaluate:
 | Fix introduces new code paths or a non-expand-only migration | No — too risky |
 | Fix is config/data only (no code change) | Yes — very low risk; changes to prices, limits or flags still get a `pricing-billing-designer` check |
 | Store-review feedback that blocks approval | Yes — required |
-| Fix affects `deploy/self-hosted/` | Only if it respects the licence decisions in `docs/ROADMAP.md` (L1–L4) and the signed-bundle rules in `.claude/rules/deploy.md` |
+| Fix affects `deploy/self-hosted/` | Only if it respects the licence decisions in `.claude/docs/standing-decisions.md` (L1–L4) and the signed-bundle rules in `.claude/rules/deploy.md` |
 | S3/S4 severity | Only if a trivial config fix; otherwise defer |
 
 ### Step 2b — Present patch scope to the user

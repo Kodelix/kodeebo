@@ -19,7 +19,7 @@ that locks a paying customer out of their own data.
 - `.claude/docs/coding-standards.md` — the eight DoD gates; `.claude/docs/security-baseline.md` (cryptography, supply chain, audit log, secrets) and `testing-standards.md`
 - `.claude/rules/security-sensitive.md` (licensing is ASVS Level 3, vetted crypto only, constant-time compares), `deploy.md` (customer bundle, signed bundles, telemetry off), `integrations.md`
 - `.claude/docs/observability-standard.md` (what must never be logged; licence activation is an audited security event), `research-protocol.md`, `workflow-modes.md`
-- `docs/ROADMAP.md` — distribution is hybrid: hosted plus self-hosted enterprise with signed offline licences and an update channel
+- `.claude/docs/standing-decisions.md` — distribution is hybrid: hosted plus self-hosted enterprise with signed offline licences and an update channel
 - `docs/stack-reference/go/` (`best-practices.md` Security and Testing sections: `testing/synctest`, `testing/cryptotest.SetGlobalRandom`), `kotlin/best-practices.md`, `docker-compose/best-practices.md`, `tooling/best-practices.md` (gitleaks), `pins.yaml`
 - `docs/architecture/threat-models/licensing.md` if it exists, the entitlement catalogue from `pricing-billing-designer`, the spec in `design/specs/`, `docs/research/<feature>.md`, ADRs in `docs/architecture/`
 

@@ -15,7 +15,7 @@ None are mandatory — absence is reported, not papered over.
 | File | Used for | Absent means |
 |---|---|---|
 | `design/product-brief.md` | ICP, positioning, decision log | question about "the product" → `INSUFFICIENT DATA` unless the user supplies it |
-| `docs/ROADMAP.md` | business model (subscription, one-time licence, hosted + self-hosted) | stated as ABSENT in the answer |
+| `.claude/docs/standing-decisions.md` | business model (subscription, one-time licence, hosted + self-hosted) | stated as ABSENT in the answer |
 | `design/specs/pricing-model.md` (canonical; else `Glob design/**/pricing-model*.md`, non-canonical location named) | implemented prices | implementation status of pricing unknown, said so |
 | `business/**`, `docs/research/**` | reuse of dated, sourced facts | no reuse; everything is researched fresh |
 
@@ -44,7 +44,7 @@ recommendations and does not outrank a known failure.
 - Hosted and self-hosted are separate columns/sections, never summed
 
 ## Immutability Rules
-- READS: `design/`, `docs/ROADMAP.md`, `business/**`, `docs/research/**`
+- READS: `design/`, `.claude/docs/standing-decisions.md`, `business/**`, `docs/research/**`
 - WRITES: only new files under `business/` (a competitor-dominant answer goes only to `business/competitors/notes/`, never into the verified-capture files)
 - Never edits product code, specs, contracts, infra or the pricing model
 

@@ -22,7 +22,7 @@ lawyer. You are not a lawyer and you never present your output as legal advice.
 - `.claude/rules/security-sensitive.md`, `migrations.md` (deletion and backfill), `deploy.md` (self-hosted bundle contents, telemetry off by default)
 - `docs/stack-reference/postgres/best-practices.md` §1 (tenant isolation) and §4 (backups — how erased data ages out of them), `mongo/best-practices.md`, `redis/best-practices.md` §1 (TTL) and §9 (persistence), `opentelemetry/best-practices.md` §6 (PII redaction), `swiftui/best-practices.md` (privacy manifests), `compose/best-practices.md`, `pins.yaml`
 - `design/product-brief.md`, `design/specs/domain-map.md` and the feature spec, `docs/architecture/threat-models/`, `docs/research/` notes that cover privacy law, and any existing `docs/architecture/privacy/` records
-- `docs/ROADMAP.md` — distribution model (hosted vs self-hosted determines who is controller and processor)
+- `.claude/docs/standing-decisions.md` — distribution model (hosted vs self-hosted determines who is controller and processor)
 
 You do not know the text of the Egyptian PDPL or the GDPR well enough to
 quote articles, deadlines, fines or thresholds: those facts come from the

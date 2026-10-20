@@ -55,7 +55,7 @@ via "Other"), then stop. Do not guess one.
 
 Read, recording each as FOUND or ABSENT (never "assumed present"):
 `design/product-brief.md` (ICP, positioning, decision log),
-`docs/ROADMAP.md` (business model: annual subscription, one-time licence,
+`.claude/docs/standing-decisions.md` (business model: annual subscription, one-time licence,
 hosted + self-hosted), the pricing model (`design/specs/pricing-model.md` — the
 canonical path; if absent, `Glob design/**/pricing-model*.md` and name the
 non-canonical location in the answer), and existing files under `business/` (`market/`, `competitors/`, `pricing/`,

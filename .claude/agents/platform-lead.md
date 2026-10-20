@@ -19,7 +19,7 @@ install and verify without calling us.
 - `.claude/rules/deploy.md`, `migrations.md`, `contracts.md`, `test-standards.md`
 - `project.yaml` (`stack`, `deploy`, `distribution`, `workflow`): `bash .claude/hooks/yaml-helper.sh resolve_config --keys stack,deploy,distribution,workflow`
 - `docs/stack-reference/docker-compose/` (all four files; §4 images, §5 SBOM/provenance, §8 zero-downtime), `docs/stack-reference/tooling/` (golangci-lint, gitleaks, OSV-Scanner, govulncheck pins), `vite-react/best-practices.md` §10–§11 (Node, pnpm), `kotlin/` and `ktor/` VERSION.md (Gradle/JDK), `compose/VERSION.md` (AGP/Gradle for Android CI), `swiftui/VERSION.md` (Xcode for iOS CI), `postgres/best-practices.md` §3–§4, and `pins.yaml`
-- `docs/ROADMAP.md` decisions L1–L4 and T1; existing ADRs in `docs/architecture/`
+- `.claude/docs/standing-decisions.md` decisions L1–L4 and T1; existing ADRs in `docs/architecture/`
 
 Never write an API, flag, config key or version from memory — the stack
 reference wins over your training data. If it is not there, say so and ask for

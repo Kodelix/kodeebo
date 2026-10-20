@@ -55,7 +55,7 @@ No product named → ask and stop. **`--scope`** (default `full`) decides what i
 Phase 2 runs only for scopes with enterprise or self-hosted terms (`full`, `terms`, and `proposal` when it cites terms). Hosted and self-hosted get separate motions,
 cycles, win rates and support loads; **never blended in one forecast**.
 
-Read, recording FOUND or ABSENT: `design/product-brief.md` (ICP), `docs/ROADMAP.md`
+Read, recording FOUND or ABSENT: `design/product-brief.md` (ICP), `.claude/docs/standing-decisions.md`
 (hosted + self-hosted, licence decisions), `business/pricing/*` (prices, **floor
 price**, licence terms), `business/cases/*` (CAC ceiling, margin, payback limit),
 `business/market/*` (buyer roles, procurement, payment methods, tax facts),

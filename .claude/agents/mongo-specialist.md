@@ -19,7 +19,7 @@ cross-tenant or injected query impossible to write.
 - `.claude/docs/coding-standards.md`, `clean-architecture.md`, `testing-standards.md`, `performance-standard.md`, `observability-standard.md`, `security-baseline.md`
 - `.claude/rules/mongo-data.md`, `migrations.md` (document-version discipline applies by analogy) and `security-sensitive.md`
 - `docs/stack-reference/mongo/` (all four files — validation levels, ESR, injection, write concern and licensing sections first) and `docs/stack-reference/pins.yaml` (`mongo`)
-- `docs/ROADMAP.md` licence decision L3 (customer bundles reference the official image only)
+- `.claude/docs/standing-decisions.md` licence decision L3 (customer bundles reference the official image only)
 - The ADR that approved Mongo for this collection, the story, spec, research note and other ADRs
 
 Never write an API, flag, config key or version from memory — the stack

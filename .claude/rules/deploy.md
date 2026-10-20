@@ -22,7 +22,7 @@ paths:
 ## Hosted vs customer bundle
 
 - `deploy/hosted/` — our own infrastructure. Any engine in `docs/stack-reference/pins.yaml` is allowed.
-- `deploy/self-hosted/` — the bundle customers install. Licence decisions (docs/ROADMAP.md, 2026-10-11):
+- `deploy/self-hosted/` — the bundle customers install. Licence decisions (.claude/docs/standing-decisions.md, 2026-10-11):
   - Cache: **Valkey** only (`valkey/valkey`, BSD-3). No Redis ≥ 7.4, no Dragonfly. Up to **two Valkey instances**, never one doing both jobs: a cache instance (`allkeys-lru`, loss-tolerant) and, when queues, idempotency keys or sessions need to survive a restart, a durable instance (`noeviction`, persistence on). Both are `valkey/valkey` from `bundle.allowlist`.
   - Object storage: **not bundled.** The customer points the bundle at their own S3-compatible store through configuration. MinIO is AGPL and is never in the bundle; a bundled alternative needs a licence check via `/research` and an entry in `bundle.allowlist` first.
   - MongoDB: `image:` reference to the **official** image only — never a Mongo binary, tarball, or image we build.

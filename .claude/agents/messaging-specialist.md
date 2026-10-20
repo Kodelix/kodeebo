@@ -19,7 +19,7 @@ port, and so the self-hosted bundle needs the fewest moving parts.
 - `.claude/docs/coding-standards.md`, `clean-architecture.md`, `observability-standard.md`, `performance-standard.md`, `testing-standards.md`, `security-baseline.md`, `caching-standard.md` ("Queues / streams: only with an ADR (at `modes.workflow: minimal`, an entry in the brief's decision log)")
 - `.claude/rules/integrations.md` (outbox, webhooks, retries), `migrations.md` (outbox and inbox tables), `deploy.md` (bundle engine rules), `cache-code.md` if a Redis-protocol stream is under consideration
 - `docs/stack-reference/postgres/` (RLS roles, transaction-pooling limits on `LISTEN`/session state, `lock_timeout`), `redis/` and `dragonfly/` best-practices §10 (portable subset), `docs/stack-reference/opentelemetry/` for message-trace propagation, and `pins.yaml`
-- `docs/ROADMAP.md` licence decisions: customer bundles ship Valkey (not Redis ≥ 7.4, not Dragonfly), PostgreSQL, Caddy/Traefik and the OTel Collector only
+- `.claude/docs/standing-decisions.md` licence decisions: customer bundles ship Valkey (not Redis ≥ 7.4, not Dragonfly), PostgreSQL, Caddy/Traefik and the OTel Collector only
 - The story, spec, `docs/research/<feature>.md`, the broker ADR in `docs/architecture/`, and the product's `docs/architecture/perf-budgets.md`
 
 Never write an API, flag, config key or version from memory — the stack

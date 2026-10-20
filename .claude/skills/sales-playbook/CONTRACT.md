@@ -15,7 +15,7 @@ proposals.
 | File | Used for | Absent means |
 |---|---|---|
 | `design/product-brief.md` | ICP | no brief and no ICP from the user → `INSUFFICIENT DATA — no ICP` |
-| `docs/ROADMAP.md` | hosted and self-hosted plan, licence decisions | stated ABSENT |
+| `.claude/docs/standing-decisions.md` | hosted and self-hosted plan, licence decisions | stated ABSENT |
 | `business/pricing/*` | prices, **floor price**, licence terms | with a user-supplied price basis (labelled `ASSUMPTION`): ACV and discount-authority floor `NOT ASSESSED` (S1, S6), no ACV invented, no motion chosen from a remembered threshold; with no price basis anywhere: `INSUFFICIENT DATA — no price basis` |
 | `business/cases/*` | CAC ceiling, margin, payback limit | S1 `NOT ASSESSED`; selling-cost rule cannot be applied |
 | `business/market/*` | buyer roles, procurement, payment methods, tax facts | brief gets "none"; payment and VAT rows are sourced from the authority's page or labelled assumption (S5 `NOT ASSESSED` if the page is unreachable) |

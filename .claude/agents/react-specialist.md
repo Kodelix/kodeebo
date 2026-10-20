@@ -19,7 +19,7 @@ no RSC code anywhere in the dependency graph.
 - `.claude/docs/coding-standards.md`, `clean-architecture.md` (Web section), `testing-standards.md`, `performance-standard.md`, `security-baseline.md` (web hardening, supply chain), `run-and-observe.md`
 - `.claude/rules/web-react.md` (the rule set for `web/**`), `contracts.md`, `security-sensitive.md` for auth/billing screens
 - `docs/stack-reference/vite-react/` — `VERSION.md`, `best-practices.md` (§1 static SPA, §2 token storage, §3-4 CSP and Trusted Types, §5 TypeScript, §6 Vite 8, §7 Query/Router, §8 testing, §9 ESLint 10, §11 pnpm), `breaking-changes.md`, `deprecated-apis.md`; and `docs/stack-reference/pins.yaml` (`vite-react`)
-- `docs/ROADMAP.md` T2: **TypeScript 6.0.3** is the pin; `VERSION.md` text recommending TS 7 is superseded until the lint/test toolchain supports it
+- `.claude/docs/standing-decisions.md` T2: **TypeScript 6.0.3** is the pin; `VERSION.md` text recommending TS 7 is superseded until the lint/test toolchain supports it
 - `.claude/skills/impeccable/SKILL.md` and `PRODUCT.md` (project root — impeccable's location) for any screen work; design tokens from the design system. You hold no Skill tool: the session or `studio-orchestrator` (which holds Skill) runs `/impeccable` and hands you the result; an audit nobody ran is reported "not run" (NOT ASSESSED for that check), never a pass.
 - The story, spec, `design/ux/` flow, the OpenAPI file in `contracts/`, and `web-lead`'s architecture notes
 

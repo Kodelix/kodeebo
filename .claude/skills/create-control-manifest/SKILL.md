@@ -177,7 +177,7 @@ Only include a standard's rules for layers the stack actually has.
   supply-chain settings for the SPA and the portability subset for the cache.
 
 ### From `deploy/` rules (when `distribution.model` is `hybrid` or `self-hosted`)
-- Customer bundle: Valkey only for cache (no Dragonfly, no Redis >= 7.4); MongoDB by reference to the official image only; OTel Collector only, exporters off by default; signed bundle, preflight, backup before upgrade, rollback; telemetry off by default (`.claude/rules/deploy.md`, `docs/ROADMAP.md`).
+- Customer bundle: Valkey only for cache (no Dragonfly, no Redis >= 7.4); MongoDB by reference to the official image only; OTel Collector only, exporters off by default; signed bundle, preflight, backup before upgrade, rollback; telemetry off by default (`.claude/rules/deploy.md`, `.claude/docs/standing-decisions.md`).
 - If `distribution.model` is `hosted`: record `Self-hosted rules: not applicable — distribution.model: hosted`.
 
 ---

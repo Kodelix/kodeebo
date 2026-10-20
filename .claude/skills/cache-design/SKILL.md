@@ -31,7 +31,7 @@ how it stays correct, how it fails, and that it is worth it
 decision for one feature, one entry at a time, from
 `.claude/docs/templates/cache-design.md`, and makes it **portable**: hosted may
 run Redis 8.2 or Dragonfly, while the **customer bundle runs Valkey**
-(`docs/ROADMAP.md` decisions L1-L2; `.claude/rules/deploy.md`). The code
+(`.claude/docs/standing-decisions.md` decisions L1-L2; `.claude/rules/deploy.md`). The code
 therefore targets the common command subset, and the design is checked against
 the engines in scope.
 

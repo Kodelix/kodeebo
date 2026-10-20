@@ -65,7 +65,10 @@ for s in dirs:
             say("ERROR", s, f"points to missing references/{r}")
     for path in set(re.findall(r"(?<![\w/])((?:\.claude/(?:docs|rules|scripts|hooks)|docs)/[A-Za-z0-9_./-]+\.(?:md|sh|yaml))", alltext)):
         if "<" in path or "*" in path or "NNNN" in path or "YYYY" in path: continue
-        if path.startswith("docs/") and not path.startswith(("docs/stack-reference/", "docs/ROADMAP")):
+        if path.startswith("docs/ROADMAP"):
+            say("ERROR", s, f"cites {path}, which is never copied to products; use .claude/docs/standing-decisions.md")
+            continue
+        if path.startswith("docs/") and not path.startswith("docs/stack-reference/"):
             continue  # product artifacts created at runtime
         if not os.path.exists(path): say("WARN", s, f"cites missing path {path}")
     for name in set(re.findall(r"`([a-z]+(?:-[a-z]+)*-(?:lead|director|engineer|specialist|designer|manager|architect|tester|writer|orchestrator|success|lifecycle|researcher))`", alltext)):

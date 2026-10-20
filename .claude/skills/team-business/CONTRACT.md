@@ -11,7 +11,7 @@ edition or viability decision.
 | File | Used for | Absent means |
 |---|---|---|
 | `design/product-brief.md` | ICP, positioning | `INSUFFICIENT DATA — no ICP / product to evaluate` unless the user supplies it |
-| `docs/ROADMAP.md` | business model, editions | stated ABSENT |
+| `.claude/docs/standing-decisions.md` | business model, editions | stated ABSENT |
 | `business/**`, `docs/research/**` | reuse of dated, sourced rows | everything is researched fresh |
 
 ### Preconditions

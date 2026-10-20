@@ -214,7 +214,7 @@ versions. For every self-hosted release write the Upgrade Notes block with:
   deprecation history.
 - **Component changes** only as they affect the admin (for example "the bundled
   cache is Valkey") — never mention components excluded from the customer
-  bundle by `docs/ROADMAP.md` licence decisions L1–L4 as if they ship.
+  bundle by `.claude/docs/standing-decisions.md` licence decisions L1–L4 as if they ship.
 
 **If the self-hosted edition shipped this version and migration/config/licence
 information cannot be sourced from the repo, do not guess.** Write the

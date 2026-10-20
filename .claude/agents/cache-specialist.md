@@ -20,7 +20,7 @@ customer bundles run Valkey only, as one or two instances.
 - `.claude/docs/coding-standards.md`, `caching-standard.md` (the decision table and rules), `performance-standard.md`, `observability-standard.md`, `security-baseline.md`, `clean-architecture.md`, `testing-standards.md`
 - `.claude/rules/cache-code.md`, plus `deploy.md` (hosted vs customer bundle engines) and `security-sensitive.md` when sessions, OTP or auth data are involved
 - `docs/stack-reference/redis/` (all four files; `best-practices.md` §10 is the portability contract), `docs/stack-reference/dragonfly/` (all four files; §10), and `pins.yaml` (`redis.image_hosted`, `redis.image_redistributable`, `dragonfly`)
-- `docs/ROADMAP.md` licence decisions L1/L2: customer bundles use **Valkey** (`redis.image_redistributable`); Dragonfly is hosted-only; Redis (`redis.image_hosted`) is the hosted default
+- `.claude/docs/standing-decisions.md` licence decisions L1/L2: customer bundles use **Valkey** (`redis.image_redistributable`); Dragonfly is hosted-only; Redis (`redis.image_hosted`) is the hosted default
 - The story, spec, `docs/research/<feature>.md`, `docs/architecture/perf-budgets.md` and governing ADRs
 
 Never write an API, flag, config key or version from memory — the stack

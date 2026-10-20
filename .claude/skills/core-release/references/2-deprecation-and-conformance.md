@@ -56,7 +56,7 @@ Build the matrix from the repo, not from memory:
    reported (`image mismatch: test uses <x>, pin is <y>`). Customer-bundle rules
    apply to what the notes may claim: cache → Valkey, Mongo → official image
    reference, observability → OTel Collector; Dragonfly is hosted-only
-   (`docs/ROADMAP.md` L1–L4) — a Dragonfly adapter is tested and the notes mark it
+   (`.claude/docs/standing-decisions.md` L1–L4) — a Dragonfly adapter is tested and the notes mark it
    hosted-only.
 3. Commands: Go — the `integration`-tagged run per `layer-checks.md` (the
    `dev-story` skill folder); Kotlin — the integration source-set task **named in

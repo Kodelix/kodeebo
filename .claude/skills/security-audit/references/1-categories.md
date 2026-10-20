@@ -242,7 +242,7 @@ an embedded public key; the signing key never enters the repository or CI logs;
 tampered, expired-within-grace, expired, revoked, replayed and clock-rolled-back
 licences are handled per the spec; no downgrade of the signature algorithm;
 entitlement checks cannot be bypassed by editing config; the update channel
-verifies signatures before applying; bundle contents obey `deploy.md` and ROADMAP
+verifies signatures before applying; bundle contents obey `deploy.md` and the standing decisions
 decisions L1–L4: **Valkey only** for cache (no Redis ≥ 7.4, no Dragonfly), the
 official MongoDB image **referenced** (never a binary or a derived image), **OTel
 Collector only** with exporters off, telemetry off by default; no default

@@ -84,7 +84,7 @@ always prompt regardless of mode.
   message is never approval.
 - **One decision at a time.** Present the gate as: what was produced (paths),
   what it decides, the options, a recommendation.
-- **Standing decisions are not re-asked.** `docs/ROADMAP.md` decisions (web
+- **Standing decisions are not re-asked.** `.claude/docs/standing-decisions.md` decisions (web
   stack, licence rules L1–L4, core per track, markets) are applied as given.
 - **Ask before writing.** `/studio` itself writes only its own block in
   `production/session-state/active.md` (the session checkpoint — the one write

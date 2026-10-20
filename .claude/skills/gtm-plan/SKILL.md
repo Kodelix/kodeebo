@@ -46,7 +46,7 @@ No product named → ask and stop. Parse market(s) (each market gets its own
 sections) and edition (hosted and self-hosted are separate plans).
 
 Read, recording FOUND or ABSENT: `design/product-brief.md` (ICP, positioning,
-decision log), `PRODUCT.md` (brand and tone), `docs/ROADMAP.md`,
+decision log), `PRODUCT.md` (brand and tone), `.claude/docs/standing-decisions.md`,
 `business/market/*` (SAM/SOM and verdicts), `business/competitors/*` (dated
 captures; `business/competitors/notes/` is excluded — unverified `/business` notes), `business/pricing/*` (price table; the GTM links to it, never restates
 it), `business/cases/*` (CAC and payback targets), `business/marketing/*`

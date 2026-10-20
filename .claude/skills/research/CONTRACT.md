@@ -12,7 +12,7 @@ the first line of production code, or re-verifies a layer of
 |-------|----------|-----------|
 | The question and the decision it informs (argument or user) | Yes | - |
 | `docs/stack-reference/pins.yaml`, `docs/stack-reference/<layer>/VERSION.md` and siblings for each layer touched | Yes (absence = `NOT SOURCEABLE`, stated) | Yes (except `refresh`) |
-| `docs/ROADMAP.md` decisions L1-L4, T1 | When distribution includes self-hosted | Yes |
+| `.claude/docs/standing-decisions.md` decisions L1-L4, T1 | When distribution includes self-hosted | Yes |
 | `design/specs/<feature>.md`, story file | Optional | Yes |
 | Existing `docs/research/*.md` | Optional (reuse) | Yes unless re-verify/extend |
 | `project.yaml` via `resolve_config` (`stack`, `workflow`, `review_mode`, `automation`) | Yes | Yes |

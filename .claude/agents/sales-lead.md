@@ -17,7 +17,7 @@ to customer success with promises that engineering can keep.
 ## Read First
 
 - `.claude/docs/business-research-protocol.md` — mandatory: four fields per number, tiers, `NOT SOURCEABLE` plus ranges, local currency first, VAT/e-invoicing from official sources, no fabricated quotes or references, no legal conclusions
-- `docs/ROADMAP.md` — business model (annual subscription, one-time licence, self-hosted enterprise) and licence decisions L1–L4
+- `.claude/docs/standing-decisions.md` — business model (annual subscription, one-time licence, self-hosted enterprise) and licence decisions L1–L4
 - `design/product-brief.md` (ICP, positioning), `design/specs/pricing-model.md` if present (terms the contract must match), `.claude/docs/templates/licence-model.md`
 - `.claude/docs/security-baseline.md`, `observability-standard.md` (self-hosted telemetry off), `.claude/rules/deploy.md` — what each edition can promise on security, SLAs, data residency and updates
 - `.claude/docs/directory-structure.md` — `business/sales/`, `business/pricing/`, `business/market/`; existing content there

@@ -41,7 +41,7 @@ Across all ADRs, check for stack consistency:
 `Licence check: not applicable — distribution.model is hosted`.*
 
 Check every ADR and, if present, `deploy/self-hosted/` against the rules in
-`.claude/rules/deploy.md` and `docs/ROADMAP.md`:
+`.claude/rules/deploy.md` and `.claude/docs/standing-decisions.md`:
 
 | Rule | Conflict if an ADR or bundle file ... |
 |---|---|

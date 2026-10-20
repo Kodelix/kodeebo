@@ -55,7 +55,7 @@ announced.
 Read **`references/1-decision-matrix.md` now** — which specialists a decision needs,
 the waves, the working files and the deliverables. Re-read after compaction.
 
-Read, recording FOUND or ABSENT: `design/product-brief.md`, `docs/ROADMAP.md`
+Read, recording FOUND or ABSENT: `design/product-brief.md`, `.claude/docs/standing-decisions.md`
 (hosted, self-hosted, annual subscription, one-time licence), `PRODUCT.md`,
 and everything under `business/` and `docs/research/` (a sourced row on disk is
 reused with its date and re-verified when older than the horizon the user states).

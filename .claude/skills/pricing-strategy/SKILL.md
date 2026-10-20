@@ -50,7 +50,7 @@ No product named → ask and stop. Parse `--scope` (default `full`) and currenci
 (default EGP, SAR, AED, USD).
 
 Read, recording FOUND or ABSENT: `design/product-brief.md` (ICP, positioning,
-pricing hypotheses, decision log), `docs/ROADMAP.md` (annual subscription and
+pricing hypotheses, decision log), `.claude/docs/standing-decisions.md` (annual subscription and
 one-time licence; hosted + self-hosted), existing pricing model
 (`design/specs/pricing-model.md` — the canonical path; if absent,
 `Glob design/**/pricing-model*.md` and name the non-canonical location),

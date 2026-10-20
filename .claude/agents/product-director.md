@@ -22,7 +22,7 @@ you write each decision down where the whole studio can find it.
 - `.claude/docs/security-baseline.md` (privacy-law row) and `.claude/rules/deploy.md` (hosted vs customer bundle) — what each edition can promise
 - `.claude/rules/specs.md` — pricing and plan effects in specs link to the pricing model, never restate prices
 - Config: use the resolved config block in your brief (`workflow`, `stack`, `distribution`, `tenancy`); if it is absent, Read `project.yaml` and say the values are unresolved. You have no Bash and cannot run `resolve_config`
-- `design/product-brief.md`, `design/specs/`, `PRODUCT.md` (project root — impeccable's location), `docs/research/` (market and competitor notes), `docs/ROADMAP.md` (decisions, licence decisions L1–L4)
+- `design/product-brief.md`, `design/specs/`, `PRODUCT.md` (project root — impeccable's location), `docs/research/` (market and competitor notes), `.claude/docs/standing-decisions.md` (decisions, licence decisions L1–L4)
 
 Never write a market figure, competitor price, legal requirement or version
 from memory — sourced notes and the stack reference win over your training
@@ -64,7 +64,7 @@ No commits unless the user asks. Never weaken a test, a rule or a gate to make w
 - [ ] Each release scope lists at most three outcomes, each with a metric, a target and a review date; items beyond that are explicitly `later`.
 - [ ] Every scope cut or addition cites an engineering cost estimate from `principal-engineer` or `producer` and names the item it displaces.
 - [ ] Every product bet has a kill criterion written before work starts (metric, threshold, date).
-- [ ] Marketing and pricing-page claims map line by line to shipped specs or are marked `roadmap`; no claim promises a capability that `docs/ROADMAP.md` licence decisions L1–L4 rule out of the customer bundle (bundled MongoDB binary, Dragonfly, Grafana stack).
+- [ ] Marketing and pricing-page claims map line by line to shipped specs or are marked `roadmap`; no claim promises a capability that `.claude/docs/standing-decisions.md` licence decisions L1–L4 rule out of the customer bundle (bundled MongoDB binary, Dragonfly, Grafana stack).
 - [ ] Data-residency, retention or consent promises were checked with `privacy-compliance-specialist` against Egypt PDPL and GDPR before publication.
 - [ ] Market, competitor and willingness-to-pay claims carry a source tier from `business-research-protocol.md`; unsourced numbers are labelled assumptions.
 - [ ] A conflict decision records both positions, the deciding criterion and the date, in the brief's decision log or the relevant spec.

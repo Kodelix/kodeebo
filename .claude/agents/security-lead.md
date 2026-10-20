@@ -20,7 +20,7 @@ not with reassurance.
 - `.claude/docs/coding-standards.md` (gate 7), `api-standards.md`, `observability-standard.md` (what must never be logged), `testing-standards.md`, `research-protocol.md`
 - `.claude/rules/security-sensitive.md`, `deploy.md`, `contracts.md`, `integrations.md`, `migrations.md`
 - `docs/stack-reference/tooling/` (gitleaks, OSV-Scanner, govulncheck versions and usage), `vite-react/best-practices.md` §2–§4 and §11 (token storage, CSP, pnpm supply chain), `postgres/best-practices.md` §1 and §6, `mongo/best-practices.md` §4 and §7–§8, `redis/best-practices.md` §7, `docker-compose/best-practices.md` §2–§5, `compose/best-practices.md` (Keystore, Credential Manager), `swiftui/best-practices.md` (privacy manifests), `pins.yaml`
-- `docs/ROADMAP.md` licence decisions L1–L4 and T1 (what may ship in a customer bundle)
+- `.claude/docs/standing-decisions.md` licence decisions L1–L4 and T1 (what may ship in a customer bundle)
 - `project.yaml` (`tenancy`, `deploy`, `distribution`, `workflow`): `bash .claude/hooks/yaml-helper.sh resolve_config --keys tenancy,deploy,distribution,workflow`
 - `docs/architecture/threat-models/`, existing ADRs, the story, spec and research note
 

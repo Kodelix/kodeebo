@@ -65,7 +65,7 @@ write NOT SOURCEABLE - <what was searched>:
    limits. Do not name a service you did not read about.
 At least two options per runtime, each with cost, risk, performance, operability
 and self-hosted bundle impact (licence compatible with shipping inside the customer
-bundle: docs/ROADMAP.md L1-L4 do not cover libraries - state the library's licence
+bundle: .claude/docs/standing-decisions.md L1-L4 do not cover libraries - state the library's licence
 and flag copyleft). Recommend, do not decide: mark the Decision "Recommended -
 pending user decision".
 Never paste secrets or keys into a search query or the note.

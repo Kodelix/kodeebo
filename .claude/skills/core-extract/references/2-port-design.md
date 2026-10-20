@@ -66,7 +66,7 @@ owner, never skipped.
    product (the contract lives in the core repo).
 3. **Adapters** — each real adapter and its infrastructure, checked against the
    customer-bundle rules (Valkey for cache, the official Mongo image only,
-   OTel Collector only; Dragonfly hosted-only — `docs/ROADMAP.md` L1–L4,
+   OTel Collector only; Dragonfly hosted-only — `.claude/docs/standing-decisions.md` L1–L4,
    `.claude/rules/deploy.md`). Plus a shipped **in-memory/fake adapter** for
    consumers' unit tests.
 4. **Conformance suite** — the named behaviours **every** adapter (including the

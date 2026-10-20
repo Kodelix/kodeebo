@@ -91,7 +91,7 @@ and checks every stack reference's **Last verified** age against 90 days.
 
 **Read `references/4-licences-and-bundle-rules.md` now and follow it.** It checks
 the customer bundle (`deploy/self-hosted/`) against the decisions L1-L4 in
-`docs/ROADMAP.md`, and reviews dependency licences, flagging copyleft and
+`.claude/docs/standing-decisions.md`, and reviews dependency licences, flagging copyleft and
 non-open-source terms in anything shipped.
 
 ## Phase 5: Triage (parallel)

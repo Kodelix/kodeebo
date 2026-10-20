@@ -283,7 +283,7 @@ chose to proceed.
   re-ask in plain text and wait.
 - **One decision at a time:** produced (paths) · what it decides · options · a
   recommendation citing an artifact.
-- **Standing decisions are not re-asked** (`docs/ROADMAP.md`: web stack, licence
+- **Standing decisions are not re-asked** (`.claude/docs/standing-decisions.md`: web stack, licence
   rules L1–L4, core per track, markets).
 - **No commits, pushes, deploys or publications** without an explicit instruction
   for that action; no migration applied from here.

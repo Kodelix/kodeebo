@@ -52,7 +52,7 @@ the case informs (launch / price / enter a country / spend a budget), horizon.
 Read, recording FOUND or ABSENT: `business/pricing/*` (ARPA, licence price, margin
 floor), `business/market/*`, `business/competitors/*`, `business/marketing/*`
 (CAC targets and channel rows), `business/sales/*` (selling cost, cycle),
-`design/product-brief.md`, `docs/ROADMAP.md`, the cost inputs (`deploy/`,
+`design/product-brief.md`, `.claude/docs/standing-decisions.md`, the cost inputs (`deploy/`,
 `docs/architecture/perf-budgets.md`, `slos.md`, hosting notes in `docs/research/`)
 and any actuals the user supplies (real churn, real CAC — only the user can
 provide these).

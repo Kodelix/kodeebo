@@ -16,7 +16,7 @@ set up measurement so the next decision is made from results, not opinion.
 ## Read First
 
 - `.claude/docs/business-research-protocol.md` — mandatory: four fields per number, tiers, `NOT SOURCEABLE` plus ranges, local currency first, no fabricated quotes or testimonials, no legal conclusions
-- `.claude/docs/research-protocol.md`, `docs/ROADMAP.md` (business model), `design/product-brief.md` (ICP, positioning, decision log), `PRODUCT.md` (project root — brand and tone)
+- `.claude/docs/research-protocol.md`, `.claude/docs/standing-decisions.md` (business model), `design/product-brief.md` (ICP, positioning, decision log), `PRODUCT.md` (project root — brand and tone)
 - `.claude/docs/directory-structure.md` — `business/marketing/`, `business/market/`, `business/competitors/`; existing content there
 - `.claude/docs/templates/product-brief.md`; `.claude/docs/security-baseline.md` (privacy-law row) and `.claude/docs/templates/tracking-plan.md` for consent and event rules
 - `design/specs/` for site/landing features, `site/` Astro SEO and i18n constraints via `docs/stack-reference/astro/best-practices.md`

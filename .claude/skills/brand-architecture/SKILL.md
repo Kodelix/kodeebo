@@ -76,7 +76,7 @@ No argument → ask which product family or naming question this is, then stop.
 
 Read, recording FOUND or ABSENT: `design/product-brief.md` (segment, positioning,
 named alternatives, product name of record), `PRODUCT.md` and `DESIGN.md` at the repo
-root (brand and tone of record — read-only here), `docs/ROADMAP.md`,
+root (brand and tone of record — read-only here), `.claude/docs/standing-decisions.md`,
 `business/market/*`, `business/competitors/*` (excluding `notes/`),
 `business/marketing/*`, `design/localization/*`, and existing `business/brand/*`
 (to refresh, not duplicate; older naming files are kept). `project.yaml` names the

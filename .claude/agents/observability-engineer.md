@@ -21,7 +21,7 @@ install sends nothing anywhere unless they opt in.
 - `.claude/rules/deploy.md` (customer bundle: OTel Collector only, exporters off), `backend-go.md` / `backend-ktor.md`, `integrations.md` (provider span attributes)
 - `docs/stack-reference/opentelemetry/` — all four files: `VERSION.md` (stability per signal, Collector component stability), `best-practices.md` §1 (telemetry off), §2 (instrumentation), §4 (sampling), §5 (cardinality), §6 (PII redaction), §7–§8 (pipeline order), `breaking-changes.md`, `deprecated-apis.md`
 - `docs/stack-reference/go/`, `ktor/`, `postgres/best-practices.md` §5 (`pg_stat_statements`, dashboard minimum), `redis/best-practices.md` §8, `docker-compose/best-practices.md` §6 (log rotation) and §10, `pins.yaml` (`opentelemetry`)
-- `docs/ROADMAP.md` L4 (customer bundle ships only the Collector, telemetry off by default)
+- `.claude/docs/standing-decisions.md` L4 (customer bundle ships only the Collector, telemetry off by default)
 - `docs/architecture/slos.md`, `docs/runbooks/`, `docs/architecture/perf-budgets.md`, the story, spec and research note
 
 Never write an API, flag, config key or version from memory — the stack

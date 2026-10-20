@@ -73,7 +73,7 @@ Scope rules: omit a section's conditional items with a one-line
 - [ ] **Sub-processor list** published and current (hosting, email/SMS, payment, analytics, error tracking)
 - [ ] **Breach notification** procedure written and linked to `incident-response.md` (who decides, who notifies regulators and customers, timing from the official rule — counsel confirms)
 - [ ] Cookie/consent text and the **analytics consent** flow match section 9; marketing-email consent and unsubscribe work
-- [ ] Third-party licence notices and attributions complete; bundle redistribution licences reviewed (L1–L4 in `docs/ROADMAP.md`) — self-hosted only
+- [ ] Third-party licence notices and attributions complete; bundle redistribution licences reviewed (L1–L4 in `.claude/docs/standing-decisions.md`) — self-hosted only
 - [ ] For self-hosted: licence agreement / EULA covers activation, grace period, update eligibility, audit rights — counsel approved
 - [ ] Trademark / name clearance and domain ownership confirmed
 - [ ] Refund, cancellation and acceptable-use policies published and consistent with `pricing-model.md`

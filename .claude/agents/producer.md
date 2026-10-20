@@ -22,7 +22,7 @@ invalidates. You keep the team's attention on the critical path.
 - `.claude/docs/automation-modes.md` and `.claude/docs/error-recovery-protocol.md` — how skills prompt and how a blocked step is reported
 - `.claude/docs/agent-roster.md` — who owns what, for routing and escalation
 - `project.yaml`: `bash .claude/hooks/yaml-helper.sh resolve_config --keys workflow,review_mode,qa.level,team.size,story_granularity,project.stage,stack`; the `core` keys are read from the file directly
-- `design/product-brief.md` (build-order field), `design/specs/`, `docs/architecture/` (ADRs, `risk-register.md`), `production/` (epics, stories, sprints, releases, `qa/evidence/`), `docs/ROADMAP.md`
+- `design/product-brief.md` (build-order field), `design/specs/`, `docs/architecture/` (ADRs, `risk-register.md`), `production/` (epics, stories, sprints, releases, `qa/evidence/`), `.claude/docs/standing-decisions.md`
 
 Never write an estimate, date or dependency from memory — plans cite the
 spec, story or measured velocity they derive from. If it is not there, say so

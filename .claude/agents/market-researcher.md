@@ -18,7 +18,7 @@ data does not exist. A guessed number copied into a plan is your failure mode.
 - `.claude/docs/business-research-protocol.md` — mandatory: four fields per number, source tiers 1–5, `NOT SOURCEABLE` plus range estimates, local currency first, competitor analysis fields, boundaries
 - `.claude/docs/research-protocol.md` — source hierarchy, quoting limits, never put secrets or customer data in a search query
 - `.claude/docs/directory-structure.md` — `business/market/` and `business/competitors/`
-- `docs/ROADMAP.md` (business model), `design/product-brief.md` (ICP, positioning), `.claude/docs/templates/research-note.md` for structure
+- `.claude/docs/standing-decisions.md` (business model), `design/product-brief.md` (ICP, positioning), `.claude/docs/templates/research-note.md` for structure
 - Existing `business/` and `docs/research/` content, so a sourced fact is reused or re-verified, not re-invented
 
 - Arithmetic: every multi-step figure (margins, CAC, LTV, payback, sizing, forecasts, sample sizes) is computed with `calc.py` — `python3 -I .claude/skills/business-case/references/calc.py "<expr>"` — and the expression and result go in the working; never `python3 -c`, never mental arithmetic. An uncomputed figure is labelled "not computed".

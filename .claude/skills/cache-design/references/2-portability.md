@@ -3,7 +3,7 @@
 > Hosted may run **Redis 8.2** (`redis:8.2`, Extended support to 2030-09-01) or
 > **Dragonfly** (`v2.0.2`); the customer bundle runs **Valkey 9.1.x**
 > (`valkey/valkey:9.1.2`, BSD-3). Dragonfly is hosted-only and Redis >= 7.4 never
-> ships in a bundle (`docs/ROADMAP.md` L1-L2; `.claude/rules/deploy.md`). Pins:
+> ships in a bundle (`.claude/docs/standing-decisions.md` L1-L2; `.claude/rules/deploy.md`). Pins:
 > `docs/stack-reference/pins.yaml`. Everything below is checked against the stack
 > reference; nothing is recalled.
 

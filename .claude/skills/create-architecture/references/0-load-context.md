@@ -49,7 +49,7 @@ Also read, once: `.claude/docs/clean-architecture.md`, `.claude/docs/api-standar
 `.claude/docs/observability-standard.md`, `.claude/docs/performance-standard.md`,
 `.claude/rules/deploy.md` and, if the core is used, `core.track`, `core.modules`
 and `core.version` from `project.yaml`. Licence decisions (cache, Mongo,
-observability in customer bundles) are in `docs/ROADMAP.md`.
+observability in customer bundles) are in `.claude/docs/standing-decisions.md`.
 
 ### 0b. Product Context + Technical Requirements Extraction
 

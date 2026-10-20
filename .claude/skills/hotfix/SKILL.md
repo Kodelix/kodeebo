@@ -190,7 +190,7 @@ Constraints on the fix itself:
 - Tenant-scoping rules, error mapping and secret handling are not relaxed
   "just for the hotfix" (`.claude/docs/coding-standards.md`).
 - If the fix touches `deploy/self-hosted/`, it respects the licence decisions in
-  `docs/ROADMAP.md` (L1–L4) — the emergency is not a reason to ship a
+  `.claude/docs/standing-decisions.md` (L1–L4) — the emergency is not a reason to ship a
   component that is excluded from customer bundles.
 
 Present the root cause and proposed fix, then ask: "May I implement this fix?"

@@ -19,10 +19,15 @@ or the temporary section path when sub-questions run in parallel}
 Mode: {new | re-verify | extend}   Existing note to build on: {path | none}
 ID block (parallel parts only): findings {F n01-F n99}, spikes {S n0-S n9}; use no
 ID outside it; cite IDs from other parts or notes with a prefix (e.g. "desktop-note F117").
-Budget: {20} units. Each WebFetch, WebSearch or spike command you run (Bash) spends one
-unit: runs take turns too. Write each finding into the file before the next fetch or
-run. Refresh provisional sections 4-9 every 8 units; when the budget is spent, stop
-fetching and running and finalise sections 4-9 from the file.
+Budget: {12} units AND turn 26, whichever comes first. Each WebFetch, WebSearch or
+spike command you run (Bash) spends one unit. A turn is one message of yours that
+calls tools (parallel calls in one message are one turn); count them from your own
+history - every Read, Edit and Write turn counts, not only fetches. A unit costs at
+least two turns (the action, then writing its finding), so batch: fetch in parallel
+in one message, write several findings in one Edit, run all spike cases from one
+script. Write each finding into the file before the next fetch or run. Refresh
+provisional sections 4-9 at turns 12 and 20. At turn 26, or when the units are
+spent, stop fetching and running and finalise sections 4-9 from the file by turn 34.
 
 Decision this informs: {one paragraph from Phase 1}
 Feature / story: {design/specs/<slug>.md | story ID | none}
@@ -34,7 +39,7 @@ only what the question needs):
 {component - pins.yaml value - stack-reference file - Last verified date; one per line}
 Stale references (older than their pin): {list | none}
 Layers with NO stack reference: {list | none} - write NOT SOURCEABLE, do not fill.
-Licence decisions in force (docs/ROADMAP.md L1-L4, T1): {the ones that apply}
+Licence decisions in force (.claude/docs/standing-decisions.md L1-L4, T1): {the ones that apply}
 Existing notes to reuse by link: {paths | none}
 Known constraints and ruled-out options: {list | none}
 
@@ -74,6 +79,14 @@ Rules you must follow:
   gradle --offline, docker run --pull=never) and list what they would fetch
   before switching it off. Relocating a cache can trigger a fresh fetch: check
   first.
+- Leaving no-download mode is the caller's decision, never yours: when an offline
+  run fails, copy the missing artifacts it names (for Gradle, the "No cached
+  version available for offline mode" lines) and return "needs approval: <that
+  list>, <size, or 'size unknown - estimate N MB'>". Dependency resolution fetches
+  transitive artifacts you did not name (Gradle's kotlin-dsl pulls a whole Kotlin
+  toolchain): an approval covers only the list you showed, so if the resolver
+  wants more, stop again. Record the cache size (du -sh) before and after every
+  approved fetch and put the real total in your return.
 - Never paste secrets, customer data or internal URLs into a search query or the
   note.
 - Recommend, do not decide: the Decision section holds your recommendation marked
@@ -85,7 +98,8 @@ Rules you must follow:
 - Open Questions: each with an owner and what it blocks.
 - Set the note's `Status:` to `Draft`. Only the caller sets `Complete`, after its
   checks and the user's approved write.
-- You cannot see your remaining turns; the budget above is your only stop rule.
+- You cannot see your remaining turns (the limit is 40); the units and the turn
+  count above are your stop rules.
   Create the destination file within your first three turns (all nine headings,
   the Question, the pinned Versions baseline), then add each finding to it as you
   fetch or run it - never hold findings for one final write. When the budget is
@@ -114,21 +128,28 @@ declined in two products; do not offer one), by section (Versions and Findings a
 disjoint ID blocks make the `F` and `S` numbers unique; check for duplicates
 before writing; Options, Decision and the rest are written once by you from the
 sections returned). Your synthesis summarises; it never replaces a part's own
-text. Each part's sections 4-9 (options, decision, notes, open questions, and any
-table in them such as a catalogue or a template matrix) are carried **verbatim**
-into the merged note under `## Appendix: Part <n> detail (verbatim)`. Delete the
-temporary files **only after** the user approved the merged note. Before asking
-for that approval, check the merged file by content: its finding rows equal the
-sum of the parts' rows, no ID appears twice, sections 4-9 are non-empty in the
-synthesis and in every per-part copy, and **every non-blank line of each part's
-sections 4-9 occurs in the merged file** (a read-only comparison, for example
-`grep -Fxv -f <merged> <part-section-lines>`, which prints the lines missing).
+text. Everything in each part from section 4 to the end of the file (options,
+decision, notes, open questions, any table in them such as a catalogue or a
+template matrix, and any trailing block after section 9 such as an evidence and
+fetch log or a run record) is carried **verbatim** into the merged note under
+`## Appendix: Part <n> detail (verbatim)`. Delete the temporary files **only
+after** the user approved the merged note. Before asking for that approval,
+check the merged file by content: its finding rows equal the sum of the parts'
+rows, no ID appears twice, sections 4-9 are non-empty in the synthesis and in
+every per-part copy, and **every non-blank line of each part from the section 4
+heading to the end of the file occurs in the merged file** (a read-only
+comparison, for example `awk '/^## 4\./{f=1} f' <part> | grep -v '^\s*$' |
+grep -Fxv -f <merged>`, which prints the lines missing; strip heading markers on
+both sides when the appendix demotes headings). Stopping the comparison at
+section 9 or 10 is not the check.
 A missing line blocks the deletion: carry it, then check again. A comparison
 that could not run is reported as `not run - <reason>` and also blocks it. The
 deletion question names the files and reports this check's result. (A Kodeebo merge kept
 every finding row but only summarised part 3's catalogue and template tables;
 the part file was deleted and the tables had to be recovered from the session
-record for the ADR that needed them.)
+record for the ADR that needed them. A later merge checked sections 4-10 only
+and missed two parts' trailing evidence and fetch logs - budget, downloads with
+sizes, evidence paths.)
 
 ## Brief template (`refresh` mode)
 

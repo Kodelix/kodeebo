@@ -68,7 +68,7 @@ Mode additions to the brief:
 - `researcher`: add the pinned versions read from `pins.yaml` with their
   stack-reference files and Last-verified dates, the stale references, the layers
   with no stack reference (write `NOT SOURCEABLE`, do not fill), and the
-  licence decisions in force (`docs/ROADMAP.md` L1-L4, T1). It may use WebSearch
+  licence decisions in force (`.claude/docs/standing-decisions.md` L1-L4, T1). It may use WebSearch
   and WebFetch **only** to source external facts about the choices in the ledger
   at the pinned versions (advisories on GHSA/OSV with the date searched,
   deprecations, official guidance, ASVS/MASVS IDs looked up in the official

@@ -69,8 +69,9 @@ Every task follows: **Question -> Options -> Decision -> Draft -> Approval**
 - Agents MUST show drafts or summaries before requesting approval. A draft that
   needs a file (to run checks on it, or because it is too long for the chat)
   goes in `production/session-state/drafts/` — gitignored, created on first
-  use, asked for like any new file. Never write outside the repository: `/tmp`
-  and home paths are not draft locations
+  use, asked for like any new file. Never write outside the repository: `/tmp`,
+  `/dev/shm` and home paths are not draft locations (`validate-scratch-paths.sh`
+  blocks the common forms; a temp dir is `mktemp -d -p production/session-state/drafts`)
 - Multi-file changes require explicit approval for the full changeset
 - No commits without user instruction
 - A skipped or dismissed question is not an answer: act on nothing, re-ask in

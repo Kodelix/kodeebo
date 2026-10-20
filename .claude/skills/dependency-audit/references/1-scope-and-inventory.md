@@ -63,7 +63,7 @@ This table is the **denominator**: Phase 2 reports each row as scanned, unscanne
 | Pins and tool pins | `docs/stack-reference/pins.yaml` (`tooling.*`) | tool version comparison, coherence |
 | Tooling reference | `docs/stack-reference/tooling/best-practices.md`, `VERSION.md` | sourced commands and flags |
 | Layer references | `docs/stack-reference/<layer>/{VERSION,deprecated-apis,breaking-changes}.md` | deprecated APIs, freshness |
-| Licence decisions | `docs/ROADMAP.md` (L1-L4, T1), `.claude/rules/deploy.md` | bundle rules |
+| Licence decisions | `.claude/docs/standing-decisions.md` (L1-L4, T1), `.claude/rules/deploy.md` | bundle rules |
 | Earlier audits | `production/qa/dependency-audit-*.md`, `production/qa/security-audit-*.md` | suppressions with expiry, prior findings |
 | Studio scripts | `.claude/scripts/project-coherence.sh` | pin drift |
 

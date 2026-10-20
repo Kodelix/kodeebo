@@ -11,7 +11,7 @@ read by the `SL-RELEASE-SECURITY` gate and `/tech-debt`.
 |-------|----------|-----------|
 | Manifests, lockfiles, images, CI files discovered in the repository | Yes (none found = NOT ASSESSED for that ecosystem) | Yes |
 | `docs/stack-reference/pins.yaml`, `tooling/`, `<layer>/{VERSION,deprecated-apis}.md` | Yes | Yes |
-| `docs/ROADMAP.md` decisions L1-L4, T1; `.claude/rules/deploy.md` | Yes | Yes |
+| `.claude/docs/standing-decisions.md` decisions L1-L4, T1; `.claude/rules/deploy.md` | Yes | Yes |
 | `project.yaml` via `resolve_config` (`stack`, `review_mode`, `automation`) | Yes (unset = asked) | Yes |
 | `bash .claude/scripts/project-coherence.sh` | Yes | Run, not edited |
 | Installed tools: govulncheck, osv-scanner, pnpm, gitleaks | Each optional; absent = `not run` | - |

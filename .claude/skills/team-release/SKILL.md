@@ -185,7 +185,7 @@ Delegate to **producer**:
 Delegate to **release-manager**:
 - Bump version numbers in all relevant places on `main` per product layer (backend, web, mobile build numbers, bundle, contract version); the commit carrying the bump is the release candidate. Development is trunk-based — a release is a tag on `main` (applied in Phase 6), not a branch
 - Confirm the release checklist (`/release-checklist`, run before `/gate-check release`) is complete for this candidate; run it now only if none exists. It covers hosted deploy, self-hosted bundle, Play, App Store, web and site targets as the editions require
-- For the self-hosted bundle: the upgrade-from matrix, migration and downtime notes, licence/update-eligibility implications, signed artefacts and SBOM, and the cache/Mongo/observability components respecting the licence decisions in `docs/ROADMAP.md` (L1–L4)
+- For the self-hosted bundle: the upgrade-from matrix, migration and downtime notes, licence/update-eligibility implications, signed artefacts and SBOM, and the cache/Mongo/observability components respecting the licence decisions in `.claude/docs/standing-decisions.md` (L1–L4)
 - For mobile: store build numbers, the target API/SDK requirements and the privacy declarations as sourced in `docs/stack-reference/` (anything not sourced is `NOT SOURCEABLE`, flagged — never filled from memory)
 - Cut a `release/[version]` branch from the candidate only if this release needs stabilising — bug fixes only there, and every fix lands on `main` as well
 - Output: release candidate commit (plus the `release/*` branch, if one was cut) and checklist

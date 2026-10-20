@@ -58,7 +58,7 @@ via ADR on `multitenancy-specialist`'s recommendation, never guessed here); a st
 named in the change but absent from `stack.data` is a **new store** — that is an
 ADR for `cto` and, for customer bundles, a licence review (Valkey for cache,
 the official Mongo image reference only, Dragonfly hosted-only —
-`docs/ROADMAP.md` L1–L3), not something this skill adds.
+`.claude/docs/standing-decisions.md` L1–L3), not something this skill adds.
 
 `review_mode` sets director-gate depth. This pipeline spawns no gate itself:
 `CTO-ADR` runs inside `/architecture-decision`, `SL-TENANT-ISOLATION` inside

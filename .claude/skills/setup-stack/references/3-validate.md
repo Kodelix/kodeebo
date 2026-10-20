@@ -76,7 +76,7 @@ Report each as a finding with the two values involved. None is auto-corrected.
 ### 3c: Licence constraints for customer bundles
 
 When `distribution.model` is `self-hosted` or `hybrid`, the bundle in
-`deploy/self-hosted/` is bound by the decisions recorded in `docs/ROADMAP.md`
+`deploy/self-hosted/` is bound by the decisions recorded in `.claude/docs/standing-decisions.md`
 and `.claude/rules/deploy.md`. Tell the user, once, as advisories (not errors):
 
 - `dragonfly` in `stack.data` is **hosted only** — it must not appear in the customer bundle; the bundle's cache is Valkey, so code stays within the portable command subset.

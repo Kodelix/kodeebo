@@ -46,7 +46,7 @@ gitleaks dir . --redact -f json -r <out-tree>.json
   user's decision. Record the rotation, or `rotation: not done` as an open
   CRITICAL.
 - Maintenance note carried from the reference: gitleaks receives security
-  patches only; ROADMAP decision T1 keeps it for now.
+  patches only; standing decision T1 (`.claude/docs/standing-decisions.md`) keeps it for now.
 
 ## govulncheck — Go dependencies (category 9)
 

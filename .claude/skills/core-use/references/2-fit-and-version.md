@@ -31,7 +31,7 @@ the fit table as a gap — `cto.md` requires both of a core module.
 | Track: module exists in the product's track core | tag + module path | yes / no |
 | Toolchain floor: the module's declared language/toolchain/framework versions vs the product's `pins.yaml` rows (run `bash .claude/scripts/project-coherence.sh`, show its real output) | module build file vs `pins.yaml` | compatible / BEHIND / unreadable |
 | Tenancy: the module is tenant-aware in the way `tenancy.model` needs (tenant taken from the authenticated context, scoping inside the adapter) | module docs, adapter file:line | yes / no / n/a |
-| Infrastructure it requires vs distribution: for `distribution.model` `self-hosted` or `hybrid`, every engine the module's adapters need must be allowed in the customer bundle (Valkey not Redis/Dragonfly for cache; official Mongo image only; OTel Collector only — `docs/ROADMAP.md` L1–L4, `.claude/rules/deploy.md`) | adapter list vs rules | OK / CONFLICT |
+| Infrastructure it requires vs distribution: for `distribution.model` `self-hosted` or `hybrid`, every engine the module's adapters need must be allowed in the customer bundle (Valkey not Redis/Dragonfly for cache; official Mongo image only; OTel Collector only — `.claude/docs/standing-decisions.md` L1–L4, `.claude/rules/deploy.md`) | adapter list vs rules | OK / CONFLICT |
 | Observability: the module emits spans/metrics/logs per `observability-standard.md` and carries no PII | module docs, adapter file:line | yes / no / not documented |
 | Deprecations: any symbol the product would use is deprecated at this tag | CHANGELOG | none / list |
 | Conformance: the adapter the product will use is covered by the module's conformance tests | conformance test paths | yes / no / not found |

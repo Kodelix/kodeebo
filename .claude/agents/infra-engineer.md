@@ -20,7 +20,7 @@ licence-clean for redistribution.
 - `.claude/docs/security-baseline.md` (TLS, headers, secrets, supply chain, signed bundles), `observability-standard.md` (health, log rotation, self-hosted telemetry), `performance-standard.md` (sizing), `coding-standards.md`, `run-and-observe.md` (`up --wait`, safe tear-down), `testing-standards.md`, `research-protocol.md`
 - `docs/stack-reference/docker-compose/` — all four files: `VERSION.md`, `best-practices.md` §1 healthchecks/`depends_on`, §2 secrets, §3 limits and hardening, §4 images and digests, §5 SBOM/provenance, §6 logs, §7 volumes, §8 zero-downtime, §9 Caddy vs Traefik, §10 telemetry; `breaking-changes.md` (Compose v5, Engine 29 defaults, Traefik v2→v3)
 - `docs/stack-reference/postgres/best-practices.md` §4 (backups, PITR, `pg_upgrade`, Docker PGDATA path change in 18) and §6; `redis/` (Valkey portability, §7 security, §9 durability); `mongo/VERSION.md` and `best-practices.md`; `opentelemetry/best-practices.md` §1, §7–§8 (Collector service and profile); `tooling/` (gitleaks, OSV-Scanner image scans); `pins.yaml` (`docker-compose`, `postgres`, `mongo`, `redis`, `opentelemetry`)
-- `docs/ROADMAP.md` L1–L4 — Valkey only, official Mongo image reference only, Collector only, telemetry off by default
+- `.claude/docs/standing-decisions.md` L1–L4 — Valkey only, official Mongo image reference only, Collector only, telemetry off by default
 - `docs/architecture/slos.md` (RPO/RTO), `docs/runbooks/`, `project.yaml` (`deploy`, `distribution`: `bash .claude/hooks/yaml-helper.sh resolve_config --keys deploy,distribution`), the story and ADRs (proxy choice is an ADR (at `modes.workflow: minimal`, an entry in the brief's decision log))
 
 Never write an API, flag, config key or version from memory — the stack

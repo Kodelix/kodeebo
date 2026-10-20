@@ -82,7 +82,7 @@ summary as unchanged or unset.
 These are defaults to reason from, not verdicts; present at most two options with
 the honest trade-off, then let the user choose.
 
-- **Web app**: the studio ships one answer, a static Vite + React SPA with no Node server in production (`CLAUDE.md`, `docs/ROADMAP.md`). `none` is right for an API-only or mobile-only product.
+- **Web app**: the studio ships one answer, a static Vite + React SPA with no Node server in production (`CLAUDE.md`, `.claude/docs/standing-decisions.md`). `none` is right for an API-only or mobile-only product.
 - **Backend**: `go` and `ktor` each have a studio lead agent (`go-lead`, `ktor-lead`) and a shared-core track (`saas-core-go`, `saas-core-kotlin`). The trade-off to put to the user: Kotlin on both the backend and a KMP/Android client lets code and people move between them; Go keeps the backend a separate toolchain from the mobile apps. `go+ktor` doubles the cores, agents and CI — recommend it only with a stated reason.
 - **Tenancy**: `shared-schema-rls` is the lowest-cost multi-tenant model and the one the studio's tenant-isolation checks are written around; stronger models cost more operations. Say which isolation test each implies (`.claude/docs/security-baseline.md`).
 - **Desktop**: the studio has no default desktop runtime and no desktop lead agent. `stack.desktop` is set only from a `/research` note and an ADR (OS versions to support, packaging, offline storage, hardware such as printers and cash drawers); until they exist leave it unset, or `none` when the product has no desktop client. The ADR also names which lead owns `desktop/` (`/dev-story` routes by it).

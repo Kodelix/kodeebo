@@ -45,7 +45,7 @@ No argument → ask for the topic and stop. Parse: countries (each is sized on i
 own), segment, edition (hosted and self-hosted are **never blended**), horizon.
 
 Read, recording FOUND or ABSENT: `design/product-brief.md` (ICP, jurisdiction,
-positioning), `docs/ROADMAP.md`, existing `business/market/*`,
+positioning), `.claude/docs/standing-decisions.md`, existing `business/market/*`,
 `business/competitors/*`, `business/pricing/*` (price points used as `P`), and
 `docs/research/`. An existing sourced row is reused with its date and re-verified
 when older than the horizon the user states (ask for it if none).

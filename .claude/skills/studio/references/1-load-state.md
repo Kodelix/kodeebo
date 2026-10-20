@@ -26,7 +26,7 @@
    output: it says which artifacts exist (`PRESENT`/`ABSENT`/`PATTERN_MISS`).
    It emits observations only; this skill decides what they mean.
 
-4. **Standing decisions.** Read `docs/ROADMAP.md` (decisions tables) if it
+4. **Standing decisions.** Read `.claude/docs/standing-decisions.md` (decisions tables) if it
    exists in this repo, and `design/product-brief.md` decision log if present.
 
 5. **Status mode** stops here: print

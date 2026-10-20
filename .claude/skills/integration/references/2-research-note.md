@@ -37,7 +37,7 @@ Distribution: {distribution.model}   Tenancy: {tenancy.model | unset}
 Features served: {design/specs/<feature>.md, ...}
 Pinned versions already read: {component - pins.yaml value - stack-reference file - Last verified}
 Stale references: {list | none}   Layers with NO stack reference: {list | none}
-Licence decisions in force (docs/ROADMAP.md L1-L4, T1): {those that apply}
+Licence decisions in force (.claude/docs/standing-decisions.md L1-L4, T1): {those that apply}
 
 Establish from the provider's OFFICIAL documentation, citing the URL fetched and
 the date, or write NOT SOURCEABLE - <what was searched>:

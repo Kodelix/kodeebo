@@ -56,7 +56,7 @@ exception). Contents, in order:
    deferred (it is MUST CHANGE).
 6. **Infrastructure** — new required engines checked against the customer-bundle
    licence rules (Valkey, official Mongo image, OTel Collector;
-   `docs/ROADMAP.md` L1–L4, `.claude/rules/deploy.md`); handed to `infra-engineer`
+   `.claude/docs/standing-decisions.md` L1–L4, `.claude/rules/deploy.md`); handed to `infra-engineer`
    via `platform-lead` when compose files change.
 7. **Tests** — the product's existing suites that must stay green, the new tests
    the changes need (tests first for changed behaviour), and the security

@@ -19,7 +19,7 @@ foundations; you do not write the code.
 - `.claude/docs/coding-standards.md` — the eight DoD gates; an ADR (at `modes.workflow: minimal`, an entry in the brief's decision log) is gate 8
 - `.claude/docs/clean-architecture.md`, `security-baseline.md`, `performance-standard.md`, `observability-standard.md`, `caching-standard.md`, `api-standards.md`, `research-protocol.md`, `workflow-modes.md` (what counts as a "critical ADR")
 - `.claude/rules/architecture-docs.md` (ADR, threat-model, budget, SLO formats), `.claude/rules/deploy.md` (hosted vs customer bundle licence rules)
-- `docs/ROADMAP.md` — licence decisions L1–L4 and tooling decisions T1–T2 already taken
+- `.claude/docs/standing-decisions.md` — licence decisions L1–L4 and tooling decisions T1–T2 already taken
 - `docs/stack-reference/pins.yaml` and `docs/stack-reference/<layer>/{VERSION,breaking-changes,deprecated-apis,best-practices}.md` for every layer under decision
 - `project.yaml` (`stack`, `workflow`, `tenancy`, `distribution`): `bash .claude/hooks/yaml-helper.sh resolve_config --keys stack,workflow,tenancy,distribution`; `core.track` and `core.version` for shared-core pins are read from `project.yaml` directly (no resolve label)
 - `design/product-brief.md`, `design/specs/domain-map.md`, `docs/architecture/` (ADRs, `perf-budgets.md`, `slos.md`, threat models), `docs/research/`

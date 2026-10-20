@@ -94,7 +94,7 @@ trigger table and the paths (do not paste documents). Named output
    `NOT SOURCEABLE` → `/research` and an ADR before the method is chosen.**
 9. **Customer-bundle rules** — Valkey for cache, the official Mongo image
    reference only (never a shipped binary or derived image), Dragonfly hosted-only,
-   OTel Collector only (`docs/ROADMAP.md` L1–L4, `.claude/rules/deploy.md`).
+   OTel Collector only (`.claude/docs/standing-decisions.md` L1–L4, `.claude/rules/deploy.md`).
 10. **Which specialists run in Phase 3, and what each is asked.**
 
 ## 4. Phase 3 — specialist designs, in parallel

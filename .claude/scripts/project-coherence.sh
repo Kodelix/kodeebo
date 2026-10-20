@@ -183,7 +183,7 @@ for cf in compose_files:
             pin_tag = pins.get(key, "").rpartition(":")[2]
             if pin_tag: report(key, tag, cf)
         # Licence rules apply to the customer bundle only (decisions L1-L4,
-        # docs/ROADMAP.md; rules in .claude/rules/deploy.md). ALLOWLIST: every
+        # .claude/docs/standing-decisions.md; rules in .claude/rules/deploy.md). ALLOWLIST: every
         # image in deploy/self-hosted/ must be classified. Unknown images are
         # reported, never assumed fine (see /dependency-audit).
         if "/self-hosted/" in "/" + cf.replace(os.sep, "/"):

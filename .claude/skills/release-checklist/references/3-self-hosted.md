@@ -1,7 +1,7 @@
 # /release-checklist — Track 2: Self-Hosted Bundle
 
 > Emitted when `distribution.model` is `self-hosted` or `hybrid`. The bundle is
-> `deploy/self-hosted/`. Sources: `.claude/rules/deploy.md`, `docs/ROADMAP.md`
+> `deploy/self-hosted/`. Sources: `.claude/rules/deploy.md`, `.claude/docs/standing-decisions.md`
 > licence decisions L1–L4, `.claude/docs/security-baseline.md` (signed bundles,
 > SBOM, licence keys), `.claude/agents/release-manager.md`.
 >

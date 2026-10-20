@@ -4,7 +4,7 @@
 > counsel**, not legal advice. Terms are read from the licence text or the
 > package's official page, with the URL fetched; never recalled.
 
-## 1. Customer-bundle rules (derived from `docs/ROADMAP.md`, decided 2026-10-11)
+## 1. Customer-bundle rules (derived from `.claude/docs/standing-decisions.md`, decided 2026-10-11)
 
 The customer bundle is `deploy/self-hosted/` (`.claude/rules/deploy.md`).
 `deploy/hosted/` is our infrastructure: any engine in `pins.yaml` is allowed.

@@ -141,7 +141,7 @@ ASSESSED - [what was missing]`. Full procedure:
   report says so.
 - **Self-hosted telemetry is off by default and never phones home without opt-in;**
   the bundle ships only the OTel Collector with exporters disabled
-  (`docs/ROADMAP.md` L4).
+  (`.claude/docs/standing-decisions.md` L4).
 - **A check that did not run is reported as `not run`, never as passed.**
 - A skipped, dismissed or empty answer is not an answer: act on nothing, ask
   again in plain text and wait.

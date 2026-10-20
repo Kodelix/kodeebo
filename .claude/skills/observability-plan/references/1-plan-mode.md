@@ -95,7 +95,7 @@ append-only per-tenant audit log (`security-baseline.md`).
 Telemetry is **off by default** and never phones home without explicit opt-in.
 The bundle ships **only the OTel Collector** (Apache-2.0) with its config so the
 customer can point it at their own stack; no Grafana/Loki/Tempo/Mimir
-(`docs/ROADMAP.md` L4; `.claude/rules/deploy.md`). The plan states, per runtime:
+(`.claude/docs/standing-decisions.md` L4; `.claude/rules/deploy.md`). The plan states, per runtime:
 
 | Runtime | Off-by-default mechanism | Source status |
 |---|---|---|

@@ -18,7 +18,7 @@ behind it, the assumptions, and what to do next. You advise; the user decides.
 
 - `.claude/docs/business-research-protocol.md` — mandatory for you and every business agent: four fields per number, source tiers, `NOT SOURCEABLE` plus transparent range estimates, local currency first, VAT/e-invoicing from official sources, no fabricated quotes, no legal/tax conclusions
 - `.claude/docs/research-protocol.md` — source hierarchy and the unsourceable-is-a-valid-finding rule
-- `docs/ROADMAP.md` — business model decisions: annual subscription and one-time licence; hosted multi-tenant plus self-hosted enterprise; licence decisions L1–L4
+- `.claude/docs/standing-decisions.md` — business model decisions: annual subscription and one-time licence; hosted multi-tenant plus self-hosted enterprise; licence decisions L1–L4
 - `design/product-brief.md` (ICP, positioning, decision log), `design/specs/pricing-model.md` if present, `.claude/docs/templates/product-brief.md` and `pricing-model.md`
 - `.claude/docs/directory-structure.md` — `business/` folders (`market/`, `competitors/`, `pricing/`, `marketing/`, `sales/`, `cases/`)
 - Existing `business/` content, `docs/research/` notes, and `project.yaml` (`distribution`, `workflow`): `bash .claude/hooks/yaml-helper.sh resolve_config --keys distribution,workflow`

@@ -74,7 +74,7 @@ file. Then the **impact scan**, read-only:
   so). Run it **after** the edits too, if they are approved.
 - A change that crosses a major version, drops support, or changes a licence
   (Redis, Dragonfly, Mongo, Valkey, OTel: the L1-L4 decisions in
-  `docs/ROADMAP.md`) is flagged for `cto` / the user: it is a decision, not an
+  `.claude/docs/standing-decisions.md`) is flagged for `cto` / the user: it is a decision, not an
   update.
 
 ## R5. Approval and writes

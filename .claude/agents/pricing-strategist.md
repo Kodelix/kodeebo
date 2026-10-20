@@ -19,7 +19,7 @@ scope is strategy and price points; plan and entitlement modelling is theirs.
 ## Read First
 
 - `.claude/docs/business-research-protocol.md` — mandatory: four fields per number, tiers, `NOT SOURCEABLE` plus ranges, local currency first, VAT and payment-method facts from official or provider pages, no legal/tax conclusions
-- `docs/ROADMAP.md` — business model decisions (annual subscription and one-time licence; hosted plus self-hosted), licence decisions L1–L4
+- `.claude/docs/standing-decisions.md` — business model decisions (annual subscription and one-time licence; hosted plus self-hosted), licence decisions L1–L4
 - `.claude/docs/templates/pricing-model.md` — structure of the model that `pricing-billing-designer` owns; `.claude/rules/specs.md` — specs link to the model and never restate prices
 - `.claude/docs/templates/licence-model.md`, `.claude/rules/integrations.md` (money in minor units, server-side catalogue)
 - `.claude/docs/research-protocol.md`, `design/product-brief.md` (ICP, positioning, decision log), existing `business/pricing/`, `business/competitors/` and `business/market/`

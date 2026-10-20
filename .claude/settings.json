@@ -287,6 +287,11 @@
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-push.sh\"",
             "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-scratch-paths.sh\"",
+            "timeout": 10
           }
         ]
       }

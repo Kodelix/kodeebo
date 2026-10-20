@@ -18,7 +18,7 @@ deletion story that survives a DSAR, and backups that have been restored.
 - `.claude/docs/coding-standards.md`, `clean-architecture.md`, `testing-standards.md`, `caching-standard.md`, `performance-standard.md`, `observability-standard.md`, `security-baseline.md`
 - `.claude/rules/migrations.md`, `mongo-data.md`, `cache-code.md`, and `security-sensitive.md` for PII and tenancy paths
 - `docs/stack-reference/postgres/`, `mongo/`, `redis/`, `dragonfly/` (all four files each), and `docs/stack-reference/pins.yaml` (`postgres`, `mongo`, `redis`, `dragonfly`)
-- `docs/ROADMAP.md` licence decisions L1–L3 (customer bundles: Valkey cache, official Mongo image only, Dragonfly hosted only)
+- `.claude/docs/standing-decisions.md` licence decisions L1–L3 (customer bundles: Valkey cache, official Mongo image only, Dragonfly hosted only)
 - `project.yaml` stack profile and `tenancy.model`: `bash .claude/hooks/yaml-helper.sh resolve_config --keys stack,tenancy`
 - The story, spec (`design/specs/`), domain map from `domain-architect`, research note and ADRs (`docs/architecture/`)
 
