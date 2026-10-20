@@ -4,8 +4,9 @@
 > `<PLACEHOLDER: …>` is replaced with the real command, its exact expected output and its failure output
 > when the scripts are written (spikes S46 and S48). Until then this runbook cannot be run.
 > **Source:** `docs/architecture/adr-0009-deploy-and-build-tooling.md` (Accepted 2026-10-20) — § 1, § 2, § 3,
-> § 3a, § 4a–4c, Key Interfaces. Threat models: `tenant-isolation.md` TB7, TB8, M49, M63, M64, M66–M68, R-8, R-9;
-> `staff-auth.md` TB10, M26, M28.
+> § 3a, § 4a–4c, Key Interfaces, and its two amendment notes of 2026-10-20 (no admin-key host step before the
+> agent-account move; build containment). Threat models: `tenant-isolation.md` TB7, TB8 (T8.10, T8.11), M49,
+> M63, M64, M66–M68, R-8, R-9, R-10; `staff-auth.md` TB10, T6.12, M26 (escrow custody), M28.
 > **Owner:** the founder (Kamel Mohamed) runs it. The AI agent writes it and the scripts; it never runs them.
 > **Review rule (founder, 2026-10-20):** the runbook is treated like the ceremony scripts. The founder reads it
 > **in full before the first ceremony**; every later change reaches the founder **as a git diff** and is read
@@ -23,13 +24,19 @@ tests, the Dockerfile, dependencies) **never runs while the signing USB is plugg
 | Step | USB | What happens |
 |---|---|---|
 | 1. Prepare | in, then **out** | clean-session check → USB in → off-machine hash check → scripts copied to a root-owned read-only place → USB out |
-| 2. Build and scan | **absent** | Gradle in a throwaway container → image build → `docker save` → scanners → SBOMs |
+| 2. Build and scan | **absent** | under the **build account** on rootless Docker: **fetch** (network on: verified dependencies, base images by digest) → **build** (no network: Gradle offline with the dependency cache read-only, image build) → `docker save` → scanners → SBOMs |
 | 3. Record | absent | image digest, tarball and SBOM hashes written down |
-| 4. Sign and send | in, then **out** | clean-session check → USB in → hash re-check → manifest shown field by field → sign → send → USB out |
+| 4. Sign and send | in, then **out** | **reboot** → clean-session check → USB in → hash re-check → manifest shown field by field → sign → send → USB out |
 
 The signing USB holds: the manifest signing key, the founder deploy key, the founder admin key (each encrypted
 with a passphrase typed by hand) and the reviewed copy of the ceremony scripts. It is separate from the
 server-key escrow USB and from Bitwarden.
+
+Three OS accounts take part, and they stay apart (ADR-0009 amendment note, 2026-10-20): the **founder's account**
+checks hashes, signs and sends; a dedicated **build account** (neither the founder's nor the agent's) runs the
+build and the scanners on a **rootless Docker** runtime, so an escape from a build container lands as an
+unprivileged user, never root; the **agent's account** takes no part and must have nothing running. The founder
+account's rootful Docker daemon is not used in the ceremony.
 
 ## 2. Rules that hold at every step
 
@@ -45,6 +52,9 @@ server-key escrow USB and from Bitwarden.
   what the agent reads goes to Anthropic).
 - **Never** run `docker compose down -v` or prune volumes on the VPS.
 - **USB out** as soon as the step that needs it is done.
+- **No ceremony and no admin-key host step before the agent-account move** (founder, 2026-10-20).
+- **Never** run build code as the founder's account or on the rootful Docker daemon; only as the build account
+  on rootless Docker.
 
 ## 3. Preconditions before the first ceremony
 
@@ -52,15 +62,17 @@ None of these is met today. The first ceremony waits for all of them.
 
 | # | Precondition | Source | State |
 |---|---|---|---|
-| P1 | The agent-account move is done: the agent has its own account, not in `docker`, `wheel` or `sudo`, with managed settings (no ceremony runs before it) | ADR-0009 § 5, TI M67 | PENDING |
+| P1 | The agent-account move is done: the agent has its own account, not in `docker`, `wheel` or `sudo`, with managed settings. No ceremony **and no admin-key host step** runs before it, so P4 comes after P1 | ADR-0009 § 5 and amendment note, TI M67 | PENDING |
 | P2 | Ceremony scripts written by the agent, reviewed by the founder as a git diff, copied to the USB, hash recorded off-machine (§ 4) | ADR-0009 § 4c | PENDING (S46) |
-| P3 | Clean-session check proven to detect an agent process, user unit, timer, cron and autostart entry | ADR-0009 § 4c | PENDING (S48) |
-| P4 | Host set-up done over the admin key: `deploy` account with the forced command, one sudo entry, `allowed_signers`, gate state initialised, Compose and nginx files, secret files (0400, owner = consuming UID), tailnet ACL limiting SSH to the founder machine | ADR-0009 § 2, § 3a | PENDING (S33 re-checks sshd and the ACL) |
+| P3 | Clean-session check proven to detect a process, user unit, timer, lingering, cron and autostart entry of the agent's, the founder's and the build account, and to list system units and timers | ADR-0009 § 4c and amendment note | PENDING (S48) |
+| P4 | Host set-up done over the admin key, **after P1**: `deploy` account with the forced command, one sudo entry, `allowed_signers`, gate state initialised, Compose and nginx files, secret files (0400, owner = consuming UID), tailnet ACL limiting SSH to the founder machine | ADR-0009 § 2, § 3a | PENDING (S33 re-checks sshd and the ACL) |
 | P5 | Provider snapshots and backups confirmed to exclude the secret files (checked from the phone) | ADR-0009 § 3a | PENDING |
 | P6 | First-deploy checklist passed, including the Docker Engine advisories (must-pass) | ADR-0009 § 6 | PENDING |
 | P7 | `catalogue_rt` grants confirmed (S58); CycloneDX plugin on Gradle 9.7.0 (S23) | ADR-0009 § 4a, § 4b | PENDING |
 | P8 | Before the first privileged migration only: the privileged procedure proven (S57) | ADR-0009 § 4a | PENDING |
 | P9 | The founder has read this runbook in full | review rule | PENDING |
+| P10 | Build account set up after P1: its own OS account, rootless Docker, its Gradle and Docker caches first filled after the move (dated record, with the download size); the founder machine's container engine passes the same advisory check as the VPS (Decision 6) | ADR-0009 amendment note, TI M53, M66 | PENDING |
+| P11 | S59 passed: an image built and saved under rootless Docker loads on the VPS with the manifest's digest, and a JAR changed in the dependency cache fails the offline build. If the second part fails, the dependency cache is fresh for every release and § 7 changes accordingly | ADR-0009 amendment note | PENDING (S59) |
 
 ## 4. Before the day: reviews and the off-machine hash
 
@@ -84,12 +96,12 @@ extension on the workstation.** The repository never holds the trusted hash.
 
 ## 5. The clean-session check
 
-Run at step 1, at step 4, and at the start of every host-step session (§ 10).
+Run at step 1, at step 4 (after the required reboot), and at the start of every host-step session (§ 10).
 
 | Command | What it does | Expected output | On failure |
 |---|---|---|---|
-| Prefer a **reboot** or a **text-console login** first | ends anything left running | — | — |
-| `<PLACEHOLDER: clean-session check, run from the USB copy at step 4 and in host steps; at step 1 from the read-only copy of the previous ceremony or the USB — decided in S48>` | looks for any process of the agent's account, any Claude Code process under any account, and user units, timers, cron and autostart entries of the agent's and the founder's accounts | `<PLACEHOLDER: e.g. clean>` | **Not clean:** do not insert the USB. Reboot into a text console and re-run. Still not clean: stop the ceremony for the day, find the cause with the USB absent, and treat an unexplained process as a possible compromise (§ 11). |
+| **Reboot** and log in at a **text console** as the founder — **required before step 4**; preferred before step 1 and host steps | ends every process the build steps started, including the rootless Docker daemon and anything an escape left in memory, so the check only has to find persistence | — | — |
+| `<PLACEHOLDER: clean-session check, run from the USB copy at step 4 and in host steps; at step 1 from the read-only copy of the previous ceremony or the USB — decided in S48>` | looks for any process of the agent's account or the build account, any Claude Code process under any account, user units, timers, lingering, cron and autostart entries of the agent's, the founder's and the build account, and lists the system units and timers | `<PLACEHOLDER: e.g. clean>` | **Not clean:** do not insert the USB. Reboot into a text console and re-run. Still not clean: stop the ceremony for the day, find the cause with the USB absent, and treat an unexplained process, unit or timer as a possible compromise (§ 11). A reboot does not undo an escape that reached root and persisted; that is why the build runs rootless. |
 
 ## 6. Step 1 — Prepare (USB in, then out)
 
@@ -101,32 +113,38 @@ Run at step 1, at step 4, and at the start of every host-step session (§ 10).
 | 1.4 | `<PLACEHOLDER: copy the scripts to a root-owned, read-only location>` | the build steps run from this copy, not from the USB | the target path | error → stop; USB out |
 | 1.5 | `<PLACEHOLDER: unmount>`; **USB out** | — | unmounted | will not unmount → find what holds it with the USB still in; do not start step 2 while it is in |
 
-## 7. Step 2 — Build and scan (USB absent)
+## 7. Step 2 — Build and scan (USB absent, build account)
 
-The build container sees only the checkout and the founder's own caches: no home directory, no USB, no Docker
-socket. Network is on in the build step only; nothing secret is reachable from it. The founder's Gradle and
-Docker caches are filled only after the agent-account move; the one-time download is measured at the first
-post-move build and recorded in ADR-0009 (PENDING).
+Everything in this step runs **as the build account on its rootless Docker runtime**, never as the founder's
+account or on the rootful daemon. Build containers see only the checkout and the dependency cache: no home
+directory, no USB, no Docker socket. The Gradle container gets the scanner flags: non-root `--user`,
+`--cap-drop ALL`, `--security-opt no-new-privileges`, read-only root, a bounded `/tmp` tmpfs, the default seccomp
+profile, and pids, memory and CPU limits. The step is split in two: **fetch** (2.3–2.4) is the only part with
+network; **build** (2.5–2.6) runs with none. The build account's caches were first filled after the
+agent-account move (P10); the one-time download is measured then and recorded in ADR-0009 (PENDING).
 
 | # | Command | What it does | Expected output | On failure |
 |---|---|---|---|---|
-| 2.1 | `<PLACEHOLDER: confirm no USB mounted or plugged>` | guards the split order | `<PLACEHOLDER>` | USB present → unmount and remove it before anything runs |
-| 2.2 | `<PLACEHOLDER: fresh checkout of the reviewed commit>` | builds exactly what was reviewed | the commit id, compared by the founder with the one reviewed in § 4.1 | different commit → stop |
-| 2.3 | `<PLACEHOLDER: Gradle build and tests in a throwaway container, strict dependency verification, lockfile>` | builds the application | build success | **verification failure** → stop; a dependency without a verification entry is reviewed as a diff, verification is **never** turned off. Test failure → stop; no release |
-| 2.4 | `<PLACEHOLDER: image build with the founder account's Docker; base images pinned by digest>` | builds the image | the image id | base image not pinned or pull refused → stop |
-| 2.5 | `<PLACEHOLDER: docker save to a tarball>` | the one artifact that is sent | the tarball path | — |
-| 2.6 | trivy-db update, in the scanner container with network on (at most once per release and never more than once a day; about 135 MB). Flags for every scanner step: `--pull=never --rm --read-only --cap-drop ALL --security-opt no-new-privileges --user 65534:65534`, pids/memory/CPU limits, a bounded `/tmp` tmpfs (`rw,noexec,nosuid,nodev`), `HOME=/tmp`, the Trivy binary mounted read-only, the cache read-write. Command inside: `trivy image --download-db-only --db-repository ghcr.io/aquasecurity/trivy-db:2 --skip-version-check --disable-telemetry` | refreshes the vulnerability database | DB downloaded; the DB manifest digest recorded | download fails → stop and retry later; **never** point `--db-repository` at another mirror; never scan with the network on |
-| 2.7 | Trivy scan, scanner container with `--network none`, DB cache read-only at `/cache`, `TRIVY_CACHE_DIR=/cache`, tarball read-only: `trivy image --input <tar> --cache-backend memory --pkg-types os --scanners vuln --skip-db-update --skip-java-db-update --offline-scan --skip-version-check --disable-telemetry` | OS-package scan of the image | counts by severity | findings at or above the configured severity → stop; release only after a fix or a reviewed ignore entry (git diff). **Scan did not run → `not_run`, never a pass → stop** |
-| 2.8 | `<PLACEHOLDER: image SBOM (Trivy, CycloneDX) in the scanner container>` | image inventory | SBOM file | failure → stop |
-| 2.9 | `<PLACEHOLDER: application SBOM, CycloneDX Gradle plugin 3.5.1 (after S23)>` | library inventory | SBOM file | failure → stop |
-| 2.10 | `<PLACEHOLDER: OSV-Scanner 2.6.0 on gradle.lockfile, scanner container, network on for its lookup>` | dependency advisories | result summary | findings at threshold → as 2.7; GO-2026-4919 is a documented false positive in the ignore file |
+| 2.1 | `<PLACEHOLDER: refuse to start while the USB block device is present>` | guards the split order; a missing mount does not prove the USB is out | `<PLACEHOLDER>` | USB present → unmount and remove it, then start step 2 again |
+| 2.2 | `<PLACEHOLDER: switch to the build account; fresh checkout of the reviewed commit>` | builds exactly what was reviewed | the commit id, compared by the founder with the one reviewed in § 4.1 | different commit → stop |
+| 2.3 | **Fetch, network on:** `<PLACEHOLDER: Gradle resolves dependencies under strict verification into the dependency cache; only caches/modules-2 is kept; a fresh GRADLE_USER_HOME otherwise>` | downloads only verified dependencies | resolution success | **verification failure** → stop; a dependency without a verification entry is reviewed as a diff, verification is **never** turned off |
+| 2.4 | **Fetch, network on:** `<PLACEHOLDER: pull the base images by digest from the official repository; show tag→digest>` | the image base, by content address | tag→digest per base image, which the founder checks against the reviewed Dockerfile | digest differs, or the base is not pinned → stop |
+| 2.5 | **Build, `--network none`:** `<PLACEHOLDER: Gradle --offline build and tests in the throwaway container; the dependency cache mounted read-only; a fresh GRADLE_USER_HOME on tmpfs (no init.d, no user gradle.properties); no --init-script; build cache and configuration cache off>` | builds and tests the application with nothing fetched | build success | a dependency missing offline → stop (the fetch step is incomplete; never turn the network on here). A changed cached JAR fails verification (S59) → stop: the cache may be poisoned; rebuild it from empty in the fetch step and treat an unexplained change as § 11. Test failure → stop; no release |
+| 2.6 | **Build, `--network none`:** `<PLACEHOLDER: image build on the build account's rootless Docker from the pinned base; the Dockerfile copies the built artifacts and installs no packages>` | builds the image | the image id | the build reaches for the network → stop; the Dockerfile is wrong |
+| 2.7 | `<PLACEHOLDER: docker save to a tarball>` | the one artifact that is sent | the tarball path | — |
+| 2.8 | trivy-db update, in the scanner container with network on (at most once per release and never more than once a day; about 135 MB). Flags for every scanner step: `--pull=never --rm --read-only --cap-drop ALL --security-opt no-new-privileges --user 65534:65534`, pids/memory/CPU limits, a bounded `/tmp` tmpfs (`rw,noexec,nosuid,nodev`), `HOME=/tmp`, the Trivy binary mounted read-only, the cache read-write. Command inside: `trivy image --download-db-only --db-repository ghcr.io/aquasecurity/trivy-db:2 --skip-version-check --disable-telemetry` | refreshes the vulnerability database | DB downloaded; the DB manifest digest recorded | download fails → stop and retry later; **never** point `--db-repository` at another mirror; never scan with the network on |
+| 2.9 | Trivy scan, scanner container with `--network none`, DB cache read-only at `/cache`, `TRIVY_CACHE_DIR=/cache`, tarball read-only: `trivy image --input <tar> --cache-backend memory --pkg-types os --scanners vuln --skip-db-update --skip-java-db-update --offline-scan --skip-version-check --disable-telemetry` | OS-package scan of the image | counts by severity | findings at or above the configured severity → stop; release only after a fix or a reviewed ignore entry (git diff). **Scan did not run → `not_run`, never a pass → stop** |
+| 2.10 | `<PLACEHOLDER: image SBOM (Trivy, CycloneDX) in the scanner container>` | image inventory | SBOM file | failure → stop |
+| 2.11 | `<PLACEHOLDER: application SBOM, CycloneDX Gradle plugin 3.5.1 (after S23), in the offline build container>` | library inventory | SBOM file | failure → stop |
+| 2.12 | `<PLACEHOLDER: OSV-Scanner 2.6.0 on gradle.lockfile, scanner container, network on for its lookup>` | dependency advisories | result summary | findings at threshold → as 2.9; GO-2026-4919 is a documented false positive in the ignore file |
+| 2.13 | `<PLACEHOLDER: stop the build account's rootless Docker daemon and log the build account out>` | nothing from the build stays running into step 4 | — | will not stop → it ends at the reboot (§ 9 row 4.0); note it, and treat it as § 11 if the reboot check then finds it |
 
 ## 8. Step 3 — Record (USB absent)
 
 | # | Command | What it does | Expected output | On failure |
 |---|---|---|---|---|
 | 3.1 | `<PLACEHOLDER: record image digest, tarball SHA-256, both SBOM SHA-256s, scan summary>` | the values the manifest will carry | one line each | a value missing → stop |
-| 3.2 | `<PLACEHOLDER: expected compose_sha256 and nginx_conf_sha256 — source decided when the scripts are written (ADR-0009 does not say where the ceremony reads them; e.g. the founder's record of the last admin-key host change)>` | must equal the host files, or the VPS refuses (`config_mismatch`) | two hex values | unknown → run a host-step session (§ 9) to read them, or stop |
+| 3.2 | `<PLACEHOLDER: expected compose_sha256 and nginx_conf_sha256 — source decided when the scripts are written (ADR-0009 does not say where the ceremony reads them; e.g. the founder's record of the last admin-key host change)>` | must equal the host files, or the VPS refuses (`config_mismatch`) | two hex values | unknown → run a host-step session (§ 10) to read them, or stop |
 | 3.3 | `<PLACEHOLDER: expected key_fingerprint.<label> values — source decided when the scripts are written (the off-host record made at key creation or rotation; never computed from a key on this machine)>` | the backend refuses to start on a mismatch (`fingerprint_mismatch`) | one value per server key | unknown → stop |
 | 3.4 | `<PLACEHOLDER: next release number N and previous manifest SHA-256, from the off-host deploy record>` | the replay gate accepts only N = last + 1, chained | N and a hex value | unclear → stop; never guess N |
 
@@ -134,6 +152,7 @@ post-move build and recorded in ADR-0009 (PENDING).
 
 | # | Command | What it does | Expected output | On failure |
 |---|---|---|---|---|
+| 4.0 | **Reboot**; log in at a text console as the founder (required) | ends everything steps 2–3 started | — | — |
 | 4.1 | § 5 clean-session check | — | clean | see § 5 |
 | 4.2 | Insert the USB; `<PLACEHOLDER: mount>` | — | mounted | § 6 row 1.2 |
 | 4.3 | `<PLACEHOLDER: USB hash re-check — the founder types the off-machine value again>` | immediately before display and signing | `<PLACEHOLDER>` | mismatch → as § 6 row 1.3 |
@@ -148,7 +167,9 @@ post-move build and recorded in ADR-0009 (PENDING).
 
 Host steps change what the deploy pipeline never writes: the deploy and rollback scripts, the wrapper,
 `allowed_signers`, the gate state, secret files, the Compose file, the nginx configuration. They also cover
-rollback, the privileged migration procedure and gate-state re-initialisation. They are rare and deliberate.
+rollback, the privileged migration procedure, gate-state re-initialisation and the escrow write and restore.
+They are rare and deliberate. **No host step runs before the agent-account move** (founder, 2026-10-20): the
+VPS host set-up and the bootstrap roles script wait for it.
 
 | # | Command | What it does | Expected output | On failure |
 |---|---|---|---|---|
@@ -168,6 +189,16 @@ signed manifest is needed.
 
 **Gate-state re-initialisation** — after any restore of the VPS or of the gate state, before the next deploy:
 host-step session, then `<PLACEHOLDER: set last_release and last_manifest_sha256 from the highest release in the off-host deploy record>`.
+
+**Escrow write and restore** (founder decision 2026-10-20, staff-auth M26 and T6.12) — the four server keys
+(pepper, TOTP key, throttle-HMAC key, verifier master key) pass through the founder machine only here:
+
+| # | Command | What it does | Expected output | On failure |
+|---|---|---|---|---|
+| E1 | Reboot; text-console login; § 5 clean-session check (only after the agent-account move) | no agent or build-account process can read the keys in transit | clean | see § 5; no escrow that day |
+| E2 | Signing USB in (admin key), **escrow USB in**; `<PLACEHOLDER: mount the encrypted escrow volume, passphrase typed by hand>` | — | mounted | does not mount → stop; never format it |
+| E3 | **Write:** `<PLACEHOLDER: copy the four key files over the admin SSH session from the VPS straight onto the mounted escrow volume>` · **Restore:** `<PLACEHOLDER: the reverse, onto the VPS paths, owner = backend UID, mode 0400>` | the keys never land in the founder's home, a temp directory or the clipboard | the four file names; after a restore, the backend's fingerprint check (`ok` at start-up) | a file staged anywhere else → delete it at once and record it; a fingerprint mismatch after a restore → stop, the backend stays down; check which key is wrong |
+| E4 | `<PLACEHOLDER: unmount>`; **escrow USB out and signing USB out**; log out | — | — | — |
 
 ## 11. Recovery routes
 
@@ -254,7 +285,10 @@ The deploy entry returns exactly one word and an exit code, never raw output.
 - The source of the expected Compose and nginx hashes (§ 8 row 3.2) and of the key fingerprints (§ 8 row 3.3).
 - Provider console features and the console login account (§ 11.1) — checked at host set-up.
 - The tailnet ACL syntax and sshd settings — S33.
-- The one-time dependency download size into the founder's caches — measured at the first post-move build.
+- The one-time dependency download size into the build account's caches — measured at the first post-move build.
+- The build account's name and set-up, and the exact rootless Docker commands — written with the scripts (P10).
+- S59: whether a changed cached JAR fails the offline build; if not, § 7 changes to a fresh dependency cache per
+  release and the per-release download is measured.
 - At the first paying customer: the two FIDO2 keys replace the USB keys (after S45); this runbook changes
   then, as a reviewed diff.
 
@@ -263,3 +297,4 @@ The deploy entry returns exactly one word and an exit code, never raw output.
 | Date | Change | Founder review |
 |---|---|---|
 | 2026-10-20 | Created at design time from ADR-0009 (Accepted 2026-10-20); placeholders until S46/S48 | pending: read in full before the first ceremony |
+| 2026-10-20 | Build containment approved by the founder (ADR-0009 amendment notes; threat-model review c75bc40): build account on rootless Docker, fetch/build split, offline build with the read-only dependency cache, required reboot before step 4, widened clean-session check, escrow write and restore as a host step, no ceremony or host step before the agent-account move; P10, P11 added | pending: this diff |
