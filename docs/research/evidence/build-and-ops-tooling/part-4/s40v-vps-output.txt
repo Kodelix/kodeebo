@@ -1,0 +1,12 @@
+# S40v output — run by the founder on the production VPS, 2026-10-20, as an unprivileged user.
+# Command: bash -s < scripts/s40v-vps-sshkeygen-verify.sh (pasted as a heredoc). Shell prompt omitted (internal hostname).
+# Transcribed from the founder's terminal into this session's chat; not captured by a tool on the VPS.
+ssh-keygen: /usr/bin/ssh-keygen
+OpenSSH_9.6p1 Ubuntu-3ubuntu13.20, OpenSSL 3.0.13 30 Jan 2024
+openssh-client: /usr/bin/ssh-keygen
+T1 valid signature accepted: PASS
+T2 tampered manifest refused: PASS
+T3 wrong namespace refused: PASS
+T4 unknown signer refused: PASS
+T5 expired signer (valid-before) refused: PASS
+done

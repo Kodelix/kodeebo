@@ -173,6 +173,8 @@ Research note: `docs/research/staff-auth-and-roles.md` (Status Draft, verdict CO
 > - **Restore (§ 3; re-check M6).** The control-journal kinds gain `login.block` and `login.unblock` (user, reason) and the ADR-0008 kinds `pin.epoch.bump` and `pin.lock.clear_device`; all are replayed after a restore, so a "not me" block made after the restore point survives. The restore step also voids pending and approved `enrolment_requests`.
 > - **Review.** Every 2026-10-20 row is reviewed at the KMS move or the first multi-counter venue, whichever comes first, and on 2027-04-18 at the latest.
 
+> **Amendment 2026-10-20 (ADR-0009 deploy and build tooling) — accepted by the founder (Kamel Mohamed) 2026-10-20; in effect.** § 2 says the pepper lives in "the encrypted server secret file". Until the KMS move it is a **plain file**: a host file outside the repository, owned by the backend container's UID, mode 0400, mounted as a Compose `file:` secret (ADR-0009 Decision 3a). At-rest encryption comes only from the AWS KMS envelope at the first paying customer, as § 2 already plans; encrypting the file on the host would need its decryption key on the same host (research `build-and-ops-tooling` part 3). The secret file is excluded from every VPS-provider snapshot and backup; recovery is the offline escrow USB. The ASVS 13.3.1 deviation accepted for the pepper is restated for a plain file until the KMS move, with the same review triggers. Migration Plan step 4 ("store in the encrypted secret file") reads "store in the server secret file (plain, 0400, owner = backend UID)". The decision text above is not edited.
+
 ### 1. Three realms
 
 | Realm | Who | Host and RP ID | Credentials | Sessions |

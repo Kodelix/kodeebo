@@ -22,6 +22,10 @@
 # 2026-10-19: staff-auth threat-model amendment batch (founder decisions on M2, M9, M10, M11, M13, M14, M15, M17, M31, M53 and the model's independent review): 7 entries superseded (TR-STRICT-SUBSET-R2, TR-RETENTION-DEFAULTS-R4, IC-PERMISSION-CATALOGUE, IC-PRE-CONTEXT-LOOKUPS-R9, IC-COUNTER-ENROLMENT-R5, IC-PIN-VERIFIER-CUSTODY-R3, IC-PIN-ACTIVATION-R2) and 10 added (7 replacements, IC-SIGNIN-FAILURE-CEILING, IC-NOTICE-GATED-FACTOR-CHANGE, FP-IP-ONLY-BLOCK); in effect (amendments to Accepted ADR-0001, 0005, 0007, 0008).
 # 2026-10-20: M21/M22/Q-counteronly amendment batch (founder decisions 2026-10-20; the amendment is Proposed until the founder accepts it after its independent re-check): 7 entries superseded (TR-TABLE-CLASSES-R8, TR-ROLE-INVENTORY-R10, IC-PRE-CONTEXT-LOOKUPS-R10, IC-PIN-VERIFIER-CUSTODY-R4, IC-COUNTER-ENROLMENT-R6, IC-SIGNIN-FAILURE-CEILING, IC-STEP-UP-R2) and 11 added (7 replacements, IC-APPROVE-ON-PHONE-ENROLMENT, IC-BREACHED-PASSWORD-CHECK, FP-COMPARE-AND-TAP-APPROVAL, FP-SLOT-DEVICE-FROM-REQUEST), all adr_status Proposed; if the amendment is rejected, the seven superseded entries return to status active; entries added in this batch were corrected in place after the independent re-check before any commit.
 # 2026-10-20: the M21/M22/Q-counteronly amendment was accepted by the founder (Kamel Mohamed) after an independent review and two re-checks (final PASS); adr_status set to Accepted on its 11 entries; the seven entries it superseded stay superseded.
+# 2026-10-20: ADR-0009 deploy and build tooling written (Proposed): 15 entries added (TR-DEPLOY-RT-CREDENTIAL; IC-DEPLOY-ENTRY, IC-RELEASE-MANIFEST, IC-MIGRATION-JOB, IC-STARTUP-FINGERPRINT, IC-SCANNER-CONTAINER; FP-SECRET-IN-ENV, FP-DEPLOY-ENTRY-ARGUMENTS, FP-NOVALIDATE-DECISION, FP-AGENT-PRIVILEGED-GROUP, FP-SCANNER-UNCONFINED, FP-FLYWAY-ROLE-BY-CALLBACK; TECH-MIGRATION-FLYWAY, TECH-SCAN-SBOM, TECH-MANIFEST-SIGNING), all effective only when ADR-0009 is Accepted; none superseded.
+# 2026-10-20: ADR-0009 revised after its independent review (FAIL) and the founder's T2 choice (the AI agent has no access to the VPS), before any commit: the 15 ADR-0009 entries corrected in place (as the M21/M22 batch did before its commit) and 3 added (TR-CATALOGUE-RT, IC-RELEASE-CEREMONY, FP-AGENT-VPS-ACCESS); all adr_status Proposed, effective only when ADR-0009 is Accepted; none superseded.
+# 2026-10-20: ADR-0009 r3 after the re-check of r2 (FAIL; R1-R11), before any commit: IC-DEPLOY-ENTRY, IC-STARTUP-FINGERPRINT, IC-RELEASE-CEREMONY and FP-AGENT-VPS-ACCESS corrected in place (split ceremony, provider and Tailscale admin accounts as founder routes, per-release fingerprint files, image variable, record_failed); still 18 ADR-0009 entries, all Proposed.
+# 2026-10-20: ADR-0009 S1-S4 (re-check of r3: PASS, 0 BLOCKER, 0 MAJOR, 4 MINOR) applied in place before any commit (IC-RELEASE-CEREMONY build-step network wording, IC-DEPLOY-ENTRY vocabulary includes record_failed); ADR-0009 Accepted by the founder (Kamel Mohamed) 2026-10-20; adr_status set to Accepted on its 18 entries; its amendments to ADR-0001 § 1b, ADR-0007 § 2 and ADR-0008 item 10 are in effect; none superseded.
 
 data_ownership: []
 
@@ -402,6 +406,16 @@ tenancy_rules:
     adr: ADR-0008
     adr_status: Accepted
     status: active
+  - id: TR-DEPLOY-RT-CREDENTIAL
+    rule: "Effective when ADR-0009 is Accepted (amends ADR-0001 § 1b, which said 'credential in the CI secret store'): the deploy_rt credential is a plain host file on the VPS outside the repository, owned by the one-shot migration job's own UID, mode 0400, mounted only by the root-owned deploy script as a Compose file secret at /run/secrets/deploy_rt; never in an environment value, a log, a CI transcript, the repository, or a provider snapshot or backup, and never reachable by the AI agent. deploy_rt carries the per-role default role = 'migrator' (ALTER ROLE deploy_rt SET role = 'migrator'), set by the founder-run bootstrap roles script outside Flyway beside GRANT migrator TO deploy_rt WITH INHERIT FALSE, SET TRUE; privileged migrations still stop the pipeline."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: TR-CATALOGUE-RT
+    rule: "Effective when ADR-0009 is Accepted (amends ADR-0001's closed role inventory): catalogue_rt is LOGIN, NOSUPERUSER, NOBYPASSRLS, owns nothing, has no table grants and reads only the system catalogue views the C1-C8 catalogue queries need (S58 confirms no grant beyond default catalogue access); it runs the post-deploy and the scheduled TI M50 catalogue checks from a root-owned script and systemd timer on the VPS; its credential is a plain host file owned by the check container's own UID, mode 0400. deploy_rt is not used for the check because its role default makes every session migrator, the owner of every table."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
     contract: "TenantConnectionResolver.resolve(TenantId) -> TenantDataSource; the only way app code reaches tenant data; today returns the shared pool."
@@ -724,6 +738,36 @@ interface_contracts:
     adr: ADR-0007
     adr_status: Accepted
     status: active
+  - id: IC-DEPLOY-ENTRY
+    contract: "Effective when ADR-0009 is Accepted: the VPS's authorized_keys holds exactly two keys, both the founder's, and no key, account or sudo entry of the AI agent (T2). (1) The founder deploy key: command=<wrapper>,restrict,from=<founder machine tailnet address> on a dedicated deploy account; the wrapper ignores SSH_ORIGINAL_COMMAND and runs one sudo entry (NOPASSWD, empty-argument form, env_reset, secure_path, no ALL, no SETENV) for one root-owned no-argument deploy script; input only on stdin as one length-prefixed stream of exactly three parts (manifest, manifest.sig, image.tar) with per-part caps, read by the script into fresh root-owned staging under an exclusive lock; output one word from the closed vocabulary (ok, busy, args_present, input_format, input_too_large, state_missing, unsigned, bad_signature, namespace_mismatch, signer_unknown_or_expired, field_syntax, not_next_release, chain_mismatch, manifest_expired, config_mismatch, tarball_hash_mismatch, image_digest_mismatch, unreviewed_migration, privileged_migration_pending, checksum_mismatch, migration_failed, fingerprint_mismatch, health_failed, catalogue_check_failed, record_failed, rolled_back) plus an exit code, never raw tool output. (2) The founder admin key: interactive OpenSSH login on the admin account (kadmin, sudo: in effect root) for founder-run host steps and the rollback script, each host-step session starting with the clean-session check from the USB. Both keys are held on the encrypted signing USB (FIDO2 at the first paying customer), never loaded in an ssh-agent while an agent session runs. OpenSSH over the tailnet only; the Tailscale SSH feature is off for the VPS; root login disabled and password authentication off (founder, 2026-10-20). Founder routes outside SSH: the VPS provider account (console, rescue, snapshots; the lost-USB recovery route) and the Tailscale admin account (network reachability only), both with 2FA on the founder's phone, used only from the phone, never signed in from the workstation browser. Scripts, wrapper, allowed_signers, gate state, secret files, Compose file (image as ${KODEEBO_IMAGE}, set by the deploy script from the verified image_digest) and nginx configuration are root-owned and changed only over the admin key; per-release expected-fingerprints files are written only by the deploy script."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: IC-RELEASE-MANIFEST
+    contract: "Effective when ADR-0009 is Accepted: every release carries a manifest the founder signs in the release ceremony, namespace kodeebo-release-manifest-v1, one field per line, each exactly once: release, previous_manifest_sha256, not_after, git_commit, image_digest, image_tarball_sha256, migrations, key_fingerprint.<label> per server key, compose_sha256, nginx_conf_sha256, sbom_app_sha256, sbom_image_sha256, scan summary. The deploy script verifies the staged copy with ssh-keygen -Y verify -n kodeebo-release-manifest-v1 -I founder-signing@kodeebo -f /etc/kodeebo/allowed_signers (OpenSSH 9.6p1 on the VPS passed S40v), parses fields only from the verified copy, and accepts only release = last_release + 1, previous_manifest_sha256 equal to the last accepted manifest's SHA-256, not_after in the future, and compose/nginx hashes equal to the host files. Gate state (last_release, last_manifest_sha256) is root-owned, written by rename only when the run ends ok, founder-initialised, backed up off-host, and re-initialised from the off-host deploy record after any restore; missing state refuses. Signing custody: its own encrypted USB now (hand-typed passphrase, no AI agent session running, USB removed after); two FIDO2 keys at the first paying customer after S45; a TPM key only as an optional interim after the agent-account move and S47."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: IC-MIGRATION-JOB
+    contract: "Effective when ADR-0009 is Accepted: migrations run as a one-shot container from the backend image, under its own UID, before the new version starts: Flyway Community 13.10.3 as a library (flyway-core, flyway-database-postgresql, pgjdbc 42.7.14), files V<n>__<verb>_<object>.sql, login deploy_rt with the role default migrator, flyway.postgresql.transactional.lock=false, validate before migrate (checksum_mismatch stops); it stops with privileged_migration_pending when a pending version is on the committed privileged-migrations.txt and with unreviewed_migration when a pending id is not in the signed manifest; logs session_user, current_user and the run identity. The bootstrap roles script runs outside Flyway as the bootstrap superuser (local peer), so the first deploy_rt run creates the history table as migrator. Privileged versions are applied only by the privileged procedure: the migration job run by the founder as the bootstrap superuser through the PostgreSQL container's socket with target=<version>, non-role objects ending owned by migrator or their C5 definer owner (S57 before the first one). S52 (history table owned by migrator, installed_by migrator, a privileged CREATE ROLE fails 42501) is a CI test re-run on every Flyway or pgjdbc bump."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: IC-STARTUP-FINGERPRINT
+    contract: "Effective when ADR-0009 is Accepted: before serving, the backend computes HMAC-SHA-256(key, fixed label per key and purpose including the key id) for each server key and compares a truncated value with the expected value the deploy script wrote from the verified manifest to that release's own file /etc/kodeebo/releases/<N>/expected-fingerprints (root-owned 0444, mounted read-only into that release's backend only; a rollback mounts the previous release's file; never an environment value, never agent-writable): FingerprintCheck.verify(expected) -> Ok | Mismatch(label) | Missing(label); it logs only the label and ok|mismatch|missing, never the computed value, and exits non-zero on anything but Ok, with a bounded restart count; the health gate then fails and the old version keeps running."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: IC-SCANNER-CONTAINER
+    contract: "Effective when ADR-0009 is Accepted: scanners run only on the founder's machine inside a locked-down container (--pull=never --rm --read-only --cap-drop ALL --security-opt no-new-privileges --user 65534:65534, pids/memory/CPU limits, bounded /tmp tmpfs rw,noexec,nosuid,nodev, HOME=/tmp, the Trivy binary mounted read-only) with no access to the home directory, SSH keys, Bitwarden, Tailscale or the Docker socket, inputs (image tarball, lockfile or SBOM) mounted read-only, and network only in the step that needs it. Trivy update step (network on): trivy image --download-db-only --db-repository ghcr.io/aquasecurity/trivy-db:2 --skip-version-check --disable-telemetry. Trivy scan step (--network none, DB cache read-only at /cache, TRIVY_CACHE_DIR=/cache): trivy image --input <tar> --cache-backend memory --pkg-types os --scanners vuln --skip-db-update --skip-java-db-update --offline-scan --skip-version-check --disable-telemetry. OSV-Scanner on gradle.lockfile runs in the same container type as its own step with network for its lookup. trivy-db is refreshed once per release, never more than once a day. Reason: the 2026-03-19 Trivy release compromise (GHSA-69fq-xp46-6x23). A scan that could not run is not_run, never a pass."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: IC-RELEASE-CEREMONY
+    contract: "Effective when ADR-0009 is Accepted: every release is built, scanned, signed and sent by the founder in the release ceremony, with no AI agent session running (checked, S48), in a split order so that agent-written build code never runs while the signing USB is present: (1) clean-session check, USB in, scripts' hash checked, scripts copied to a root-owned read-only location, USB out; (2) with the USB absent, Gradle in a throwaway container (only the checkout and the founder's dedicated caches; no home, no USB, no Docker socket; network on during this step only, nothing secret reachable from it), image build with the founder account's Docker from the reviewed git commit (Gradle strict verification; base images by digest), docker save, Trivy scan and image SBOM in the scanner container, CycloneDX Gradle plugin SBOM; (3) image digest and SBOM hashes recorded; (4) clean-session check again, USB in, scripts' hash re-checked, manifest printed field by field with its SHA-256, ssh-keygen -Y sign, send on the founder deploy key's stdin, USB out. The founder account's own Gradle and Docker caches (never the agent's) are filled only after the agent-account move, and no release ceremony runs before it. Remaining trust: the founder's review of build files and dependency updates. The ceremony runs from scripts plus docs/runbooks/release-ceremony.md (every command, what it does, expected output, what to do on failure). The AI writes the scripts; every change is reviewed by the founder as a git diff before first use; the ceremony runs only the reviewed copy on the signing USB, never the repository copy; its SHA-256 is recorded off-machine (paper or the Bitwarden app on the founder's phone, never the Bitwarden browser extension on the workstation) and checked against the value the founder types at the start of every ceremony. The one-time dependency download into the founder's caches is recorded with its size once measured."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
 performance_budgets: []
 
 api_decisions: []
@@ -1020,6 +1064,41 @@ forbidden_patterns:
     adr: ADR-0008
     adr_status: Accepted
     status: active
+  - id: FP-SECRET-IN-ENV
+    pattern: "Effective when ADR-0009 is Accepted: a secret (database credential, server key, signing key, founder admin or deploy key) in an environment variable, env file, Compose environment value, image layer, build arg, repository file, log line, CI transcript, a VPS-provider snapshot or backup, or anything the AI agent can read; a secret file not owned by its one consuming container's UID with mode 0400, or two consumers sharing one UID."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: FP-DEPLOY-ENTRY-ARGUMENTS
+    pattern: "Effective when ADR-0009 is Accepted: a deploy entry that accepts an argument, reads SSH_ORIGINAL_COMMAND, gives a shell or PTY, runs through a sudo rule with ALL, SETENV or a wildcard, reads a client-sent file in place, extracts an archive as root, runs without the exclusive lock, or returns raw docker/psql/application output; a deploy script, wrapper, Compose file or nginx configuration the pipeline can rewrite."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: FP-NOVALIDATE-DECISION
+    pattern: "Effective when ADR-0009 is Accepted: deciding a deploy on ssh-keygen -Y check-novalidate, on a digest without the founder's signature, on fields parsed from an unverified manifest copy, without the replay gate (next release number, previous-manifest hash, not_after), or writing the gate state before the run ends ok."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: FP-AGENT-PRIVILEGED-GROUP
+    pattern: "Effective when ADR-0009 is Accepted: the AI agent's OS account on the founder machine, after the account move, in the docker, wheel or sudo group or reaching the Docker socket; containers for Testcontainers and spikes run on a rootless runtime instead; Claude Code policy for the agent account set anywhere the agent can edit instead of the root-owned, readable /etc/claude-code/managed-settings.json. Until the move the rule 'the deploy agent never sees a secret' is procedural on the founder machine (the VPS side holds by construction, FP-AGENT-VPS-ACCESS)."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: FP-SCANNER-UNCONFINED
+    pattern: "Effective when ADR-0009 is Accepted: running an image or dependency scanner (Trivy, OSV-Scanner) on the VPS, on the founder machine's host outside the locked-down scanner container, with network in the Trivy scan step, with the home directory, SSH keys, Bitwarden, Tailscale or the Docker socket mounted, installed by curl | sh, a Docker Hub tag or a GitHub Action, or with --db-repository pointing at a mirror we do not operate."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: FP-FLYWAY-ROLE-BY-CALLBACK
+    pattern: "Effective when ADR-0009 is Accepted: setting the migration role through Flyway initSql (deprecated) or a SET ROLE callback (Flyway restores the captured login role, research F516-F517) instead of the deploy_rt role default; running a privileged migration (a role change, or a function created, replaced or re-owned for any C5 definer owner: today auth_lookup, support_fn, audit_writer, pin_writer) in the pipeline or by any route other than the privileged procedure; a privileged migration missing from privileged-migrations.txt."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: FP-AGENT-VPS-ACCESS
+    pattern: "Effective when ADR-0009 is Accepted: any SSH key, account, sudo entry, inbox, pull source or file on the VPS that belongs to or is written by the AI agent; the agent building, transferring or deploying a release; a release image built from the agent's caches or by the agent's CI; the ceremony running a script from the repository or a USB copy whose hash was not checked against the founder's off-machine value; build code running while the signing USB is inserted; the VPS provider account or the Tailscale admin account signed in from the workstation."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
 # 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
 # 2026-10-19 (ADR-0006 review): only TECH-* entries belong here; the IC-* and FP-* entries first placed here are superseded by copies in interface_contracts and forbidden_patterns.
 technology_choices:
@@ -1066,5 +1145,20 @@ technology_choices:
   - id: TECH-BACKEND-KTOR-R2
     choice: "Backend track Ktor on Kotlin/JVM (stack.backend: ktor, core.track: kotlin, saas-core-kotlin; founder 2026-10-19): Kotlin 2.4.21, kotlinx.coroutines 1.11.0, Ktor 3.6.0 exact, Exposed 1.5.1 with ADR-0002 J1 suspendTransaction (plus the J1 export-carrier addendum), HikariCP 7.1.0, OpenTelemetry Java agent 2.32.0. Ed25519 with the JDK built-in provider or Bouncy Castle 1.86; the licensing ADR picks one and runs the edge-vector suite. ETA CAdES-BES with Bouncy Castle bcpkix 1.86 (C1) if signing stays on the backend; acceptance pending the ETA ADR. Still to pin: pgjdbc (42.7.14 seen 2026-10-18, with a stack-reference row recording getCopyAPI/copyOut), an SLF4J 2 binding, Bouncy Castle; JDK 21 or 25 and its distribution open (Q8); Gradle wrapper 9.7.0 (\"9.7\" does not resolve) or 9.8.x per Q7. Mandatory in CI: dependency locking incl. buildscript, strict verification metadata, OSV-Scanner on every PR, base images by digest; no backend image before an image scanner and SBOM generator are pinned (Q6). Explicit heap and Compose memory limit from S18 before the first deploy. Blocking JDBC on bounded Dispatchers.IO.limitedParallelism(n, name) dispatchers; one HikariCP pool per LOGIN role, sizes from S18. Billing: rules as data and one shared vector suite in every combination, one Kotlin module only if the desktop ADR picks Compose Desktop (S46). Switch-to-Go conditions recorded in ADR-0006 Decision 12; Compose Desktop x Go rejected."
     adr: ADR-0006
+    adr_status: Accepted
+    status: active
+  - id: TECH-MIGRATION-FLYWAY
+    choice: "Effective when ADR-0009 is Accepted: production migrations use Flyway Community 13.10.3 as a library (org.flywaydb:flyway-core and flyway-database-postgresql) with pgjdbc 42.7.14, run from a small main() in the backend image as a one-shot job, files V<n>__<verb>_<object>.sql with development-only U files (S16); the bootstrap roles script runs outside Flyway; not the Flyway CLI (324-386 MB), not Liquibase 5.x (FSL, source-available), not dbmate; the in-house versioned-SQL runner is the named fallback if a Flyway bump breaks the deploy_rt role default. Pins proposed, to be applied by the user with a docs/stack-reference/ section; the pgjdbc licence is fetched before the first image ships."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: TECH-SCAN-SBOM
+    choice: "Effective when ADR-0009 is Accepted (closes ADR-0006 Q6): OSV-Scanner 2.6.0 on gradle.lockfile per PR; Trivy 0.76.0 (release tarball SHA-256 e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7, no sigstore verification, cosign out of scope) for the image vulnerability scan and image CycloneDX SBOM, scope OS packages only, per release in the release ceremony (recorded deviation from the baseline's per-PR image scan), in the locked-down scanner container (IC-SCANNER-CONTAINER); the CycloneDX Gradle plugin 3.5.1 for the application SBOM (after S23 on Gradle 9.7.0); both SBOMs stored per release with hashes in the manifest. trivy-db data licence: no statement from Aqua, accepted by the founder for internal use only, never redistributed (named gap). The licences of OSV-Scanner and the CycloneDX plugin are fetched before the first image ships."
+    adr: ADR-0009
+    adr_status: Accepted
+    status: active
+  - id: TECH-MANIFEST-SIGNING
+    choice: "Effective when ADR-0009 is Accepted: release manifests are signed with ssh-keygen -Y sign in the release ceremony and verified on the VPS with ssh-keygen -Y verify against a root-owned allowed_signers file (no cosign, no registry, no transparency log). The VPS's OpenSSH 9.6p1 (openssh-client) passed S40v on 2026-10-20 (valid signature accepted; tampered, wrong-namespace, unknown-signer and expired-signer cases refused). minisign is the named fallback. The OpenSSH licence is fetched before the first image ships."
+    adr: ADR-0009
     adr_status: Accepted
     status: active
