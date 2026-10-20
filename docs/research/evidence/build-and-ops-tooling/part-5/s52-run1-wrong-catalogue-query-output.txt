@@ -1,0 +1,847 @@
+date_utc: 2026-10-20T03:04:02Z
+openjdk version "21.0.12.1" 2026-08-18
+sha256 eb38d49092c423aa421fab351df5fd093e2bc07449b100a7ace4aca9efbb9f3c flyway-core-13.10.3.jar
+sha256 7a012fd805f0752028d571dc9284e23697d70652fed5cc347dca3a0206939f6f flyway-database-postgresql-13.10.3.jar
+sha256 21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0 jackson-annotations-2.22.jar
+sha256 6d3cccd4e8ec78984b28780226cb141c7ecfb0285e22683397c3c06f578706bf jackson-annotations-3.0-rc5.jar
+sha256 494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651 jackson-core-3.2.4.jar
+sha256 c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d jackson-databind-3.2.4.jar
+sha256 73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c postgresql-42.7.14.jar
+host port: 32770 (loopback)
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+
+################ CANDIDATE control-initSql  (login deploy_rt, mode=initSql, arg='SET ROLE migrator')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": << Empty Schema >>
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "1 - orders rls"
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "2 - definer fn"
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "3 - who"
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.008s)
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:06 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt current_user=migrator
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.019s)
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 3
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "4 - privileged create role"
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.internal.command.DbMigrate applyMigrations
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:07 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=125 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=126 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=133 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+pid=133 user=postgres db=c0 ERROR:  operator is not unique: text || "char" at character 49
+pid=140 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+pid=147 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+pid=148 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=148 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=148 user=deploy_rt db=c0 ERROR:  permission denied to create role
+pid=149 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=156 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+
+################ CANDIDATE afterConnect-sql  (login deploy_rt, mode=callbackdir, arg='/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/s52-work/cb-afterConnect')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:04:08 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:08 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:08 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: afterConnect - 
+Oct 20, 2026 6:04:08 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:08 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+Oct 20, 2026 6:04:08 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:04:17 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:17 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:17 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: afterConnect - 
+Oct 20, 2026 6:04:17 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:04:18 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:18 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:18 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: afterConnect - 
+Oct 20, 2026 6:04:18 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:18 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+Oct 20, 2026 6:04:18 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:04:27 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:27 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:27 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: afterConnect - 
+Oct 20, 2026 6:04:27 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=171 user=deploy_rt db=c1 LOG:  connection authorized: user=deploy_rt database=c1 application_name=Redgate_Flyway
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=172 user=deploy_rt db=c1 LOG:  connection authorized: user=deploy_rt database=c1 application_name=Redgate_Flyway
+pid=172 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=172 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=179 user=postgres db=c1 LOG:  connection authorized: user=postgres database=c1 application_name=psql
+pid=179 user=postgres db=c1 ERROR:  operator is not unique: text || "char" at character 49
+pid=186 user=postgres db=c1 LOG:  connection authorized: user=postgres database=c1 application_name=psql
+pid=186 user=postgres db=c1 ERROR:  relation "app.flyway_schema_history" does not exist at character 129
+pid=193 user=postgres db=c1 LOG:  connection authorized: user=postgres database=c1 application_name=psql
+pid=193 user=postgres db=c1 ERROR:  relation "app.who" does not exist at character 90
+pid=194 user=deploy_rt db=c1 LOG:  connection authorized: user=deploy_rt database=c1 application_name=Redgate_Flyway
+pid=194 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=194 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=194 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=194 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=194 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=194 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=194 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+
+################ CANDIDATE beforeMigrate-sql  (login deploy_rt, mode=callbackdir, arg='/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/s52-work/cb-beforeMigrate')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:04:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:28 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:28 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+Oct 20, 2026 6:04:28 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:04:37 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:37 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:37 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:04:38 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:38 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:38 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:38 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.007s)
+Oct 20, 2026 6:04:38 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:04:47 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:47 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:47 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=217 user=deploy_rt db=c2 LOG:  connection authorized: user=deploy_rt database=c2 application_name=Redgate_Flyway
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=219 user=deploy_rt db=c2 LOG:  connection authorized: user=deploy_rt database=c2 application_name=Redgate_Flyway
+pid=226 user=postgres db=c2 LOG:  connection authorized: user=postgres database=c2 application_name=psql
+pid=226 user=postgres db=c2 ERROR:  operator is not unique: text || "char" at character 49
+pid=233 user=postgres db=c2 LOG:  connection authorized: user=postgres database=c2 application_name=psql
+pid=233 user=postgres db=c2 ERROR:  relation "app.flyway_schema_history" does not exist at character 129
+pid=240 user=postgres db=c2 LOG:  connection authorized: user=postgres database=c2 application_name=psql
+pid=240 user=postgres db=c2 ERROR:  relation "app.who" does not exist at character 90
+pid=241 user=deploy_rt db=c2 LOG:  connection authorized: user=deploy_rt database=c2 application_name=Redgate_Flyway
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=241 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=243 user=deploy_rt db=c2 LOG:  connection authorized: user=deploy_rt database=c2 application_name=Redgate_Flyway
+
+################ CANDIDATE beforeValidate-sql  (login deploy_rt, mode=callbackdir, arg='/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/s52-work/cb-beforeValidate')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:04:48 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:48 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:48 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: beforeValidate - 
+Oct 20, 2026 6:04:48 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:48 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.006s)
+Oct 20, 2026 6:04:48 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:04:57 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:57 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:57 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:04:58 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:04:58 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:04:58 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: beforeValidate - 
+Oct 20, 2026 6:04:58 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:04:58 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.011s)
+Oct 20, 2026 6:04:58 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:05:07 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:07 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:07 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=265 user=deploy_rt db=c3 LOG:  connection authorized: user=deploy_rt database=c3 application_name=Redgate_Flyway
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=266 user=deploy_rt db=c3 LOG:  connection authorized: user=deploy_rt database=c3 application_name=Redgate_Flyway
+pid=273 user=postgres db=c3 LOG:  connection authorized: user=postgres database=c3 application_name=psql
+pid=273 user=postgres db=c3 ERROR:  operator is not unique: text || "char" at character 49
+pid=280 user=postgres db=c3 LOG:  connection authorized: user=postgres database=c3 application_name=psql
+pid=280 user=postgres db=c3 ERROR:  relation "app.flyway_schema_history" does not exist at character 129
+pid=287 user=postgres db=c3 LOG:  connection authorized: user=postgres database=c3 application_name=psql
+pid=287 user=postgres db=c3 ERROR:  relation "app.who" does not exist at character 90
+pid=288 user=deploy_rt db=c3 LOG:  connection authorized: user=deploy_rt database=c3 application_name=Redgate_Flyway
+pid=288 user=deploy_rt db=c3 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=288 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+
+################ CANDIDATE url-options  (login deploy_rt, mode=urlopt, arg='-c role=migrator')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.009s)
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": << Empty Schema >>
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "1 - orders rls"
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "2 - definer fn"
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "3 - who"
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.010s)
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:08 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt current_user=migrator
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.015s)
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 3
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "4 - privileged create role"
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.internal.command.DbMigrate applyMigrations
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:09 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=312 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=313 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=320 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+pid=320 user=postgres db=c4 ERROR:  operator is not unique: text || "char" at character 49
+pid=327 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+pid=334 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+pid=335 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=335 user=deploy_rt db=c4 ERROR:  permission denied to create role
+pid=336 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=343 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+
+################ CANDIDATE jdbc-properties  (login deploy_rt, mode=jdbcprop, arg='-c role=migrator')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.012s)
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": << Empty Schema >>
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "1 - orders rls"
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "2 - definer fn"
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "3 - who"
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.008s)
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:10 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt current_user=migrator
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.016s)
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 3
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "4 - privileged create role"
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.internal.command.DbMigrate applyMigrations
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:11 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=358 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=359 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=366 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+pid=366 user=postgres db=c5 ERROR:  operator is not unique: text || "char" at character 49
+pid=374 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+pid=381 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+pid=382 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=382 user=deploy_rt db=c5 ERROR:  permission denied to create role
+pid=383 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=391 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+ALTER ROLE
+
+################ CANDIDATE role-default  (login deploy_rt2, mode=none, arg='')
+--- step 1: migrate to target 3 as deploy_rt2
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.009s)
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": << Empty Schema >>
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "1 - orders rls"
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "2 - definer fn"
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "3 - who"
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.008s)
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:12 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt2 current_user=migrator
+--- step 2: migrate to latest as deploy_rt2 (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.020s)
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 3
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "4 - privileged create role"
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.internal.command.DbMigrate applyMigrations
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:13 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=413 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=414 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=421 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+pid=421 user=postgres db=c6 ERROR:  operator is not unique: text || "char" at character 49
+pid=427 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+pid=434 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+pid=435 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=435 user=deploy_rt2 db=c6 ERROR:  permission denied to create role
+pid=436 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=443 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+
+################ CANDIDATE java-AFTER_CONNECT  (login deploy_rt, mode=javacb, arg='AFTER_CONNECT')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:05:14 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:14 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:14 AM org.flywaydb.core.internal.callback.DefaultCallbackExecutor handleEvent
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=458 session_user=deploy_rt current_user=migrator
+Oct 20, 2026 6:05:14 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:14 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+Oct 20, 2026 6:05:14 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:05:23 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:23 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:23 AM org.flywaydb.core.internal.callback.DefaultCallbackExecutor handleEvent
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=460 session_user=deploy_rt current_user=migrator
+Oct 20, 2026 6:05:23 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:05:24 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:24 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:24 AM org.flywaydb.core.internal.callback.DefaultCallbackExecutor handleEvent
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=482 session_user=deploy_rt current_user=migrator
+Oct 20, 2026 6:05:24 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:24 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.009s)
+Oct 20, 2026 6:05:24 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:05:33 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:33 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:33 AM org.flywaydb.core.internal.callback.DefaultCallbackExecutor handleEvent
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=483 session_user=deploy_rt current_user=migrator
+Oct 20, 2026 6:05:33 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=458 user=deploy_rt db=c7 LOG:  connection authorized: user=deploy_rt database=c7 application_name=Redgate_Flyway
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=460 user=deploy_rt db=c7 LOG:  connection authorized: user=deploy_rt database=c7 application_name=Redgate_Flyway
+pid=460 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=460 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=467 user=postgres db=c7 LOG:  connection authorized: user=postgres database=c7 application_name=psql
+pid=467 user=postgres db=c7 ERROR:  operator is not unique: text || "char" at character 49
+pid=474 user=postgres db=c7 LOG:  connection authorized: user=postgres database=c7 application_name=psql
+pid=474 user=postgres db=c7 ERROR:  relation "app.flyway_schema_history" does not exist at character 129
+pid=481 user=postgres db=c7 LOG:  connection authorized: user=postgres database=c7 application_name=psql
+pid=481 user=postgres db=c7 ERROR:  relation "app.who" does not exist at character 90
+pid=482 user=deploy_rt db=c7 LOG:  connection authorized: user=deploy_rt database=c7 application_name=Redgate_Flyway
+pid=482 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=482 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=482 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=482 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=482 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=482 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=482 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+
+################ CANDIDATE java-BEFORE_VALIDATE  (login deploy_rt, mode=javacb, arg='BEFORE_VALIDATE')
+--- step 1: migrate to target 3 as deploy_rt
+Oct 20, 2026 6:05:34 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:34 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:34 AM org.flywaydb.core.internal.callback.DefaultCallbackExecutor handleEvent
+INFO: Executing Java callback: beforeValidate - s52-set-role
+JAVACB event=beforeValidate pid=505 session_user=deploy_rt current_user=migrator
+Oct 20, 2026 6:05:34 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:34 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.007s)
+Oct 20, 2026 6:05:34 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:05:43 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:43 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:43 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  operator is not unique: text || "char"
+LINE 1: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind|...
+                                                        ^
+HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+Oct 20, 2026 6:05:44 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:44 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:44 AM org.flywaydb.core.internal.callback.DefaultCallbackExecutor handleEvent
+INFO: Executing Java callback: beforeValidate - s52-set-role
+JAVACB event=beforeValidate pid=530 session_user=deploy_rt current_user=migrator
+Oct 20, 2026 6:05:44 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 6:05:44 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+Oct 20, 2026 6:05:44 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+Oct 20, 2026 6:05:53 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 6:05:53 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 6:05:53 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=505 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=508 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+pid=515 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+pid=515 user=postgres db=c8 ERROR:  operator is not unique: text || "char" at character 49
+pid=522 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+pid=522 user=postgres db=c8 ERROR:  relation "app.flyway_schema_history" does not exist at character 129
+pid=529 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+pid=529 user=postgres db=c8 ERROR:  relation "app.who" does not exist at character 90
+pid=530 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+
+container removed on exit

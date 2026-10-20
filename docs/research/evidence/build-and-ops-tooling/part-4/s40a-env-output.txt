@@ -1,0 +1,64 @@
+# S40a environment probe, 2026-10-20 (no key file read)
+## ssh -V
+OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+## ssh -Q key (sk types)
+sk-ssh-ed25519@openssh.com
+sk-ssh-ed25519-cert-v01@openssh.com
+sk-ecdsa-sha2-nistp256@openssh.com
+sk-ecdsa-sha2-nistp256-cert-v01@openssh.com
+## ssh-keygen -Y usage
+option requires an argument -- Y
+usage: ssh-keygen [-q] [-a rounds] [-b bits] [-C comment] [-f output_keyfile]
+                  [-m format] [-N new_passphrase] [-O option]
+                  [-t ecdsa|ecdsa-sk|ed25519|ed25519-sk|mldsa44-ed25519|rsa]
+                  [-w provider] [-Z cipher]
+       ssh-keygen -p [-a rounds] [-f keyfile] [-m format] [-N new_passphrase]
+                   [-P old_passphrase] [-Z cipher]
+       ssh-keygen -i [-f input_keyfile] [-m key_format]
+       ssh-keygen -e [-f input_keyfile] [-m key_format]
+       ssh-keygen -y [-f input_keyfile]
+       ssh-keygen -c [-a rounds] [-C comment] [-f keyfile] [-P passphrase]
+       ssh-keygen -l [-v] [-E fingerprint_hash] [-f input_keyfile]
+       ssh-keygen -B [-f input_keyfile]
+       ssh-keygen -D pkcs11
+       ssh-keygen -F hostname [-lv] [-f known_hosts_file]
+       ssh-keygen -H [-f known_hosts_file]
+       ssh-keygen -K [-a rounds] [-w provider]
+       ssh-keygen -R hostname [-f known_hosts_file]
+       ssh-keygen -r hostname [-g] [-f input_keyfile]
+       ssh-keygen -M generate [-O option] output_file
+## gpg
+gpg (GnuPG) 2.4.9
+libgcrypt 1.12.4
+Copyright (C) 2025 g10 Code GmbH
+## id
+uid=1000(kiko) gid=1000(kiko) groups=1000(kiko),3(sys),90(network),946(libvirt),950(ollama),951(docker),956(nopasswdlogin),979(rfkill),982(users),983(video),985(storage),989(lp),995(audio),998(wheel)
+## session
+XDG_SESSION_TYPE=wayland WAYLAND_DISPLAY=wayland-1 DISPLAY=:0
+SSH_AUTH_SOCK set: no
+## yama ptrace_scope
+1
+## tpm devices
+crw-rw---- 1 tss  root  10,   224 Oct 20  2026 /dev/tpm0
+crw-rw---- 1 root tss  252, 65536 Oct 20  2026 /dev/tpmrm0
+## tools present
+cosign: absent
+minisign: absent
+signify: absent
+signify-openbsd: absent
+age: absent
+ykman: absent
+fido2-token: absent
+tpm2_getcap: absent
+ssh-tpm-agent: absent
+gpg: /usr/bin/gpg
+gpg-agent: /usr/bin/gpg-agent
+ssh-agent: /usr/bin/ssh-agent
+bwrap: /usr/bin/bwrap
+sudo: alias sudo='nocorrect sudo'
+## other users with login shells (names only)
+kiko
+## parent chain of this process
+    PID USER     COMMAND
+ 269591 kiko     claude
+ 298054 kiko     zsh

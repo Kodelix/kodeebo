@@ -1,0 +1,14 @@
+date_utc: 2026-10-20T02:21:17Z
+openjdk version "21.0.12.1" 2026-08-18
+1
+jackson versions resolved: databind=3.2.4 core=3.2.4 annotations=3.0-rc5
+sha256 eb38d49092c423aa421fab351df5fd093e2bc07449b100a7ace4aca9efbb9f3c 816588 flyway-core-13.10.3.jar
+sha256 7a012fd805f0752028d571dc9284e23697d70652fed5cc347dca3a0206939f6f 32674 flyway-database-postgresql-13.10.3.jar
+sha256 73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c 1221004 postgresql-42.7.14.jar
+sha256 c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d 1990007 jackson-databind-3.2.4.jar
+sha256 494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651 613344 jackson-core-3.2.4.jar
+sha256 6d3cccd4e8ec78984b28780226cb141c7ecfb0285e22683397c3c06f578706bf 80543 jackson-annotations-3.0-rc5.jar
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint s11pg (43212b2e17ecf59a5b3c8401b5fd15114da27b257736b06c75dd87f3b039cd18): Bind for 127.0.0.1:55432 failed: port is already allocated
+
+Run 'docker run --help' for more information
+docker run failed

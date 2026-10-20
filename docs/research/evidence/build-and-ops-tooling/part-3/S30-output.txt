@@ -1,0 +1,160 @@
+== versions
+Docker version 29.9.1, build dfc520dcc2
+Docker Compose version 5.6.0
+== host: uid=1000 file:
+-r-------- 1 1000 1000 34 Oct 20 05:19 fake_file.txt
+== run service: short
+time="2026-10-20T05:19:37+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:37+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:37+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.uid: uid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:37+03:00" level=warning msg="service \"long\": secrets.fake_file.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:37+03:00" level=warning msg="service \"long\": secrets.fake_file.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:37+03:00" level=warning msg="service \"long\": secrets.fake_file.uid: uid is not supported outside Swarm mode and will be ignored"
+ Network s30probe_default Creating 
+ Network s30probe_default Creating 
+ Network s30probe_default Created 
+ Network s30probe_default Created 
+ Container s30probe-short-run-0d610464188a Creating 
+ Container s30probe-short-run-0d610464188a Created 
+id: cannot find name for user ID 10001
+id: cannot find name for group ID 10001
+id: cannot find name for group ID 10001
+uid=10001(10001) gid=10001(10001) groups=10001(10001)
+total 4
+-r-------- 1 1000 1000 34 Oct 20 02:19 fake_file
+cat: /run/secrets/fake_file: Permission denied
+
+== run service: long
+time="2026-10-20T05:19:38+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:38+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:38+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.uid: uid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:38+03:00" level=warning msg="service \"long\": secrets.fake_file.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:38+03:00" level=warning msg="service \"long\": secrets.fake_file.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:38+03:00" level=warning msg="service \"long\": secrets.fake_file.uid: uid is not supported outside Swarm mode and will be ignored"
+ Container s30probe-long-run-c35f4c5061cd Creating 
+ Container s30probe-long-run-c35f4c5061cd Created 
+id: cannot find name for user ID 10001
+id: cannot find name for group ID 10001
+id: cannot find name for group ID 10001
+uid=10001(10001) gid=10001(10001) groups=10001(10001)
+total 4
+-r-------- 1 1000 1000 34 Oct 20 02:19 fake_file
+cat: /run/secrets/fake_file: Permission denied
+
+== run service: envsrc
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.uid: uid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.uid: uid is not supported outside Swarm mode and will be ignored"
+ Container s30probe-envsrc-run-4c419e463e67 Creating 
+ Container s30probe-envsrc-run-4c419e463e67 Created 
+uid=10001(10001) gid=10001(10001) groups=10001(10001)
+id: cannot find name for user ID 10001
+id: cannot find name for group ID 10001
+id: cannot find name for group ID 10001
+total 4
+-r-------- 1 10001 10001 37 Oct 20 02:19 fake_env
+FAKE-PLACEHOLDER-S30-ENV-NOT-A-SECRET
+== docker compose config (does it print secret values?)
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.uid: uid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.uid: uid is not supported outside Swarm mode and will be ignored"
+name: s30probe
+services:
+  envsrc:
+    command:
+      - sh
+      - -c
+      - id; ls -ln /run/secrets; cat /run/secrets/fake_env 2>&1 | head -c 60; echo
+    image: eclipse-temurin:21-jre
+    networks:
+      default: null
+    pull_policy: never
+    secrets:
+      - source: fake_env
+        target: fake_env
+        uid: "10001"
+        gid: "10001"
+        mode: "0400"
+    user: 10001:10001
+  inspectme:
+    command:
+      - sleep
+      - "60"
+    environment:
+      FAKE_PLAIN_ENV_S30: FAKE-PLACEHOLDER-PLAIN-ENV
+    image: eclipse-temurin:21-jre
+    networks:
+      default: null
+    pull_policy: never
+    secrets:
+      - source: fake_file
+        target: /run/secrets/fake_file
+    user: 10001:10001
+  long:
+    command:
+      - sh
+      - -c
+      - id; ls -ln /run/secrets; cat /run/secrets/fake_file 2>&1 | head -c 60; echo
+    image: eclipse-temurin:21-jre
+    networks:
+      default: null
+    pull_policy: never
+    secrets:
+      - source: fake_file
+        target: fake_file
+        uid: "10001"
+        gid: "10001"
+        mode: "0400"
+    user: 10001:10001
+  short:
+    command:
+      - sh
+      - -c
+      - id; ls -ln /run/secrets; cat /run/secrets/fake_file 2>&1 | head -c 60; echo
+    image: eclipse-temurin:21-jre
+    networks:
+      default: null
+    pull_policy: never
+    secrets:
+      - source: fake_file
+        target: /run/secrets/fake_file
+    user: 10001:10001
+networks:
+  default:
+    name: s30probe_default
+secrets:
+  fake_env:
+    name: s30probe_fake_env
+    environment: FAKE_ENV_S30
+  fake_file:
+    name: s30probe_fake_file
+    file: /home/kiko/saas-products/kodeebo/docs/research/evidence/build-and-ops-tooling/part-3/s30-work/fake_file.txt
+== inspect a running container
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"envsrc\": secrets.fake_env.uid: uid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.gid: gid is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.mode: mode is not supported outside Swarm mode and will be ignored"
+time="2026-10-20T05:19:39+03:00" level=warning msg="service \"long\": secrets.fake_file.uid: uid is not supported outside Swarm mode and will be ignored"
+ Container s30probe-inspectme-1 Creating 
+ Container s30probe-inspectme-1 Created 
+ Container s30probe-inspectme-1 Starting 
+ Container s30probe-inspectme-1 Started 
+-- inspect .Config.Env
+["FAKE_PLAIN_ENV_S30=FAKE-PLACEHOLDER-PLAIN-ENV","PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin","JAVA_HOME=/opt/java/openjdk","LANG=en_US.UTF-8","LANGUAGE=en_US:en","LC_ALL=en_US.UTF-8","JAVA_VERSION=jdk-21.0.12.1+1"]
+-- inspect .Mounts
+[{"Type":"bind","Source":"/home/kiko/saas-products/kodeebo/docs/research/evidence/build-and-ops-tooling/part-3/s30-work/fake_file.txt","Destination":"/run/secrets/fake_file","Mode":"","RW":false,"Propagation":"rprivate"}]
+-- /proc/1/environ via docker exec (needs docker access)
+FAKE_PLAIN_ENV_S30=FAKE-PLACEHOLDER-PLAIN-ENV
+ Container s30probe-inspectme-1 Stopping 
+ Container s30probe-inspectme-1 Stopped 
+ Container s30probe-inspectme-1 Removing 
+ Container s30probe-inspectme-1 Removed 
+ Network s30probe_default Removing 
+ Network s30probe_default Removed 

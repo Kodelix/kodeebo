@@ -1,0 +1,42 @@
+date_utc: 2026-10-20T03:09:41Z
+--- OSV Go github.com/aquasecurity/trivy 0.76.0
+ records: 1
+   GO-2026-4919 2026-04-01 | Trivy ecosystem supply chain was briefly compromised in github.com/aquasecurity/trivy
+--- OSV Go github.com/aquasecurity/trivy-db 0.0.0-20261020000000-000000000000
+ records: 0
+--- OSV Maven org.flywaydb:flyway-core 13.10.3
+ records: 0
+--- OSV Maven org.flywaydb:flyway-database-postgresql 13.10.3
+ records: 0
+--- OSV Maven org.postgresql:postgresql 42.7.14
+ records: 0
+
+--- OSV all versions (no version filter): Go trivy / Maven flyway-core
+ records: 10
+   GHSA-xcq4-m2r3-cmrj 2024-05-20 | Trivy possibly leaks registry credential when scanning images from malicious registries
+   GO-2024-2870 2024-05-22 | Credential leakage in github.com/aquasecurity/trivy
+   GHSA-69fq-xp46-6x23 2026-03-24 | Trivy ecosystem supply chain was briefly compromised
+   GO-2026-4919 2026-04-01 | Trivy ecosystem supply chain was briefly compromised in github.com/aquasecurity/trivy
+   GHSA-q3fv-x8vg-qqm4 2026-07-14 | Trivy: Helm chart tar bomb causes OOM via unbounded io.ReadAll in parser
+   GO-2026-5983 2026-07-27 | Trivy: Helm chart tar bomb causes OOM via unbounded io.ReadAll in parser in github.com/aquasecurity/
+   GHSA-8rc5-4fr6-64pw 2026-08-18 | Trivy Plugin Manager has Path Traversal that Allows Arbitrary File Write
+   GO-2026-6250 2026-08-25 | Trivy Plugin Manager has Path Traversal that Allows Arbitrary File Write in github.com/aquasecurity/
+   GHSA-mcj4-mphf-j9ff 2026-08-25 | Trivy has a path traversal via a crafted vulnerability database or other downloaded artifacts
+   GO-2026-6294 2026-08-26 | Path traversal via crafted vulnerability database or other downloaded artifacts in github.com/aquase
+ records: 0
+
+--- GitHub advisory DB: ecosystem=go&affects=github.com/aquasecurity/trivy@0.76.0
+ records: 0
+
+--- GitHub advisory DB: ecosystem=maven&affects=org.flywaydb:flyway-core@13.10.3
+ records: 0
+
+--- GitHub advisory DB: ecosystem=maven&affects=org.postgresql:postgresql@42.7.14
+ records: 0
+
+--- all GitHub advisories (any version) for github.com/aquasecurity/trivy, newest first
+   GHSA-mcj4-mphf-j9ff CVE-2026-55092 high 2026-08-25 vulnerable: [('github.com/aquasecurity/trivy', '< 0.71.1', '0.71.1')] | Trivy has a path traversal via a crafted vulnerability database or oth
+   GHSA-8rc5-4fr6-64pw CVE-2026-63328 medium 2026-08-18 vulnerable: [('github.com/aquasecurity/trivy', '< 0.72.0', '0.72.0')] | Trivy Plugin Manager has Path Traversal that Allows Arbitrary File Wri
+   GHSA-q3fv-x8vg-qqm4 CVE-2026-54448 high 2026-07-14 vulnerable: [('github.com/aquasecurity/trivy', '< 0.71.0', '0.71.0')] | Trivy: Helm chart tar bomb causes OOM via unbounded io.ReadAll in pars
+   GHSA-69fq-xp46-6x23 CVE-2026-33634 critical 2026-03-24 vulnerable: [('github.com/aquasecurity/trivy', '= 0.69.4', None), ('aquasecurity/trivy-action', '< 0.35.0', '0.35.0')] | Trivy ecosystem supply chain was briefly compromised
+   GHSA-xcq4-m2r3-cmrj CVE-2024-35192 medium 2024-05-20 vulnerable: [('github.com/aquasecurity/trivy', '< 0.51.2', '0.51.2')] | Trivy possibly leaks registry credential when scanning images from mal

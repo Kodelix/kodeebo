@@ -1,0 +1,65 @@
+#!/bin/bash
+# S11: Flyway 13.10.3 (library) vs postgres:18.6, loopback-bound throwaway container, trust auth (no secret).
+# Usage: run-s11.sh <evidence_dir> <cache_dir>   (run from repo root)
+set -u
+D="$1"; C="$2"; J="$C/jars"; M=https://repo1.maven.org/maven2
+W="$C/migrations-work"; rm -rf "$W"; mkdir -p "$W"; cp "$D"/s11-migrations/*.sql "$W"/
+echo "date_utc: $(date -u +%FT%TZ)"; java -version 2>&1 | head -1; java --list-modules | grep -c jdk.compiler
+rel(){ curl -s --max-time 30 "$M/$1/maven-metadata.xml" | grep -o '<release>[^<]*' | sed 's/<release>//'; }
+JD=$(rel tools/jackson/core/jackson-databind); JC=$(rel tools/jackson/core/jackson-core); JA=$(curl -s --max-time 30 "$M/com/fasterxml/jackson/core/jackson-annotations/maven-metadata.xml" | grep -o "<version>2\.[0-9.]*</version>" | sed "s/<[^>]*>//g" | sort -V | tail -1)
+echo "jackson versions resolved: databind=$JD core=$JC annotations=$JA"
+for p in "org/flywaydb/flyway-core/13.10.3/flyway-core-13.10.3.jar" "org/flywaydb/flyway-database-postgresql/13.10.3/flyway-database-postgresql-13.10.3.jar" "org/postgresql/postgresql/42.7.14/postgresql-42.7.14.jar" "tools/jackson/core/jackson-databind/$JD/jackson-databind-$JD.jar" "tools/jackson/core/jackson-core/$JC/jackson-core-$JC.jar" "com/fasterxml/jackson/core/jackson-annotations/$JA/jackson-annotations-$JA.jar"; do
+  f="$J/$(basename "$p")"; [ -f "$f" ] || curl -fsSL --max-time 120 -o "$f" "$M/$p" || echo "DOWNLOAD FAILED $p"
+  echo "sha256 $(sha256sum "$f" | cut -d' ' -f1) $(stat -c %s "$f") $(basename "$f")"
+done
+docker rm -f s11pg-bot-p1 >/dev/null 2>&1
+docker run --pull=never -d --name s11pg-bot-p1 -e POSTGRES_HOST_AUTH_METHOD=trust -p 127.0.0.1::5432 postgres:18.6 >/dev/null || { echo "docker run failed"; exit 1; }
+trap 'docker rm -f s11pg-bot-p1 >/dev/null 2>&1' EXIT
+PGPORT=$(docker port s11pg-bot-p1 5432/tcp | head -1 | sed "s/.*://"); export PGPORT; echo "host port: $PGPORT"
+for i in $(seq 1 60); do docker exec s11pg-bot-p1 psql -h 127.0.0.1 -U postgres -Atc 'select 1' >/dev/null 2>&1 && break; sleep 1; done
+P(){ docker exec -i s11pg-bot-p1 psql -h 127.0.0.1 -U postgres -v ON_ERROR_STOP=1 "$@"; }
+P -Atc 'select version()'
+P <<'SQL'
+CREATE ROLE migrator NOLOGIN;
+CREATE ROLE app_rt NOLOGIN;
+CREATE ROLE deploy_rt LOGIN NOSUPERUSER NOBYPASSRLS;
+GRANT migrator TO deploy_rt WITH INHERIT FALSE, SET TRUE;
+CREATE DATABASE kodeebo OWNER migrator;
+SQL
+P -d kodeebo <<'SQL'
+CREATE SCHEMA app AUTHORIZATION migrator;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+GRANT USAGE ON SCHEMA app TO app_rt;
+SQL
+run(){ echo; echo "### $*"; java -cp "$J/*" "$D/scripts/Main.java" "$@" 2>&1 | grep -v -E '^\s*$' | cut -c1-400; }
+run migrate deploy_rt "SET ROLE migrator" 2 "$W"
+echo "### V3 with the default (transactional) lock, 45 s timeout: a hang is the observation under test"
+timeout 45 java -cp "$J/*" "$D/scripts/Main.java" migrate deploy_rt "SET ROLE migrator" 3 "$W" 2>&1 | grep -v -E '^\s*$' | cut -c1-300 | tail -6; echo "client exit status: ${PIPESTATUS[0]} (124 = timed out)"
+P -d kodeebo -Atc "select 'invalid index left behind: '||indexrelid::regclass||' valid='||indisvalid from pg_index where indexrelid::regclass::text like '%orders_tenant_idx%'"
+P -d kodeebo -c "DROP INDEX IF EXISTS app.orders_tenant_idx"
+run migrate deploy_rt "SET ROLE migrator" 3 "$W" "flyway.postgresql.transactional.lock=false"
+echo "--- index state"; P -d kodeebo -Atc "select indexrelid::regclass, indisvalid from pg_index where indexrelid::regclass::text like '%orders_tenant_idx%'"
+echo "--- tamper V1 then validate"; cp "$W/V1__orders_rls.sql" "$C/V1.bak"; echo "-- tamper" >> "$W/V1__orders_rls.sql"
+run validate deploy_rt "SET ROLE migrator" latest "$W"
+cp "$C/V1.bak" "$W/V1__orders_rls.sql"
+echo "--- migrate to latest as deploy_rt (V4 needs CREATEROLE)"
+run migrate deploy_rt "SET ROLE migrator" latest "$W"
+echo "--- migrate V4 as bootstrap superuser (postgres), no SET ROLE"
+run migrate postgres "" latest "$W"
+echo "--- pipeline run again as deploy_rt"
+run migrate deploy_rt "SET ROLE migrator" latest "$W"
+echo; echo "### afterConnect callback instead of initSql (database kodeebo2)"
+P -c "CREATE DATABASE kodeebo2 OWNER migrator"
+P -d kodeebo2 -c "CREATE SCHEMA app AUTHORIZATION migrator"
+W2="$C/migrations-work2"; rm -rf "$W2"; mkdir -p "$W2"; cp "$W"/V1__*.sql "$W"/V2__*.sql "$W2"/; echo "SET ROLE migrator;" > "$W2/afterConnect.sql"
+export PGDB=kodeebo2; run migrate deploy_rt "" latest "$W2"; export PGDB=kodeebo
+P -d kodeebo2 -c "select installed_rank,version,installed_by,success from app.flyway_schema_history order by 1"
+P -d kodeebo2 -c "select tablename,tableowner from pg_tables where schemaname='app'"
+echo; echo "=== catalog checks"
+P -d kodeebo -c "select installed_rank,version,description,type,installed_by,success from app.flyway_schema_history order by 1"
+P -d kodeebo -c "select tablename,owner:=tableowner from pg_tables where schemaname='app'" 2>/dev/null || P -d kodeebo -c "select tablename,tableowner from pg_tables where schemaname='app'"
+P -d kodeebo -c "select polname,polpermissive,polroles::regrole[] from pg_policy where polrelid='app.orders'::regclass"
+P -d kodeebo -c "select relrowsecurity,relforcerowsecurity from pg_class where oid='app.orders'::regclass"
+P -d kodeebo -c "select p.proname,pg_get_userbyid(p.proowner) owner,p.prosecdef,p.proconfig from pg_proc p where proname='tenant_count'"
+P -d kodeebo -c "select rolname from pg_roles where rolname='spike_priv_role'"
+echo "container log tail:"; docker logs s11pg-bot-p1 2>&1 | grep -i -E "error|FATAL" | tail -12

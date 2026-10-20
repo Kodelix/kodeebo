@@ -1,0 +1,34 @@
+date_utc: 2026-10-20T02:57:39Z
+tag v0.76.0 published 2026-10-14T11:45:44Z prerelease False immutable True
+asset trivy_0.76.0_checksums.txt 2121 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_checksums.txt
+asset trivy_0.76.0_checksums.txt.sigstore.json 10287 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_checksums.txt.sigstore.json
+asset trivy_0.76.0_Linux-64bit.deb 52248240 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.deb
+asset trivy_0.76.0_Linux-64bit.deb.sigstore.json 10335 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.deb.sigstore.json
+asset trivy_0.76.0_Linux-64bit.rpm 52213348 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.rpm
+asset trivy_0.76.0_Linux-64bit.rpm.sigstore.json 10431 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.rpm.sigstore.json
+asset trivy_0.76.0_Linux-64bit.tar.gz 52253735 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.tar.gz
+asset trivy_0.76.0_Linux-64bit.tar.gz.sigstore.json 10383 https://github.com/aquasecurity/trivy/releases/download/v0.76.0/trivy_0.76.0_Linux-64bit.tar.gz.sigstore.json
+tarball content-length reported: 52253735 (approved: 52253735)
+total 51036
+-rw-r--r-- 1 kiko kiko     2121 Oct 20 05:57 trivy_0.76.0_checksums.txt
+-rw-r--r-- 1 kiko kiko 52253735 Oct 20 05:57 trivy_0.76.0_Linux-64bit.tar.gz
+--- checksums file line for the tarball
+e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7  trivy_0.76.0_Linux-64bit.tar.gz
+--- sha256sum of tarball
+e24b1c51293c1b15e4ba8d45bbc7891ba053f90278ec2698f3562c993e145fe7  production/session-state/cache/build-and-ops-tooling/part-5/trivy-dl/trivy_0.76.0_Linux-64bit.tar.gz
+SHA-256 MATCH
+sigstore bundle: NOT verified (cosign not installed)
+total 170496
+drwxr-xr-x 1 kiko kiko       114 Oct 20 05:57 contrib
+-rw-r--r-- 1 kiko kiko     11357 Oct 14 14:10 LICENSE
+-rw-r--r-- 1 kiko kiko      5590 Oct 14 14:10 README.md
+-rwxr-xr-x 1 kiko kiko 174563488 Oct 14 14:23 trivy
+--- tar member list
+LICENSE
+README.md
+contrib/asff.tpl
+contrib/gitlab-codequality.tpl
+contrib/gitlab.tpl
+contrib/html.tpl
+contrib/junit.tpl
+trivy

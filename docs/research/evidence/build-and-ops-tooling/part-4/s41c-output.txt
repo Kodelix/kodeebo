@@ -1,0 +1,11 @@
+# command: timeout 60 bash docs/research/evidence/build-and-ops-tooling/part-4/scripts/s41c-agent-confirm-no-keyfile.sh production/session-state/cache/build-and-ops-tooling/part-4 ; OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+# S41c run 2026-10-20T03:01:41Z OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+Identity added: k_FAKE (FAKE-confirm-key)
+The user must confirm each use of the key
+private key file removed after loading into the agent; only k_FAKE.pub remains
+T2 confirmation DENIED: signed anyway = YES
+T3 confirmation ACCEPTED: signed = YES
+--- askpass.log: the text the founder would be shown ---
+--- ssh-add -l (what an agent client can learn without a secret) ---
+256 SHA256:9HbvG0FDSRKAfELht5cI857Ur3U8yVcND1wMCyBiZGo FAKE-confirm-key (ED25519)
+exit=0

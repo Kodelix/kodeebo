@@ -1,0 +1,14 @@
+date_utc: 2026-10-20T02:58:33Z
+client 29.9.1 server 29.9.1
+kprobe-ktor-jlink:latest id=c3224b729d65 size=280MB digest=sha256:c3224b729d657f1ce7907340f9e3f22f7584a541164f51484f1d76731333416d
+kprobe-ktor:latest id=865850d350a8 size=518MB digest=sha256:865850d350a8062f23cd0bfd452d7b4da8b99ede4c2ad1ecc4c4641670d80a8f
+eclipse-temurin:21-jre id=227118764ccc size=460MB digest=sha256:227118764cccd3c3294617061aaa93a08309c63a395eefa83e6b35032992ea99
+--- eclipse-temurin:21-jre
+id=sha256:227118764cccd3c3294617061aaa93a08309c63a395eefa83e6b35032992ea99 os=linux/amd64 size=455101007 created=2026-10-17T00:19:23.58777964Z repodigests=[eclipse-temurin@sha256:227118764cccd3c3294617061aaa93a08309c63a395eefa83e6b35032992ea99]
+--- kprobe-ktor:latest
+id=sha256:865850d350a8062f23cd0bfd452d7b4da8b99ede4c2ad1ecc4c4641670d80a8f os=linux/amd64 size=517914045 created=2026-10-18T23:06:26.095794476+03:00 repodigests=[kprobe-ktor@sha256:865850d350a8062f23cd0bfd452d7b4da8b99ede4c2ad1ecc4c4641670d80a8f]
+total 260332
+-rw------- 1 kiko kiko 120585728 Oct 20 05:58 eclipse-temurin-21-jre.tar
+-rw------- 1 kiko kiko 145992192 Oct 20 05:58 kprobe-ktor-latest.tar
+1b612f5b89f96736b071d82ef47a96ba46fa2ed5fa00d1c45c994d62e1d22bdc  production/session-state/cache/build-and-ops-tooling/part-5/images/eclipse-temurin-21-jre.tar
+d3e226d8266abd4cbc98d7001a4f2c6ffd30114138520d7ba2b7eeaef379cabb  production/session-state/cache/build-and-ops-tooling/part-5/images/kprobe-ktor-latest.tar

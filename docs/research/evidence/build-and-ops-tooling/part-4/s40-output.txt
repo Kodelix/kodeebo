@@ -1,0 +1,33 @@
+# command: timeout 90 bash docs/research/evidence/build-and-ops-tooling/part-4/scripts/s40-sshkeygen-sign-verify-replay.sh production/session-state/cache/build-and-ops-tooling/part-4 ; OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026; bash 
+# S40 run 2026-10-20T03:00:52Z OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+# FAKE keys: generated now, never real
+## allowed_signers (public data)
+founder-signing@kodeebo namespaces="kodeebo-release-manifest-v1" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB0j+rAaSNVHA9FCBH7C80+a8/1P7n7YsN1RzUAQ5naw
+
+## S42 replay / rollback / negative cases
+A genuine release 1:                ACCEPTED release=1 signer=founder-signing@kodeebo
+B genuine release 2 (prev=sha m1):  ACCEPTED release=2 signer=founder-signing@kodeebo
+C replay of valid release 1:        REFUSED reason=not_next_release release=1 last=2
+D replay of valid release 2 again:   REFUSED reason=not_next_release release=2 last=2
+E tampered release-2 bytes, old sig: REFUSED reason=bad_signature (Signature verification failed: incorrect signature )
+F signature made in namespace git:   REFUSED reason=bad_signature (Couldn't verify signature: namespace does not match )
+G attacker key, right namespace:    REFUSED reason=bad_signature ()
+G2 ssh-keygen -Y check-novalidate on the attacker signature (must not be used to decide): exit 0 (OK despite unauthorised signer)
+H skip-ahead (release 4 after 2):    REFUSED reason=not_next_release release=4 last=2
+I fork (release 3, wrong prev hash): REFUSED reason=chain_mismatch release=3
+J duplicate release= fields:         REFUSED reason=release_field_count
+K expired signer entry (valid-before 2020): REFUSED reason=bad_signature (allowed_signers_expired:1: key has expired: verify time 2026-10-20T06:00:52 > valid-before)
+L genuine release 3 (after the above): ACCEPTED release=3 signer=founder-signing@kodeebo
+state now: release=3
+signature file head (public format):
+-----BEGIN SSH SIGNATURE-----
+U1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgHSP6sBpI1UcD0UIEfsLzT5rz/U
+
+## S41 same-user use of an unlocked ssh-agent, and ssh-add -c prompt content (FAKE key)
+key added to private agent (passphrase supplied once)
+T1 another process, no passphrase, signed arbitrary content via the agent: YES
+re-added with confirm (-c)
+T2 confirm denied: signing refused
+T3 sign failed after accept
+askpass prompts the agent showed (what the founder would see):
+exit=0

@@ -1,0 +1,67 @@
+date_utc: 2026-10-20T03:28:47Z
+== size guard: current manifest of ghcr.io/aquasecurity/trivy-db:2
+docker-content-digest: sha256:18b0b0b043de407898649561d0ec997013775de05dbe5efc2ee678001caf94d9
+layer digest sha256:75ec5870d5330e6da8d60bcd7f155ed8898729376a4104a957d03360086b9a43 size 135378999 created 2026-10-20T01:23:58Z
+== (a) UPDATE STEP (network on, default bridge; all other flags unchanged)
+update docker flags: --pull=never --rm --read-only --cap-drop ALL --security-opt no-new-privileges --user 65534:65534 --pids-limit 256 --memory 3g --memory-swap 3g --cpus 2 --tmpfs /tmp:rw,noexec,nosuid,nodev,size=1g -e HOME=/tmp -e TRIVY_CACHE_DIR=/tmp/trivycache -v /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-dl/bin:/opt/trivy:ro -e TRIVY_CACHE_DIR=/cache -v /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache:/cache:rw
+2026-10-20T03:28:48Z	INFO	[vulndb] Need to update DB
+2026-10-20T03:28:48Z	INFO	[vulndb] Downloading vulnerability DB...
+2026-10-20T03:28:48Z	INFO	[vulndb] Downloading artifact...	repo="ghcr.io/aquasecurity/trivy-db:2"
+512.00 KiB / 129.11 MiB [>___________________________________________________________] 0.39% ? p/s ?1.24 MiB / 129.11 MiB [>_____________________________________________________________] 0.96% ? p/s ?1.80 MiB / 129.11 MiB [>_____________________________________________________________] 1.39% ? p/s ?
+RESULT exit=0 elapsed_ms=42287 memory.peak_bytes=2123726848
+-- cache tree
+/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache 4 bytes
+/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache/db 42 bytes
+/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache/db/trivy.db 1640230912 bytes
+/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache/db/metadata.json 153 bytes
+1.6G	/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache
+-- db/metadata.json
+{"Version":2,"NextUpdate":"2026-10-21T01:16:59.036595078Z","UpdatedAt":"2026-10-20T01:16:59.036595599Z","DownloadedAt":"2026-10-20T03:29:30.444356186Z"}
+
+== (b) SCAN STEP (--network none; db/ mounted read-only onto the tmpfs cache dir)
+scan docker flags: --pull=never --rm --read-only --network none --cap-drop ALL --security-opt no-new-privileges --user 65534:65534 --pids-limit 256 --memory 3g --memory-swap 3g --cpus 2 --tmpfs /tmp:rw,noexec,nosuid,nodev,size=1g -e HOME=/tmp -e TRIVY_CACHE_DIR=/tmp/trivycache -v /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-dl/bin:/opt/trivy:ro -v /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache/db:/tmp/trivycache/db:ro
+
+######## [V7-cdx] temurin :: trivy image --input /in/img.tar --format cyclonedx --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update -o /out/temurin.V7.cdx.json
+2026-10-20T03:29:31Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:29:31Z	FATAL	Fatal error	run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /tmp/trivycache/fanal: permission denied
+RESULT exit=1 elapsed_ms=64 memory.peak_bytes=33153024
+
+######## [V7-json] temurin :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update -o /out/temurin.V7.json
+2026-10-20T03:29:31Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:29:31Z	FATAL	Fatal error	run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /tmp/trivycache/fanal: permission denied
+RESULT exit=1 elapsed_ms=44 memory.peak_bytes=32636928
+
+######## [V8-json-java-db-flag-omitted] temurin :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-version-check --disable-telemetry --offline-scan --skip-db-update -o /out/temurin.V8.json
+2026-10-20T03:29:31Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:29:31Z	FATAL	Fatal error	run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /tmp/trivycache/fanal: permission denied
+RESULT exit=1 elapsed_ms=33 memory.peak_bytes=31817728
+
+######## [V7-cdx] ktor :: trivy image --input /in/img.tar --format cyclonedx --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update -o /out/ktor.V7.cdx.json
+2026-10-20T03:29:32Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:29:32Z	FATAL	Fatal error	run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /tmp/trivycache/fanal: permission denied
+RESULT exit=1 elapsed_ms=46 memory.peak_bytes=31608832
+
+######## [V7-json] ktor :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update -o /out/ktor.V7.json
+2026-10-20T03:29:32Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:29:32Z	FATAL	Fatal error	run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /tmp/trivycache/fanal: permission denied
+RESULT exit=1 elapsed_ms=57 memory.peak_bytes=34693120
+
+######## [V8-json-java-db-flag-omitted] ktor :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-version-check --disable-telemetry --offline-scan --skip-db-update -o /out/ktor.V8.json
+2026-10-20T03:29:32Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:29:32Z	FATAL	Fatal error	run error: image scan error: scan error: unable to initialize a scan service: unable to initialize cache: unable to initialize fs cache: failed to create cache dir: mkdir /tmp/trivycache/fanal: permission denied
+RESULT exit=1 elapsed_ms=37 memory.peak_bytes=34021376
+
+== counts (severity counts and IDs only; no advisory text)
+temurin V7 no file
+temurin V8 no file
+ktor V7 no file
+ktor V8 no file
+-- java db present in cache?
+db
+total 1336
+drwxrwxrwx 1 kiko   kiko      140 Oct 20 06:00 .
+drwxr-xr-x 1 kiko   kiko      584 Oct 20 06:28 ..
+-rw-r--r-- 1 nobody nobody 334142 Oct 20 06:00 ktor.V4.cdx.json
+-rw-r--r-- 1 nobody nobody 345806 Oct 20 06:00 ktor.V6.cdx.json
+-rw-r--r-- 1 nobody nobody 333989 Oct 20 06:00 temurin.V4.cdx.json
+-rw-r--r-- 1 nobody nobody 345653 Oct 20 06:00 temurin.V6.cdx.json

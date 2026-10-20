@@ -1,0 +1,48 @@
+== versions
+Docker version 29.9.1, build dfc520dcc2
+== java version (hardened, read-only, NO tmpfs)
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)
+== java -Xlog warnings, read-only, NO tmpfs
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)
+== container-aware memory settings under --memory 256m
+   size_t MaxHeapSize                              = 132120576                                 {product} {ergonomic}
+   size_t SoftMaxHeapSize                          = 132120576                              {manageable} {ergonomic}
+     bool UseContainerSupport                      = true                                      {product} {default}
+    Effective CPU Count: 16
+    Memory Limit: 256.00M
+== default CDS archive present in the image (read, not written)?
+total 53132
+-r--r--r-- 1 root root 13512704 Oct 17 00:19 classes.jsa
+-r--r--r-- 1 root root 13910016 Aug 18 19:15 classes_nocoops.jsa
+-rw-r--r-- 1 root root    13400 Aug 18 19:15 libjsig.so
+-rw-r--r-- 1 root root 26964072 Aug 18 19:15 libjvm.so
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)
+== JFR to /tmp WITHOUT tmpfs (expect failure on read-only root)
+[0.086s][error][jfr,startup] Can't create Flight Recorder. JFR repository directory (/tmp) exists, but isn't writable
+Error occurred during initialization of VM
+Failure when starting JFR on_create_vm_3
+== JFR to /tmp WITH tmpfs
+[0.213s][info][jfr,startup] Started recording 1. The result will be written to:
+[0.213s][info][jfr,startup] 
+[0.213s][info][jfr,startup] /tmp/s31.jfr
+openjdk version "21.0.12.1" 2026-08-18 LTS
+OpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)
+OpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)
+== long-running JVM (jwebserver) NOT read-only: which files does it write? (docker diff)
+9d0a6851e350480b815ba6800149069bcbb602563eb30e3a60ec16d5ff571f9c
+s31-rw Up 4 seconds
+Serving /tmp and subdirectories on 127.0.0.1 port 8080
+URL http://127.0.0.1:8080/
+-- docker diff (paths changed in the writable layer)
+== long-running JVM read-only with tmpfs /tmp only
+f8057a43904b757a83f6325129748bc7569fb54453fdd866d455a01876660ed4
+s31-ro Up 4 seconds
+Serving /tmp and subdirectories on 127.0.0.1 port 8080
+URL http://127.0.0.1:8080/
+ReadonlyRootfs=true CapDrop=[ALL] SecurityOpt=[no-new-privileges] User=10001:10001 Mem=268435456 Pids=200

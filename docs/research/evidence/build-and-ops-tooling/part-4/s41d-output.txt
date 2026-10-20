@@ -1,0 +1,15 @@
+# command: timeout 60 bash docs/research/evidence/build-and-ops-tooling/part-4/scripts/s41d-agent-confirm-abs-paths.sh production/session-state/cache/build-and-ops-tooling/part-4 ; OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+# S41d run 2026-10-20T03:02:01Z OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+Identity added: k_FAKE (FAKE-confirm-key)
+The user must confirm each use of the key
+private key file removed after loading into the agent; only k_FAKE.pub remains
+T2 confirmation DENIED: signing refused
+T3 confirmation ACCEPTED: signed = YES
+--- askpass.log: the text the founder would be shown ---
+03:02:01 askpass-called argv1=[Allow use of key FAKE-confirm-key?
+Key fingerprint SHA256:++gaJJWg0ommd66ACjPBNxz+svpv4304cdtOyFovfx4.]
+03:02:01 askpass-called argv1=[Allow use of key FAKE-confirm-key?
+Key fingerprint SHA256:++gaJJWg0ommd66ACjPBNxz+svpv4304cdtOyFovfx4.]
+--- is the agent socket mode restricted? ---
+srw------- kiko /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-4/s41d/a.sock
+exit=0

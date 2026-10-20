@@ -1,0 +1,10 @@
+date_utc: 2026-10-20T03:29:32Z
+id GO-2026-4919 aliases ['CVE-2026-33634', 'GHSA-69fq-xp46-6x23'] published 2026-04-01T16:33:18Z modified 2026-06-16T13:29:16.436842048Z withdrawn None
+top-level keys ['affected', 'aliases', 'database_specific', 'details', 'id', 'modified', 'published', 'references', 'related', 'schema_version', 'summary']
+AFFECTED package {'name': 'github.com/aquasecurity/trivy', 'ecosystem': 'Go', 'purl': 'pkg:golang/github.com/aquasecurity/trivy'}
+  range type SEMVER events [{'introduced': '0.69.4'}]
+  explicit versions: None
+  ecosystem_specific {}
+  database_specific {"source": "https://vuln.go.dev/ID/GO-2026-4919.json"}
+references (types/urls) [('ADVISORY', 'https://github.com/aquasecurity/trivy/security/advisories/GHSA-69fq-xp46-6x23'), ('WEB', 'https://docs.litellm.ai/blog/security-update-march-2026'), ('WEB', 'https://futuresearch.ai/blog/litellm-pypi-supply-chain-attack'), ('WEB', 'https://github.com/BerriAI/litellm/issues/24518'), ('WEB', 'https://github.com/BerriAI/litellm/issues/24518#issuecomment-4127436387'), ('WEB', 'https://github.com/aquasecurity/trivy/discussions/10425'), ('WEB', 'https://github.com/pypa/advisory-database/tree/main/vulns/litellm/PYSEC-2026-2.yaml'), ('WEB', 'https://github.com/team-telnyx/telnyx-python/security/advisories/GHSA-955r-262c-33jc')]
+database_specific {"review_status": "REVIEWED", "url": "https://pkg.go.dev/vuln/GO-2026-4919"}

@@ -1,0 +1,53 @@
+date_utc: 2026-10-20T03:30:12Z
+scan docker flags: --pull=never --rm --read-only --network none --cap-drop ALL --security-opt no-new-privileges --user 65534:65534 --pids-limit 256 --memory 3g --memory-swap 3g --cpus 2 --tmpfs /tmp:rw,noexec,nosuid,nodev,size=1g -e HOME=/tmp -e TRIVY_CACHE_DIR=/tmp/trivycache -v /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-dl/bin:/opt/trivy:ro -e TRIVY_CACHE_DIR=/cache -v /home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/trivy-cache:/cache:ro
+
+######## [V7-cdx] temurin :: trivy image --input /in/img.tar --format cyclonedx --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update --cache-backend memory -o /out/temurin.V7.cdx.json
+2026-10-20T03:30:12Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:30:13Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:30:13Z	INFO	[ubuntu] Detecting vulnerabilities...	os_version="26.04" pkg_num=140
+RESULT exit=0 elapsed_ms=1037 memory.peak_bytes=165277696
+
+######## [V7-json] temurin :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update --cache-backend memory -o /out/temurin.V7.json
+2026-10-20T03:30:14Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:30:15Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:30:15Z	INFO	[ubuntu] Detecting vulnerabilities...	os_version="26.04" pkg_num=140
+RESULT exit=0 elapsed_ms=1182 memory.peak_bytes=82243584
+
+######## [V8-json-java-db-flag-omitted] temurin :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-version-check --disable-telemetry --offline-scan --skip-db-update --cache-backend memory -o /out/temurin.V8.json
+2026-10-20T03:30:15Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:30:16Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:30:16Z	INFO	[ubuntu] Detecting vulnerabilities...	os_version="26.04" pkg_num=140
+RESULT exit=0 elapsed_ms=1098 memory.peak_bytes=67837952
+
+######## [V7-cdx] ktor :: trivy image --input /in/img.tar --format cyclonedx --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update --cache-backend memory -o /out/ktor.V7.cdx.json
+2026-10-20T03:30:18Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:30:19Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:30:19Z	INFO	[ubuntu] Detecting vulnerabilities...	os_version="26.04" pkg_num=140
+RESULT exit=0 elapsed_ms=1072 memory.peak_bytes=204279808
+
+######## [V7-json] ktor :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-java-db-update --skip-version-check --disable-telemetry --offline-scan --skip-db-update --cache-backend memory -o /out/ktor.V7.json
+2026-10-20T03:30:19Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:30:20Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:30:20Z	INFO	[ubuntu] Detecting vulnerabilities...	os_version="26.04" pkg_num=140
+RESULT exit=0 elapsed_ms=1001 memory.peak_bytes=52957184
+
+######## [V8-json-java-db-flag-omitted] ktor :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-version-check --disable-telemetry --offline-scan --skip-db-update --cache-backend memory -o /out/ktor.V8.json
+2026-10-20T03:30:20Z	INFO	[vuln] Vulnerability scanning is enabled
+2026-10-20T03:30:21Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:30:21Z	INFO	[ubuntu] Detecting vulnerabilities...	os_version="26.04" pkg_num=140
+RESULT exit=0 elapsed_ms=986 memory.peak_bytes=51085312
+
+== counts (severity counts and IDs only; no advisory text)
+temurin V7 findings 57 unique ids 46 with fixed version 0 {'MEDIUM': 53, 'LOW': 4} ArtifactType container_image OS {'Family': 'ubuntu', 'Name': '26.04'} results [('/in/img.tar (ubuntu 26.04)', 'os-pkgs')]
+temurin V8 findings 57 unique ids 46 with fixed version 0 {'MEDIUM': 53, 'LOW': 4} ArtifactType container_image OS {'Family': 'ubuntu', 'Name': '26.04'} results [('/in/img.tar (ubuntu 26.04)', 'os-pkgs')]
+temurin V7 cdx specVersion 1.7 components 141 vulnerabilities 46 rating severities {'medium': 95, 'low': 22, 'high': 35} bytes 461428
+ktor V7 findings 57 unique ids 46 with fixed version 0 {'MEDIUM': 53, 'LOW': 4} ArtifactType container_image OS {'Family': 'ubuntu', 'Name': '26.04'} results [('/in/img.tar (ubuntu 26.04)', 'os-pkgs')]
+ktor V8 findings 57 unique ids 46 with fixed version 0 {'MEDIUM': 53, 'LOW': 4} ArtifactType container_image OS {'Family': 'ubuntu', 'Name': '26.04'} results [('/in/img.tar (ubuntu 26.04)', 'os-pkgs')]
+ktor V7 cdx specVersion 1.7 components 141 vulnerabilities 46 rating severities {'medium': 95, 'low': 22, 'high': 35} bytes 461581
+-- cache dir contents after the scans (must be unchanged: db only)
+total 0
+drwxrwxrwx 1 kiko   kiko     4 Oct 20 06:29 .
+drwxr-xr-x 1 kiko   kiko   106 Oct 20 06:28 ..
+drwxr-xr-x 1 nobody nobody  42 Oct 20 06:29 db
+metadata.json
+trivy.db

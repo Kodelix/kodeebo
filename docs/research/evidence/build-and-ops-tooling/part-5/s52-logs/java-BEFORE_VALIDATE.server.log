@@ -1,0 +1,996 @@
+2026-10-20 03:08:03.207 UTC pid=505 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=52054
+2026-10-20 03:08:03.212 UTC pid=505 user=deploy_rt db=c8 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:08:03.212 UTC pid=505 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+2026-10-20 03:08:03.246 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:03.249 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:08:03.250 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:08:03.251 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:08:03.251 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:03.251 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:08:03.251 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:08:03.262 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:03.262 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:03.263 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:03.263 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:03.264 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:03.264 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:03.265 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:08:03.265 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = '"app","$user", public'
+2026-10-20 03:08:03.266 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE migrator
+2026-10-20 03:08:03.266 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: select pg_backend_pid(), session_user, current_user
+2026-10-20 03:08:03.268 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:03.273 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:03.273 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:03.274 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:03.274 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:03.276 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:03.277 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:03.278 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:03.278 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:03.278 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:03.278 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:03.278 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:03.278 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:03.279 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:03.279 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:03.280 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:08:03.280 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:08:03.282 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:08:03.282 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:03.282 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:03.282 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:03.294 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:03.294 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:03.294 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:03.294 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:03.298 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:04.299 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:04.300 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:04.300 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:04.305 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:04.305 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:04.305 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:04.305 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:04.306 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:05.307 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:05.308 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:05.308 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:05.310 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:05.310 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:05.310 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:05.310 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:05.311 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:06.312 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:06.313 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:06.313 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:06.318 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:06.318 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:06.318 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:06.318 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:06.319 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:07.320 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:07.321 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:07.321 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:07.323 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:07.323 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:07.323 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:07.323 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:07.324 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:08.324 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:08.325 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:08.325 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:08.327 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:08.327 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:08.327 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:08.327 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:08.328 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:09.328 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:09.329 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:09.329 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:09.330 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:09.330 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:09.330 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:09.330 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:09.330 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:10.331 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:10.332 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:10.332 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:10.335 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:10.335 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:10.335 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:10.335 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:10.336 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:11.336 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:11.337 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:11.337 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:11.338 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:11.339 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:11.339 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:11.339 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:11.339 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:12.339 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:12.340 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:12.340 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:12.343 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:12.343 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:12.343 UTC pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:12.343 UTC pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:12.344 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:12.345 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:08:12.345 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:12.346 UTC pid=505 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:12.346 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:12.347 UTC pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:08:12.347 UTC pid=505 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = '"$user", public'
+2026-10-20 03:08:12.347 UTC pid=505 user=deploy_rt db=c8 LOG:  execute S_5: COMMIT
+2026-10-20 03:08:12.353 UTC pid=508 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=57392
+2026-10-20 03:08:12.354 UTC pid=508 user=deploy_rt db=c8 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:08:12.355 UTC pid=508 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+2026-10-20 03:08:12.362 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:12.363 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:08:12.364 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:08:12.365 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:08:12.366 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:12.366 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:08:12.366 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:08:12.371 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:12.372 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:12.372 UTC pid=508 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:12.373 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:12.373 UTC pid=508 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:12.374 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:08:12.374 UTC pid=508 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:08:12.376 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:12.376 UTC pid=508 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:12.376 UTC pid=508 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:12.376 UTC pid=508 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:12.474 UTC pid=515 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=44398
+2026-10-20 03:08:12.475 UTC pid=515 user=postgres db=c8 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:08:12.475 UTC pid=515 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+2026-10-20 03:08:12.475 UTC pid=515 user=postgres db=c8 LOG:  statement: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind::text||') = '||pg_get_userbyid(c.relowner) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='app' and c.relkind in ('r','S') order by 1
+2026-10-20 03:08:12.544 UTC pid=522 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=44404
+2026-10-20 03:08:12.545 UTC pid=522 user=postgres db=c8 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:08:12.545 UTC pid=522 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+2026-10-20 03:08:12.545 UTC pid=522 user=postgres db=c8 LOG:  statement: select 'history rank='||installed_rank||' v='||coalesce(version,'-')||' installed_by='||installed_by||' success='||success from app.flyway_schema_history order by installed_rank
+2026-10-20 03:08:12.546 UTC pid=522 user=postgres db=c8 ERROR:  relation "app.flyway_schema_history" does not exist at character 129
+2026-10-20 03:08:12.546 UTC pid=522 user=postgres db=c8 STATEMENT:  select 'history rank='||installed_rank||' v='||coalesce(version,'-')||' installed_by='||installed_by||' success='||success from app.flyway_schema_history order by installed_rank
+2026-10-20 03:08:12.592 UTC pid=529 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=44414
+2026-10-20 03:08:12.593 UTC pid=529 user=postgres db=c8 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:08:12.593 UTC pid=529 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+2026-10-20 03:08:12.593 UTC pid=529 user=postgres db=c8 LOG:  statement: select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+2026-10-20 03:08:12.594 UTC pid=529 user=postgres db=c8 ERROR:  relation "app.who" does not exist at character 90
+2026-10-20 03:08:12.594 UTC pid=529 user=postgres db=c8 STATEMENT:  select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+2026-10-20 03:08:13.104 UTC pid=530 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=57398
+2026-10-20 03:08:13.109 UTC pid=530 user=deploy_rt db=c8 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:08:13.109 UTC pid=530 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+2026-10-20 03:08:13.144 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:13.147 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:08:13.148 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:08:13.148 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:08:13.148 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:13.149 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:08:13.149 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:08:13.160 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:13.160 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:13.162 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:13.162 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:13.162 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:13.162 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:13.163 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:08:13.163 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = '"app","$user", public'
+2026-10-20 03:08:13.164 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE migrator
+2026-10-20 03:08:13.164 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: select pg_backend_pid(), session_user, current_user
+2026-10-20 03:08:13.166 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:13.171 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:13.172 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:13.172 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:13.172 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:13.174 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:13.176 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:13.177 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:13.177 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:13.177 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:13.177 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:13.177 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:13.177 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:13.178 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:13.178 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:13.179 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:08:13.179 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:08:13.183 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:08:13.183 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:13.184 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:13.184 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:13.193 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:13.193 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:13.194 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:13.194 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:13.197 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:14.198 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:14.199 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:14.199 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:14.202 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:14.202 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:14.202 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:14.202 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:14.203 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:15.204 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:15.206 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:15.206 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:15.211 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:15.211 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:15.211 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:15.211 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:15.212 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:16.213 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:16.214 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:16.214 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:16.216 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:16.216 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:16.216 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:16.216 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:16.217 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:17.218 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:17.219 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:17.219 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:17.222 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:17.222 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:17.222 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:17.222 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:17.223 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:18.224 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:18.224 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:18.224 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:18.227 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:18.227 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:18.227 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:18.227 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:18.228 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:19.228 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:19.229 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:19.229 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:19.231 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:19.231 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:19.231 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:19.231 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:19.232 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:20.233 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:20.233 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:20.233 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:20.236 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:20.236 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:20.236 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:20.236 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:20.236 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:21.237 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:21.238 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:21.238 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:21.241 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:21.242 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:21.242 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:21.242 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:21.243 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:22.243 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:22.244 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:22.244 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:22.245 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:22.245 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:22.245 UTC pid=530 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+2026-10-20 03:08:22.245 UTC pid=530 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:08:22.246 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_2: ROLLBACK
+2026-10-20 03:08:22.246 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:08:22.246 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+2026-10-20 03:08:22.247 UTC pid=530 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:22.247 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:22.247 UTC pid=530 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:08:22.247 UTC pid=530 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = '"$user", public'
+2026-10-20 03:08:22.247 UTC pid=530 user=deploy_rt db=c8 LOG:  execute S_5: COMMIT
+2026-10-20 03:08:22.250 UTC pid=533 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=43380
+2026-10-20 03:08:22.251 UTC pid=533 user=deploy_rt db=c8 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:08:22.251 UTC pid=533 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+2026-10-20 03:08:22.255 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:22.256 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:08:22.258 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:08:22.259 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:08:22.259 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:22.260 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:08:22.260 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:08:22.266 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:22.268 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:08:22.268 UTC pid=533 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:08:22.270 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:08:22.270 UTC pid=533 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:08:22.273 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:08:22.273 UTC pid=533 user=deploy_rt db=c8 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:08:22.277 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+2026-10-20 03:08:22.278 UTC pid=533 user=deploy_rt db=c8 LOG:  statement: BEGIN
+2026-10-20 03:08:22.278 UTC pid=533 user=deploy_rt db=c8 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:08:22.278 UTC pid=533 user=deploy_rt db=c8 LOG:  execute S_1: COMMIT
+2026-10-20 03:08:22.361 UTC pid=540 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=41470
+2026-10-20 03:08:22.362 UTC pid=540 user=postgres db=c8 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:08:22.362 UTC pid=540 user=postgres db=c8 LOG:  connection authorized: user=postgres database=c8 application_name=psql
+2026-10-20 03:08:22.362 UTC pid=540 user=postgres db=c8 LOG:  statement: select 'after step 2: history rows='||count(*)||' ; role spike_priv_role exists='||(select count(*) from pg_roles where rolname='spike_priv_role') from app.flyway_schema_history
+2026-10-20 03:08:22.362 UTC pid=540 user=postgres db=c8 ERROR:  relation "app.flyway_schema_history" does not exist at character 153
+2026-10-20 03:08:22.362 UTC pid=540 user=postgres db=c8 STATEMENT:  select 'after step 2: history rows='||count(*)||' ; role spike_priv_role exists='||(select count(*) from pg_roles where rolname='spike_priv_role') from app.flyway_schema_history

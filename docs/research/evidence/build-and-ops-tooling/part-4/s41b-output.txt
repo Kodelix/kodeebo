@@ -1,0 +1,10 @@
+# command: timeout 60 bash docs/research/evidence/build-and-ops-tooling/part-4/scripts/s41b-agent-confirm.sh production/session-state/cache/build-and-ops-tooling/part-4 ; OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+# S41b run 2026-10-20T03:01:25Z OpenSSH_10.6p1, OpenSSL 3.6.5 29 Sep 2026
+Identity added: k_FAKE (FAKE-confirm-key)
+The user must confirm each use of the key
+T2 confirmation DENIED: signed anyway = YES
+T3 confirmation ACCEPTED: signed = YES
+--- askpass.log: the text the founder would be shown ---
+--- ssh-add -l (what an agent client can learn without a secret) ---
+256 SHA256:Sc9tpLcYAeuxOab+jZVvedRi3JuosJ6ofBeSmUlJKK4 FAKE-confirm-key (ED25519)
+exit=0

@@ -1,0 +1,43 @@
+name: s30probe
+services:
+  short:
+    image: eclipse-temurin:21-jre
+    pull_policy: never
+    user: "10001:10001"
+    command: ["sh","-c","id; ls -ln /run/secrets; cat /run/secrets/fake_file 2>&1 | head -c 60; echo"]
+    secrets: [fake_file]
+  long:
+    image: eclipse-temurin:21-jre
+    pull_policy: never
+    user: "10001:10001"
+    command: ["sh","-c","id; ls -ln /run/secrets; cat /run/secrets/fake_file 2>&1 | head -c 60; echo"]
+    secrets:
+      - source: fake_file
+        target: fake_file
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+  envsrc:
+    image: eclipse-temurin:21-jre
+    pull_policy: never
+    user: "10001:10001"
+    command: ["sh","-c","id; ls -ln /run/secrets; cat /run/secrets/fake_env 2>&1 | head -c 60; echo"]
+    secrets:
+      - source: fake_env
+        target: fake_env
+        uid: "10001"
+        gid: "10001"
+        mode: 0400
+  inspectme:
+    image: eclipse-temurin:21-jre
+    pull_policy: never
+    user: "10001:10001"
+    environment:
+      FAKE_PLAIN_ENV_S30: "FAKE-PLACEHOLDER-PLAIN-ENV"
+    command: ["sleep","60"]
+    secrets: [fake_file]
+secrets:
+  fake_file:
+    file: ./fake_file.txt
+  fake_env:
+    environment: FAKE_ENV_S30

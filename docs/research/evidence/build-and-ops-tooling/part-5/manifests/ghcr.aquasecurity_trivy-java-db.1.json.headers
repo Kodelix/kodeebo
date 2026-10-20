@@ -1,0 +1,11 @@
+HTTP/2 200 
+content-length: 624
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:d4d3c487393044263210ca7b6dd893c86f98a67a2a420fe2edfce95d070af194
+docker-distribution-api-version: registry/2.0
+etag: "sha256:d4d3c487393044263210ca7b6dd893c86f98a67a2a420fe2edfce95d070af194"
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+date: Tue, 20 Oct 2026 03:00:35 GMT
+x-github-request-id: D86C:304552:144295:149AAA:6AD6D952
+x-github-edge-region: fra
+

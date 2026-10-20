@@ -1,0 +1,145 @@
+date_utc: 2026-10-20T02:19:42Z
+== artifact sizes (HEAD only)
+-- org/flywaydb/flyway-core/13.10.3/flyway-core-13.10.3.jar
+HTTP/2 200 
+content-length: 816588
+last-modified: Thu, 15 Oct 2026 14:42:37 GMT
+-- org/flywaydb/flyway-database-postgresql/13.10.3/flyway-database-postgresql-13.10.3.jar
+HTTP/2 200 
+content-length: 32674
+last-modified: Thu, 15 Oct 2026 14:42:37 GMT
+-- org/liquibase/liquibase-core/5.0.4/liquibase-core-5.0.4.jar
+HTTP/2 200 
+content-length: 3159681
+last-modified: Thu, 20 Aug 2026 17:29:52 GMT
+-- org/postgresql/postgresql/42.7.14/postgresql-42.7.14.jar
+HTTP/2 200 
+content-length: 1221004
+last-modified: Wed, 07 Oct 2026 21:41:11 GMT
+== maven-metadata (latest/release/lastUpdated)
+-- org/flywaydb/flyway-core
+    <latest>13.10.3</latest>
+    <release>13.10.3</release>
+    <lastUpdated>20261015144436</lastUpdated>
+-- org/flywaydb/flyway-database-postgresql
+    <latest>13.10.3</latest>
+    <release>13.10.3</release>
+    <lastUpdated>20261015144436</lastUpdated>
+-- org/liquibase/liquibase-core
+    <latest>5.0.4</latest>
+    <release>5.0.4</release>
+    <lastUpdated>20260820174031</lastUpdated>
+-- org/postgresql/postgresql
+    <latest>42.7.14</latest>
+    <release>42.7.14</release>
+    <lastUpdated>20261007215823</lastUpdated>
+== flyway-core 13.10.3 pom (dependencies, licence)
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-parent</artifactId>
+    <version>13.10.3</version>
+  <artifactId>flyway-core</artifactId>
+  <name>${project.artifactId}</name>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <optional>true</optional>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <optional>true</optional>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-vfs</artifactId>
+      <optional>true</optional>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+      <groupId>tools.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+        <artifactId>maven-resources-plugin</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+== liquibase-core 5.0.4 pom (dependencies, licence)
+  <groupId>org.liquibase</groupId>
+  <artifactId>liquibase-core</artifactId>
+  <version>5.0.4</version>
+  <name>Liquibase</name>
+  <url>http://www.liquibase.com</url>
+  <licenses>
+      <name>FSL-1.1-ALv2</name>
+      <url>https://fsl.software/FSL-1.1-ALv2.template.md</url>
+      <name>Nathan Voxland</name>
+    <url>scm:git:git@github.com:liquibase/liquibase.git</url>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>2.6</version>
+      <scope>compile</scope>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.6.0</version>
+      <scope>compile</scope>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
+      <version>1.15.0</version>
+      <scope>compile</scope>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>5.12.0</version>
+      <scope>compile</scope>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils</artifactId>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+      <scope>compile</scope>
+          <groupId>javax.activation</groupId>
+          <artifactId>javax.activation-api</artifactId>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>4.7.7</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.20.0</version>
+      <scope>compile</scope>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.22.0</version>
+      <scope>compile</scope>
+== GitHub latest releases
+amacneil/dbmate v2.37.0 2026-10-18T18:12:44Z 
+pressly/goose v3.29.0 2026-10-11T17:48:18Z 
+golang-migrate/migrate v4.20.1 2026-09-09T06:21:49Z 
+== OSV (api.osv.dev/v1/query)
+-- Maven org.flywaydb:flyway-core 13.10.3
+count: 0
+-- Maven org.flywaydb:flyway-core <all versions>
+count: 0
+-- Maven org.liquibase:liquibase-core 5.0.4
+count: 0
+-- Maven org.liquibase:liquibase-core <all versions>
+count: 1
+  GHSA-jvfv-hrrc-6q72 2022-03-05 | Improper Restriction of XML External Entity Reference in Liquibase
+-- Maven org.postgresql:postgresql 42.7.14
+count: 0
+-- Go github.com/pressly/goose/v3 <all versions>
+count: 0
+-- Go github.com/golang-migrate/migrate/v4 <all versions>
+count: 0
+-- Go github.com/amacneil/dbmate/v2 <all versions>
+count: 0

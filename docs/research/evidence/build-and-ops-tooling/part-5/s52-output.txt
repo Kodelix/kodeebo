@@ -1,0 +1,774 @@
+date_utc: 2026-10-20T03:06:32Z
+openjdk version "21.0.12.1" 2026-08-18
+sha256 eb38d49092c423aa421fab351df5fd093e2bc07449b100a7ace4aca9efbb9f3c flyway-core-13.10.3.jar
+sha256 7a012fd805f0752028d571dc9284e23697d70652fed5cc347dca3a0206939f6f flyway-database-postgresql-13.10.3.jar
+sha256 21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0 jackson-annotations-2.22.jar
+sha256 6d3cccd4e8ec78984b28780226cb141c7ecfb0285e22683397c3c06f578706bf jackson-annotations-3.0-rc5.jar
+sha256 494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651 jackson-core-3.2.4.jar
+sha256 c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d jackson-databind-3.2.4.jar
+sha256 73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c postgresql-42.7.14.jar
+host port: 32771 (loopback)
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE ROLE
+GRANT ROLE
+
+################ CANDIDATE control-initSql  (login deploy_rt, mode=initSql, arg='SET ROLE migrator')
+--- step 1: migrate to target 3 as deploy_rt
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.010s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+INFO: Current version of schema "app": << Empty Schema >>
+INFO: Migrating schema "app" to version "1 - orders rls"
+INFO: Migrating schema "app" to version "2 - definer fn"
+INFO: Migrating schema "app" to version "3 - who"
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.009s)
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+owner app.flyway_schema_history (r) = migrator
+owner app.orders (r) = migrator
+owner app.who (r) = migrator
+owner app.who_id_seq (S) = migrator
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt current_user=migrator
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO: Successfully validated 4 migrations (execution time 00:00.015s)
+INFO: Current version of schema "app": 3
+INFO: Migrating schema "app" to version "4 - privileged create role"
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=125 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE migrator
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT current_user
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_3: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_3: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_3: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_5: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_5: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT current_user
+pid=125 user=deploy_rt db=c0 LOG:  execute S_5: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_5: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_5: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_9: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_9: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_9: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_9: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_9: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: CREATE TABLE app.who (id serial PRIMARY KEY, session_user_name text NOT NULL, current_user_name text NOT NULL)
+pid=125 user=deploy_rt db=c0 LOG:  execute <unnamed>: INSERT INTO app.who (session_user_name, current_user_name) VALUES (session_user, current_user)
+pid=125 user=deploy_rt db=c0 LOG:  execute S_14: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_14: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_14: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_14: SET ROLE 'migrator'
+pid=125 user=deploy_rt db=c0 LOG:  execute S_14: SET ROLE 'migrator'
+pid=126 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=126 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE migrator
+pid=126 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=126 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT current_user
+pid=126 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=126 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=133 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+pid=140 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+pid=147 user=postgres db=c0 LOG:  connection authorized: user=postgres database=c0 application_name=psql
+pid=147 user=postgres db=c0 LOG:  statement: select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+pid=148 user=deploy_rt db=c0 LOG:  connection authorized: user=deploy_rt database=c0 application_name=Redgate_Flyway
+pid=148 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE migrator
+pid=148 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=148 user=deploy_rt db=c0 LOG:  execute <unnamed>: SELECT current_user
+pid=148 user=deploy_rt db=c0 LOG:  execute <unnamed>: SET ROLE 'migrator'
+
+################ CANDIDATE afterConnect-sql  (login deploy_rt, mode=callbackdir, arg='/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/s52-work/cb-afterConnect')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Executing SQL callback: afterConnect - 
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.006s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Executing SQL callback: afterConnect - 
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Executing SQL callback: afterConnect - 
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Executing SQL callback: afterConnect - 
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=171 user=deploy_rt db=c1 LOG:  connection authorized: user=deploy_rt database=c1 application_name=Redgate_Flyway
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SELECT current_user
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SET ROLE migrator
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 ERROR:  permission denied for schema app at character 14
+pid=171 user=deploy_rt db=c1 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=171 user=deploy_rt db=c1 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=171 user=deploy_rt db=c1 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+
+################ CANDIDATE beforeMigrate-sql  (login deploy_rt, mode=callbackdir, arg='/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/s52-work/cb-beforeMigrate')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.010s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=217 user=deploy_rt db=c2 LOG:  connection authorized: user=deploy_rt database=c2 application_name=Redgate_Flyway
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: SELECT current_user
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=217 user=deploy_rt db=c2 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=217 user=deploy_rt db=c2 ERROR:  permission denied for schema app at character 14
+pid=217 user=deploy_rt db=c2 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+
+################ CANDIDATE beforeValidate-sql  (login deploy_rt, mode=callbackdir, arg='/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-5/s52-work/cb-beforeValidate')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Executing SQL callback: beforeValidate - 
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.009s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Executing SQL callback: beforeValidate - 
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.006s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=265 user=deploy_rt db=c3 LOG:  connection authorized: user=deploy_rt database=c3 application_name=Redgate_Flyway
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SELECT current_user
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SET ROLE migrator
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 ERROR:  permission denied for schema app at character 14
+pid=265 user=deploy_rt db=c3 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=265 user=deploy_rt db=c3 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=265 user=deploy_rt db=c3 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+
+################ CANDIDATE url-options  (login deploy_rt, mode=urlopt, arg='-c role=migrator')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.009s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+INFO: Current version of schema "app": << Empty Schema >>
+INFO: Migrating schema "app" to version "1 - orders rls"
+INFO: Migrating schema "app" to version "2 - definer fn"
+INFO: Migrating schema "app" to version "3 - who"
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.010s)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+owner app.flyway_schema_history (r) = migrator
+owner app.orders (r) = migrator
+owner app.who (r) = migrator
+owner app.who_id_seq (S) = migrator
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt current_user=migrator
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Successfully validated 4 migrations (execution time 00:00.015s)
+INFO: Current version of schema "app": 3
+INFO: Migrating schema "app" to version "4 - privileged create role"
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=312 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT current_user
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_3: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_3: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_3: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_5: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_5: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT current_user
+pid=312 user=deploy_rt db=c4 LOG:  execute S_5: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_5: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_5: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_9: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_9: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_9: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_9: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_9: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: CREATE TABLE app.who (id serial PRIMARY KEY, session_user_name text NOT NULL, current_user_name text NOT NULL)
+pid=312 user=deploy_rt db=c4 LOG:  execute <unnamed>: INSERT INTO app.who (session_user_name, current_user_name) VALUES (session_user, current_user)
+pid=312 user=deploy_rt db=c4 LOG:  execute S_14: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_14: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_14: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_14: SET ROLE 'migrator'
+pid=312 user=deploy_rt db=c4 LOG:  execute S_14: SET ROLE 'migrator'
+pid=313 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=313 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=313 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT current_user
+pid=313 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=313 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=320 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+pid=327 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+pid=334 user=postgres db=c4 LOG:  connection authorized: user=postgres database=c4 application_name=psql
+pid=334 user=postgres db=c4 LOG:  statement: select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+pid=335 user=deploy_rt db=c4 LOG:  connection authorized: user=deploy_rt database=c4 application_name=Redgate_Flyway
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SELECT current_user
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=335 user=deploy_rt db=c4 LOG:  execute <unnamed>: SET ROLE 'migrator'
+
+################ CANDIDATE jdbc-properties  (login deploy_rt, mode=jdbcprop, arg='-c role=migrator')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.010s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+INFO: Current version of schema "app": << Empty Schema >>
+INFO: Migrating schema "app" to version "1 - orders rls"
+INFO: Migrating schema "app" to version "2 - definer fn"
+INFO: Migrating schema "app" to version "3 - who"
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.008s)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+owner app.flyway_schema_history (r) = migrator
+owner app.orders (r) = migrator
+owner app.who (r) = migrator
+owner app.who_id_seq (S) = migrator
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt current_user=migrator
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Successfully validated 4 migrations (execution time 00:00.016s)
+INFO: Current version of schema "app": 3
+INFO: Migrating schema "app" to version "4 - privileged create role"
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=358 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_3: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_3: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_3: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE TABLE app.who (id serial PRIMARY KEY, session_user_name text NOT NULL, current_user_name text NOT NULL)
+pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: INSERT INTO app.who (session_user_name, current_user_name) VALUES (session_user, current_user)
+pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+pid=359 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=366 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+pid=373 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+pid=380 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+pid=380 user=postgres db=c5 LOG:  statement: select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+pid=381 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+pid=381 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=381 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+pid=381 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=381 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=381 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=381 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+ALTER ROLE
+
+################ CANDIDATE role-default  (login deploy_rt2, mode=none, arg='')
+--- step 1: migrate to target 3 as deploy_rt2
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.011s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+INFO: Current version of schema "app": << Empty Schema >>
+INFO: Migrating schema "app" to version "1 - orders rls"
+INFO: Migrating schema "app" to version "2 - definer fn"
+INFO: Migrating schema "app" to version "3 - who"
+INFO: Successfully applied 3 migrations to schema "app", now at version v3 (execution time 00:00.008s)
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+owner app.flyway_schema_history (r) = migrator
+owner app.orders (r) = migrator
+owner app.who (r) = migrator
+owner app.who_id_seq (S) = migrator
+history rank=1 v=1 installed_by=migrator success=true
+history rank=2 v=2 installed_by=migrator success=true
+history rank=3 v=3 installed_by=migrator success=true
+who: session_user=deploy_rt2 current_user=migrator
+--- step 2: migrate to latest as deploy_rt2 (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Successfully validated 4 migrations (execution time 00:00.020s)
+INFO: Current version of schema "app": 3
+INFO: Migrating schema "app" to version "4 - privileged create role"
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql | ------------------------------------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied to create role |   Detail: Only roles with the CREATEROLE attribute ma
+INFO v=1 state=SUCCESS by=migrator
+INFO v=2 state=SUCCESS by=migrator
+INFO v=3 state=SUCCESS by=migrator
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+after step 2: history rows=3 ; role spike_priv_role exists=0
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=412 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT current_user
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_3: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_3: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_3: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_5: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_5: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT current_user
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_5: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_5: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_5: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_9: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_9: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_9: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_9: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_9: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: CREATE TABLE app.who (id serial PRIMARY KEY, session_user_name text NOT NULL, current_user_name text NOT NULL)
+pid=412 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: INSERT INTO app.who (session_user_name, current_user_name) VALUES (session_user, current_user)
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_14: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_14: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_14: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_14: SET ROLE 'migrator'
+pid=412 user=deploy_rt2 db=c6 LOG:  execute S_14: SET ROLE 'migrator'
+pid=413 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT current_user
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=413 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=420 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+pid=427 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+pid=434 user=postgres db=c6 LOG:  connection authorized: user=postgres database=c6 application_name=psql
+pid=434 user=postgres db=c6 LOG:  statement: select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+pid=435 user=deploy_rt2 db=c6 LOG:  connection authorized: user=deploy_rt2 database=c6 application_name=Redgate_Flyway
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SELECT current_user
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+pid=435 user=deploy_rt2 db=c6 LOG:  execute <unnamed>: SET ROLE 'migrator'
+
+################ CANDIDATE java-AFTER_CONNECT  (login deploy_rt, mode=javacb, arg='AFTER_CONNECT')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=458 session_user=deploy_rt current_user=migrator
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.007s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=459 session_user=deploy_rt current_user=migrator
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=482 session_user=deploy_rt current_user=migrator
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Executing Java callback: afterConnect - s52-set-role
+JAVACB event=afterConnect pid=483 session_user=deploy_rt current_user=migrator
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=458 user=deploy_rt db=c7 LOG:  connection authorized: user=deploy_rt database=c7 application_name=Redgate_Flyway
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SELECT current_user
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SET ROLE migrator
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: select pg_backend_pid(), session_user, current_user
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=458 user=deploy_rt db=c7 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 ERROR:  permission denied for schema app at character 14
+pid=458 user=deploy_rt db=c7 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=458 user=deploy_rt db=c7 LOG:  execute S_3: SET ROLE 'deploy_rt'
+
+################ CANDIDATE java-BEFORE_VALIDATE  (login deploy_rt, mode=javacb, arg='BEFORE_VALIDATE')
+--- step 1: migrate to target 3 as deploy_rt
+INFO: Executing Java callback: beforeValidate - s52-set-role
+JAVACB event=beforeValidate pid=505 session_user=deploy_rt current_user=migrator
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.007s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=ABOVE_TARGET by=null
+(client exit 0; 124 = timed out)
+--- catalogue after step 1
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...led_by='||installed_by||' success='||success from app.flyway...
+                                                             ^
+ERROR:  relation "app.who" does not exist
+LINE 1: ..._user_name||' current_user='||current_user_name from app.who
+                                                                ^
+--- step 2: migrate to latest as deploy_rt (V4 = CREATE ROLE, privileged: must fail safely)
+INFO: Executing Java callback: beforeValidate - s52-set-role
+JAVACB event=beforeValidate pid=530 session_user=deploy_rt current_user=migrator
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO: Successfully validated 4 migrations (execution time 00:00.008s)
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script  | ------------------------- | SQL State  : 42501 | Error Code : 0 | Message    : ERROR: permission denied for schema app |   Position: 14 | Location   :  () | Line       : 1 | Statement  : Run Flyway with -X option to see the actual s
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 state=PENDING by=null
+INFO v=2 state=PENDING by=null
+INFO v=3 state=PENDING by=null
+INFO v=4 state=PENDING by=null
+(client exit 0; 124 = timed out)
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ...om pg_roles where rolname='spike_priv_role') from app.flyway...
+                                                             ^
+--- server log: connections and role/history statements (pid shows which connection ran what)
+pid=505 user=deploy_rt db=c8 LOG:  connection authorized: user=deploy_rt database=c8 application_name=Redgate_Flyway
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT CURRENT_USER
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SELECT current_user
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE migrator
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: select pg_backend_pid(), session_user, current_user
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+pid=505 user=deploy_rt db=c8 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 ERROR:  permission denied for schema app at character 14
+pid=505 user=deploy_rt db=c8 STATEMENT:  CREATE TABLE "app"."flyway_schema_history" (
+pid=505 user=deploy_rt db=c8 LOG:  execute S_3: SET ROLE 'deploy_rt'
+
+container removed on exit

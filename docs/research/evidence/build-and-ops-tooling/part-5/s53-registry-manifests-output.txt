@@ -1,0 +1,78 @@
+date_utc: 2026-10-20T03:00:33Z
+
+#### ghcr.io/aquasecurity/trivy-db:2
+HTTP/2 200 
+content-length: 616
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:18b0b0b043de407898649561d0ec997013775de05dbe5efc2ee678001caf94d9
+ mediaType: application/vnd.oci.image.manifest.v1+json artifactType: application/vnd.aquasec.trivy.config.v1+json
+ manifest annotation org.opencontainers.image.created = 2026-10-20T01:23:58Z
+ config application/vnd.oci.empty.v1+json 2
+ layer application/vnd.aquasec.trivy.db.layer.v1.tar+gzip size 135378999 annotations {'org.opencontainers.image.title': 'db.tar.gz'}
+ TOTAL layer bytes: 135378999
+ tags:
+{"name":"aquasecurity/trivy-db","tags":["1","latest","2"]}
+
+#### ghcr.io/aquasecurity/trivy-java-db:1
+HTTP/2 200 
+content-length: 624
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:d4d3c487393044263210ca7b6dd893c86f98a67a2a420fe2edfce95d070af194
+ mediaType: application/vnd.oci.image.manifest.v1+json artifactType: application/vnd.aquasec.trivy.config.v1+json
+ manifest annotation org.opencontainers.image.created = 2026-10-20T01:00:40Z
+ config application/vnd.oci.empty.v1+json 2
+ layer application/vnd.aquasec.trivy.javadb.layer.v1.tar+gzip size 986097002 annotations {'org.opencontainers.image.title': 'javadb.tar.gz'}
+ TOTAL layer bytes: 986097002
+ tags:
+{"name":"aquasecurity/trivy-java-db","tags":["1"]}
+
+#### ghcr.io/aquasecurity/trivy-checks:2
+HTTP/2 200 
+content-length: 750
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:b0e12d009b01dcc8ca2ebbc199b9caf3922491978d21c17b61c1d7f6dc75220b
+ mediaType: application/vnd.oci.image.manifest.v1+json artifactType: application/vnd.cncf.openpolicyagent.config.v1+json
+ manifest annotation org.opencontainers.image.created = 2026-10-14T08:54:44Z
+ manifest annotation org.opencontainers.image.revision = 6ceb33758a0f28d6e37e6cd571dc6816beeadbcc
+ manifest annotation org.opencontainers.image.version = 2.3.0
+ config application/vnd.oci.empty.v1+json 2
+ layer application/vnd.cncf.openpolicyagent.layer.v1.tar+gzip size 240203 annotations {'org.opencontainers.image.title': 'bundle.tar.gz'}
+ TOTAL layer bytes: 240203
+ tags:
+{"name":"aquasecurity/trivy-checks","tags":["latest","0.10.1","0.10","0","0.10.2","0.10.3","0.10.4","0.11.0","0.11","0.12.0","0.12","0.13.0","0.13","1.0.1","1.0","1","1.1.0","1.1","1.2.1","1.2"]}
+
+#### mirror.gcr.io/aquasec/trivy-db:2 (anonymous)
+HTTP/2 200 
+content-length: 616
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:8e99b52e2ae3bc72e137b221a26391ebbbe1af4d3b22bed76e22c87596232f2f
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","artifactType":"application/vnd.aquasec.trivy.config.v1+json","config":{"mediaType":"application/vnd.oci.empty.v1+json","digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a","size":2,"data":"e30=
+
+#### mirror.gcr.io/aquasec/trivy-java-db:1 (anonymous)
+HTTP/2 200 
+content-length: 624
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:b4b5b9a1c296e0f2b545b4a7572c38805638678482c77324a460e1af4435d0a7
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","artifactType":"application/vnd.aquasec.trivy.config.v1+json","config":{"mediaType":"application/vnd.oci.empty.v1+json","digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a","size":2,"data":"e30=
+
+#### mirror.gcr.io/aquasec/trivy-checks:2 (anonymous)
+HTTP/2 200 
+content-length: 750
+content-type: application/vnd.oci.image.manifest.v1+json
+docker-content-digest: sha256:b591e9190cff4aa4e385b1a25bccfd9ecf178d3c77fd194e1410b7ce7e1df058
+{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","artifactType":"application/vnd.cncf.openpolicyagent.config.v1+json","config":{"mediaType":"application/vnd.oci.empty.v1+json","digest":"sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a","size":2,"data
+
+#### GitHub repo aquasecurity/trivy
+ full_name aquasecurity/trivy license Apache-2.0 Apache License 2.0 size_kb 945464 pushed_at 2026-10-19T09:31:55Z archived False default_branch main
+
+#### GitHub repo aquasecurity/trivy-db
+ full_name aquasecurity/trivy-db license Apache-2.0 Apache License 2.0 size_kb 10822 pushed_at 2026-10-16T16:32:15Z archived False default_branch main
+
+#### GitHub repo aquasecurity/trivy-java-db
+ full_name aquasecurity/trivy-java-db license Apache-2.0 Apache License 2.0 size_kb 186 pushed_at 2026-10-09T08:24:47Z archived False default_branch main
+
+#### GitHub repo aquasecurity/trivy-checks
+ full_name aquasecurity/trivy-checks license MIT MIT License size_kb 5435 pushed_at 2026-10-15T16:24:58Z archived False default_branch main
+
+#### GitHub repo aquasecurity/vexhub
+ full_name aquasecurity/vexhub license Apache-2.0 Apache License 2.0 size_kb 3734 pushed_at 2026-03-23T00:48:44Z archived False default_branch main

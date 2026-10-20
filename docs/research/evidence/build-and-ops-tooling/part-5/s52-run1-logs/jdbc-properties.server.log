@@ -1,0 +1,441 @@
+2026-10-20 03:05:10.230 UTC pid=358 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=39070
+2026-10-20 03:05:10.237 UTC pid=358 user=deploy_rt db=c5 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:05:10.237 UTC pid=358 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+2026-10-20 03:05:10.279 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:10.281 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:05:10.282 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:05:10.283 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:05:10.283 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:10.284 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:05:10.284 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:05:10.293 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.293 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.300 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.300 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:10.301 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.301 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.306 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_1: COMMIT
+2026-10-20 03:05:10.308 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.308 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.308 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.309 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_1: COMMIT
+2026-10-20 03:05:10.309 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:10.309 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.309 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.309 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.309 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.311 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:05:10.311 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:05:10.314 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:05:10.314 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:10.315 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.315 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.330 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.330 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE TABLE "app"."flyway_schema_history" (
+	    "installed_rank" INT NOT NULL,
+	    "version" VARCHAR(50),
+	    "description" VARCHAR(200) NOT NULL,
+	    "type" VARCHAR(20) NOT NULL,
+	    "script" VARCHAR(1000) NOT NULL,
+	    "checksum" INTEGER,
+	    "installed_by" VARCHAR(100) NOT NULL,
+	    "installed_on" TIMESTAMP NOT NULL DEFAULT now(),
+	    "execution_time" INTEGER NOT NULL,
+	    "success" BOOLEAN NOT NULL
+	)
+2026-10-20 03:05:10.333 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: ALTER TABLE "app"."flyway_schema_history" ADD CONSTRAINT "flyway_schema_history_pk" PRIMARY KEY ("installed_rank")
+2026-10-20 03:05:10.334 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE INDEX "flyway_schema_history_s_idx" ON "app"."flyway_schema_history" ("success")
+2026-10-20 03:05:10.334 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_2: COMMIT
+2026-10-20 03:05:10.335 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:10.336 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.336 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.336 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:05:10.337 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_3: SET ROLE 'migrator'
+2026-10-20 03:05:10.338 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:05:10.338 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_3: SET ROLE 'migrator'
+2026-10-20 03:05:10.338 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_4: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.338 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.341 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.341 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '-1'
+2026-10-20 03:05:10.347 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.348 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_3: SET ROLE 'migrator'
+2026-10-20 03:05:10.348 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.348 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.348 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:05:10.348 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '"app","$user", public'
+2026-10-20 03:05:10.349 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET lock_timeout = '5s'
+2026-10-20 03:05:10.350 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE TABLE app.orders (tenant_id uuid NOT NULL, id uuid PRIMARY KEY, note text)
+2026-10-20 03:05:10.350 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: ALTER TABLE app.orders ENABLE ROW LEVEL SECURITY
+2026-10-20 03:05:10.351 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: ALTER TABLE app.orders FORCE ROW LEVEL SECURITY
+2026-10-20 03:05:10.351 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE POLICY tenant_isolation ON app.orders AS RESTRICTIVE
+	  USING (tenant_id = nullif(current_setting('app.tenant_id', true), '')::uuid)
+2026-10-20 03:05:10.351 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE POLICY app_rt_all ON app.orders AS PERMISSIVE FOR ALL TO app_rt USING (true) WITH CHECK (true)
+2026-10-20 03:05:10.351 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: GRANT SELECT, INSERT, UPDATE, DELETE ON app.orders TO app_rt
+2026-10-20 03:05:10.351 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+2026-10-20 03:05:10.352 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_6: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.352 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.352 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.352 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '-1'
+2026-10-20 03:05:10.352 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+2026-10-20 03:05:10.354 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:05:10.354 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: INSERT INTO "app"."flyway_schema_history" ("installed_rank", "version", "description", "type", "script", "checksum", "installed_by", "execution_time", "success") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+2026-10-20 03:05:10.354 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '1', $2 = '1', $3 = 'orders rls', $4 = 'SQL', $5 = 'V1__orders_rls.sql', $6 = '1530841888', $7 = 'migrator', $8 = '4', $9 = 't'
+2026-10-20 03:05:10.354 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_7: COMMIT
+2026-10-20 03:05:10.355 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:05:10.355 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+2026-10-20 03:05:10.356 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:05:10.356 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+2026-10-20 03:05:10.356 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_6: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.356 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.356 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.356 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '-1'
+2026-10-20 03:05:10.360 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.360 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_5: SET ROLE 'migrator'
+2026-10-20 03:05:10.360 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_8: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.360 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.361 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:05:10.361 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '"app","$user", public'
+2026-10-20 03:05:10.361 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: -- comment with a semicolon; and 'quote
+	CREATE FUNCTION app.tenant_count(p_tenant uuid) RETURNS bigint
+	LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, app AS $fn$
+	DECLARE n bigint;
+	BEGIN
+	  SELECT count(*) INTO n FROM app.orders WHERE tenant_id = p_tenant; -- ; inside body
+	  PERFORM 'a;b'::text;
+	  RETURN n;
+	END;
+	$fn$
+2026-10-20 03:05:10.362 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: REVOKE ALL ON FUNCTION app.tenant_count(uuid) FROM PUBLIC
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: GRANT EXECUTE ON FUNCTION app.tenant_count(uuid) TO app_rt
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_10: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '1'
+2026-10-20 03:05:10.363 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+2026-10-20 03:05:10.364 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: INSERT INTO "app"."flyway_schema_history" ("installed_rank", "version", "description", "type", "script", "checksum", "installed_by", "execution_time", "success") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+2026-10-20 03:05:10.364 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '2', $2 = '2', $3 = 'definer fn', $4 = 'SQL', $5 = 'V2__definer_fn.sql', $6 = '-645961681', $7 = 'migrator', $8 = '2', $9 = 't'
+2026-10-20 03:05:10.364 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_11: COMMIT
+2026-10-20 03:05:10.365 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:05:10.365 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+2026-10-20 03:05:10.365 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:05:10.365 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+2026-10-20 03:05:10.365 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_10: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.365 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.366 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_12: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.366 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '1'
+2026-10-20 03:05:10.367 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.367 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_9: SET ROLE 'migrator'
+2026-10-20 03:05:10.367 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_13: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.367 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.367 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:05:10.367 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '"app","$user", public'
+2026-10-20 03:05:10.368 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET lock_timeout = '5s'
+2026-10-20 03:05:10.368 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE TABLE app.who (id serial PRIMARY KEY, session_user_name text NOT NULL, current_user_name text NOT NULL)
+2026-10-20 03:05:10.369 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: INSERT INTO app.who (session_user_name, current_user_name) VALUES (session_user, current_user)
+2026-10-20 03:05:10.369 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+2026-10-20 03:05:10.369 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_15: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.369 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.370 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_16: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.370 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '2'
+2026-10-20 03:05:10.370 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+2026-10-20 03:05:10.370 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: INSERT INTO "app"."flyway_schema_history" ("installed_rank", "version", "description", "type", "script", "checksum", "installed_by", "execution_time", "success") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+2026-10-20 03:05:10.370 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '3', $2 = '3', $3 = 'who', $4 = 'SQL', $5 = 'V3__who.sql', $6 = '652730999', $7 = 'migrator', $8 = '2', $9 = 't'
+2026-10-20 03:05:10.370 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_17: COMMIT
+2026-10-20 03:05:10.371 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:05:10.371 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+2026-10-20 03:05:10.371 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_18: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:05:10.372 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+2026-10-20 03:05:10.372 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_15: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.372 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.372 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_16: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.372 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '2'
+2026-10-20 03:05:10.373 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_19: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:05:10.376 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_14: SET ROLE 'migrator'
+2026-10-20 03:05:10.376 UTC pid=358 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.376 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:10.376 UTC pid=358 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:05:10.376 UTC pid=358 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '"$user", public'
+2026-10-20 03:05:10.376 UTC pid=358 user=deploy_rt db=c5 LOG:  execute S_20: COMMIT
+2026-10-20 03:05:10.378 UTC pid=359 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=39086
+2026-10-20 03:05:10.379 UTC pid=359 user=deploy_rt db=c5 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:05:10.379 UTC pid=359 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+2026-10-20 03:05:10.381 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:10.382 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:05:10.382 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:05:10.383 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:05:10.383 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:10.383 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:05:10.383 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:05:10.385 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:10.386 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:10.386 UTC pid=359 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:10.386 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:10.386 UTC pid=359 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '-1'
+2026-10-20 03:05:10.387 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:10.387 UTC pid=359 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:10.388 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:05:10.388 UTC pid=359 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:05:10.390 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:10.390 UTC pid=359 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:10.390 UTC pid=359 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:10.390 UTC pid=359 user=deploy_rt db=c5 LOG:  execute S_1: COMMIT
+2026-10-20 03:05:10.482 UTC pid=366 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=46200
+2026-10-20 03:05:10.483 UTC pid=366 user=postgres db=c5 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:05:10.483 UTC pid=366 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+2026-10-20 03:05:10.484 UTC pid=366 user=postgres db=c5 LOG:  statement: select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind||') = '||pg_get_userbyid(c.relowner) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='app' and c.relkind in ('r','S') order by 1
+2026-10-20 03:05:10.485 UTC pid=366 user=postgres db=c5 ERROR:  operator is not unique: text || "char" at character 49
+2026-10-20 03:05:10.485 UTC pid=366 user=postgres db=c5 HINT:  Could not choose a best candidate operator. You might need to add explicit type casts.
+2026-10-20 03:05:10.485 UTC pid=366 user=postgres db=c5 STATEMENT:  select 'owner '||n.nspname||'.'||c.relname||' ('||c.relkind||') = '||pg_get_userbyid(c.relowner) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='app' and c.relkind in ('r','S') order by 1
+2026-10-20 03:05:10.572 UTC pid=374 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=46212
+2026-10-20 03:05:10.572 UTC pid=374 user=postgres db=c5 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:05:10.572 UTC pid=374 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+2026-10-20 03:05:10.573 UTC pid=374 user=postgres db=c5 LOG:  statement: select 'history rank='||installed_rank||' v='||coalesce(version,'-')||' installed_by='||installed_by||' success='||success from app.flyway_schema_history order by installed_rank
+2026-10-20 03:05:10.622 UTC pid=381 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=46226
+2026-10-20 03:05:10.623 UTC pid=381 user=postgres db=c5 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:05:10.623 UTC pid=381 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+2026-10-20 03:05:10.624 UTC pid=381 user=postgres db=c5 LOG:  statement: select 'who: session_user='||session_user_name||' current_user='||current_user_name from app.who
+2026-10-20 03:05:11.181 UTC pid=382 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=39098
+2026-10-20 03:05:11.189 UTC pid=382 user=deploy_rt db=c5 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:05:11.189 UTC pid=382 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+2026-10-20 03:05:11.236 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:11.239 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:05:11.240 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:05:11.241 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:05:11.241 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:11.241 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:05:11.241 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:05:11.250 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:11.250 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:11.257 UTC pid=382 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:11.257 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:11.258 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:11.258 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:11.264 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:11.264 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '-1'
+2026-10-20 03:05:11.268 UTC pid=382 user=deploy_rt db=c5 LOG:  execute S_1: COMMIT
+2026-10-20 03:05:11.270 UTC pid=382 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:11.270 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:11.270 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:11.270 UTC pid=382 user=deploy_rt db=c5 LOG:  execute S_1: COMMIT
+2026-10-20 03:05:11.271 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:11.271 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:11.271 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:11.272 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:11.274 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_try_advisory_lock(77431436970681)
+2026-10-20 03:05:11.274 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:11.275 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:11.275 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:11.275 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:11.275 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '3'
+2026-10-20 03:05:11.287 UTC pid=382 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:11.287 UTC pid=382 user=deploy_rt db=c5 LOG:  execute S_2: SET ROLE 'migrator'
+2026-10-20 03:05:11.287 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:11.287 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:11.288 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT set_config('search_path', $1, false)
+2026-10-20 03:05:11.288 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '"app","$user", public'
+2026-10-20 03:05:11.290 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: CREATE ROLE spike_priv_role NOLOGIN
+2026-10-20 03:05:11.290 UTC pid=382 user=deploy_rt db=c5 ERROR:  permission denied to create role
+2026-10-20 03:05:11.290 UTC pid=382 user=deploy_rt db=c5 DETAIL:  Only roles with the CREATEROLE attribute may create roles.
+2026-10-20 03:05:11.290 UTC pid=382 user=deploy_rt db=c5 STATEMENT:  CREATE ROLE spike_priv_role NOLOGIN
+2026-10-20 03:05:11.301 UTC pid=382 user=deploy_rt db=c5 LOG:  execute S_3: ROLLBACK
+2026-10-20 03:05:11.302 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT pg_advisory_unlock(77431436970681)
+2026-10-20 03:05:11.302 UTC pid=382 user=deploy_rt db=c5 LOG:  execute S_4: SET ROLE 'migrator'
+2026-10-20 03:05:11.302 UTC pid=382 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:11.302 UTC pid=382 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:11.303 UTC pid=382 user=deploy_rt db=c5 LOG:  execute S_5: COMMIT
+2026-10-20 03:05:11.305 UTC pid=383 user=[unknown] db=[unknown] LOG:  connection received: host=172.17.0.1 port=39100
+2026-10-20 03:05:11.305 UTC pid=383 user=deploy_rt db=c5 LOG:  connection authenticated: user="deploy_rt" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:130)
+2026-10-20 03:05:11.305 UTC pid=383 user=deploy_rt db=c5 LOG:  connection authorized: user=deploy_rt database=c5 application_name=Redgate_Flyway
+2026-10-20 03:05:11.308 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:11.309 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT CURRENT_USER
+2026-10-20 03:05:11.310 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT rolname FROM pg_roles WHERE rolname ILIKE 'rds_superuser'
+2026-10-20 03:05:11.310 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_schema
+2026-10-20 03:05:11.310 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:11.310 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: select current_catalog
+2026-10-20 03:05:11.310 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT current_user
+2026-10-20 03:05:11.313 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:11.313 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	  SELECT 1
+	  FROM   pg_catalog.pg_class c
+	  JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	  WHERE  n.nspname = $1
+	  AND    c.relname = $2
+	  AND    c.relkind = 'r'
+	)
+2026-10-20 03:05:11.313 UTC pid=383 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'flyway_schema_history'
+2026-10-20 03:05:11.314 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: /*NO LOAD BALANCE*/
+	SELECT "installed_rank","version","description","type","script","checksum","installed_on","installed_by","execution_time","success" FROM "app"."flyway_schema_history" WHERE "installed_rank" > $1 ORDER BY "installed_rank"
+2026-10-20 03:05:11.314 UTC pid=383 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = '-1'
+2026-10-20 03:05:11.315 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT COUNT(*) FROM pg_namespace WHERE nspname=$1
+2026-10-20 03:05:11.315 UTC pid=383 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app'
+2026-10-20 03:05:11.316 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT c.oid FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid AND d.deptype = 'e'
+	    WHERE  n.nspname = $1 AND d.objid IS NULL AND c.relkind IN ('r', 'v', 'S', 't')
+	  UNION ALL
+	    SELECT t.oid FROM pg_catalog.pg_type t
+	    JOIN pg_catalog.pg_namespace n ON n.oid = t.typnamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = t.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $2 AND d.objid IS NULL AND t.typcategory NOT IN ('A', 'C')
+	  UNION ALL
+	    SELECT p.oid FROM pg_catalog.pg_proc p
+	    JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+	    LEFT JOIN pg_catalog.pg_depend d ON d.objid = p.oid AND d.deptype = 'e'
+	    WHERE n.nspname = $3 AND d.objid IS NULL
+	)
+2026-10-20 03:05:11.316 UTC pid=383 user=deploy_rt db=c5 DETAIL:  Parameters: $1 = 'app', $2 = 'app', $3 = 'app'
+2026-10-20 03:05:11.318 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SET ROLE 'migrator'
+2026-10-20 03:05:11.318 UTC pid=383 user=deploy_rt db=c5 LOG:  statement: BEGIN
+2026-10-20 03:05:11.318 UTC pid=383 user=deploy_rt db=c5 LOG:  execute <unnamed>: SHOW search_path
+2026-10-20 03:05:11.318 UTC pid=383 user=deploy_rt db=c5 LOG:  execute S_1: COMMIT
+2026-10-20 03:05:11.403 UTC pid=391 user=[unknown] db=[unknown] LOG:  connection received: host=127.0.0.1 port=46228
+2026-10-20 03:05:11.404 UTC pid=391 user=postgres db=c5 LOG:  connection authenticated: user="postgres" method=trust (/var/lib/postgresql/18/docker/pg_hba.conf:119)
+2026-10-20 03:05:11.404 UTC pid=391 user=postgres db=c5 LOG:  connection authorized: user=postgres database=c5 application_name=psql
+2026-10-20 03:05:11.404 UTC pid=391 user=postgres db=c5 LOG:  statement: select 'after step 2: history rows='||count(*)||' ; role spike_priv_role exists='||(select count(*) from pg_roles where rolname='spike_priv_role') from app.flyway_schema_history

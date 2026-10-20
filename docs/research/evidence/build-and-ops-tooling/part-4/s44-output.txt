@@ -1,0 +1,189 @@
+# command: python3 -I docs/research/evidence/build-and-ops-tooling/part-4/scripts/s44-releases-advisories.py ; python Python 3.14.8
+# S44 run 2026-10-20T02:59:34.780929+00:00
+
+## releases/latest sigstore/cosign
+tag v3.1.3 published 2026-08-06T01:09:23Z prerelease False
+  asset cosign-linux-amd64 141178250
+  asset cosign-linux-amd64-kms.sigstore.json 3618
+  asset cosign-linux-amd64.sigstore.json 6406
+  asset cosign-linux-amd64_3.1.3_linux_amd64.sbom.json 433297
+  asset cosign-linux-arm 131906627
+  asset cosign-linux-arm-kms.sigstore.json 3665
+  asset cosign-linux-arm.sigstore.json 6265
+  asset cosign-linux-arm64 132747403
+  asset cosign-linux-arm64-kms.sigstore.json 3661
+  asset cosign-linux-arm64.sigstore.json 6265
+  asset cosign-linux-arm64_3.1.3_linux_arm64.sbom.json 433297
+  asset cosign-linux-arm_3.1.3_linux_arm.sbom.json 431765
+  asset cosign-linux-pivkey-pkcs11key-amd64 140294536
+  asset cosign-linux-pivkey-pkcs11key-amd64-kms.sigstore.json 3614
+  asset cosign-linux-pivkey-pkcs11key-amd64.sigstore.json 6453
+  asset cosign-linux-pivkey-pkcs11key-amd64_3.1.3_linux_amd64.sbom.json 456792
+  asset cosign-linux-pivkey-pkcs11key-arm64 131531040
+  asset cosign-linux-pivkey-pkcs11key-arm64-kms.sigstore.json 3575
+  asset cosign-linux-pivkey-pkcs11key-arm64.sigstore.json 6363
+  asset cosign-linux-pivkey-pkcs11key-arm64_3.1.3_linux_arm64.sbom.json 459263
+  asset cosign-linux-ppc64le 138886551
+  asset cosign-linux-ppc64le-kms.sigstore.json 3661
+  asset cosign-linux-ppc64le.sigstore.json 6308
+  asset cosign-linux-ppc64le_3.1.3_linux_ppc64le.sbom.json 434829
+  asset cosign-linux-riscv64 131036199
+  asset cosign-linux-riscv64-kms.sigstore.json 3712
+  asset cosign-linux-riscv64.sigstore.json 6410
+  asset cosign-linux-riscv64_3.1.3_linux_riscv64.sbom.json 434829
+  asset cosign-linux-s390x 144110849
+  asset cosign-linux-s390x-kms.sigstore.json 3665
+  asset cosign-linux-s390x.sigstore.json 6449
+  asset cosign-linux-s390x_3.1.3_linux_s390x.sbom.json 433297
+
+## releases/latest jedisct1/minisign
+tag 0.12 published 2025-01-15T21:48:15Z prerelease False
+  asset minisign-0.12-linux.tar.gz 271043
+  asset minisign-0.12-linux.tar.gz.minisig 321
+
+## releases/latest jedisct1/zig-minisign
+tag 0.1.14 published 2026-10-03T17:10:03Z prerelease False
+
+## releases/latest openssh/openssh-portable
+ERROR <HTTPError 404: 'Not Found'>
+
+## repository security advisories (published) sigstore/cosign
+count 10
+  GHSA-fx35-mq7g-6g98 None high 2026-08-06 | Verification bypass via public key in legacy bundle | [('github.com/sigstore/cosign/v3', '<= 3.1.2', 'v3.1.3'), ('github.com/sigstore/cosign/v2', '<= 2.6.4', 'v2.6.5')]
+  GHSA-w6c6-c85g-mmv6 CVE-2026-39395 medium 2026-04-06 | verify-blob-attestation reports false positive when payload parsing fails | [('github.com/sigstore/cosign', '<= v3.0.5, <= v2.6.2', 'v3.0.6, v2.6.3')]
+  GHSA-wfqv-66vq-46rm CVE-2026-24122 low 2026-02-19 | Signatures considered valid with certificates that outlive expired CA certificates | [('github.com/sigstore/cosign', '<= 3.0.4', '3.0.5')]
+  GHSA-whqx-f9j3-ch6m CVE-2026-22703 medium 2026-01-09 | Verification accepts any valid Rekor entry under certain conditions | [('github.com/sigstore/cosign', '<= 2.6.1, <= 3.0.3', '2.6.2, 3.0.4')]
+  GHSA-88jx-383q-w4qc CVE-2024-29902 medium 2024-04-10 | Malicious attachments can cause system-wide denial of service | [('github.com/sigstore/cosign', '<= 2.2.3', '2.2.4')]
+  GHSA-95pr-fxf5-86gv CVE-2024-29903 medium 2024-04-10 | Malicious artifacts can cause machine-wide DoS | [('github.com/sigstore/cosign', '<= 2.2.3', '2.2.4')]
+  GHSA-vfp6-jrw2-99g9 CVE-2023-46737 low 2023-11-07 | Possible endless data attack from attacker-controlled registry | [('github.com/sigstore/cosign', '<= 2.2.0', '2.2.1')]
+  GHSA-8gw7-4j42-w388 CVE-2022-36056 medium 2022-09-14 | Vulnerabilities with blob verification | [('cosign', '<=1.11.1', '1.12.0')]
+  GHSA-vjxv-45g9-9296 CVE-2022-35929 medium 2022-08-04 | `cosign verify-attestation  --type` can report a false positive if any attestation exists | [('cosign', '< 1.10.0', '1.10.1')]
+  GHSA-ccxc-vr6p-4858 CVE-2022-23649 low 2022-02-18 | Cosign can be manipulated to falsely claim an entry exists in the Rekor transparency log | [('', '< 1.5.1', '1.5.2')]
+
+## repository security advisories (published) jedisct1/minisign
+count 0
+
+## repository security advisories (published) jedisct1/zig-minisign
+count 0
+
+## repository security advisories (published) openssh/openssh-portable
+count 0
+
+## OSV package queries
+Go github.com/sigstore/cosign/v2 records 10
+   GHSA-88jx-383q-w4qc 2024-04-11 | Cosign malicious attachments can cause system-wide denial of service
+   GHSA-95pr-fxf5-86gv 2024-04-11 | Cosign malicious artifacts can cause machine-wide DoS
+   GHSA-vfp6-jrw2-99g9 2023-11-08 | Cosign vulnerable to possible endless data attack from attacker-controlled registry
+   GHSA-whqx-f9j3-ch6m 2026-01-13 | Cosign verification accepts any valid Rekor entry under certain conditions
+   GO-2023-2181 2023-11-09 | Denial of service attack from remote registry in github.com/sigstore/cosign
+   GO-2024-2718 2024-06-05 | Cosign malicious attachments can cause system-wide denial of service in github.com/sigstore/cosign
+   GO-2024-2719 2024-06-05 | Cosign malicious artifacts can cause machine-wide DoS in github.com/sigstore/cosign
+   GO-2026-4309 2026-01-13 | Cosign verification accepts any valid Rekor entry under certain conditions in github.com/sigstore/cosign
+   GO-2026-4529 2026-02-23 | Cosign considered signatures valid with expired intermediate certificates when transparency log verification i
+   GO-2026-5694 2026-06-25 | Cosign's verify-blob-attestation reports false positive when payload parsing fails in github.com/sigstore/cosi
+Go github.com/sigstore/cosign/v3 records 4
+   GHSA-whqx-f9j3-ch6m 2026-01-13 | Cosign verification accepts any valid Rekor entry under certain conditions
+   GO-2026-4309 2026-01-13 | Cosign verification accepts any valid Rekor entry under certain conditions in github.com/sigstore/cosign
+   GO-2026-4529 2026-02-23 | Cosign considered signatures valid with expired intermediate certificates when transparency log verification i
+   GO-2026-5694 2026-06-25 | Cosign's verify-blob-attestation reports false positive when payload parsing fails in github.com/sigstore/cosi
+Go github.com/sigstore/cosign records 17
+   GHSA-88jx-383q-w4qc 2024-04-11 | Cosign malicious attachments can cause system-wide denial of service
+   GHSA-8gw7-4j42-w388 2022-09-16 | Cosign bundle can be crafted to successfully verify a blob even if the embedded rekorBundle does not reference
+   GHSA-95pr-fxf5-86gv 2024-04-11 | Cosign malicious artifacts can cause machine-wide DoS
+   GHSA-ccxc-vr6p-4858 2022-02-22 | Improper Certificate Validation in Cosign
+   GHSA-vfp6-jrw2-99g9 2023-11-08 | Cosign vulnerable to possible endless data attack from attacker-controlled registry
+   GHSA-vjxv-45g9-9296 2022-08-10 | cosign's `cosign verify-attestaton  --type` can report a false positive if any attestation exists
+   GHSA-w6c6-c85g-mmv6 2026-04-08 | Cosign's verify-blob-attestation reports false positive when payload parsing fails
+   GHSA-wfqv-66vq-46rm 2026-02-19 | Cosign considered signatures valid with expired intermediate certificates when transparency log verification i
+   GO-2022-0326 2023-11-09 | Improper certificate validation in github.com/sigstore/cosign
+   GO-2022-0758 2023-11-09 | Improper verification of signature attestations in github.com/sigstore/cosign
+   GO-2022-0998 2023-11-09 | Improper blob verification in github.com/sigstore/cosign
+   GO-2023-2181 2023-11-09 | Denial of service attack from remote registry in github.com/sigstore/cosign
+   GO-2024-2718 2024-06-05 | Cosign malicious attachments can cause system-wide denial of service in github.com/sigstore/cosign
+   GO-2024-2719 2024-06-05 | Cosign malicious artifacts can cause machine-wide DoS in github.com/sigstore/cosign
+   GO-2026-4309 2026-01-13 | Cosign verification accepts any valid Rekor entry under certain conditions in github.com/sigstore/cosign
+   GO-2026-4529 2026-02-23 | Cosign considered signatures valid with expired intermediate certificates when transparency log verification i
+   GO-2026-5694 2026-06-25 | Cosign's verify-blob-attestation reports false positive when payload parsing fails in github.com/sigstore/cosi
+GitHub Actions sigstore/cosign-installer records 0
+Debian:13 openssh records 118
+   DEBIAN-CVE-2000-0992 2000-12-19 | 
+   DEBIAN-CVE-2001-1459 2001-06-19 | 
+   DEBIAN-CVE-2001-1507 2001-12-31 | 
+   DEBIAN-CVE-2002-0639 2002-07-03 | 
+   DEBIAN-CVE-2002-0640 2002-07-03 | 
+   DEBIAN-CVE-2002-0765 2002-08-12 | 
+   DEBIAN-CVE-2003-0190 2003-05-12 | 
+   DEBIAN-CVE-2003-0386 2003-07-02 | 
+   DEBIAN-CVE-2003-0682 2003-10-06 | 
+   DEBIAN-CVE-2003-0693 2003-09-22 | 
+   DEBIAN-CVE-2003-0695 2003-10-06 | 
+   DEBIAN-CVE-2003-0786 2003-11-17 | 
+   DEBIAN-CVE-2003-0787 2003-11-17 | 
+   DEBIAN-CVE-2003-1562 2003-12-31 | 
+   DEBIAN-CVE-2004-0175 2004-08-18 | 
+   DEBIAN-CVE-2004-2069 2004-12-31 | 
+   DEBIAN-CVE-2004-2760 2004-12-31 | 
+   DEBIAN-CVE-2005-2666 2005-08-23 | 
+   DEBIAN-CVE-2005-2797 2005-09-06 | 
+   DEBIAN-CVE-2005-2798 2005-09-06 | 
+   DEBIAN-CVE-2006-0225 2006-01-25 | 
+   DEBIAN-CVE-2006-0883 2006-03-07 | 
+   DEBIAN-CVE-2006-4924 2006-09-27 | 
+   DEBIAN-CVE-2006-4925 2006-09-29 | 
+   DEBIAN-CVE-2006-5051 2006-09-27 | 
+   DEBIAN-CVE-2006-5052 2006-09-27 | 
+   DEBIAN-CVE-2006-5794 2006-11-08 | 
+   DEBIAN-CVE-2007-2243 2007-04-25 | 
+   DEBIAN-CVE-2007-2768 2007-05-21 | 
+   DEBIAN-CVE-2007-4752 2007-09-12 | 
+   DEBIAN-CVE-2008-0166 2008-05-13 | 
+   DEBIAN-CVE-2008-1483 2008-03-24 | 
+   DEBIAN-CVE-2008-1657 2008-04-02 | 
+   DEBIAN-CVE-2008-2285 2008-05-18 | 
+   DEBIAN-CVE-2008-3234 2008-07-18 | 
+   DEBIAN-CVE-2008-4109 2008-09-18 | 
+   DEBIAN-CVE-2008-5161 2008-11-19 | 
+   DEBIAN-CVE-2010-5107 2013-03-07 | 
+   DEBIAN-CVE-2011-0539 2011-02-10 | 
+   DEBIAN-CVE-2011-5000 2012-04-05 | 
+Alpine openssh records 41
+   ALPINE-CVE-2015-8325 2016-05-01 | 
+   ALPINE-CVE-2016-10009 2017-01-05 | 
+   ALPINE-CVE-2016-10010 2017-01-05 | 
+   ALPINE-CVE-2016-10011 2017-01-05 | 
+   ALPINE-CVE-2016-10012 2017-01-05 | 
+   ALPINE-CVE-2016-1907 2016-01-19 | 
+   ALPINE-CVE-2016-6210 2017-02-13 | 
+   ALPINE-CVE-2016-6515 2016-08-07 | 
+   ALPINE-CVE-2017-15906 2017-10-26 | 
+   ALPINE-CVE-2018-15473 2018-08-17 | 
+   ALPINE-CVE-2018-20685 2019-01-10 | 
+   ALPINE-CVE-2019-6109 2019-01-31 | 
+   ALPINE-CVE-2019-6111 2019-01-31 | 
+   ALPINE-CVE-2020-14145 2020-06-29 | 
+   ALPINE-CVE-2020-15778 2020-07-24 | 
+   ALPINE-CVE-2021-28041 2021-03-05 | 
+   ALPINE-CVE-2021-36368 2022-03-13 | 
+   ALPINE-CVE-2021-41617 2021-09-26 | 
+   ALPINE-CVE-2023-28531 2023-03-17 | 
+   ALPINE-CVE-2023-38408 2023-07-20 | 
+   ALPINE-CVE-2023-48795 2023-12-18 | 
+   ALPINE-CVE-2023-51384 2023-12-18 | 
+   ALPINE-CVE-2023-51385 2023-12-18 | 
+   ALPINE-CVE-2023-51767 2023-12-24 | 
+   ALPINE-CVE-2024-6387 2024-07-01 | 
+   ALPINE-CVE-2025-26465 2025-02-18 | 
+   ALPINE-CVE-2025-26466 2025-02-28 | 
+   ALPINE-CVE-2025-32728 2025-04-10 | 
+   ALPINE-CVE-2025-61984 2025-10-06 | 
+   ALPINE-CVE-2025-61985 2025-10-06 | 
+   ALPINE-CVE-2026-59995 2026-07-08 | 
+   ALPINE-CVE-2026-59996 2026-07-08 | 
+   ALPINE-CVE-2026-59997 2026-07-08 | 
+   ALPINE-CVE-2026-59998 2026-07-08 | 
+   ALPINE-CVE-2026-59999 2026-07-08 | 
+   ALPINE-CVE-2026-60000 2026-07-08 | 
+   ALPINE-CVE-2026-60001 2026-07-08 | 
+   ALPINE-CVE-2026-60002 2026-07-08 | 
+   ALPINE-CVE-2026-73281 2026-08-11 | 
+   ALPINE-CVE-2026-73282 2026-08-11 | 

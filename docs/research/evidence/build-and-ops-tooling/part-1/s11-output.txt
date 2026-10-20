@@ -1,0 +1,311 @@
+date_utc: 2026-10-20T02:28:36Z
+openjdk version "21.0.12.1" 2026-08-18
+1
+jackson versions resolved: databind=3.2.4 core=3.2.4 annotations=2.22
+sha256 eb38d49092c423aa421fab351df5fd093e2bc07449b100a7ace4aca9efbb9f3c 816588 flyway-core-13.10.3.jar
+sha256 7a012fd805f0752028d571dc9284e23697d70652fed5cc347dca3a0206939f6f 32674 flyway-database-postgresql-13.10.3.jar
+sha256 73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c 1221004 postgresql-42.7.14.jar
+sha256 c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d 1990007 jackson-databind-3.2.4.jar
+sha256 494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651 613344 jackson-core-3.2.4.jar
+sha256 21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0 84211 jackson-annotations-2.22.jar
+host port: 32769
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+GRANT ROLE
+CREATE DATABASE
+CREATE SCHEMA
+REVOKE
+GRANT
+
+### migrate deploy_rt SET ROLE migrator 2 production/session-state/cache/build-and-ops-tooling/part-1/migrations-work
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.007s)
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": << Empty Schema >>
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "1 - orders rls"
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "2 - definer fn"
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 2 migrations to schema "app", now at version v2 (execution time 00:00.007s)
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:28:40 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 desc=orders rls state=SUCCESS by=migrator checksum=1530841888
+INFO v=2 desc=definer fn state=SUCCESS by=migrator checksum=-645961681
+INFO v=3 desc=orders index concurrently state=ABOVE_TARGET by=null checksum=114425334
+INFO v=4 desc=privileged create role state=ABOVE_TARGET by=null checksum=555988878
+### V3 with the default (transactional) lock, 45 s timeout: a hang is the observation under test
+Oct 20, 2026 5:28:41 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:28:41 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 2
+Oct 20, 2026 5:28:41 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "3 - orders index concurrently" [non-transactional]
+client exit status: 124 (124 = timed out)
+invalid index left behind: app.orders_tenant_idx valid=true
+DROP INDEX
+
+### migrate deploy_rt SET ROLE migrator 3 production/session-state/cache/build-and-ops-tooling/part-1/migrations-work flyway.postgresql.transactional.lock=false
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.021s)
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 2
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "3 - orders index concurrently" [non-transactional]
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v3 (execution time 00:00.007s)
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:26 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 desc=orders rls state=SUCCESS by=migrator checksum=1530841888
+INFO v=2 desc=definer fn state=SUCCESS by=migrator checksum=-645961681
+INFO v=3 desc=orders index concurrently state=SUCCESS by=migrator checksum=114425334
+INFO v=4 desc=privileged create role state=ABOVE_TARGET by=null checksum=555988878
+--- index state
+app.orders_tenant_idx|t
+--- tamper V1 then validate
+
+### validate deploy_rt SET ROLE migrator latest production/session-state/cache/build-and-ops-tooling/part-1/migrations-work
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+ERROR: org.flywaydb.core.api.exception.FlywayValidateException: Validate failed: Migrations have failed validation
+Migration checksum mismatch for migration version 1
+-> Applied to database : 1530841888
+-> Resolved locally    : 210508270
+Either revert the changes to the migration, or run repair to update the schema history.
+Detected resolved migration not applied to database: 4.
+To fix this error, either run migrate, or set -ignoreMigrationPatterns='*:pending'.
+Need more flexibility with validation rules? Learn more: https://help.red-gate.com/help/flyway-cli13/help_10.aspx?topic=flyway-blog/older-posts/customize-validation-rules-with-ignoremigrationpatterns
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:27 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 desc=orders rls state=SUCCESS by=migrator checksum=1530841888
+INFO v=2 desc=definer fn state=SUCCESS by=migrator checksum=-645961681
+INFO v=3 desc=orders index concurrently state=SUCCESS by=migrator checksum=114425334
+INFO v=4 desc=privileged create role state=PENDING by=null checksum=555988878
+--- migrate to latest as deploy_rt (V4 needs CREATEROLE)
+
+### migrate deploy_rt SET ROLE migrator latest production/session-state/cache/build-and-ops-tooling/part-1/migrations-work
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.014s)
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 3
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "4 - privileged create role"
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.command.DbMigrate applyMigrations
+SEVERE: Migration of schema "app" to version "4 - privileged create role" failed! Changes successfully rolled back.
+ERROR: org.flywaydb.core.internal.exception.FlywayMigrateException: Failed to execute script V4__privileged_create_role.sql
+-------------------------------------------------------
+SQL State  : 42501
+Error Code : 0
+Message    : ERROR: permission denied to create role
+  Detail: Only roles with the CREATEROLE attribute may create roles.
+Location   : production/session-state/cache/build-and-ops-tooling/part-1/migrations-work/V4__privileged_create_role.sql (/home/kiko/saas-products/kodeebo/production/session-state/cache/build-and-ops-tooling/part-1/migrations-work/V4__privileged_create_role.sql)
+Line       : 1
+Statement  : Run Flyway with -X option to see the actual statement causing the problem
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 desc=orders rls state=SUCCESS by=migrator checksum=1530841888
+INFO v=2 desc=definer fn state=SUCCESS by=migrator checksum=-645961681
+INFO v=3 desc=orders index concurrently state=SUCCESS by=migrator checksum=114425334
+INFO v=4 desc=privileged create role state=PENDING by=null checksum=555988878
+--- migrate V4 as bootstrap superuser (postgres), no SET ROLE
+
+### migrate postgres  latest production/session-state/cache/build-and-ops-tooling/part-1/migrations-work
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:28 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.019s)
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 3
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "4 - privileged create role"
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v4 (execution time 00:00.004s)
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+INFO v=1 desc=orders rls state=SUCCESS by=migrator checksum=1530841888
+INFO v=2 desc=definer fn state=SUCCESS by=migrator checksum=-645961681
+INFO v=3 desc=orders index concurrently state=SUCCESS by=migrator checksum=114425334
+INFO v=4 desc=privileged create role state=SUCCESS by=postgres checksum=555988878
+--- pipeline run again as deploy_rt
+
+### migrate deploy_rt SET ROLE migrator latest production/session-state/cache/build-and-ops-tooling/part-1/migrations-work
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.020s)
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 4
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+Oct 20, 2026 5:29:29 AM org.flywaydb.core.internal.util.DeprecationUtils printDeprecationNotice
+WARNING: initSql is deprecated and will be removed in a future release. Please use 'afterConnect' callback instead
+INFO v=1 desc=orders rls state=SUCCESS by=migrator checksum=1530841888
+INFO v=2 desc=definer fn state=SUCCESS by=migrator checksum=-645961681
+INFO v=3 desc=orders index concurrently state=SUCCESS by=migrator checksum=114425334
+INFO v=4 desc=privileged create role state=SUCCESS by=postgres checksum=555988878
+
+### afterConnect callback instead of initSql (database kodeebo2)
+CREATE DATABASE
+CREATE SCHEMA
+
+### migrate deploy_rt  latest production/session-state/cache/build-and-ops-tooling/part-1/migrations-work2
+Oct 20, 2026 5:29:30 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:30 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:30 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: afterConnect - 
+Oct 20, 2026 5:29:30 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+Oct 20, 2026 5:29:30 AM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.006s)
+Oct 20, 2026 5:29:30 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_schema_history" ...
+ERROR: org.flywaydb.core.internal.sqlscript.FlywaySqlScriptException: Failed to execute script 
+-------------------------
+SQL State  : 42501
+Error Code : 0
+Message    : ERROR: permission denied for schema app
+  Position: 14
+Location   :  ()
+Line       : 1
+Statement  : Run Flyway with -X option to see the actual statement causing the problem
+Oct 20, 2026 5:29:39 AM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 5:29:39 AM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 5:29:39 AM org.flywaydb.core.internal.callback.SqlScriptCallbackFactory
+INFO: Executing SQL callback: afterConnect - 
+Oct 20, 2026 5:29:39 AM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_schema_history" does not exist yet
+INFO v=1 desc=orders rls state=PENDING by=null checksum=1530841888
+INFO v=2 desc=definer fn state=PENDING by=null checksum=-645961681
+ERROR:  relation "app.flyway_schema_history" does not exist
+LINE 1: ... installed_rank,version,installed_by,success from app.flyway...
+                                                             ^
+ tablename | tableowner 
+-----------+------------
+(0 rows)
+
+
+=== catalog checks
+ installed_rank | version |        description        | type | installed_by | success 
+----------------+---------+---------------------------+------+--------------+---------
+              1 | 1       | orders rls                | SQL  | migrator     | t
+              2 | 2       | definer fn                | SQL  | migrator     | t
+              3 | 3       | orders index concurrently | SQL  | migrator     | t
+              4 | 4       | privileged create role    | SQL  | postgres     | t
+(4 rows)
+
+       tablename       | tableowner 
+-----------------------+------------
+ flyway_schema_history | migrator
+ orders                | migrator
+(2 rows)
+
+     polname      | polpermissive | polroles 
+------------------+---------------+----------
+ tenant_isolation | f             | {-}
+ app_rt_all       | t             | {app_rt}
+(2 rows)
+
+ relrowsecurity | relforcerowsecurity 
+----------------+---------------------
+ t              | t
+(1 row)
+
+   proname    |  owner   | prosecdef |            proconfig            
+--------------+----------+-----------+---------------------------------
+ tenant_count | migrator | t         | {"search_path=pg_catalog, app"}
+(1 row)
+
+     rolname     
+-----------------
+ spike_priv_role
+(1 row)
+
+container log tail:
+2026-10-20 02:29:30.498 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:31.507 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:32.512 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:33.520 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:34.525 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:35.528 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:36.534 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:37.539 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:38.542 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:39.546 UTC [179] ERROR:  permission denied for schema app at character 14
+2026-10-20 02:29:39.706 UTC [188] ERROR:  relation "app.flyway_schema_history" does not exist at character 57
+2026-10-20 02:29:39.914 UTC [209] ERROR:  syntax error at or near ":=" at character 23

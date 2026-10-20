@@ -1,0 +1,38 @@
+date_utc: 2026-10-20T03:00:27Z
+
+######## [V4-os-packages-only-cyclonedx] temurin :: trivy image --input /in/img.tar --format cyclonedx --pkg-types os --scanners license --skip-version-check --disable-telemetry --offline-scan --skip-db-update --skip-java-db-update -o /out/temurin.V4.cdx.json
+2026-10-20T03:00:28Z	INFO	[license] License scanning is enabled
+2026-10-20T03:00:28Z	INFO	Detected OS	family="ubuntu" version="26.04"
+RESULT exit=0 elapsed_ms=884 memory.peak_bytes=51941376
+
+######## [V5-vuln-scanner-no-db] temurin :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-version-check --disable-telemetry --offline-scan --skip-db-update --skip-java-db-update -o /out/temurin.V5.json
+2026-10-20T03:00:29Z	ERROR	[vulndb] The first run cannot skip downloading DB
+2026-10-20T03:00:29Z	FATAL	Fatal error	run error: init error: DB error: database error: --skip-db-update cannot be specified on the first run
+RESULT exit=1 elapsed_ms=50 memory.peak_bytes=31522816
+
+######## [V6-skip-jar-files] temurin :: trivy image --input /in/img.tar --format cyclonedx --scanners license --skip-files **/*.jar --skip-version-check --disable-telemetry --offline-scan --skip-db-update --skip-java-db-update -o /out/temurin.V6.cdx.json
+2026-10-20T03:00:29Z	INFO	[license] License scanning is enabled
+2026-10-20T03:00:30Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:00:30Z	INFO	Number of language-specific files	num=1
+RESULT exit=0 elapsed_ms=955 memory.peak_bytes=70942720
+
+######## [V4-os-packages-only-cyclonedx] ktor :: trivy image --input /in/img.tar --format cyclonedx --pkg-types os --scanners license --skip-version-check --disable-telemetry --offline-scan --skip-db-update --skip-java-db-update -o /out/ktor.V4.cdx.json
+2026-10-20T03:00:30Z	INFO	[license] License scanning is enabled
+2026-10-20T03:00:31Z	INFO	Detected OS	family="ubuntu" version="26.04"
+RESULT exit=0 elapsed_ms=1005 memory.peak_bytes=53747712
+
+######## [V5-vuln-scanner-no-db] ktor :: trivy image --input /in/img.tar --format json --pkg-types os --scanners vuln --skip-version-check --disable-telemetry --offline-scan --skip-db-update --skip-java-db-update -o /out/ktor.V5.json
+2026-10-20T03:00:32Z	ERROR	[vulndb] The first run cannot skip downloading DB
+2026-10-20T03:00:32Z	FATAL	Fatal error	run error: init error: DB error: database error: --skip-db-update cannot be specified on the first run
+RESULT exit=1 elapsed_ms=63 memory.peak_bytes=31862784
+
+######## [V6-skip-jar-files] ktor :: trivy image --input /in/img.tar --format cyclonedx --scanners license --skip-files **/*.jar --skip-version-check --disable-telemetry --offline-scan --skip-db-update --skip-java-db-update -o /out/ktor.V6.cdx.json
+2026-10-20T03:00:32Z	INFO	[license] License scanning is enabled
+2026-10-20T03:00:33Z	INFO	Detected OS	family="ubuntu" version="26.04"
+2026-10-20T03:00:33Z	INFO	Number of language-specific files	num=1
+RESULT exit=0 elapsed_ms=1003 memory.peak_bytes=74194944
+total 1336
+-rw-r--r-- 1 nobody nobody 334142 Oct 20 06:00 ktor.V4.cdx.json
+-rw-r--r-- 1 nobody nobody 345806 Oct 20 06:00 ktor.V6.cdx.json
+-rw-r--r-- 1 nobody nobody 333989 Oct 20 06:00 temurin.V4.cdx.json
+-rw-r--r-- 1 nobody nobody 345653 Oct 20 06:00 temurin.V6.cdx.json
