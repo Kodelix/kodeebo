@@ -1,0 +1,351 @@
+date: 2026-10-20T18:14:05Z
+Gradle 9.7.0
+Kotlin:        2.4.0
+
+######## P1: product BEFORE the lift (project dependencies): locks, ABI dumps, verification metadata, build
+
+### [product] gradle assemble testClasses updateKotlinAbi --write-locks
+BUILD SUCCESSFUL in 18s
+36 actionable tasks: 36 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=18456
+
+### [product] gradle --write-verification-metadata sha256 build
+BUILD SUCCESSFUL in 17s
+36 actionable tasks: 21 executed, 15 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=17958
+
+### [product] gradle build
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 5s
+36 actionable tasks: 6 executed, 30 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=5263
+verification components before: 70
+--- build files that mention the two modules (before):
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/platform/audit/build.gradle.kts:4:    api(projects.platform.tenancy)
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/contexts/venue/build.gradle.kts:3:    api(projects.platform.tenancy)
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/app/build.gradle.kts:6:    implementation(projects.platform.audit)
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/settings.gradle.kts:9:include(":platform:tenancy", ":platform:audit", ":platform:ratelimit", ":platform:notify", ":contexts:venue", ":app")
+302256b8155425f9d635f4e948c917ea12cd0451cb5885d0f4c098e45f7d6e87  tenancy/api/tenancy.api
+051f7cca13d1c1a82f1bdb825ece86011b8e725e1c1a4addf0496cbb155c0659  audit/api/audit.api
+5 /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/callers-src-before.sha
+
+######## L1: LIFT = move the two module directories into a separate build (core) with its own settings, build-logic and publishing
+--- core/audit/build.gradle.kts after the move:
+plugins { id("kodeebo.kotlin-module") }
+dependencies {
+    // TenantId is part of audit's public API, so `api`.
+    api(projects.tenancy)
+}
+--- ABI dump identical after the move? (diff of sha lists, paths normalised)
+IDENTICAL
+
+######## C1: core build: locks, checkKotlinAbi with the MOVED dump (no updateKotlinAbi), build
+
+### [core] gradle assemble testClasses --write-locks
+BUILD SUCCESSFUL in 20s
+13 actionable tasks: 13 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=20507
+
+### [core] gradle checkKotlinAbi
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 17s
+15 actionable tasks: 9 executed, 6 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=17627
+
+######## C2: publish to the file repository, twice, default jars (timestamps) vs -Preproducible
+
+### [core] gradle publish -PpublishRepo=/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 5s
+19 actionable tasks: 6 executed, 13 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=5386
+--- published files:
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.jar
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.jar.md5
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.jar.sha1
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.jar.sha256
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.jar.sha512
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.module
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.module.md5
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.module.sha1
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.module.sha256
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.module.sha512
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.pom
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.pom.md5
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.pom.sha1
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.pom.sha256
+./net/kodelix/core/audit/0.1.0/audit-0.1.0.pom.sha512
+./net/kodelix/core/audit/maven-metadata.xml
+./net/kodelix/core/audit/maven-metadata.xml.md5
+./net/kodelix/core/audit/maven-metadata.xml.sha1
+./net/kodelix/core/audit/maven-metadata.xml.sha256
+./net/kodelix/core/audit/maven-metadata.xml.sha512
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.jar
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.jar.md5
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.jar.sha1
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.jar.sha256
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.jar.sha512
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.module
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.module.md5
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.module.sha1
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.module.sha256
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.module.sha512
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.pom
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.pom.md5
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.pom.sha1
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.pom.sha256
+./net/kodelix/core/tenancy/0.1.0/tenancy-0.1.0.pom.sha512
+./net/kodelix/core/tenancy/maven-metadata.xml
+./net/kodelix/core/tenancy/maven-metadata.xml.md5
+./net/kodelix/core/tenancy/maven-metadata.xml.sha1
+./net/kodelix/core/tenancy/maven-metadata.xml.sha256
+./net/kodelix/core/tenancy/maven-metadata.xml.sha512
+2550f987793ab28a22e78c3aca53ff2a7c2bda185659b24dfceb6b097961daa3  /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo/net/kodelix/core/audit/0.1.0/audit-0.1.0.jar
+
+### [core] gradle clean publish -PpublishRepo=/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo
+BUILD SUCCESSFUL in 6s
+21 actionable tasks: 12 executed, 9 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=7367
+2550f987793ab28a22e78c3aca53ff2a7c2bda185659b24dfceb6b097961daa3  /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo/net/kodelix/core/audit/0.1.0/audit-0.1.0.jar
+default jars identical across two publishes? YES
+
+### [core] gradle clean publish -PpublishRepo=/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo -Preproducible=true
+BUILD SUCCESSFUL in 7s
+21 actionable tasks: 12 executed, 9 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=8111
+2550f987793ab28a22e78c3aca53ff2a7c2bda185659b24dfceb6b097961daa3  /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo/net/kodelix/core/audit/0.1.0/audit-0.1.0.jar
+
+### [core] gradle clean publish -PpublishRepo=/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo -Preproducible=true
+BUILD SUCCESSFUL in 7s
+21 actionable tasks: 12 executed, 9 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=7412
+2550f987793ab28a22e78c3aca53ff2a7c2bda185659b24dfceb6b097961daa3  /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo/net/kodelix/core/audit/0.1.0/audit-0.1.0.jar
+reproducible jars identical across two publishes? YES
+--- audit POM:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.kodelix.core</groupId>
+  <artifactId>audit</artifactId>
+  <version>0.1.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>net.kodelix.core</groupId>
+      <artifactId>tenancy</artifactId>
+      <version>0.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>2.4.21</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+--- audit .module (dependencies part):
+4:    "group": "net.kodelix.core",
+5:    "module": "audit",
+6:    "version": "0.1.0",
+13:      "version": "9.7.0"
+18:      "name": "apiElements",
+30:          "group": "net.kodelix.core",
+31:          "module": "tenancy",
+32:          "version": {
+37:          "group": "org.jetbrains.kotlin",
+38:          "module": "kotlin-stdlib",
+39:          "version": {
+57:      "name": "runtimeElements",
+69:          "group": "net.kodelix.core",
+70:          "module": "tenancy",
+71:          "version": {
+76:          "group": "org.jetbrains.kotlin",
+77:          "module": "kotlin-stdlib",
+78:          "version": {
+
+######## A: product AFTER the lift, consuming by COORDINATES from the file repository
+--- product settings.gradle.kts:
+pluginManagement {
+    includeBuild("build-logic")
+}
+dependencyResolutionManagement {
+    repositories { maven { url = uri("/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo"); content { includeGroup("net.kodelix.core") } }; mavenCentral() }
+}
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "kprobe-modules"
+include(":platform:ratelimit", ":platform:notify", ":contexts:venue", ":app")
+--- product build files that mention the core modules (after):
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/contexts/venue/build.gradle.kts:3:    api("net.kodelix.core:tenancy:0.1.0")
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/app/build.gradle.kts:6:    implementation("net.kodelix.core:audit:0.1.0")
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/settings.gradle.kts:5:    repositories { maven { url = uri("/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo"); content { includeGroup("net.kodelix.core") } }; mavenCentral() }
+callers' Kotlin source files identical before/after the lift? YES-byte-identical
+
+--- A1: build with the OLD locks and OLD verification metadata (expect failure)
+
+### [product] gradle build
+Execution failed for task ':contexts:venue:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Dependency verification failed for configuration ':contexts:venue:detachedConfiguration1'
+  One artifact failed verification: tenancy-0.1.0.module (net.kodelix.core:tenancy:0.1.0) from repository maven
+  If the artifacts are trustworthy, you will need to update the gradle/verification-metadata.xml file. For more on how to do this, please refer to https://docs.gradle.org/9.7.0/userguide/dependency_verification.html#sec:troubleshooting-verification in the Gradle documentation.
+  
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/build/reports/dependency-verification/at-1792520159052/dependency-verification-report.html
+BUILD FAILED in 9s
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=9585
+--- A2: re-lock, then rewrite verification metadata
+
+### [product] gradle assemble testClasses updateKotlinAbi --write-locks
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/build/reports/dependency-verification/at-1792520168644/dependency-verification-report.html
+BUILD FAILED in 13s
+10 actionable tasks: 4 executed, 6 up-to-date
+exit=1 wall_ms=13641
+
+### [product] gradle --write-verification-metadata sha256 build
+Execution failed for task ':contexts:venue:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Could not resolve all files for configuration ':contexts:venue:compileClasspath'.
+   > Resolved 'net.kodelix.core:tenancy:0.1.0' which is not part of the dependency lock state
+BUILD FAILED in 12s
+10 actionable tasks: 4 executed, 6 up-to-date
+exit=1 wall_ms=13299
+verification components after: 72  (before: 70)
+--- entries for net.kodelix.core in verification metadata:
+34:      <component group="net.kodelix.core" name="audit" version="0.1.0">
+35-         <artifact name="audit-0.1.0.jar">
+36-            <sha256 value="2550f987793ab28a22e78c3aca53ff2a7c2bda185659b24dfceb6b097961daa3" origin="Generated by Gradle"/>
+37-         </artifact>
+38-         <artifact name="audit-0.1.0.module">
+--
+42:      <component group="net.kodelix.core" name="tenancy" version="0.1.0">
+43-         <artifact name="tenancy-0.1.0.jar">
+44-            <sha256 value="89f39ca3a394c6cf9b2b1f8af9707df6e16eb7d3bf0646e7458a48a37526d1ed" origin="Generated by Gradle"/>
+45-         </artifact>
+46-         <artifact name="tenancy-0.1.0.module">
+--- app lockfile lines for net.kodelix:
+--- A3: control build strict
+
+### [product] gradle build
+> Could not resolve all files for configuration ':contexts:venue:compileClasspath'.
+   > Resolved 'net.kodelix.core:tenancy:0.1.0' which is not part of the dependency lock state
+BUILD FAILED in 4s
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=4892
+--- A4: tamper the published jar in the file repository (append one byte), build --rerun-tasks
+
+### [product] gradle build --rerun-tasks
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Type-safe project accessors is an incubating feature.
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':contexts:venue:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Could not resolve all files for configuration ':contexts:venue:compileClasspath'.
+   > Resolved 'net.kodelix.core:tenancy:0.1.0' which is not part of the dependency lock state
+BUILD FAILED in 12s
+10 actionable tasks: 10 executed
+exit=1 wall_ms=13086
+--- A5: tamper the checksum of the published audit jar in verification-metadata.xml
+tampering
+
+### [product] gradle build
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Type-safe project accessors is an incubating feature.
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':contexts:venue:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Could not resolve all files for configuration ':contexts:venue:compileClasspath'.
+   > Resolved 'net.kodelix.core:tenancy:0.1.0' which is not part of the dependency lock state
+BUILD FAILED in 4s
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=4747
+--- A6: control after restore
+
+### [product] gradle build
+> Could not resolve all files for configuration ':contexts:venue:compileClasspath'.
+   > Resolved 'net.kodelix.core:tenancy:0.1.0' which is not part of the dependency lock state
+BUILD FAILED in 4s
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=4700
+
+######## B: product consuming the SAME coordinates through an INCLUDED BUILD (composite), repository entry kept but jar tamper-free
+--- product settings.gradle.kts:
+pluginManagement {
+    includeBuild("build-logic")
+}
+dependencyResolutionManagement {
+    repositories { maven { url = uri("/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/m2repo"); content { includeGroup("net.kodelix.core") } }; mavenCentral() }
+}
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+includeBuild("../core")
+rootProject.name = "kprobe-modules"
+include(":platform:ratelimit", ":platform:notify", ":contexts:venue", ":app")
+--- B1: build with the locks and verification metadata of step A (unchanged)
+
+### [product] gradle build
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 13s
+41 actionable tasks: 15 executed, 26 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=14151
+--- B2: where do the core modules come from? (app runtimeClasspath)
+11:+--- net.kodelix.core:audit:0.1.0 -> project ':core:audit'
+12:|    +--- project ':core:tenancy'
+20:|    +--- net.kodelix.core:tenancy:0.1.0 -> project ':core:tenancy' (*)
+--- B3: re-lock and re-write verification metadata with the included build
+
+### [product] gradle assemble testClasses updateKotlinAbi --write-locks
+Persisted dependency lock state for project ':core:build-logic'
+BUILD SUCCESSFUL in 21s
+41 actionable tasks: 20 executed, 21 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=22351
+
+### [product] gradle --write-verification-metadata sha256 build
+Calculating task graph as configuration cache cannot be reused due to --write-verification-metadata
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 20s
+41 actionable tasks: 20 executed, 21 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=20441
+verification components with included build: 72
+component list unchanged vs step A
+--- app lockfile lines for net.kodelix (included build):
+--- B4: tamper a core build-logic dependency checksum in the PRODUCT's file (kotlin-gradle-plugin) -> does the included core build fail?
+tampering
+
+### [product] gradle build
+> Error while evaluating property 'pluginEntries' of task ':core:build-logic:generateExternalPluginSpecBuilders'.
+   > Dependency verification failed for configuration ':core:build-logic:compileClasspath'
+     One artifact failed verification: kotlin-gradle-plugin-2.4.21-gradle96.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21) from repository MavenRepo
+     This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+     
+     Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-3/work-s31/product/build/reports/dependency-verification/at-1792520285737/dependency-verification-report.html
+BUILD FAILED in 4s
+1 actionable task: 1 executed
+exit=1 wall_ms=4384
+--- B5: control
+
+### [product] gradle build
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 5s
+41 actionable tasks: 4 executed, 37 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=5834
+
+######## D: summary diff of the product tree between before and after the lift (build files only?)
+callers' Kotlin source identical: YES
+DONE

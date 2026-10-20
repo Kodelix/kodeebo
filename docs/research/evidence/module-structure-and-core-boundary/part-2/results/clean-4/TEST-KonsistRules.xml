@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="KonsistRules" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-20T17:42:52.945Z" hostname="Keko" time="0.441">
+  <properties/>
+  <testcase name="r1_clientLibsOnlyInNotifications()" classname="KonsistRules" time="0.374"/>
+  <testcase name="r3_layer1_architectureApi()" classname="KonsistRules" time="0.015"/>
+  <testcase name="r3_layer1ImportsNothingFromLayer2or3_imports()" classname="KonsistRules" time="0.008"/>
+  <testcase name="r4_platformNeverImportsVertical_architectureApi()" classname="KonsistRules" time="0.009"/>
+  <testcase name="r2_appSeesOnlyPorts_noInfraNoAdapters()" classname="KonsistRules" time="0.009"/>
+  <testcase name="r3_whenIsOnly_identityDomainNotGaming()" classname="KonsistRules" time="0.006"/>
+  <testcase name="r2_domainImportsNoInfra()" classname="KonsistRules" time="0.005"/>
+  <testcase name="r3_layer1_textFallback_fullyQualifiedUse()" classname="KonsistRules" time="0.011"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

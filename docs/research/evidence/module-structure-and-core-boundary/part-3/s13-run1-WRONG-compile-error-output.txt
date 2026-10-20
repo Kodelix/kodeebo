@@ -1,0 +1,5 @@
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-3/scripts/S13.java:87: error: 'var' is not allowed in a compound declaration
+    var fda = fw("s13d", "flyway_audit", false, null, "filesystem:" + DA), fdo = fw("s13d", "flyway_orders", false, null, "filesystem:" + DO);
+    ^
+1 error
+error: compilation failed

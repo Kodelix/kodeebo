@@ -1,0 +1,22 @@
+date: 2026-10-20T18:28:18Z
+OSV Maven org.flywaydb:flyway-core 13.10.3: 0 records [] 
+OSV Maven org.flywaydb:flyway-database-postgresql 13.10.3: 0 records [] 
+OSV Maven org.postgresql:postgresql 42.7.14: 0 records [] 
+OSV Maven org.jetbrains.kotlin:kotlin-gradle-plugin 2.4.21: 0 records [] 
+OSV Maven org.jetbrains.kotlin:kotlin-gradle-plugin-api 2.4.21: 0 records [] 
+OSV Maven org.gradle:gradle-core 9.7.0: 0 records [] 
+OSV Maven org.gradle:gradle-tooling-api 9.7.0: 0 records [] 
+OSV Maven org.flywaydb:flyway-core ALL-VERSIONS: 0 records [] 
+OSV Maven org.jetbrains.kotlin:kotlin-gradle-plugin ALL-VERSIONS: 1 records [('GHSA-r937-wjx7-w2jp', '2026-06-26')] 
+OSV Maven org.postgresql:postgresql ALL-VERSIONS: 11 records [('GHSA-24rp-q3w6-vc56', '2024-02-21'), ('GHSA-562r-vg33-8x8h', '2022-11-23'), ('GHSA-673j-qm5f-xpv8', '2022-02-16'), ('GHSA-727h-hrw8-jg8q', '2022-03-11'), ('GHSA-88cc-g835-76rp', '2022-02-10'), ('GHSA-98qh-xjc8-98pq', '2026-05-05'), ('GHSA-h86w-m5rm-xr33', '2022-05-17'), ('GHSA-hq9p-pm7w-8p54', '2025-06-11'), ('GHSA-j92g-9f8w-j867', '2026-07-21'), ('GHSA-r38f-c4h4-hqq2', '2022-08-06'), ('GHSA-v7wg-cpwc-24m4', '2022-02-02')] 
+--- GitHub global advisories (affects= filter, ecosystem maven)
+GHSA affects=org.flywaydb:flyway-core@13.10.3: 0 []
+GHSA affects=org.postgresql:postgresql@42.7.14: 0 []
+GHSA affects=org.jetbrains.kotlin:kotlin-gradle-plugin@2.4.21: 0 []
+--- repository security advisories (published, per repo)
+repo flyway/flyway: 0 published; newest 5: []
+repo pgjdbc/pgjdbc: 12 published; newest 5: [('GHSA-hcjv-f5jh-r55v', None, '2026-10-15', 'low', ['org.postgresql:postgresql <=42.7.14 fixed ']), ('GHSA-rhp9-mr79-r74h', 'CVE-2026-107314', '2026-10-07', 'medium', ['org.postgresql:postgresql >= 42.7.11, <= 42.7.13 fixed 42.7.14']), ('GHSA-hggc-j2qh-988m', 'CVE-2026-107313', '2026-10-07', 'medium', ['org.postgresql:postgresql >= 42.7.4, < 42.7.6 fixed 42.7.6']), ('GHSA-f64h-wr5q-3qf3', 'CVE-2026-107315', '2026-10-07', 'medium', ['org.postgresql:postgresql >= 42.7.4, <= 42.7.13 fixed 42.7.14']), ('GHSA-j92g-9f8w-j867', 'CVE-2026-54291', '2026-06-29', 'high', ['org.postgresql:postgresql >= 42.7.4, < 42.7.12 fixed 42.7.12'])]
+repo JetBrains/kotlin: 0 published; newest 5: []
+repo gradle/gradle: 21 published; newest 5: [('GHSA-j5m7-59rp-24f5', None, '2026-10-07', 'high', ['org.gradle:gradle-core < 8.14.6, 9.0.0 to 9.8.0 fixed 8.14.6, 9.8.1']), ('GHSA-xwqc-3h47-hg64', None, '2026-10-07', 'high', ['org.gradle:gradle-core < 8.14.6, 9.0.0 to 9.8.0 fixed 8.14.6, 9.8.1']), ('GHSA-mvvg-497x-hmj8', None, '2026-10-07', 'high', ['org.gradle:gradle-core < 8.14.6, 9.0.0 to 9.8.0 fixed 8.14.6, 9.8.1']), ('GHSA-mqwm-5m85-gmcv', 'CVE-2026-22865', '2026-01-16', 'high', ['org.gradle:gradle-core < 8.14.4, 9.0.0 to 9.2.1 fixed 8.14.4, >= 9.3.0']), ('GHSA-w78c-w6vf-rw82', 'CVE-2026-22816', '2026-01-16', 'high', ['org.gradle:gradle-core < 8.14.4, 9.0.0 to 9.2.1 fixed 8.14.4, >= 9.3.0'])]
+--- Gradle: GitHub global advisories for the gradle repo name (any ecosystem)
+GHSA gradle/gradle (via repo list above); GHSA affects= for org.gradle: 0 []

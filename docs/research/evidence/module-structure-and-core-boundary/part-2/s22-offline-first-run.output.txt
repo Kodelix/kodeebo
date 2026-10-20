@@ -1,0 +1,92 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :gaming
+w: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/gaming/build.gradle.kts:2:42: 'fun ExtraPropertiesExtension.provideDelegate(receiver: Any?, property: KProperty<*>): MutablePropertyDelegate' is deprecated. Use 'val property = extra[name] as Type' instead. See the Gradle 9.6 upgrading guide.
+
+> Configure project :identity
+w: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/build.gradle.kts:2:40: 'fun ExtraPropertiesExtension.provideDelegate(receiver: Any?, property: KProperty<*>): MutablePropertyDelegate' is deprecated. Use 'val property = extra[name] as Type' instead. See the Gradle 9.6 upgrading guide.
+
+> Configure project :orders
+w: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/build.gradle.kts:2:40: 'fun ExtraPropertiesExtension.provideDelegate(receiver: Any?, property: KProperty<*>): MutablePropertyDelegate' is deprecated. Use 'val property = extra[name] as Type' instead. See the Gradle 9.6 upgrading guide.
+w: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/build.gradle.kts:3:42: 'fun ExtraPropertiesExtension.provideDelegate(receiver: Any?, property: KProperty<*>): MutablePropertyDelegate' is deprecated. Use 'val property = extra[name] as Type' instead. See the Gradle 9.6 upgrading guide.
+
+> Task :arch-tests:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :arch-tests:compileKotlin NO-SOURCE
+> Task :arch-tests:compileJava NO-SOURCE
+> Task :arch-tests:processResources NO-SOURCE
+> Task :arch-tests:classes UP-TO-DATE
+> Task :arch-tests:jar
+> Task :gaming:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:processResources NO-SOURCE
+> Task :gaming:processResources NO-SOURCE
+> Task :identity:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :notifications:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:processResources NO-SOURCE
+> Task :notifications:processResources NO-SOURCE
+> Task :orders:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :orders:processResources NO-SOURCE
+> Task :identity:processResources NO-SOURCE
+> Task :vendor-mail:compileKotlin
+> Task :vendor-ktor:compileKotlin
+> Task :vendor-ktor:compileJava NO-SOURCE
+> Task :vendor-ktor:classes UP-TO-DATE
+> Task :vendor-ktor:jar
+> Task :vendor-mail:compileJava NO-SOURCE
+> Task :vendor-mail:classes UP-TO-DATE
+> Task :vendor-mail:jar
+> Task :gaming:compileKotlin
+> Task :gaming:compileJava NO-SOURCE
+> Task :gaming:classes UP-TO-DATE
+> Task :notifications:compileKotlin
+> Task :gaming:jar
+> Task :notifications:compileJava NO-SOURCE
+> Task :notifications:classes UP-TO-DATE
+> Task :notifications:jar
+> Task :orders:compileKotlin
+> Task :orders:compileJava NO-SOURCE
+> Task :orders:classes UP-TO-DATE
+> Task :orders:jar
+> Task :identity:compileKotlin
+> Task :identity:compileJava NO-SOURCE
+> Task :identity:classes UP-TO-DATE
+> Task :identity:jar
+> Task :arch-tests:compileTestKotlin FAILED
+
+[Incubating] Problems report is available at: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':arch-tests:compileTestKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Could not resolve all files for configuration ':arch-tests:testCompileClasspath'.
+   > Could not resolve com.lemonappdev:konsist:0.18.1.
+     Required by:
+         project ':arch-tests'
+      > No cached version of com.lemonappdev:konsist:0.18.1 available for offline mode.
+   > Could not resolve com.tngtech.archunit:archunit:1.5.1.
+     Required by:
+         project ':arch-tests'
+      > No cached version of com.tngtech.archunit:archunit:1.5.1 available for offline mode.
+   > Could not resolve org.junit.jupiter:junit-jupiter:5.12.2.
+     Required by:
+         project ':arch-tests'
+      > No cached version of org.junit.jupiter:junit-jupiter:5.12.2 available for offline mode.
+> There is 1 more failure with an identical cause.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 12s
+14 actionable tasks: 14 executed

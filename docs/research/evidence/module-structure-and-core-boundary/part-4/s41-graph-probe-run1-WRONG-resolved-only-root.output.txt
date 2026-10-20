@@ -1,0 +1,13 @@
+## CONFIG ktlint2cli
+COMP :probe-resolve:unspecified
+## CONFIG ktlint18cli
+COMP :probe-resolve:unspecified
+## CONFIG detekt2cli
+COMP :probe-resolve:unspecified
+## CONFIG detekt2plugin
+COMP :probe-resolve:unspecified
+## CONFIG ktlintGradle
+COMP :probe-resolve:unspecified
+COMP org.jlleitschuh.gradle:ktlint-gradle:14.2.0
+## CONFIG kotlinter
+COMP :probe-resolve:unspecified

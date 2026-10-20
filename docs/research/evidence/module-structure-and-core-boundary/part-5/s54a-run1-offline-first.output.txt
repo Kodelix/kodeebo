@@ -1,0 +1,239 @@
+date: 2026-10-20T19:04:17Z
+java: openjdk version "21.0.12.1" 2026-08-18
+cache size before: 1046241323 bytes
+
+Welcome to Gradle 9.8.2!
+
+Here are the highlights of this release:
+ - Java 27 support
+ - Maven mirror settings reuse
+ - Linked problem locations in build output
+
+For more details see https://docs.gradle.org/9.8.2/release-notes.html
+
+
+------------------------------------------------------------
+
+### gradle updateKotlinAbi
+Starting a Gradle Daemon (subsequent builds will be faster)
+Type-safe project accessors is an incubating feature.
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s10/build-logic/build.gradle.kts' line: 1
+
+* What went wrong:
+Plugin [id: 'org.gradle.kotlin.kotlin-dsl', version: '6.7.6'] was not found in any of the following sources:
+
+- Gradle Core Plugins (plugin is not in 'org.gradle' namespace)
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:6.7.6')
+  Searched in the following repositories:
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 7s
+exit=1 wall_ms=8306
+cache size after first build: 1046748735 bytes
+
+### ABI dump files
+
+### gradle build
+Plugin [id: 'org.gradle.kotlin.kotlin-dsl', version: '6.7.6'] was not found in any of the following sources:
+
+- Gradle Core Plugins (plugin is not in 'org.gradle' namespace)
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:6.7.6')
+  Searched in the following repositories:
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 399ms
+exit=1 wall_ms=476
+
+######## B1: leak of an implementation-only dependency
+
+### gradle :app:compileKotlin
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:6.7.6')
+  Searched in the following repositories:
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 355ms
+exit=1 wall_ms=415
+
+######## B2: explicit API strict violation
+
+### gradle :platform:tenancy:compileKotlin
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:6.7.6')
+  Searched in the following repositories:
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 335ms
+exit=1 wall_ms=405
+
+######## B3: ABI change without updating the dump
+
+### gradle checkKotlinAbi
+Type-safe project accessors is an incubating feature.
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s10/build-logic/build.gradle.kts' line: 1
+
+* What went wrong:
+Plugin [id: 'org.gradle.kotlin.kotlin-dsl', version: '6.7.6'] was not found in any of the following sources:
+
+- Gradle Core Plugins (plugin is not in 'org.gradle' namespace)
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:6.7.6')
+  Searched in the following repositories:
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 334ms
+exit=1 wall_ms=431
+
+### gradle updateKotlinAbi
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 346ms
+exit=1 wall_ms=406
+cat: 'platform/tenancy/api/*.api': No such file or directory
+
+### gradle checkKotlinAbi
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 393ms
+exit=1 wall_ms=466
+
+######## C: configuration cache and timing (all tasks up to date unless noted)
+
+### gradle build --no-configuration-cache
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 362ms
+exit=1 wall_ms=438
+
+### gradle build --configuration-cache
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 681ms
+Configuration cache entry stored.
+exit=1 wall_ms=741
+
+### gradle build --configuration-cache
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 388ms
+Configuration cache entry stored.
+exit=1 wall_ms=449
+-- touch one source file in tenancy (non-ABI change), with config cache
+
+### gradle build --configuration-cache
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 342ms
+Configuration cache entry stored.
+exit=1 wall_ms=414
+-- change build file of one module, with config cache (invalidates the cache)
+
+### gradle build --configuration-cache
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 357ms
+Configuration cache entry stored.
+exit=1 wall_ms=435
+-- cold clean build, config cache on, build cache off
+
+### gradle clean build --configuration-cache --rerun-tasks
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 407ms
+Configuration cache entry stored.
+exit=1 wall_ms=477
+
+### type-safe accessors (settings had no feature flag): ok if the builds above passed
+### project tree
+
+### gradle projects
+Type-safe project accessors is an incubating feature.
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s10/build-logic/build.gradle.kts' line: 1
+
+* What went wrong:
+Plugin [id: 'org.gradle.kotlin.kotlin-dsl', version: '6.7.6'] was not found in any of the following sources:
+
+- Gradle Core Plugins (plugin is not in 'org.gradle' namespace)
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:6.7.6')
+  Searched in the following repositories:
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 315ms
+exit=1 wall_ms=421
+Stopping Daemon(s)
+1 Daemon stopped
+cache size end: 1047138084 bytes

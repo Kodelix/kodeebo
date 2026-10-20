@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="NotRunProbes" tests="3" skipped="3" failures="0" errors="0" timestamp="2026-10-20T19:31:05.843Z" hostname="Keko" time="0.001">
+  <properties/>
+  <testcase name="konsist_filterMatchesNothing_wrongPackage()" classname="NotRunProbes" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="konsist_scopeFromDirectory_missingDir()" classname="NotRunProbes" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="konsist_emptyFileList_assertFalse_alwaysTrueLambda()" classname="NotRunProbes" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

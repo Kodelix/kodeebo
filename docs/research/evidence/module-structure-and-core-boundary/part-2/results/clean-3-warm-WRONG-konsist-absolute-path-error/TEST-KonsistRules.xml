@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="KonsistRules" tests="8" skipped="0" failures="8" errors="0" timestamp="2026-10-20T17:42:11.883Z" hostname="Keko" time="0.043">
+  <properties/>
+  <testcase name="r1_clientLibsOnlyInNotifications()" classname="KonsistRules" time="0.035">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.files(KonsistRules.kt:10)
+	at KonsistRules.r1_clientLibsOnlyInNotifications(KonsistRules.kt:14)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1_architectureApi()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.r3_layer1_architectureApi(KonsistRules.kt:29)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1ImportsNothingFromLayer2or3_imports()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.files(KonsistRules.kt:10)
+	at KonsistRules.r3_layer1ImportsNothingFromLayer2or3_imports(KonsistRules.kt:26)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r4_platformNeverImportsVertical_architectureApi()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.r4_platformNeverImportsVertical_architectureApi(KonsistRules.kt:46)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r2_appSeesOnlyPorts_noInfraNoAdapters()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.files(KonsistRules.kt:10)
+	at KonsistRules.r2_appSeesOnlyPorts_noInfraNoAdapters(KonsistRules.kt:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_whenIsOnly_identityDomainNotGaming()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.files(KonsistRules.kt:10)
+	at KonsistRules.r3_whenIsOnly_identityDomainNotGaming(KonsistRules.kt:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r2_domainImportsNoInfra()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.files(KonsistRules.kt:10)
+	at KonsistRules.r2_domainImportsNoInfra(KonsistRules.kt:18)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1_textFallback_fullyQualifiedUse()" classname="KonsistRules" time="0.001">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo//home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/arch-tests/build/clean-src
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at KonsistRules.scope(KonsistRules.kt:9)
+	at KonsistRules.files(KonsistRules.kt:10)
+	at KonsistRules.r3_layer1_textFallback_fullyQualifiedUse(KonsistRules.kt:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

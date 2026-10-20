@@ -1,0 +1,83 @@
+## CONFIG ktlint2cli
+UNRESOLVED io.github.ktlint.core:ktlint-cli:2.0.0-ALPHA-4: Could not resolve io.github.ktlint.core:ktlint-cli:2.0.0-ALPHA-4.
+COMP :probe-resolve:unspecified
+## CONFIG ktlint18cli
+UNRESOLVED com.pinterest.ktlint:ktlint-cli:1.8.0: Could not resolve com.pinterest.ktlint:ktlint-cli:1.8.0.
+COMP :probe-resolve:unspecified
+## CONFIG detekt2cli
+COMP :probe-resolve:unspecified
+COMP dev.detekt:detekt-cli:2.0.0-alpha.6
+COMP org.jcommander:jcommander:1.85
+COMP dev.detekt:detekt-api:2.0.0-alpha.6
+COMP dev.drewhamilton.poko:poko-annotations:0.23.1
+COMP dev.drewhamilton.poko:poko-annotations-jvm:0.23.1
+COMP org.jetbrains.kotlin:kotlin-stdlib:2.4.10
+COMP org.jetbrains:annotations:23.0.0
+COMP org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.4.10
+COMP org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.4.10
+COMP org.jetbrains.kotlin:kotlin-stdlib-common:2.4.10
+COMP org.jetbrains.kotlin:kotlin-compiler:2.4.10
+COMP org.jetbrains.kotlin:kotlin-script-runtime:2.4.10
+COMP org.jetbrains.kotlin:kotlin-reflect:2.4.10
+COMP org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0
+COMP org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.0
+COMP org.jetbrains.kotlin:kotlin-build-tools-api:2.4.10
+COMP dev.detekt:detekt-tooling:2.0.0-alpha.6
+COMP dev.detekt:detekt-utils:2.0.0-alpha.6
+COMP dev.detekt:detekt-core:2.0.0-alpha.6
+COMP dev.detekt:detekt-kotlin-analysis-api:2.0.0-alpha.6
+COMP com.github.ben-manes.caffeine:caffeine:2.9.3
+COMP org.checkerframework:checker-qual:3.19.0
+COMP com.google.errorprone:error_prone_annotations:2.10.0
+COMP org.jetbrains.kotlinx:kotlinx-serialization-core:1.11.0
+COMP org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.11.0
+COMP org.jetbrains.kotlinx:kotlinx-serialization-bom:1.11.0
+COMP org.jetbrains.intellij.deps.kotlinx:kotlinx-coroutines-core:1.10.2-intellij-1
+COMP org.jetbrains.intellij.deps.kotlinx:kotlinx-coroutines-core-jvm:1.10.2-intellij-1
+COMP org.jetbrains.intellij.deps.kotlinx:kotlinx-coroutines-bom:1.10.2-intellij-1
+COMP dev.detekt:detekt-kotlin-analysis-api-standalone:2.0.0-alpha.6
+COMP org.snakeyaml:snakeyaml-engine:2.10
+COMP dev.detekt:detekt-metrics:2.0.0-alpha.6
+COMP dev.detekt:detekt-parser:2.0.0-alpha.6
+COMP dev.detekt:detekt-psi-utils:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-complexity:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-coroutines:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-comments:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-empty-blocks:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-potential-bugs:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-exceptions:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-naming:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-performance:2.0.0-alpha.6
+COMP dev.detekt:detekt-rules-style:2.0.0-alpha.6
+COMP dev.detekt:detekt-report-html:2.0.0-alpha.6
+COMP org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0
+COMP dev.detekt:detekt-report-markdown:2.0.0-alpha.6
+COMP dev.detekt:detekt-report-sarif:2.0.0-alpha.6
+COMP io.github.detekt.sarif4k:sarif4k:0.6.0
+COMP io.github.detekt.sarif4k:sarif4k-jvm:0.6.0
+COMP org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1
+COMP org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.4.1
+COMP dev.detekt:detekt-report-checkstyle:2.0.0-alpha.6
+## CONFIG detekt2plugin
+COMP :probe-resolve:unspecified
+COMP dev.detekt:detekt-gradle-plugin:2.0.0-alpha.6
+COMP io.github.detekt.sarif4k:sarif4k:0.6.0
+COMP io.github.detekt.sarif4k:sarif4k-jvm:0.6.0
+COMP org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1
+COMP org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.4.1
+COMP org.jetbrains.kotlin:kotlin-stdlib:1.9.23
+COMP org.jetbrains:annotations:13.0
+COMP org.jetbrains.kotlin:kotlin-stdlib-common:1.9.23
+COMP org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0
+COMP org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0
+COMP org.jetbrains.kotlinx:kotlinx-serialization-core:1.4.1
+COMP org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.4.1
+## CONFIG ktlintGradle
+COMP :probe-resolve:unspecified
+COMP org.jlleitschuh.gradle:ktlint-gradle:14.2.0
+## CONFIG kotlinter
+COMP :probe-resolve:unspecified
+COMP org.jmailen.gradle:kotlinter-gradle:5.7.0
+COMP org.jetbrains.kotlin:kotlin-stdlib:2.4.10
+COMP org.jetbrains:annotations:13.0

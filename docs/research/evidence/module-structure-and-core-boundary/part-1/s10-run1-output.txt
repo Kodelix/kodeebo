@@ -1,0 +1,284 @@
+date: 2026-10-20T17:39:00Z
+java: openjdk version "21.0.12.1" 2026-08-18
+cache size before: 169978706 bytes
+
+Welcome to Gradle 9.7.0!
+
+Here are the highlights of this release:
+ - Isolated Projects graduates to incubating
+ - Broader Configuration Cache compatibility
+ - More source locations in problem reports
+
+For more details see https://docs.gradle.org/9.7.0/release-notes.html
+
+
+------------------------------------------------------------
+
+### gradle updateKotlinAbi
+> Task :build-logic:generateScriptPluginAdapters
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:compilePluginsBlocks
+> Task :build-logic:generatePrecompiledScriptPluginAccessors
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+
+> Configure project :app
+e: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts:6:20: Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val TaskContainer.projects: TaskProvider<ProjectReportTask>
+e: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts:6:29: Unresolved reference 'platform'.
+e: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts:7:20: Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val TaskContainer.projects: TaskProvider<ProjectReportTask>
+e: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts:7:29: Unresolved reference 'platform'.
+e: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts:8:20: Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+val TaskContainer.projects: TaskProvider<ProjectReportTask>
+e: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts:8:29: Unresolved reference 'contexts'.
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/build.gradle.kts' line: 6
+
+* What went wrong:
+Script compilation errors:
+
+  Line 6:     implementation(projects.platform.audit)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 6:     implementation(projects.platform.audit)
+                                      ^ Unresolved reference 'platform'.
+
+  Line 7:     implementation(projects.platform.notify)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 7:     implementation(projects.platform.notify)
+                                      ^ Unresolved reference 'platform'.
+
+  Line 8:     implementation(projects.contexts.venue)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 8:     implementation(projects.contexts.venue)
+                                      ^ Unresolved reference 'contexts'.
+
+6 errors
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 14s
+9 actionable tasks: 9 executed
+exit=1 wall_ms=75313
+cache size after first build: 966552331 bytes
+
+### ABI dump files
+
+### gradle build
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 8:     implementation(projects.contexts.venue)
+                                      ^ Unresolved reference 'contexts'.
+
+6 errors
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 961ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=1051
+
+######## B1: leak of an implementation-only dependency
+
+### gradle :app:compileKotlin
+                                      ^ Unresolved reference 'contexts'.
+
+6 errors
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 946ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=1042
+
+######## B2: explicit API strict violation
+
+### gradle :platform:tenancy:compileKotlin
+                                      ^ Unresolved reference 'contexts'.
+
+6 errors
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 593ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=649
+
+######## B3: ABI change without updating the dump
+
+### gradle checkKotlinAbi
+
+  Line 7:     implementation(projects.platform.notify)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 7:     implementation(projects.platform.notify)
+                                      ^ Unresolved reference 'platform'.
+
+  Line 8:     implementation(projects.contexts.venue)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 8:     implementation(projects.contexts.venue)
+                                      ^ Unresolved reference 'contexts'.
+
+6 errors
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 529ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=587
+
+### gradle updateKotlinAbi
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 600ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=666
+cat: 'platform/tenancy/api/*.api': No such file or directory
+
+### gradle checkKotlinAbi
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 535ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=600
+
+######## C: configuration cache and timing (all tasks up to date unless noted)
+
+### gradle build --no-configuration-cache
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 576ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=673
+
+### gradle build --configuration-cache
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 850ms
+9 actionable tasks: 9 up-to-date
+Configuration cache entry stored.
+exit=1 wall_ms=924
+
+### gradle build --configuration-cache
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 591ms
+9 actionable tasks: 9 up-to-date
+Configuration cache entry stored.
+exit=1 wall_ms=644
+-- touch one source file in tenancy (non-ABI change), with config cache
+
+### gradle build --configuration-cache
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 516ms
+9 actionable tasks: 9 up-to-date
+Configuration cache entry stored.
+exit=1 wall_ms=575
+-- change build file of one module, with config cache (invalidates the cache)
+
+### gradle build --configuration-cache
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 596ms
+9 actionable tasks: 9 up-to-date
+Configuration cache entry stored.
+exit=1 wall_ms=665
+-- cold clean build, config cache on, build cache off
+
+### gradle clean build --configuration-cache --rerun-tasks
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3s
+9 actionable tasks: 9 executed
+Configuration cache entry stored.
+exit=1 wall_ms=3615
+
+### type-safe accessors (settings had no feature flag): ok if the builds above passed
+### project tree
+
+### gradle projects
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 6:     implementation(projects.platform.audit)
+                                      ^ Unresolved reference 'platform'.
+
+  Line 7:     implementation(projects.platform.notify)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 7:     implementation(projects.platform.notify)
+                                      ^ Unresolved reference 'platform'.
+
+  Line 8:     implementation(projects.contexts.venue)
+                             ^ Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
+                                 val TaskContainer.projects: TaskProvider<ProjectReportTask>
+
+  Line 8:     implementation(projects.contexts.venue)
+                                      ^ Unresolved reference 'contexts'.
+
+6 errors
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 472ms
+9 actionable tasks: 9 up-to-date
+exit=1 wall_ms=558
+Stopping Daemon(s)
+1 Daemon stopped
+cache size end: 967465068 bytes

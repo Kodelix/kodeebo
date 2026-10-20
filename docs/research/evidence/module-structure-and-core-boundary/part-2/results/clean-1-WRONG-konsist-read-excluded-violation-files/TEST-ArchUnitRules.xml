@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ArchUnitRules" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-20T17:41:00.339Z" hostname="Keko" time="0.839">
+  <properties/>
+  <testcase name="r1_clientLibsOnlyInNotifications()" classname="ArchUnitRules" time="0.033"/>
+  <testcase name="r4_platformNeverImportsVertical()" classname="ArchUnitRules" time="0.001"/>
+  <testcase name="r3_layer1ImportsNothingFromLayer2or3()" classname="ArchUnitRules" time="0.004"/>
+  <testcase name="r2_appSeesOnlyPorts_noInfraNoAdapters()" classname="ArchUnitRules" time="0.003"/>
+  <testcase name="r3_whenIsOnly_identityDomainNotGaming()" classname="ArchUnitRules" time="0.001"/>
+  <testcase name="r2_domainImportsNoInfra()" classname="ArchUnitRules" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+</testsuite>

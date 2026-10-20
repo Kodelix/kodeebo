@@ -1,0 +1,18 @@
+## CONFIG ktlint2cli
+UNRESOLVED io.github.ktlint.core:ktlint-cli:2.0.0-ALPHA-4: Could not resolve io.github.ktlint.core:ktlint-cli:2.0.0-ALPHA-4.
+COMP :probe-resolve:unspecified
+## CONFIG ktlint18cli
+UNRESOLVED com.pinterest.ktlint:ktlint-cli:1.8.0: Could not resolve com.pinterest.ktlint:ktlint-cli:1.8.0.
+COMP :probe-resolve:unspecified
+## CONFIG detekt2cli
+UNRESOLVED dev.detekt:detekt-cli:2.0.0-alpha.6: Could not resolve dev.detekt:detekt-cli:2.0.0-alpha.6.
+COMP :probe-resolve:unspecified
+## CONFIG detekt2plugin
+UNRESOLVED dev.detekt:detekt-gradle-plugin:2.0.0-alpha.6: Could not resolve dev.detekt:detekt-gradle-plugin:2.0.0-alpha.6.
+COMP :probe-resolve:unspecified
+## CONFIG ktlintGradle
+COMP :probe-resolve:unspecified
+COMP org.jlleitschuh.gradle:ktlint-gradle:14.2.0
+## CONFIG kotlinter
+UNRESOLVED org.jmailen.gradle:kotlinter-gradle:5.7.0: Could not resolve org.jmailen.gradle:kotlinter-gradle:5.7.0.
+COMP :probe-resolve:unspecified

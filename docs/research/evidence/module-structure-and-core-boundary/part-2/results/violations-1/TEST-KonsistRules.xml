@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="KonsistRules" tests="8" skipped="0" failures="8" errors="0" timestamp="2026-10-20T17:40:17.281Z" hostname="Keko" time="1.997">
+  <properties/>
+  <testcase name="r1_clientLibsOnlyInNotifications()" classname="KonsistRules" time="1.947">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r1_clientLibsOnlyInNotifications' was violated (2 times). Invalid files:&#10;├── File ViolationHttp.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/adapters/ViolationHttp.kt&#10;└── File ViolationOrderMailer.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/adapters/ViolationOrderMailer.kt" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r1_clientLibsOnlyInNotifications' was violated (2 times). Invalid files:
+├── File ViolationHttp.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/adapters/ViolationHttp.kt
+└── File ViolationOrderMailer.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/adapters/ViolationOrderMailer.kt
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.getResult(KoDeclarationAndProviderAssertCore.kt:223)
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.assert(KoDeclarationAndProviderAssertCore.kt:56)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse(KoDeclarationAndProviderAssert.kt:100)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse$default(KoDeclarationAndProviderAssert.kt:94)
+	at KonsistRules.r1_clientLibsOnlyInNotifications(KonsistRules.kt:13)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1_architectureApi()" classname="KonsistRules" time="0.032">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: 'r3_layer1_architectureApi' test has failed. &#10;'Identity' layer does not depends on 'Orders' layer failed. Files that depend on 'Orders' layer:&#10;└── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt&#10;    └── Import kodeebo.orders.app.OrderService (file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt:3:1)&#10;&#10;'Identity' layer does not depends on 'Gaming' layer failed. Files that depend on 'Gaming' layer:&#10;└── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt&#10;    └── Import kodeebo.gaming.domain.Session (file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt:3:1)" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: 'r3_layer1_architectureApi' test has failed. 
+'Identity' layer does not depends on 'Orders' layer failed. Files that depend on 'Orders' layer:
+└── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt
+    └── Import kodeebo.orders.app.OrderService (file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt:3:1)
+
+'Identity' layer does not depends on 'Gaming' layer failed. Files that depend on 'Gaming' layer:
+└── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt
+    └── Import kodeebo.gaming.domain.Session (file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt:3:1)
+	at com.lemonappdev.konsist.core.verify.KoArchitectureAssertKt.assertCommon(KoArchitectureAssert.kt:89)
+	at com.lemonappdev.konsist.core.verify.KoArchitectureAssertKt.assert(KoArchitectureAssert.kt:50)
+	at com.lemonappdev.konsist.core.architecture.KoArchitectureAssertionCore.assertArchitecture(KoArchitectureAssertionCore.kt:20)
+	at com.lemonappdev.konsist.core.architecture.KoArchitectureAssertionCore.assertArchitecture(KoArchitectureAssertionCore.kt:11)
+	at com.lemonappdev.konsist.api.architecture.KoArchitectureCreator.assertArchitecture(KoArchitectureCreator.kt)
+	at KonsistRules.r3_layer1_architectureApi(KonsistRules.kt:27)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1ImportsNothingFromLayer2or3_imports()" classname="KonsistRules" time="0.002">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_layer1ImportsNothingFromLayer2or3_imports' was violated (2 times). Invalid files:&#10;├── File ViolationOrdersImport.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt&#10;└── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_layer1ImportsNothingFromLayer2or3_imports' was violated (2 times). Invalid files:
+├── File ViolationOrdersImport.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt
+└── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.getResult(KoDeclarationAndProviderAssertCore.kt:223)
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.assert(KoDeclarationAndProviderAssertCore.kt:56)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse(KoDeclarationAndProviderAssert.kt:100)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse$default(KoDeclarationAndProviderAssert.kt:94)
+	at KonsistRules.r3_layer1ImportsNothingFromLayer2or3_imports(KonsistRules.kt:25)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r4_platformNeverImportsVertical_architectureApi()" classname="KonsistRules" time="0.004">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: 'r4_platformNeverImportsVertical_architectureApi' test has failed. &#10;'Orders' layer does not depends on 'Gaming' layer failed. Files that depend on 'Gaming' layer:&#10;└── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt&#10;    └── Import kodeebo.gaming.domain.Session (file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt:3:1)" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: 'r4_platformNeverImportsVertical_architectureApi' test has failed. 
+'Orders' layer does not depends on 'Gaming' layer failed. Files that depend on 'Gaming' layer:
+└── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt
+    └── Import kodeebo.gaming.domain.Session (file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt:3:1)
+	at com.lemonappdev.konsist.core.verify.KoArchitectureAssertKt.assertCommon(KoArchitectureAssert.kt:89)
+	at com.lemonappdev.konsist.core.verify.KoArchitectureAssertKt.assert(KoArchitectureAssert.kt:50)
+	at com.lemonappdev.konsist.core.architecture.KoArchitectureAssertionCore.assertArchitecture(KoArchitectureAssertionCore.kt:20)
+	at com.lemonappdev.konsist.core.architecture.KoArchitectureAssertionCore.assertArchitecture(KoArchitectureAssertionCore.kt:11)
+	at com.lemonappdev.konsist.api.architecture.KoArchitectureCreator.assertArchitecture(KoArchitectureCreator.kt)
+	at KonsistRules.r4_platformNeverImportsVertical_architectureApi(KonsistRules.kt:44)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r2_appSeesOnlyPorts_noInfraNoAdapters()" classname="KonsistRules" time="0.002">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r2_appSeesOnlyPorts_noInfraNoAdapters' was violated (2 times). Invalid files:&#10;├── File ViolationExposed.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/gaming/src/main/kotlin/kodeebo/gaming/app/ViolationExposed.kt&#10;└── File ViolationAppAdapters.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationAppAdapters.kt" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r2_appSeesOnlyPorts_noInfraNoAdapters' was violated (2 times). Invalid files:
+├── File ViolationExposed.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/gaming/src/main/kotlin/kodeebo/gaming/app/ViolationExposed.kt
+└── File ViolationAppAdapters.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationAppAdapters.kt
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.getResult(KoDeclarationAndProviderAssertCore.kt:223)
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.assert(KoDeclarationAndProviderAssertCore.kt:56)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse(KoDeclarationAndProviderAssert.kt:100)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse$default(KoDeclarationAndProviderAssert.kt:94)
+	at KonsistRules.r2_appSeesOnlyPorts_noInfraNoAdapters(KonsistRules.kt:21)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_whenIsOnly_identityDomainNotGaming()" classname="KonsistRules" time="0.002">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_whenIsOnly_identityDomainNotGaming' was violated (1 time). Invalid files:&#10;└── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_whenIsOnly_identityDomainNotGaming' was violated (1 time). Invalid files:
+└── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.getResult(KoDeclarationAndProviderAssertCore.kt:223)
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.assert(KoDeclarationAndProviderAssertCore.kt:56)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse(KoDeclarationAndProviderAssert.kt:100)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse$default(KoDeclarationAndProviderAssert.kt:94)
+	at KonsistRules.r3_whenIsOnly_identityDomainNotGaming(KonsistRules.kt:42)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r2_domainImportsNoInfra()" classname="KonsistRules" time="0.001">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r2_domainImportsNoInfra' was violated (1 time). Invalid files:&#10;└── File ViolationBillKtor.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/domain/ViolationBillKtor.kt" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r2_domainImportsNoInfra' was violated (1 time). Invalid files:
+└── File ViolationBillKtor.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/domain/ViolationBillKtor.kt
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.getResult(KoDeclarationAndProviderAssertCore.kt:223)
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.assert(KoDeclarationAndProviderAssertCore.kt:56)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse(KoDeclarationAndProviderAssert.kt:100)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse$default(KoDeclarationAndProviderAssert.kt:94)
+	at KonsistRules.r2_domainImportsNoInfra(KonsistRules.kt:17)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1_textFallback_fullyQualifiedUse()" classname="KonsistRules" time="0.003">
+    <failure message="com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_layer1_textFallback_fullyQualifiedUse' was violated (3 times). Invalid files:&#10;├── File ViolationOrdersImport.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt&#10;├── File ViolationFq.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationFq.kt&#10;└── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt" type="com.lemonappdev.konsist.core.exception.KoAssertionFailedException">com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_layer1_textFallback_fullyQualifiedUse' was violated (3 times). Invalid files:
+├── File ViolationOrdersImport.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt
+├── File ViolationFq.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationFq.kt
+└── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.getResult(KoDeclarationAndProviderAssertCore.kt:223)
+	at com.lemonappdev.konsist.core.verify.KoDeclarationAndProviderAssertCoreKt.assert(KoDeclarationAndProviderAssertCore.kt:56)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse(KoDeclarationAndProviderAssert.kt:100)
+	at com.lemonappdev.konsist.api.verify.KoDeclarationAndProviderAssertKt.assertFalse$default(KoDeclarationAndProviderAssert.kt:94)
+	at KonsistRules.r3_layer1_textFallback_fullyQualifiedUse(KonsistRules.kt:38)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

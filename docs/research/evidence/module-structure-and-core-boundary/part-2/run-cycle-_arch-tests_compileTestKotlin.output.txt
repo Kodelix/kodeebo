@@ -1,0 +1,44 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Circular dependency between the following tasks:
+:gaming:classes
+\--- :gaming:compileJava
+     +--- :gaming:compileKotlin
+     |    \--- :orders:jar
+     |         +--- :orders:classes
+     |         |    \--- :orders:compileJava
+     |         |         +--- :gaming:jar
+     |         |         |    +--- :gaming:classes (*)
+     |         |         |    +--- :gaming:compileJava (*)
+     |         |         |    \--- :gaming:compileKotlin (*)
+     |         |         +--- :identity:jar
+     |         |         |    +--- :identity:classes
+     |         |         |    |    \--- :identity:compileJava
+     |         |         |    |         +--- :gaming:jar (*)
+     |         |         |    |         +--- :identity:compileKotlin
+     |         |         |    |         |    +--- :gaming:jar (*)
+     |         |         |    |         |    \--- :orders:jar (*)
+     |         |         |    |         \--- :orders:jar (*)
+     |         |         |    +--- :identity:compileJava (*)
+     |         |         |    \--- :identity:compileKotlin (*)
+     |         |         \--- :orders:compileKotlin
+     |         |              +--- :gaming:jar (*)
+     |         |              \--- :identity:jar (*)
+     |         +--- :orders:compileJava (*)
+     |         \--- :orders:compileKotlin (*)
+     \--- :orders:jar (*)
+
+(*) - details omitted (listed previously)
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3s

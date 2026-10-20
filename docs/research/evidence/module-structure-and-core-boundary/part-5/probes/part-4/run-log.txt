@@ -1,0 +1,7 @@
+mode=violations label=offline-first args=--offline :arch-tests:test --continue exit=1 wall_ms=9264 at=2026-10-20T19:30:57Z
+mode=clean label=clean-1 args=--offline :arch-tests:test --continue exit=1 wall_ms=9134 at=2026-10-20T19:31:06Z
+mode=strict label=strict-compile args=--offline compileKotlin --continue exit=1 wall_ms=7157 at=2026-10-20T19:31:13Z
+mode=clean label=ktlint2-alpha4 args=--offline -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Format --continue exit=0 wall_ms=5362 at=2026-10-20T19:31:18Z
+mode=violations label=stack-cold args=--offline -PwithGraphPlugin=1 -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :arch-tests:test :graph-check:assertModuleGraph :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Help :syntax24:ktlint2Empty :syntax24:ktlint2Control --continue exit=1 wall_ms=9991 at=2026-10-20T19:31:28Z
+mode=violations label=stack-warm args=--offline -PwithGraphPlugin=1 -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :arch-tests:test :graph-check:assertModuleGraph :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Help :syntax24:ktlint2Empty :syntax24:ktlint2Control --continue exit=1 wall_ms=9347 at=2026-10-20T19:31:38Z
+mode=violations label=notrun-probes args=--offline -Pprobe=true :arch-tests:test --tests NotRunProbes --continue exit=1 wall_ms=4965 at=2026-10-20T19:31:43Z

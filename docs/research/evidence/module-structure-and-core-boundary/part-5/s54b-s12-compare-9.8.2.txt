@@ -1,0 +1,49 @@
+######## 1: locks for all modules, then ABI dumps
+BUILD SUCCESSFUL 
+exit=0 
+######## 2: write verification metadata (sha256) on build
+BUILD SUCCESSFUL 
+exit=0 
+components: 79  artifacts: 155  bytes: 41837
+name="kotlin-gradle-plugin" version="2.4.10"
+name="kotlin-gradle-plugin" version="2.4.21"
+name="gradle-kotlin-dsl-plugins" version="6.7.6"
+######## 3: control - strict build with intact metadata
+BUILD SUCCESSFUL 
+exit=0 
+######## 3b: cost of verification on a full rebuild (verification strict vs off)
+BUILD SUCCESSFUL 
+exit=0 
+BUILD SUCCESSFUL 
+exit=0 
+######## 4: tamper checksum of a module dependency (kotlin-stdlib 2.4.21)
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+BUILD FAILED 
+exit=1 
+######## 5: tamper checksum of a build-logic dependency (kotlin-gradle-plugin 2.4.21)
+   > Dependency verification failed for configuration ':build-logic:compileClasspath'
+     One artifact failed verification: kotlin-gradle-plugin-2.4.21-gradle96.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21) from repository MavenRepo
+BUILD FAILED 
+exit=1 
+######## 6: tamper checksum of the kotlin-dsl plugin jar (build-logic buildscript classpath)
+BUILD SUCCESSFUL 
+exit=0 
+######## 7: a component missing from the metadata (annotations 13.0 removed)
+removed components: 1
+   > Dependency verification failed for configuration 'classpath'
+BUILD FAILED 
+exit=1 
+######## 8: control after restore, then a cached jar changed on disk (offline, metadata intact)
+BUILD SUCCESSFUL 
+exit=0 
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+BUILD FAILED 
+exit=1 
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+BUILD FAILED 
+exit=1 
+BUILD SUCCESSFUL 
+exit=0 

@@ -1,0 +1,331 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :arch-tests:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :arch-tests:compileKotlin NO-SOURCE
+> Task :arch-tests:compileJava NO-SOURCE
+> Task :arch-tests:processResources NO-SOURCE
+> Task :arch-tests:classes UP-TO-DATE
+> Task :arch-tests:jar UP-TO-DATE
+> Task :gaming:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:compileKotlin UP-TO-DATE
+> Task :vendor-ktor:compileJava NO-SOURCE
+> Task :vendor-ktor:processResources NO-SOURCE
+> Task :vendor-ktor:classes UP-TO-DATE
+> Task :vendor-ktor:jar UP-TO-DATE
+> Task :gaming:compileKotlin UP-TO-DATE
+> Task :gaming:compileJava NO-SOURCE
+> Task :gaming:processResources NO-SOURCE
+> Task :gaming:classes UP-TO-DATE
+> Task :gaming:jar
+> Task :identity:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :notifications:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:compileKotlin UP-TO-DATE
+> Task :vendor-mail:compileJava NO-SOURCE
+> Task :vendor-mail:processResources NO-SOURCE
+> Task :vendor-mail:classes UP-TO-DATE
+> Task :vendor-mail:jar UP-TO-DATE
+> Task :notifications:compileKotlin UP-TO-DATE
+> Task :notifications:compileJava NO-SOURCE
+> Task :notifications:processResources NO-SOURCE
+> Task :notifications:classes UP-TO-DATE
+> Task :notifications:jar UP-TO-DATE
+> Task :orders:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :orders:processResources NO-SOURCE
+> Task :identity:processResources NO-SOURCE
+> Task :arch-tests:processTestResources NO-SOURCE
+> Task :graph-check:assertRestrictions FAILED
+
+> Task :syntax24:ktlint2Syntax
+KTLINT_EXIT ktlint2Syntax = 0
+
+> Task :syntax24:ktlint2Fixture
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:1:1: File 'Unformatted.kt' contains a single class, and possibly related top level declarations for that class. The file should be named after the class, 'Bad.kt' (standard:filename)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:2:1: Wildcard import (standard:no-wildcard-imports)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:1: Expected a blank line for this declaration (standard:blank-line-before-declaration)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:7: Unnecessary long whitespace (standard:no-multi-spaces)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:13: Unexpected whitespace (standard:parameter-list-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:13: Unexpected spacing after "(" (standard:paren-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:14: Newline expected after opening parenthesis (standard:class-signature)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:19: Whitespace after ':' is missing (standard:parameter-list-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:20: Missing spacing after ":" (standard:colon-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:23: Unexpected whitespace (standard:parameter-list-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:23: Unexpected spacing before ")" (standard:paren-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:24: Newline expected before closing parenthesis (standard:class-signature)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:25: Expected a single space before class body (standard:class-signature)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:3:25: Missing spacing before "{" (standard:curly-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:1: Unexpected indentation (0) (should be 4) (standard:indent)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:7: Unexpected whitespace (standard:parameter-list-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:7: Unexpected spacing after "(" (standard:paren-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:8: No whitespace expected between opening parenthesis and first parameter name (standard:function-signature)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:9: Whitespace after ':' is missing (standard:parameter-list-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:10: Missing spacing after ":" (standard:colon-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:13: No whitespace expected between last parameter and closing parenthesis (standard:function-signature)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:13: Unexpected whitespace (standard:parameter-list-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:13: Unexpected spacing before ")" (standard:paren-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:15: Single space expected between colon and return type (standard:function-return-type-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:16: Missing spacing after ":" (standard:colon-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:19: Expected a single space before body block (standard:function-signature)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:19: Expected a single white space before start of function body (standard:function-start-of-body-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:19: Function body should be replaced with body expression (standard:function-expression-body)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:19: Missing spacing before "{" (standard:curly-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:21: Missing newline after '{' (standard:statement-wrapping)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:29: Missing spacing around "+" (standard:op-spacing)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:32: Missing newline before '}' (standard:statement-wrapping)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:33: Trailing space(s) (standard:no-trailing-spaces)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:4:34: Unnecessary long whitespace (standard:no-multi-spaces)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:5:1: Unexpected indentation (8) (should be 4) (standard:indent)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:5:9: Expected a blank line for this declaration (standard:blank-line-before-declaration)
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/lintfix/src/main/kotlin/net/kodelix/fixtures/Unformatted.kt:5:20: Unnecessary long whitespace (standard:no-multi-spaces)
+22:31:24.445 [main] WARN io.github.ktlint.core.cli.internal.KtlintCommandLine -- Lint has found errors than can be autocorrected using 'ktlint --format'
+
+Summary error count (descending) by rule:
+  standard:parameter-list-spacing: 6
+  standard:paren-spacing: 4
+  standard:class-signature: 3
+  standard:colon-spacing: 3
+  standard:function-signature: 3
+  standard:no-multi-spaces: 3
+  standard:blank-line-before-declaration: 2
+  standard:curly-spacing: 2
+  standard:indent: 2
+  standard:statement-wrapping: 2
+  standard:filename: 1
+  standard:function-expression-body: 1
+  standard:function-return-type-spacing: 1
+  standard:function-start-of-body-spacing: 1
+  standard:no-trailing-spaces: 1
+  standard:no-wildcard-imports: 1
+  standard:op-spacing: 1
+KTLINT_EXIT ktlint2Fixture = 1
+
+> Task :syntax24:ktlint2Help
+Usage: ktlint [<options>] [<arguments>]... <command> [<args>]...
+
+  An anti-bikeshedding Kotlin linter with built-in formatter.
+  (https://ktlint.github.io/ktlint/latest/).
+
+  Usage on Windows: java -jar ktlint.jar [<options>] [<arguments>]... <command>
+  [<args>]...
+
+  # EXAMPLES
+
+  ## Use default patterns
+
+  Check the style of all Kotlin files (ending with '.kt' or '.kts') inside the
+  current dir (recursively). Hidden folders will be skipped.
+
+  `ktlint`
+
+  ## Specify patterns
+
+  Check only certain locations starting from the current directory. Prepend !
+  to negate the pattern, KtLint uses .gitignore pattern style syntax. Globs are
+  applied starting from the last one.
+
+  Check all '.kt' files in 'src/' directory, but ignore files ending with
+  'Test.kt':
+
+  `ktlint "src/**/*.kt" "!src/**/*Test.kt"`
+
+  Check all '.kt' files in 'src/' directory, but ignore 'generated' directory
+  and its subdirectories:
+
+  `ktlint "src/**/*.kt" "!src/**/generated/**"`
+
+  ## Auto-correct style violations
+
+  Check all '.kt' files in 'src/' directory, and when possible automatically
+  correct the lint violations:
+
+  `ktlint -F "src/**/*.kt"`
+
+  ## Using custom reporter jar and overriding report location
+
+  `ktlint
+  --reporter=csv,artifact=/path/to/reporter/csv.jar,output=my-custom-report.csv`
+
+  # Options and commands
+
+Options:
+  -v, --version                  Show the version and exit
+  --color                        Make output colorful
+  --color-name=<text>            Customize the output color
+  -F, --format                   Fix deviations from the code style when
+                                 possible
+  --ignore-autocorrect-failures  Ignore all violations for which no autocorrect
+                                 is available
+  --limit=<int>                  Maximum number of errors to show (default:
+                                 show all)
+  --relative                     Print files relative to the working directory
+                                 (e.g. dir/file.kt instead of
+                                 /home/user/project/dir/file.kt)
+  --reporter=<text>              A reporter to use (built-in: plain (default),
+                                 plain?group_by_file, plain-summary, json,
+                                 sarif, checkstyle, html). To usea third-party
+                                 reporter specify a path to a JAR file on the
+                                 filesystem via ',artifact=' option. To
+                                 override reporter output, use ',output='
+                                 option.
+  -R, --ruleset=<text>           A path to a JAR file containing additional
+                                 ruleset(s)
+  --stdin                        Read file from stdin
+  --stdin-path=<text>            Virtual file location for stdin. When combined
+                                 with option '--format' the actual file will
+                                 not be overwritten
+  --patterns-from-stdin[=<text>]
+                                 Read additional patterns to check/format from
+                                 stdin. Patterns are delimited by the given
+                                 argument. (default is newline). If the
+                                 argument is an empty string, the NUL byte is
+                                 used.
+  --editorconfig=<text>          Path to the default '.editorconfig'. A
+                                 property value from this file is used only
+                                 when no '.editorconfig' file on the path to
+                                 the source file specifies that property. Note:
+                                 up until ktlint 0.46 the property value in
+                                 this file used to override values found in
+                                 '.editorconfig' files on the path to the
+                                 source file.
+  --baseline=<text>              Defines a baseline file to check against
+  -l, --log-level=<value>        Defines the minimum log level (trace, debug,
+                                 info, warn, error) or none to suppress all
+                                 logging
+  -h, --help                     Show this message and exit
+
+Commands:
+  generateEditorConfig     Generate kotlin style section for '.editorconfig'
+                           file. Output should be copied manually to the
+                           '.editorconfig' file.
+  installGitPreCommitHook  Install git hook to automatically check files for
+                           style violations on commit
+  installGitPrePushHook    Install git hook to automatically check files for
+                           style violations before push
+KTLINT_EXIT ktlint2Help = 0
+
+> Task :syntax24:ktlint2Empty
+22:31:25.058 [main] WARN io.github.ktlint.core.cli.internal.KtlintCommandLine -- No files matched [nomatch/**/*.kt]
+KTLINT_EXIT ktlint2Empty = 0
+
+> Task :syntax24:ktlint2ControlCopy UP-TO-DATE
+> Task :orders:compileKotlin
+
+> Task :syntax24:ktlint2Control
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/build/syntax24/control-copy/net/kodelix/syntax24/Syntax24.kt:63:1: Expected a blank line for this declaration (standard:blank-line-before-declaration)
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/build/syntax24/control-copy/net/kodelix/syntax24/Syntax24.kt:63:5: Unnecessary long whitespace (standard:no-multi-spaces)
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/build/syntax24/control-copy/net/kodelix/syntax24/Syntax24.kt:63:18: Unnecessary long whitespace (standard:no-multi-spaces)
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/build/syntax24/control-copy/net/kodelix/syntax24/Syntax24.kt:63:20: Missing spacing after "=" (standard:op-spacing)
+22:31:25.737 [main] WARN io.github.ktlint.core.cli.internal.KtlintCommandLine -- Lint has found errors than can be autocorrected using 'ktlint --format'
+
+Summary error count (descending) by rule:
+  standard:no-multi-spaces: 2
+  standard:blank-line-before-declaration: 1
+  standard:op-spacing: 1
+KTLINT_EXIT ktlint2Control = 1
+
+> Task :orders:compileJava NO-SOURCE
+> Task :orders:classes UP-TO-DATE
+> Task :orders:jar
+> Task :identity:compileKotlin
+> Task :identity:compileJava NO-SOURCE
+> Task :identity:classes UP-TO-DATE
+> Task :identity:jar
+> Task :arch-tests:compileTestKotlin
+> Task :arch-tests:compileTestJava NO-SOURCE
+> Task :arch-tests:testClasses UP-TO-DATE
+
+> Task :arch-tests:test
+
+ArchUnitRules > r1_clientLibsOnlyInNotifications() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:18
+
+ArchUnitRules > scope_sanity_classesImported() PASSED
+
+ArchUnitRules > probe_whenIs_r3_fqType_identityDomain() PASSED
+
+ArchUnitRules > r4_platformNeverImportsVertical() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:34
+
+ArchUnitRules > probe_whenIs_r3_importedType_identityDomain() PASSED
+
+ArchUnitRules > r3_layer1ImportsNothingFromLayer2or3() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:30
+
+ArchUnitRules > r2_appSeesOnlyPorts_noInfraNoAdapters() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:26
+
+ArchUnitRules > probe_whenIs_r2_ktorType_ordersDomain() PASSED
+
+ArchUnitRules > r2_domainImportsNoInfra() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:22
+
+KonsistRules > r2_domain_imports() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:28
+
+KonsistRules > scope_sanity_filesFound() PASSED
+
+KonsistRules > r4_imports() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:33
+
+KonsistRules > r3_r4_architectureApi() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:36
+
+KonsistRules > cover_r2_app_text() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:48
+
+KonsistRules > cover_r2_domain_text() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:47
+
+KonsistRules > cover_r1_text() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:46
+
+KonsistRules > cover_r3_text() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:49
+
+KonsistRules > cover_r4_text() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:51
+
+KonsistRules > r1_imports() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:27
+
+KonsistRules > r2_app_imports() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:30
+
+KonsistRules > r3_imports() FAILED
+    com.lemonappdev.konsist.core.exception.KoAssertionFailedException at KonsistRules.kt:31
+
+24 tests completed, 16 failed, 3 skipped
+
+> Task :arch-tests:test FAILED
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':graph-check:assertRestrictions'.
+> Dependency '':identity' -> ':orders' violates: ':(notifications|identity) -X> :(orders|gaming)'
+  Dependency '':identity' -> ':gaming' violates: ':(notifications|identity) -X> :(orders|gaming)'
+  Dependency '':orders' -> ':vendor-mail' violates: ':(identity|orders|gaming|graph-check) -X> :vendor-mail'
+  Dependency '':orders' -> ':gaming' violates: ':orders -X> :gaming'
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':arch-tests:test'.
+> There were failing tests. See the report at: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/build/arch-tests/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+==============================================================================
+
+BUILD FAILED in 9s
+22 actionable tasks: 13 executed, 9 up-to-date

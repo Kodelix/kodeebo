@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ArchUnitRules" tests="9" skipped="0" failures="4" errors="0" timestamp="2026-10-20T18:23:41.518Z" hostname="Keko" time="1.554">
+  <properties/>
+  <testcase name="r1_clientLibsOnlyInNotifications()" classname="ArchUnitRules" time="0.039"/>
+  <testcase name="scope_sanity_classesImported()" classname="ArchUnitRules" time="0.011">
+    <failure message="org.opentest4j.AssertionFailedError: ArchUnit imported only 11 classes ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: ArchUnit imported only 11 classes ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at ArchUnitRules.scope_sanity_classesImported(ArchUnitRules.kt:14)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="probe_whenIs_r3_fqType_identityDomain()" classname="ArchUnitRules" time="0.007">
+    <failure message="java.lang.AssertionError: Rule 'no classes that have fully qualified name 'net.kodelix.core.identity.domain.ViolationWhenIsFqKt' should depend on classes that reside in a package 'net.kodelix.kodeebo.gaming..'' failed to check any classes. This means either that no classes have been passed to the rule at all, or that no classes passed to the rule matched the `that()` clause. To allow rules being evaluated without checking any classes you can either use `ArchRule.allowEmptyShould(true)` on a single rule or set the configuration property `archRule.failOnEmptyShould = false` to change the behavior globally." type="java.lang.AssertionError">java.lang.AssertionError: Rule 'no classes that have fully qualified name 'net.kodelix.core.identity.domain.ViolationWhenIsFqKt' should depend on classes that reside in a package 'net.kodelix.kodeebo.gaming..'' failed to check any classes. This means either that no classes have been passed to the rule at all, or that no classes passed to the rule matched the `that()` clause. To allow rules being evaluated without checking any classes you can either use `ArchRule.allowEmptyShould(true)` on a single rule or set the configuration property `archRule.failOnEmptyShould = false` to change the behavior globally.
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.verifyNoEmptyShouldIfEnabled(ArchRule.java:201)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.evaluate(ArchRule.java:181)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:84)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.probe_whenIs_r3_fqType_identityDomain(ArchUnitRules.kt:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r4_platformNeverImportsVertical()" classname="ArchUnitRules" time="0.005"/>
+  <testcase name="probe_whenIs_r3_importedType_identityDomain()" classname="ArchUnitRules" time="0.001">
+    <failure message="java.lang.AssertionError: Rule 'no classes that have fully qualified name 'net.kodelix.core.identity.domain.ViolationWhenIsKt' should depend on classes that reside in a package 'net.kodelix.kodeebo.gaming..'' failed to check any classes. This means either that no classes have been passed to the rule at all, or that no classes passed to the rule matched the `that()` clause. To allow rules being evaluated without checking any classes you can either use `ArchRule.allowEmptyShould(true)` on a single rule or set the configuration property `archRule.failOnEmptyShould = false` to change the behavior globally." type="java.lang.AssertionError">java.lang.AssertionError: Rule 'no classes that have fully qualified name 'net.kodelix.core.identity.domain.ViolationWhenIsKt' should depend on classes that reside in a package 'net.kodelix.kodeebo.gaming..'' failed to check any classes. This means either that no classes have been passed to the rule at all, or that no classes passed to the rule matched the `that()` clause. To allow rules being evaluated without checking any classes you can either use `ArchRule.allowEmptyShould(true)` on a single rule or set the configuration property `archRule.failOnEmptyShould = false` to change the behavior globally.
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.verifyNoEmptyShouldIfEnabled(ArchRule.java:201)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.evaluate(ArchRule.java:181)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:84)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.probe_whenIs_r3_importedType_identityDomain(ArchUnitRules.kt:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r3_layer1ImportsNothingFromLayer2or3()" classname="ArchUnitRules" time="0.004"/>
+  <testcase name="r2_appSeesOnlyPorts_noInfraNoAdapters()" classname="ArchUnitRules" time="0.002"/>
+  <testcase name="probe_whenIs_r2_ktorType_ordersDomain()" classname="ArchUnitRules" time="0.002">
+    <failure message="java.lang.AssertionError: Rule 'no classes that have fully qualified name 'net.kodelix.kodeebo.orders.domain.ViolationDomainWhenKtorKt' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..']' failed to check any classes. This means either that no classes have been passed to the rule at all, or that no classes passed to the rule matched the `that()` clause. To allow rules being evaluated without checking any classes you can either use `ArchRule.allowEmptyShould(true)` on a single rule or set the configuration property `archRule.failOnEmptyShould = false` to change the behavior globally." type="java.lang.AssertionError">java.lang.AssertionError: Rule 'no classes that have fully qualified name 'net.kodelix.kodeebo.orders.domain.ViolationDomainWhenKtorKt' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..']' failed to check any classes. This means either that no classes have been passed to the rule at all, or that no classes passed to the rule matched the `that()` clause. To allow rules being evaluated without checking any classes you can either use `ArchRule.allowEmptyShould(true)` on a single rule or set the configuration property `archRule.failOnEmptyShould = false` to change the behavior globally.
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.verifyNoEmptyShouldIfEnabled(ArchRule.java:201)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.evaluate(ArchRule.java:181)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:84)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.probe_whenIs_r2_ktorType_ordersDomain(ArchUnitRules.kt:47)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r2_domainImportsNoInfra()" classname="ArchUnitRules" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+</testsuite>

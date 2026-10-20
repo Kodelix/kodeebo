@@ -1,0 +1,46 @@
+== konsist 0.18.1 pom dependencies
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <version>2.4.21</version>
+      <scope>runtime</scope>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-compiler-embeddable</artifactId>
+      <version>2.4.21</version>
+      <scope>runtime</scope>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+      <version>1.9.0</version>
+      <scope>runtime</scope>
+== archunit 1.5.1 pom dependencies
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.19</version>
+      <scope>compile</scope>
+== konsist gradle module metadata runtime deps
+    "group": "com.lemonappdev",
+    "module": "konsist",
+    "version": "0.18.1",
+      "version": "9.8.1"
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "2.4.21"
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-compiler-embeddable",
+          "version": {
+            "requires": "2.4.21"
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.9.0"
+== sizes (bytes)
+com/lemonappdev/konsist/0.18.1/konsist-0.18.1.jar content-length: 1649789
+
+com/tngtech/archunit/archunit/1.5.1/archunit-1.5.1.jar content-length: 4605766
+
+com/tngtech/archunit/archunit-junit5/1.5.1/archunit-junit5-1.5.1.jar content-length: 568
+
+com/tngtech/archunit/archunit-junit5-api/1.5.1/archunit-junit5-api-1.5.1.jar content-length: 6018
+
+com/tngtech/archunit/archunit-junit5-engine/1.5.1/archunit-junit5-engine-1.5.1.jar content-length: 57102
+

@@ -1,0 +1,426 @@
+S30 java 21.0.12.1 pg 57613
+
+=== PHASE 1: product owns all migrations (directories on classpath), empty database
+--- 1a first run
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_tenancy" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.database.base.Schema create
+INFO: Creating schema "app" ...
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_tenancy" ...
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": null
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create tenants"
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v0001 (execution time 00:00.002s)
+  tenancy: validate OK, applied=1, table=flyway_tenancy, resolved=1
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_audit" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_audit" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.003s)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_audit" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.001s)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_audit" with baseline ...
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbBaseline baseline
+INFO: Successfully baselined schema with version: 0
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create audit log"
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0002 - audit index"
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 2 migrations to schema "app", now at version v0002 (execution time 00:00.003s)
+  audit: validate OK, applied=2, table=flyway_audit, resolved=2
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 1 migration (execution time 00:00.001s)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 1 migration (execution time 00:00.002s)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_orders" with baseline ...
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbBaseline baseline
+INFO: Successfully baselined schema with version: 0
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create orders"
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v0001 (execution time 00:00.002s)
+  orders: validate OK, applied=1, table=flyway_orders, resolved=1
+--- 1b second run (idempotent)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.004s)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0001
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  tenancy: validate OK, applied=0, table=flyway_tenancy, resolved=1
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 3 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 3 migrations (execution time 00:00.004s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0002
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  audit: validate OK, applied=0, table=flyway_audit, resolved=2
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0001
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  orders: validate OK, applied=0, table=flyway_orders, resolved=1
+     flyway_tenancy rank=0 v=null << Flyway Schema Creation >> SCHEMA cs=null
+     flyway_tenancy rank=1 v=0001 create tenants SQL cs=-1095974140
+     flyway_audit rank=1 v=0 << Flyway Baseline >> BASELINE cs=null
+     flyway_audit rank=2 v=0001 create audit log SQL cs=1920206809
+     flyway_audit rank=3 v=0002 audit index SQL cs=-975376061
+     flyway_orders rank=1 v=0 << Flyway Baseline >> BASELINE cs=null
+     flyway_orders rank=2 v=0001 create orders SQL cs=-17536100
+
+=== PHASE 2: LIFT tenancy and audit into jars (same resource paths, same bytes); jar for audit also ships V0003; orders stays in the product
+--- 2a existing database, migrations now from jars
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0001
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  tenancy: validate OK, applied=0, table=flyway_tenancy, resolved=1
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.003s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0002
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0003 - audit note"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v0003 (execution time 00:00.003s)
+  audit: validate OK, applied=1, table=flyway_audit, resolved=3
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0001
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  orders: validate OK, applied=0, table=flyway_orders, resolved=1
+     flyway_audit rank=1 v=0 << Flyway Baseline >> BASELINE cs=null
+     flyway_audit rank=2 v=0001 create audit log SQL cs=1920206809
+     flyway_audit rank=3 v=0002 audit index SQL cs=-975376061
+     flyway_audit rank=4 v=0003 audit note SQL cs=-1799005210
+
+=== PHASE 3a: lift forgot the audit jar (audit location absent from the classpath)
+--- 3a
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.001s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.003s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0001
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  tenancy: validate OK, applied=0, table=flyway_tenancy, resolved=1
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+  audit: STOP FlywayException: Unable to resolve location classpath:db/migration/net/kodelix/core/audit.
+
+=== PHASE 3b: drifted copy: product still has an edited audit V0002 next to the jar's V0002
+--- 3b (drift dir first on classpath)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.001s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 2 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0001
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "app" is up to date. No migration necessary.
+  tenancy: validate OK, applied=0, table=flyway_tenancy, resolved=1
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+  audit: STOP FlywayException: Found more than one migration with version 0002 | Offenders: | -> W/lift/drift-res/db/migration/net/kodelix/core/audit/V0002__audit_index.sql (SQL) | -> /home/kiko/saas-products/kodeebo/file:W/lift/audit-0.1.0.jar!/db/migration/net/kodelix/core/audit/V0002__audit_index.sql (SQL)
+
+=== PHASE 3c: fresh database from the jars only (new customer / new environment)
+--- 3c
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_tenancy" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.database.base.Schema create
+INFO: Creating schema "app" ...
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_tenancy" ...
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": null
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create tenants"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v0001 (execution time 00:00.002s)
+  tenancy: validate OK, applied=1, table=flyway_tenancy, resolved=1
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_audit" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_audit" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 3 migrations (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_audit" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 3 migrations (execution time 00:00.001s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_audit" with baseline ...
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbBaseline baseline
+INFO: Successfully baselined schema with version: 0
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create audit log"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0002 - audit index"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0003 - audit note"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 3 migrations to schema "app", now at version v0003 (execution time 00:00.002s)
+  audit: validate OK, applied=3, table=flyway_audit, resolved=3
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 1 migration (execution time 00:00.002s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 1 migration (execution time 00:00.003s)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_orders" with baseline ...
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbBaseline baseline
+INFO: Successfully baselined schema with version: 0
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": 0
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create orders"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 1 migration to schema "app", now at version v0001 (execution time 00:00.002s)
+  orders: validate OK, applied=1, table=flyway_orders, resolved=1
+
+=== PHASE 3d: wrong module order (orders before tenancy) on a fresh database
+--- 3d
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "app"."flyway_orders" does not exist yet
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Environment: default
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.FlywayExecutor init
+INFO: Database: jdbc:postgresql:******** (PostgreSQL 18.6)
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.database.base.Schema create
+INFO: Creating schema "app" ...
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "app"."flyway_orders" ...
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "app": null
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "app" to version "0001 - create orders"
+Oct 20, 2026 9:29:50 PM org.flywaydb.core.internal.command.DbMigrate applyMigrations
+SEVERE: Migration of schema "app" to version "0001 - create orders" failed! Changes successfully rolled back.
+  orders: STOP FlywayMigrateException: Failed to execute script V0001__create_orders.sql | ------------------------------------------------- | SQL State  : 42P01 | Error Code : 0 | Message    : ERROR: relation "app.tenants" does not exist | Location   : db/migration/net/kodelix/kodeebo/orders/V0001__create_orders.sql (W/lift/product-res/db/migration/net/kodelix/kodeebo/orders/V0001__create_orders.sql) | Line       : 1 | Statement  ...
+
+DONE

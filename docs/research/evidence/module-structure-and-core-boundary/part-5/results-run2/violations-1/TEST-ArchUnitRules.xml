@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ArchUnitRules" tests="9" skipped="0" failures="5" errors="0" timestamp="2026-10-20T19:30:55.053Z" hostname="Keko" time="1.036">
+  <properties/>
+  <testcase name="r1_clientLibsOnlyInNotifications()" classname="ArchUnitRules" time="0.032">
+    <failure message="java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix..' and reside outside of package 'net.kodelix.core.notifications..' should depend on classes that reside in any package ['fake.mail..', 'jakarta.mail..', 'javax.mail..', 'java.net.http..']' was violated (6 times):&#10;Constructor &lt;net.kodelix.core.identity.adapters.WebhookCaller.&lt;init&gt;()&gt; calls method &lt;java.net.http.HttpClient.newHttpClient()&gt; in (ViolationHttp.kt:4)&#10;Constructor &lt;net.kodelix.kodeebo.orders.adapters.OrderMailer.&lt;init&gt;(fake.mail.MailClient)&gt; has parameter of type &lt;fake.mail.MailClient&gt; in (ViolationOrderMailer.kt:0)&#10;Field &lt;net.kodelix.core.identity.adapters.WebhookCaller.client&gt; has type &lt;java.net.http.HttpClient&gt; in (ViolationHttp.kt:0)&#10;Field &lt;net.kodelix.kodeebo.orders.adapters.OrderMailer.m&gt; has type &lt;fake.mail.MailClient&gt; in (ViolationOrderMailer.kt:0)&#10;Method &lt;net.kodelix.core.identity.adapters.WebhookCaller.getClient()&gt; has return type &lt;java.net.http.HttpClient&gt; in (ViolationHttp.kt:0)&#10;Method &lt;net.kodelix.kodeebo.orders.adapters.OrderMailer.getM()&gt; has return type &lt;fake.mail.MailClient&gt; in (ViolationOrderMailer.kt:0)" type="java.lang.AssertionError">java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix..' and reside outside of package 'net.kodelix.core.notifications..' should depend on classes that reside in any package ['fake.mail..', 'jakarta.mail..', 'javax.mail..', 'java.net.http..']' was violated (6 times):
+Constructor &lt;net.kodelix.core.identity.adapters.WebhookCaller.&lt;init&gt;()&gt; calls method &lt;java.net.http.HttpClient.newHttpClient()&gt; in (ViolationHttp.kt:4)
+Constructor &lt;net.kodelix.kodeebo.orders.adapters.OrderMailer.&lt;init&gt;(fake.mail.MailClient)&gt; has parameter of type &lt;fake.mail.MailClient&gt; in (ViolationOrderMailer.kt:0)
+Field &lt;net.kodelix.core.identity.adapters.WebhookCaller.client&gt; has type &lt;java.net.http.HttpClient&gt; in (ViolationHttp.kt:0)
+Field &lt;net.kodelix.kodeebo.orders.adapters.OrderMailer.m&gt; has type &lt;fake.mail.MailClient&gt; in (ViolationOrderMailer.kt:0)
+Method &lt;net.kodelix.core.identity.adapters.WebhookCaller.getClient()&gt; has return type &lt;java.net.http.HttpClient&gt; in (ViolationHttp.kt:0)
+Method &lt;net.kodelix.kodeebo.orders.adapters.OrderMailer.getM()&gt; has return type &lt;fake.mail.MailClient&gt; in (ViolationOrderMailer.kt:0)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.assertNoViolation(ArchRule.java:94)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:86)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.r1_clientLibsOnlyInNotifications(ArchUnitRules.kt:18)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="scope_sanity_classesImported()" classname="ArchUnitRules" time="0.004"/>
+  <testcase name="probe_whenIs_r3_fqType_identityDomain()" classname="ArchUnitRules" time="0.002"/>
+  <testcase name="r4_platformNeverImportsVertical()" classname="ArchUnitRules" time="0.004">
+    <failure message="java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in any package ['net.kodelix.kodeebo.orders..'] should depend on classes that reside in any package ['net.kodelix.kodeebo.gaming..']' was violated (3 times):&#10;Constructor &lt;net.kodelix.kodeebo.orders.app.BillSession.&lt;init&gt;(net.kodelix.kodeebo.gaming.domain.Session)&gt; has parameter of type &lt;net.kodelix.kodeebo.gaming.domain.Session&gt; in (ViolationGamingImport.kt:0)&#10;Field &lt;net.kodelix.kodeebo.orders.app.BillSession.s&gt; has type &lt;net.kodelix.kodeebo.gaming.domain.Session&gt; in (ViolationGamingImport.kt:0)&#10;Method &lt;net.kodelix.kodeebo.orders.app.BillSession.getS()&gt; has return type &lt;net.kodelix.kodeebo.gaming.domain.Session&gt; in (ViolationGamingImport.kt:0)" type="java.lang.AssertionError">java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in any package ['net.kodelix.kodeebo.orders..'] should depend on classes that reside in any package ['net.kodelix.kodeebo.gaming..']' was violated (3 times):
+Constructor &lt;net.kodelix.kodeebo.orders.app.BillSession.&lt;init&gt;(net.kodelix.kodeebo.gaming.domain.Session)&gt; has parameter of type &lt;net.kodelix.kodeebo.gaming.domain.Session&gt; in (ViolationGamingImport.kt:0)
+Field &lt;net.kodelix.kodeebo.orders.app.BillSession.s&gt; has type &lt;net.kodelix.kodeebo.gaming.domain.Session&gt; in (ViolationGamingImport.kt:0)
+Method &lt;net.kodelix.kodeebo.orders.app.BillSession.getS()&gt; has return type &lt;net.kodelix.kodeebo.gaming.domain.Session&gt; in (ViolationGamingImport.kt:0)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.assertNoViolation(ArchRule.java:94)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:86)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.r4_platformNeverImportsVertical(ArchUnitRules.kt:34)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="probe_whenIs_r3_importedType_identityDomain()" classname="ArchUnitRules" time="0.001"/>
+  <testcase name="r3_layer1ImportsNothingFromLayer2or3()" classname="ArchUnitRules" time="0.003">
+    <failure message="java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix.core..' should depend on classes that reside in a package 'net.kodelix.kodeebo..'' was violated (4 times):&#10;Constructor &lt;net.kodelix.core.identity.app.BillingSync.&lt;init&gt;(net.kodelix.kodeebo.orders.app.OrderService)&gt; has parameter of type &lt;net.kodelix.kodeebo.orders.app.OrderService&gt; in (ViolationOrdersImport.kt:0)&#10;Field &lt;net.kodelix.core.identity.app.BillingSync.orders&gt; has type &lt;net.kodelix.kodeebo.orders.app.OrderService&gt; in (ViolationOrdersImport.kt:0)&#10;Method &lt;net.kodelix.core.identity.app.BillingSync.getOrders()&gt; has return type &lt;net.kodelix.kodeebo.orders.app.OrderService&gt; in (ViolationOrdersImport.kt:0)&#10;Method &lt;net.kodelix.core.identity.domain.ViolationFqKt.makeBill()&gt; calls constructor &lt;net.kodelix.kodeebo.orders.domain.Bill.&lt;init&gt;(java.lang.String)&gt; in (ViolationFq.kt:3)" type="java.lang.AssertionError">java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix.core..' should depend on classes that reside in a package 'net.kodelix.kodeebo..'' was violated (4 times):
+Constructor &lt;net.kodelix.core.identity.app.BillingSync.&lt;init&gt;(net.kodelix.kodeebo.orders.app.OrderService)&gt; has parameter of type &lt;net.kodelix.kodeebo.orders.app.OrderService&gt; in (ViolationOrdersImport.kt:0)
+Field &lt;net.kodelix.core.identity.app.BillingSync.orders&gt; has type &lt;net.kodelix.kodeebo.orders.app.OrderService&gt; in (ViolationOrdersImport.kt:0)
+Method &lt;net.kodelix.core.identity.app.BillingSync.getOrders()&gt; has return type &lt;net.kodelix.kodeebo.orders.app.OrderService&gt; in (ViolationOrdersImport.kt:0)
+Method &lt;net.kodelix.core.identity.domain.ViolationFqKt.makeBill()&gt; calls constructor &lt;net.kodelix.kodeebo.orders.domain.Bill.&lt;init&gt;(java.lang.String)&gt; in (ViolationFq.kt:3)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.assertNoViolation(ArchRule.java:94)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:86)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.r3_layer1ImportsNothingFromLayer2or3(ArchUnitRules.kt:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r2_appSeesOnlyPorts_noInfraNoAdapters()" classname="ArchUnitRules" time="0.003">
+    <failure message="java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix.*.*.app..' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..', 'net.kodelix.*.*.adapters..']' was violated (6 times):&#10;Constructor &lt;net.kodelix.core.identity.app.LoginService.&lt;init&gt;(net.kodelix.core.identity.adapters.PgAccountRepo)&gt; has parameter of type &lt;net.kodelix.core.identity.adapters.PgAccountRepo&gt; in (ViolationAppAdapters.kt:0)&#10;Constructor &lt;net.kodelix.kodeebo.gaming.app.SessionStore.&lt;init&gt;(org.jetbrains.exposed.v1.core.Table)&gt; has parameter of type &lt;org.jetbrains.exposed.v1.core.Table&gt; in (ViolationExposed.kt:0)&#10;Field &lt;net.kodelix.core.identity.app.LoginService.repo&gt; has type &lt;net.kodelix.core.identity.adapters.PgAccountRepo&gt; in (ViolationAppAdapters.kt:0)&#10;Field &lt;net.kodelix.kodeebo.gaming.app.SessionStore.t&gt; has type &lt;org.jetbrains.exposed.v1.core.Table&gt; in (ViolationExposed.kt:0)&#10;Method &lt;net.kodelix.core.identity.app.LoginService.getRepo()&gt; has return type &lt;net.kodelix.core.identity.adapters.PgAccountRepo&gt; in (ViolationAppAdapters.kt:0)&#10;Method &lt;net.kodelix.kodeebo.gaming.app.SessionStore.getT()&gt; has return type &lt;org.jetbrains.exposed.v1.core.Table&gt; in (ViolationExposed.kt:0)" type="java.lang.AssertionError">java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix.*.*.app..' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..', 'net.kodelix.*.*.adapters..']' was violated (6 times):
+Constructor &lt;net.kodelix.core.identity.app.LoginService.&lt;init&gt;(net.kodelix.core.identity.adapters.PgAccountRepo)&gt; has parameter of type &lt;net.kodelix.core.identity.adapters.PgAccountRepo&gt; in (ViolationAppAdapters.kt:0)
+Constructor &lt;net.kodelix.kodeebo.gaming.app.SessionStore.&lt;init&gt;(org.jetbrains.exposed.v1.core.Table)&gt; has parameter of type &lt;org.jetbrains.exposed.v1.core.Table&gt; in (ViolationExposed.kt:0)
+Field &lt;net.kodelix.core.identity.app.LoginService.repo&gt; has type &lt;net.kodelix.core.identity.adapters.PgAccountRepo&gt; in (ViolationAppAdapters.kt:0)
+Field &lt;net.kodelix.kodeebo.gaming.app.SessionStore.t&gt; has type &lt;org.jetbrains.exposed.v1.core.Table&gt; in (ViolationExposed.kt:0)
+Method &lt;net.kodelix.core.identity.app.LoginService.getRepo()&gt; has return type &lt;net.kodelix.core.identity.adapters.PgAccountRepo&gt; in (ViolationAppAdapters.kt:0)
+Method &lt;net.kodelix.kodeebo.gaming.app.SessionStore.getT()&gt; has return type &lt;org.jetbrains.exposed.v1.core.Table&gt; in (ViolationExposed.kt:0)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.assertNoViolation(ArchRule.java:94)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:86)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.r2_appSeesOnlyPorts_noInfraNoAdapters(ArchUnitRules.kt:26)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="probe_whenIs_r2_ktorType_ordersDomain()" classname="ArchUnitRules" time="0.002"/>
+  <testcase name="r2_domainImportsNoInfra()" classname="ArchUnitRules" time="0.003">
+    <failure message="java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix.*.*.domain..' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..']' was violated (3 times):&#10;Constructor &lt;net.kodelix.kodeebo.orders.domain.BillWithKtor.&lt;init&gt;(io.ktor.server.application.Application)&gt; has parameter of type &lt;io.ktor.server.application.Application&gt; in (ViolationBillKtor.kt:0)&#10;Field &lt;net.kodelix.kodeebo.orders.domain.BillWithKtor.app&gt; has type &lt;io.ktor.server.application.Application&gt; in (ViolationBillKtor.kt:0)&#10;Method &lt;net.kodelix.kodeebo.orders.domain.BillWithKtor.getApp()&gt; has return type &lt;io.ktor.server.application.Application&gt; in (ViolationBillKtor.kt:0)" type="java.lang.AssertionError">java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'net.kodelix.*.*.domain..' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..']' was violated (3 times):
+Constructor &lt;net.kodelix.kodeebo.orders.domain.BillWithKtor.&lt;init&gt;(io.ktor.server.application.Application)&gt; has parameter of type &lt;io.ktor.server.application.Application&gt; in (ViolationBillKtor.kt:0)
+Field &lt;net.kodelix.kodeebo.orders.domain.BillWithKtor.app&gt; has type &lt;io.ktor.server.application.Application&gt; in (ViolationBillKtor.kt:0)
+Method &lt;net.kodelix.kodeebo.orders.domain.BillWithKtor.getApp()&gt; has return type &lt;io.ktor.server.application.Application&gt; in (ViolationBillKtor.kt:0)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.assertNoViolation(ArchRule.java:94)
+	at com.tngtech.archunit.lang.ArchRule$Assertions.check(ArchRule.java:86)
+	at com.tngtech.archunit.lang.ArchRule$Factory$SimpleArchRule.check(ArchRule.java:165)
+	at com.tngtech.archunit.lang.syntax.ObjectsShouldInternal.check(ObjectsShouldInternal.java:81)
+	at ArchUnitRules.r2_domainImportsNoInfra(ArchUnitRules.kt:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+</testsuite>

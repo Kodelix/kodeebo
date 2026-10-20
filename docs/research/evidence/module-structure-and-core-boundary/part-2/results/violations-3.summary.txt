@@ -1,0 +1,17 @@
+== violations-3
+suite ArchUnitRules tests=6 failures=5 errors=0 suite_seconds=1.681
+  FAIL r1_clientLibsOnlyInNotifications()                           0.057s
+  FAIL r4_platformNeverImportsVertical()                            0.006s
+  FAIL r3_layer1ImportsNothingFromLayer2or3()                       0.014s
+  FAIL r2_appSeesOnlyPorts_noInfraNoAdapters()                      0.006s
+  PASS r3_whenIsOnly_identityDomainNotGaming()                      0.004s
+  FAIL r2_domainImportsNoInfra()                                    0.003s
+suite KonsistRules tests=8 failures=8 errors=0 suite_seconds=0.849
+  FAIL r1_clientLibsOnlyInNotifications()                           0.613s
+  FAIL r3_layer1_architectureApi()                                  0.077s
+  FAIL r3_layer1ImportsNothingFromLayer2or3_imports()               0.026s
+  FAIL r4_platformNeverImportsVertical_architectureApi()            0.038s
+  FAIL r2_appSeesOnlyPorts_noInfraNoAdapters()                      0.026s
+  FAIL r3_whenIsOnly_identityDomainNotGaming()                      0.022s
+  FAIL r2_domainImportsNoInfra()                                    0.023s
+  FAIL r3_layer1_textFallback_fullyQualifiedUse()                   0.023s

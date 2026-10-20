@@ -1,0 +1,9 @@
+e: orders/src/main/kotlin/kodeebo/orders/adapters/ViolationOrderMailer.kt:3:8 Unresolved reference 'fake'.
+e: orders/src/main/kotlin/kodeebo/orders/adapters/ViolationOrderMailer.kt:4:26 Unresolved reference 'MailClient'.
+e: orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt:3:16 Unresolved reference 'gaming'.
+e: orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt:4:26 Unresolved reference 'Session'.
+e: identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt:3:16 Unresolved reference 'orders'.
+e: identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt:4:31 Unresolved reference 'OrderService'.
+e: identity/src/main/kotlin/kodeebo/identity/domain/ViolationFq.kt:3:31 Unresolved reference 'orders'.
+e: identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt:3:16 Unresolved reference 'gaming'.
+e: identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt:6:8 Unresolved reference 'Session'.

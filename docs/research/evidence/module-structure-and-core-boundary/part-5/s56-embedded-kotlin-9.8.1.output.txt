@@ -1,0 +1,13 @@
+date: 2026-10-20T18:54:16Z
+=== gradle/gradle v9.8.1 gradle/libs.versions.toml (kotlin lines)
+=== gradle/gradle v9.8.1 kotlin-dsl-plugins build file (published plugin version lines)
+9:val portalVersion = "6.7.7"
+13:        reproducibleVersion = portalVersion
+16:version = portalVersion
+79:val appliedKgpVersion = libs.versions.kotlin.get()
+=== gradle/gradle v9.7.0 gradle/libs.versions.toml (kotlin lines)
+=== gradle/gradle v9.7.0 kotlin-dsl-plugins build file (published plugin version lines)
+9:version = "6.7.4"
+76:val appliedKgpVersion = libs.versions.kotlin.get()
+=== plugins.gradle.org/m2 gradle-kotlin-dsl-plugins-6.7.13.pom: kotlin dependencies
+=== plugins.gradle.org/m2 gradle-kotlin-dsl-plugins-6.7.3.pom: kotlin dependencies

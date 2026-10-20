@@ -1,0 +1,55 @@
+######## 1: 'dependencies --write-locks' on the root only
+BUILD SUCCESSFUL in 13s
+exit=0 
+./build-logic/buildscript-gradle.lockfile 27 entries
+./build-logic/gradle.lockfile 41 entries
+./buildscript-gradle.lockfile 1 entries
+######## 1c: resolveAndLockAll (every resolvable configuration, incl. Kotlin tooling) --write-locks, offline
+BUILD FAILED in 737ms
+exit=1 
+######## 2: assemble testClasses updateKotlinAbi --write-locks (what the build really resolves)
+BUILD SUCCESSFUL in 4s
+exit=0 
+./app/gradle.lockfile 19 entries
+./build-logic/buildscript-gradle.lockfile 27 entries
+./build-logic/gradle.lockfile 41 entries
+./buildscript-gradle.lockfile 1 entries
+./contexts/venue/gradle.lockfile 19 entries
+./platform/audit/gradle.lockfile 19 entries
+./platform/notify/gradle.lockfile 19 entries
+./platform/ratelimit/gradle.lockfile 19 entries
+./platform/tenancy/gradle.lockfile 19 entries
+BUILD SUCCESSFUL in 6s
+exit=0 
+######## 3: new dependency not in the lock (kotlin-reflect 2.4.0, present in the offline cache, added to notify)
+* What went wrong:
+BUILD FAILED in 3s
+exit=1 
+BUILD SUCCESSFUL in 3s
+exit=0 
+BUILD SUCCESSFUL in 4s
+exit=0 
+######## 4: verification metadata (written across all projects and the included build)
+BUILD FAILED in 1s
+exit=1 
+components: 70  artifacts: 137
+BUILD FAILED in 847ms
+exit=1 
+######## 5: tamper a checksum of a project dependency (kotlin-stdlib 2.4.21 jar)
+* What went wrong:
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+BUILD FAILED in 727ms
+exit=1 
+######## 6: tamper a checksum of a build-logic dependency (kotlin-gradle-plugin 2.4.21 jar)
+* What went wrong:
+BUILD FAILED in 695ms
+exit=1 
+######## 7: jar changed IN THE DEPENDENCY CACHE (one byte appended), metadata intact, offline
+* What went wrong:
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+BUILD FAILED in 2s
+exit=1 
+BUILD FAILED in 807ms
+exit=1 

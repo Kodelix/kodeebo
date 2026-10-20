@@ -1,0 +1,17 @@
+== clean-4
+suite ArchUnitRules tests=6 failures=0 errors=0 suite_seconds=0.967
+  PASS r1_clientLibsOnlyInNotifications()                           0.027s
+  PASS r4_platformNeverImportsVertical()                            0.003s
+  PASS r3_layer1ImportsNothingFromLayer2or3()                       0.004s
+  PASS r2_appSeesOnlyPorts_noInfraNoAdapters()                      0.004s
+  PASS r3_whenIsOnly_identityDomainNotGaming()                      0.001s
+  PASS r2_domainImportsNoInfra()                                    0.002s
+suite KonsistRules tests=8 failures=0 errors=0 suite_seconds=0.441
+  PASS r1_clientLibsOnlyInNotifications()                           0.374s
+  PASS r3_layer1_architectureApi()                                  0.015s
+  PASS r3_layer1ImportsNothingFromLayer2or3_imports()               0.008s
+  PASS r4_platformNeverImportsVertical_architectureApi()            0.009s
+  PASS r2_appSeesOnlyPorts_noInfraNoAdapters()                      0.009s
+  PASS r3_whenIsOnly_identityDomainNotGaming()                      0.006s
+  PASS r2_domainImportsNoInfra()                                    0.005s
+  PASS r3_layer1_textFallback_fullyQualifiedUse()                   0.011s

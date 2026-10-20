@@ -1,0 +1,15 @@
+  public static org.flywaydb.core.api.configuration.FluentConfiguration configure();
+  public static org.flywaydb.core.api.configuration.FluentConfiguration configure(java.lang.ClassLoader);
+  public org.flywaydb.core.api.configuration.FluentConfiguration(java.lang.ClassLoader);
+  public org.flywaydb.core.api.configuration.FluentConfiguration ignoreMigrationPatterns(java.lang.String...);
+  public org.flywaydb.core.api.configuration.FluentConfiguration ignoreMigrationPatterns(org.flywaydb.core.api.pattern.ValidatePattern...);
+  public org.flywaydb.core.api.configuration.FluentConfiguration table(java.lang.String);
+  public org.flywaydb.core.api.configuration.FluentConfiguration powershellExecutable(java.lang.String);
+  public org.flywaydb.core.api.configuration.FluentConfiguration baselineOnMigrate(boolean);
+  public org.flywaydb.core.api.configuration.FluentConfiguration outOfOrder(boolean);
+  public java.lang.ClassLoader getClassLoader();
+  public java.lang.String getPowershellExecutable();
+  public java.lang.String getTable();
+  public boolean isBaselineOnMigrate();
+  public boolean isOutOfOrder();
+  public org.flywaydb.core.api.pattern.ValidatePattern[] getIgnoreMigrationPatterns();

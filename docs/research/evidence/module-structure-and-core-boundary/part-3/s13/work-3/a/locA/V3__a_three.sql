@@ -1,0 +1,1 @@
+create table app.a3(id int);

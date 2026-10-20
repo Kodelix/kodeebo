@@ -1,0 +1,1 @@
+create table app.tenant_x(id int);

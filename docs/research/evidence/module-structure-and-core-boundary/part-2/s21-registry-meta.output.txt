@@ -1,0 +1,54 @@
+run at 2026-10-20T17:34:38Z
+=== LemonAppDev/konsist
+{"archived":false,"full_name":"LemonAppDev/konsist","license":"Apache-2.0","open_issues":2,"pushed_at":"2026-10-20T06:18:31Z","stars":1746}
+{"prerelease":false,"published":"2026-10-10T09:11:41Z","tag":"v0.18.1"}
+{"prerelease":false,"published":"2026-10-09T11:23:47Z","tag":"v0.18.0"}
+{"prerelease":false,"published":"2024-12-08T19:44:21Z","tag":"v0.17.3"}
+=== TNG/ArchUnit
+{"archived":false,"full_name":"TNG/ArchUnit","license":"Apache-2.0","open_issues":186,"pushed_at":"2026-10-20T07:21:38Z","stars":3868}
+{"prerelease":false,"published":"2026-09-25T07:27:04Z","tag":"v1.5.1"}
+{"prerelease":false,"published":"2026-08-04T05:09:46Z","tag":"v1.5.0"}
+{"prerelease":false,"published":"2026-04-18T19:55:23Z","tag":"v1.4.2"}
+=== jraska/modules-graph-assert
+{"archived":false,"full_name":"jraska/modules-graph-assert","license":"Apache-2.0","open_issues":16,"pushed_at":"2026-10-14T04:35:42Z","stars":645}
+{"prerelease":false,"published":"2026-04-12T09:41:20Z","tag":"2.9.1"}
+{"prerelease":false,"published":"2025-06-23T21:04:14Z","tag":"2.9.0"}
+{"prerelease":false,"published":"2025-03-02T12:49:39Z","tag":"2.8.0"}
+=== eduardbosch/modules-graph-assert
+{"archived":false,"full_name":"eduardbosch/modules-graph-assert","license":"Apache-2.0","open_issues":0,"pushed_at":"2026-10-14T06:49:44Z","stars":1}
+{"prerelease":false,"published":"2026-10-14T06:49:45Z","tag":"2.11.0"}
+{"prerelease":false,"published":"2026-03-18T13:52:26Z","tag":"2.10.1"}
+{"prerelease":false,"published":"2026-03-12T14:43:29Z","tag":"2.10.0"}
+=== rubensousa/ProjectGuard
+{"archived":false,"full_name":"rubensousa/ProjectGuard","license":"Apache-2.0","open_issues":4,"pushed_at":"2026-03-19T08:22:22Z","stars":76}
+{"prerelease":false,"published":"2026-03-19T08:22:22Z","tag":"1.0.0-rc03"}
+{"prerelease":false,"published":"2026-03-17T07:47:43Z","tag":"1.0.0-rc02"}
+{"prerelease":false,"published":"2026-03-14T09:31:39Z","tag":"1.0.0-rc01"}
+=== detekt/detekt
+{"archived":false,"full_name":"detekt/detekt","license":"Apache-2.0","open_issues":188,"pushed_at":"2026-10-19T23:13:02Z","stars":7098}
+{"prerelease":true,"published":"2026-08-04T22:38:20Z","tag":"v2.0.0-alpha.6"}
+{"prerelease":true,"published":"2026-06-17T22:27:27Z","tag":"v2.0.0-alpha.5"}
+{"prerelease":true,"published":"2026-06-13T18:26:35Z","tag":"v2.0.0-alpha.4"}
+=== ebay/graph-analytics
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/repos#get-a-repository","status":"404"}gh: Not Found (HTTP 404)
+{"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}gh: Not Found (HTTP 404)
+=== https://repo1.maven.org/maven2/com/lemonappdev/konsist/maven-metadata.xml
+    <latest>0.18.1</latest>
+    <release>0.18.1</release>
+    <lastUpdated>20261010090732</lastUpdated>
+exit=0
+=== https://repo1.maven.org/maven2/com/tngtech/archunit/archunit/maven-metadata.xml
+    <latest>1.5.1</latest>
+    <release>1.5.1</release>
+    <lastUpdated>20260925070754</lastUpdated>
+exit=0
+=== https://plugins.gradle.org/m2/com/jraska/module/graph/assertion/com.jraska.module.graph.assertion.gradle.plugin/maven-metadata.xml
+        <latest>2.9.1</latest>
+        <release>2.9.1</release>
+        <lastUpdated>20260412094209</lastUpdated>
+exit=0
+=== https://plugins.gradle.org/m2/io/github/eduardbosch/module/graph/assertion/io.github.eduardbosch.module.graph.assertion.gradle.plugin/maven-metadata.xml
+        <latest>2.11.0</latest>
+        <release>2.11.0</release>
+        <lastUpdated>20261014064815</lastUpdated>
+exit=0

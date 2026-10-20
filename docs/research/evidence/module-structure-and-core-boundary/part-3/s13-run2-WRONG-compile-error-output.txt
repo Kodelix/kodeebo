@@ -1,0 +1,7 @@
+/home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-3/scripts/S13.java:19: error: cannot find symbol
+    if (cl != null) c.classLoader(cl);
+                     ^
+  symbol:   method classLoader(ClassLoader)
+  location: variable c of type FluentConfiguration
+1 error
+error: compilation failed

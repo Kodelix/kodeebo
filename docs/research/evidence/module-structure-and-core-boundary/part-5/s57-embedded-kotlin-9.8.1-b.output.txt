@@ -1,0 +1,28 @@
+date: 2026-10-20T18:54:30Z
+=== files under gradle/ at v9.8.1 matching toml
+['dependency-management', 'detekt.yml', 'gradle-daemon-jvm.properties', 'shared-with-buildSrc', 'verification-keyring.keys', 'verification-metadata.xml', 'wrapper']
+=== gradle/dependency-management/libs.versions.toml
+2:[http 404]
+=== gradle/libs.versions.toml
+2:[http 404]
+=== build-logic-settings/libs.versions.toml
+2:[http 404]
+=== kotlin-dsl-plugins 6.7.7 and 6.7.4 POM (plugin portal m2)
+-- 6.7.7
+[http 303]
+-- 6.7.4
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+      <modelVersion>4.0.0</modelVersion>
+      <artifactId>org.gradle.kotlin.kotlin-dsl.gradle.plugin</artifactId>
+      <version>6.7.4</version>
+          <artifactId>gradle-kotlin-dsl-plugins</artifactId>
+          <version>6.7.4</version>
+    </project>[http 200]
+-- 6.7.3
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+      <modelVersion>4.0.0</modelVersion>
+      <artifactId>org.gradle.kotlin.kotlin-dsl.gradle.plugin</artifactId>
+      <version>6.7.3</version>
+          <artifactId>gradle-kotlin-dsl-plugins</artifactId>
+          <version>6.7.3</version>
+    </project>[http 200]

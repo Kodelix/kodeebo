@@ -1,0 +1,23 @@
+Compiled from "ViolationWhenIs.kt"
+public final class kodeebo.identity.domain.ViolationWhenIsKt {
+  public static final java.lang.String describe(java.lang.Object);
+    Code:
+       0: aload_0
+       1: ldc           #9                  // String x
+       3: invokestatic  #15                 // Method kotlin/jvm/internal/Intrinsics.checkNotNullParameter:(Ljava/lang/Object;Ljava/lang/String;)V
+       6: aload_0
+       7: iconst_0
+       8: invokedynamic #29,  0             // InvokeDynamic #0:typeSwitch:(Ljava/lang/Object;I)I
+      13: tableswitch   { // 0 to 1
+                     0: 36
+                     1: 41
+               default: 46
+          }
+      36: ldc           #31                 // String text
+      38: goto          48
+      41: ldc           #33                 // String session
+      43: goto          48
+      46: ldc           #35                 // String other
+      48: areturn
+}
+openjdk version "21.0.12.1" 2026-08-18

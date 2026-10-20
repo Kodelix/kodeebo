@@ -1,0 +1,143 @@
+date: 2026-10-20T19:17:23Z
+######## 1: locks for all modules, then ABI dumps
+
+### gradle assemble testClasses updateKotlinAbi --write-locks
+BUILD SUCCESSFUL in 18s
+36 actionable tasks: 36 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=19397
+
+######## 2: write verification metadata (sha256) on build
+
+### gradle --write-verification-metadata sha256 build
+Calculating task graph as configuration cache cannot be reused due to --write-verification-metadata
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 5s
+36 actionable tasks: 21 executed, 15 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=5997
+components: 79  artifacts: 155  bytes: 41837
+name="kotlin-gradle-plugin" version="2.4.10"
+name="kotlin-gradle-plugin" version="2.4.21"
+name="gradle-kotlin-dsl-plugins" version="6.7.6"
+6
+
+######## 3: control - strict build with intact metadata
+
+### gradle build
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 803ms
+36 actionable tasks: 6 executed, 30 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=877
+
+######## 3b: cost of verification on a full rebuild (verification strict vs off)
+
+### gradle clean build --rerun-tasks --dependency-verification strict
+BUILD SUCCESSFUL in 3s
+42 actionable tasks: 42 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=3360
+
+### gradle clean build --rerun-tasks --dependency-verification off
+BUILD SUCCESSFUL in 2s
+42 actionable tasks: 42 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=3036
+
+######## 4: tamper checksum of a module dependency (kotlin-stdlib 2.4.21)
+tampering kotlin-stdlib-2\.4\.21\.jar bd8250210584
+
+### gradle build
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':platform:tenancy:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+  This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+  
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s12/build/reports/dependency-verification/at-1792523877038/dependency-verification-report.html
+BUILD FAILED in 526ms
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=620
+
+######## 5: tamper checksum of a build-logic dependency (kotlin-gradle-plugin 2.4.21)
+tampering kotlin-gradle-plugin-2\.4\.21[^"]*\.jar d0a11912936c
+
+### gradle build
+Type-safe project accessors is an incubating feature.
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':build-logic:generateExternalPluginSpecBuilders' (registered by plugin class 'org.gradle.kotlin.dsl.plugins.precompiled.PrecompiledScriptPlugins').
+> Error while evaluating property 'pluginEntries' of task ':build-logic:generateExternalPluginSpecBuilders'.
+   > Dependency verification failed for configuration ':build-logic:compileClasspath'
+     One artifact failed verification: kotlin-gradle-plugin-2.4.21-gradle96.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.21) from repository MavenRepo
+     This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+     
+     Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s12/build/reports/dependency-verification/at-1792523877668/dependency-verification-report.html
+BUILD FAILED in 343ms
+1 actionable task: 1 executed
+exit=1 wall_ms=404
+
+######## 6: tamper checksum of the kotlin-dsl plugin jar (build-logic buildscript classpath)
+NO MATCH for gradle-kotlin-dsl-plugins-6\.7\.3\.jar
+
+### gradle build
+Type-safe project accessors is an incubating feature.
+BUILD SUCCESSFUL in 1s
+36 actionable tasks: 6 executed, 30 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=1085
+
+######## 7: a component missing from the metadata (annotations 13.0 removed)
+removed components: 1
+
+### gradle build
+Error resolving plugin [id: 'kodeebo.kotlin-module']
+> A problem occurred configuring project ':build-logic'.
+   > Dependency verification failed for configuration 'classpath'
+     2 artifacts failed verification:
+       - annotations-13.0.jar (org.jetbrains:annotations:13.0) from repository Gradle Central Plugin Repository
+       - annotations-13.0.pom (org.jetbrains:annotations:13.0) from repository Gradle Central Plugin Repository
+     If the artifacts are trustworthy, you will need to update the gradle/verification-metadata.xml file. For more on how to do this, please refer to https://docs.gradle.org/9.8.2/userguide/dependency_verification.html#sec:troubleshooting-verification in the Gradle documentation.
+     
+     Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s12/build/reports/dependency-verification/at-1792523879202/dependency-verification-report.html
+BUILD FAILED in 303ms
+exit=1 wall_ms=388
+
+######## 8: control after restore, then a cached jar changed on disk (offline, metadata intact)
+
+### gradle build
+BUILD SUCCESSFUL in 1s
+36 actionable tasks: 6 executed, 30 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=1447
+
+### gradle build
+Execution failed for task ':platform:tenancy:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+  This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+  
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s12/build/reports/dependency-verification/at-1792523881047/dependency-verification-report.html
+BUILD FAILED in 498ms
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=568
+
+### gradle build --rerun-tasks
+Execution failed for task ':platform:tenancy:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+  This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+  
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s12/build/reports/dependency-verification/at-1792523881615/dependency-verification-report.html
+BUILD FAILED in 2s
+10 actionable tasks: 10 executed
+exit=1 wall_ms=2465
+
+### gradle build
+BUILD SUCCESSFUL in 569ms
+36 actionable tasks: 6 executed, 30 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=620
+1 Daemon stopped

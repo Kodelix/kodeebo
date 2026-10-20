@@ -1,0 +1,79 @@
+## run-log 9.8.2
+mode=violations label=offline-first exit=1 wall_ms=57264 at=2026-10-20T19:28:28Z
+mode=clean label=clean-1 exit=1 wall_ms=8245 at=2026-10-20T19:28:37Z
+mode=strict label=strict-compile exit=1 wall_ms=6076 at=2026-10-20T19:28:43Z
+mode=clean label=ktlint2-alpha4 exit=0 wall_ms=5122 at=2026-10-20T19:28:48Z
+mode=violations label=stack-cold exit=1 wall_ms=11545 at=2026-10-20T19:28:59Z
+mode=violations label=stack-warm exit=1 wall_ms=7823 at=2026-10-20T19:29:07Z
+mode=violations label=notrun-probes exit=1 wall_ms=4526 at=2026-10-20T19:29:12Z
+## run-log 9.7.0 (part 4, the same labels)
+mode=violations label=offline-first exit=1 wall_ms=15547 at=2026-10-20T18:23:27Z
+mode=clean label=clean-1 exit=1 wall_ms=10486 at=2026-10-20T18:23:43Z
+mode=strict label=strict-compile exit=1 wall_ms=6623 at=2026-10-20T18:24:39Z
+mode=strict label=strict-compile exit=1 wall_ms=20689 at=2026-10-20T18:25:08Z
+mode=clean label=ktlint2-alpha4 exit=0 wall_ms=13969 at=2026-10-20T18:30:03Z
+mode=violations label=stack-cold exit=1 wall_ms=14522 at=2026-10-20T18:30:58Z
+mode=violations label=stack-warm exit=1 wall_ms=8228 at=2026-10-20T18:31:12Z
+mode=violations label=notrun-probes exit=1 wall_ms=11116 at=2026-10-20T18:32:12Z
+## junit 9.8.2 (final state of the build dir = last arch-tests run)
+TEST-NotRunProbes.xml: tests="3" skipped="0" failures="2" errors="0"
+## part-4 summaries (9.7.0)
+== violations-1
+suite ArchUnitRules tests=9 failures=5 errors=0 suite_seconds=1.169
+  FAIL r1_clientLibsOnlyInNotifications()                           0.046s
+  PASS scope_sanity_classesImported()                               0.004s
+  PASS probe_whenIs_r3_fqType_identityDomain()                      0.003s
+  FAIL r4_platformNeverImportsVertical()                            0.006s
+  PASS probe_whenIs_r3_importedType_identityDomain()                0.001s
+  FAIL r3_layer1ImportsNothingFromLayer2or3()                       0.004s
+== clean-1
+suite ArchUnitRules tests=9 failures=4 errors=0 suite_seconds=1.554
+  PASS r1_clientLibsOnlyInNotifications()                           0.039s
+  FAIL scope_sanity_classesImported()                               0.011s
+## graph/ktlint markers 9.8.2 stack-warm
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+    java.lang.IllegalArgumentException at KonsistRules.kt:17
+KTLINT_EXIT ktlint2Syntax = 0
+KTLINT_EXIT ktlint2Fixture = 1
+## 9.7.0 stack-warm
+KTLINT_EXIT ktlint2Syntax = 0
+KTLINT_EXIT ktlint2Fixture = 1
+KTLINT_EXIT ktlint2Help = 0
+KTLINT_EXIT ktlint2Empty = 0
+KTLINT_EXIT ktlint2Control = 1
+## warnings in 9.8.2 suite outputs
+## warnings in S10/S11/S12/S31 outputs
+## S31 key lines 9.8.2 / 9.7.0
+verification components before: 79
+--- ABI dump identical after the move? (diff of sha lists, paths normalised)
+default jars identical across two publishes? YES
+reproducible jars identical across two publishes? YES
+callers' Kotlin source files identical before/after the lift? YES-byte-identical
+verification components after: 81  (before: 79)
+verification components with included build: 81
+callers' Kotlin source identical: YES
+--
+verification components before: 70
+--- ABI dump identical after the move? (diff of sha lists, paths normalised)
+default jars identical across two publishes? YES
+reproducible jars identical across two publishes? YES
+callers' Kotlin source files identical before/after the lift? YES-byte-identical
+verification components after: 72  (before: 70)
+verification components with included build: 72
+callers' Kotlin source identical: YES
+## S31 exit sequence 9.8.2 vs 9.7.0
+exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=1 exit=0 exit=0 exit=0 exit=1 exit=1 exit=0 exit=0 exit=0 exit=0 exit=1 exit=0 
+exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=0 exit=1 exit=0 exit=0 exit=0 exit=1 exit=1 exit=0 exit=0 exit=0 exit=0 exit=1 exit=0 
+## sizes
+940K	docs/research/evidence/module-structure-and-core-boundary/part-5
+docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/build

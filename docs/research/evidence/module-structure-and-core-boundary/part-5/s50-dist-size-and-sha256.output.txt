@@ -1,0 +1,29 @@
+date: 2026-10-20T18:49:31Z
+## HEAD size
+HTTP/1.1 307 Temporary Redirect
+Content-Length: 169
+Location: https://github.com/gradle/gradle-distributions/releases/download/v9.8.1/gradle-9.8.1-bin.zip
+HTTP/2 302 
+location: https://release-assets.githubusercontent.com/github-production-release-asset/696192900/7c52e2cd-94f6-45c1-b1f8-51510b404386?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-10-20T19%3A24%3A33Z&rscd=attachment%3B+filename%3Dgradle-9.8.1-bin.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-10-20T18%3A24%3A20Z&ske=2026-10-20T19%3A24%3A33Z&sks=b&skv=2018-11-09&sig=7OEwKgNl56yJtPSTddlY9SKNWxEnlDFxc48gotTlOt8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MjUyNTYzMywibmJmIjoxNzkyNTIyMDMzLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.BKuVcaTMRxRsn7PuF0SNIKr-suoCQzXeJI5rTMJrXW4&response-content-disposition=attachment%3B%20filename%3Dgradle-9.8.1-bin.zip&response-content-type=application%2Foctet-stream
+content-length: 0
+HTTP/2 200 
+content-length: 151620101
+## published sha256
+dce76f55f8e251a3a1f130eb120f30b3d271de2b76c9b0729d316b5a1b6dc01f
+## current version json
+{
+  "version" : "9.8.2",
+  "buildTime" : "20261019162926+0000",
+  "commitId" : "8de7bcf76e785507ad92f0741ab9235a430c95e6",
+  "current" : true,
+  "snapshot" : false,
+  "nightly" : false,
+  "releaseNightly" : false,
+  "activeRc" : false,
+  "rcFor" : "",
+  "milestoneFor" : "",
+  "broken" : false,
+  "downloadUrl" : "https://services.gradle.org/distributions/gradle-9.8.2-bin.zip",
+  "checksumUrl" : "https://services.gradle.org/distributions/gradle-9.8.2-bin.zip.sha256",
+  "checksum" : "21bd5da2de49b642904077f38c0efdc7778e92b3ed0889392dca61b97e389607",
+  "wrapperChecksumUrl" : "https://services.grad

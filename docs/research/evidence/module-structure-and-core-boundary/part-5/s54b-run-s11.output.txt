@@ -1,0 +1,257 @@
+date: 2026-10-20T19:09:18Z
+######## 1: 'dependencies --write-locks' on the root only
+
+### gradle dependencies --write-locks
+Persisted dependency lock state for buildscript of project ':build-logic'
+Persisted dependency lock state for project ':build-logic'
+
+BUILD SUCCESSFUL in 17s
+10 actionable tasks: 10 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=17669
+./build-logic/buildscript-gradle.lockfile 27 entries
+./build-logic/gradle.lockfile 41 entries
+./buildscript-gradle.lockfile 1 entries
+
+######## 1c: resolveAndLockAll (every resolvable configuration, incl. Kotlin tooling) --write-locks, offline
+
+### gradle resolveAndLockAll --write-locks
+> Could not resolve all files for configuration ':app:kotlinKlibCommonizerClasspath'.
+   > Could not resolve org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:2.4.21.
+     Required by:
+         project ':app'
+      > No cached version of org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:2.4.21 available for offline mode.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=1177
+
+######## 2: assemble testClasses updateKotlinAbi --write-locks (what the build really resolves)
+
+### gradle assemble testClasses updateKotlinAbi --write-locks
+Persisted dependency lock state for buildscript of project ':build-logic'
+Persisted dependency lock state for project ':build-logic'
+
+BUILD SUCCESSFUL in 4s
+36 actionable tasks: 27 executed, 9 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=4951
+./app/gradle.lockfile 19 entries
+./build-logic/buildscript-gradle.lockfile 27 entries
+./build-logic/gradle.lockfile 41 entries
+./buildscript-gradle.lockfile 1 entries
+./contexts/venue/gradle.lockfile 19 entries
+./platform/audit/gradle.lockfile 19 entries
+./platform/notify/gradle.lockfile 19 entries
+./platform/ratelimit/gradle.lockfile 19 entries
+./platform/tenancy/gradle.lockfile 19 entries
+-- head of root buildscript-gradle.lockfile and notify gradle.lockfile
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+empty=classpath
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+# To regenerate this file, run: ./gradlew :platform:notify:dependencies --write-locks
+org.jetbrains.kotlin:kotlin-build-tools-api:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-build-tools-compat:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-build-tools-cri-impl:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-build-tools-impl:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-compiler-embeddable:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-compiler-runner:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-daemon-client:2.4.21=kotlinBuildToolsApiClasspath
+org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.21=kotlinBuildToolsApiClasspath
+-- is 2.4.0 (kotlin-dsl compiler) in build-logic lock?
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s11/build-logic/buildscript-gradle.lockfile:0
+/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s11/build-logic/gradle.lockfile:0
+
+### gradle build
+> Task :app:testClasses UP-TO-DATE
+> Task :app:test NO-SOURCE
+> Task :app:check
+> Task :app:build
+
+BUILD SUCCESSFUL in 8s
+36 actionable tasks: 21 executed, 15 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=9033
+
+######## 3: new dependency not in the lock (kotlin-reflect 2.4.0, present in the offline cache, added to notify)
+
+### gradle :platform:notify:compileKotlin
+> Task :build-logic:jar UP-TO-DATE
+> Task :platform:notify:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:ratelimit:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:ratelimit:compileKotlin UP-TO-DATE
+> Task :platform:ratelimit:compileJava NO-SOURCE
+> Task :platform:notify:compileKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':platform:notify:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Could not resolve all files for configuration ':platform:notify:compileClasspath'.
+   > Resolved 'org.jetbrains.kotlin:kotlin-reflect:2.4.0' which is not part of the dependency lock state
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+11 actionable tasks: 1 executed, 10 up-to-date
+exit=1 wall_ms=1386
+
+### gradle :platform:notify:dependencies --write-locks --configuration compileClasspath
+Persisted dependency lock state for buildscript of project ':build-logic'
+Persisted dependency lock state for project ':build-logic'
+
+BUILD SUCCESSFUL in 3s
+10 actionable tasks: 4 executed, 6 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=3368
+
+### gradle :platform:notify:compileKotlin
+> Task :platform:ratelimit:compileJava NO-SOURCE
+> Task :platform:notify:compileKotlin
+
+BUILD SUCCESSFUL in 3s
+11 actionable tasks: 4 executed, 7 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=3123
+
+######## 4: verification metadata (written across all projects and the included build)
+
+### gradle --write-verification-metadata sha256 build
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 874ms
+22 actionable tasks: 1 executed, 21 up-to-date
+exit=1 wall_ms=965
+-rw-r--r-- 1 kiko kiko 42335 Oct 20 22:10 /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s11/gradle/verification-metadata.xml
+components: 80  artifacts: 157
+kotlin-compiler-embeddable versions listed:
+name="kotlin-compiler-embeddable" version="2.4.0"
+name="kotlin-compiler-embeddable" version="2.4.10"
+name="kotlin-compiler-embeddable" version="2.4.21"
+kotlin-gradle-plugin versions listed:
+name="kotlin-gradle-plugin" version="2.4.10"
+name="kotlin-gradle-plugin" version="2.4.21"
+build-logic jar / project artifacts listed?
+0
+
+### gradle build
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 586ms
+22 actionable tasks: 1 executed, 21 up-to-date
+exit=1 wall_ms=658
+
+######## 5: tamper a checksum of a project dependency (kotlin-stdlib 2.4.21 jar)
+tampering bd8250210584
+
+### gradle build
+> Task :contexts:venue:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:tenancy:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:tenancy:compileKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':platform:tenancy:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+  This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+  
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s11/build/reports/dependency-verification/at-1792523401281/dependency-verification-report.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 535ms
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=600
+
+######## 6: tamper a checksum of a build-logic dependency (kotlin-gradle-plugin 2.4.21 jar)
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+AttributeError: 'NoneType' object has no attribute 'group'
+
+### gradle build
+> Task :platform:ratelimit:jar UP-TO-DATE
+> Task :platform:tenancy:processResources NO-SOURCE
+> Task :platform:tenancy:classes UP-TO-DATE
+> Task :platform:tenancy:jar UP-TO-DATE
+> Task :app:startScripts FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:startScripts' (registered by plugin 'org.gradle.application').
+> Error while evaluating property 'relativeClasspath' of task ':app:startScripts'.
+   > Could not resolve all files for configuration ':app:runtimeClasspath'.
+      > Resolved 'org.jetbrains.kotlin:kotlin-reflect:2.4.0' which is not part of the dependency lock state
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 555ms
+22 actionable tasks: 1 executed, 21 up-to-date
+exit=1 wall_ms=617
+
+######## 7: jar changed IN THE DEPENDENCY CACHE (one byte appended), metadata intact, offline
+
+### gradle build --rerun-tasks
+> Task :contexts:venue:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:tenancy:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:tenancy:compileKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':platform:tenancy:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> Dependency verification failed for configuration ':platform:tenancy:detachedConfiguration1'
+  One artifact failed verification: kotlin-stdlib-2.4.21.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.21) from repository MavenRepo
+  This can indicate that a dependency has been compromised. Please carefully verify the checksums.
+  
+  Open this report for more details: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/work-s11/build/reports/dependency-verification/at-1792523402528/dependency-verification-report.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+10 actionable tasks: 10 executed
+exit=1 wall_ms=1948
+
+### gradle build
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 586ms
+22 actionable tasks: 1 executed, 21 up-to-date
+exit=1 wall_ms=662
+1 Daemon stopped

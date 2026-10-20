@@ -1,0 +1,69 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :lintfix:loadKtlintReporters
+> Task :syntax24:loadKtlintReporters
+> Task :lintfix:runKtlintCheckOverTestSourceSet NO-SOURCE
+> Task :lintfix:ktlintTestSourceSetCheck SKIPPED
+> Task :syntax24:runKtlintCheckOverTestSourceSet NO-SOURCE
+> Task :syntax24:ktlintTestSourceSetCheck SKIPPED
+> Task :lintfix:runKtlintCheckOverKotlinScripts FAILED
+> Task :lintfix:runKtlintCheckOverMainSourceSet FAILED
+> Task :syntax24:runKtlintCheckOverMainSourceSet FAILED
+> Task :syntax24:runKtlintCheckOverKotlinScripts FAILED
+
+FAILURE: Build completed with 4 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':lintfix:runKtlintCheckOverMainSourceSet' (registered by plugin 'org.jlleitschuh.gradle.ktlint').
+> A failure occurred while executing org.jlleitschuh.gradle.ktlint.worker.KtLintWorkAction
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':syntax24:runKtlintCheckOverKotlinScripts' (registered by plugin 'org.jlleitschuh.gradle.ktlint').
+> A failure occurred while executing org.jlleitschuh.gradle.ktlint.worker.KtLintWorkAction
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+3: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':syntax24:runKtlintCheckOverMainSourceSet' (registered by plugin 'org.jlleitschuh.gradle.ktlint').
+> A failure occurred while executing org.jlleitschuh.gradle.ktlint.worker.KtLintWorkAction
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+4: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':lintfix:runKtlintCheckOverKotlinScripts' (registered by plugin 'org.jlleitschuh.gradle.ktlint').
+> A failure occurred while executing org.jlleitschuh.gradle.ktlint.worker.KtLintWorkAction
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 1m 41s
+6 actionable tasks: 6 executed

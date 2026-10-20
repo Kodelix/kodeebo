@@ -1,0 +1,88 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :arch-tests:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :arch-tests:compileKotlin NO-SOURCE
+> Task :gaming:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:compileKotlin UP-TO-DATE
+> Task :vendor-ktor:compileJava NO-SOURCE
+> Task :vendor-ktor:processResources NO-SOURCE
+> Task :vendor-ktor:classes UP-TO-DATE
+> Task :vendor-ktor:jar UP-TO-DATE
+> Task :identity:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :lintfix:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :lintfix:compileKotlin UP-TO-DATE
+> Task :notifications:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:compileKotlin UP-TO-DATE
+> Task :vendor-mail:compileJava NO-SOURCE
+> Task :vendor-mail:processResources NO-SOURCE
+> Task :vendor-mail:classes UP-TO-DATE
+> Task :vendor-mail:jar UP-TO-DATE
+> Task :notifications:compileKotlin UP-TO-DATE
+> Task :notifications:compileJava NO-SOURCE
+> Task :notifications:processResources NO-SOURCE
+> Task :notifications:classes UP-TO-DATE
+> Task :notifications:jar UP-TO-DATE
+> Task :orders:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :syntax24:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :syntax24:compileKotlin UP-TO-DATE
+
+> Task :orders:compileKotlin FAILED
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/orders/src/main/kotlin/net/kodelix/kodeebo/orders/adapters/ViolationOrderMailer.kt:3:8 Unresolved reference 'fake'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/orders/src/main/kotlin/net/kodelix/kodeebo/orders/adapters/ViolationOrderMailer.kt:4:26 Unresolved reference 'MailClient'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/orders/src/main/kotlin/net/kodelix/kodeebo/orders/app/ViolationGamingImport.kt:3:28 Unresolved reference 'gaming'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/orders/src/main/kotlin/net/kodelix/kodeebo/orders/app/ViolationGamingImport.kt:4:26 Unresolved reference 'Session'.
+
+> Task :identity:compileKotlin FAILED
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/app/ViolationOrdersImport.kt:3:20 Unresolved reference 'kodeebo'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/app/ViolationOrdersImport.kt:4:31 Unresolved reference 'OrderService'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/domain/ViolationFq.kt:3:35 Unresolved reference 'kodeebo'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/domain/ViolationWhenIs.kt:3:20 Unresolved reference 'kodeebo'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/domain/ViolationWhenIs.kt:6:8 Unresolved reference 'Session'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/domain/ViolationWhenIsFq.kt:5:20 Unresolved reference 'kodeebo'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/domain/ViolationWhenIsWildcard.kt:3:20 Unresolved reference 'kodeebo'.
+e: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/domain/ViolationWhenIsWildcard.kt:6:8 Unresolved reference 'Session'.
+
+> Task :gaming:compileKotlin
+
+[Incubating] Problems report is available at: file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/build/reports/problems/problems-report.html
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':identity:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Kotlin compiler: UNRESOLVED_IMPORT
+       Kotlin compiler error
+         Unresolved reference 'kodeebo'.
+         Location: /home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/identity/src/main/kotlin/net/kodelix/core/identity/app/ViolationOrdersImport.kt:3
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':orders:compileKotlin' (registered by plugin 'org.jetbrains.kotlin.jvm').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Kotlin compiler: UNRESOLVED_IMPORT
+       Kotlin compiler error
+         Unresolved reference 'fake'.
+         Location: /home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-5/probes/part-4/spike/orders/src/main/kotlin/net/kodelix/kodeebo/orders/adapters/ViolationOrderMailer.kt:3
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 6s
+11 actionable tasks: 3 executed, 8 up-to-date

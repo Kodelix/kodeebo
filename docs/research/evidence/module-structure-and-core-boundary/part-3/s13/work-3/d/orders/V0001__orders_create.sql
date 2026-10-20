@@ -1,0 +1,1 @@
+create table app.orders(id int);

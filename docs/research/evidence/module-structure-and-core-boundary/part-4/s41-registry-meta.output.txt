@@ -1,0 +1,121 @@
+## date 2026-10-20T18:07:24Z
+### releases ktlint/ktlint
+2.0.0-ALPHA-4	2026-08-21T15:35:39Z	true
+1.8.0	2025-11-14T19:48:21Z	false
+1.7.1	2025-07-21T17:38:37Z	false
+1.7.0	2025-07-15T01:48:52Z	false
+1.6.0	2025-05-19T15:53:23Z	false
+1.5.0	2024-12-04T19:38:04Z	false
+1.4.1	2024-11-05T16:45:11Z	false
+1.4.0	2024-10-24T14:59:33Z	false
+### releases JLLeitschuh/ktlint-gradle
+v14.2.0	2026-03-12T16:50:46Z	false
+v14.1.0	2026-03-05T15:07:01Z	false
+v14.0.1	2025-11-10T16:53:40Z	false
+v13.1.0	2025-08-21T13:48:51Z	false
+### releases jeremymailen/kotlinter-gradle
+5.7.0	2026-08-09T17:32:17Z	false
+5.6.0	2026-07-05T04:22:09Z	false
+5.5.0	2026-05-17T05:53:48Z	false
+5.4.2	2026-02-10T23:36:31Z	false
+### releases detekt/detekt
+v2.0.0-alpha.6	2026-08-04T22:38:20Z	true
+v2.0.0-alpha.5	2026-06-17T22:27:27Z	true
+v2.0.0-alpha.4	2026-06-13T18:26:35Z	true
+v2.0.0-alpha.3	2026-04-24T23:10:14Z	true
+v2.0.0-alpha.2	2026-01-27T01:06:15Z	true
+v2.0.0-alpha.1	2025-10-21T18:14:43Z	true
+v2.0.0-alpha.0	2025-09-04T13:40:51Z	true
+v1.23.8	2025-02-21T14:59:00Z	false
+### releases diffplug/spotless
+maven/3.10.4	2026-10-08T22:20:17Z	false
+lib/4.10.4	2026-10-08T22:03:09Z	false
+gradle/8.10.4	2026-10-08T22:13:13Z	false
+maven/3.10.3	2026-09-25T20:10:57Z	false
+gradle/8.10.3	2026-09-25T20:13:34Z	false
+maven/3.10.2	2026-09-04T18:59:43Z	false
+lib/4.10.2	2026-09-04T18:57:38Z	false
+gradle/8.10.2	2026-09-04T18:58:18Z	false
+maven/3.10.1	2026-08-27T16:49:32Z	false
+lib/4.10.1	2026-08-27T16:47:00Z	false
+gradle/8.10.1	2026-08-27T16:47:40Z	false
+maven/3.10.0	2026-08-17T03:20:10Z	false
+### maven-metadata https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/maven-metadata.xml
+    <latest>2.0.0-ALPHA-4</latest>
+    <release>2.0.0-ALPHA-4</release>
+      <version>2.0.0-ALPHA-4</version>
+    <lastUpdated>20260822133318</lastUpdated>
+### maven-metadata https://repo1.maven.org/maven2/com/pinterest/ktlint/ktlint-cli/maven-metadata.xml
+      <version>1.7.0</version>
+      <version>1.7.1</version>
+      <version>1.7.2</version>
+      <version>1.8.0</version>
+    <lastUpdated>20251215204517</lastUpdated>
+### maven-metadata https://repo1.maven.org/maven2/dev/detekt/detekt-cli/maven-metadata.xml
+    <latest>2.0.0-alpha.6</latest>
+    <release>2.0.0-alpha.6</release>
+      <version>2.0.0-alpha.0</version>
+      <version>2.0.0-alpha.1</version>
+      <version>2.0.0-alpha.2</version>
+      <version>2.0.0-alpha.3</version>
+      <version>2.0.0-alpha.4</version>
+      <version>2.0.0-alpha.5</version>
+      <version>2.0.0-alpha.6</version>
+    <lastUpdated>20260804223519</lastUpdated>
+### maven-metadata https://repo1.maven.org/maven2/dev/detekt/detekt-gradle-plugin/maven-metadata.xml
+      <version>2.0.0-alpha.0</version>
+      <version>2.0.0-alpha.1</version>
+      <version>2.0.0-alpha.2</version>
+      <version>2.0.0-alpha.3</version>
+      <version>2.0.0-alpha.4</version>
+      <version>2.0.0-alpha.5</version>
+      <version>2.0.0-alpha.6</version>
+    <lastUpdated>20260804223522</lastUpdated>
+### maven-metadata https://repo1.maven.org/maven2/io/gitlab/arturbosch/detekt/detekt-cli/maven-metadata.xml
+      <version>1.23.6</version>
+      <version>1.23.7</version>
+      <version>1.23.8</version>
+    <lastUpdated>20250221121825</lastUpdated>
+### maven-metadata https://plugins.gradle.org/m2/org/jlleitschuh/gradle/ktlint/org.jlleitschuh.gradle.ktlint.gradle.plugin/maven-metadata.xml
+      <version>14.2.0</version>
+        <latest>14.2.0</latest>
+        <release>14.2.0</release>
+          <version>1.0-SNAPSHOT</version><version>1.0.0</version><version>1.0.1</version><version>1.0.2-SNAPSHOT</version><version>1.0.2</version><version>1.0.3-SNAPSHOT</version><version>1.0.3</version><version>2.0.0</version><version>2.0.1</version><version>2.1.0</version><version>2.1.1</version><version>2.2.0</version><version>2.2.1</version><version>2.3.0</version><version>3.0.0</version><version>3.0.1</version><version>3.1.0</version><version>3.2.0</version><version>3.3.0</version><version>4.0.0</version><version>4.1.0</version><version>5.0.0</version><version>5.1.0</version><version>6.0.0</version><version>6.1.0-SNAPSHOT</version><version>6.1.0</version><version>6.2.0</version><version>6.2.1</version><version>6.3.0</version><version>6.3.1</version><version>7.0.0</version><version>7.1.0</version><version>7.2.0</version><version>7.2.1</version><version>7.3.0</version><version>7.4.0</version><version>8.0.0</version><version>8.1.0</version><version>8.2.0</version><version>9.0.0</version><version>9.1.0</version><version>9.1.1</version><version>9.2.0</version><version>9.2.1</version><version>9.3.0</version><version>9.4.0</version><version>9.4.1</version><version>10.0.0</version><version>10.1.0</version><version>10.2.0</version><version>10.2.1</version><version>10.3.0</version><version>11.0.0</version><version>11.1.0</version><version>11.2.0</version><version>11.3.1</version><version>11.3.2</version><version>11.4.0</version><version>11.4.1</version><version>11.4.2</version><version>11.5.0</version><version>11.5.1</version><version>11.6.0</version><version>11.6.1</version><version>12.0.2</version><version>12.0.3</version><version>12.1.0</version><version>12.1.1</version><version>12.1.2</version><version>12.2.0</version><version>12.3.0-rc.6</version><version>12.3.0-rc.7</version><version>12.3.0</version><version>13.0.0-rc.1</version><version>13.0.0</version><version>13.1.0</version><version>14.0.1</version><version>14.1.0</version><version>14.2.0</version>
+        <lastUpdated>20260312165043</lastUpdated>
+### maven-metadata https://plugins.gradle.org/m2/org/jmailen/kotlinter/org.jmailen.kotlinter.gradle.plugin/maven-metadata.xml
+      <version>5.7.0</version>
+        <latest>5.7.0</latest>
+        <release>5.7.0</release>
+          <version>0.6.0</version><version>0.6.1</version><version>0.7.0</version><version>0.8.0</version><version>0.8.1</version><version>0.9.0</version><version>0.9.1</version><version>0.9.2</version><version>0.9.3</version><version>1.0.0</version><version>1.1.0</version><version>1.2.0</version><version>1.2.1</version><version>1.3.0</version><version>1.3.1</version><version>1.3.2</version><version>1.4.0</version><version>1.4.1</version><version>1.5.0</version><version>1.5.1</version><version>1.5.2</version><version>1.6.0</version><version>1.7.0</version><version>1.8.0</version><version>1.8.1</version><version>1.8.2</version><version>1.8.3</version><version>1.9.0</version><version>1.10.0</version><version>1.11.0</version><version>1.11.1</version><version>1.11.2</version><version>1.11.3</version><version>1.12.0</version><version>1.13.0</version><version>1.14.0</version><version>1.15.0</version><version>1.15.1</version><version>1.16.0</version><version>1.17.0</version><version>1.18.0</version><version>1.19.0</version><version>1.20.0</version><version>1.20.1</version><version>1.21.0</version><version>1.22.0</version><version>1.23.0</version><version>1.23.1</version><version>1.24.0</version><version>1.24.1</version><version>1.25.0</version><version>1.25.1</version><version>1.25.2</version><version>1.26.0</version><version>2.0.0</version><version>2.1.0</version><version>2.1.1</version><version>2.1.2</version><version>2.1.3</version><version>2.2.0</version><version>2.3.0</version><version>2.3.1</version><version>2.3.2</version><version>2.4.0</version><version>2.4.1</version><version>3.0.0</version><version>3.0.1</version><version>3.0.2</version><version>3.1.0</version><version>3.1.1</version><version>3.2.0</version><version>3.3.0</version><version>3.4.0</version><version>3.4.1</version><version>3.4.2</version><version>3.4.3</version><version>3.4.4</version><version>3.4.5</version><version>3.5.0</version><version>3.5.1</version><version>3.6.0</version><version>3.7.0</version><version>3.8.0</version><version>3.9.0</version><version>3.10.0</version><version>3.11.0</version><version>3.11.1</version><version>3.12.0</version><version>3.13.0</version><version>3.14.0</version><version>3.15.0</version><version>3.16.0</version><version>4.0.0</version><version>4.0.1</version><version>4.1.0</version><version>4.1.1</version><version>4.2.0</version><version>4.3.0</version><version>4.4.0</version><version>4.4.1</version><version>4.5.0</version><version>5.0.0</version><version>5.0.1</version><version>5.0.2</version><version>5.1.0</version><version>5.1.1</version><version>5.2.0</version><version>5.3.0</version><version>5.4.0</version><version>5.4.2</version><version>5.5.0</version><version>5.6.0</version><version>5.7.0</version>
+        <lastUpdated>20260809173336</lastUpdated>
+### maven-metadata https://plugins.gradle.org/m2/com/diffplug/spotless/com.diffplug.spotless.gradle.plugin/maven-metadata.xml
+      <version>8.10.4</version>
+        <latest>8.10.4</latest>
+        <release>8.10.4</release>
+          <version>5.0.0</version><version>5.1.0</version><version>5.1.1</version><version>5.1.2</version><version>5.10.0</version><version>5.10.1</version><version>5.10.2</version><version>5.11.0</version><version>5.11.1</version><version>5.12.0</version><version>5.12.1</version><version>5.12.2</version><version>5.12.3</version><version>5.12.4</version><version>5.12.5</version><version>5.13.0</version><version>5.14.0</version><version>5.14.1</version><version>5.14.2</version><version>5.14.3</version><version>5.15.0</version><version>5.15.1</version><version>5.15.2</version><version>5.16.0</version><version>5.17.0</version><version>5.17.1</version><version>5.2.0</version><version>5.3.0</version><version>5.4.0</version><version>5.5.0</version><version>5.5.1</version><version>5.5.2</version><version>5.6.0</version><version>5.6.1</version><version>5.7.0</version><version>5.8.0</version><version>5.8.1</version><version>5.8.2</version><version>5.9.0</version><version>6.0.0</version><version>6.0.1</version><version>6.0.2</version><version>6.0.3</version><version>6.0.4</version><version>6.0.5</version><version>6.1.0</version><version>6.1.1</version><version>6.1.2</version><version>6.10.0</version><version>6.11.0</version><version>6.12.0</version><version>6.12.1</version><version>6.13.0</version><version>6.14.0</version><version>6.14.1</version><version>6.15.0</version><version>6.16.0</version><version>6.17.0</version><version>6.18.0</version><version>6.19.0</version><version>6.2.0</version><version>6.2.1</version><version>6.2.2</version><version>6.20.0</version><version>6.21.0</version><version>6.22.0</version><version>6.23.0</version><version>6.23.1</version><version>6.23.2</version><version>6.23.3</version><version>6.24.0</version><version>6.25.0</version><version>6.3.0</version><version>6.4.0</version><version>6.4.1</version><version>6.4.2</version><version>6.5.0</version><version>6.5.1</version><version>6.5.2</version><version>6.6.0</version><version>6.6.1</version><version>6.7.0</version><version>6.7.1</version><version>6.7.2</version><version>6.8.0</version><version>6.9.0</version><version>6.9.1</version><version>7.0.0</version><version>7.0.0.BETA1</version><version>7.0.0.BETA2</version><version>7.0.0.BETA3</version><version>7.0.0.BETA4</version><version>7.0.1</version><version>7.0.2</version><version>7.0.3</version><version>7.0.4</version><version>7.1.0</version><version>7.2.0</version><version>7.2.1</version><version>8.0.0</version><version>8.1.0</version><version>8.10.0</version><version>8.10.1</version><version>8.10.2</version><version>8.10.3</version><version>8.10.4</version><version>8.2.0</version><version>8.2.1</version><version>8.3.0</version><version>8.4.0</version><version>8.5.0</version><version>8.5.1</version><version>8.6.0</version><version>8.7.0</version><version>8.8.0</version><version>8.9.0</version>
+        <lastUpdated>20261008220315</lastUpdated>
+### maven-metadata https://plugins.gradle.org/m2/dev/detekt/dev.detekt.gradle.plugin/maven-metadata.xml
+      <version>2.0.0-alpha.6</version>
+        <latest>2.0.0-alpha.6</latest>
+        <release>2.0.0-alpha.6</release>
+          <version>2.0.0-alpha.0</version><version>2.0.0-alpha.1</version><version>2.0.0-alpha.2</version><version>2.0.0-alpha.3</version><version>2.0.0-alpha.4</version><version>2.0.0-alpha.5</version><version>2.0.0-alpha.6</version>
+        <lastUpdated>20260804222720</lastUpdated>
+### maven-metadata https://plugins.gradle.org/m2/io/gitlab/arturbosch/detekt/io.gitlab.arturbosch.detekt.gradle.plugin/maven-metadata.xml
+      <version>1.23.8</version>
+        <latest>1.23.8</latest>
+        <release>1.23.8</release>
+          <version>1.0.0</version><version>1.0.0-RC10</version><version>1.0.0-RC11</version><version>1.0.0-RC12</version><version>1.0.0-RC13</version><version>1.0.0-RC14</version><version>1.0.0-RC15</version><version>1.0.0-RC16</version><version>1.0.0.M10</version><version>1.0.0.M10.1</version><version>1.0.0.M10.2</version><version>1.0.0.M10.3</version><version>1.0.0.M11</version><version>1.0.0.M12</version><version>1.0.0.M12.1</version><version>1.0.0.M12.2</version><version>1.0.0.M12.3</version><version>1.0.0.M12.4</version><version>1.0.0.M13</version><version>1.0.0.M13.1</version><version>1.0.0.M13.2</version><version>1.0.0.RC1</version><version>1.0.0.RC2</version><version>1.0.0.RC3</version><version>1.0.0.RC4</version><version>1.0.0.RC4-2</version><version>1.0.0.RC4-3</version><version>1.0.0.RC5</version><version>1.0.0.RC5-2</version><version>1.0.0.RC5-3</version><version>1.0.0.RC5-4</version><version>1.0.0.RC5-5</version><version>1.0.0.RC5-6</version><version>1.0.0.RC6</version><version>1.0.0.RC6-1</version><version>1.0.0.RC6-2</version><version>1.0.0.RC6-3</version><version>1.0.0.RC6-4</version><version>1.0.0.RC7</version><version>1.0.0.RC7-2</version><version>1.0.0.RC7-3</version><version>1.0.0.RC8</version><version>1.0.0.RC9</version><version>1.0.0.RC9.2</version><version>1.0.1</version><version>1.1.0</version><version>1.1.1</version><version>1.10.0</version><version>1.10.0-RC1</version><version>1.11.0</version><version>1.11.0-RC1</version><version>1.11.0-RC2</version><version>1.11.1</version><version>1.11.2</version><version>1.12.0</version><version>1.12.0-RC1</version><version>1.13.0</version><version>1.13.1</version><version>1.14.0</version><version>1.14.1</version><version>1.14.2</version><version>1.15.0</version><version>1.15.0-RC1</version><version>1.15.0-RC2</version><version>1.16.0</version><version>1.16.0-RC1</version><version>1.16.0-RC2</version><version>1.16.0-RC3</version><version>1.17.0</version><version>1.17.0-RC1</version><version>1.17.0-RC2</version><version>1.17.0-RC3</version><version>1.17.1</version><version>1.18.0</version><version>1.18.0-RC1</version><version>1.18.0-RC2</version><version>1.18.0-RC3</version><version>1.18.1</version><version>1.19.0</version><version>1.19.0-RC1</version><version>1.19.0-RC2</version><version>1.2.0</version><version>1.2.1</version><version>1.2.2</version><version>1.20.0</version><version>1.20.0-RC1</version><version>1.20.0-RC2</version><version>1.21.0</version><version>1.21.0-RC1</version><version>1.21.0-RC2</version><version>1.22.0</version><version>1.22.0-RC1</version><version>1.22.0-RC2</version><version>1.22.0-RC3</version><version>1.23.0</version><version>1.23.0-RC1</version><version>1.23.0-RC2</version><version>1.23.0-RC3</version><version>1.23.1</version><version>1.23.2</version><version>1.23.3</version><version>1.23.4</version><version>1.23.5</version><version>1.23.6</version><version>1.23.7</version><version>1.23.8</version><version>1.3.0</version><version>1.3.1</version><version>1.4.0</version><version>1.5.0</version><version>1.5.1</version><version>1.6.0</version><version>1.7.0</version><version>1.7.0-beta1</version><version>1.7.0-beta2</version><version>1.7.1</version><version>1.7.2</version><version>1.7.3</version><version>1.7.4</version><version>1.8.0</version><version>1.9.0</version><version>1.9.1</version>
+        <lastUpdated>20250221121439</lastUpdated>
+### directory listings + sizes (bytes)
+# https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/2.0.0-ALPHA-4/
+https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/2.0.0-ALPHA-4/ktlint-cli-2.0.0-ALPHA-4-all.jar	75423247
+https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/2.0.0-ALPHA-4/ktlint-cli-2.0.0-ALPHA-4-javadoc.jar	403012
+https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/2.0.0-ALPHA-4/ktlint-cli-2.0.0-ALPHA-4-sources.jar	24916
+https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/2.0.0-ALPHA-4/ktlint-cli-2.0.0-ALPHA-4.jar	96529
+https://repo1.maven.org/maven2/io/github/ktlint/core/ktlint-cli/2.0.0-ALPHA-4/ktlint-cli-2.0.0-ALPHA-4.pom	5153
+# https://repo1.maven.org/maven2/dev/detekt/detekt-cli/2.0.0-alpha.6/
+https://repo1.maven.org/maven2/dev/detekt/detekt-cli/2.0.0-alpha.6/detekt-cli-2.0.0-alpha.6-all.jar	84733979
+https://repo1.maven.org/maven2/dev/detekt/detekt-cli/2.0.0-alpha.6/detekt-cli-2.0.0-alpha.6-javadoc.jar	261
+https://repo1.maven.org/maven2/dev/detekt/detekt-cli/2.0.0-alpha.6/detekt-cli-2.0.0-alpha.6-sources.jar	12548
+https://repo1.maven.org/maven2/dev/detekt/detekt-cli/2.0.0-alpha.6/detekt-cli-2.0.0-alpha.6.jar	57308
+https://repo1.maven.org/maven2/dev/detekt/detekt-cli/2.0.0-alpha.6/detekt-cli-2.0.0-alpha.6.pom	3595

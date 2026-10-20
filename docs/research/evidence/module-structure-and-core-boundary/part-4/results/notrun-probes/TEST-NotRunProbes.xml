@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="NotRunProbes" tests="3" skipped="0" failures="1" errors="0" timestamp="2026-10-20T18:32:12.233Z" hostname="Keko" time="0.315">
+  <properties/>
+  <testcase name="konsist_filterMatchesNothing_wrongPackage()" classname="NotRunProbes" time="0.304"/>
+  <testcase name="konsist_scopeFromDirectory_missingDir()" classname="NotRunProbes" time="0.003">
+    <failure message="java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo/no/such/dir" type="java.lang.IllegalArgumentException">java.lang.IllegalArgumentException: Directory does not exist: /home/kiko/saas-products/kodeebo/no/such/dir
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getFilesFromDirectory(KoScopeCreatorCore.kt:161)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.getScopeFromPaths(KoScopeCreatorCore.kt:148)
+	at com.lemonappdev.konsist.core.container.KoScopeCreatorCore.scopeFromDirectory(KoScopeCreatorCore.kt:170)
+	at com.lemonappdev.konsist.api.Konsist.scopeFromDirectory(Konsist.kt)
+	at NotRunProbes.konsist_scopeFromDirectory_missingDir(NotRunProbes.kt:21)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="konsist_emptyFileList_assertFalse_alwaysTrueLambda()" classname="NotRunProbes" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

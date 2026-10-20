@@ -1,0 +1,24 @@
+run at 2026-10-20T17:44:03Z
+== marker pom dependency
+      <groupId>com.jraska.module.graph.assertion</groupId>
+      <artifactId>com.jraska.module.graph.assertion.gradle.plugin</artifactId>
+      <version>2.9.1</version>
+          <groupId>com.jraska.module.graph.assertion</groupId>
+          <artifactId>plugin</artifactId>
+          <version>2.9.1</version>
+plugin artifact: com.jraska.module.graph.assertion:plugin
+size plugin-2.9.1.jar: Content-Length: 73061
+
+== OSV (includes GitHub Security Advisories)
+org.apache.logging.log4j:log4j-core 2.14.1 -> {"vulns":[{"id":"GHSA-3pxv-7cmr-fjr4","summary":"ApacheLog4jCore:SilentlogeventlossinXmlLayoutduetounescapedXML1.0forbiddencharacters","details":"ApacheLog4jCore's[`XmlLayout`](https://logging.apache.
+
+com.lemonappdev:konsist 0.18.1 -> {}
+
+com.tngtech.archunit:archunit 1.5.1 -> {}
+
+com.jraska.module.graph.assertion:plugin 2.9.1 -> {}
+
+org.jetbrains.kotlin:kotlin-compiler-embeddable 2.4.21 -> {}
+
+org.slf4j:slf4j-api 2.0.19 -> {}
+

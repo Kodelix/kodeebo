@@ -1,0 +1,114 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :arch-tests:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :arch-tests:compileKotlin NO-SOURCE
+> Task :arch-tests:compileJava NO-SOURCE
+> Task :arch-tests:processResources NO-SOURCE
+> Task :arch-tests:classes UP-TO-DATE
+> Task :arch-tests:jar UP-TO-DATE
+> Task :gaming:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-ktor:compileKotlin UP-TO-DATE
+> Task :vendor-ktor:compileJava NO-SOURCE
+> Task :vendor-ktor:processResources NO-SOURCE
+> Task :vendor-ktor:classes UP-TO-DATE
+> Task :vendor-ktor:jar UP-TO-DATE
+> Task :gaming:processResources NO-SOURCE
+> Task :identity:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :identity:processResources NO-SOURCE
+> Task :notifications:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :vendor-mail:compileKotlin UP-TO-DATE
+> Task :vendor-mail:compileJava NO-SOURCE
+> Task :vendor-mail:processResources NO-SOURCE
+> Task :vendor-mail:classes UP-TO-DATE
+> Task :vendor-mail:jar UP-TO-DATE
+> Task :notifications:compileKotlin UP-TO-DATE
+> Task :notifications:compileJava NO-SOURCE
+> Task :notifications:processResources NO-SOURCE
+> Task :notifications:classes UP-TO-DATE
+> Task :notifications:jar UP-TO-DATE
+> Task :orders:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :orders:processResources NO-SOURCE
+> Task :arch-tests:prepareCleanSources UP-TO-DATE
+> Task :arch-tests:processTestResources NO-SOURCE
+> Task :orders:compileKotlin
+> Task :gaming:compileKotlin
+> Task :identity:compileKotlin
+> Task :gaming:compileJava NO-SOURCE
+> Task :gaming:classes UP-TO-DATE
+> Task :gaming:jar
+> Task :identity:compileJava NO-SOURCE
+> Task :identity:classes UP-TO-DATE
+> Task :identity:jar
+> Task :orders:compileJava NO-SOURCE
+> Task :orders:classes UP-TO-DATE
+> Task :orders:jar
+> Task :arch-tests:compileTestKotlin
+> Task :arch-tests:compileTestJava NO-SOURCE
+> Task :arch-tests:testClasses UP-TO-DATE
+
+> Task :arch-tests:test
+
+ArchUnitRules > r1_clientLibsOnlyInNotifications() PASSED
+
+ArchUnitRules > scope_sanity_classesImported() FAILED
+    org.opentest4j.AssertionFailedError at ArchUnitRules.kt:14
+
+ArchUnitRules > probe_whenIs_r3_fqType_identityDomain() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:43
+
+ArchUnitRules > r4_platformNeverImportsVertical() PASSED
+
+ArchUnitRules > probe_whenIs_r3_importedType_identityDomain() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:39
+
+ArchUnitRules > r3_layer1ImportsNothingFromLayer2or3() PASSED
+
+ArchUnitRules > r2_appSeesOnlyPorts_noInfraNoAdapters() PASSED
+
+ArchUnitRules > probe_whenIs_r2_ktorType_ordersDomain() FAILED
+    java.lang.AssertionError at ArchUnitRules.kt:47
+
+ArchUnitRules > r2_domainImportsNoInfra() PASSED
+
+KonsistRules > r2_domain_imports() PASSED
+
+KonsistRules > scope_sanity_filesFound() FAILED
+    org.opentest4j.AssertionFailedError at KonsistRules.kt:24
+
+KonsistRules > r4_imports() PASSED
+
+KonsistRules > r3_r4_architectureApi() PASSED
+
+KonsistRules > cover_r2_app_text() PASSED
+
+KonsistRules > cover_r2_domain_text() PASSED
+
+KonsistRules > cover_r1_text() PASSED
+
+KonsistRules > cover_r3_text() PASSED
+
+KonsistRules > cover_r4_text() PASSED
+
+KonsistRules > r1_imports() PASSED
+
+KonsistRules > r2_app_imports() PASSED
+
+KonsistRules > r3_imports() PASSED
+
+24 tests completed, 5 failed, 3 skipped
+
+> Task :arch-tests:test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':arch-tests:test'.
+> There were failing tests. See the report at: file:///home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/build/arch-tests/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 8s
+16 actionable tasks: 8 executed, 8 up-to-date

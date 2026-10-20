@@ -1,0 +1,29 @@
+date: 2026-10-20T18:53:01Z
+## part-2 home: files under kotlin-compiler-embeddable/2.4.10
+2647 kotlin-compiler-embeddable-2.4.10.pom
+## kotlin-gradle-plugin dirs in part-2 home
+2.4.21
+## user-level Gradle wrapper dists (read-only listing)
+CACHEDIR.TAG
+gradle-9.3.0-bin
+gradle-9.3.1-bin
+gradle-9.6.1-bin
+/home/kiko/.gradle/wrapper/dists/gradle-9.3.0-bin/79n14ral3mx1ozqr3csh2u872:
+gradle-9.3.0
+gradle-9.3.0-bin.zip.lck
+gradle-9.3.0-bin.zip.ok
+
+/home/kiko/.gradle/wrapper/dists/gradle-9.3.1-bin/23ovyewtku6u96viwx3xl3oks:
+gradle-9.3.1
+gradle-9.3.1-bin.zip.lck
+gradle-9.3.1-bin.zip.ok
+
+/home/kiko/.gradle/wrapper/dists/gradle-9.6.1-bin/4ticwg1pgcbps2hj28r8so764:
+gradle-9.6.1
+gradle-9.6.1-bin.zip.lck
+gradle-9.6.1-bin.zip.ok
+## gradle 9.8.x anywhere in repo cache
+production/session-state/cache/module-structure-and-core-boundary/part-5:
+dist
+
+production/session-state/cache/module-structure-and-core-boundary/part-5/dist:

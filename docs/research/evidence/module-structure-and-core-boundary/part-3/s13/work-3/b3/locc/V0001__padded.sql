@@ -1,0 +1,1 @@
+create table app.p1(id int);

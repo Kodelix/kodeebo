@@ -1,0 +1,39 @@
+## ArchUnitRules r1_clientLibsOnlyInNotifications()
+java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'kodeebo..' and reside outside of package 'kodeebo.notifications..' should depend on classes that reside in any package ['fake.mail..', 'jakarta.mail..', 'javax.mail..', 'java.net.http..']' was violated (6 times): | Constructor <kodeebo.identity.adapters.WebhookCaller.<init>()> calls method <java.net.http.Htt
+
+## ArchUnitRules r4_platformNeverImportsVertical()
+java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'kodeebo.orders..' should depend on classes that reside in a package 'kodeebo.gaming..'' was violated (3 times): | Constructor <kodeebo.orders.app.BillSession.<init>(kodeebo.gaming.domain.Session)> has parameter of type <kodeebo.gaming.domain.Session> in (ViolationGamingImport.kt:0) | Field <kodeebo.orders.app.
+
+## ArchUnitRules r3_layer1ImportsNothingFromLayer2or3()
+java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in any package ['kodeebo.notifications..', 'kodeebo.identity..'] should depend on classes that reside in any package ['kodeebo.orders..', 'kodeebo.gaming..']' was violated (4 times): | Constructor <kodeebo.identity.app.BillingSync.<init>(kodeebo.orders.app.OrderService)> has parameter of type <kodeebo.orders.app.OrderServ
+
+## ArchUnitRules r2_appSeesOnlyPorts_noInfraNoAdapters()
+java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'kodeebo.*.app..' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..', 'kodeebo.*.adapters..']' was violated (6 times): | Constructor <kodeebo.gaming.app.SessionStore.<init>(org.jetbr
+
+## ArchUnitRules r2_domainImportsNoInfra()
+java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule 'no classes that reside in a package 'kodeebo.*.domain..' should depend on classes that reside in any package ['io.ktor..', 'org.jetbrains.exposed..', 'com.zaxxer.hikari..', 'org.postgresql..', 'org.bouncycastle..', 'io.opentelemetry..']' was violated (3 times): | Constructor <kodeebo.orders.domain.BillWithKtor.<init>(io.ktor.server.application.
+
+## KonsistRules r1_clientLibsOnlyInNotifications()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r1_clientLibsOnlyInNotifications' was violated (2 times). Invalid files: | ├── File ViolationHttp.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/adapters/ViolationHttp.kt | └── File ViolationOrderMailer.kt file:///home/kiko/saas-products/ko
+
+## KonsistRules r3_layer1_architectureApi()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: 'r3_layer1_architectureApi' test has failed.  | 'Identity' layer does not depends on 'Orders' layer failed. Files that depend on 'Orders' layer: | └── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt |     └── Import kode
+
+## KonsistRules r3_layer1ImportsNothingFromLayer2or3_imports()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_layer1ImportsNothingFromLayer2or3_imports' was violated (2 times). Invalid files: | ├── File ViolationOrdersImport.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt | └── File ViolationWhenIs.kt file:///home/kik
+
+## KonsistRules r4_platformNeverImportsVertical_architectureApi()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: 'r4_platformNeverImportsVertical_architectureApi' test has failed.  | 'Orders' layer does not depends on 'Gaming' layer failed. Files that depend on 'Gaming' layer: | └── File file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/app/ViolationGamingImport.kt |    
+
+## KonsistRules r2_appSeesOnlyPorts_noInfraNoAdapters()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r2_appSeesOnlyPorts_noInfraNoAdapters' was violated (2 times). Invalid files: | ├── File ViolationExposed.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/gaming/src/main/kotlin/kodeebo/gaming/app/ViolationExposed.kt | └── File ViolationAppAdapters.kt file:///home/kiko/saas-products/
+
+## KonsistRules r3_whenIsOnly_identityDomainNotGaming()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_whenIsOnly_identityDomainNotGaming' was violated (1 time). Invalid files: | └── File ViolationWhenIs.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/domain/ViolationWhenIs.kt
+
+## KonsistRules r2_domainImportsNoInfra()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r2_domainImportsNoInfra' was violated (1 time). Invalid files: | └── File ViolationBillKtor.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/orders/src/main/kotlin/kodeebo/orders/domain/ViolationBillKtor.kt
+
+## KonsistRules r3_layer1_textFallback_fullyQualifiedUse()
+com.lemonappdev.konsist.core.exception.KoAssertionFailedException: Assert 'r3_layer1_textFallback_fullyQualifiedUse' was violated (3 times). Invalid files: | ├── File ViolationOrdersImport.kt file:///home/kiko/saas-products/kodeebo/docs/research/evidence/module-structure-and-core-boundary/part-2/spike/identity/src/main/kotlin/kodeebo/identity/app/ViolationOrdersImport.kt | ├── File ViolationFq.kt file:///home/kiko/saas-p
+

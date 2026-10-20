@@ -1,0 +1,19 @@
+date: 2026-10-20T18:53:49Z
+=== gradle/gradle repository advisories (published), newest first
+GHSA-j5m7-59rp-24f5 None 2026-10-07 high | Failure to disable repositories failing to establish an SSL connection can expose builds to malicious artifact | ['org.gradle:gradle-core | < 8.14.6, 9.0.0 to 9.8.0 | fixed 8.14.6, 9.8.1']
+GHSA-xwqc-3h47-hg64 None 2026-10-07 high | Deserialization of untrusted Java objects before authentication in the client - daemon communication | ['org.gradle:gradle-core | < 8.14.6, 9.0.0 to 9.8.0 | fixed 8.14.6, 9.8.1']
+GHSA-mvvg-497x-hmj8 None 2026-10-07 high | Unauthenticated worker-to-daemon channel deserializes untrusted Java objects | ['org.gradle:gradle-core | < 8.14.6, 9.0.0 to 9.8.0 | fixed 8.14.6, 9.8.1']
+GHSA-mqwm-5m85-gmcv CVE-2026-22865 2026-01-16 high | Failure to disable repositories failing to answer can expose builds to malicious artifacts | ['org.gradle:gradle-core | < 8.14.4, 9.0.0 to 9.2.1 | fixed 8.14.4, >= 9.3.0']
+GHSA-w78c-w6vf-rw82 CVE-2026-22816 2026-01-16 high | Failure to disable repositories with unknown host can expose builds to malicious artifacts | ['org.gradle:gradle-core | < 8.14.4, 9.0.0 to 9.2.1 | fixed 8.14.4, >= 9.3.0']
+GHSA-465q-w4mf-4f4r CVE-2025-27148 2025-02-25 high | Local privilege escalation through system temporary directory | ['Gradle | 8.12 | fixed 8.12.1']
+GHSA-mrff-q8qj-xvg8 CVE-2023-42445 2023-10-04 medium | Possible local text file exfiltration by XML External entity injection | ['Gradle | <7.6.3, <8.4 | fixed 7.6.3, 8.4']
+GHSA-43r3-pqhv-f7h9 CVE-2023-44387 2023-10-04 low | Incorrect permission assignment for symlinked files used in copy or archiving operations | ['Gradle | <7.6.3, <8.4 | fixed 7.6.3, 8.4']
+GHSA-84mw-qh6q-v842 CVE-2023-35947 2023-06-30 medium | Path traversal vulnerabilities in handling of Tar archives | ['Gradle | <7.6.1, [8.0,8.1.1] | fixed 7.6.2, 8.2']
+GHSA-2h6c-rv6q-494v CVE-2023-35946 2023-06-30 medium | Dependency cache path traversal | ['Gradle | <7.6.1, [8.0,8.1.1] | fixed 7.6.2, 8.2']
+GHSA-c724-3xg7-g3hf CVE-2023-26053 2023-02-28 medium | Dependency verification: Usage of long IDs for PGP keys is unsafe and is subject to collision attacks | ['Gradle | 6.2 to 7.6 | fixed 6.9.4, 7.6.1, 8.0']
+GHSA-j6wc-xfg8-jx2j CVE-2022-31156 2022-07-14 medium | Dependency verification can ignore checksum verification when signature verification cannot be performed | ['Gradle | 6.2 to 7.4.2 | fixed 7.5']
+=== OSV queries
+org.gradle:gradle-core 9.8.1: 0 records []
+org.gradle:gradle-core 9.8.2: 0 records []
+org.gradle:gradle-core 9.7.0: 0 records []
+org.jetbrains.kotlin:kotlin-gradle-plugin 2.4.21: 0 records []

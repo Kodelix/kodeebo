@@ -1,0 +1,62 @@
+date: 2026-10-20T18:50:53Z
+## dirs named 2.4.10 in modules-2 of part-1/2/3 homes
+-- part-1
+-- part-2
+org.jetbrains.kotlin/kotlin-build-tools-api/2.4.10
+org.jetbrains.kotlin/kotlin-stdlib/2.4.10
+org.jetbrains.kotlin/kotlin-compiler-embeddable/2.4.10
+org.jetbrains.kotlin/kotlin-script-runtime/2.4.10
+org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.10
+org.jetbrains.kotlin/kotlin-reflect/2.4.10
+org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.4.10
+org.jetbrains.kotlin/kotlin-stdlib-jdk7/2.4.10
+org.jetbrains.kotlin/kotlin-compiler/2.4.10
+org.jetbrains.kotlin/kotlin-stdlib-common/2.4.10
+-- part-3
+## 2.4.0 files fetched by kotlin-dsl at 9.7.0 (part-1 home): bytes
+60351320 org.jetbrains.kotlin/kotlin-compiler-embeddable/2.4.0/f1a24af8bd111a83950236b1aec7a6d72a97e92c/kotlin-compiler-embeddable-2.4.0.jar
+26709000 org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.0/18bfb59ea7d01e0ae925f5a5535e61a98624ed3f/kotlin-gradle-plugin-2.4.0-gradle813.jar
+3750099 org.jetbrains.kotlin/kotlin-reflect/2.4.0/532cc727c0960d12f4c9acb6a6c2c4a3e08187b/kotlin-reflect-2.4.0.jar
+3156999 org.jetbrains.kotlin/kotlin-build-tools-impl/2.4.0/3dde5b4075cd7963afd0b0b2835627f40abc1149/kotlin-build-tools-impl-2.4.0.jar
+2692453 org.jetbrains.kotlin/kotlin-gradle-plugin-idea-proto/2.4.0/c64be4d760a576018704234952e752ec8670bea3/kotlin-gradle-plugin-idea-proto-2.4.0.jar
+1841929 org.jetbrains.kotlin/kotlin-stdlib/2.4.0/4e9f4b531dce5c7dee58ed2de9a8b9a763c8dc6c/kotlin-stdlib-2.4.0.jar
+733994 org.jetbrains.kotlin/kotlin-util-klib/2.4.0/336a8a1bd6fab18c5e529811076de2c0d46b3cdb/kotlin-util-klib-2.4.0.jar
+710502 org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/2.4.0/d475e00905218e947dfc90bb208884ca5ab8dcd0/kotlin-scripting-compiler-embeddable-2.4.0.jar
+569001 org.jetbrains.kotlin/kotlin-build-tools-cri-impl/2.4.0/7fdfe4b4de70b7e6d81c054572e862121aa1603a/kotlin-build-tools-cri-impl-2.4.0.jar
+400243 org.jetbrains.kotlin/kotlin-native-utils/2.4.0/f6fd432652adcecbbd70ec0018ce445918f63cac/kotlin-native-utils-2.4.0.jar
+381838 org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.0/1ecabef3a8ba6a8e25654573d54edb7e4136e903/kotlin-daemon-embeddable-2.4.0.jar
+310931 org.jetbrains.kotlin/kotlin-build-tools-api/2.4.0/46429d5887df2d02f33fe11a0c8444c5be5fd8da/kotlin-build-tools-api-2.4.0.jar
+274030 org.jetbrains.kotlin/kotlin-gradle-plugin-api/2.4.0/75cef3ce6f6086fd3943cc614158c889b84ce5d1/kotlin-gradle-plugin-api-2.4.0-gradle813.jar
+251406 org.jetbrains.kotlin/kotlin-daemon-client/2.4.0/e9080614f98d07554367b7e5810529963e9f43e2/kotlin-daemon-client-2.4.0.jar
+246357 org.jetbrains.kotlin/kotlin-build-statistics/2.4.0/d58fcc98c1ef7f350a59a9becaa35830c9b1ace0/kotlin-build-statistics-2.4.0.jar
+203068 org.jetbrains.kotlin/kotlin-scripting-common/2.4.0/d0a53d62601b10b7ad700c3c5df57bb5a8262afd/kotlin-scripting-common-2.4.0.jar
+197773 org.jetbrains.kotlin/kotlin-scripting-compiler-impl-embeddable/2.4.0/2d8ee9cea72bb0a1c71699e6768cb47266390d5e/kotlin-scripting-compiler-impl-embeddable-2.4.0.jar
+143775 org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.0/284ad301d7d72b5b4eb409f2b00e2ef2cc7b128a/kotlin-gradle-plugin-2.4.0.module
+136265 org.jetbrains.kotlin/kotlin-scripting-jvm/2.4.0/27e313ed6d09e223634ed031382c019e2fdd6d94/kotlin-scripting-jvm-2.4.0.jar
+135623 org.jetbrains.kotlin/kotlin-build-tools-compat/2.4.0/209372718c8759fbcb47402dc130d45f00c3f81/kotlin-build-tools-compat-2.4.0.jar
+128076 org.jetbrains.kotlin/kotlin-gradle-plugin-api/2.4.0/26468e6092610bc5b7fd3584227b6d5d4d5184f7/kotlin-gradle-plugin-api-2.4.0.module
+100243 org.jetbrains.kotlin/kotlin-util-klib-metadata/2.4.0/83486d03b118c0fd8a3c6901f9990fd90d9f8591/kotlin-util-klib-metadata-2.4.0.jar
+94633 org.jetbrains.kotlin/kotlin-gradle-plugin-idea/2.4.0/905431b905fbd7c516de862a1179d7ab5fae3955/kotlin-gradle-plugin-idea-2.4.0.jar
+89051 org.jetbrains.kotlin/kotlin-tooling-core/2.4.0/75970f5a2a9cb4d25557965bbec0a7ccd55bfbcf/kotlin-tooling-core-2.4.0.jar
+86422 org.jetbrains.kotlin/fus-statistics-gradle-plugin/2.4.0/9394ff2e790b58298b84b7d6ddd2a2ef076e8eee/fus-statistics-gradle-plugin-2.4.0-gradle813.jar
+75327 org.jetbrains.kotlin/kotlin-sam-with-receiver/2.4.0/b0c49d0ef205e7b1fa66f51b922940a32041ea08/kotlin-sam-with-receiver-2.4.0.module
+74592 org.jetbrains.kotlin/kotlin-assignment/2.4.0/641970e46b7297f74406c0202f2ebdeec8f57eb3/kotlin-assignment-2.4.0.module
+73984 org.jetbrains.kotlin/kotlin-klib-commonizer-api/2.4.0/e5b767303bd219c67a07f1f4ddc1b35359148660/kotlin-klib-commonizer-api-2.4.0.jar
+60086 org.jetbrains.kotlin/kotlin-util-io/2.4.0/5cbad06319bd397dde521561701c0f5b36cd7faf/kotlin-util-io-2.4.0.jar
+56622 org.jetbrains.kotlin/fus-statistics-gradle-plugin/2.4.0/87f41353451441e2c3b4f39da188fc5ad0046a64/fus-statistics-gradle-plugin-2.4.0.module
+52492 org.jetbrains.kotlin/kotlin-assignment-compiler-plugin-embeddable/2.4.0/2d5fa580291ff8368a084e17878d40bed297cccb/kotlin-assignment-compiler-plugin-embeddable-2.4.0.jar
+46564 org.jetbrains.kotlin/kotlin-script-runtime/2.4.0/1de03f0ef3e208ab5f97ee6a587e9b8480447df6/kotlin-script-runtime-2.4.0.jar
+20376 org.jetbrains.kotlin/kotlin-compiler-runner/2.4.0/d2b2336d493d2d3a8047c826cb27606f67029da8/kotlin-compiler-runner-2.4.0.jar
+19327 org.jetbrains.kotlin/kotlin-sam-with-receiver-compiler-plugin-embeddable/2.4.0/e2d182e31f2533ebb2a1716f2f8397c2a3afbdb8/kotlin-sam-with-receiver-compiler-plugin-embeddable-2.4.0.jar
+12389 org.jetbrains.kotlin/kotlin-stdlib/2.4.0/4aeee8ad7da035ca42c1def6896ece66ada9f365/kotlin-stdlib-2.4.0.module
+10827 org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.0/169a090ee758f5adb07e76460a837b483667c127/kotlin-gradle-plugin-2.4.0.pom
+9660 org.jetbrains.kotlin/kotlin-sam-with-receiver/2.4.0/e26efda7d7db6d17570bc7e019c600fe3e20ca9d/kotlin-sam-with-receiver-2.4.0-gradle813.jar
+9470 org.jetbrains.kotlin/kotlin-assignment/2.4.0/459a2215e57b238a6889c7b8125cb58c7509dce1/kotlin-assignment-2.4.0-gradle813.jar
+7530 org.jetbrains.kotlin/kotlin-gradle-plugin-idea/2.4.0/213ff82b346fddea9d248a7163f0a87a3f056a99/kotlin-gradle-plugin-idea-2.4.0.module
+6665 org.jetbrains.kotlin/kotlin-gradle-plugins-bom/2.4.0/c4366df5e73c09ddeca9590736cfa976e4596ff4/kotlin-gradle-plugins-bom-2.4.0.module
+total bytes of 2.4.0 files:
+104299074
+## other kotlin-dsl related
+production/session-state/cache/module-structure-and-core-boundary/part-1/home/caches/modules-2/files-2.1/org.gradle.kotlin.kotlin-dsl
+production/session-state/cache/module-structure-and-core-boundary/part-1/home/caches/modules-2/files-2.1/org.gradle.kotlin/gradle-kotlin-dsl-plugins
+production/session-state/cache/module-structure-and-core-boundary/part-1/home/caches/modules-2/files-2.1/org.gradle.kotlin.kotlin-dsl/org.gradle.kotlin.kotlin-dsl.gradle.plugin

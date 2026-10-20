@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="KonsistRules" tests="12" skipped="0" failures="1" errors="0" timestamp="2026-10-20T19:31:05.356Z" hostname="Keko" time="0.486">
+  <properties/>
+  <testcase name="r2_domain_imports()" classname="KonsistRules" time="0.334"/>
+  <testcase name="scope_sanity_filesFound()" classname="KonsistRules" time="0.04">
+    <failure message="org.opentest4j.AssertionFailedError: Konsist found only 13 files under production/session-state/cache/module-structure-and-core-boundary/part-5/build/arch-tests/clean-src ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: Konsist found only 13 files under production/session-state/cache/module-structure-and-core-boundary/part-5/build/arch-tests/clean-src ==&gt; expected: &lt;true&gt; but was: &lt;false&gt;
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at KonsistRules.scope_sanity_filesFound(KonsistRules.kt:24)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="r4_imports()" classname="KonsistRules" time="0.021"/>
+  <testcase name="r3_r4_architectureApi()" classname="KonsistRules" time="0.03"/>
+  <testcase name="cover_r2_app_text()" classname="KonsistRules" time="0.013"/>
+  <testcase name="cover_r2_domain_text()" classname="KonsistRules" time="0.008"/>
+  <testcase name="cover_r1_text()" classname="KonsistRules" time="0.008"/>
+  <testcase name="cover_r3_text()" classname="KonsistRules" time="0.008"/>
+  <testcase name="cover_r4_text()" classname="KonsistRules" time="0.006"/>
+  <testcase name="r1_imports()" classname="KonsistRules" time="0.005"/>
+  <testcase name="r2_app_imports()" classname="KonsistRules" time="0.005"/>
+  <testcase name="r3_imports()" classname="KonsistRules" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

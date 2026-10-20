@@ -1,0 +1,305 @@
+date: 2026-10-20T17:41:05Z
+java: openjdk version "21.0.12.1" 2026-08-18
+cache size before: 967144402 bytes
+
+------------------------------------------------------------
+Gradle 9.7.0
+------------------------------------------------------------
+
+Build time:    2026-08-06 14:07:35 UTC
+Revision:      3defbfc59d757b873d787b2261de5c7f8a00970a
+
+Kotlin:        2.4.0
+Groovy:        4.0.32
+Ant:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026
+Launcher JVM:  21.0.12.1 (Arch Linux 21.0.12.1+1)
+
+### gradle updateKotlinAbi
+Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:generateExternalPluginSpecBuilders
+> Task :build-logic:extractPrecompiledScriptPluginPlugins
+> Task :build-logic:generateScriptPluginAdapters
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:compilePluginsBlocks
+> Task :build-logic:generatePrecompiledScriptPluginAccessors
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :contexts:venue:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:tenancy:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:audit:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:notify:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:ratelimit:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:ratelimit:compileKotlin
+> Task :platform:tenancy:compileKotlin
+> Task :platform:ratelimit:compileJava NO-SOURCE
+> Task :platform:tenancy:compileJava NO-SOURCE
+> Task :platform:ratelimit:internalDumpKotlinAbi
+> Task :platform:ratelimit:updateKotlinAbi
+> Task :platform:tenancy:internalDumpKotlinAbi
+> Task :platform:tenancy:updateKotlinAbi
+> Task :platform:audit:compileKotlin
+> Task :platform:audit:compileJava NO-SOURCE
+> Task :platform:audit:internalDumpKotlinAbi
+> Task :contexts:venue:compileKotlin
+> Task :platform:audit:updateKotlinAbi
+> Task :contexts:venue:compileJava NO-SOURCE
+> Task :contexts:venue:internalDumpKotlinAbi
+> Task :contexts:venue:updateKotlinAbi
+> Task :platform:notify:compileKotlin
+> Task :platform:notify:compileJava NO-SOURCE
+> Task :platform:notify:internalDumpKotlinAbi
+> Task :platform:notify:updateKotlinAbi
+> Task :app:compileKotlin
+> Task :app:compileJava NO-SOURCE
+> Task :app:internalDumpKotlinAbi
+> Task :app:updateKotlinAbi
+
+BUILD SUCCESSFUL in 28s
+27 actionable tasks: 27 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=28781
+cache size after first build: 1007406274 bytes
+
+### ABI dump files
+./app/api/app.api
+./app/build/kotlin/abi/app.api
+./contexts/venue/api/venue.api
+./contexts/venue/build/kotlin/abi/venue.api
+./platform/audit/api/audit.api
+./platform/audit/build/kotlin/abi/audit.api
+./platform/notify/api/notify.api
+./platform/notify/build/kotlin/abi/notify.api
+./platform/ratelimit/api/ratelimit.api
+./platform/ratelimit/build/kotlin/abi/ratelimit.api
+./platform/tenancy/api/tenancy.api
+./platform/tenancy/build/kotlin/abi/tenancy.api
+public final class kodeebo/tenancy/TenantId {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getValue ()Ljava/lang/String;
+}
+
+public abstract interface class kodeebo/tenancy/TenantScope {
+	public abstract fun current ()Lkodeebo/tenancy/TenantId;
+}
+
+
+### gradle build
+> Task :platform:ratelimit:build
+> Task :platform:tenancy:assemble
+> Task :platform:tenancy:internalDumpKotlinAbi UP-TO-DATE
+> Task :platform:tenancy:checkKotlinAbi
+> Task :platform:tenancy:compileTestKotlin NO-SOURCE
+> Task :platform:tenancy:compileTestJava NO-SOURCE
+> Task :platform:tenancy:processTestResources NO-SOURCE
+> Task :platform:tenancy:testClasses UP-TO-DATE
+> Task :platform:tenancy:test NO-SOURCE
+> Task :platform:tenancy:check
+> Task :platform:tenancy:build
+
+BUILD SUCCESSFUL in 1s
+36 actionable tasks: 15 executed, 21 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=1371
+
+######## B1: leak of an implementation-only dependency
+
+### gradle :app:compileKotlin
+       Kotlin compiler error
+         Unresolved reference 'ratelimit'.
+         Location: /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/app/src/main/kotlin/kodeebo/app/Leak.kt line 3
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1s
+15 actionable tasks: 1 executed, 14 up-to-date
+exit=1 wall_ms=1157
+
+######## B2: explicit API strict violation
+
+### gradle :platform:tenancy:compileKotlin
+       Kotlin compiler error
+         Visibility must be specified in explicit API mode.
+         Location: /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/platform/tenancy/src/main/kotlin/kodeebo/tenancy/Violation.kt line 3
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 587ms
+10 actionable tasks: 1 executed, 9 up-to-date
+exit=1 wall_ms=666
+
+######## B3: ABI change without updating the dump
+
+### gradle checkKotlinAbi
+> ABI check failed for project tenancy
+  
+  
+  <<<ABI has changed>>>
+  --- /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/platform/tenancy/api/tenancy.api
+  +++ /home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-1/work-s10/platform/tenancy/build/kotlin/abi/tenancy.api
+  @@ -1,3 +1,7 @@
+  +public final class kodeebo/tenancy/AbiChangeKt {
+  +	public static final fun newPublicApi ()I
+  +}
+  +
+   public final class kodeebo/tenancy/TenantId {
+   	public fun <init> (Ljava/lang/String;)V
+   	public final fun getValue ()Ljava/lang/String;
+  
+  You can run ':platform:tenancy:updateKotlinAbi' task to create or overwrite reference ABI declarations
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 791ms
+20 actionable tasks: 7 executed, 13 up-to-date
+exit=1 wall_ms=844
+
+### gradle updateKotlinAbi
+> Task :app:compileKotlin
+> Task :app:compileJava NO-SOURCE
+> Task :app:internalDumpKotlinAbi UP-TO-DATE
+> Task :app:updateKotlinAbi UP-TO-DATE
+
+BUILD SUCCESSFUL in 586ms
+27 actionable tasks: 2 executed, 25 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=633
+public final class kodeebo/tenancy/AbiChangeKt {
+	public static final fun newPublicApi ()I
+}
+
+public final class kodeebo/tenancy/TenantId {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getValue ()Ljava/lang/String;
+}
+
+public abstract interface class kodeebo/tenancy/TenantScope {
+	public abstract fun current ()Lkodeebo/tenancy/TenantId;
+}
+
+
+### gradle checkKotlinAbi
+> Task :platform:ratelimit:internalDumpKotlinAbi UP-TO-DATE
+> Task :platform:ratelimit:checkKotlinAbi
+> Task :platform:tenancy:internalDumpKotlinAbi UP-TO-DATE
+> Task :platform:tenancy:checkKotlinAbi
+
+BUILD SUCCESSFUL in 602ms
+27 actionable tasks: 6 executed, 21 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=650
+
+######## C: configuration cache and timing (all tasks up to date unless noted)
+
+### gradle build --no-configuration-cache
+> Task :platform:tenancy:test NO-SOURCE
+> Task :platform:tenancy:check
+> Task :platform:tenancy:build
+
+BUILD SUCCESSFUL in 719ms
+36 actionable tasks: 10 executed, 26 up-to-date
+exit=0 wall_ms=769
+
+### gradle build --configuration-cache
+> Task :app:check
+> Task :app:build
+
+BUILD SUCCESSFUL in 1s
+36 actionable tasks: 6 executed, 30 up-to-date
+Configuration cache entry stored.
+exit=0 wall_ms=1162
+
+### gradle build --configuration-cache
+> Task :app:check
+> Task :app:build
+
+BUILD SUCCESSFUL in 442ms
+27 actionable tasks: 6 executed, 21 up-to-date
+Configuration cache entry reused.
+exit=0 wall_ms=501
+-- touch one source file in tenancy (non-ABI change), with config cache
+
+### gradle build --configuration-cache
+> Task :app:check
+> Task :app:build
+
+BUILD SUCCESSFUL in 641ms
+27 actionable tasks: 7 executed, 20 up-to-date
+Configuration cache entry reused.
+exit=0 wall_ms=708
+-- change build file of one module, with config cache (invalidates the cache)
+
+### gradle build --configuration-cache
+> Task :app:check
+> Task :app:build
+
+BUILD SUCCESSFUL in 1s
+36 actionable tasks: 6 executed, 30 up-to-date
+Configuration cache entry stored.
+exit=0 wall_ms=1132
+-- cold clean build, config cache on, build cache off
+
+### gradle clean build --configuration-cache --rerun-tasks
+> Task :app:assemble
+> Task :app:build
+
+BUILD SUCCESSFUL in 3s
+42 actionable tasks: 42 executed
+Configuration cache entry stored.
+exit=0 wall_ms=3772
+
+### type-safe accessors (settings had no feature flag): ok if the builds above passed
+### project tree
+
+### gradle projects
++--- Project ':app'
++--- Project ':contexts'
+|    \--- Project ':contexts:venue'
+\--- Project ':platform'
+     +--- Project ':platform:audit'
+     +--- Project ':platform:notify'
+     +--- Project ':platform:ratelimit'
+     \--- Project ':platform:tenancy'
+
+Project locations:
+
+project ':app' - /app
+project ':contexts' - /contexts
+project ':contexts:venue' - /contexts/venue
+project ':platform' - /platform
+project ':platform:audit' - /platform/audit
+project ':platform:notify' - /platform/notify
+project ':platform:ratelimit' - /platform/ratelimit
+project ':platform:tenancy' - /platform/tenancy
+
+Included builds:
+
+\--- Included build ':build-logic'
+
+To see a list of the tasks of a project, run gradle <project-path>:tasks
+For example, try running gradle :app:tasks
+
+BUILD SUCCESSFUL in 508ms
+10 actionable tasks: 1 executed, 9 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.7.0/userguide/configuration_cache_enabling.html
+exit=0 wall_ms=572
+Stopping Daemon(s)
+1 Daemon stopped
+cache size end: 1007484358 bytes

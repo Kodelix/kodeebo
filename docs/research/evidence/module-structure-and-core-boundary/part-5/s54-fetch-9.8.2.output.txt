@@ -1,0 +1,43 @@
+date: 2026-10-20T19:03:08Z
+size: 151620138 bytes
+published sha256 (.sha256 file): 21bd5da2de49b642904077f38c0efdc7778e92b3ed0889392dca61b97e389607
+versions/current: "version":"9.8.2","buildTime":"20261019162926+0000","checksum":"21bd5da2de49b642904077f38c0efdc7778e92b3ed0889392dca61b97e389607",
+estimated total with kotlin-dsl gap: 255907243 (cap 280000000)
+-rw-r--r-- 1 kiko kiko 151620138 Oct 20 22:03 gradle-9.8.2-bin.zip
+gradle-9.8.2-bin.zip: OK
+## distribution lib: kotlin jars and kotlin-dsl plugins
+gradle-core-kotlin-extensions-9.8.2.jar
+gradle-core-kotlin-extensions.properties
+gradle-kotlin-dsl-9.8.2.jar
+gradle-kotlin-dsl-extensions-9.8.2.jar
+gradle-kotlin-dsl-extensions.properties
+gradle-kotlin-dsl.properties
+gradle-kotlin-dsl-shared-runtime-9.8.2.jar
+gradle-kotlin-dsl-shared-runtime.properties
+gradle-kotlin-dsl-tooling-models-9.8.2.jar
+gradle-kotlin-dsl-tooling-models.properties
+gradle-stdlib-kotlin-extensions-9.8.2.jar
+gradle-stdlib-kotlin-extensions.properties
+kotlin-assignment-compiler-plugin-embeddable-2.4.10.jar
+kotlin-assignment-compiler-plugin-embeddable.properties
+kotlin-build-tools-api-2.4.10.jar
+kotlin-build-tools-api.properties
+kotlin-build-tools-impl-2.4.10.jar
+kotlin-build-tools-impl.properties
+kotlin-compiler-embeddable-2.4.10.jar
+kotlin-compiler-embeddable.properties
+gradle-kotlin-dsl-provider-plugins-9.8.2.jar
+gradle-kotlin-dsl-provider-plugins.properties
+gradle-kotlin-dsl-tooling-builders-9.8.2.jar
+gradle-kotlin-dsl-tooling-builders.properties
+gradle-kotlin-dsl-tooling-model-impls-9.8.2.jar
+gradle-kotlin-dsl-tooling-model-impls.properties
+## gradle --version
+Gradle 9.8.2
+Kotlin:        2.4.10
+Launcher JVM:  21.0.12.1 (Arch Linux 21.0.12.1+1)
+## homes (copies)
+1008M	/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/home-a
+325M	/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/home-b
+145M	/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/dist
+165M	/home/kiko/saas-products/kodeebo/production/session-state/cache/module-structure-and-core-boundary/part-5/gradle-dist

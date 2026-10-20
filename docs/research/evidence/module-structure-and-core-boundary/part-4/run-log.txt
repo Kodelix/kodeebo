@@ -1,0 +1,12 @@
+mode=violations label=offline-first args=--offline :arch-tests:test --continue exit=1 wall_ms=15547 at=2026-10-20T18:23:27Z
+mode=clean label=clean-1 args=--offline :arch-tests:test --continue exit=1 wall_ms=10486 at=2026-10-20T18:23:43Z
+mode=strict label=strict-compile args=--offline compileKotlin --continue exit=1 wall_ms=6623 at=2026-10-20T18:24:39Z
+mode=strict label=strict-compile args=compileKotlin --continue exit=1 wall_ms=20689 at=2026-10-20T18:25:08Z
+mode=strict label=kg-1.8.0-fixture args=-Plint=kg -PktlintVersion=1.8.0 ktlintCheck --continue exit=1 wall_ms=101595 at=2026-10-20T18:27:17Z
+mode=clean label=kg-1.8.0-stacktrace args=--offline -Plint=kg -PktlintVersion=1.8.0 :syntax24:runKtlintCheckOverMainSourceSet --stacktrace exit=1 wall_ms=4384 at=2026-10-20T18:28:10Z
+mode=clean label=kg-2.0.0-ALPHA-4 args=-Plint=kg -PktlintVersion=2.0.0-ALPHA-4 :syntax24:runKtlintCheckOverMainSourceSet --stacktrace exit=1 wall_ms=4374 at=2026-10-20T18:28:22Z
+mode=clean label=kotlinter-5.7.0 args=-Plint=kotlinter :syntax24:lintKotlinMain :lintfix:lintKotlinMain --continue --stacktrace exit=1 wall_ms=4146 at=2026-10-20T18:28:26Z
+mode=clean label=ktlint2-alpha4 args=-Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Format --continue exit=0 wall_ms=13969 at=2026-10-20T18:30:03Z
+mode=violations label=stack-cold args=--offline -PwithGraphPlugin=1 -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :arch-tests:test :graph-check:assertModuleGraph :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Help :syntax24:ktlint2Empty :syntax24:ktlint2Control --continue exit=1 wall_ms=14522 at=2026-10-20T18:30:58Z
+mode=violations label=stack-warm args=--offline -PwithGraphPlugin=1 -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :arch-tests:test :graph-check:assertModuleGraph :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Help :syntax24:ktlint2Empty :syntax24:ktlint2Control --continue exit=1 wall_ms=8228 at=2026-10-20T18:31:12Z
+mode=violations label=notrun-probes args=--offline -Pprobe=true :arch-tests:test --tests NotRunProbes --continue exit=1 wall_ms=11116 at=2026-10-20T18:32:12Z

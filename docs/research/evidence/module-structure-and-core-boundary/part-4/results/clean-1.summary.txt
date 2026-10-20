@@ -1,0 +1,24 @@
+== clean-1
+suite ArchUnitRules tests=9 failures=4 errors=0 suite_seconds=1.554
+  PASS r1_clientLibsOnlyInNotifications()                           0.039s
+  FAIL scope_sanity_classesImported()                               0.011s
+  FAIL probe_whenIs_r3_fqType_identityDomain()                      0.007s
+  PASS r4_platformNeverImportsVertical()                            0.005s
+  FAIL probe_whenIs_r3_importedType_identityDomain()                0.001s
+  PASS r3_layer1ImportsNothingFromLayer2or3()                       0.004s
+  PASS r2_appSeesOnlyPorts_noInfraNoAdapters()                      0.002s
+  FAIL probe_whenIs_r2_ktorType_ordersDomain()                      0.002s
+  PASS r2_domainImportsNoInfra()                                    0.003s
+suite KonsistRules tests=12 failures=1 errors=0 suite_seconds=0.493
+  PASS r2_domain_imports()                                          0.359s
+  FAIL scope_sanity_filesFound()                                    0.03s
+  PASS r4_imports()                                                 0.017s
+  PASS r3_r4_architectureApi()                                      0.019s
+  PASS cover_r2_app_text()                                          0.01s
+  PASS cover_r2_domain_text()                                       0.011s
+  PASS cover_r1_text()                                              0.01s
+  PASS cover_r3_text()                                              0.009s
+  PASS cover_r4_text()                                              0.005s
+  PASS r1_imports()                                                 0.005s
+  PASS r2_app_imports()                                             0.006s
+  PASS r3_imports()                                                 0.007s

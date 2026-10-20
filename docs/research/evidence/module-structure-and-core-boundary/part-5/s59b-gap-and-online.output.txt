@@ -1,0 +1,17 @@
+date: 2026-10-20T19:27:27Z
+buildEnvironment exit=1
+6:* What went wrong:
+8:> Could not resolve all artifacts for configuration 'classpath'.
+9:   > Could not download kotlin-stdlib-2.4.10.jar (org.jetbrains.kotlin:kotlin-stdlib:2.4.10): No cached version available for offline mode
+17:BUILD FAILED in 2s
+1841933 org.jetbrains.kotlin kotlin-stdlib 2.4.10
+TOTAL_GAP_BYTES 1841933 UNKNOWN 0
+downloaded so far 256245292 + gap 1841933 (unknown-size items: 0); cap 280000000
+modules-2 growth in home-b: 1848329 bytes
+mode=violations label=offline-first args=:arch-tests:test --continue exit=1 wall_ms=57264 at=2026-10-20T19:28:28Z
+mode=clean label=clean-1 args=:arch-tests:test --continue exit=1 wall_ms=8245 at=2026-10-20T19:28:37Z
+mode=strict label=strict-compile args=compileKotlin --continue exit=1 wall_ms=6076 at=2026-10-20T19:28:43Z
+mode=clean label=ktlint2-alpha4 args=-Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Format --continue exit=0 wall_ms=5122 at=2026-10-20T19:28:48Z
+mode=violations label=stack-cold args=-PwithGraphPlugin=1 -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :arch-tests:test :graph-check:assertModuleGraph :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Hel
+mode=violations label=stack-warm args=-PwithGraphPlugin=1 -Plint=ktlint2 -PktlintMain=io.github.ktlint.core.Main :arch-tests:test :graph-check:assertModuleGraph :syntax24:ktlint2Syntax :syntax24:ktlint2Fixture :syntax24:ktlint2Hel
+mode=violations label=notrun-probes args=-Pprobe=true :arch-tests:test --tests NotRunProbes --continue exit=1 wall_ms=4526 at=2026-10-20T19:29:12Z

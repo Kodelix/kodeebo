@@ -1,0 +1,61 @@
+date: 2026-10-20T19:08:25Z
+## home-a top-level and caches sizes (bytes)
+1846277490	production/session-state/cache/module-structure-and-core-boundary/part-5/home-a/caches
+671676	production/session-state/cache/module-structure-and-core-boundary/part-5/home-a/native
+437833	production/session-state/cache/module-structure-and-core-boundary/part-5/home-a/daemon
+335051	production/session-state/cache/module-structure-and-core-boundary/part-5/home-a/kotlin-profile
+0	production/session-state/cache/module-structure-and-core-boundary/part-5/home-a/notifications
+## modules-2 files-2.1: 2.4.10 total bytes
+73 files 104309279 bytes
+## modules-2 files newer than home-a creation (mtime within last 10 min), bytes
+480 files 377170936 bytes
+60352373 org.jetbrains.kotlin/kotlin-compiler-embeddable/2.4.10/cac44a5a360313427c693a9de295017bc76d6e4e/kotlin-compiler-embeddable-2.4.10.jar
+60351320 org.jetbrains.kotlin/kotlin-compiler-embeddable/2.4.0/f1a24af8bd111a83950236b1aec7a6d72a97e92c/kotlin-compiler-embeddable-2.4.0.jar
+58593291 org.jetbrains.kotlin/kotlin-compiler-embeddable/2.4.21/3cd9c37c505fb9879e03ebeaf91d9c9500ab6eca/kotlin-compiler-embeddable-2.4.21.jar
+30672980 org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.21/d2b2862980453fbeb168a03dddd488d6191924df/kotlin-gradle-plugin-2.4.21-gradle96.jar
+26714711 org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.10/54e85b6639aa6819abc9985612e470576540e8ec/kotlin-gradle-plugin-2.4.10-gradle813.jar
+26709000 org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.0/18bfb59ea7d01e0ae925f5a5535e61a98624ed3f/kotlin-gradle-plugin-2.4.0-gradle813.jar
+16178627 io.github.willena/sqlite-jdbc/3.53.4.0/11afebcbe413f202089b0f5ded84242a857bf0d9/sqlite-jdbc-3.53.4.0.jar
+12352403 org.jetbrains.skiko/skiko-awt-runtime-linux-x64/0.150.2/556ce6635ef3b7c755b54eef4966e9bf5488dc66/skiko-awt-runtime-linux-x64-0.150.2.jar
+## all files in home-a changed in last 12 min by top dir
+769893686 caches/9.7.0
+696919187 caches/9.8.2
+379363880 caches/modules-2
+569049 native/0.2.8
+437652 daemon/9.8.2
+199529 .tmp/configuration-cache-report4447747415353609091.html
+199529 .tmp/configuration-cache-report12235986432357315913.html
+199529 .tmp/configuration-cache-report10551243621603175455.html
+128171 .tmp/configuration-cache-report8056296835960351284.html
+128171 .tmp/configuration-cache-report3840582615977238899.html
+## S10 online run: first lines
+date: 2026-10-20T19:05:18Z
+java: openjdk version "21.0.12.1" 2026-08-18
+cache size before: 1047138084 bytes
+------------------------------------------------------------
+Gradle 9.8.2
+------------------------------------------------------------
+Build time:    2026-10-19 16:29:26 UTC
+Revision:      8de7bcf76e785507ad92f0741ab9235a430c95e6
+Kotlin:        2.4.10
+Groovy:        4.0.33
+Ant:           Apache Ant(TM) version 1.10.17 compiled on April 6 2026
+Launcher JVM:  21.0.12.1 (Arch Linux 21.0.12.1+1)
+### gradle updateKotlinAbi
+Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:generateExternalPluginSpecBuilders
+> Task :build-logic:extractPrecompiledScriptPluginPlugins
+> Task :build-logic:compilePluginsBlocks
+> Task :build-logic:generateScriptPluginAdapters
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:generatePrecompiledScriptPluginAccessors
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :contexts:venue:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :platform:tenancy:checkKotlinGradlePluginConfigurationErrors SKIPPED

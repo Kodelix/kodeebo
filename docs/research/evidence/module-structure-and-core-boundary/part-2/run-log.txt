@@ -1,0 +1,15 @@
+mode=violations task=:arch-tests:compileTestKotlin args=--offline exit=1 wall_ms=12696 at=2026-10-20T17:38:49Z
+mode=violations task=:arch-tests:test args=--continue exit=1 wall_ms=53498 at=2026-10-20T17:40:19Z
+mode=clean task=:arch-tests:test args=--continue exit=1 wall_ms=10274 at=2026-10-20T17:41:02Z
+mode=clean task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=1 wall_ms=1 at=2026-10-20T17:41:02Z
+mode=strict task=:arch-tests:compileTestKotlin args=--continue exit=1 wall_ms=6482 at=2026-10-20T17:41:08Z
+mode=cycle task=:arch-tests:compileTestKotlin args= exit=1 wall_ms=4180 at=2026-10-20T17:41:13Z
+mode=clean task=:arch-tests:test args=--continue exit=1 wall_ms=12310 at=2026-10-20T17:42:06Z
+mode=clean task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=1 wall_ms=5643 at=2026-10-20T17:42:12Z
+mode=violations task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=1 wall_ms=9025 at=2026-10-20T17:42:21Z
+mode=clean task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=0 wall_ms=10732 at=2026-10-20T17:42:53Z
+mode=clean task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=0 wall_ms=6042 at=2026-10-20T17:42:59Z
+mode=violations task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=1 wall_ms=12496 at=2026-10-20T17:43:12Z
+mode=violations task=:arch-tests:cleanTest :arch-tests:test args=--continue exit=1 wall_ms=7998 at=2026-10-20T17:43:20Z
+mode=violations task=:graph-check:assertModuleGraph args=--continue -PwithGraphPlugin exit=1 wall_ms=70277 at=2026-10-20T17:45:26Z
+mode=clean task=:graph-check:assertModuleGraph args=--continue -PwithGraphPlugin exit=0 wall_ms=4010 at=2026-10-20T17:45:30Z

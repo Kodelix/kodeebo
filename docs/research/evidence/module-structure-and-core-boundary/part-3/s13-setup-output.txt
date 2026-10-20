@@ -1,0 +1,10 @@
+eb38d49092c423aa421fab351df5fd093e2bc07449b100a7ace4aca9efbb9f3c  flyway-core-13.10.3.jar
+7a012fd805f0752028d571dc9284e23697d70652fed5cc347dca3a0206939f6f  flyway-database-postgresql-13.10.3.jar
+21ddb598807d3a51a876704eb979d9296e1c6a6f47ab1826ff88c6d6a127a2d0  jackson-annotations-2.22.jar
+494b9f5fccf008042d5a72c5bf00629b144c0ba7362a9864cbb02234c9772651  jackson-core-3.2.4.jar
+c4af37223d5024f1294a5450598b01b65f30c53d9e906f02c3955ba1fb14a67d  jackson-databind-3.2.4.jar
+73914527305a40cce504b0d3d90b23caf565136912d607ae8ae7c5895512332c  postgresql-42.7.14.jar
+4757828	total
+21a77f511bc3244511ce38fbfec4dc99abce0b5441932eb54ceda64dfbde6553
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+PORT=57613
