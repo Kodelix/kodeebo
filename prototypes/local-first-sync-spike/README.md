@@ -1945,7 +1945,7 @@ Evidence: `evidence/phase4/set2-*` (runner `set2-runner.sh`, status `set2.status
 
 - `slots`: the marker is two 128-byte MAC'd slots written in place with one flush, instead of a temporary file, its flush and a write-through rename.
 - The spread between single runs is larger than the differences (truncate / file's p95 is four times truncate / slots'), so nothing is ranked from this table. No variant reaches the commit p95 ≤ 150 ms.
-- **Linux checks per variant (`evidence/phase4/p4f3-*`, harness `901f3b8`):** the phase 1 kill matrix PASS for all six. Tamper 38 of 38 for delete / file and delete / slots. For the four truncate and persist variants, 28 of 38: the 10 wrong-key rows reported `client.db-journal` as a stray file, with the store unchanged and every attempt refused and recorded. Those two modes keep the journal file by design, so the file existed before the probe. The check was fixed in `4ddb601` (a journal file is a stray only if the probe changed it), but the four variants' tamper suite **has not been rerun** since, so their tamper result is still open.
+- **Linux checks per variant (`evidence/phase4/p4f3-*`, harness `901f3b8`):** the phase 1 kill matrix PASS for all six. Tamper 38 of 38 for delete / file and delete / slots. For the four truncate and persist variants, 28 of 38: the 10 wrong-key rows reported `client.db-journal` as a stray file, with the store unchanged and every attempt refused and recorded. Those two modes keep the journal file by design, so the file existed before the probe. The check was fixed in `4ddb601` (a journal file is a stray only if the probe changed it), but the four variants' tamper suite was not rerun after it: **not passed — not rerun after the `4ddb601` fix.** The rerun follows set 3 (founder, 2026-10-20), so it cannot disturb set 3's timings.
 - **Next (founder, 2026-10-20):** set 3 repeats the three leading options (truncate / slots, persist / slots, delete / file) alternately, three rounds of 400.
 
 **SC-27 with the P4-F4 exclusion options (200 rounds each, ms).** A custom Defender scan of the client's `runs` folder (every earlier run's store included) every 20 s, and a `FullScan` request. As in set 1, `Start-MpScan -ScanType FullScan` returned after 2–6 s, so whether a full scan ran is **not established**.
@@ -1991,11 +1991,25 @@ Evidence: `evidence/phase4/set2-*` (runner `set2-runner.sh`, status `set2.status
 | Transition | Rounds | `BootId` +1 | Tick and QPC restart from zero | A marker kept in memory survives |
 |---|---|---|---|---|
 | Restart (`shutdown /r`) | 10 | 10 | 10 | 0 |
-| Shutdown (`shutdown /s /hybrid`, off 30 s) | 10 | 10 | 10 | 0 |
+| Shutdown requested as Fast Startup (`shutdown /s /hybrid`, off 30 s); what the VM did instead is not established | 10 | 10 | 10 | 0 |
 | Power-off (`virsh destroy`, off 30 s) | 10 | 10 | 10 | 0 |
 | `shutdown /s /full` | 10 | did not shut down | — | — |
 | Hibernate (`shutdown /h`) | 10 | did not shut down | — | — |
 
-- **The registry `BootId` counter rises by exactly one at every boot** and did not move on any clock edit (TS-07b), so it is the boot signal for the founder's "PC was off" versus "app was closed" split (2026-10-18). A boot time computed as wall clock minus uptime is not reliable on its own: it moved once without a boot, from rounding.
-- **Not covered on this VM:** the firmware supports neither hibernation nor Fast Startup (`powercfg /a`), so `/hybrid` was a full shutdown here and the hibernate leg never ran. The `/full` leg did not shut the VM down in any round (the cause was not investigated). Fast Startup and hibernate are for the pilot PC.
+- **The registry `BootId` counter rose by exactly one at every boot measured** and did not move on any clock edit (TS-07b). A boot time computed as wall clock minus uptime is not reliable on its own: it moved once without a boot, from rounding.
+- **"PC was off" is NOT verified for a true full shutdown.** It holds here for a restart and a hard power-off only.
+  - The `/full` leg did not shut the VM down in any round. Likely cause, to confirm after set 3: Microsoft's documented `shutdown` syntax has no `/full` parameter, and a plain `shutdown /s` is already a full shutdown ("Full shutdown is the default when you use Shutdown.exe", [KB 3211190](https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/fast-startup-causes-system-hibernation-shutdown-fail); [shutdown command reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/shutdown), both fetched 2026-10-20). The harness did not record the command's error output, so this is not yet established.
+  - The `/hybrid` leg asks for a Fast Startup shutdown, but the VM's firmware supports neither hibernation nor Fast Startup (`powercfg /a`), so what it actually did is not established either.
+  - After set 3: rerun the leg with `shutdown /s /t 0` and keep the command's output.
+- **Fast Startup and hibernate are not covered on this VM;** they go to the pilot PC (below).
 - The cashier account cannot read the Kernel-Boot event 27 either ("Access is denied").
+
+**Pilot-PC checks (things this VM cannot show; run on the first pilot café's PC before a release reaches it):**
+- **Fast Startup (founder, 2026-10-20).** Microsoft: "Fast Startup is enabled by default in Windows", and with it "the kernel session is not closed, but it is hibernated" at Shut down; "The Fast Startup setting doesn't apply to Restart" ([KB 3211190](https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/fast-startup-causes-system-hibernation-shutdown-fail), applies to Windows 10, ms.date 2026-02-12). The system "appears to the user as though a full shutdown (S5) has occurred, even though the system has actually gone through S4" ([System power states](https://learn.microsoft.com/en-us/windows/win32/power/system-power-states), ms.date 2025-07-14). So a cashier's normal Shut down is a kernel hibernation.
+  - **To test:** with Fast Startup on, Start menu Shut down and power on again; does `BootId` rise; do the tick count and QPC restart or carry on; does the founder's "PC was off" versus "app was closed" split still hold; and is a session open across it billed for the real time off.
+  - **The risk to check (inference, not measured):** if `BootId` does not rise, the client treats the shutdown as "app was closed while the PC was on" and measures the gap with the monotonic clock (D1-B), which may not count the time the PC was off, so an open session would be under-billed.
+  - **If it breaks the split:** a candidate install-checklist item is turning Fast Startup off (Power Options, "Turn on fast startup", or `powercfg /h off`, which also removes hibernation). Microsoft's KB adds that "Disabling Fast Startup is not recommended"; the cost to weigh is a slower cold boot.
+- **Hibernate,** if the PC offers it: the same questions.
+- **The disk's own write cache** (S104 above: QEMU does not emulate a disk that acknowledges a flush it did not do).
+- **Every device timing** (`docs/architecture/perf-budgets.md`: the pilot PC replaces the VM proxy), including P4-F3's commit cost and P4-F5's start check on a real HDD or SSD.
+- **Defender's scheduled-scan settings** chosen for P4-F4, once decided.
