@@ -444,7 +444,71 @@ def _marker_fault(stage):
         raise OSError(errno.ENOSPC, f"injected ENOSPC at marker {stage}")
 
 
+MARKER_MODE = os.environ.get("MARKER_MODE", "file")  # phase 4, P4-F3: "file" (temp + rename) | "slots" (in place)
+SLOT = 128
+
+
+def _slot_bytes(seq):
+    body = json.dumps({"seq": seq, "mac": _mac(seq)}, separators=(",", ":")).encode()
+    return body.ljust(SLOT - 1, b" ") + b"\n"
+
+
+def read_marker():
+    """The marker's sequence. File mode: (seq, 0). Slots mode: (highest seq whose MAC verifies, number of slots that do
+    not verify). Raises MarkerError when nothing verifies."""
+    try:
+        data = open(MARKER, "rb").read()
+    except OSError as e:
+        raise MarkerError(f"commit marker unreadable: {e}")
+    if MARKER_MODE != "slots":
+        try:
+            m = json.loads(data)
+            mseq, mmac = int(m["seq"]), str(m["mac"])
+        except (ValueError, KeyError, TypeError) as e:
+            raise MarkerError(f"commit marker unreadable: {e}")
+        if not hmac.compare_digest(mmac, _mac(mseq)):
+            raise MarkerError("commit marker MAC invalid")
+        return mseq, 0
+    good, bad = [], 0
+    for k in range(2):
+        raw = data[k * SLOT:(k + 1) * SLOT]
+        if raw.strip() == b"":  # never written yet (a new store's first marker)
+            continue
+        try:
+            m = json.loads(raw)
+            if hmac.compare_digest(str(m["mac"]), _mac(int(m["seq"]))) and int(m["seq"]) % 2 == k:
+                good.append(int(m["seq"]))
+                continue
+        except (ValueError, KeyError, TypeError):
+            pass
+        bad += 1
+    if not good:
+        raise MarkerError("commit marker: no slot verifies")
+    return max(good), bad
+
+
 def write_marker(seq):
+    if MARKER_MODE == "slots" and os.path.exists(MARKER) and os.path.getsize(MARKER) == 2 * SLOT:
+        # One forced write per commit: overwrite slot seq % 2 in place and flush. A torn write damages only that slot;
+        # the other still holds the previous sequence (check_marker tells a torn write from tampering).
+        with open(MARKER, "r+b") as f:
+            _marker_fault("write")
+            f.seek((seq % 2) * SLOT)
+            f.write(_slot_bytes(seq))
+            f.flush()
+            _marker_fault("fsync")
+            os.fsync(f.fileno())
+        return
+    if MARKER_MODE == "slots":  # first marker: create both slots durably (temp + rename), as file mode does
+        tmp = MARKER + ".tmp"
+        with open(tmp, "wb") as f:
+            prev = max(seq - 1, 0)
+            slots = {seq % 2: _slot_bytes(seq), prev % 2: _slot_bytes(prev)} if seq else {0: _slot_bytes(0), 1: b" " * (SLOT - 1) + b"\n"}
+            f.write(slots[0] + slots[1])
+            f.flush()
+            os.fsync(f.fileno())
+        durable_replace(tmp, MARKER)
+        return
     tmp = MARKER + ".tmp"
     with open(tmp, "w") as f:
         _marker_fault("write")
@@ -463,13 +527,11 @@ def check_marker(c):
             write_marker(0)  # first start of an empty store
             return
         raise MarkerError(f"commit marker missing beside a store at sequence {seq}")
-    try:
-        m = json.load(open(MARKER))
-        mseq, mmac = int(m["seq"]), str(m["mac"])
-    except (ValueError, KeyError, TypeError) as e:
-        raise MarkerError(f"commit marker unreadable: {e}")
-    if not hmac.compare_digest(mmac, _mac(mseq)):
-        raise MarkerError("commit marker MAC invalid")
+    mseq, bad = read_marker()
+    if bad and seq <= mseq:
+        # slots: a damaged slot is legitimate only as a torn write of the NEXT sequence, which is written after its
+        # commit, so the store must then be ahead of the newest valid slot
+        raise MarkerError(f"commit marker slot invalid while the store is not ahead (store {seq}, marker {mseq})")
     if seq < mseq:
         raise MarkerError(f"committed sales missing: store sequence {seq} < marker {mseq}")
     if seq > mseq:  # crash or failed marker write after a commit: the store is ahead, which is safe
@@ -490,11 +552,25 @@ def q(sql, params=()):
     return con.execute(sql, params).fetchall()
 
 
+JOURNAL_MAGIC = bytes.fromhex("d9d505f920a163d7")
+
+
+def journal_is_hot(path):
+    """A rollback journal SQLite would replay: present and starting with the journal magic. DELETE mode removes it,
+    TRUNCATE empties it and PERSIST zeroes its header at commit, so a leftover file is not hot by itself (P4-F3)."""
+    try:
+        with open(path, "rb") as f:
+            return f.read(8) == JOURNAL_MAGIC
+    except OSError:
+        return False
+
+
 def preserve_before_recovery(force=False):
     """After a crash a hot journal or WAL makes SQLite rewrite the main file while opening it (rollback) or at
     close (checkpoint). Copy the store files aside first, so a store that then fails verification still has its
     untouched originals for recovery and evidence (spike finding P1-F3). Returns the copy's path or None."""
-    if not force and not any(os.path.exists(p) and os.path.getsize(p) > 0 for p in (DB + "-journal", DB + "-wal")):
+    if not force and not (journal_is_hot(DB + "-journal") or
+                          (os.path.exists(DB + "-wal") and os.path.getsize(DB + "-wal") > 0)):
         return None
     base = DB + ".recovery"
     os.makedirs(base, exist_ok=True)
@@ -685,10 +761,8 @@ NET_ERRORS_EARLY = (urllib.error.URLError, ConnectionError, TimeoutError, OSErro
 def marker_seq_if_valid():
     """S206: the sequence in the commit marker, if the marker exists and its MAC is valid."""
     try:
-        m = json.load(open(MARKER))
-        s_ = int(m["seq"])
-        return s_ if hmac.compare_digest(str(m["mac"]), _mac(s_)) else None
-    except (OSError, ValueError, KeyError, TypeError):
+        return read_marker()[0]
+    except MarkerError:
         return None
 
 
@@ -1575,7 +1649,10 @@ for line in sys.stdin:
                    "bills_tax": "tax_piasters" in cols["bills"], "bill_lines": bool(cols["bill_lines"]),
                    "outbox_envelope": "envelope" in cols["outbox"], "premigrate": os.path.exists(PREMIGRATE)})
         elif op == "marker":  # SC-20 view: marker sequence against the store counter
-            m = json.load(open(MARKER)) if os.path.exists(MARKER) else {}
+            try:
+                m = {"seq": read_marker()[0]} if os.path.exists(MARKER) else {}
+            except MarkerError:
+                m = {}
             reply({"ok": True, "op": op, "marker_seq": m.get("seq"),
                    "counter": q("SELECT seq FROM counter WHERE id = 1")[0][0], "unreported": len(unreported)})
         elif op == "pull_config":

@@ -44,6 +44,8 @@ def sha(path):
 class Client:
     def __init__(self, db, cipher, key, journal="delete", fp=None, cache_pages=None, extra_env=None):
         tmp = os.path.join(os.path.dirname(db), "tmp")
+        if journal == "delete":  # P4-F3 variants: TAMPER_JOURNAL=truncate|persist replaces the default journal mode
+            journal = os.environ.get("TAMPER_JOURNAL", journal)
         env = dict(os.environ, STORE="sqlite3mc", CIPHER=cipher, SPIKE_DB_KEY=key, SQLITE_TMPDIR=tmp, TMPDIR=tmp,
                    JOURNAL=journal)
         for k in ("FP", "MUTANT", "CACHE_PAGES"):
