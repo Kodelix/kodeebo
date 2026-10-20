@@ -1,0 +1,239 @@
+{
+ "harness_commit": "4ddb601",
+ "cases": [
+  {
+   "seed": 101,
+   "variant": "a",
+   "copied_while_running": false,
+   "copy": "        1 file(s) copied.\n        1 file(s) copied.\n",
+   "server_view": {
+    "quarantine": [
+     {
+      "device_id": "dev-1",
+      "kept": null,
+      "reason": "sequence_reused",
+      "state": "quarantined"
+     }
+    ],
+    "review_queue": [],
+    "lost_seqs": [],
+    "gaps": []
+   },
+   "after_restore_sync": {
+    "ok": true,
+    "op": "sync",
+    "results": [
+     {
+      "command_id": "cmd-s101-a10",
+      "seq": 6,
+      "result": "quarantined"
+     },
+     {
+      "command_id": "cmd-s101-a11",
+      "seq": 7,
+      "result": "quarantined"
+     },
+     {
+      "command_id": "cmd-s101-a12",
+      "seq": 8,
+      "result": "quarantined"
+     }
+    ],
+    "pending": 0,
+    "batch": 50,
+    "quarantined": true,
+    "retired": false
+   },
+   "violations": [
+    [
+     "I1",
+     "s101-a10 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s101-a11 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s101-a12 acknowledged but missing on the server"
+    ]
+   ]
+  },
+  {
+   "seed": 102,
+   "variant": "b",
+   "copied_while_running": false,
+   "copy": "        1 file(s) copied.\n        1 file(s) copied.\n",
+   "server_view": {
+    "quarantine": [],
+    "review_queue": [],
+    "lost_seqs": [],
+    "gaps": []
+   },
+   "after_restore_sync": {
+    "ok": true,
+    "op": "sync",
+    "results": [
+     {
+      "command_id": "cmd-s102-a10",
+      "seq": 6,
+      "result": "applied"
+     },
+     {
+      "command_id": "cmd-s102-a11",
+      "seq": 7,
+      "result": "applied"
+     },
+     {
+      "command_id": "cmd-s102-a12",
+      "seq": 8,
+      "result": "applied"
+     }
+    ],
+    "pending": 0,
+    "batch": 50,
+    "quarantined": false,
+    "retired": false
+   },
+   "violations": [
+    [
+     "I1",
+     "s102-a5 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s102-a6 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s102-a7 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s102-a8 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s102-a9 acknowledged but missing on the server"
+    ]
+   ]
+  },
+  {
+   "seed": 103,
+   "variant": "a",
+   "copied_while_running": true,
+   "copy": "        1 file(s) copied.\n        1 file(s) copied.\n",
+   "server_view": {
+    "quarantine": [
+     {
+      "device_id": "dev-1",
+      "kept": null,
+      "reason": "sequence_reused",
+      "state": "quarantined"
+     }
+    ],
+    "review_queue": [],
+    "lost_seqs": [],
+    "gaps": []
+   },
+   "after_restore_sync": {
+    "ok": true,
+    "op": "sync",
+    "results": [
+     {
+      "command_id": "cmd-s103-a10",
+      "seq": 6,
+      "result": "quarantined"
+     },
+     {
+      "command_id": "cmd-s103-a11",
+      "seq": 7,
+      "result": "quarantined"
+     },
+     {
+      "command_id": "cmd-s103-a12",
+      "seq": 8,
+      "result": "quarantined"
+     }
+    ],
+    "pending": 0,
+    "batch": 50,
+    "quarantined": true,
+    "retired": false
+   },
+   "violations": [
+    [
+     "I1",
+     "s103-a10 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s103-a11 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s103-a12 acknowledged but missing on the server"
+    ]
+   ]
+  },
+  {
+   "seed": 104,
+   "variant": "b",
+   "copied_while_running": true,
+   "copy": "        1 file(s) copied.\n        1 file(s) copied.\n",
+   "server_view": {
+    "quarantine": [],
+    "review_queue": [],
+    "lost_seqs": [],
+    "gaps": []
+   },
+   "after_restore_sync": {
+    "ok": true,
+    "op": "sync",
+    "results": [
+     {
+      "command_id": "cmd-s104-a10",
+      "seq": 6,
+      "result": "applied"
+     },
+     {
+      "command_id": "cmd-s104-a11",
+      "seq": 7,
+      "result": "applied"
+     },
+     {
+      "command_id": "cmd-s104-a12",
+      "seq": 8,
+      "result": "applied"
+     }
+    ],
+    "pending": 0,
+    "batch": 50,
+    "quarantined": false,
+    "retired": false
+   },
+   "violations": [
+    [
+     "I1",
+     "s104-a5 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s104-a6 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s104-a7 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s104-a8 acknowledged but missing on the server"
+    ],
+    [
+     "I1",
+     "s104-a9 acknowledged but missing on the server"
+    ]
+   ]
+  }
+ ]
+}

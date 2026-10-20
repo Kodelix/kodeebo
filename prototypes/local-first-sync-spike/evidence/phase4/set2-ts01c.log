@@ -1,0 +1,6 @@
+phase 4 TS-01c (store copy restored on Windows), commit 4ddb601
+  (a) copy while running False: quarantine [{'device_id': 'dev-1', 'kept': None, 'reason': 'sequence_reused', 'state': 'quarantined'}] review 0 lost [] gaps [] violations 3 [('I1', 's101-a10 acknowledged but missing on the server'), ('I1', 's101-a11 acknowledged but missing on the server')]
+  (b) copy while running False: quarantine [] review 0 lost [] gaps [] violations 5 [('I1', 's102-a5 acknowledged but missing on the server'), ('I1', 's102-a6 acknowledged but missing on the server')]
+  (a) copy while running True: quarantine [{'device_id': 'dev-1', 'kept': None, 'reason': 'sequence_reused', 'state': 'quarantined'}] review 0 lost [] gaps [] violations 3 [('I1', 's103-a10 acknowledged but missing on the server'), ('I1', 's103-a11 acknowledged but missing on the server')]
+  (b) copy while running True: quarantine [] review 0 lost [] gaps [] violations 5 [('I1', 's104-a5 acknowledged but missing on the server'), ('I1', 's104-a6 acknowledged but missing on the server')]
+TS-01c: done

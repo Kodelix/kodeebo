@@ -1,0 +1,8 @@
+phase 4 counter timings, commit 4ddb601, 200 iterations, journal truncate, marker file, throttled VM
+  start_session  n  200 failed 0  total p50/p95/max 119.2/671.78/1661.16  rt p50/p95/max 120.44/673.51/1662.88
+  change_tier    n  200 failed 0  total p50/p95/max 99.54/659.35/1927.4  rt p50/p95/max 101.33/660.68/1928.98
+  close_session  n  200 failed 0  total p50/p95/max 266.04/1458.88/2721.84  commit p50/p95/max 176.8/911.3/2110.9  marker p50/p95/max 89.04/447.8/1859.25  rt p50/p95/max 267.61/1460.05/2722.94
+  sell_items     n  200 failed 0  total p50/p95/max 258.59/1228.35/2308.07  commit p50/p95/max 178.92/879.15/1694.17  marker p50/p95/max 79.32/416.56/1016.25  rt p50/p95/max 259.94/1229.28/2309.19
+  sync           n    4 failed 0  total p50/p95/max 279.88/431.56/431.56  rt p50/p95/max 281.72/432.92/432.92
+  end_day        n    2 failed 0  total p50/p95/max 193.77/246.13/246.13  rt p50/p95/max 195.15/248.1/248.1
+timings: violations 0 (274 s)

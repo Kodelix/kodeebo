@@ -1,0 +1,135 @@
+{
+ "harness_commit": "4ddb601",
+ "defender": "{\n    \"AMServiceEnabled\":  true,\n    \"RealTimeProtectionEnabled\":  true,\n    \"AntivirusSignatureVersion\":  \"1.461.112.0\"\n}\nplatform=4.18.26090.9\nexclusions=C:\\Users\\cashier\\p4\\runs\\seed-27\\client.db-journal\\:{PathType:file,Process:\"C:\\Users\\cashier\\p4\\py\\python.exe\"} | C:\\Users\\cashier\\p4\\runs\\seed-27\\client.db\\:{PathType:file,Process:\"C:\\Users\\cashier\\p4\\py\\python.exe\"}\nplatform=4.18.26090.9\nexclusions=\n",
+ "exclusion": "contextual",
+ "iterations": 200,
+ "scans": {
+  "custom": 21,
+  "full": 2
+ },
+ "violations": [],
+ "ops": {
+  "start_session": {
+   "n": 200,
+   "failed": 0,
+   "total": {
+    "p50": 242.49,
+    "p95": 742.05,
+    "p99": 1457.08,
+    "max": 4648.22
+   },
+   "rt": {
+    "p50": 244.37,
+    "p95": 743.74,
+    "p99": 1458.67,
+    "max": 4649.58
+   }
+  },
+  "change_tier": {
+   "n": 200,
+   "failed": 0,
+   "total": {
+    "p50": 240.85,
+    "p95": 591.6,
+    "p99": 1189.87,
+    "max": 1720.65
+   },
+   "rt": {
+    "p50": 242.07,
+    "p95": 592.03,
+    "p99": 1190.91,
+    "max": 1722.02
+   }
+  },
+  "close_session": {
+   "n": 200,
+   "failed": 0,
+   "total": {
+    "p50": 514.54,
+    "p95": 1420.63,
+    "p99": 3017.19,
+    "max": 4781.16
+   },
+   "commit": {
+    "p50": 373.18,
+    "p95": 1015.62,
+    "p99": 2639.78,
+    "max": 3702.84
+   },
+   "marker": {
+    "p50": 117.24,
+    "p95": 370.42,
+    "p99": 905.88,
+    "max": 1505.68
+   },
+   "rt": {
+    "p50": 516.16,
+    "p95": 1422.64,
+    "p99": 3018.95,
+    "max": 4782.99
+   }
+  },
+  "sell_items": {
+   "n": 200,
+   "failed": 0,
+   "total": {
+    "p50": 508.17,
+    "p95": 2627.5,
+    "p99": 7428.34,
+    "max": 34218.05
+   },
+   "commit": {
+    "p50": 371.11,
+    "p95": 1655.91,
+    "p99": 4389.17,
+    "max": 33569.54
+   },
+   "marker": {
+    "p50": 116.57,
+    "p95": 471.82,
+    "p99": 971.43,
+    "max": 2872.16
+   },
+   "rt": {
+    "p50": 510.04,
+    "p95": 2628.91,
+    "p99": 7429.69,
+    "max": 34219.77
+   }
+  },
+  "sync": {
+   "n": 4,
+   "failed": 0,
+   "total": {
+    "p50": 513.59,
+    "p95": 622.75,
+    "p99": 622.75,
+    "max": 622.75
+   },
+   "rt": {
+    "p50": 515.76,
+    "p95": 624.49,
+    "p99": 624.49,
+    "max": 624.49
+   }
+  },
+  "end_day": {
+   "n": 2,
+   "failed": 0,
+   "total": {
+    "p50": 255.63,
+    "p95": 523.34,
+    "p99": 523.34,
+    "max": 523.34
+   },
+   "rt": {
+    "p50": 256.99,
+    "p95": 524.15,
+    "p99": 524.15,
+    "max": 524.15
+   }
+  }
+ },
+ "client_events": [],
+ "seconds": 478
+}

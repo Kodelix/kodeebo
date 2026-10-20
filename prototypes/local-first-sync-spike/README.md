@@ -1923,3 +1923,79 @@ Budget: ready ≤ 10 s, check ≤ 5 s. **Missed at every size**, by 7× at 6 day
   - **(b)** (they never reached the server): the erased sales were never seen, and the restored device's next sales took their sequence numbers. This is the known blind spot (OQ27), confirmed on Windows.
 - **Rerun with `CLONE_POLICY=1`:** in leg set 2; the harness is fixed.
 - **Windows finding:** the store and the marker could be copied while the app was running (an administrator `copy`; SQLite opens the file with read sharing). Only the cashier-account boundary (M1, TS-08) can stop that.
+
+#### Leg set 2 (2026-10-20 08:18 – 19:50; one boot from `clean-ssh2`, reverted after)
+
+Evidence: `evidence/phase4/set2-*` (runner `set2-runner.sh`, status `set2.status`). Every leg ran on committed harness `4ddb601`. Indicative only: one throttled VM, and most rows are one run.
+
+**TS-01c rerun with the decided OQ7 policy (`CLONE_POLICY=1`): (a) PASS, (b) blind spot confirmed.**
+- **(a)** (the later sales were synced before the restore): the restored device's next sale reused a sequence the server already held. The server quarantined the device (`sequence_reused`) for the owner's choice instead of rejecting the sales; the oracle's 3 × I1 are exactly the sales held in quarantine. The same with the copy taken while the app ran.
+- **(b)** (they never reached the server): nothing to detect; the restored device's next sales take the erased sequence numbers (OQ27 blind spot), on Windows as on Linux.
+
+**P4-F3 commit variants, one run each (200 rounds, ms, total inside the client):**
+
+| Journal / marker | Close bill p50 / p95 / max | Café sale p50 / p95 / max | Start p95 | Commit p95 (close) |
+|---|---|---|---|---|
+| delete / file (phase 0–3 design) | 276 / 457 / 570 | 279 / 399 / 539 | 211 | 316 |
+| delete / slots | 269 / 489 / 697 | 277 / 528 / 5,598 | 261 | 375 |
+| truncate / file | 266 / 1,459 / 2,722 | 259 / 1,228 / 2,308 | 672 | 911 |
+| truncate / slots | 229 / 360 / 1,380 | 223 / 337 / 1,919 | 188 | 266 |
+| persist / file | 287 / 475 / 535 | 279 / 459 / 578 | 220 | 346 |
+| persist / slots | 260 / 358 / 1,843 | 258 / 401 / 1,756 | 199 | 296 |
+
+- `slots`: the marker is two 128-byte MAC'd slots written in place with one flush, instead of a temporary file, its flush and a write-through rename.
+- The spread between single runs is larger than the differences (truncate / file's p95 is four times truncate / slots'), so nothing is ranked from this table. No variant reaches the commit p95 ≤ 150 ms.
+- **Linux checks per variant (`evidence/phase4/p4f3-*`, harness `901f3b8`):** the phase 1 kill matrix PASS for all six. Tamper 38 of 38 for delete / file and delete / slots. For the four truncate and persist variants, 28 of 38: the 10 wrong-key rows reported `client.db-journal` as a stray file, with the store unchanged and every attempt refused and recorded. Those two modes keep the journal file by design, so the file existed before the probe. The check was fixed in `4ddb601` (a journal file is a stray only if the probe changed it), but the four variants' tamper suite **has not been rerun** since, so their tamper result is still open.
+- **Next (founder, 2026-10-20):** set 3 repeats the three leading options (truncate / slots, persist / slots, delete / file) alternately, three rounds of 400.
+
+**SC-27 with the P4-F4 exclusion options (200 rounds each, ms).** A custom Defender scan of the client's `runs` folder (every earlier run's store included) every 20 s, and a `FullScan` request. As in set 1, `Start-MpScan -ScanType FullScan` returned after 2–6 s, so whether a full scan ran is **not established**.
+
+| Option | Custom scans | Close bill p50 / p95 / p99 / max | Café sale p50 / p95 / p99 / max | Start p99 |
+|---|---|---|---|---|
+| No exclusion | 19 | 515 / 1,153 / 6,490 / 8,579 | 528 / 938 / 4,178 / 9,869 | 2,186 |
+| Exact paths: the store and its journal only | 25 | 684 / 1,334 / 2,370 / 6,053 | 678 / 1,320 / 3,349 / 5,366 | 1,401 |
+| Contextual: the same paths, only when the app's `python.exe` opens them | 21 | 515 / 1,421 / 3,017 / 4,781 | 508 / 2,628 / 7,428 / 34,218 | 1,457 |
+
+- No sale lost or doubled, no false refusal, in all three.
+- Neither exclusion brings the tail under the 3 s ceiling. The scan still reads every other file in the folder (the other runs' stores, the marker, the logs) on the same 100-IOPS disk, and an exclusion does not remove that disk load (inference; per-file I/O not traced). The 34 s café sale under the contextual option is one commit, in one run.
+- The reference without any scan (delete / file above): close bill max 570 ms, with real-time protection on. Real-time protection alone costs little here; the stalls come with a scan running while the counter sells.
+- Platform 4.18.26090.9, so contextual exclusions are supported (they need 4.18.2205.7 or later). Both options were removed after their run (`defender-excl.ps1 remove`).
+- The write-up for the founder (the security cost, and scan scheduling as the other lever) is in the phase 4 report.
+
+**SC-24 options (P4-F5): ready times INVALID, rerun in set 3.**
+- The probe (`harness/guest/sc24probe.py`) and the option 4 run timed "ready" as the first reply to `stats`. But `stats` runs `integrity_check` itself, so every row includes a full check: partial and unclean came out at 45 s (30k) and 380–386 s (300k), the full check's own time. Fixed in `7862d0f`: the ready signal is the light `marker` op, and sc24b also measures `full` and `quick` start modes.
+- The page-size rows (full check, 30k store, cold): 16 KB 17.0–18.7 s, 64 KB 11.0–12.1 s, against 36 s at 4 KB in set 1. The second check in `stats` read a warm cache, so these are close to the real numbers; set 3 measures them again.
+
+**SC-24 option 4 (background check) found a defect: fixed in `7862d0f`.**
+- On the 300k store the background copy refused the store in both runs, and every later sale was refused (1,079 instant refusals in 90 minutes). The background copy shared the counter's own connection across threads, and apsw raises `ThreadingViolationError` when two threads use one connection at once; the client treated that as a store fault.
+- The fix: the copy uses its own read-only connection, and a lock (`store_mx`) keeps each backup step from overlapping a counter write. A stress case (no idle wait, 400-page steps, a sale every 20 ms) was added to `harness/bgcheck.py`; 3 runs PASS on Linux.
+- On the 30k store the copy completed (3,329 pages in 41.4 s, cold) and the check of the copy took 0.1 s (the copy was still in the OS cache). Its ready time is invalid for the reason above.
+- The oracle's I1 rows in this leg are the pre-built store's commands, which were synced to the builder's own database (`sc24`), not to this run's server: a harness artefact, not a loss.
+
+**TS-07b (real Windows clock edits) → finding P4-F6.** The client ran with `REALCLOCK=1` (Windows' own clocks: `GetTickCount64`, `QueryPerformanceCounter`, the `BootId` counter). An administrator set the time ±1 h with `Set-Date -Adjust` while the cashier's client ran.
+
+| Case | Edit | Real time | Billed | Event recorded |
+|---|---|---|---|---|
+| Session running, app open | +1 h / −1 h | 3 min | 3 min / 3 min | `wall_clock_moved` +3600 / −3600 |
+| Session closed during the edit window, app open | +1 h / −1 h | 3 min | 3 min / 3 min | `wall_clock_moved` +3600 / −3600 |
+| Edit, then a restart before the app's next one-minute check | +1 h | 5 min | **65 min** | none |
+| The same | −1 h | 5 min | **−55 min** | none |
+
+- **Finding P4-F6 — a clock edit followed by a restart bills an open session wrongly, even negatively, without any event.**
+  - Across a restart the monotonic clock starts again from zero, so the client measures the outage with the wall clock (last-alive checkpoint to now, D1-B). An edit made less than a minute before the restart is never seen, because the client compares the clocks once a minute.
+  - The cashier account cannot read Windows' time-change or boot events: `wevtutil` answers "Access is denied" for both.
+  - This is phase 5 territory (trusted time). Candidates for the founder: never bill a negative gap and hold a large one for the cashier's confirmation, with an owner flag; catch the edit at once with `WM_TIMECHANGE`, which "the system will broadcast … when the application changes the system time" ([Win32 docs](https://learn.microsoft.com/en-us/windows/win32/sysinfo/wm-timechange), fetched 2026-10-20); and compare with server time at the next contact.
+
+**S301/S302 (clocks and the boot marker across a restart, a shutdown, a power-off), 10 rounds each.**
+
+| Transition | Rounds | `BootId` +1 | Tick and QPC restart from zero | A marker kept in memory survives |
+|---|---|---|---|---|
+| Restart (`shutdown /r`) | 10 | 10 | 10 | 0 |
+| Shutdown (`shutdown /s /hybrid`, off 30 s) | 10 | 10 | 10 | 0 |
+| Power-off (`virsh destroy`, off 30 s) | 10 | 10 | 10 | 0 |
+| `shutdown /s /full` | 10 | did not shut down | — | — |
+| Hibernate (`shutdown /h`) | 10 | did not shut down | — | — |
+
+- **The registry `BootId` counter rises by exactly one at every boot** and did not move on any clock edit (TS-07b), so it is the boot signal for the founder's "PC was off" versus "app was closed" split (2026-10-18). A boot time computed as wall clock minus uptime is not reliable on its own: it moved once without a boot, from rounding.
+- **Not covered on this VM:** the firmware supports neither hibernation nor Fast Startup (`powercfg /a`), so `/hybrid` was a full shutdown here and the hibernate leg never ran. The `/full` leg did not shut the VM down in any round (the cause was not investigated). Fast Startup and hibernate are for the pilot PC.
+- The cashier account cannot read the Kernel-Boot event 27 either ("Access is denied").

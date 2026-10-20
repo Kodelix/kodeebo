@@ -1,0 +1,14 @@
+phase 4 SC-24 options (P4-F5), commit 4ddb601
+  rep 1 n30000           partial     13.6 MB  44963.5 ms  ok True
+  rep 1 n30000           unclean     13.6 MB  47114.5 ms  ok True
+  rep 1 n300000          partial    141.2 MB  386366.3 ms  ok True
+  rep 1 n300000          unclean    141.2 MB  385594.5 ms  ok True
+  rep 1 n30000-p16384    full        13.8 MB  18720.7 ms  ok True
+  rep 1 n30000-p65536    full        15.8 MB  12070.5 ms  ok True
+  rep 2 n30000           partial     13.6 MB  45611.9 ms  ok True
+  rep 2 n30000           unclean     13.6 MB  45972.2 ms  ok True
+  rep 2 n300000          partial    141.2 MB  379435.5 ms  ok True
+  rep 2 n300000          unclean    141.2 MB  379071.3 ms  ok True
+  rep 2 n30000-p16384    full        13.8 MB  17020.6 ms  ok True
+  rep 2 n30000-p65536    full        15.8 MB  11028.5 ms  ok True
+SC-24 options: done

@@ -1,0 +1,8 @@
+phase 4 TS-07b + S304 (real clock edits), commit 4ddb601
+  running  +1 h: real 198.5 s, expected 3 min, billed 3.0 min, events ['wall_clock_moved 3600']
+  running  -1 h: real 180.5 s, expected 3 min, billed 3.0 min, events ['wall_clock_moved -3600']
+  closed   +1 h: real 181.7 s, expected 3 min, billed 3.0 min, events ['wall_clock_moved 3600']
+  closed   -1 h: real 181.6 s, expected 3 min, billed 3.0 min, events ['wall_clock_moved -3600']
+  reboot   +1 h: real 336.8 s, expected 5 min, billed 65.0 min, events []
+  reboot   -1 h: real 308.4 s, expected 5 min, billed -55.0 min, events []
+TS-07b: done

@@ -1,0 +1,193 @@
+{
+ "harness_commit": "4ddb601",
+ "cases": [
+  {
+   "seed": 701,
+   "case": "running",
+   "shift_h": 1,
+   "clock_after_edit": "2026-10-20T04:25:02.0507483-07:00",
+   "billed_minutes": 3.0,
+   "start": {
+    "ok": true,
+    "op": "start_session",
+    "rate": 6000,
+    "v": 2
+   },
+   "close": {
+    "ok": true,
+    "op": "sale",
+    "action_id": "c701",
+    "seq": 1
+   },
+   "real_elapsed_s": 198.5,
+   "expected_minutes": 3,
+   "restore": "The following error occurred: The service has not been started. (0x80070426)\n2026-10-20T04:26:34.0663008-07:00\n",
+   "restore_fallback": "2026-10-20T03:26:34.4413225-07:00",
+   "time_changed_event_visible_to_cashier": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "events": [
+    "wall_clock_moved 3600"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 702,
+   "case": "running",
+   "shift_h": -1,
+   "clock_after_edit": "2026-10-20T02:28:10.9854353-07:00",
+   "billed_minutes": 3.0,
+   "start": {
+    "ok": true,
+    "op": "start_session",
+    "rate": 6000,
+    "v": 2
+   },
+   "close": {
+    "ok": true,
+    "op": "sale",
+    "action_id": "c702",
+    "seq": 1
+   },
+   "real_elapsed_s": 180.5,
+   "expected_minutes": 3,
+   "restore": "The following error occurred: The service has not been started. (0x80070426)\n2026-10-20T02:29:42.1260671-07:00\n",
+   "restore_fallback": "2026-10-20T03:29:42.5063791-07:00",
+   "time_changed_event_visible_to_cashier": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "events": [
+    "wall_clock_moved -3600"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 703,
+   "case": "closed",
+   "shift_h": 1,
+   "clock_after_edit": "2026-10-20T04:31:18.7873633-07:00",
+   "billed_minutes": 3.0,
+   "start": {
+    "ok": true,
+    "op": "start_session",
+    "rate": 6000,
+    "v": 2
+   },
+   "close": {
+    "ok": true,
+    "op": "sale",
+    "action_id": "c703",
+    "seq": 2
+   },
+   "real_elapsed_s": 181.7,
+   "expected_minutes": 3,
+   "restore": "The following error occurred: The service has not been started. (0x80070426)\n2026-10-20T04:32:50.9555074-07:00\n",
+   "restore_fallback": "2026-10-20T03:32:51.2992961-07:00",
+   "time_changed_event_visible_to_cashier": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "events": [
+    "wall_clock_moved 3600"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 704,
+   "case": "closed",
+   "shift_h": -1,
+   "clock_after_edit": "2026-10-20T02:34:27.5863431-07:00",
+   "billed_minutes": 3.0,
+   "start": {
+    "ok": true,
+    "op": "start_session",
+    "rate": 6000,
+    "v": 2
+   },
+   "close": {
+    "ok": true,
+    "op": "sale",
+    "action_id": "c704",
+    "seq": 2
+   },
+   "real_elapsed_s": 181.6,
+   "expected_minutes": 3,
+   "restore": "The following error occurred: The service has not been started. (0x80070426)\n2026-10-20T02:35:59.7549087-07:00\n",
+   "restore_fallback": "2026-10-20T03:36:00.1161732-07:00",
+   "time_changed_event_visible_to_cashier": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "events": [
+    "wall_clock_moved -3600"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 705,
+   "case": "reboot",
+   "shift_h": 1,
+   "clock_after_edit": "2026-10-20T04:37:36.7655449-07:00",
+   "billed_minutes": 65.0,
+   "start": {
+    "ok": true,
+    "op": "start_session",
+    "rate": 6000,
+    "v": 2
+   },
+   "close": {
+    "ok": true,
+    "op": "sale",
+    "action_id": "c705",
+    "seq": 2
+   },
+   "real_elapsed_s": 336.8,
+   "expected_minutes": 5,
+   "restore": "The following error occurred: The service has not been started. (0x80070426)\n2026-10-20T04:43:56.2836619-07:00\n",
+   "restore_fallback": "2026-10-20T03:44:05.5440440-07:00",
+   "time_changed_event_visible_to_cashier": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "events": [],
+   "violations": []
+  },
+  {
+   "seed": 706,
+   "case": "reboot",
+   "shift_h": -1,
+   "clock_after_edit": "2026-10-20T02:46:48.5603382-07:00",
+   "billed_minutes": -55.0,
+   "start": {
+    "ok": true,
+    "op": "start_session",
+    "rate": 6000,
+    "v": 2
+   },
+   "close": {
+    "ok": true,
+    "op": "sale",
+    "action_id": "c706",
+    "seq": 1
+   },
+   "real_elapsed_s": 308.4,
+   "expected_minutes": 5,
+   "restore": "The following error occurred: The service has not been started. (0x80070426)\n2026-10-20T02:52:30.7376377-07:00\n",
+   "restore_fallback": "Connection timed out during banner exchange",
+   "time_changed_event_visible_to_cashier": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "events": [],
+   "violations": []
+  }
+ ]
+}

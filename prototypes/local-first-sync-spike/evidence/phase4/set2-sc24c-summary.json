@@ -1,0 +1,1514 @@
+{
+ "harness_commit": "4ddb601",
+ "gap_s": 5.0,
+ "rows": [
+  {
+   "rep": 1,
+   "store": "n30000",
+   "boot_s": 40.3,
+   "ready_ms_host": 50602.7,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 3329,
+    "total": 3329,
+    "copy_s": 41.4,
+    "check_s": 0.1,
+    "ms": {
+     "total": 0.02
+    }
+   },
+   "bg_elapsed_s": 5.9,
+   "sales": 2,
+   "sale_total_ms": {
+    "n": 2,
+    "p50": 303.28,
+    "p95": 627.85,
+    "max": 627.85
+   },
+   "bg_trace": [
+    {
+     "t": 0.3,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792479819 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792479819 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g1000 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g10000 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g10001 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "boot_s": 40.3,
+   "ready_ms_host": 381869.1,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": false,
+    "op": "bg_state",
+    "store": "refused",
+    "ms": {
+     "total": 0.01
+    }
+   },
+   "bg_elapsed_s": 5400.4,
+   "sales": 1079,
+   "sale_total_ms": {
+    "n": 1079,
+    "p50": 0.02,
+    "p95": 0.03,
+    "max": 953.75
+   },
+   "bg_trace": [
+    {
+     "t": 0.3,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    },
+    {
+     "t": 51.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 101.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 151.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 201.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 251.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 301.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 351.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 401.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 451.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 501.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 551.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 601.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 651.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 701.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 751.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 801.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 851.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 901.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 951.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1001.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1052.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1102.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1152.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1202.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1252.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1302.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1352.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1402.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1452.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1502.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1552.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1602.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1652.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1702.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1752.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1802.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1852.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1902.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1952.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2002.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2052.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2102.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2152.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2202.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2252.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2302.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2353.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2403.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2453.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2503.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2553.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2603.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2653.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2703.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2753.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2803.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2853.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2903.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2953.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3003.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3053.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3103.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3153.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3203.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3253.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3303.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3353.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3403.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3453.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3503.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3553.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3604.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3654.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3704.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3754.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3804.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3854.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3904.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3954.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4004.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4054.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4104.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4154.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4204.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4254.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4304.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4354.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4404.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4454.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4504.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4554.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4604.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4654.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4704.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4754.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4804.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4854.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4905.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4955.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5005.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5055.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5105.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5155.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5205.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5255.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5305.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5355.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792480320 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g0 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g1 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g10 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g100 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "boot_s": 40.4,
+   "ready_ms_host": 49284.2,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 3329,
+    "total": 3329,
+    "copy_s": 41.4,
+    "check_s": 0.1,
+    "ms": {
+     "total": 0.02
+    }
+   },
+   "bg_elapsed_s": 5.5,
+   "sales": 2,
+   "sale_total_ms": {
+    "n": 2,
+    "p50": 173.18,
+    "p95": 348.24,
+    "max": 348.24
+   },
+   "bg_trace": [
+    {
+     "t": 0.4,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792479819 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792485883 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792479819 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792485883 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g1000 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "boot_s": 40.3,
+   "ready_ms_host": 380713.7,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": false,
+    "op": "bg_state",
+    "store": "refused",
+    "ms": {
+     "total": 0.01
+    }
+   },
+   "bg_elapsed_s": 5400.5,
+   "sales": 1079,
+   "sale_total_ms": {
+    "n": 1079,
+    "p50": 0.02,
+    "p95": 0.02,
+    "max": 1179.37
+   },
+   "bg_trace": [
+    {
+     "t": 0.3,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    },
+    {
+     "t": 51.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 101.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 151.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 201.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 251.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 301.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 351.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 401.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 451.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 501.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 551.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 601.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 651.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 701.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 751.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 802.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 852.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 902.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 952.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1002.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1052.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1102.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1152.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1202.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1252.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1302.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1352.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1402.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1452.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1502.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1552.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1602.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1652.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1702.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1752.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1802.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1852.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1902.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 1952.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2002.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2052.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2102.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2153.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2203.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2253.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2303.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2353.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2403.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2453.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2503.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2553.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2603.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2653.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2703.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2753.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2803.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2853.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2903.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 2953.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3003.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3053.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3103.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3153.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3203.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3253.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3303.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3353.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3403.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3454.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3504.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3554.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3604.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3654.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3704.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3754.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3804.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3854.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3904.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 3954.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4004.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4054.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4104.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4154.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4204.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4254.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4304.6,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4354.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4404.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4454.7,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4504.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4554.8,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4604.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4654.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4704.9,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4755.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4805.0,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4855.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4905.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 4955.1,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5005.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5055.2,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5105.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5155.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5205.3,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5255.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5305.4,
+     "state": null,
+     "pages": null,
+     "total": null
+    },
+    {
+     "t": 5355.5,
+     "state": null,
+     "pages": null,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792480320 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792486382 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g0 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g1 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g10 recorded on the device but missing on the server"
+    ]
+   ]
+  }
+ ]
+}

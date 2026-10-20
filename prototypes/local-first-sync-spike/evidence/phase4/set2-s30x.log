@@ -1,0 +1,202 @@
+phase 4 S301/S302 clocks and boot markers, commit 4ddb601
+  rep  1 restart   off None s back 157.1 s wall +201.546 tick +-245.453 qpc +-245.45 unbiased +-245.454 boot_from_tick changed True BootId [24, 25] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  1 hybrid    off 30.3 s back 8.6 s wall +39743.471 tick +-109.531 qpc +-109.532 unbiased +-109.531 boot_from_tick changed True BootId [25, 26] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  1 full      off did not power off s back 0.3 s wall +956.145 tick +956.141 qpc +956.146 unbiased +956.149 boot_from_tick changed False BootId [26, 26] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  1 poweroff  off 30.3 s back 8.7 s wall +65.236 tick +-956.765 qpc +-956.767 unbiased +-956.773 boot_from_tick changed True BootId [26, 27] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  1 hibernate off did not power off s back 0.3 s wall +959.037 tick +959.047 qpc +959.038 unbiased +959.051 boot_from_tick changed False BootId [27, 27] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  2 restart   off None s back 0.4 s wall +40.601 tick +-956.422 qpc +-956.405 unbiased +-956.411 boot_from_tick changed True BootId [27, 28] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  2 hybrid    off 30.2 s back 8.4 s wall +70.233 tick +-3.766 qpc +-3.758 unbiased +-3.767 boot_from_tick changed True BootId [28, 29] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  2 full      off did not power off s back 0.3 s wall +956.274 tick +956.281 qpc +956.275 unbiased +956.275 boot_from_tick changed False BootId [29, 29] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  2 poweroff  off 30.3 s back 8.8 s wall +66.346 tick +-956.656 qpc +-956.661 unbiased +-956.651 boot_from_tick changed True BootId [29, 30] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  2 hibernate off did not power off s back 0.3 s wall +958.985 tick +959.0 qpc +958.985 unbiased +958.992 boot_from_tick changed False BootId [30, 30] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  3 restart   off None s back 0.4 s wall +40.841 tick +-956.156 qpc +-956.153 unbiased +-956.147 boot_from_tick changed True BootId [30, 31] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  3 hybrid    off 30.2 s back 8.9 s wall +71.605 tick +-3.375 qpc +-3.393 unbiased +-3.388 boot_from_tick changed True BootId [31, 32] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  3 full      off did not power off s back 0.3 s wall +958.859 tick +958.859 qpc +958.859 unbiased +958.868 boot_from_tick changed False BootId [32, 32] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  3 poweroff  off 30.2 s back 8.8 s wall +63.552 tick +-959.454 qpc +-959.446 unbiased +-959.449 boot_from_tick changed True BootId [32, 33] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  3 hibernate off did not power off s back 0.3 s wall +958.915 tick +958.922 qpc +958.914 unbiased +958.924 boot_from_tick changed False BootId [33, 33] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  4 restart   off None s back 15.5 s wall +55.867 tick +-941.125 qpc +-941.138 unbiased +-941.133 boot_from_tick changed True BootId [33, 34] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  4 hybrid    off 30.3 s back 24.7 s wall +88.273 tick +-2.734 qpc +-2.727 unbiased +-2.731 boot_from_tick changed True BootId [34, 35] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  4 full      off did not power off s back 0.2 s wall +958.759 tick +958.766 qpc +958.759 unbiased +958.771 boot_from_tick changed False BootId [35, 35] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  4 poweroff  off 30.3 s back 9.1 s wall +65.995 tick +-975.0 qpc +-975.009 unbiased +-975.0 boot_from_tick changed True BootId [35, 36] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  4 hibernate off did not power off s back 0.2 s wall +958.29 tick +958.297 qpc +958.29 unbiased +958.289 boot_from_tick changed False BootId [36, 36] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  5 restart   off None s back 0.4 s wall +41.025 tick +-955.984 qpc +-955.973 unbiased +-955.979 boot_from_tick changed True BootId [36, 37] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  5 hybrid    off 30.3 s back 24.7 s wall +85.582 tick +12.593 qpc +12.579 unbiased +12.596 boot_from_tick changed True BootId [37, 38] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  5 full      off did not power off s back 0.3 s wall +958.727 tick +958.734 qpc +958.727 unbiased +958.723 boot_from_tick changed False BootId [38, 38] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  5 poweroff  off 30.3 s back 8.5 s wall +64.497 tick +-975.5 qpc +-975.49 unbiased +-975.502 boot_from_tick changed True BootId [38, 39] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  5 hibernate off did not power off s back 0.3 s wall +958.813 tick +958.797 qpc +958.814 unbiased +958.808 boot_from_tick changed False BootId [39, 39] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  6 restart   off None s back 1.2 s wall +41.752 tick +-955.265 qpc +-955.26 unbiased +-955.264 boot_from_tick changed True BootId [39, 40] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  6 hybrid    off 30.3 s back 8.6 s wall +74.812 tick +-4.188 qpc +-4.185 unbiased +-4.186 boot_from_tick changed True BootId [40, 41] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  6 full      off did not power off s back 0.3 s wall +-35040.911 tick +958.375 qpc +958.367 unbiased +958.366 boot_from_tick changed True BootId [41, 41] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  6 poweroff  off 30.3 s back 9.9 s wall +36064.758 tick +-957.531 qpc +-957.522 unbiased +-957.528 boot_from_tick changed True BootId [41, 42] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  6 hibernate off did not power off s back 0.3 s wall +957.297 tick +957.297 qpc +957.297 unbiased +957.3 boot_from_tick changed False BootId [42, 42] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  7 restart   off None s back 0.5 s wall +41.261 tick +-955.734 qpc +-955.745 unbiased +-955.732 boot_from_tick changed True BootId [42, 43] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  7 hybrid    off 30.3 s back 8.7 s wall +70.328 tick +-3.672 qpc +-3.659 unbiased +-3.672 boot_from_tick changed True BootId [43, 44] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  7 full      off did not power off s back 0.3 s wall +958.571 tick +958.563 qpc +958.571 unbiased +958.569 boot_from_tick changed False BootId [44, 44] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  7 poweroff  off 30.3 s back 8.6 s wall +65.623 tick +-959.375 qpc +-959.384 unbiased +-959.38 boot_from_tick changed True BootId [44, 45] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  7 hibernate off did not power off s back 0.3 s wall +958.511 tick +958.5 qpc +958.511 unbiased +958.509 boot_from_tick changed False BootId [45, 45] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  8 restart   off None s back 0.4 s wall +40.92 tick +-956.094 qpc +-956.081 unbiased +-956.092 boot_from_tick changed True BootId [45, 46] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  8 hybrid    off 30.3 s back 8.5 s wall +72.255 tick +-3.735 qpc +-3.737 unbiased +-3.734 boot_from_tick changed True BootId [46, 47] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  8 full      off did not power off s back 0.2 s wall +958.686 tick +958.688 qpc +958.686 unbiased +958.684 boot_from_tick changed False BootId [47, 47] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  8 poweroff  off 30.3 s back 13.5 s wall +68.717 tick +-954.281 qpc +-954.285 unbiased +-954.277 boot_from_tick changed True BootId [47, 48] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  8 hibernate off did not power off s back 0.3 s wall +958.502 tick +958.515 qpc +958.502 unbiased +958.511 boot_from_tick changed False BootId [48, 48] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  9 restart   off None s back 0.3 s wall +40.221 tick +-959.797 qpc +-959.786 unbiased +-959.794 boot_from_tick changed True BootId [48, 49] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  9 hybrid    off 30.3 s back 8.8 s wall +121.829 tick +-4.172 qpc +-4.171 unbiased +-4.173 boot_from_tick changed True BootId [49, 50] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  9 full      off did not power off s back 0.2 s wall +958.381 tick +958.375 qpc +958.381 unbiased +958.379 boot_from_tick changed False BootId [50, 50] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  9 poweroff  off 30.3 s back 8.9 s wall +64.187 tick +-958.797 qpc +-958.807 unbiased +-958.803 boot_from_tick changed True BootId [50, 51] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  9 hibernate off did not power off s back 0.3 s wall +956.145 tick +956.14 qpc +956.145 unbiased +956.144 boot_from_tick changed False BootId [51, 51] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep 10 restart   off None s back 0.3 s wall +40.844 tick +-954.157 qpc +-954.166 unbiased +-954.155 boot_from_tick changed True BootId [51, 52] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep 10 hybrid    off 30.3 s back 8.9 s wall +90.238 tick +-2.75 qpc +-2.744 unbiased +-2.758 boot_from_tick changed True BootId [52, 53] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep 10 full      off did not power off s back 0.3 s wall +958.666 tick +958.656 qpc +958.666 unbiased +958.659 boot_from_tick changed False BootId [53, 53] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep 10 poweroff  off 30.4 s back 8.8 s wall +65.715 tick +-959.296 qpc +-959.302 unbiased +-959.29 boot_from_tick changed True BootId [53, 54] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep 10 hibernate off did not power off s back 0.3 s wall +956.432 tick +956.438 qpc +956.432 unbiased +956.426 boot_from_tick changed False BootId [54, 54] volatile survived True event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+S301/S302: done

@@ -1,0 +1,126 @@
+{
+ "harness_commit": "4ddb601",
+ "started": "2026-10-20 09:09:47",
+ "rows": [
+  {
+   "rep": 1,
+   "store": "n30000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 44963.5,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000",
+   "start_check": "unclean",
+   "boot_s": 40.4,
+   "ms": 47114.5,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 386366.3,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "start_check": "unclean",
+   "boot_s": 40.3,
+   "ms": 385594.5,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000-p16384",
+   "start_check": "full",
+   "boot_s": 40.4,
+   "ms": 18720.7,
+   "db_bytes": 13844480,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000-p65536",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 12070.5,
+   "db_bytes": 15794176,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 45611.9,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "start_check": "unclean",
+   "boot_s": 40.3,
+   "ms": 45972.2,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 379435.5,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "start_check": "unclean",
+   "boot_s": 40.3,
+   "ms": 379071.3,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000-p16384",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 17020.6,
+   "db_bytes": 13844480,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000-p65536",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 11028.5,
+   "db_bytes": 15794176,
+   "ready_ok": true,
+   "error": null
+  }
+ ]
+}
