@@ -1,0 +1,20 @@
+--- start 2026-10-20 08:18:08 4ddb601
+install 08:19:57
+ts01c rc=0 08:24:00
+t-delete-file rc=0 08:27:19
+t-truncate-file rc=0 08:31:58
+t-persist-file rc=0 08:35:18
+t-delete-slots rc=0 08:38:52
+t-persist-slots rc=0 08:42:05
+t-truncate-slots rc=0 08:44:51
+sc27-none rc=0 08:52:15
+sc27-paths rc=0 09:01:29
+sc27-contextual rc=0 09:09:46
+sc24b rc=0 10:00:54
+sc24c rc=0 13:23:05
+ts07b rc=0 13:53:02
+s30x rc=0 19:49:03
+Domain snapshot clean-ssh2 reverted
+
+19:50:04 p4 down: shut off, reverted clean-ssh2
+DONE 2026-10-20 19:50:04
