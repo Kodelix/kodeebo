@@ -1,0 +1,19 @@
+du before (run 2): 80K
+Traceback (most recent call last):
+  File "/home/kiko/saas-products/kodeebo/docs/research/evidence/jobs-and-outbox/part-3/S31-exposed-ktor/resolve.py", line 154, in <module>
+    main()
+    ~~~~^^
+  File "/home/kiko/saas-products/kodeebo/docs/research/evidence/jobs-and-outbox/part-3/S31-exposed-ktor/resolve.py", line 124, in main
+    final, problems = resolve(cache)
+                      ~~~~~~~^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/docs/research/evidence/jobs-and-outbox/part-3/S31-exposed-ktor/resolve.py", line 99, in resolve
+    ds, err = deps_of(cache, g, a, new[(g, a)])
+              ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/docs/research/evidence/jobs-and-outbox/part-3/S31-exposed-ktor/resolve.py", line 63, in deps_of
+    root = ET.fromstring(open(f, "rb").read())
+  File "/usr/lib/python3.14/xml/etree/ElementTree.py", line 1363, in XML
+    return parser.close()
+           ~~~~~~~~~~~~^^
+xml.etree.ElementTree.ParseError: no element found: line 1, column 0
+du after plan (POMs only): 80K
+NOTE: failed run 2: an empty POM file left by failed run 1 broke the XML parse. Empty POMs deleted from the cache before run 3.

@@ -1,0 +1,97 @@
+### S31b start 2026-10-20T19:42:41Z; PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2); java: openjdk version "21.0.12.1" 2026-08-18
+
+### (a) Db2: attempt count vs transaction_timeout=500ms, body = claim + pg_sleep(3), counter outside the DB
+[+171ms] CASE a1-default: defaultMaxAttempts=(Exposed default) maxAttempts-in-block=(not set)
+[+232ms]   a1-default body run #1: transaction.maxAttempts=3 claimed [1, 2, 3], now pg_sleep(3)
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31b-a1-default - Connection org.postgresql.jdbc.PgConnection@6ac13091 marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+[+767ms]   a1-default body run #2: transaction.maxAttempts=3 claimed [1, 2, 3], now pg_sleep(3)
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31b-a1-default - Connection org.postgresql.jdbc.PgConnection@12251115 marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+[+1272ms]   a1-default body run #3: transaction.maxAttempts=3 claimed [1, 2, 3], now pg_sleep(3)
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31b-a1-default - Connection org.postgresql.jdbc.PgConnection@563bdded marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+[+1785ms]   a1-default FAILED after 1606ms; body ran 3 time(s); ExposedSQLException: org.postgresql.util.PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- 
+[+1791ms]   a1-default next borrower (attempt 1): transaction_timeout=[0] claim=[1, 2, 3]
+[+1821ms] CASE a2-config1: defaultMaxAttempts=1 maxAttempts-in-block=(not set)
+[+1825ms]   a2-config1 body run #1: transaction.maxAttempts=1 claimed [1, 2, 3], now pg_sleep(3)
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31b-a2-config1 - Connection org.postgresql.jdbc.PgConnection@5bf0d49 marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+[+2326ms]   a2-config1 FAILED after 505ms; body ran 1 time(s); ExposedSQLException: org.postgresql.util.PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- 
+[+2330ms]   a2-config1 next borrower (attempt 1): transaction_timeout=[0] claim=[1, 2, 3]
+[+2378ms] CASE a3-block1: defaultMaxAttempts=(Exposed default) maxAttempts-in-block=1
+[+2383ms]   a3-block1 body run #1: transaction.maxAttempts=1 claimed [1, 2, 3], now pg_sleep(3)
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31b-a3-block1 - Connection org.postgresql.jdbc.PgConnection@45752059 marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+[+2884ms]   a3-block1 FAILED after 506ms; body ran 1 time(s); ExposedSQLException: org.postgresql.util.PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- 
+[+2887ms]   a3-block1 next borrower (attempt 1): transaction_timeout=[0] claim=[1, 2, 3]
+[+2922ms] done
+### Db2 exit=0
+
+### (b) Rb1-pg12s-runnerstop2s-shutdown2s: WORK_SEC=12 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000
+before SIGTERM: claimable rows (expect 8): 8; job backends: active/PgSleep 
+JVM exited 2136 ms after SIGTERM
+exit code: 143
+row state after JVM exit, sampled each ~1 s (ms since SIGTERM | claimable rows of 10 | job backends not idle):
+  2272 ms | 8 | 1
+  3428 ms | 8 | 1
+  4564 ms | 8 | 1
+  5741 ms | 8 | 1
+  6877 ms | 8 | 1
+  8051 ms | 8 | 1
+  9211 ms | 8 | 1
+  10357 ms | 8 | 1
+  11513 ms | 10 | 0
+[+208ms] config: WORK_SEC=12 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000 CCCI_MS=null
+[+331ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[+341ms] event ApplicationStarted
+[+357ms] event ServerReady
+[+381ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0]; now REAL blocking JDBC: select pg_sleep(12)
+[+1139ms] event ApplicationStopPreparing
+[+1140ms] main: start(wait=true) returned
+[+1140ms] event ApplicationStopping
+[+3143ms] runner: stop() TIMED OUT after 2001ms
+[+3150ms] event ApplicationStopped; closing pools
+[+3153ms] pools: closed
+
+### (b) Rb2-pg12s-runnerstop2s-shutdown2s-ccci1000: WORK_SEC=12 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000
+before SIGTERM: claimable rows (expect 8): 8; job backends: active/PgSleep 
+JVM exited 2140 ms after SIGTERM
+exit code: 143
+row state after JVM exit, sampled each ~1 s (ms since SIGTERM | claimable rows of 10 | job backends not idle):
+  2313 ms | 8 | 1
+  3455 ms | 10 | 0
+[+196ms] config: WORK_SEC=12 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000 CCCI_MS=1000
+[+314ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[+324ms] event ApplicationStarted
+[+340ms] event ServerReady
+[+367ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[1s]; now REAL blocking JDBC: select pg_sleep(12)
+[+1158ms] event ApplicationStopPreparing
+[+1159ms] main: start(wait=true) returned
+[+1159ms] event ApplicationStopping
+[+3167ms] runner: stop() TIMED OUT after 2003ms
+[+3178ms] event ApplicationStopped; closing pools
+[+3183ms] pools: closed
+
+### (b) Rb3-pg4s-runnerstop6s-shutdown8s: WORK_SEC=4 GRACE_MS=500 TIMEOUT_MS=8000 RUNNER_STOP_MS=6000
+before SIGTERM: claimable rows (expect 8): 8; job backends: active/PgSleep 
+JVM exited 3466 ms after SIGTERM
+exit code: 143
+row state after JVM exit, sampled each ~1 s (ms since SIGTERM | claimable rows of 10 | job backends not idle):
+  3639 ms | 10 | 0
+[+194ms] config: WORK_SEC=4 GRACE_MS=500 TIMEOUT_MS=8000 RUNNER_STOP_MS=6000 CCCI_MS=null
+[+318ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=8000
+[+328ms] event ApplicationStarted
+[+344ms] event ServerReady
+[+368ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0]; now REAL blocking JDBC: select pg_sleep(4)
+[+1043ms] event ApplicationStopPreparing
+[+1044ms] main: start(wait=true) returned
+[+1044ms] event ApplicationStopping
+[+4372ms] loop: pg_sleep returned after 4004ms (statement was NOT interrupted if this is about 4000ms)
+[+4396ms] loop: cancelled (JobCancellationException)
+[+4396ms] loop: exited
+[+4400ms] runner: stop() joined after 3352ms
+[+4411ms] event ApplicationStopped; closing pools
+[+4414ms] pools: closed
+
+### done 2026-10-20T19:43:07Z

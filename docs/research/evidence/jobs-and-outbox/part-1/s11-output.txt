@@ -1,0 +1,73 @@
+### date 2026-10-20T19:04:03Z
+
+=== com.github.kagkarlsson:db-scheduler ===
+    <latest>16.12.0</latest>
+    <release>16.12.0</release>
+    <lastUpdated>20260529142018</lastUpdated>
+release=16.12.0
+--- jar HEAD (size only, not downloaded)
+HTTP/2 200 
+content-length: 515484
+last-modified: Fri, 29 May 2026 14:06:03 GMT
+--- pom licences + java hints
+--- OSV at release 16.12.0
+{"n":0,"ids":[]}
+--- OSV all versions (ids, first 12)
+{"n":0,"ids":[]}
+
+=== org.jobrunr:jobrunr ===
+    <latest>9.0.2</latest>
+    <release>9.0.2</release>
+    <lastUpdated>20261020090804</lastUpdated>
+release=9.0.2
+--- jar HEAD (size only, not downloaded)
+HTTP/2 200 
+content-length: 1248670
+last-modified: Tue, 20 Oct 2026 09:03:03 GMT
+--- pom licences + java hints
+    <license>
+      <name>GNU Lesser General Public License v3.0 or later</name>
+      <url>https://github.com/jobrunr/jobrunr/blob/master/License.md#lgpl-v3-license</url>
+    </license>
+    <license>
+      <name>Commercial License</name>
+      <url>https://github.com/jobrunr/jobrunr/blob/master/License.md#commercial-license</url>
+    </license>
+--- OSV at release 9.0.2
+{"n":0,"ids":[]}
+--- OSV all versions (ids, first 12)
+{"n":0,"ids":[]}
+
+=== org.quartz-scheduler:quartz ===
+    <latest>2.5.2</latest>
+    <release>2.5.2</release>
+    <lastUpdated>20251201172916</lastUpdated>
+release=2.5.2
+--- jar HEAD (size only, not downloaded)
+HTTP/2 200 
+content-length: 626705
+last-modified: Mon, 01 Dec 2025 17:23:25 GMT
+--- pom licences + java hints
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+--- OSV at release 2.5.2
+{"n":0,"ids":[]}
+--- OSV all versions (ids, first 12)
+{"n":1,"ids":["GHSA-9qcf-c26r-x5rf"]}
+
+=== OSV positive control: log4j-core 2.14.1 (expect many) ===
+{"n":7,"ids":["GHSA-3pxv-7cmr-fjr4","GHSA-6hg6-v5c8-fphq","GHSA-7rjr-3q55-vv33","GHSA-8489-44mv-ggj8","GHSA-jfh8-c2jp-5v3q","GHSA-p6xc-xr62-6r2g","GHSA-vc5p-v9hr-52mj"]}
+
+=== GitHub kagkarlsson/db-scheduler ===
+{"license":"Apache-2.0","archived":false,"pushed_at":"2026-10-19T12:57:52Z","open_issues_count":71,"stars":1667}
+{"tag":"v16.12.0","published":"2026-05-29T14:20:31Z"}
+
+=== GitHub jobrunr/jobrunr ===
+{"license":"NOASSERTION","archived":false,"pushed_at":"2026-10-20T08:52:46Z","open_issues_count":10,"stars":3100}
+{"tag":"v9.0.2","published":"2026-10-20T08:52:46Z"}
+
+=== GitHub quartz-scheduler/quartz ===
+{"license":"Apache-2.0","archived":false,"pushed_at":"2026-10-19T01:42:57Z","open_issues_count":62,"stars":6756}
+{"tag":"v2.5.2","published":"2025-12-01T18:00:46Z"}

@@ -1,0 +1,155 @@
+### S30 start 2026-10-20T19:01:39Z
+### versions
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+Docker version 29.9.1, build dfc520dcc2
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE ROLE
+CREATE SCHEMA
+GRANT
+ALTER ROLE
+ALTER ROLE
+ALTER ROLE
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+DO
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+RESET
+GRANT
+GRANT
+GRANT
+GRANT
+app_rt|f|f
+job_rt|f|f
+migrator|f|f
+platform_rt|f|f
+INSERT 0 3
+INSERT 0 10
+INSERT 0 3
+
+### T1a job_rt, NO tenant context: outbox count, skip-locked claim, tenant_status count (expect 0, 0 rows, 0)
+BEGIN
+outbox rows visible: 0
+claim rows: 0
+tenant_status rows visible to job_rt: 0
+COMMIT
+### T1b platform_rt, no context: list tenant ids (expect 3), then read outbox (expect permission denied)
+tenant: aaaaaaaa-0000-4000-8000-000000000001 active
+tenant: aaaaaaaa-0000-4000-8000-000000000002 active
+tenant: aaaaaaaa-0000-4000-8000-000000000003 suspended
+ERROR:  permission denied for table outbox
+### T1c app_rt no context: tenant_status (no grant, expect permission denied)
+ERROR:  permission denied for table tenant_status
+
+### T2 two workers, same tenant A (10 rows): W1 claims 6 and holds 4 s, W2 starts 1 s later and claims up to 6
+W1 claimed 1
+W1 claimed 2
+W1 claimed 3
+W1 claimed 4
+W1 claimed 5
+W1 claimed 6
+W2 claimed 7
+W2 claimed 8
+W2 claimed 9
+W2 claimed 10
+T2 result: W1=6 W2=4 overlap=0
+
+### T3 dedup row and effect in ONE transaction (tenant A, message m1)
+-- T3a forced failure after both inserts (division by zero), then COMMIT (becomes rollback)
+BEGIN
+t
+INSERT 0 1
+INSERT 0 1
+ERROR:  division by zero
+ROLLBACK
+-- after T3a (new transaction, scope A): dedup rows and effect rows (expect 0 and 0)
+BEGIN
+t
+dedup rows: 0
+effect rows: 0
+COMMIT
+-- T3b success path (expect COMMIT, then 1 and 1)
+BEGIN
+t
+INSERT 0 1
+INSERT 0 1
+COMMIT
+BEGIN
+t
+dedup rows: 1
+effect rows: 1
+COMMIT
+-- T3c redelivery of m1: insert ... on conflict do nothing returning; effect only when a row came back (expect 0 rows -> skip)
+BEGIN
+t
+INSERT 0 0
+effect rows after redelivery: 1
+COMMIT
+-- T3d plain duplicate insert without ON CONFLICT (expect SQLSTATE 23505 text)
+BEGIN
+t
+ERROR:  23505: duplicate key value violates unique constraint "inbox_dedup_pkey"
+SCHEMA NAME:  app
+TABLE NAME:  inbox_dedup
+CONSTRAINT NAME:  inbox_dedup_pkey
+LOCATION:  _bt_check_unique, nbtinsert.c:666
+ROLLBACK
+-- T3e dedup row for tenant A written while scope is B (expect RLS WITH CHECK violation)
+BEGIN
+t
+ERROR:  new row violates row-level security policy "tenant_isolation" for table "inbox_dedup"
+ROLLBACK
+
+### T4 traceparent round trip (stored by app_rt in scope A, read and marked by job_rt in scope A)
+BEGIN
+t
+INSERT 0 1
+COMMIT
+BEGIN
+t
+read back: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01 equal=true
+UPDATE 1
+unprocessed left in A: 10
+COMMIT
+
+### T5 transaction_timeout (set first, locally, 500 ms) on a claim transaction that then sleeps 3 s
+BEGIN
+t
+t
+T5 claimed 1
+T5 claimed 2
+T5 claimed 3
+FATAL:  terminating connection due to transaction timeout
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+connection to server was lost
+T5 elapsed_ms=560
+-- T5 follow-up: a new session claims A (expect the same 3 ids claimable again; lock released)
+T5b claimed 1
+T5b claimed 2
+T5b claimed 3
+
+### T6 process kill: client claims 3 rows in scope A, holds, is SIGKILLed; second session polls for the rows
+PID:228
+-- before kill: backends named jo3-killme, and a competing claim (expect 3 fewer claimable rows in A)
+backends jo3-killme: 1
+locked-by-victim rows (pg_locks tuple locks held by jo3-killme): 1
+competing claim before kill got rows: 7
+kill -9 sent to client pid 228
+T6 first poll that saw the victim's rows again: rows=7 after_ms=18725 (includes docker exec overhead per poll)
+backends jo3-killme after: 1
+
+### done 2026-10-20T19:02:10Z

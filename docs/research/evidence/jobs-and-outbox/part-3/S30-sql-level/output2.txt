@@ -1,0 +1,53 @@
+### S30b start 2026-10-20T19:03:02Z
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+rows claimable in A before any victim: 10
+
+### T6b victim idle in transaction, default settings, observe up to 15 s
+PID:123
+BEGIN
+t
+V claimed 1
+V claimed 2
+V claimed 3
+backends t6b before kill: 1; rows claimable by a competitor now: 7 (expect 7)
+backend state: idle in transaction / ClientRead
+kill -9 sent to client pid 123
+backends t6b after: 0, elapsed_ms=96 (poll includes docker exec overhead)
+rows claimable after: 10 (10 means the victim's 3 rows are free again)
+
+### T6c victim inside pg_sleep(60), default client_connection_check_interval (0), observe up to 15 s
+PID:171
+BEGIN
+t
+V claimed 1
+V claimed 2
+V claimed 3
+backends t6c before kill: 1; rows claimable by a competitor now: 7 (expect 7)
+backend state: active / PgSleep
+kill -9 sent to client pid 171
+backends t6c after: 1, elapsed_ms=15109 (poll includes docker exec overhead)
+rows claimable after: 7 (10 means the victim's 3 rows are free again)
+
+### T6d victim inside pg_sleep(60), client_connection_check_interval=1000ms set at connect, observe up to 15 s
+PID:795
+BEGIN
+t
+V claimed 4
+V claimed 5
+V claimed 6
+backends t6d before kill: 1; rows claimable by a competitor now: 4 (expect 7)
+backend state: active / PgSleep
+kill -9 sent to client pid 795
+backends t6d after: 0, elapsed_ms=867 (poll includes docker exec overhead)
+rows claimable after: 7 (10 means the victim's 3 rows are free again)
+
+-- setting reference: default and unit of client_connection_check_interval on this server
+client_connection_check_interval=0ms
+idle_in_transaction_session_timeout=0ms
+tcp_keepalives_count=9
+tcp_keepalives_idle=7200s
+tcp_keepalives_interval=75s
+tcp_user_timeout=0ms
+transaction_timeout=0ms
+
+### done 2026-10-20T19:03:30Z

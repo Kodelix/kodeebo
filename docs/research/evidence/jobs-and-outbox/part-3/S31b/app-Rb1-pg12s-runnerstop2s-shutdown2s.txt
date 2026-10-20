@@ -1,0 +1,24 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31b-app-job - Added connection org.postgresql.jdbc.PgConnection@ba8d91c
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31b-app-plat - Added connection org.postgresql.jdbc.PgConnection@351d0846
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Start completed.
+[+208ms] config: WORK_SEC=12 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000 CCCI_MS=null
+[+331ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.115 seconds.
+[+341ms] event ApplicationStarted
+[DefaultDispatcher-worker-2] INFO io.ktor.server.Application - Responding at http://127.0.0.1:18091
+[+357ms] event ServerReady
+[+381ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0]; now REAL blocking JDBC: select pg_sleep(12)
+[+1139ms] event ApplicationStopPreparing
+[+1140ms] main: start(wait=true) returned
+[+1140ms] event ApplicationStopping
+[+3143ms] runner: stop() TIMED OUT after 2001ms
+[+3150ms] event ApplicationStopped; closing pools
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Shutdown completed.
+[+3153ms] pools: closed

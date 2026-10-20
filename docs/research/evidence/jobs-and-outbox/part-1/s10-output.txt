@@ -1,0 +1,335 @@
+### date 2026-10-20T19:02:43Z  image postgres:18.6 sha256:74935e722416
+PostgreSQL 18.6 (Debian 18.6-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+
+=== SETUP (as postgres) ===
+                                     List of roles
+  Role name  |                         Attributes                         | Description 
+-------------+------------------------------------------------------------+-------------
+ app_rt      |                                                            | 
+ job_rt      |                                                            | 
+ migrator    | Cannot login                                               | 
+ platform_rt |                                                            | 
+ postgres    | Superuser, Create role, Create DB, Replication, Bypass RLS | 
+ ro_rt       |                                                            | 
+ sel_only_rt |                                                            | 
+
+   relname    | rls | forced 
+--------------+-----+--------
+ job_schedule | f   | f
+ outbox       | t   | t
+ tenant_work  | t   | t
+(3 rows)
+
+
+=== SEED as app_rt: tenant A 6 rows, tenant B 3 rows, tenant_work row for A (committed) ===
+
+=== T1a job_rt claim, NO tenant context (expect 0 rows) ===
+ rows_claimed_no_ctx 
+---------------------
+                   0
+(1 row)
+
+
+=== T1b job_rt claim in scope A (expect 6) and in scope B (expect 3) ===
+ scope_a 
+---------
+       6
+(1 row)
+
+ scope_b 
+---------
+       3
+(1 row)
+
+
+=== T1c FOR UPDATE by a role with SELECT privilege only (ro_rt) ===
+ERROR:  42501: permission denied for table outbox
+LOCATION:  aclcheck_error, aclchk.c:2793
+
+=== T1d FOR UPDATE by a role with SELECT+UPDATE privilege but only a SELECT policy (sel_only_rt) ===
+ for_update_rows 
+-----------------
+               0
+(1 row)
+
+
+=== T1e two workers, same tenant: s1 claims 3 and holds 3 s, s2 starts 1 s later (expect disjoint ids) ===
+ who |   ids   
+-----+---------
+ s2  | {4,5,6}
+(1 row)
+
+ who |   ids   
+-----+---------
+ s1  | {1,2,3}
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+
+=== T1f crashed claimer: s3 claims all 6 and sleeps; its backend is terminated at 1 s; s4 claims at once after (expect 6) ===
+terminated claimer3: true
+ who | claimed_after_crash 
+-----+---------------------
+ s4  |                   6
+(1 row)
+
+--- s3 raw output:
+ who | claimed 
+-----+---------
+ s3  |       6
+(1 row)
+
+FATAL:  57P01: terminating connection due to administrator command
+LOCATION:  ProcessInterrupts, postgres.c:3354
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+connection to server was lost
+
+=== T1g cross-tenant: in scope A as app_rt, count visible rows and try to insert a row for tenant B ===
+ visible_in_scope_a 
+--------------------
+                  6
+(1 row)
+
+ERROR:  42501: new row violates row-level security policy for table "outbox"
+LOCATION:  ExecWithCheckOptions, execMain.c:2337
+
+=== T1h business write + outbox row + tenant_work upsert in one app_rt transaction: ROLLBACK then COMMIT ===
+ tx_test_rows_after_rollback | pending_after_rollback 
+-----------------------------+------------------------
+                           0 |                      6
+(1 row)
+
+
+=== T1i hot-row contention in design 2-d: s5 upserts tenant_work (DO UPDATE) and holds 1.5 s; s6 starts 0.5 s later (waited seconds for s6's upsert) ===
+ do_update_waited_s 
+--------------------
+               0.99
+(1 row)
+
+
+=== T1j same, but the hint row already exists and the writers use ON CONFLICT DO NOTHING ===
+ do_nothing_waited_s 
+---------------------
+                0.00
+(1 row)
+
+
+=== T1k CP due-list query by platform_rt over 10,000 tenant_work rows (50 due) ===
+ tenants_visible 
+-----------------
+           10001
+(1 row)
+
+                                                   QUERY PLAN                                                    
+-----------------------------------------------------------------------------------------------------------------
+ Index Scan using tenant_work_due on tenant_work  (cost=0.29..9.16 rows=50 width=16) (actual rows=51.00 loops=1)
+   Index Cond: (due_at <= now())
+   Index Searches: 1
+   Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=4
+ Planning Time: 0.041 ms
+ Execution Time: 0.012 ms
+(8 rows)
+
+--- same query as app_rt in scope A (restrictive policy applies to it)
+ visible_to_app_rt 
+-------------------
+                 1
+(1 row)
+
+
+=== T1l idle claim poll for one tenant with 200,000 done rows (A) + 100,000 (B) and 20 due pending rows (A): plan and time ===
+                                                               QUERY PLAN                                                               
+----------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.14..5.92 rows=1 width=22) (actual rows=6.00 loops=1)
+   Buffers: shared hit=9
+   ->  LockRows  (cost=0.14..5.92 rows=1 width=22) (actual rows=6.00 loops=1)
+         Buffers: shared hit=9
+         ->  Index Scan using outbox_due on outbox  (cost=0.14..5.91 rows=1 width=22) (actual rows=6.00 loops=1)
+               Index Cond: ((tenant_id = (NULLIF(current_setting('app.tenant_id'::text, true), ''::text))::uuid) AND (run_at <= now()))
+               Filter: (status = 'pending'::text)
+               Index Searches: 1
+               Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=174
+ Planning Time: 0.286 ms
+ Execution Time: 0.037 ms
+(13 rows)
+
+
+=== T2 retry with exponential backoff, attempt limit and dead state (base 30 s, cap 3600 s, max_attempts 4; 'time passing' simulated by setting run_at=now()) ===
+--- failure 1
+ claimable_now 
+---------------
+             1
+(1 row)
+
+ attempts | status  | next_in_s 
+----------+---------+-----------
+        1 | pending |        30
+(1 row)
+
+--- failure 2
+ claimable_now 
+---------------
+             1
+(1 row)
+
+ attempts | status  | next_in_s 
+----------+---------+-----------
+        2 | pending |        60
+(1 row)
+
+--- failure 3
+ claimable_now 
+---------------
+             1
+(1 row)
+
+ attempts | status  | next_in_s 
+----------+---------+-----------
+        3 | pending |       120
+(1 row)
+
+--- failure 4
+ claimable_now 
+---------------
+             1
+(1 row)
+
+ attempts | status | next_in_s 
+----------+--------+-----------
+        4 | dead   |       240
+(1 row)
+
+--- failure 5
+ claimable_now 
+---------------
+             0
+(1 row)
+
+ attempts | status | next_in_s 
+----------+--------+-----------
+(0 rows)
+
+
+=== T3a recurring job, row-lock runner: s8 and s9 both look for the due 'retention' row (s9 starts 0.5 s after s8) ===
+ who | name 
+-----+------
+(0 rows)
+
+ who |   name    
+-----+-----------
+ s8  | retention
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+       who        | due_rows 
+------------------+----------
+ s10 after commit |        0
+(1 row)
+
+   name    | runs | next_in_hours 
+-----------+------+---------------
+ retention |    1 |            24
+(1 row)
+
+
+=== T3b recurring job, advisory runner: s11 holds pg_try_advisory_xact_lock(42) 1.5 s, s12 tries at 0.5 s, s13 tries after commit ===
+ who | got 
+-----+-----
+ s12 | f
+(1 row)
+
+ who | got 
+-----+-----
+ s11 | t
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+       who        | got 
+------------------+-----
+ s13 after commit | t
+(1 row)
+
+
+=== T3c advisory lock holder killed: s14 holds the xact lock, is terminated at 1 s; s15 tries right after ===
+terminated r14: true
+ who | got 
+-----+-----
+ s15 | t
+(1 row)
+
+
+=== T3d session-level advisory lock survives ROLLBACK in a live session (s16 lives 3 s; s17 tries at 1 s and again after s16 ends) ===
+         who         | got 
+---------------------+-----
+ s17 while s16 alive | f
+(1 row)
+
+ who | got 
+-----+-----
+ s16 | t
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+         who         | got 
+---------------------+-----
+ s18 after s16 ended | t
+(1 row)
+
+
+=== T4 LISTEN/NOTIFY: N0 notifies before anyone listens; L listens, then sits in a 3 s transaction; N then sends rolled-back, committed and duplicate notifications while L is in its transaction ===
+ queue_usage_fraction 
+----------------------
+                    0
+(1 row)
+
+L: listening
+ pg_sleep 
+----------
+ 
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+L: end of 3 s transaction, committing now
+Asynchronous notification "kjobs" with payload "committed-while-L-in-tx" received from server process with PID 385.
+Asynchronous notification "kjobs" with payload "dup" received from server process with PID 385.
+Asynchronous notification "kjobs" with payload "dup2" received from server process with PID 385.
+L: committed
+ probe_after_commit 
+--------------------
+                  1
+(1 row)
+
+ probe_2 
+---------
+       2
+(1 row)
+
+
+=== CLEANUP ===
+container removed

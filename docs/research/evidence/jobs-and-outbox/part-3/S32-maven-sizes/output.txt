@@ -1,0 +1,30 @@
+TRANSCRIPTION, not a saved run. The command below was run inline on 2026-10-20 (researcher, jobs-and-outbox part 3, 1 unit);
+its stdout was not tee'd to a file, so this file copies what the tool printed. Re-run to replace it with a captured output.
+Command: for each URL path U below: curl -sI --max-time 20 "https://repo1.maven.org/maven2/$U"  (HEAD only, no body downloaded)
+Printed: "<http status> <Content-Length in bytes> <file name>"
+
+200 1169949 exposed-core-1.5.1.jar
+200 319137 exposed-jdbc-1.5.1.jar
+200 155567 exposed-dao-1.5.1.jar
+200 172996 HikariCP-7.1.0.jar
+200 1014279 ktor-server-core-jvm-3.6.0.jar
+200 121973 ktor-server-cio-jvm-3.6.0.jar
+200 257204 ktor-server-netty-jvm-3.6.0.jar
+200 1584 ktor-server-host-common-jvm-3.6.0.jar
+200 397498 ktor-utils-jvm-3.6.0.jar
+200 458908 ktor-http-jvm-3.6.0.jar
+200 303591 ktor-io-jvm-3.6.0.jar
+200 6397 ktor-events-jvm-3.6.0.jar
+200 134494 ktor-http-cio-jvm-3.6.0.jar
+200 202163 ktor-network-jvm-3.6.0.jar
+200 192926 ktor-websockets-jvm-3.6.0.jar
+200 23007 ktor-serialization-jvm-3.6.0.jar
+200 172301 ktor-server-test-host-jvm-3.6.0.jar
+200 1577052 kotlinx-coroutines-core-jvm-1.11.0.jar
+200 1853315 kotlin-stdlib-2.4.21.jar
+
+Local search before this probe (find over the repo and production/session-state/cache/*, names exposed-*.jar, ktor-server-*.jar, HikariCP*.jar): no match.
+Present in other sessions' caches (read only, not touched): postgresql-42.7.14.jar, kotlin-compiler-embeddable-2.4.21.jar, kotlin-stdlib-2.4.21.jar,
+kotlinx-coroutines-core-jvm 1.8.0 / 1.9.0 / 1.10.2 (1.11.0 absent), slf4j-api 2.0.7 / 2.0.17 / 2.0.18 / 2.0.19.
+Sum of the 15 direct jars needed for a CIO-engine spike (exposed-core, exposed-jdbc, HikariCP, ktor-server-core, -cio, -host-common, -utils, -http, -io,
+-events, -http-cio, -network, -websockets, -serialization, coroutines 1.11.0): 6,095,954 bytes. Transitive artifacts not listed here (unknown without reading POMs).

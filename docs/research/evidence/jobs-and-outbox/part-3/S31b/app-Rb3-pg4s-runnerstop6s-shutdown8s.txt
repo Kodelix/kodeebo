@@ -1,0 +1,27 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31b-app-job - Added connection org.postgresql.jdbc.PgConnection@ba8d91c
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31b-app-plat - Added connection org.postgresql.jdbc.PgConnection@351d0846
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Start completed.
+[+194ms] config: WORK_SEC=4 GRACE_MS=500 TIMEOUT_MS=8000 RUNNER_STOP_MS=6000 CCCI_MS=null
+[+318ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=8000
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.112 seconds.
+[+328ms] event ApplicationStarted
+[+344ms] event ServerReady
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:18091
+[+368ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0]; now REAL blocking JDBC: select pg_sleep(4)
+[+1043ms] event ApplicationStopPreparing
+[+1044ms] main: start(wait=true) returned
+[+1044ms] event ApplicationStopping
+[+4372ms] loop: pg_sleep returned after 4004ms (statement was NOT interrupted if this is about 4000ms)
+[+4396ms] loop: cancelled (JobCancellationException)
+[+4396ms] loop: exited
+[+4400ms] runner: stop() joined after 3352ms
+[+4411ms] event ApplicationStopped; closing pools
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31b-app-plat - Shutdown completed.
+[+4414ms] pools: closed

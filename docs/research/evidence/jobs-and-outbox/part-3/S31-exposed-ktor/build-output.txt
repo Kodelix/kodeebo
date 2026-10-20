@@ -1,0 +1,20 @@
+compiler cp
+kotlin-compiler-embeddable-2.4.21.jar
+kotlin-stdlib-2.4.21.jar
+kotlin-script-runtime-2.4.21.jar
+kotlin-reflect-2.4.0.jar
+kotlin-daemon-embeddable-2.4.21.jar
+annotations-13.0.jar
+kotlinx-coroutines-core-jvm-1.11.0.jar
+warning: opt-in requirement marker 'kotlin.ExperimentalCoroutinesApi' is unresolved. Make sure it's present in the module dependencies.
+compile exit=0
+App$main$loop$1.class
+App$main$loop$2$1.class
+App$main$loop$2.class
+App$main$loop$tenants$1$1.class
+App$main$loop$tenants$1.class
+App$main$server$2$5.class
+App$main$server$2$6$1.class
+App$main$server$2$7$done$1$1.class
+App$main$server$2$7$done$1.class
+App$main$server$2.class

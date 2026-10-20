@@ -1,0 +1,65 @@
+compiler cp
+kotlin-compiler-embeddable-2.4.21.jar
+kotlin-stdlib-2.4.21.jar
+kotlin-script-runtime-2.4.21.jar
+kotlin-reflect-2.4.0.jar
+kotlin-daemon-embeddable-2.4.21.jar
+annotations-13.0.jar
+kotlinx-coroutines-core-jvm-1.11.0.jar
+S31.kt:185:22: error: none of the following candidates is applicable:
+
+fun <TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration> embeddedServer(factory: ApplicationEngineFactory<TEngine, TConfiguration>, port: Int = ..., host: String = ..., watchPaths: List<String> = ..., module: suspend Application.() -> Unit): EmbeddedServer<TEngine, TConfiguration>:
+  No parameter with name 'configure' found.
+
+fun <TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration> embeddedServer(factory: ApplicationEngineFactory<TEngine, TConfiguration>, environment: ApplicationEnvironment = ..., configure: TConfiguration.() -> Unit = ..., module: suspend Application.() -> Unit = ...): EmbeddedServer<TEngine, TConfiguration>:
+  No parameter with name 'port' found.
+  No parameter with name 'host' found.
+
+fun <TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration> embeddedServer(factory: ApplicationEngineFactory<TEngine, TConfiguration>, rootConfig: ServerConfig, configure: TConfiguration.() -> Unit = ...): EmbeddedServer<TEngine, TConfiguration>:
+  No parameter with name 'port' found.
+  No parameter with name 'host' found.
+  Too many arguments for 'fun <TEngine : ApplicationEngine, TConfiguration : ApplicationEngine.Configuration> embeddedServer(factory: ApplicationEngineFactory<TEngine, TConfiguration>, rootConfig: ServerConfig, configure: TConfiguration.() -> Unit = ...): EmbeddedServer<TEngine, TConfiguration>'.
+  No value passed for parameter 'rootConfig'.
+        val server = embeddedServer(CIO, port = 18090, host = "127.0.0.1", configure = {
+                     ^^^^^^^^^^^^^^
+S31.kt:186:29: error: unresolved reference 'shutdownGracePeriod'.
+            if (grace >= 0) shutdownGracePeriod = grace
+                            ^^^^^^^^^^^^^^^^^^^
+S31.kt:187:27: error: unresolved reference 'shutdownTimeout'.
+            if (tmo >= 0) shutdownTimeout = tmo
+                          ^^^^^^^^^^^^^^^
+S31.kt:189:13: error: unresolved reference 'monitor'.
+            monitor.subscribe(ApplicationStarting) { p("event ApplicationStarting") }
+            ^^^^^^^
+S31.kt:190:13: error: unresolved reference 'monitor'.
+            monitor.subscribe(ApplicationStarted) { p("event ApplicationStarted") }
+            ^^^^^^^
+S31.kt:191:13: error: unresolved reference 'monitor'.
+            monitor.subscribe(ServerReady) { p("event ServerReady") }
+            ^^^^^^^
+S31.kt:192:13: error: unresolved reference 'monitor'.
+            monitor.subscribe(ApplicationStopPreparing) { p("event ApplicationStopPreparing") }
+            ^^^^^^^
+S31.kt:194:31: error: 'fun launch(context: CoroutineContext = ..., start: CoroutineStart = ..., block: suspend CoroutineScope.() -> Unit): Job' is deprecated. 'launch' can not be called without the corresponding coroutine scope. Consider wrapping 'launch' in 'coroutineScope { }', using 'runBlocking { }', or using some other 'CoroutineScope'.
+            if (mode == "B1") launch(disp) { loop() }
+                              ^^^^^^
+S31.kt:195:18: error: unresolved reference 'monitor'.
+            else monitor.subscribe(ApplicationStarted) { runner.launch { loop() } }
+                 ^^^^^^^
+S31.kt:196:13: error: unresolved reference 'monitor'.
+            monitor.subscribe(ApplicationStopping) {
+            ^^^^^^^
+S31.kt:205:13: error: unresolved reference 'monitor'.
+            monitor.subscribe(ApplicationStopped) {
+            ^^^^^^^
+S31.kt:210:55: error: unresolved reference 'engineConfig'.
+        p("engineConfig: shutdownGracePeriod=${server.engineConfig.shutdownGracePeriod} shutdownTimeout=${server.engineConfig.shutdownTimeout}")
+                                                      ^^^^^^^^^^^^
+S31.kt:210:114: error: unresolved reference 'engineConfig'.
+        p("engineConfig: shutdownGracePeriod=${server.engineConfig.shutdownGracePeriod} shutdownTimeout=${server.engineConfig.shutdownTimeout}")
+                                                                                                                 ^^^^^^^^^^^^
+S31.kt:211:16: error: unresolved reference 'start'.
+        server.start(wait = true)
+               ^^^^^
+compile exit=1
+NOTE: failed compile 1: embeddedServer overload with port/host has no configure parameter in Ktor 3.6.0; fixed with EngineConnectorBuilder.

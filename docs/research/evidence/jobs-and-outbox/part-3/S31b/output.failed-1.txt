@@ -1,0 +1,5 @@
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint jo3-pg31b (0d95184746ea8218453bfe6a8769c35098d4f900d162578a8a83ed63dc664cab): Bind for 127.0.0.1:55432 failed: port is already allocated
+
+Run 'docker run --help' for more information
+docker run failed
+NOTE: failed run 1: host port 55432 already in use by another session; script changed to a free port picked at start.

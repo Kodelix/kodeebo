@@ -1,0 +1,13 @@
+### S33 OSV 2026-10-20T19:06:32Z
+Maven io.ktor:ktor-server-core-jvm 3.6.0 -> 0 records 
+Maven io.ktor:ktor-server-cio-jvm 3.6.0 -> 0 records 
+Maven io.ktor:ktor-server-netty-jvm 3.6.0 -> 0 records 
+Maven org.jetbrains.exposed:exposed-core 1.5.1 -> 0 records 
+Maven org.jetbrains.exposed:exposed-jdbc 1.5.1 -> 0 records 
+Maven com.zaxxer:HikariCP 7.1.0 -> 0 records 
+Maven org.postgresql:postgresql 42.7.14 -> 0 records 
+Maven org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm 1.11.0 -> 0 records 
+Maven org.jetbrains.kotlin:kotlin-stdlib 2.4.21 -> 0 records 
+-- positive control (an old pgjdbc, expect > 0)
+Maven org.postgresql:postgresql 42.2.0 -> 8 records GHSA-24rp-q3w6-vc56 GHSA-562r-vg33-8x8h GHSA-673j-qm5f-xpv8 GHSA-727h-hrw8-jg8q GHSA-88cc-g835-76rp GHSA-98qh-xjc8-98pq GHSA-r38f-c4h4-hqq2 GHSA-v7wg-cpwc-24m4
+### done

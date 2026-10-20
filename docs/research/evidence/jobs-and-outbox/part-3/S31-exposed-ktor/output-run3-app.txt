@@ -1,0 +1,170 @@
+### S31 start 2026-10-20T19:36:09Z; java: openjdk version "21.0.12.1" 2026-08-18
+### (Db part skipped in this script: it consumes the outbox rows, see run2 note)
+
+### R1-B2-delay-defaults: MODE=B2 WORK=delay WORK_SEC=3 CLOSE_AT=stopped SIG=TERM
+backend state before signal: idle in transaction idle idle idle  ; claimable rows now: 8
+signal TERM sent at +1149 ms after launch
+JVM exited 104 ms after the signal
+exit code: 143
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[+200ms] config: MODE=B2 WORK=delay WORK_SEC=3 CLOSE_AT=stopped GRACE_MS=-1 TIMEOUT_MS=-1
+[+317ms] engineConfig: shutdownGracePeriod=1000 shutdownTimeout=5000
+[+330ms] event ApplicationStarted
+[+346ms] event ServerReady
+[+376ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+381ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=delay 3s
+[+1119ms] event ApplicationStopPreparing
+[+1120ms] main: start(wait=true) returned
+[+1120ms] event ApplicationStopping
+[+1122ms] loop: cancelled (JobCancellationException)
+[+1122ms] loop: exited
+[+1124ms] runner: stop() joined after 2ms
+[+1129ms] event ApplicationStopped
+[+1129ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+1131ms] pools: closed
+
+### R2-B1-delay: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopped SIG=TERM
+backend state before signal: idle in transaction idle idle idle  ; claimable rows now: 8
+signal TERM sent at +1162 ms after launch
+JVM exited 103 ms after the signal
+exit code: 143
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[+183ms] config: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopped GRACE_MS=-1 TIMEOUT_MS=-1
+[+296ms] engineConfig: shutdownGracePeriod=1000 shutdownTimeout=5000
+[+307ms] event ApplicationStarted
+[+316ms] event ServerReady
+[+350ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+356ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=delay 3s
+[+1109ms] event ApplicationStopPreparing
+[+1111ms] main: start(wait=true) returned
+[+1111ms] event ApplicationStopping
+[+1113ms] loop: cancelled (JobCancellationException)
+[+1113ms] loop: exited
+[+1119ms] event ApplicationStopped
+[+1119ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+1122ms] pools: closed
+
+### R3-B1-delay-poolclose-at-stopping: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopping SIG=TERM
+backend state before signal: idle in transaction idle idle idle  ; claimable rows now: 8
+signal TERM sent at +1153 ms after launch
+JVM exited 104 ms after the signal
+exit code: 143
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[+200ms] config: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopping GRACE_MS=-1 TIMEOUT_MS=-1
+[+320ms] engineConfig: shutdownGracePeriod=1000 shutdownTimeout=5000
+[+332ms] event ApplicationStarted
+[+344ms] event ServerReady
+[+375ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+380ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=delay 3s
+[+1125ms] event ApplicationStopPreparing
+[+1126ms] main: start(wait=true) returned
+[+1126ms] event ApplicationStopping
+[+1126ms] pools: closing at ApplicationStopping
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+1130ms] pools: closed
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31-app-job - Connection org.postgresql.jdbc.PgConnection@7bc1a03d marked as broken because of SQLSTATE(08003), ErrorCode(0)
+org.postgresql.util.PSQLException: This connection has been closed.
+	at com.zaxxer.hikari.pool.ProxyConnection.rollback(ProxyConnection.java:386)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.rollback(HikariProxyConnection.java)
+	at org.jetbrains.exposed.v1.jdbc.statements.jdbc.JdbcConnectionImpl.rollback(JdbcConnectionImpl.kt:54)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager$ThreadLocalTransaction.rollback(TransactionManager.kt:268)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback$lambda$0(JdbcTransaction.kt:112)
+	at org.jetbrains.exposed.v1.core.transactions.TransactionsKt.withThreadLocalTransaction(Transactions.kt:47)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback(JdbcTransaction.kt:109)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt.rollbackLoggingException(JdbcTransactionInterface.kt:43)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invokeSuspend(JdbcTransactionInterface.kt:52)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invoke(JdbcTransactionInterface.kt)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invoke(JdbcTransactionInterface.kt)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt.rollbackSuspendLoggingException(JdbcTransactionInterface.kt:51)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt$inTopLevelSuspendTransaction$2.invokeSuspend(Transactions.kt:477)
+org.postgresql.util.PSQLException: This connection has been closed.
+	at com.zaxxer.hikari.pool.ProxyConnection.rollback(ProxyConnection.java:386)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.rollback(HikariProxyConnection.java)
+	at org.jetbrains.exposed.v1.jdbc.statements.jdbc.JdbcConnectionImpl.rollback(JdbcConnectionImpl.kt:54)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager$ThreadLocalTransaction.rollback(TransactionManager.kt:268)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback$lambda$0(JdbcTransaction.kt:112)
+	at org.jetbrains.exposed.v1.core.transactions.TransactionsKt.withThreadLocalTransaction(Transactions.kt:47)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback(JdbcTransaction.kt:109)
+
+### R4-B1-block8s-timeout2s: MODE=B1 WORK=block WORK_SEC=8 GRACE_MS=500 TIMEOUT_MS=2000 CLOSE_AT=stopped SIG=TERM
+backend state before signal: idle in transaction idle idle idle  ; claimable rows now: 8
+signal TERM sent at +1086 ms after launch
+JVM exited 2139 ms after the signal
+exit code: 143
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[+185ms] config: MODE=B1 WORK=block WORK_SEC=8 CLOSE_AT=stopped GRACE_MS=500 TIMEOUT_MS=2000
+[+301ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[+313ms] event ApplicationStarted
+[+326ms] event ServerReady
+[+358ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+363ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=block 8s
+[+1045ms] event ApplicationStopPreparing
+[+1046ms] main: start(wait=true) returned
+[+1046ms] event ApplicationStopping
+kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 2000 ms
+	at kotlinx.coroutines.TimeoutKt.TimeoutCancellationException(Timeout.kt:281)
+[+3050ms] event ApplicationStopped
+[+3050ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+3055ms] pools: closed
+
+### R4b-B2-block8s-runnerstop2s: MODE=B2 WORK=block WORK_SEC=8 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000 CLOSE_AT=stopped SIG=TERM
+backend state before signal: idle in transaction idle idle idle  ; claimable rows now: 8
+signal TERM sent at +1147 ms after launch
+JVM exited 2141 ms after the signal
+exit code: 143
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[+194ms] config: MODE=B2 WORK=block WORK_SEC=8 CLOSE_AT=stopped GRACE_MS=500 TIMEOUT_MS=2000
+[+319ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[+332ms] event ApplicationStarted
+[+347ms] event ServerReady
+[+381ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+386ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=block 8s
+[+1110ms] event ApplicationStopPreparing
+[+1112ms] main: start(wait=true) returned
+[+1112ms] event ApplicationStopping
+[+3118ms] runner: stop() TIMED OUT after 2003ms
+[+3130ms] event ApplicationStopped
+[+3130ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+3135ms] pools: closed
+
+### R5-B2-block60s-kill9: MODE=B2 WORK=block WORK_SEC=60 CLOSE_AT=stopped SIG=KILL
+backend state before signal: idle in transaction idle idle idle  ; claimable rows now: 8
+signal KILL sent at +1052 ms after launch
+run_app.sh: line 54: 2511613 Killed                     env "$@" PGPORT_S31=$PGPORT_S31 java -cp "$CP" App > "$HERE/app-$name.txt" 2>&1
+after SIGKILL: claimable=10 after 66 ms (poll includes docker exec overhead); jvm alive: no
+backends s31-app-job after: 0
+exit code: 137
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[+186ms] config: MODE=B2 WORK=block WORK_SEC=60 CLOSE_AT=stopped GRACE_MS=-1 TIMEOUT_MS=-1
+[+299ms] engineConfig: shutdownGracePeriod=1000 shutdownTimeout=5000
+[+309ms] event ApplicationStarted
+[+320ms] event ServerReady
+[+350ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+355ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=block 60s
+
+### done 2026-10-20T19:36:25Z

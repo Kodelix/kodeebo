@@ -1,0 +1,33 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Start completed.
+[+185ms] config: MODE=B1 WORK=block WORK_SEC=8 CLOSE_AT=stopped GRACE_MS=500 TIMEOUT_MS=2000
+[+301ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.109 seconds.
+[+313ms] event ApplicationStarted
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:18090
+[+326ms] event ServerReady
+[+358ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+363ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=block 8s
+[+1045ms] event ApplicationStopPreparing
+[+1046ms] main: start(wait=true) returned
+[+1046ms] event ApplicationStopping
+[KtorShutdownHook] ERROR io.ktor.server.Application - Failed to destroy application instance.
+kotlinx.coroutines.TimeoutCancellationException: Timed out waiting for 2000 ms
+	at kotlinx.coroutines.TimeoutKt.TimeoutCancellationException(Timeout.kt:281)
+	at kotlinx.coroutines.TimeoutCoroutine.run(Timeout.kt:243)
+	at kotlinx.coroutines.EventLoopImplBase$DelayedRunnableTask.run(EventLoop.common.kt:498)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:256)
+	at kotlinx.coroutines.DefaultExecutor.run(DefaultExecutor.kt:105)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+[+3050ms] event ApplicationStopped
+[+3050ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+3055ms] pools: closed

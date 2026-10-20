@@ -1,0 +1,26 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Start completed.
+[+194ms] config: MODE=B2 WORK=block WORK_SEC=8 CLOSE_AT=stopped GRACE_MS=500 TIMEOUT_MS=2000
+[+319ms] engineConfig: shutdownGracePeriod=500 shutdownTimeout=2000
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.122 seconds.
+[+332ms] event ApplicationStarted
+[+347ms] event ServerReady
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:18090
+[+381ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+386ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=block 8s
+[+1110ms] event ApplicationStopPreparing
+[+1112ms] main: start(wait=true) returned
+[+1112ms] event ApplicationStopping
+[+3118ms] runner: stop() TIMED OUT after 2003ms
+[+3130ms] event ApplicationStopped
+[+3130ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+3135ms] pools: closed

@@ -1,0 +1,28 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Start completed.
+[+200ms] config: MODE=B2 WORK=delay WORK_SEC=3 CLOSE_AT=stopped GRACE_MS=-1 TIMEOUT_MS=-1
+[+317ms] engineConfig: shutdownGracePeriod=1000 shutdownTimeout=5000
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.112 seconds.
+[+330ms] event ApplicationStarted
+[+346ms] event ServerReady
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:18090
+[+376ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+381ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=delay 3s
+[+1119ms] event ApplicationStopPreparing
+[+1120ms] main: start(wait=true) returned
+[+1120ms] event ApplicationStopping
+[+1122ms] loop: cancelled (JobCancellationException)
+[+1122ms] loop: exited
+[+1124ms] runner: stop() joined after 2ms
+[+1129ms] event ApplicationStopped
+[+1129ms] pools: closing at ApplicationStopped
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+1131ms] pools: closed

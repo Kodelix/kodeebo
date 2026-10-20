@@ -1,0 +1,85 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Start completed.
+[+200ms] config: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopping GRACE_MS=-1 TIMEOUT_MS=-1
+[+320ms] engineConfig: shutdownGracePeriod=1000 shutdownTimeout=5000
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.114 seconds.
+[+332ms] event ApplicationStarted
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:18090
+[+344ms] event ServerReady
+[+375ms] DSL SQL: SELECT app.outbox.id FROM app.outbox WHERE app.outbox.processed_at IS NULL ORDER BY app.outbox.id ASC LIMIT 2 FOR UPDATE SKIP LOCKED
+[+380ms] loop: claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001, work=delay 3s
+[+1125ms] event ApplicationStopPreparing
+[+1126ms] main: start(wait=true) returned
+[+1126ms] event ApplicationStopping
+[+1126ms] pools: closing at ApplicationStopping
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31-app-plat - Shutdown completed.
+[+1130ms] pools: closed
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31-app-job - Connection org.postgresql.jdbc.PgConnection@7bc1a03d marked as broken because of SQLSTATE(08003), ErrorCode(0)
+org.postgresql.util.PSQLException: This connection has been closed.
+	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1050)
+	at org.postgresql.jdbc.PgConnection.rollback(PgConnection.java:1057)
+	at com.zaxxer.hikari.pool.ProxyConnection.rollback(ProxyConnection.java:386)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.rollback(HikariProxyConnection.java)
+	at org.jetbrains.exposed.v1.jdbc.statements.jdbc.JdbcConnectionImpl.rollback(JdbcConnectionImpl.kt:54)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager$ThreadLocalTransaction.rollback(TransactionManager.kt:268)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback$lambda$0(JdbcTransaction.kt:112)
+	at org.jetbrains.exposed.v1.core.transactions.TransactionsKt.withThreadLocalTransaction(Transactions.kt:47)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback(JdbcTransaction.kt:109)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt.rollbackLoggingException(JdbcTransactionInterface.kt:43)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invokeSuspend(JdbcTransactionInterface.kt:52)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invoke(JdbcTransactionInterface.kt)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invoke(JdbcTransactionInterface.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatched(Undispatched.kt:66)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.withContext(Builders.common.kt:497)
+	at kotlinx.coroutines.BuildersKt.withContext(Unknown Source)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt.rollbackSuspendLoggingException(JdbcTransactionInterface.kt:51)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt$inTopLevelSuspendTransaction$2.invokeSuspend(Transactions.kt:477)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+[DefaultDispatcher-worker-1] WARN Exposed - Transaction rollback failed: This connection has been closed.. Statement: null
+org.postgresql.util.PSQLException: This connection has been closed.
+	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1050)
+	at org.postgresql.jdbc.PgConnection.rollback(PgConnection.java:1057)
+	at com.zaxxer.hikari.pool.ProxyConnection.rollback(ProxyConnection.java:386)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.rollback(HikariProxyConnection.java)
+	at org.jetbrains.exposed.v1.jdbc.statements.jdbc.JdbcConnectionImpl.rollback(JdbcConnectionImpl.kt:54)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager$ThreadLocalTransaction.rollback(TransactionManager.kt:268)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback$lambda$0(JdbcTransaction.kt:112)
+	at org.jetbrains.exposed.v1.core.transactions.TransactionsKt.withThreadLocalTransaction(Transactions.kt:47)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.rollback(JdbcTransaction.kt:109)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt.rollbackLoggingException(JdbcTransactionInterface.kt:43)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invokeSuspend(JdbcTransactionInterface.kt:52)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invoke(JdbcTransactionInterface.kt)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt$rollbackSuspendLoggingException$2.invoke(JdbcTransactionInterface.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatched(Undispatched.kt:66)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.withContext(Builders.common.kt:497)
+	at kotlinx.coroutines.BuildersKt.withContext(Unknown Source)
+	at org.jetbrains.exposed.v1.jdbc.transactions.JdbcTransactionInterfaceKt.rollbackSuspendLoggingException(JdbcTransactionInterface.kt:51)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt$inTopLevelSuspendTransaction$2.invokeSuspend(Transactions.kt:477)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+[+1138ms] loop: cancelled (JobCancellationException)
+[+1138ms] loop: exited
+[+1144ms] event ApplicationStopped

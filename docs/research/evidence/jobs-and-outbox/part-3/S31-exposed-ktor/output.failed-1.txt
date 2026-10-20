@@ -1,0 +1,57 @@
+### S31 start 2026-10-20T19:30:22Z; java: openjdk version "21.0.12.1" 2026-08-18
+### Db: X1-X6, X3b
+Error: Could not find or load main class Db
+Caused by: java.lang.ClassNotFoundException: Db
+### Db exit=1
+
+### R1-B2-delay-defaults: MODE=B2 WORK=delay WORK_SEC=3 CLOSE_AT=stopped SIG=TERM
+backend state before signal:  ; claimable rows now: 10
+run_all.sh: line 51: kill: (2486939) - No such process
+signal TERM sent at +21300 ms after launch
+JVM exited 2 ms after the signal
+exit code: 1
+Caused by: java.lang.ClassNotFoundException: App
+
+### R2-B1-delay: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopped SIG=TERM
+backend state before signal:  ; claimable rows now: 10
+run_all.sh: line 51: kill: (2488206) - No such process
+signal TERM sent at +21096 ms after launch
+JVM exited 2 ms after the signal
+exit code: 1
+Caused by: java.lang.ClassNotFoundException: App
+
+### R3-B1-delay-poolclose-at-stopping: MODE=B1 WORK=delay WORK_SEC=3 CLOSE_AT=stopping SIG=TERM
+backend state before signal:  ; claimable rows now: 10
+run_all.sh: line 51: kill: (2489824) - No such process
+signal TERM sent at +21029 ms after launch
+JVM exited 3 ms after the signal
+exit code: 1
+Caused by: java.lang.ClassNotFoundException: App
+
+### R4-B1-block8s-timeout2s: MODE=B1 WORK=block WORK_SEC=8 GRACE_MS=500 TIMEOUT_MS=2000 CLOSE_AT=stopped SIG=TERM
+backend state before signal:  ; claimable rows now: 10
+run_all.sh: line 51: kill: (2491746) - No such process
+signal TERM sent at +21144 ms after launch
+JVM exited 3 ms after the signal
+exit code: 1
+Caused by: java.lang.ClassNotFoundException: App
+
+### R4b-B2-block8s-runnerstop2s: MODE=B2 WORK=block WORK_SEC=8 GRACE_MS=500 TIMEOUT_MS=2000 RUNNER_STOP_MS=2000 CLOSE_AT=stopped SIG=TERM
+backend state before signal:  ; claimable rows now: 10
+run_all.sh: line 51: kill: (2493496) - No such process
+signal TERM sent at +21354 ms after launch
+JVM exited 1 ms after the signal
+exit code: 1
+Caused by: java.lang.ClassNotFoundException: App
+
+### R5-B2-block60s-kill9: MODE=B2 WORK=block WORK_SEC=60 CLOSE_AT=stopped SIG=KILL
+backend state before signal:  ; claimable rows now: 10
+run_all.sh: line 51: kill: (2494651) - No such process
+signal KILL sent at +21370 ms after launch
+after SIGKILL: claimable=10 after 90 ms (poll includes docker exec overhead); jvm alive: no
+backends s31-app-job after: 0
+exit code: 1
+Caused by: java.lang.ClassNotFoundException: App
+
+### done 2026-10-20T19:32:35Z
+NOTE: failed run 1 (wrong test setup): runtime-classpath.txt had a missing ':' before the classes directory, so Db and App were not found. build.sh fixed; no result in this file is evidence.

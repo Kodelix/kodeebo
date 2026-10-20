@@ -1,0 +1,26 @@
+L: listening
+ pg_sleep 
+----------
+ 
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+L: end of 3 s transaction, committing now
+Asynchronous notification "kjobs" with payload "committed-while-L-in-tx" received from server process with PID 385.
+Asynchronous notification "kjobs" with payload "dup" received from server process with PID 385.
+Asynchronous notification "kjobs" with payload "dup2" received from server process with PID 385.
+L: committed
+ probe_after_commit 
+--------------------
+                  1
+(1 row)
+
+ probe_2 
+---------
+       2
+(1 row)
+
