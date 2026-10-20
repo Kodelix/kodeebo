@@ -1096,6 +1096,31 @@ Directory: `prototypes/local-first-sync-spike/`. Prototype rules apply: throwawa
 - **Evidence:** `prototypes/desktop-client-spike/evidence/g5/`, one file per leg and runtime, cited here by path and commit once round 4 is done.
 - **Stay with sync phase 4:** TS-01c, TS-04b, TS-07b and TS-08. TS-08 takes the desktop spike's round 3 per-user uninstall results (G4.3) as an input.
 
+**Phase 4 findings and founder decisions (2026-10-20; spike README "Phase 4").** Phase 4 is in progress on the shared Windows 10 VM, a proxy for the 4 GB counter PC; every timing is indicative only.
+- **P4-F1 — a power flicker can stop the counter PC at Windows' Recovery screen.** WinRE "starts automatically" after "Two consecutive unexpected shutdowns that occur within two minutes of boot completion" ([Windows RE technical reference](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-recovery-environment--windows-re--technical-reference)). Reproduced on the VM: two power-offs 10 s after boot. With `bcdedit /set {current} recoveryenabled No` and `bcdedit /set {current} bootstatuspolicy IgnoreAllFailures` ([BCDEdit /set](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/bcdedit--set)), three such power-offs all booted normally. **Founder decision:** the on-site install applies both settings. They are recorded in the install checklist (`docs/runbooks/counter-pc-install-checklist.md`) with the commands that revert them, and with a recommendation to the owner of a small UPS for the counter PC. Cost: a PC that really cannot boot no longer offers automatic repair.
+- **P4-F2 — Windows' Egypt summer-time rule is a week late in 2026 on the VM's build (19045.2965).**
+  - Windows' rule is "last Thursday of April, 23:59", so summer time starts at 2026-04-30 22:00 UTC. The tz database used by PostgreSQL (`Africa/Cairo`) starts it at 2026-04-23 22:00 UTC (last Friday). They agree on the October end.
+  - So from 24 to 30 April 2026 that PC's local time is an hour behind.
+  - Not checked: whether a later Windows cumulative update fixes it (the VM has none).
+  - **Founder decision:** every time is stored as UTC. Local time is computed with time-zone rules that ship with the app and can be updated from the server through the config feed, because Egypt changes its summer-time rules by decree at short notice. Windows local time is never used for receipts or business logic (business day, End Day, shift, owner reports).
+- **P4-F3 — the counter misses three budgets on the throttled VM** (`docs/architecture/perf-budgets.md`; 200 rounds; timings measured inside the client):
+  - start session p95 211 ms (budget 200 ms);
+  - café sale p95 559 ms (500 ms);
+  - local commit alone p95 284–410 ms (150 ms).
+
+  Close bill p95 is 411 ms and within budget; no action is near the 3 s ceiling. **Founder decision:** the budgets are not changed yet. The spike proposes ways to make the commit cheaper without weakening OQ28 (fewer forced writes per transaction; the marker in the same flush where the design allows), measures again and reports. The budgets are revisited only with the pilot PC's numbers.
+- **P4-F4 — Windows Defender scanning the store's folder stalls the counter for seconds (SC-27).** During 32 custom scans of the store's folder: close bill p99 9.3 s, max 10.9 s, against the 3 s ceiling. No sale was lost or doubled, no false refusal. **Founder decision:** write it up first, including an option that excludes only the encrypted store and its journal by exact file path (not the folder, not the executables), with its security cost.
+
+- **P4-F5 — a full store check at every start is far too slow on an HDD-class disk (SC-24).**
+  - Cold after a reboot, `integrity_check` took 36 s on a 13.6 MB store (30,000 commands, about 6 days at the OQ16 bound) and 371–377 s on 141 MB (300,000 commands, 60 days), against the 5 s budget. `quick_check` was no faster.
+  - Both read about 92 pages of 4 KB per second, the VM's 100-IOPS cap, so the numbers are an upper bound (desktop G0-F2).
+  - Options to measure next, each re-running TS-03a: the full check only after an unclean shutdown and on a schedule, otherwise relying on the cipher's per-page authentication; a partial check of the hot tables; a larger page size.
+- **Passed so far on Windows:**
+  - S104: 30 power-offs and 10 OS crashes, 0 acknowledged sales lost or doubled.
+  - SC-26: counter reads during a 35,000-command drain, p95 34 ms, no `SQLITE_BUSY`.
+  - SC-21b, sync half: power cut at every migration step, queued commands sent byte-identical and deduplicated across versions.
+  - TS-01c (b): the blind spot is confirmed. TS-01c (a) is rerun under the decided OQ7 policy.
+
 **Phase 5 limits.** Phase 5 runs **without S308** (server billing parity). S308 is **PARKED. Trigger: the backend-track decision.** It does not hold up the spike's close or the sync ADR. Phase 5's tax order uses a configurable setting, inclusive or exclusive, until ETA answers (OQ8 rule 5).
 
 **Not in this spike (other owners):** S201 cursor under load and S204 tenant-counter cursor (`cto`); S202 push through the real proxy and a venue line (`infra-engineer`, after OQ19); S203 two offline devices per branch (risk 9, after Tier 1); S105 batch size and backoff on a venue link; S106 RLS policy matrix (`multitenancy-specialist`); S108 inbox growth; S307 JWS interoperability.

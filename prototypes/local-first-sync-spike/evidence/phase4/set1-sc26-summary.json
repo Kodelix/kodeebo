@@ -1,0 +1,26 @@
+{
+ "harness_commit": "7791001+dirty",
+ "server_sales": 35000,
+ "baseline": {
+  "reads": 2050,
+  "errors": 0,
+  "first_errors": [],
+  "p50": 0.37,
+  "p95": 36.34,
+  "p99": 43.15,
+  "max": 81.81
+ },
+ "syncs": 700,
+ "drain_s": 62.3,
+ "during": "{\"reads\": 15459, \"errors\": 0}\n",
+ "violations_except_I8": [],
+ "drain": {
+  "reads": 15459,
+  "errors": 0,
+  "first_errors": [],
+  "p50": 0.47,
+  "p95": 34.25,
+  "p99": 41.54,
+  "max": 93.34
+ }
+}

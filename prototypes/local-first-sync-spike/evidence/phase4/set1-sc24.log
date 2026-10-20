@@ -1,0 +1,29 @@
+phase 4 SC-24 (start-up check time, cold), commit 7791001+dirty
+  rep 1 ready      30000 commands     13.6 MB  43751.9 ms  True
+  rep 1 ready     100000 commands     45.8 MB  133464.6 ms  True
+  rep 1 ready     300000 commands    141.2 MB  382977.7 ms  True
+  rep 1 integrity  30000 commands     13.6 MB  36503.6 ms  ok
+  rep 1 integrity 100000 commands     45.8 MB  125757.5 ms  ok
+  rep 1 integrity 300000 commands    141.2 MB  370505.0 ms  ok
+  rep 1 quick      30000 commands     13.6 MB  34592.3 ms  ok
+  rep 1 quick     100000 commands     45.8 MB  128718.7 ms  ok
+  rep 1 quick     300000 commands    141.2 MB  376432.0 ms  ok
+  rep 2 ready      30000 commands     13.6 MB  45299.4 ms  True
+  rep 2 ready     100000 commands     45.8 MB  139289.5 ms  True
+  rep 2 ready     300000 commands    141.2 MB  386666.0 ms  True
+  rep 2 integrity  30000 commands     13.6 MB  35981.7 ms  ok
+  rep 2 integrity 100000 commands     45.8 MB  129613.3 ms  ok
+  rep 2 integrity 300000 commands    141.2 MB  376562.5 ms  ok
+  rep 2 quick      30000 commands     13.6 MB  36265.1 ms  ok
+  rep 2 quick     100000 commands     45.8 MB  130563.5 ms  ok
+  rep 2 quick     300000 commands    141.2 MB  371186.8 ms  ok
+  rep 3 ready      30000 commands     13.6 MB  45060.1 ms  True
+  rep 3 ready     100000 commands     45.8 MB  134036.8 ms  True
+  rep 3 ready     300000 commands    141.2 MB  381699.7 ms  True
+  rep 3 integrity  30000 commands     13.6 MB  36161.0 ms  ok
+  rep 3 integrity 100000 commands     45.8 MB  124179.7 ms  ok
+  rep 3 integrity 300000 commands    141.2 MB  376879.2 ms  ok
+  rep 3 quick      30000 commands     13.6 MB  35990.9 ms  ok
+  rep 3 quick     100000 commands     45.8 MB  128370.4 ms  ok
+  rep 3 quick     300000 commands    141.2 MB  372454.5 ms  ok
+SC-24: done (measured; judged against perf-budgets.md in the README)

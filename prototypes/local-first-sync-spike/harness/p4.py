@@ -825,7 +825,8 @@ class RollbackRun(WinRun):
     reached the server: the known blind spot (OQ27), expected to go unseen by the server."""
 
     def __init__(self, seed, variant, while_running, **kw):
-        super().__init__(seed, ("none", None, 0.0), label="p4-ts01c", **kw)
+        # the decided OQ7 policy (SC-13): a reused sequence is quarantined for the owner, never rejected (OQ6)
+        super().__init__(seed, ("none", None, 0.0), label="p4-ts01c", server_env={"CLONE_POLICY": "1"}, **kw)
         self.client_env.update(MACHINE_ID="m1")
         self.variant, self.while_running, self.info = variant, while_running, {}
 

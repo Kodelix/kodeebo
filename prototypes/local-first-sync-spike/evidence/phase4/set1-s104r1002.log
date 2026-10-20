@@ -1,0 +1,1 @@
+{"seed": 1002, "fired": ["nmi cut while held at client:mid_local_txn (hit 1)"], "acked": 64, "server_sales": 64, "hot_journal_at_restart": true, "boot_s": 118.2, "violations": []}

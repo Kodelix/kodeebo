@@ -1,0 +1,9 @@
+phase 4 SC-21b sync half (update with a queued outbox on Windows), commit 0865142+dirty
+  cut at none                     fired False acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+  cut at migrate:before_copy      fired True acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+  cut at migrate:after_copy       fired True acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+  cut at migrate:mid_ddl          fired True acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+  cut at migrate:after_commit     fired True acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+  cut at migrate:before_marker    fired True acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+  cut at migrate:before_cleanup   fired True acked 25 server 25 schema 2 replay ['duplicate'] violations 0 []
+SC-21b sync half: PASS

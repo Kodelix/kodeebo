@@ -1,0 +1,285 @@
+{
+ "harness_commit": "7791001+dirty",
+ "started": "2026-10-20 03:45:50",
+ "rows": [
+  {
+   "rep": 1,
+   "mode": "ready",
+   "commands": 30000,
+   "boot_s": 49.5,
+   "db_bytes": 13635584,
+   "ms": 43751.9,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 1,
+   "mode": "ready",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 133464.6,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 1,
+   "mode": "ready",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 382977.7,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 1,
+   "mode": "integrity",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 36503.6,
+   "open_ms": 507.5,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 1,
+   "mode": "integrity",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 125757.5,
+   "open_ms": 397.9,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 1,
+   "mode": "integrity",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 370505.0,
+   "open_ms": 348.3,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 1,
+   "mode": "quick",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 34592.3,
+   "open_ms": 348.2,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 1,
+   "mode": "quick",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 128718.7,
+   "open_ms": 428.7,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 1,
+   "mode": "quick",
+   "commands": 300000,
+   "boot_s": 49.4,
+   "db_bytes": 141168640,
+   "ms": 376432.0,
+   "open_ms": 387.5,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 2,
+   "mode": "ready",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 45299.4,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 2,
+   "mode": "ready",
+   "commands": 100000,
+   "boot_s": 45.4,
+   "db_bytes": 45830144,
+   "ms": 139289.5,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 2,
+   "mode": "ready",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 386666.0,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 2,
+   "mode": "integrity",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 35981.7,
+   "open_ms": 346.9,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 2,
+   "mode": "integrity",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 129613.3,
+   "open_ms": 378.5,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 2,
+   "mode": "integrity",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 376562.5,
+   "open_ms": 388.1,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 2,
+   "mode": "quick",
+   "commands": 30000,
+   "boot_s": 45.3,
+   "db_bytes": 13635584,
+   "ms": 36265.1,
+   "open_ms": 377.6,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 2,
+   "mode": "quick",
+   "commands": 100000,
+   "boot_s": 49.4,
+   "db_bytes": 45830144,
+   "ms": 130563.5,
+   "open_ms": 349.0,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 2,
+   "mode": "quick",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 371186.8,
+   "open_ms": 378.9,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 3,
+   "mode": "ready",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 45060.1,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 3,
+   "mode": "ready",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 134036.8,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 3,
+   "mode": "ready",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 381699.7,
+   "ready_reply_ok": true
+  },
+  {
+   "rep": 3,
+   "mode": "integrity",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 36161.0,
+   "open_ms": 389.0,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 3,
+   "mode": "integrity",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 124179.7,
+   "open_ms": 427.6,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 3,
+   "mode": "integrity",
+   "commands": 300000,
+   "boot_s": 45.3,
+   "db_bytes": 141168640,
+   "ms": 376879.2,
+   "open_ms": 369.1,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 3,
+   "mode": "quick",
+   "commands": 30000,
+   "boot_s": 40.3,
+   "db_bytes": 13635584,
+   "ms": 35990.9,
+   "open_ms": 387.8,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 3,
+   "mode": "quick",
+   "commands": 100000,
+   "boot_s": 40.3,
+   "db_bytes": 45830144,
+   "ms": 128370.4,
+   "open_ms": 347.7,
+   "result": "ok",
+   "ready_reply_ok": null
+  },
+  {
+   "rep": 3,
+   "mode": "quick",
+   "commands": 300000,
+   "boot_s": 40.3,
+   "db_bytes": 141168640,
+   "ms": 372454.5,
+   "open_ms": 349.1,
+   "result": "ok",
+   "ready_reply_ok": null
+  }
+ ]
+}

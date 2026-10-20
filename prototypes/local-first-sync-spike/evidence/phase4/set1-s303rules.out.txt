@@ -1,0 +1,6 @@
+2023-01-01..9999-12-31 start fixed=False M4 D1 W5 Thursday 23:59 | end fixed=False M10 D1 W5 Thursday 23:59 | delta 01:00:00
+transition at UTC 2026-01-01T12:00Z -> UTC+2
+transition at UTC 2026-04-30T22:00Z -> UTC+3
+transition at UTC 2026-10-29T21:00Z -> UTC+2
+tzdata transition at 2026-04-23 22:00:00+00
+tzdata transition at 2026-10-29 21:00:00+00

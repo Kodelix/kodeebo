@@ -1,0 +1,8 @@
+phase 4 counter timings, commit 7791001, 200 iterations, throttled VM
+  start_session  n  200 failed 0  total p50/p95/max 130.7/210.67/451.72  rt p50/p95/max 131.67/211.56/452.71
+  change_tier    n  200 failed 0  total p50/p95/max 129.64/198.57/457.87  rt p50/p95/max 130.82/199.32/459.08
+  close_session  n  200 failed 0  total p50/p95/max 295.51/410.73/617.14  commit p50/p95/max 203.63/283.57/542.9  marker p50/p95/max 68.21/126.81/385.8  rt p50/p95/max 296.69/412.38/617.98
+  sell_items     n  200 failed 0  total p50/p95/max 298.86/558.99/669.34  commit p50/p95/max 202.73/409.65/541.96  marker p50/p95/max 78.38/137.58/346.68  rt p50/p95/max 300.2/559.93/670.1
+  sync           n    4 failed 0  total p50/p95/max 321.69/341.76/341.76  rt p50/p95/max 322.88/342.75/342.75
+  end_day        n    2 failed 0  total p50/p95/max 236.7/316.88/316.88  rt p50/p95/max 237.16/317.39/317.39
+timings: violations 0 (205 s)

@@ -4,3 +4,4 @@ runs/
 sut/server/server
 .venv/
 tools/
+__pycache__/

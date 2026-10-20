@@ -1,0 +1,157 @@
+{
+ "harness_commit": "0865142+dirty",
+ "cases": [
+  {
+   "seed": 211,
+   "cut_at": null,
+   "fired": [],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 212,
+   "cut_at": "migrate:before_copy",
+   "fired": [
+    "power cut while held at migrate:before_copy (hit 1)"
+   ],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 213,
+   "cut_at": "migrate:after_copy",
+   "fired": [
+    "power cut while held at migrate:after_copy (hit 1)"
+   ],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 214,
+   "cut_at": "migrate:mid_ddl",
+   "fired": [
+    "power cut while held at migrate:mid_ddl (hit 1)"
+   ],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 215,
+   "cut_at": "migrate:after_commit",
+   "fired": [
+    "power cut while held at migrate:after_commit (hit 1)"
+   ],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 216,
+   "cut_at": "migrate:before_marker",
+   "fired": [
+    "power cut while held at migrate:before_marker (hit 1)"
+   ],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  },
+  {
+   "seed": 217,
+   "cut_at": "migrate:before_cleanup",
+   "fired": [
+    "power cut while held at migrate:before_cleanup (hit 1)"
+   ],
+   "acked": 25,
+   "server_sales": 25,
+   "schema_after": {
+    "ok": true,
+    "op": "schema",
+    "user_version": 2,
+    "bills_tax": true,
+    "bill_lines": true,
+    "outbox_envelope": true,
+    "premigrate": false
+   },
+   "replay_results": [
+    "duplicate"
+   ],
+   "violations": []
+  }
+ ]
+}

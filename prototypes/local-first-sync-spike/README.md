@@ -1811,3 +1811,115 @@ Commands: `bash harness/p4.sh up` (revert `clean-ssh2`, boot, throttle), `bash h
 - **Mitigation tested:** `bcdedit /set {current} recoveryenabled No` and `bcdedit /set {current} bootstatuspolicy IgnoreAllFailures` ("The computer will attempt to boot normally after an error occurs", [BCDEdit /set](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/bcdedit--set)). After them, three power-offs 10 s after boot all booted normally (probe 3 (b)).
 - **Cost:** a PC that really cannot boot no longer offers automatic repair; repair then needs recovery media or the Advanced startup menu. Setting it needs administrator rights, once, at installation or onboarding.
 - **For the founder:** should the counter PC setup (installer or onboarding checklist) apply this? The S104 runs below apply it, as the product would, so that a run measures the store and not the Recovery screen.
+
+#### S104 run 1 (committed harness `b492b6a`, 2026-10-19 22:30 – 2026-10-20 00:49)
+
+`evidence/phase4/s104-run1.log`, `s104-run1-summary.json`. 30 power-offs and 10 OS crashes on the throttled VM, with the P4-F1 boot settings applied.
+
+| | Power-off | OS crash (NMI bugcheck) |
+|---|---|---|
+| Runs | 30 | 10 |
+| Cut fired | 28 | 8 |
+| Cut at a held point: inside the local transaction, after its commit, before the send, before or inside the acknowledgement write, after it | 13 | 3 |
+| Cut at a seeded moment | 15 | 5 |
+| A hot journal at restart (the copy before open, P1-F3, then SQLite's rollback) | 14 | 5 |
+| Boot back to ssh after the cut | 9.0–27.0 s | 176–203 s |
+| Acknowledged sales lost or doubled | 0 | 0 |
+
+- **Not exercised:** seeds 3, 11 and 1003 were held at `client:after_business_commit`, a point that exists only in the `separate_outbox_txn` mutant, so the correct client never reaches it. It is dropped from later plans.
+- **Harness faults (both fixed, in `b629cf3` and `c886c64`; both replayed below):**
+  - **Seed 15** (power, held after the acknowledgement write, hit 2) was reported FAIL with 58 × I1. After the reboot the reverse tunnel's ssh process was alive but carried nothing, so every sync was refused and the drain never reached the server. The device store, fetched and opened on the host, was intact: integrity `ok`, all 65 bills, 58 commands pending. Nothing was lost, but the oracle could not see that. `tunnel()` now checks `/health` from the VM and retries.
+  - **Seed 1002** (NMI, held inside the transaction): the run script did not reach the VM right after the previous crash's slow boot, so the client failed to start and the cut never fired. The copy is now verified.
+- **In-flight sale:** in 5 runs the sale in flight at the cut was committed on the device but its reply was lost ("acked 64, server 65"). It reached the server once, at the next sync, which is the expected outcome.
+- **OS crashes boot slowly:** 176–203 s, against about 13 s after a power-off, on the same VM (indicative only).
+
+#### Leg set 1 (2026-10-20 00:53 – 06:17; one boot from `clean-ssh2`, reverted after)
+
+Evidence: `evidence/phase4/set1-*`. Harness commits: the replays, S303, the timings and SC-27 ran on `c886c64` and `7791001`; SC-26 onwards on `7791001`. Two other-session commits landed during the run (`6e2467f`, `0865142`, research and ADR documents only); `git diff 7791001 0865142 -- prototypes/local-first-sync-spike` is empty. Logs marked `+dirty` show the untracked `harness/__pycache__/` folder only: Python's bytecode cache, not code. It is now ignored (`.gitignore` in this folder).
+
+**Runner restart:** the first runner was a `setsid nohup` job, and it died with the session at 01:57, during SC-26. The rest of the set (SC-26, SC-24, SC-21b, TS-01c) ran again under `systemd-run --user`, on the same VM boot.
+
+**S104 replays: PASS.**
+- Seed 15 (power, held after the acknowledgement write, hit 2): 65 acknowledged, 65 on the server, a hot journal at restart, back in 11.7 s.
+- Seed 1002 (NMI, held inside the local transaction): 64 and 64, a hot journal, back in 118 s.
+
+With them, **S104: 30 power-offs and 10 OS crashes, 0 acknowledged sales lost or doubled.** The cut fired in 37 runs; 3 runs were held at a point the correct client never reaches.
+
+**S303 (Egypt's UTC offset): Windows and PostgreSQL disagree → finding P4-F2.**
+- Windows 10 build 19045.2965 holds one Egypt rule from 2023 on: summer time from the last Thursday of April at 23:59 to the last Thursday of October at 23:59 (`harness/guest/s303rules.ps1`, `set1-s303rules.out.txt`).
+- In 2026 that is 2026-04-30 22:00 UTC. The tz database in the `postgres:18.6` image (`Africa/Cairo`) says 2026-04-23 22:00 UTC, the last Friday.
+- They agree on the October end (2026-10-29 21:00 UTC).
+- Between 24 and 30 April 2026 this PC's local time is one hour behind.
+- Not checked: whether a later Windows update changes the rule (the VM has no updates).
+
+**Finding P4-F2 — Windows' own time-zone rules cannot be trusted for Egypt's local time.** The 2026 start differs by a week on this build, and Egypt changes its rules by decree at short notice. **Founder decision (2026-10-20):** every time is stored in UTC. Local time is computed with time-zone rules that ship with the app and can be updated from the server through the config feed. Windows local time is never used for receipts or business logic.
+
+**Counter timings** (`set1-timings.log`; 200 rounds after 10 warm-up rounds; server reachable; timings measured inside the client, ms):
+
+| Action | p50 | p95 | max | Budget (`docs/architecture/perf-budgets.md`) |
+|---|---|---|---|---|
+| Start session | 131 | 211 | 452 | p95 ≤ 200, max ≤ 1,000: **p95 missed** |
+| Change tier (the stand-in for "add item": a committed write to an open session) | 130 | 199 | 458 | p95 ≤ 200, max ≤ 1,000: met |
+| Close session (the bill; no printing in the spike) | 296 | 411 | 617 | p95 ≤ 500, max ≤ 3,000: met (the print hand-off is not included) |
+| Café-only sale | 299 | 559 | 669 | p95 ≤ 500: **missed** |
+| Local commit (the `COMMIT` alone), in close session / café sale | 204 / 203 | 284 / 410 | 543 / 542 | p95 ≤ 150, max ≤ 1,000: **p95 missed** |
+| Marker write, in close session / café sale | 68 / 78 | 127 / 138 | 386 / 347 | (part of the commit cost) |
+| End Day | 237 | 317 | 317 | p95 ≤ 1,000: met (2 samples) |
+
+**Finding P4-F3 — on an HDD-class disk the forced writes of each sale cost most of the budget.**
+- The rollback journal with `synchronous=FULL`, plus the marker (a temporary file, its flush, and the write-through rename), makes about five forced writes per sale.
+- **Founder decision (2026-10-20):** the budgets stay. The spike proposes cheaper commits that keep OQ28 (fewer forced writes per transaction; the marker in the same flush where the design allows), measures them and reports. The budgets are revisited only with the pilot PC's numbers.
+
+**SC-27 (Windows Defender scanning while the counter sells):** the same 200 rounds, while a custom Defender scan of the client's folder ran every 20 s (32 scans).
+- `Start-MpScan -ScanType FullScan` returned after 3 s, so whether a full scan ran is **not established**.
+- Real-time protection was on (signatures 1.461.110.0).
+
+| Action | p50 | p95 | p99 | max |
+|---|---|---|---|---|
+| Start session | 412 | 953 | 3,791 | 4,968 |
+| Close session | 757 | 2,523 | 9,275 | 10,949 |
+| Café-only sale | 769 | 2,669 | 7,029 | 10,879 |
+| Local commit (close session) | 552 | 1,863 | 6,158 | 7,144 |
+| End Day | | | | 8,427 (2 samples) |
+
+No sale was lost or doubled, there was no false refusal, and the client recorded no event.
+
+**Finding P4-F4 — Defender scanning the store stalls the counter for up to 11 s, far above the 3 s ceiling.** **Founder decision (2026-10-20):** write it up first. The write-up includes an option that excludes only the encrypted store and its journal by exact file path, with its security cost; it follows in the measurement leg.
+
+**SC-26 (counter reads while a 35,000-command backlog drains): PASS.**
+- A second process read open sessions, today's bills, the price list and the items every 50 ms.
+- **Without sync** (120 s, 2,050 reads): p50 0.37, p95 36.3, p99 43.2, max 81.8 ms.
+- **During the drain** (15,459 reads): p50 0.47, p95 34.3, p99 41.5, max 93.3 ms. No `SQLITE_BUSY` or locked error reached the reader.
+- The drain took 700 syncs in 62 s. The server holds all 35,000.
+- Budget: p95 ≤ 100, p99 ≤ 300, max ≤ 3,000 ms: met.
+
+**SC-24 (start-up check on a 60-day store), cold after a reboot, 3 runs each (s):**
+
+| Store | Size | Ready to sell (the client's start, its integrity check included) | `integrity_check` alone | `quick_check` alone |
+|---|---|---|---|---|
+| 30,000 commands (about 6 days at the OQ16 bound) | 13.6 MB | 43.8–45.3 | 36.0–36.5 | 34.6–36.3 |
+| 100,000 commands (about 20 days) | 45.8 MB | 133.5–139.3 | 124.2–129.6 | 128.4–130.6 |
+| 300,000 commands (60 days, OQ29) | 141.2 MB | 381.7–386.7 | 370.5–376.9 | 371.2–376.4 |
+
+Budget: ready ≤ 10 s, check ≤ 5 s. **Missed at every size**, by 7× at 6 days and 75× at 60 days.
+
+**Finding P4-F5 — a full check of the store at every start is far too slow on an HDD-class disk.**
+- Both checks read about 0.38 MB/s, about 92 pages of 4 KB per second. That is the VM's 100-IOPS cap, one request per page.
+- `quick_check` is no faster: the time is spent reading pages, not checking indexes.
+- A real HDD with read-ahead may read faster, so these numbers are an upper bound (G0-F2). But a fragmented store on a real HDD can come near them, and even a tenth of these times breaks the budget at 60 days.
+- Options to measure next (each re-runs TS-03a, sync note SC-24):
+  - the full check only after an unclean shutdown (a hot journal, or the store and marker disagree) and on a schedule, relying otherwise on the cipher's per-page authentication;
+  - a partial check of the hot tables at start;
+  - a larger page size (fewer requests per MB).
+
+**SC-21b, sync half (an update with sales queued on Windows): PASS.**
+- Version 1 synced 10 sales and queued 10. Version 2 then started and migrated the store to schema 2. In 6 of the 7 cases the power was cut while version 2 was held at a migration step: before the copy, after the copy, mid-DDL, after the commit, before the marker, before the cleanup.
+- Every case ended at schema 2 with all 25 sales on the server exactly once.
+- Resends of acknowledged commands came back `duplicate`, never `conflict`. The stored bytes did not change across versions.
+
+**TS-01c (a store copy restored on Windows):**
+- **Run without the decided OQ7 policy:** the harness started the server without `CLONE_POLICY=1`.
+  - **(a)** (the later sales were synced before the restore): the server refused the restored device's new sales as `seq_conflict`. That is detection, but not the decided OQ6/OQ7 handling, which quarantines them for the owner and never rejects a money fact.
+  - **(b)** (they never reached the server): the erased sales were never seen, and the restored device's next sales took their sequence numbers. This is the known blind spot (OQ27), confirmed on Windows.
+- **Rerun with `CLONE_POLICY=1`:** in leg set 2; the harness is fixed.
+- **Windows finding:** the store and the marker could be copied while the app was running (an administrator `copy`; SQLite opens the file with read sharing). Only the cashier-account boundary (M1, TS-08) can stop that.
