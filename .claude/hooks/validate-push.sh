@@ -127,6 +127,22 @@ git_segment() {
 # Only process git push commands
 PUSH_SEG=$(git_segment push "$COMMAND") || exit 0
 
+# --- Skipping git hooks on a push (BLOCKING) ---------------------------------
+# A product's pre-push git hook runs the same checks as CI (tests, architecture
+# tests, OSV-Scanner, gitleaks; Kodeebo ADR-0011). An agent that pushes with
+# --no-verify (git accepts any unambiguous prefix, e.g. --no-veri) or points
+# core.hooksPath elsewhere skips all of it. Scope, stated so a miss is not read
+# as a pass: this reads the push segment only, so a hooks path set by an earlier
+# `export GIT_CONFIG_*` or `git config` command is not seen. The user can still
+# push this way from their own terminal; the block is for agents.
+if printf '%s\n' "$PUSH_SEG" | LC_ALL=C grep -qE '(^|[[:space:]])--no-veri[a-z]*([[:space:]=]|$)' \
+   || printf '%s\n' "$PUSH_SEG" | LC_ALL=C grep -qiE 'core\.hookspath'; then
+    echo "BLOCKED: this push skips the git hooks (--no-verify or core.hooksPath)." >&2
+    echo "The pre-push hook runs the same checks as CI; fix what it reports and push normally." >&2
+    echo "If skipping it is really needed, ask the user to push from their own terminal." >&2
+    exit 2
+fi
+
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 MATCHED_BRANCH=""
 
