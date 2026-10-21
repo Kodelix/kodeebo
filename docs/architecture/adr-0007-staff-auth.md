@@ -175,6 +175,13 @@ Research note: `docs/research/staff-auth-and-roles.md` (Status Draft, verdict CO
 
 > **Amendment 2026-10-20 (ADR-0009 deploy and build tooling) — accepted by the founder (Kamel Mohamed) 2026-10-20; in effect.** § 2 says the pepper lives in "the encrypted server secret file". Until the KMS move it is a **plain file**: a host file outside the repository, owned by the backend container's UID, mode 0400, mounted as a Compose `file:` secret (ADR-0009 Decision 3a). At-rest encryption comes only from the AWS KMS envelope at the first paying customer, as § 2 already plans; encrypting the file on the host would need its decryption key on the same host (research `build-and-ops-tooling` part 3). The secret file is excluded from every VPS-provider snapshot and backup; recovery is the offline escrow USB. The ASVS 13.3.1 deviation accepted for the pepper is restated for a plain file until the KMS move, with the same review triggers. Migration Plan step 4 ("store in the encrypted secret file") reads "store in the server secret file (plain, 0400, owner = backend UID)". The decision text above is not edited.
 
+> **Amendment 2026-10-21 (ADR-0013 notifications) — Proposed; takes effect only when ADR-0013 is Accepted.** This ADR's text stays; ADR-0013 Decision 7 is the source text. In short:
+> - **`Recovery.create(identifier, expiresAt)` no longer takes `tokenHash`.** The request writes the recovery request and its notice and sends nothing, so the response time stays uniform (ASVS 6.3.8). The send job mints the link token in its claim transaction (`Recovery.addToken`) and confirms it on acceptance (`Recovery.confirmToken`); earlier links stay valid until a later attempt is accepted, which voids the rest. The factor-removal cancel link works the same way (`SecondFactors.addCancelToken` / `confirmCancelToken`). Each link keeps its § 2 lifetime, counted from its minting.
+> - **`RecoveryMailer.send(verifiedAddress, link)` is replaced** by the notify mail kind (ADR-0013).
+> - **Notices "to every owner contact" fan out** to one email item per recipient.
+> - **M31 reads `AuthNotices.isAccepted`:** no recipient pending and at least one accepted. A recipient whose address is failing, or whose item went dead, does not block the notice and raises an alert naming the contact (never the address). If every recipient failed, the gated change stays paused and the operator is alerted at the configured bound.
+> - **The reset and cancel pages** answer an expired, used or replaced token with one message: the link has expired or was replaced; use the most recent email.
+
 ### 1. Three realms
 
 | Realm | Who | Host and RP ID | Credentials | Sessions |
