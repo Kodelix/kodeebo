@@ -29,6 +29,7 @@
 # 2026-10-20: ADR-0009 amendment note (threat-model amendment review, findings 1-3; approved by the founder, Kamel Mohamed, 2026-10-20): IC-RELEASE-CEREMONY superseded by IC-RELEASE-CEREMONY-R2 (rootless build account, fetch/build split, offline build with read-only caches, reboot before signing, S59; no admin-key host step before the agent-account move); adr_status Accepted.
 
 # 2026-10-21: ADR-0012 jobs and outbox written (Proposed): TR-JOB-TABLES, TR-JOB-RETENTION, IC-OUTBOX-SWEEP-R3, IC-EXTERNAL-EFFECT, IC-JOB-LIFECYCLE, 6 FP-* and TECH-MESSAGING-NONE added, each effective when ADR-0012 is Accepted; IC-OUTBOX-SWEEP-R2 stays active until then (founder, 2026-10-21: superseded by R3 on acceptance, not now).
+# 2026-10-21: ADR-0010 core-extraction policy written (Proposed, r2 after CTO-ADR): TR-BRANCH-ROW-IN-TENANCY, IC-CORE-MODULE-IDENTITY, IC-RETENTION-PARTICIPANT, IC-CORE-ROLES-BOOTSTRAP, FP-LAYER1-DEPENDS-ON-PRODUCT, FP-FK-LAYER1-TO-PRODUCT, FP-EXPOSED-CROSS-MODULE-REFERENCE, FP-ROLE-IN-MIGRATION added, each effective when ADR-0010 is Accepted; IC-MIGRATION-JOB, IC-RELEASE-MANIFEST, IC-DEPLOY-ENTRY and TECH-MIGRATION-FLYWAY are superseded with <module>:<version> ids at acceptance (ADR-0010 Ordering Note 4).
 data_ownership: []
 
 tenancy_rules:
@@ -428,6 +429,11 @@ tenancy_rules:
     adr: ADR-0012
     adr_status: Proposed
     status: active
+  - id: TR-BRANCH-ROW-IN-TENANCY
+    rule: "Effective when ADR-0010 is Accepted (founder 2026-10-21): the bare row branches (tenant_id, id, status) and its lifecycle belong to the tenancy module (Layer 1), because Layer 1 tables such as devices, seats and support grants carry a composite FK to it (TR-TENANT-UNIT, TR-BRANCH-SCOPE-R4); Venue Configuration (Layer 2) keeps every branch attribute (name, logo, phone numbers, opening hours, settings) in its own tables keyed (tenant_id, branch_id) with a FK to tenancy branches. Branch is the core generic word for a tenant unit."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
     contract: "TenantConnectionResolver.resolve(TenantId) -> TenantDataSource; the only way app code reaches tenant data; today returns the shared pool."
@@ -800,6 +806,21 @@ interface_contracts:
     adr: ADR-0012
     adr_status: Proposed
     status: active
+  - id: IC-CORE-MODULE-IDENTITY
+    contract: "Effective when ADR-0010 is Accepted: each of the fourteen Layer 1 modules (tenancy, identity, otp, ratelimit, authz, audit, operator, licensing, billing, notify, jobs, observability, analytics, storage) and its <module>-conformance module has Gradle group net.kodelix.core, project name = module name, package net.kodelix.core.<module>, strict explicitApi(), a committed ABI dump <module>/api/<module>.api checked by checkKotlinAbi on every PR, migrations in src/main/resources/db/migration/net/kodelix/core/<module>/V0001__<verb>_<object>.sql (4-digit, never reused), history table flyway_<module>, and migration id <module>:<version> in the job, manifest, privileged list and deploy record; product contexts use net.kodelix.kodeebo.<context> with the same migration layout. A lift changes build files and regenerated lock and verification files only, never Kotlin source."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
+  - id: IC-RETENTION-PARTICIPANT
+    contract: "Effective when ADR-0010 is Accepted (founder 2026-10-21): tenancy defines TenantDataParticipant (export its tables EXP-2, purge personal data, delete, for one tenant) and identity defines the per-person form (de-identify, delete personal fields, extract); steps and signatures are ADR-0005s, written in /design-spec tenant-foundation. Every module holding tenant or personal data implements it; only :app registers participants; the orchestrator deletes in reverse dependency order (children first) and exports in dependency order; coverage tests (ADR-0005 M47, erasure) fail when a module with tenant tables registers none."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
+  - id: IC-CORE-ROLES-BOOTSTRAP
+    contract: "Effective when ADR-0010 is Accepted (founder 2026-10-21): the founder-run bootstrap roles script (outside Flyway, ADR-0009 B4/M5) is split into a core part, shipped versioned with the tenancy module at tenancy/src/main/resources/bootstrap/net/kodelix/core/tenancy/roles.sql and moved with it on a lift, creating the roles and role defaults Layer 1 SQL needs (ADR-0001 1b as amended), and a product part for Kodeebo-only roles. Both run once as the bootstrap superuser through the local peer login; a product consuming saas-core-kotlin runs the core part before its first migration. A new role needs an ADR-0001 amendment and the ADR-0009 4a privileged route."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
 performance_budgets: []
 
 api_decisions: []
@@ -1159,6 +1180,26 @@ forbidden_patterns:
   - id: FP-LISTEN-NOTIFY
     pattern: "Effective when ADR-0012 is Accepted: LISTEN/NOTIFY in the backend until a revisit trigger in ADR-0012 Decision 11 reopens Decision 1; polling is the floor even then."
     adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: FP-LAYER1-DEPENDS-ON-PRODUCT
+    pattern: "Effective when ADR-0010 is Accepted: a Layer 1 module (net.kodelix.core.*) depending on, importing or naming a Layer 2 or Layer 3 module or a Kodeebo concept (station, bill, cashier, counter, venue, shift, End Day) in its public API; a Layer 1 retention, closure or export orchestrator calling product tables or classes directly instead of the participant port."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
+  - id: FP-FK-LAYER1-TO-PRODUCT
+    pattern: "Effective when ADR-0010 is Accepted: a foreign key from a Layer 1 table to a Layer 2 or Layer 3 table, or any cross-module FK against the Gradle dependency direction."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
+  - id: FP-EXPOSED-CROSS-MODULE-REFERENCE
+    pattern: "Effective when ADR-0010 is Accepted: a public Exposed Table object, or an Exposed reference() to another module table; rows across modules are referenced by id value with the FK in SQL."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: active
+  - id: FP-ROLE-IN-MIGRATION
+    pattern: "Effective when ADR-0010 is Accepted: creating or altering a role in a Flyway migration, or a Layer 1 migration granting to a role outside ADR-0001 1b as amended; roles come only from the bootstrap roles script (core or product part) after an ADR-0001 amendment."
+    adr: ADR-0010
     adr_status: Proposed
     status: active
 # 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
