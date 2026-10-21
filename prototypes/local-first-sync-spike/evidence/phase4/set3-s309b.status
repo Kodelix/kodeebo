@@ -1,0 +1,7 @@
+--- start 2026-10-21 04:36:40 db11ef9 dirty=[0]
+install 04:40:31
+s309 rc=0 12:40:57
+Domain snapshot clean-ssh2 reverted
+
+12:41:58 p4 down: shut off, reverted clean-ssh2
+DONE 2026-10-21 12:41:58

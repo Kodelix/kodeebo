@@ -1,0 +1,22 @@
+phase 4 SC-24 options (P4-F5), commit 8dfdc86+dirty
+  rep 1 n30000           full        13.6 MB  45340.7 ms  ok True
+  rep 1 n30000           quick       13.6 MB  43558.6 ms  ok True
+  rep 1 n30000           partial     13.6 MB  7655.1 ms  ok True
+  rep 1 n30000           unclean     13.6 MB  8179.2 ms  ok True
+  rep 1 n300000          full       141.2 MB  384709.6 ms  ok True
+  rep 1 n300000          quick      141.2 MB  376839.2 ms  ok True
+  rep 1 n300000          partial    141.2 MB  8064.1 ms  ok True
+  rep 1 n300000          unclean    141.2 MB  17124.6 ms  ok True
+  rep 1 n30000-p16384    full        13.8 MB  17258.6 ms  ok True
+  rep 1 n30000-p65536    full        15.8 MB  9800.2 ms  ok True
+  rep 2 n30000           full        13.6 MB  76798.1 ms  ok True
+  rep 2 n30000           quick       13.6 MB  44751.6 ms  ok True
+  rep 2 n30000           partial     13.6 MB  8037.5 ms  ok True
+  rep 2 n30000           unclean     13.6 MB  8585.0 ms  ok True
+  rep 2 n300000          full       141.2 MB  378843.2 ms  ok True
+  rep 2 n300000          quick      141.2 MB  373752.1 ms  ok True
+  rep 2 n300000          partial    141.2 MB  8360.6 ms  ok True
+  rep 2 n300000          unclean    141.2 MB  9013.6 ms  ok True
+  rep 2 n30000-p16384    full        13.8 MB  15001.5 ms  ok True
+  rep 2 n30000-p65536    full        15.8 MB  9521.1 ms  ok True
+SC-24 options: done

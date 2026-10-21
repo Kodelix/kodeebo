@@ -1,0 +1,10617 @@
+{
+ "harness_commit": "b6b7150",
+ "iterations": 400,
+ "journal": "truncate",
+ "marker": "slots",
+ "tag": "r3",
+ "violations": [],
+ "ops": {
+  "start_session": {
+   "n": 400,
+   "failed": 0,
+   "total": {
+    "p50": 77.82,
+    "p95": 97.94,
+    "p99": 116.49,
+    "max": 123.37
+   },
+   "rt": {
+    "p50": 79.1,
+    "p95": 99.38,
+    "p99": 118.07,
+    "max": 124.77
+   }
+  },
+  "change_tier": {
+   "n": 400,
+   "failed": 0,
+   "total": {
+    "p50": 78.76,
+    "p95": 96.98,
+    "p99": 109.47,
+    "max": 181.4
+   },
+   "rt": {
+    "p50": 80.11,
+    "p95": 98.8,
+    "p99": 110.76,
+    "max": 182.53
+   }
+  },
+  "close_session": {
+   "n": 400,
+   "failed": 0,
+   "total": {
+    "p50": 189.75,
+    "p95": 228.02,
+    "p99": 249.02,
+    "max": 290.73
+   },
+   "txn": {
+    "p50": 157.43,
+    "p95": 188.12,
+    "p99": 206.76,
+    "max": 228.45
+   },
+   "commit": {
+    "p50": 156.48,
+    "p95": 186.61,
+    "p99": 205.63,
+    "max": 227.45
+   },
+   "marker": {
+    "p50": 31.18,
+    "p95": 47.93,
+    "p99": 62.41,
+    "max": 111.66
+   },
+   "rt": {
+    "p50": 191.13,
+    "p95": 229.35,
+    "p99": 250.84,
+    "max": 292.14
+   }
+  },
+  "sell_items": {
+   "n": 400,
+   "failed": 0,
+   "total": {
+    "p50": 178.78,
+    "p95": 218.17,
+    "p99": 239.16,
+    "max": 367.77
+   },
+   "txn": {
+    "p50": 146.85,
+    "p95": 176.88,
+    "p99": 195.78,
+    "max": 287.1
+   },
+   "commit": {
+    "p50": 146.26,
+    "p95": 176.16,
+    "p99": 190.47,
+    "max": 286.5
+   },
+   "marker": {
+    "p50": 31.05,
+    "p95": 50.3,
+    "p99": 61.08,
+    "max": 89.79
+   },
+   "rt": {
+    "p50": 180.01,
+    "p95": 219.11,
+    "p99": 240.77,
+    "max": 369.21
+   }
+  },
+  "sync": {
+   "n": 8,
+   "failed": 0,
+   "total": {
+    "p50": 158.47,
+    "p95": 168.15,
+    "p99": 168.15,
+    "max": 168.15
+   },
+   "rt": {
+    "p50": 160.39,
+    "p95": 168.95,
+    "p99": 168.95,
+    "max": 168.95
+   }
+  },
+  "end_day": {
+   "n": 4,
+   "failed": 0,
+   "total": {
+    "p50": 150.23,
+    "p95": 188.75,
+    "p99": 188.75,
+    "max": 188.75
+   },
+   "rt": {
+    "p50": 150.76,
+    "p95": 189.99,
+    "p99": 189.99,
+    "max": 189.99
+   }
+  }
+ },
+ "seconds": 228,
+ "samples": {
+  "start_session": [
+   {
+    "rt": 77.48,
+    "total": 76.48,
+    "ok": true
+   },
+   {
+    "rt": 79.41,
+    "total": 78.93,
+    "ok": true
+   },
+   {
+    "rt": 78.22,
+    "total": 77.26,
+    "ok": true
+   },
+   {
+    "rt": 80.54,
+    "total": 79.12,
+    "ok": true
+   },
+   {
+    "rt": 80.2,
+    "total": 79.71,
+    "ok": true
+   },
+   {
+    "rt": 89.23,
+    "total": 87.82,
+    "ok": true
+   },
+   {
+    "rt": 79.23,
+    "total": 77.69,
+    "ok": true
+   },
+   {
+    "rt": 78.16,
+    "total": 76.46,
+    "ok": true
+   },
+   {
+    "rt": 79.04,
+    "total": 77.67,
+    "ok": true
+   },
+   {
+    "rt": 78.77,
+    "total": 76.85,
+    "ok": true
+   },
+   {
+    "rt": 78.11,
+    "total": 76.49,
+    "ok": true
+   },
+   {
+    "rt": 89.82,
+    "total": 87.77,
+    "ok": true
+   },
+   {
+    "rt": 77.29,
+    "total": 76.19,
+    "ok": true
+   },
+   {
+    "rt": 79.5,
+    "total": 77.6,
+    "ok": true
+   },
+   {
+    "rt": 78.8,
+    "total": 77.03,
+    "ok": true
+   },
+   {
+    "rt": 79.07,
+    "total": 77.3,
+    "ok": true
+   },
+   {
+    "rt": 78.58,
+    "total": 76.99,
+    "ok": true
+   },
+   {
+    "rt": 79.12,
+    "total": 77.47,
+    "ok": true
+   },
+   {
+    "rt": 79.56,
+    "total": 78.46,
+    "ok": true
+   },
+   {
+    "rt": 78.86,
+    "total": 77.39,
+    "ok": true
+   },
+   {
+    "rt": 89.36,
+    "total": 88.28,
+    "ok": true
+   },
+   {
+    "rt": 79.88,
+    "total": 78.47,
+    "ok": true
+   },
+   {
+    "rt": 79.28,
+    "total": 78.0,
+    "ok": true
+   },
+   {
+    "rt": 79.23,
+    "total": 77.59,
+    "ok": true
+   },
+   {
+    "rt": 88.86,
+    "total": 87.68,
+    "ok": true
+   },
+   {
+    "rt": 79.23,
+    "total": 78.49,
+    "ok": true
+   },
+   {
+    "rt": 79.06,
+    "total": 77.22,
+    "ok": true
+   },
+   {
+    "rt": 110.05,
+    "total": 108.19,
+    "ok": true
+   },
+   {
+    "rt": 91.83,
+    "total": 90.83,
+    "ok": true
+   },
+   {
+    "rt": 98.95,
+    "total": 97.11,
+    "ok": true
+   },
+   {
+    "rt": 78.47,
+    "total": 76.6,
+    "ok": true
+   },
+   {
+    "rt": 78.42,
+    "total": 77.61,
+    "ok": true
+   },
+   {
+    "rt": 100.39,
+    "total": 98.52,
+    "ok": true
+   },
+   {
+    "rt": 79.97,
+    "total": 78.62,
+    "ok": true
+   },
+   {
+    "rt": 80.64,
+    "total": 79.41,
+    "ok": true
+   },
+   {
+    "rt": 88.5,
+    "total": 86.5,
+    "ok": true
+   },
+   {
+    "rt": 79.15,
+    "total": 77.53,
+    "ok": true
+   },
+   {
+    "rt": 77.55,
+    "total": 75.37,
+    "ok": true
+   },
+   {
+    "rt": 88.65,
+    "total": 87.03,
+    "ok": true
+   },
+   {
+    "rt": 78.44,
+    "total": 76.88,
+    "ok": true
+   },
+   {
+    "rt": 79.58,
+    "total": 77.93,
+    "ok": true
+   },
+   {
+    "rt": 77.57,
+    "total": 75.8,
+    "ok": true
+   },
+   {
+    "rt": 78.96,
+    "total": 77.19,
+    "ok": true
+   },
+   {
+    "rt": 79.53,
+    "total": 77.79,
+    "ok": true
+   },
+   {
+    "rt": 78.19,
+    "total": 76.73,
+    "ok": true
+   },
+   {
+    "rt": 118.07,
+    "total": 116.49,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.27,
+    "ok": true
+   },
+   {
+    "rt": 79.64,
+    "total": 78.05,
+    "ok": true
+   },
+   {
+    "rt": 80.55,
+    "total": 79.25,
+    "ok": true
+   },
+   {
+    "rt": 79.29,
+    "total": 78.74,
+    "ok": true
+   },
+   {
+    "rt": 78.55,
+    "total": 76.99,
+    "ok": true
+   },
+   {
+    "rt": 79.18,
+    "total": 77.25,
+    "ok": true
+   },
+   {
+    "rt": 78.71,
+    "total": 77.16,
+    "ok": true
+   },
+   {
+    "rt": 78.33,
+    "total": 77.67,
+    "ok": true
+   },
+   {
+    "rt": 79.2,
+    "total": 77.43,
+    "ok": true
+   },
+   {
+    "rt": 78.74,
+    "total": 77.0,
+    "ok": true
+   },
+   {
+    "rt": 77.48,
+    "total": 75.38,
+    "ok": true
+   },
+   {
+    "rt": 100.2,
+    "total": 98.37,
+    "ok": true
+   },
+   {
+    "rt": 88.03,
+    "total": 86.31,
+    "ok": true
+   },
+   {
+    "rt": 88.9,
+    "total": 86.9,
+    "ok": true
+   },
+   {
+    "rt": 90.23,
+    "total": 88.8,
+    "ok": true
+   },
+   {
+    "rt": 78.99,
+    "total": 77.25,
+    "ok": true
+   },
+   {
+    "rt": 77.33,
+    "total": 75.63,
+    "ok": true
+   },
+   {
+    "rt": 99.69,
+    "total": 97.79,
+    "ok": true
+   },
+   {
+    "rt": 79.09,
+    "total": 77.08,
+    "ok": true
+   },
+   {
+    "rt": 79.46,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 90.22,
+    "total": 89.03,
+    "ok": true
+   },
+   {
+    "rt": 80.39,
+    "total": 78.81,
+    "ok": true
+   },
+   {
+    "rt": 77.93,
+    "total": 76.53,
+    "ok": true
+   },
+   {
+    "rt": 78.59,
+    "total": 77.19,
+    "ok": true
+   },
+   {
+    "rt": 80.2,
+    "total": 78.72,
+    "ok": true
+   },
+   {
+    "rt": 78.92,
+    "total": 77.19,
+    "ok": true
+   },
+   {
+    "rt": 88.3,
+    "total": 86.58,
+    "ok": true
+   },
+   {
+    "rt": 79.71,
+    "total": 79.17,
+    "ok": true
+   },
+   {
+    "rt": 79.92,
+    "total": 78.41,
+    "ok": true
+   },
+   {
+    "rt": 79.07,
+    "total": 78.08,
+    "ok": true
+   },
+   {
+    "rt": 89.9,
+    "total": 88.12,
+    "ok": true
+   },
+   {
+    "rt": 78.87,
+    "total": 78.28,
+    "ok": true
+   },
+   {
+    "rt": 79.24,
+    "total": 78.58,
+    "ok": true
+   },
+   {
+    "rt": 89.13,
+    "total": 87.94,
+    "ok": true
+   },
+   {
+    "rt": 77.93,
+    "total": 77.21,
+    "ok": true
+   },
+   {
+    "rt": 78.97,
+    "total": 78.27,
+    "ok": true
+   },
+   {
+    "rt": 76.81,
+    "total": 75.89,
+    "ok": true
+   },
+   {
+    "rt": 80.64,
+    "total": 79.57,
+    "ok": true
+   },
+   {
+    "rt": 79.04,
+    "total": 78.31,
+    "ok": true
+   },
+   {
+    "rt": 79.89,
+    "total": 78.48,
+    "ok": true
+   },
+   {
+    "rt": 79.79,
+    "total": 78.78,
+    "ok": true
+   },
+   {
+    "rt": 79.98,
+    "total": 78.58,
+    "ok": true
+   },
+   {
+    "rt": 77.12,
+    "total": 75.74,
+    "ok": true
+   },
+   {
+    "rt": 77.71,
+    "total": 76.25,
+    "ok": true
+   },
+   {
+    "rt": 108.97,
+    "total": 108.06,
+    "ok": true
+   },
+   {
+    "rt": 77.26,
+    "total": 76.0,
+    "ok": true
+   },
+   {
+    "rt": 78.59,
+    "total": 77.88,
+    "ok": true
+   },
+   {
+    "rt": 78.55,
+    "total": 77.68,
+    "ok": true
+   },
+   {
+    "rt": 100.21,
+    "total": 99.07,
+    "ok": true
+   },
+   {
+    "rt": 78.75,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 79.55,
+    "total": 78.41,
+    "ok": true
+   },
+   {
+    "rt": 78.71,
+    "total": 78.11,
+    "ok": true
+   },
+   {
+    "rt": 78.87,
+    "total": 76.66,
+    "ok": true
+   },
+   {
+    "rt": 78.18,
+    "total": 76.73,
+    "ok": true
+   },
+   {
+    "rt": 79.39,
+    "total": 78.04,
+    "ok": true
+   },
+   {
+    "rt": 78.8,
+    "total": 77.4,
+    "ok": true
+   },
+   {
+    "rt": 88.29,
+    "total": 86.76,
+    "ok": true
+   },
+   {
+    "rt": 79.28,
+    "total": 78.05,
+    "ok": true
+   },
+   {
+    "rt": 77.86,
+    "total": 76.45,
+    "ok": true
+   },
+   {
+    "rt": 90.3,
+    "total": 88.56,
+    "ok": true
+   },
+   {
+    "rt": 80.18,
+    "total": 78.68,
+    "ok": true
+   },
+   {
+    "rt": 79.16,
+    "total": 77.87,
+    "ok": true
+   },
+   {
+    "rt": 90.06,
+    "total": 88.34,
+    "ok": true
+   },
+   {
+    "rt": 75.35,
+    "total": 74.08,
+    "ok": true
+   },
+   {
+    "rt": 78.71,
+    "total": 76.85,
+    "ok": true
+   },
+   {
+    "rt": 89.99,
+    "total": 88.09,
+    "ok": true
+   },
+   {
+    "rt": 79.27,
+    "total": 77.55,
+    "ok": true
+   },
+   {
+    "rt": 80.37,
+    "total": 78.98,
+    "ok": true
+   },
+   {
+    "rt": 89.93,
+    "total": 88.03,
+    "ok": true
+   },
+   {
+    "rt": 80.99,
+    "total": 79.93,
+    "ok": true
+   },
+   {
+    "rt": 101.25,
+    "total": 100.21,
+    "ok": true
+   },
+   {
+    "rt": 79.63,
+    "total": 78.0,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.87,
+    "ok": true
+   },
+   {
+    "rt": 80.08,
+    "total": 77.49,
+    "ok": true
+   },
+   {
+    "rt": 79.98,
+    "total": 78.28,
+    "ok": true
+   },
+   {
+    "rt": 78.61,
+    "total": 77.05,
+    "ok": true
+   },
+   {
+    "rt": 78.98,
+    "total": 77.46,
+    "ok": true
+   },
+   {
+    "rt": 79.69,
+    "total": 78.61,
+    "ok": true
+   },
+   {
+    "rt": 119.52,
+    "total": 118.09,
+    "ok": true
+   },
+   {
+    "rt": 88.94,
+    "total": 87.7,
+    "ok": true
+   },
+   {
+    "rt": 77.89,
+    "total": 76.44,
+    "ok": true
+   },
+   {
+    "rt": 87.99,
+    "total": 86.53,
+    "ok": true
+   },
+   {
+    "rt": 78.8,
+    "total": 78.22,
+    "ok": true
+   },
+   {
+    "rt": 77.32,
+    "total": 76.06,
+    "ok": true
+   },
+   {
+    "rt": 80.02,
+    "total": 78.61,
+    "ok": true
+   },
+   {
+    "rt": 77.13,
+    "total": 75.34,
+    "ok": true
+   },
+   {
+    "rt": 78.91,
+    "total": 77.25,
+    "ok": true
+   },
+   {
+    "rt": 79.4,
+    "total": 78.07,
+    "ok": true
+   },
+   {
+    "rt": 79.5,
+    "total": 77.89,
+    "ok": true
+   },
+   {
+    "rt": 76.99,
+    "total": 75.7,
+    "ok": true
+   },
+   {
+    "rt": 109.52,
+    "total": 108.23,
+    "ok": true
+   },
+   {
+    "rt": 78.02,
+    "total": 76.49,
+    "ok": true
+   },
+   {
+    "rt": 74.18,
+    "total": 72.72,
+    "ok": true
+   },
+   {
+    "rt": 77.45,
+    "total": 75.92,
+    "ok": true
+   },
+   {
+    "rt": 81.0,
+    "total": 79.7,
+    "ok": true
+   },
+   {
+    "rt": 77.84,
+    "total": 75.93,
+    "ok": true
+   },
+   {
+    "rt": 78.69,
+    "total": 78.18,
+    "ok": true
+   },
+   {
+    "rt": 79.07,
+    "total": 77.31,
+    "ok": true
+   },
+   {
+    "rt": 79.18,
+    "total": 77.68,
+    "ok": true
+   },
+   {
+    "rt": 78.14,
+    "total": 76.71,
+    "ok": true
+   },
+   {
+    "rt": 78.06,
+    "total": 76.16,
+    "ok": true
+   },
+   {
+    "rt": 78.48,
+    "total": 76.53,
+    "ok": true
+   },
+   {
+    "rt": 78.61,
+    "total": 76.84,
+    "ok": true
+   },
+   {
+    "rt": 79.09,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 80.35,
+    "total": 78.72,
+    "ok": true
+   },
+   {
+    "rt": 80.61,
+    "total": 79.38,
+    "ok": true
+   },
+   {
+    "rt": 80.71,
+    "total": 79.71,
+    "ok": true
+   },
+   {
+    "rt": 79.48,
+    "total": 78.47,
+    "ok": true
+   },
+   {
+    "rt": 86.48,
+    "total": 85.24,
+    "ok": true
+   },
+   {
+    "rt": 89.03,
+    "total": 87.43,
+    "ok": true
+   },
+   {
+    "rt": 97.72,
+    "total": 96.63,
+    "ok": true
+   },
+   {
+    "rt": 88.42,
+    "total": 87.98,
+    "ok": true
+   },
+   {
+    "rt": 110.44,
+    "total": 109.27,
+    "ok": true
+   },
+   {
+    "rt": 99.15,
+    "total": 97.74,
+    "ok": true
+   },
+   {
+    "rt": 79.43,
+    "total": 78.07,
+    "ok": true
+   },
+   {
+    "rt": 79.12,
+    "total": 77.83,
+    "ok": true
+   },
+   {
+    "rt": 79.5,
+    "total": 78.95,
+    "ok": true
+   },
+   {
+    "rt": 78.78,
+    "total": 78.19,
+    "ok": true
+   },
+   {
+    "rt": 79.77,
+    "total": 78.09,
+    "ok": true
+   },
+   {
+    "rt": 79.81,
+    "total": 78.37,
+    "ok": true
+   },
+   {
+    "rt": 78.49,
+    "total": 76.79,
+    "ok": true
+   },
+   {
+    "rt": 78.04,
+    "total": 76.48,
+    "ok": true
+   },
+   {
+    "rt": 88.33,
+    "total": 86.73,
+    "ok": true
+   },
+   {
+    "rt": 77.93,
+    "total": 76.67,
+    "ok": true
+   },
+   {
+    "rt": 77.69,
+    "total": 76.13,
+    "ok": true
+   },
+   {
+    "rt": 109.43,
+    "total": 108.36,
+    "ok": true
+   },
+   {
+    "rt": 76.23,
+    "total": 74.68,
+    "ok": true
+   },
+   {
+    "rt": 68.12,
+    "total": 67.01,
+    "ok": true
+   },
+   {
+    "rt": 78.8,
+    "total": 77.57,
+    "ok": true
+   },
+   {
+    "rt": 68.56,
+    "total": 66.56,
+    "ok": true
+   },
+   {
+    "rt": 67.99,
+    "total": 66.81,
+    "ok": true
+   },
+   {
+    "rt": 67.82,
+    "total": 66.45,
+    "ok": true
+   },
+   {
+    "rt": 124.77,
+    "total": 123.37,
+    "ok": true
+   },
+   {
+    "rt": 80.39,
+    "total": 79.19,
+    "ok": true
+   },
+   {
+    "rt": 78.09,
+    "total": 76.66,
+    "ok": true
+   },
+   {
+    "rt": 77.18,
+    "total": 75.95,
+    "ok": true
+   },
+   {
+    "rt": 77.76,
+    "total": 76.48,
+    "ok": true
+   },
+   {
+    "rt": 78.34,
+    "total": 77.1,
+    "ok": true
+   },
+   {
+    "rt": 78.75,
+    "total": 77.05,
+    "ok": true
+   },
+   {
+    "rt": 89.52,
+    "total": 88.27,
+    "ok": true
+   },
+   {
+    "rt": 99.48,
+    "total": 97.87,
+    "ok": true
+   },
+   {
+    "rt": 119.31,
+    "total": 118.1,
+    "ok": true
+   },
+   {
+    "rt": 88.07,
+    "total": 86.56,
+    "ok": true
+   },
+   {
+    "rt": 79.06,
+    "total": 77.51,
+    "ok": true
+   },
+   {
+    "rt": 93.99,
+    "total": 92.74,
+    "ok": true
+   },
+   {
+    "rt": 78.72,
+    "total": 77.2,
+    "ok": true
+   },
+   {
+    "rt": 78.07,
+    "total": 76.74,
+    "ok": true
+   },
+   {
+    "rt": 79.17,
+    "total": 77.47,
+    "ok": true
+   },
+   {
+    "rt": 78.88,
+    "total": 77.4,
+    "ok": true
+   },
+   {
+    "rt": 98.13,
+    "total": 96.15,
+    "ok": true
+   },
+   {
+    "rt": 78.85,
+    "total": 77.84,
+    "ok": true
+   },
+   {
+    "rt": 78.62,
+    "total": 77.08,
+    "ok": true
+   },
+   {
+    "rt": 78.16,
+    "total": 76.72,
+    "ok": true
+   },
+   {
+    "rt": 78.65,
+    "total": 77.03,
+    "ok": true
+   },
+   {
+    "rt": 80.26,
+    "total": 79.0,
+    "ok": true
+   },
+   {
+    "rt": 78.32,
+    "total": 76.77,
+    "ok": true
+   },
+   {
+    "rt": 78.9,
+    "total": 77.35,
+    "ok": true
+   },
+   {
+    "rt": 79.84,
+    "total": 78.16,
+    "ok": true
+   },
+   {
+    "rt": 80.27,
+    "total": 79.02,
+    "ok": true
+   },
+   {
+    "rt": 79.1,
+    "total": 77.97,
+    "ok": true
+   },
+   {
+    "rt": 79.02,
+    "total": 77.71,
+    "ok": true
+   },
+   {
+    "rt": 122.65,
+    "total": 120.88,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.25,
+    "ok": true
+   },
+   {
+    "rt": 79.14,
+    "total": 77.47,
+    "ok": true
+   },
+   {
+    "rt": 89.61,
+    "total": 89.01,
+    "ok": true
+   },
+   {
+    "rt": 77.46,
+    "total": 75.78,
+    "ok": true
+   },
+   {
+    "rt": 79.55,
+    "total": 78.11,
+    "ok": true
+   },
+   {
+    "rt": 78.83,
+    "total": 77.33,
+    "ok": true
+   },
+   {
+    "rt": 89.78,
+    "total": 88.43,
+    "ok": true
+   },
+   {
+    "rt": 78.52,
+    "total": 77.01,
+    "ok": true
+   },
+   {
+    "rt": 80.1,
+    "total": 78.6,
+    "ok": true
+   },
+   {
+    "rt": 78.58,
+    "total": 77.03,
+    "ok": true
+   },
+   {
+    "rt": 79.07,
+    "total": 77.38,
+    "ok": true
+   },
+   {
+    "rt": 78.96,
+    "total": 77.22,
+    "ok": true
+   },
+   {
+    "rt": 78.21,
+    "total": 76.73,
+    "ok": true
+   },
+   {
+    "rt": 78.48,
+    "total": 77.14,
+    "ok": true
+   },
+   {
+    "rt": 78.77,
+    "total": 77.5,
+    "ok": true
+   },
+   {
+    "rt": 88.46,
+    "total": 86.96,
+    "ok": true
+   },
+   {
+    "rt": 78.83,
+    "total": 77.59,
+    "ok": true
+   },
+   {
+    "rt": 79.38,
+    "total": 77.81,
+    "ok": true
+   },
+   {
+    "rt": 88.75,
+    "total": 86.86,
+    "ok": true
+   },
+   {
+    "rt": 78.46,
+    "total": 77.09,
+    "ok": true
+   },
+   {
+    "rt": 77.65,
+    "total": 76.41,
+    "ok": true
+   },
+   {
+    "rt": 88.2,
+    "total": 86.69,
+    "ok": true
+   },
+   {
+    "rt": 79.79,
+    "total": 78.28,
+    "ok": true
+   },
+   {
+    "rt": 78.73,
+    "total": 77.09,
+    "ok": true
+   },
+   {
+    "rt": 88.9,
+    "total": 87.08,
+    "ok": true
+   },
+   {
+    "rt": 79.43,
+    "total": 78.17,
+    "ok": true
+   },
+   {
+    "rt": 79.46,
+    "total": 78.55,
+    "ok": true
+   },
+   {
+    "rt": 88.73,
+    "total": 87.58,
+    "ok": true
+   },
+   {
+    "rt": 77.81,
+    "total": 76.84,
+    "ok": true
+   },
+   {
+    "rt": 107.17,
+    "total": 105.96,
+    "ok": true
+   },
+   {
+    "rt": 78.14,
+    "total": 76.7,
+    "ok": true
+   },
+   {
+    "rt": 80.09,
+    "total": 79.21,
+    "ok": true
+   },
+   {
+    "rt": 79.87,
+    "total": 79.37,
+    "ok": true
+   },
+   {
+    "rt": 78.96,
+    "total": 77.58,
+    "ok": true
+   },
+   {
+    "rt": 79.01,
+    "total": 78.45,
+    "ok": true
+   },
+   {
+    "rt": 78.56,
+    "total": 77.85,
+    "ok": true
+   },
+   {
+    "rt": 78.28,
+    "total": 77.07,
+    "ok": true
+   },
+   {
+    "rt": 108.04,
+    "total": 107.55,
+    "ok": true
+   },
+   {
+    "rt": 90.91,
+    "total": 90.0,
+    "ok": true
+   },
+   {
+    "rt": 79.45,
+    "total": 78.47,
+    "ok": true
+   },
+   {
+    "rt": 79.04,
+    "total": 77.68,
+    "ok": true
+   },
+   {
+    "rt": 78.62,
+    "total": 77.22,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.41,
+    "ok": true
+   },
+   {
+    "rt": 79.18,
+    "total": 78.21,
+    "ok": true
+   },
+   {
+    "rt": 79.23,
+    "total": 78.51,
+    "ok": true
+   },
+   {
+    "rt": 78.31,
+    "total": 76.94,
+    "ok": true
+   },
+   {
+    "rt": 79.04,
+    "total": 77.71,
+    "ok": true
+   },
+   {
+    "rt": 78.46,
+    "total": 77.94,
+    "ok": true
+   },
+   {
+    "rt": 78.09,
+    "total": 76.94,
+    "ok": true
+   },
+   {
+    "rt": 78.52,
+    "total": 77.77,
+    "ok": true
+   },
+   {
+    "rt": 78.54,
+    "total": 77.19,
+    "ok": true
+   },
+   {
+    "rt": 78.42,
+    "total": 76.63,
+    "ok": true
+   },
+   {
+    "rt": 79.02,
+    "total": 77.76,
+    "ok": true
+   },
+   {
+    "rt": 78.6,
+    "total": 77.32,
+    "ok": true
+   },
+   {
+    "rt": 78.48,
+    "total": 76.84,
+    "ok": true
+   },
+   {
+    "rt": 78.68,
+    "total": 77.25,
+    "ok": true
+   },
+   {
+    "rt": 78.75,
+    "total": 77.69,
+    "ok": true
+   },
+   {
+    "rt": 78.9,
+    "total": 78.44,
+    "ok": true
+   },
+   {
+    "rt": 79.12,
+    "total": 78.49,
+    "ok": true
+   },
+   {
+    "rt": 79.18,
+    "total": 78.68,
+    "ok": true
+   },
+   {
+    "rt": 89.8,
+    "total": 89.01,
+    "ok": true
+   },
+   {
+    "rt": 79.19,
+    "total": 78.6,
+    "ok": true
+   },
+   {
+    "rt": 79.19,
+    "total": 78.13,
+    "ok": true
+   },
+   {
+    "rt": 78.67,
+    "total": 78.06,
+    "ok": true
+   },
+   {
+    "rt": 78.93,
+    "total": 78.3,
+    "ok": true
+   },
+   {
+    "rt": 78.53,
+    "total": 77.98,
+    "ok": true
+   },
+   {
+    "rt": 89.96,
+    "total": 89.41,
+    "ok": true
+   },
+   {
+    "rt": 77.71,
+    "total": 76.08,
+    "ok": true
+   },
+   {
+    "rt": 89.32,
+    "total": 88.43,
+    "ok": true
+   },
+   {
+    "rt": 99.13,
+    "total": 98.27,
+    "ok": true
+   },
+   {
+    "rt": 77.99,
+    "total": 76.82,
+    "ok": true
+   },
+   {
+    "rt": 99.21,
+    "total": 98.58,
+    "ok": true
+   },
+   {
+    "rt": 79.0,
+    "total": 77.23,
+    "ok": true
+   },
+   {
+    "rt": 78.04,
+    "total": 77.28,
+    "ok": true
+   },
+   {
+    "rt": 89.58,
+    "total": 87.96,
+    "ok": true
+   },
+   {
+    "rt": 78.28,
+    "total": 77.12,
+    "ok": true
+   },
+   {
+    "rt": 78.46,
+    "total": 76.96,
+    "ok": true
+   },
+   {
+    "rt": 89.2,
+    "total": 87.74,
+    "ok": true
+   },
+   {
+    "rt": 78.95,
+    "total": 77.38,
+    "ok": true
+   },
+   {
+    "rt": 78.26,
+    "total": 76.54,
+    "ok": true
+   },
+   {
+    "rt": 78.62,
+    "total": 77.24,
+    "ok": true
+   },
+   {
+    "rt": 78.44,
+    "total": 76.77,
+    "ok": true
+   },
+   {
+    "rt": 89.01,
+    "total": 88.45,
+    "ok": true
+   },
+   {
+    "rt": 78.62,
+    "total": 76.98,
+    "ok": true
+   },
+   {
+    "rt": 78.84,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 78.18,
+    "total": 76.93,
+    "ok": true
+   },
+   {
+    "rt": 79.59,
+    "total": 79.02,
+    "ok": true
+   },
+   {
+    "rt": 79.24,
+    "total": 77.9,
+    "ok": true
+   },
+   {
+    "rt": 78.93,
+    "total": 77.6,
+    "ok": true
+   },
+   {
+    "rt": 79.36,
+    "total": 77.94,
+    "ok": true
+   },
+   {
+    "rt": 78.7,
+    "total": 77.15,
+    "ok": true
+   },
+   {
+    "rt": 78.18,
+    "total": 76.67,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.6,
+    "ok": true
+   },
+   {
+    "rt": 89.8,
+    "total": 88.58,
+    "ok": true
+   },
+   {
+    "rt": 79.67,
+    "total": 78.32,
+    "ok": true
+   },
+   {
+    "rt": 90.97,
+    "total": 90.11,
+    "ok": true
+   },
+   {
+    "rt": 90.2,
+    "total": 89.52,
+    "ok": true
+   },
+   {
+    "rt": 98.22,
+    "total": 97.29,
+    "ok": true
+   },
+   {
+    "rt": 98.53,
+    "total": 97.94,
+    "ok": true
+   },
+   {
+    "rt": 99.55,
+    "total": 98.78,
+    "ok": true
+   },
+   {
+    "rt": 78.36,
+    "total": 76.77,
+    "ok": true
+   },
+   {
+    "rt": 79.03,
+    "total": 77.2,
+    "ok": true
+   },
+   {
+    "rt": 99.55,
+    "total": 98.45,
+    "ok": true
+   },
+   {
+    "rt": 78.83,
+    "total": 77.08,
+    "ok": true
+   },
+   {
+    "rt": 88.02,
+    "total": 86.48,
+    "ok": true
+   },
+   {
+    "rt": 77.75,
+    "total": 76.69,
+    "ok": true
+   },
+   {
+    "rt": 88.97,
+    "total": 87.76,
+    "ok": true
+   },
+   {
+    "rt": 78.24,
+    "total": 76.51,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.43,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 78.9,
+    "total": 77.49,
+    "ok": true
+   },
+   {
+    "rt": 78.12,
+    "total": 76.58,
+    "ok": true
+   },
+   {
+    "rt": 78.7,
+    "total": 77.2,
+    "ok": true
+   },
+   {
+    "rt": 79.06,
+    "total": 78.04,
+    "ok": true
+   },
+   {
+    "rt": 78.46,
+    "total": 77.2,
+    "ok": true
+   },
+   {
+    "rt": 78.77,
+    "total": 77.6,
+    "ok": true
+   },
+   {
+    "rt": 78.41,
+    "total": 77.12,
+    "ok": true
+   },
+   {
+    "rt": 80.04,
+    "total": 79.12,
+    "ok": true
+   },
+   {
+    "rt": 78.3,
+    "total": 76.76,
+    "ok": true
+   },
+   {
+    "rt": 79.14,
+    "total": 78.01,
+    "ok": true
+   },
+   {
+    "rt": 79.02,
+    "total": 77.96,
+    "ok": true
+   },
+   {
+    "rt": 79.05,
+    "total": 77.73,
+    "ok": true
+   },
+   {
+    "rt": 90.44,
+    "total": 88.5,
+    "ok": true
+   },
+   {
+    "rt": 78.72,
+    "total": 77.62,
+    "ok": true
+   },
+   {
+    "rt": 78.2,
+    "total": 76.67,
+    "ok": true
+   },
+   {
+    "rt": 90.13,
+    "total": 88.83,
+    "ok": true
+   },
+   {
+    "rt": 79.15,
+    "total": 77.93,
+    "ok": true
+   },
+   {
+    "rt": 89.51,
+    "total": 87.95,
+    "ok": true
+   },
+   {
+    "rt": 98.94,
+    "total": 97.27,
+    "ok": true
+   },
+   {
+    "rt": 79.97,
+    "total": 77.94,
+    "ok": true
+   },
+   {
+    "rt": 90.31,
+    "total": 88.87,
+    "ok": true
+   },
+   {
+    "rt": 72.34,
+    "total": 71.06,
+    "ok": true
+   },
+   {
+    "rt": 78.43,
+    "total": 76.73,
+    "ok": true
+   },
+   {
+    "rt": 79.59,
+    "total": 78.24,
+    "ok": true
+   },
+   {
+    "rt": 79.3,
+    "total": 77.73,
+    "ok": true
+   },
+   {
+    "rt": 78.42,
+    "total": 77.08,
+    "ok": true
+   },
+   {
+    "rt": 79.13,
+    "total": 77.97,
+    "ok": true
+   },
+   {
+    "rt": 79.1,
+    "total": 77.82,
+    "ok": true
+   },
+   {
+    "rt": 79.88,
+    "total": 78.21,
+    "ok": true
+   },
+   {
+    "rt": 79.66,
+    "total": 77.96,
+    "ok": true
+   },
+   {
+    "rt": 78.75,
+    "total": 76.79,
+    "ok": true
+   },
+   {
+    "rt": 79.34,
+    "total": 77.75,
+    "ok": true
+   },
+   {
+    "rt": 78.75,
+    "total": 77.4,
+    "ok": true
+   },
+   {
+    "rt": 78.81,
+    "total": 77.45,
+    "ok": true
+   },
+   {
+    "rt": 79.36,
+    "total": 78.64,
+    "ok": true
+   },
+   {
+    "rt": 79.05,
+    "total": 77.14,
+    "ok": true
+   },
+   {
+    "rt": 79.25,
+    "total": 78.14,
+    "ok": true
+   },
+   {
+    "rt": 80.13,
+    "total": 78.82,
+    "ok": true
+   },
+   {
+    "rt": 77.78,
+    "total": 76.59,
+    "ok": true
+   },
+   {
+    "rt": 77.86,
+    "total": 76.86,
+    "ok": true
+   },
+   {
+    "rt": 79.52,
+    "total": 77.79,
+    "ok": true
+   },
+   {
+    "rt": 78.84,
+    "total": 77.46,
+    "ok": true
+   },
+   {
+    "rt": 79.17,
+    "total": 77.46,
+    "ok": true
+   },
+   {
+    "rt": 77.95,
+    "total": 76.54,
+    "ok": true
+   },
+   {
+    "rt": 99.12,
+    "total": 97.81,
+    "ok": true
+   },
+   {
+    "rt": 87.83,
+    "total": 86.23,
+    "ok": true
+   },
+   {
+    "rt": 79.22,
+    "total": 76.6,
+    "ok": true
+   },
+   {
+    "rt": 79.96,
+    "total": 78.61,
+    "ok": true
+   },
+   {
+    "rt": 79.95,
+    "total": 78.33,
+    "ok": true
+   },
+   {
+    "rt": 79.45,
+    "total": 77.82,
+    "ok": true
+   },
+   {
+    "rt": 81.08,
+    "total": 79.78,
+    "ok": true
+   },
+   {
+    "rt": 78.44,
+    "total": 76.67,
+    "ok": true
+   },
+   {
+    "rt": 78.87,
+    "total": 77.59,
+    "ok": true
+   },
+   {
+    "rt": 77.97,
+    "total": 76.57,
+    "ok": true
+   },
+   {
+    "rt": 78.93,
+    "total": 77.34,
+    "ok": true
+   },
+   {
+    "rt": 80.15,
+    "total": 79.45,
+    "ok": true
+   },
+   {
+    "rt": 80.08,
+    "total": 78.55,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.73,
+    "ok": true
+   },
+   {
+    "rt": 79.45,
+    "total": 78.51,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 78.16,
+    "ok": true
+   },
+   {
+    "rt": 79.93,
+    "total": 78.89,
+    "ok": true
+   },
+   {
+    "rt": 79.64,
+    "total": 79.1,
+    "ok": true
+   },
+   {
+    "rt": 92.21,
+    "total": 90.61,
+    "ok": true
+   },
+   {
+    "rt": 77.55,
+    "total": 76.26,
+    "ok": true
+   },
+   {
+    "rt": 77.58,
+    "total": 76.03,
+    "ok": true
+   },
+   {
+    "rt": 79.13,
+    "total": 78.14,
+    "ok": true
+   },
+   {
+    "rt": 77.57,
+    "total": 76.32,
+    "ok": true
+   },
+   {
+    "rt": 77.85,
+    "total": 76.39,
+    "ok": true
+   },
+   {
+    "rt": 78.45,
+    "total": 77.41,
+    "ok": true
+   },
+   {
+    "rt": 77.59,
+    "total": 75.98,
+    "ok": true
+   },
+   {
+    "rt": 79.45,
+    "total": 78.1,
+    "ok": true
+   },
+   {
+    "rt": 79.15,
+    "total": 77.86,
+    "ok": true
+   },
+   {
+    "rt": 89.04,
+    "total": 87.66,
+    "ok": true
+   },
+   {
+    "rt": 79.95,
+    "total": 78.05,
+    "ok": true
+   },
+   {
+    "rt": 78.61,
+    "total": 77.44,
+    "ok": true
+   },
+   {
+    "rt": 88.55,
+    "total": 87.53,
+    "ok": true
+   },
+   {
+    "rt": 99.38,
+    "total": 97.88,
+    "ok": true
+   },
+   {
+    "rt": 78.57,
+    "total": 77.36,
+    "ok": true
+   },
+   {
+    "rt": 99.3,
+    "total": 97.57,
+    "ok": true
+   },
+   {
+    "rt": 78.03,
+    "total": 77.29,
+    "ok": true
+   },
+   {
+    "rt": 78.31,
+    "total": 76.63,
+    "ok": true
+   },
+   {
+    "rt": 78.29,
+    "total": 76.73,
+    "ok": true
+   }
+  ],
+  "change_tier": [
+   {
+    "rt": 80.73,
+    "total": 79.79,
+    "ok": true
+   },
+   {
+    "rt": 89.56,
+    "total": 89.12,
+    "ok": true
+   },
+   {
+    "rt": 90.33,
+    "total": 89.55,
+    "ok": true
+   },
+   {
+    "rt": 78.92,
+    "total": 77.44,
+    "ok": true
+   },
+   {
+    "rt": 80.8,
+    "total": 80.01,
+    "ok": true
+   },
+   {
+    "rt": 80.04,
+    "total": 78.41,
+    "ok": true
+   },
+   {
+    "rt": 80.19,
+    "total": 78.53,
+    "ok": true
+   },
+   {
+    "rt": 79.21,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 80.48,
+    "total": 78.89,
+    "ok": true
+   },
+   {
+    "rt": 77.99,
+    "total": 76.73,
+    "ok": true
+   },
+   {
+    "rt": 80.11,
+    "total": 78.96,
+    "ok": true
+   },
+   {
+    "rt": 79.05,
+    "total": 77.53,
+    "ok": true
+   },
+   {
+    "rt": 79.93,
+    "total": 79.49,
+    "ok": true
+   },
+   {
+    "rt": 78.98,
+    "total": 77.03,
+    "ok": true
+   },
+   {
+    "rt": 89.24,
+    "total": 87.58,
+    "ok": true
+   },
+   {
+    "rt": 78.9,
+    "total": 77.15,
+    "ok": true
+   },
+   {
+    "rt": 80.73,
+    "total": 79.38,
+    "ok": true
+   },
+   {
+    "rt": 79.91,
+    "total": 78.43,
+    "ok": true
+   },
+   {
+    "rt": 80.13,
+    "total": 78.57,
+    "ok": true
+   },
+   {
+    "rt": 80.44,
+    "total": 79.03,
+    "ok": true
+   },
+   {
+    "rt": 81.11,
+    "total": 78.96,
+    "ok": true
+   },
+   {
+    "rt": 109.41,
+    "total": 107.68,
+    "ok": true
+   },
+   {
+    "rt": 79.65,
+    "total": 77.95,
+    "ok": true
+   },
+   {
+    "rt": 79.8,
+    "total": 78.16,
+    "ok": true
+   },
+   {
+    "rt": 90.19,
+    "total": 88.83,
+    "ok": true
+   },
+   {
+    "rt": 80.76,
+    "total": 79.26,
+    "ok": true
+   },
+   {
+    "rt": 78.89,
+    "total": 77.63,
+    "ok": true
+   },
+   {
+    "rt": 98.85,
+    "total": 96.98,
+    "ok": true
+   },
+   {
+    "rt": 80.03,
+    "total": 78.16,
+    "ok": true
+   },
+   {
+    "rt": 79.34,
+    "total": 77.86,
+    "ok": true
+   },
+   {
+    "rt": 89.78,
+    "total": 88.25,
+    "ok": true
+   },
+   {
+    "rt": 82.71,
+    "total": 81.24,
+    "ok": true
+   },
+   {
+    "rt": 111.2,
+    "total": 109.47,
+    "ok": true
+   },
+   {
+    "rt": 79.89,
+    "total": 78.47,
+    "ok": true
+   },
+   {
+    "rt": 78.62,
+    "total": 77.36,
+    "ok": true
+   },
+   {
+    "rt": 80.45,
+    "total": 79.03,
+    "ok": true
+   },
+   {
+    "rt": 79.52,
+    "total": 77.59,
+    "ok": true
+   },
+   {
+    "rt": 80.83,
+    "total": 78.98,
+    "ok": true
+   },
+   {
+    "rt": 79.64,
+    "total": 78.02,
+    "ok": true
+   },
+   {
+    "rt": 79.55,
+    "total": 78.04,
+    "ok": true
+   },
+   {
+    "rt": 79.43,
+    "total": 77.87,
+    "ok": true
+   },
+   {
+    "rt": 80.46,
+    "total": 78.71,
+    "ok": true
+   },
+   {
+    "rt": 78.91,
+    "total": 77.06,
+    "ok": true
+   },
+   {
+    "rt": 79.29,
+    "total": 77.51,
+    "ok": true
+   },
+   {
+    "rt": 80.68,
+    "total": 79.22,
+    "ok": true
+   },
+   {
+    "rt": 79.98,
+    "total": 78.32,
+    "ok": true
+   },
+   {
+    "rt": 80.07,
+    "total": 78.35,
+    "ok": true
+   },
+   {
+    "rt": 79.41,
+    "total": 77.63,
+    "ok": true
+   },
+   {
+    "rt": 79.09,
+    "total": 77.65,
+    "ok": true
+   },
+   {
+    "rt": 80.97,
+    "total": 79.93,
+    "ok": true
+   },
+   {
+    "rt": 80.13,
+    "total": 78.75,
+    "ok": true
+   },
+   {
+    "rt": 78.7,
+    "total": 77.2,
+    "ok": true
+   },
+   {
+    "rt": 79.67,
+    "total": 77.83,
+    "ok": true
+   },
+   {
+    "rt": 80.71,
+    "total": 79.76,
+    "ok": true
+   },
+   {
+    "rt": 80.14,
+    "total": 78.58,
+    "ok": true
+   },
+   {
+    "rt": 78.93,
+    "total": 76.91,
+    "ok": true
+   },
+   {
+    "rt": 80.69,
+    "total": 78.62,
+    "ok": true
+   },
+   {
+    "rt": 88.06,
+    "total": 86.01,
+    "ok": true
+   },
+   {
+    "rt": 100.06,
+    "total": 98.67,
+    "ok": true
+   },
+   {
+    "rt": 89.87,
+    "total": 88.09,
+    "ok": true
+   },
+   {
+    "rt": 77.03,
+    "total": 75.7,
+    "ok": true
+   },
+   {
+    "rt": 80.14,
+    "total": 78.37,
+    "ok": true
+   },
+   {
+    "rt": 81.25,
+    "total": 79.4,
+    "ok": true
+   },
+   {
+    "rt": 78.07,
+    "total": 76.14,
+    "ok": true
+   },
+   {
+    "rt": 80.15,
+    "total": 77.98,
+    "ok": true
+   },
+   {
+    "rt": 89.56,
+    "total": 87.56,
+    "ok": true
+   },
+   {
+    "rt": 78.47,
+    "total": 76.7,
+    "ok": true
+   },
+   {
+    "rt": 80.48,
+    "total": 78.68,
+    "ok": true
+   },
+   {
+    "rt": 80.45,
+    "total": 78.66,
+    "ok": true
+   },
+   {
+    "rt": 79.7,
+    "total": 78.31,
+    "ok": true
+   },
+   {
+    "rt": 79.42,
+    "total": 77.49,
+    "ok": true
+   },
+   {
+    "rt": 80.09,
+    "total": 78.14,
+    "ok": true
+   },
+   {
+    "rt": 79.26,
+    "total": 77.89,
+    "ok": true
+   },
+   {
+    "rt": 109.52,
+    "total": 109.03,
+    "ok": true
+   },
+   {
+    "rt": 78.83,
+    "total": 77.26,
+    "ok": true
+   },
+   {
+    "rt": 79.77,
+    "total": 78.6,
+    "ok": true
+   },
+   {
+    "rt": 78.92,
+    "total": 77.23,
+    "ok": true
+   },
+   {
+    "rt": 79.62,
+    "total": 78.68,
+    "ok": true
+   },
+   {
+    "rt": 80.85,
+    "total": 80.0,
+    "ok": true
+   },
+   {
+    "rt": 79.53,
+    "total": 78.53,
+    "ok": true
+   },
+   {
+    "rt": 81.07,
+    "total": 80.34,
+    "ok": true
+   },
+   {
+    "rt": 79.8,
+    "total": 78.97,
+    "ok": true
+   },
+   {
+    "rt": 80.25,
+    "total": 79.59,
+    "ok": true
+   },
+   {
+    "rt": 78.56,
+    "total": 77.19,
+    "ok": true
+   },
+   {
+    "rt": 80.45,
+    "total": 79.38,
+    "ok": true
+   },
+   {
+    "rt": 79.12,
+    "total": 77.86,
+    "ok": true
+   },
+   {
+    "rt": 78.98,
+    "total": 77.8,
+    "ok": true
+   },
+   {
+    "rt": 78.92,
+    "total": 77.5,
+    "ok": true
+   },
+   {
+    "rt": 82.21,
+    "total": 80.9,
+    "ok": true
+   },
+   {
+    "rt": 80.23,
+    "total": 79.2,
+    "ok": true
+   },
+   {
+    "rt": 89.83,
+    "total": 88.52,
+    "ok": true
+   },
+   {
+    "rt": 92.29,
+    "total": 91.05,
+    "ok": true
+   },
+   {
+    "rt": 90.05,
+    "total": 89.48,
+    "ok": true
+   },
+   {
+    "rt": 81.05,
+    "total": 79.89,
+    "ok": true
+   },
+   {
+    "rt": 90.41,
+    "total": 89.19,
+    "ok": true
+   },
+   {
+    "rt": 79.22,
+    "total": 78.27,
+    "ok": true
+   },
+   {
+    "rt": 79.55,
+    "total": 78.16,
+    "ok": true
+   },
+   {
+    "rt": 80.31,
+    "total": 79.61,
+    "ok": true
+   },
+   {
+    "rt": 79.72,
+    "total": 77.25,
+    "ok": true
+   },
+   {
+    "rt": 79.73,
+    "total": 78.38,
+    "ok": true
+   },
+   {
+    "rt": 81.05,
+    "total": 79.49,
+    "ok": true
+   },
+   {
+    "rt": 79.43,
+    "total": 78.47,
+    "ok": true
+   },
+   {
+    "rt": 79.1,
+    "total": 78.11,
+    "ok": true
+   },
+   {
+    "rt": 80.42,
+    "total": 78.59,
+    "ok": true
+   },
+   {
+    "rt": 81.53,
+    "total": 79.74,
+    "ok": true
+   },
+   {
+    "rt": 77.3,
+    "total": 75.64,
+    "ok": true
+   },
+   {
+    "rt": 79.23,
+    "total": 77.97,
+    "ok": true
+   },
+   {
+    "rt": 79.69,
+    "total": 77.95,
+    "ok": true
+   },
+   {
+    "rt": 77.86,
+    "total": 76.13,
+    "ok": true
+   },
+   {
+    "rt": 79.39,
+    "total": 77.89,
+    "ok": true
+   },
+   {
+    "rt": 80.43,
+    "total": 78.74,
+    "ok": true
+   },
+   {
+    "rt": 79.31,
+    "total": 77.66,
+    "ok": true
+   },
+   {
+    "rt": 78.96,
+    "total": 77.46,
+    "ok": true
+   },
+   {
+    "rt": 79.77,
+    "total": 77.9,
+    "ok": true
+   },
+   {
+    "rt": 79.29,
+    "total": 77.52,
+    "ok": true
+   },
+   {
+    "rt": 79.36,
+    "total": 77.59,
+    "ok": true
+   },
+   {
+    "rt": 78.92,
+    "total": 77.88,
+    "ok": true
+   },
+   {
+    "rt": 79.02,
+    "total": 77.56,
+    "ok": true
+   },
+   {
+    "rt": 79.73,
+    "total": 78.71,
+    "ok": true
+   },
+   {
+    "rt": 77.54,
+    "total": 76.29,
+    "ok": true
+   },
+   {
+    "rt": 79.41,
+    "total": 77.5,
+    "ok": true
+   },
+   {
+    "rt": 79.25,
+    "total": 77.88,
+    "ok": true
+   },
+   {
+    "rt": 79.87,
+    "total": 78.81,
+    "ok": true
+   },
+   {
+    "rt": 79.52,
+    "total": 78.11,
+    "ok": true
+   },
+   {
+    "rt": 90.29,
+    "total": 88.34,
+    "ok": true
+   },
+   {
+    "rt": 99.81,
+    "total": 98.34,
+    "ok": true
+   },
+   {
+    "rt": 81.04,
+    "total": 79.74,
+    "ok": true
+   },
+   {
+    "rt": 80.53,
+    "total": 79.11,
+    "ok": true
+   },
+   {
+    "rt": 80.73,
+    "total": 79.53,
+    "ok": true
+   },
+   {
+    "rt": 90.23,
+    "total": 89.23,
+    "ok": true
+   },
+   {
+    "rt": 76.99,
+    "total": 76.08,
+    "ok": true
+   },
+   {
+    "rt": 81.69,
+    "total": 80.1,
+    "ok": true
+   },
+   {
+    "rt": 79.66,
+    "total": 78.22,
+    "ok": true
+   },
+   {
+    "rt": 79.94,
+    "total": 78.66,
+    "ok": true
+   },
+   {
+    "rt": 79.66,
+    "total": 78.32,
+    "ok": true
+   },
+   {
+    "rt": 80.7,
+    "total": 80.12,
+    "ok": true
+   },
+   {
+    "rt": 182.53,
+    "total": 181.4,
+    "ok": true
+   },
+   {
+    "rt": 79.39,
+    "total": 78.05,
+    "ok": true
+   },
+   {
+    "rt": 79.67,
+    "total": 77.73,
+    "ok": true
+   },
+   {
+    "rt": 90.19,
+    "total": 88.75,
+    "ok": true
+   },
+   {
+    "rt": 79.22,
+    "total": 77.57,
+    "ok": true
+   },
+   {
+    "rt": 79.44,
+    "total": 78.35,
+    "ok": true
+   },
+   {
+    "rt": 80.9,
+    "total": 79.92,
+    "ok": true
+   },
+   {
+    "rt": 80.55,
+    "total": 78.94,
+    "ok": true
+   },
+   {
+    "rt": 78.8,
+    "total": 77.35,
+    "ok": true
+   },
+   {
+    "rt": 80.91,
+    "total": 79.5,
+    "ok": true
+   },
+   {
+    "rt": 80.54,
+    "total": 78.66,
+    "ok": true
+   },
+   {
+    "rt": 80.38,
+    "total": 78.84,
+    "ok": true
+   },
+   {
+    "rt": 78.84,
+    "total": 77.63,
+    "ok": true
+   },
+   {
+    "rt": 79.01,
+    "total": 77.45,
+    "ok": true
+   },
+   {
+    "rt": 78.19,
+    "total": 76.7,
+    "ok": true
+   },
+   {
+    "rt": 79.16,
+    "total": 77.68,
+    "ok": true
+   },
+   {
+    "rt": 80.17,
+    "total": 78.38,
+    "ok": true
+   },
+   {
+    "rt": 80.4,
+    "total": 79.19,
+    "ok": true
+   },
+   {
+    "rt": 100.18,
+    "total": 99.07,
+    "ok": true
+   },
+   {
+    "rt": 80.26,
+    "total": 79.05,
+    "ok": true
+   },
+   {
+    "rt": 80.81,
+    "total": 80.1,
+    "ok": true
+   },
+   {
+    "rt": 90.3,
+    "total": 89.78,
+    "ok": true
+   },
+   {
+    "rt": 79.91,
+    "total": 78.97,
+    "ok": true
+   },
+   {
+    "rt": 79.19,
+    "total": 77.81,
+    "ok": true
+   },
+   {
+    "rt": 79.52,
+    "total": 78.18,
+    "ok": true
+   },
+   {
+    "rt": 78.76,
+    "total": 77.64,
+    "ok": true
+   },
+   {
+    "rt": 81.31,
+    "total": 80.79,
+    "ok": true
+   },
+   {
+    "rt": 79.85,
+    "total": 79.06,
+    "ok": true
+   },
+   {
+    "rt": 78.19,
+    "total": 77.17,
+    "ok": true
+   },
+   {
+    "rt": 77.71,
+    "total": 76.56,
+    "ok": true
+   },
+   {
+    "rt": 78.54,
+    "total": 77.28,
+    "ok": true
+   },
+   {
+    "rt": 80.6,
+    "total": 79.0,
+    "ok": true
+   },
+   {
+    "rt": 79.64,
+    "total": 78.29,
+    "ok": true
+   },
+   {
+    "rt": 80.93,
+    "total": 79.68,
+    "ok": true
+   },
+   {
+    "rt": 80.58,
+    "total": 79.21,
+    "ok": true
+   },
+   {
+    "rt": 48.99,
+    "total": 47.95,
+    "ok": true
+   },
+   {
+    "rt": 81.85,
+    "total": 80.64,
+    "ok": true
+   },
+   {
+    "rt": 81.29,
+    "total": 79.71,
+    "ok": true
+   },
+   {
+    "rt": 77.69,
+    "total": 76.41,
+    "ok": true
+   },
+   {
+    "rt": 83.01,
+    "total": 81.81,
+    "ok": true
+   },
+   {
+    "rt": 82.33,
+    "total": 81.17,
+    "ok": true
+   },
+   {
+    "rt": 83.28,
+    "total": 81.67,
+    "ok": true
+   },
+   {
+    "rt": 23.9,
+    "total": 22.66,
+    "ok": true
+   },
+   {
+    "rt": 91.12,
+    "total": 89.47,
+    "ok": true
+   },
+   {
+    "rt": 81.93,
+    "total": 80.26,
+    "ok": true
+   },
+   {
+    "rt": 80.93,
+    "total": 79.58,
+    "ok": true
+   },
+   {
+    "rt": 92.48,
+    "total": 90.89,
+    "ok": true
+   },
+   {
+    "rt": 79.97,
+    "total": 78.4,
+    "ok": true
+   },
+   {
+    "rt": 79.57,
+    "total": 78.15,
+    "ok": true
+   },
+   {
+    "rt": 110.76,
+    "total": 109.5,
+    "ok": true
+   },
+   {
+    "rt": 89.44,
+    "total": 87.96,
+    "ok": true
+   },
+   {
+    "rt": 99.63,
+    "total": 97.74,
+    "ok": true
+   },
+   {
+    "rt": 91.03,
+    "total": 89.39,
+    "ok": true
+   },
+   {
+    "rt": 79.22,
+    "total": 77.2,
+    "ok": true
+   },
+   {
+    "rt": 75.56,
+    "total": 73.91,
+    "ok": true
+   },
+   {
+    "rt": 80.03,
+    "total": 78.51,
+    "ok": true
+   },
+   {
+    "rt": 81.04,
+    "total": 79.74,
+    "ok": true
+   },
+   {
+    "rt": 79.45,
+    "total": 77.74,
+    "ok": true
+   },
+   {
+    "rt": 78.84,
+    "total": 77.82,
+    "ok": true
+   },
+   {
+    "rt": 80.03,
+    "total": 78.67,
+    "ok": true
+   },
+   {
+    "rt": 79.46,
+    "total": 78.52,
+    "ok": true
+   },
+   {
+    "rt": 79.25,
+    "total": 77.69,
+    "ok": true
+   },
+   {
+    "rt": 80.31,
+    "total": 79.21,
+    "ok": true
+   },
+   {
+    "rt": 80.04,
+    "total": 78.55,
+    "ok": true
+   },
+   {
+    "rt": 79.19,
+    "total": 77.76,
+    "ok": true
+   },
+   {
+    "rt": 80.02,
+    "total": 78.94,
+    "ok": true
+   },
+   {
+    "rt": 79.92,
+    "total": 78.49,
+    "ok": true
+   },
+   {
+    "rt": 79.29,
+    "total": 77.72,
+    "ok": true
+   },
+   {
+    "rt": 79.74,
+    "total": 78.22,
+    "ok": true
+   },
+   {
+    "rt": 80.45,
+    "total": 78.95,
+    "ok": true
+   },
+   {
+    "rt": 80.72,
+    "total": 79.44,
+    "ok": true
+   },
+   {
+    "rt": 76.73,
+    "total": 74.9,
+    "ok": true
+   },
+   {
+    "rt": 80.54,
+    "total": 79.04,
+    "ok": true
+   },
+   {
+    "rt": 79.39,
+    "total": 78.01,
+    "ok": true
+   },
+   {
+    "rt": 79.85,
+    "total": 78.72,
+    "ok": true
+   },
+   {
+    "rt": 79.76,
+    "total": 78.31,
+    "ok": true
+   },
+   {
+    "rt": 88.55,
+    "total": 87.25,
+    "ok": true
+   },
+   {
+    "rt": 79.57,
+    "total": 78.04,
+    "ok": true
+   },
+   {
+    "rt": 79.42,
+    "total": 78.24,
+    "ok": true
+   },
+   {
+    "rt": 101.92,
+    "total": 99.8,
+    "ok": true
+   },
+   {
+    "rt": 89.25,
+    "total": 87.5,
+    "ok": true
+   },
+   {
+    "rt": 91.03,
+    "total": 89.63,
+    "ok": true
+   },
+   {
+    "rt": 79.57,
+    "total": 78.11,
+    "ok": true
+   },
+   {
+    "rt": 80.7,
+    "total": 79.13,
+    "ok": true
+   },
+   {
+    "rt": 90.71,
+    "total": 89.17,
+    "ok": true
+   },
+   {
+    "rt": 80.73,
+    "total": 79.76,
+    "ok": true
+   },
+   {
+    "rt": 79.98,
+    "total": 78.39,
+    "ok": true
+   },
+   {
+    "rt": 80.09,
+    "total": 78.76,
+    "ok": true
+   },
+   {
+    "rt": 80.01,
+    "total": 78.39,
+    "ok": true
+   },
+   {
+    "rt": 79.42,
+    "total": 77.97,
+    "ok": true
+   },
+   {
+    "rt": 78.99,
+    "total": 77.59,
+    "ok": true
+   },
+   {
+    "rt": 80.65,
+    "total": 79.19,
+    "ok": true
+   },
+   {
+    "rt": 81.22,
+    "total": 80.07,
+    "ok": true
+   },
+   {
+    "rt": 80.42,
+    "total": 78.94,
+    "ok": true
+   },
+   {
+    "rt": 79.03,
+    "total": 77.38,
+    "ok": true
+   },
+   {
+    "rt": 80.34,
+    "total": 79.0,
+    "ok": true
+   },
+   {
+    "rt": 80.6,
+    "total": 79.48,
+    "ok": true
+   },
+   {
+    "rt": 80.14,
+    "total": 79.02,
+    "ok": true
+   },
+   {
+    "rt": 79.49,
+    "total": 78.66,
+    "ok": true
+   },
+   {
+    "rt": 80.68,
+    "total": 79.07,
+    "ok": true
+   },
+   {
+    "rt": 79.28,
+    "total": 78.45,
+    "ok": true
+   },
+   {
+    "rt": 80.51,
+    "total": 79.9,
+    "ok": true
+   },
+   {
+    "rt": 78.17,
+    "total": 76.72,
+    "ok": true
+   },
+   {
+    "rt": 79.78,
+    "total": 78.78,
+    "ok": true
+   },
+   {
+    "rt": 81.29,
+    "total": 80.39,
+    "ok": true
+   },
+   {
+    "rt": 79.52,
+    "total": 78.0,
+    "ok": true
+   },
+   {
+    "rt": 79.72,
+    "total": 79.09,
+    "ok": true
+   },
+   {
+    "rt": 101.57,
+    "total": 100.41,
+    "ok": true
+   },
+   {
+    "rt": 80.77,
+    "total": 79.29,
+    "ok": true
+   },
+   {
+    "rt": 100.71,
+    "total": 99.85,
+    "ok": true
+   },
+   {
+    "rt": 98.8,
+    "total": 97.79,
+    "ok": true
+   },
+   {
+    "rt": 80.34,
+    "total": 79.0,
+    "ok": true
+   },
+   {
+    "rt": 78.64,
+    "total": 77.66,
+    "ok": true
+   },
+   {
+    "rt": 80.03,
+    "total": 78.92,
+    "ok": true
+   },
+   {
+    "rt": 80.32,
+    "total": 79.1,
+    "ok": true
+   },
+   {
+    "rt": 119.94,
+    "total": 118.76,
+    "ok": true
+   },
+   {
+    "rt": 80.68,
+    "total": 79.46,
+    "ok": true
+   },
+   {
+    "rt": 80.43,
+    "total": 79.03,
+    "ok": true
+   },
+   {
+    "rt": 78.79,
+    "total": 77.65,
+    "ok": true
+   },
+   {
+    "rt": 79.86,
+    "total": 79.28,
+    "ok": true
+   },
+   {
+    "rt": 79.51,
+    "total": 78.67,
+    "ok": true
+   },
+   {
+    "rt": 80.15,
+    "total": 79.28,
+    "ok": true
+   },
+   {
+    "rt": 80.45,
+    "total": 78.89,
+    "ok": true
+   },
+   {
+    "rt": 91.04,
+    "total": 89.5,
+    "ok": true
+   },
+   {
+    "rt": 79.86,
+    "total": 78.8,
+    "ok": true
+   },
+   {
+    "rt": 80.16,
+    "total": 79.01,
+    "ok": true
+   },
+   {
+    "rt": 90.05,
+    "total": 88.49,
+    "ok": true
+   },
+   {
+    "rt": 78.06,
+    "total": 76.88,
+    "ok": true
+   },
+   {
+    "rt": 79.99,
+    "total": 79.14,
+    "ok": true
+   },
+   {
+    "rt": 90.69,
+    "total": 90.09,
+    "ok": true
+   },
+   {
+    "rt": 80.34,
+    "total": 79.57,
+    "ok": true
+   },
+   {
+    "rt": 80.88,
+    "total": 80.2,
+    "ok": true
+   },
+   {
+    "rt": 77.85,
+    "total": 76.99,
+    "ok": true
+   },
+   {
+    "rt": 79.98,
+    "total": 79.49,
+    "ok": true
+   },
+   {
+    "rt": 79.69,
+    "total": 78.74,
+    "ok": true
+   },
+   {
+    "rt": 90.11,
+    "total": 89.54,
+    "ok": true
+   },
+   {
+    "rt": 80.17,
+    "total": 79.42,
+    "ok": true
+   },
+   {
+    "rt": 80.5,
+    "total": 79.75,
+    "ok": true
+   },
+   {
+    "rt": 90.05,
+    "total": 88.8,
+    "ok": true
+   },
+   {
+    "rt": 90.12,
+    "total": 89.22,
+    "ok": true
+   },
+   {
+    "rt": 89.18,
+    "total": 88.15,
+    "ok": true
+   },
+   {
+    "rt": 79.44,
+    "total": 78.62,
+    "ok": true
+   },
+   {
+    "rt": 89.31,
+    "total": 88.74,
+    "ok": true
+   },
+   {
+    "rt": 80.73,
+    "total": 79.69,
+    "ok": true
+   },
+   {
+    "rt": 79.44,
+    "total": 77.9,
+    "ok": true
+   },
+   {
+    "rt": 79.64,
+    "total": 79.17,
+    "ok": true
+   },
+   {
+    "rt": 79.59,
+    "total": 78.04,
+    "ok": true
+   },
+   {
+    "rt": 80.24,
+    "total": 79.2,
+    "ok": true
+   },
+   {
+    "rt": 80.05,
+    "total": 78.66,
+    "ok": true
+   },
+   {
+    "rt": 79.3,
+    "total": 77.88,
+    "ok": true
+   },
+   {
+    "rt": 79.32,
+    "total": 78.0,
+    "ok": true
+   },
+   {
+    "rt": 79.5,
+    "total": 78.13,
+    "ok": true
+   },
+   {
+    "rt": 81.18,
+    "total": 79.94,
+    "ok": true
+   },
+   {
+    "rt": 78.76,
+    "total": 77.36,
+    "ok": true
+   },
+   {
+    "rt": 80.18,
+    "total": 79.44,
+    "ok": true
+   },
+   {
+    "rt": 79.91,
+    "total": 78.4,
+    "ok": true
+   },
+   {
+    "rt": 90.21,
+    "total": 88.77,
+    "ok": true
+   },
+   {
+    "rt": 80.02,
+    "total": 78.72,
+    "ok": true
+   },
+   {
+    "rt": 80.28,
+    "total": 79.2,
+    "ok": true
+   },
+   {
+    "rt": 99.7,
+    "total": 98.31,
+    "ok": true
+   },
+   {
+    "rt": 80.44,
+    "total": 79.05,
+    "ok": true
+   },
+   {
+    "rt": 80.2,
+    "total": 78.63,
+    "ok": true
+   },
+   {
+    "rt": 99.26,
+    "total": 97.82,
+    "ok": true
+   },
+   {
+    "rt": 80.04,
+    "total": 78.59,
+    "ok": true
+   },
+   {
+    "rt": 80.55,
+    "total": 78.91,
+    "ok": true
+   },
+   {
+    "rt": 80.04,
+    "total": 78.58,
+    "ok": true
+   },
+   {
+    "rt": 80.5,
+    "total": 78.91,
+    "ok": true
+   },
+   {
+    "rt": 78.96,
+    "total": 77.88,
+    "ok": true
+   },
+   {
+    "rt": 128.28,
+    "total": 127.56,
+    "ok": true
+   },
+   {
+    "rt": 80.19,
+    "total": 79.34,
+    "ok": true
+   },
+   {
+    "rt": 79.63,
+    "total": 78.98,
+    "ok": true
+   },
+   {
+    "rt": 80.46,
+    "total": 79.3,
+    "ok": true
+   },
+   {
+    "rt": 80.25,
+    "total": 78.61,
+    "ok": true
+   },
+   {
+    "rt": 80.19,
+    "total": 78.62,
+    "ok": true
+   },
+   {
+    "rt": 80.67,
+    "total": 79.12,
+    "ok": true
+   },
+   {
+    "rt": 79.5,
+    "total": 78.09,
+    "ok": true
+   },
+   {
+    "rt": 80.36,
+    "total": 79.14,
+    "ok": true
+   },
+   {
+    "rt": 80.05,
+    "total": 78.8,
+    "ok": true
+   },
+   {
+    "rt": 79.38,
+    "total": 78.94,
+    "ok": true
+   },
+   {
+    "rt": 79.94,
+    "total": 78.59,
+    "ok": true
+   },
+   {
+    "rt": 80.44,
+    "total": 79.2,
+    "ok": true
+   },
+   {
+    "rt": 79.59,
+    "total": 78.29,
+    "ok": true
+   },
+   {
+    "rt": 80.61,
+    "total": 78.9,
+    "ok": true
+   },
+   {
+    "rt": 80.15,
+    "total": 78.76,
+    "ok": true
+   },
+   {
+    "rt": 79.91,
+    "total": 78.44,
+    "ok": true
+   },
+   {
+    "rt": 80.29,
+    "total": 79.15,
+    "ok": true
+   },
+   {
+    "rt": 79.48,
+    "total": 77.89,
+    "ok": true
+   },
+   {
+    "rt": 80.12,
+    "total": 78.76,
+    "ok": true
+   },
+   {
+    "rt": 80.13,
+    "total": 78.84,
+    "ok": true
+   },
+   {
+    "rt": 80.38,
+    "total": 78.99,
+    "ok": true
+   },
+   {
+    "rt": 80.5,
+    "total": 79.04,
+    "ok": true
+   },
+   {
+    "rt": 89.77,
+    "total": 88.37,
+    "ok": true
+   },
+   {
+    "rt": 79.67,
+    "total": 78.65,
+    "ok": true
+   },
+   {
+    "rt": 78.98,
+    "total": 78.06,
+    "ok": true
+   },
+   {
+    "rt": 78.77,
+    "total": 77.09,
+    "ok": true
+   },
+   {
+    "rt": 80.47,
+    "total": 78.81,
+    "ok": true
+   },
+   {
+    "rt": 80.81,
+    "total": 79.29,
+    "ok": true
+   },
+   {
+    "rt": 100.42,
+    "total": 98.89,
+    "ok": true
+   },
+   {
+    "rt": 101.22,
+    "total": 99.85,
+    "ok": true
+   },
+   {
+    "rt": 89.45,
+    "total": 87.86,
+    "ok": true
+   },
+   {
+    "rt": 89.29,
+    "total": 87.49,
+    "ok": true
+   },
+   {
+    "rt": 78.99,
+    "total": 77.29,
+    "ok": true
+   },
+   {
+    "rt": 80.34,
+    "total": 79.29,
+    "ok": true
+   },
+   {
+    "rt": 80.83,
+    "total": 79.55,
+    "ok": true
+   },
+   {
+    "rt": 89.43,
+    "total": 88.04,
+    "ok": true
+   },
+   {
+    "rt": 79.93,
+    "total": 78.6,
+    "ok": true
+   },
+   {
+    "rt": 79.96,
+    "total": 78.46,
+    "ok": true
+   },
+   {
+    "rt": 80.45,
+    "total": 78.97,
+    "ok": true
+   },
+   {
+    "rt": 80.58,
+    "total": 79.02,
+    "ok": true
+   },
+   {
+    "rt": 79.11,
+    "total": 77.92,
+    "ok": true
+   },
+   {
+    "rt": 80.28,
+    "total": 78.31,
+    "ok": true
+   },
+   {
+    "rt": 79.92,
+    "total": 78.38,
+    "ok": true
+   },
+   {
+    "rt": 79.06,
+    "total": 77.61,
+    "ok": true
+   },
+   {
+    "rt": 80.27,
+    "total": 78.78,
+    "ok": true
+   },
+   {
+    "rt": 79.93,
+    "total": 78.55,
+    "ok": true
+   },
+   {
+    "rt": 79.84,
+    "total": 78.63,
+    "ok": true
+   },
+   {
+    "rt": 80.97,
+    "total": 79.32,
+    "ok": true
+   },
+   {
+    "rt": 79.85,
+    "total": 78.32,
+    "ok": true
+   },
+   {
+    "rt": 80.13,
+    "total": 78.6,
+    "ok": true
+   },
+   {
+    "rt": 79.03,
+    "total": 77.78,
+    "ok": true
+   },
+   {
+    "rt": 79.9,
+    "total": 78.78,
+    "ok": true
+   },
+   {
+    "rt": 80.5,
+    "total": 79.47,
+    "ok": true
+   },
+   {
+    "rt": 79.81,
+    "total": 78.15,
+    "ok": true
+   },
+   {
+    "rt": 79.71,
+    "total": 78.3,
+    "ok": true
+   },
+   {
+    "rt": 78.97,
+    "total": 77.62,
+    "ok": true
+   },
+   {
+    "rt": 90.9,
+    "total": 89.19,
+    "ok": true
+   },
+   {
+    "rt": 108.71,
+    "total": 107.64,
+    "ok": true
+   },
+   {
+    "rt": 80.95,
+    "total": 79.5,
+    "ok": true
+   },
+   {
+    "rt": 79.59,
+    "total": 77.73,
+    "ok": true
+   },
+   {
+    "rt": 79.98,
+    "total": 78.29,
+    "ok": true
+   },
+   {
+    "rt": 79.75,
+    "total": 78.21,
+    "ok": true
+   },
+   {
+    "rt": 79.75,
+    "total": 78.27,
+    "ok": true
+   },
+   {
+    "rt": 78.92,
+    "total": 77.37,
+    "ok": true
+   },
+   {
+    "rt": 79.71,
+    "total": 78.25,
+    "ok": true
+   },
+   {
+    "rt": 80.11,
+    "total": 78.52,
+    "ok": true
+   },
+   {
+    "rt": 79.67,
+    "total": 78.19,
+    "ok": true
+   },
+   {
+    "rt": 80.67,
+    "total": 79.11,
+    "ok": true
+   },
+   {
+    "rt": 79.42,
+    "total": 78.58,
+    "ok": true
+   },
+   {
+    "rt": 79.86,
+    "total": 77.86,
+    "ok": true
+   },
+   {
+    "rt": 80.43,
+    "total": 79.11,
+    "ok": true
+   },
+   {
+    "rt": 80.38,
+    "total": 78.76,
+    "ok": true
+   },
+   {
+    "rt": 79.77,
+    "total": 79.18,
+    "ok": true
+   },
+   {
+    "rt": 91.1,
+    "total": 89.72,
+    "ok": true
+   },
+   {
+    "rt": 79.44,
+    "total": 78.81,
+    "ok": true
+   },
+   {
+    "rt": 76.18,
+    "total": 74.97,
+    "ok": true
+   },
+   {
+    "rt": 90.81,
+    "total": 89.91,
+    "ok": true
+   },
+   {
+    "rt": 80.17,
+    "total": 78.48,
+    "ok": true
+   },
+   {
+    "rt": 80.66,
+    "total": 79.09,
+    "ok": true
+   },
+   {
+    "rt": 91.55,
+    "total": 90.52,
+    "ok": true
+   },
+   {
+    "rt": 80.67,
+    "total": 79.38,
+    "ok": true
+   },
+   {
+    "rt": 80.99,
+    "total": 79.8,
+    "ok": true
+   },
+   {
+    "rt": 89.66,
+    "total": 88.29,
+    "ok": true
+   },
+   {
+    "rt": 79.91,
+    "total": 78.49,
+    "ok": true
+   },
+   {
+    "rt": 78.73,
+    "total": 77.38,
+    "ok": true
+   },
+   {
+    "rt": 79.39,
+    "total": 77.38,
+    "ok": true
+   },
+   {
+    "rt": 79.62,
+    "total": 78.24,
+    "ok": true
+   },
+   {
+    "rt": 80.35,
+    "total": 78.59,
+    "ok": true
+   },
+   {
+    "rt": 90.97,
+    "total": 89.4,
+    "ok": true
+   },
+   {
+    "rt": 78.52,
+    "total": 76.98,
+    "ok": true
+   },
+   {
+    "rt": 90.17,
+    "total": 88.74,
+    "ok": true
+   },
+   {
+    "rt": 89.44,
+    "total": 87.74,
+    "ok": true
+   },
+   {
+    "rt": 80.93,
+    "total": 79.68,
+    "ok": true
+   },
+   {
+    "rt": 79.06,
+    "total": 78.21,
+    "ok": true
+   },
+   {
+    "rt": 80.04,
+    "total": 78.3,
+    "ok": true
+   }
+  ],
+  "close_session": [
+   {
+    "rt": 168.72,
+    "total": 167.61,
+    "txn": 137.28,
+    "commit": 136.27,
+    "marker": 29.17,
+    "ok": true
+   },
+   {
+    "rt": 182.04,
+    "total": 181.56,
+    "txn": 149.29,
+    "commit": 149.03,
+    "marker": 31.85,
+    "ok": true
+   },
+   {
+    "rt": 151.44,
+    "total": 150.37,
+    "txn": 119.18,
+    "commit": 118.53,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 160.95,
+    "total": 159.52,
+    "txn": 127.13,
+    "commit": 125.96,
+    "marker": 31.43,
+    "ok": true
+   },
+   {
+    "rt": 162.16,
+    "total": 160.62,
+    "txn": 128.88,
+    "commit": 127.88,
+    "marker": 30.77,
+    "ok": true
+   },
+   {
+    "rt": 159.94,
+    "total": 158.19,
+    "txn": 127.49,
+    "commit": 126.5,
+    "marker": 29.66,
+    "ok": true
+   },
+   {
+    "rt": 190.71,
+    "total": 188.96,
+    "txn": 135.41,
+    "commit": 134.29,
+    "marker": 52.43,
+    "ok": true
+   },
+   {
+    "rt": 162.19,
+    "total": 160.39,
+    "txn": 127.87,
+    "commit": 126.98,
+    "marker": 31.63,
+    "ok": true
+   },
+   {
+    "rt": 171.92,
+    "total": 170.02,
+    "txn": 136.7,
+    "commit": 135.45,
+    "marker": 32.14,
+    "ok": true
+   },
+   {
+    "rt": 171.41,
+    "total": 170.75,
+    "txn": 138.98,
+    "commit": 138.61,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 171.13,
+    "total": 170.07,
+    "txn": 138.7,
+    "commit": 138.02,
+    "marker": 30.55,
+    "ok": true
+   },
+   {
+    "rt": 171.29,
+    "total": 169.78,
+    "txn": 138.43,
+    "commit": 137.4,
+    "marker": 30.4,
+    "ok": true
+   },
+   {
+    "rt": 173.43,
+    "total": 172.39,
+    "txn": 139.85,
+    "commit": 139.62,
+    "marker": 32.16,
+    "ok": true
+   },
+   {
+    "rt": 181.95,
+    "total": 180.17,
+    "txn": 148.75,
+    "commit": 147.76,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 161.36,
+    "total": 159.59,
+    "txn": 127.49,
+    "commit": 126.46,
+    "marker": 30.92,
+    "ok": true
+   },
+   {
+    "rt": 171.9,
+    "total": 170.03,
+    "txn": 136.88,
+    "commit": 135.26,
+    "marker": 31.83,
+    "ok": true
+   },
+   {
+    "rt": 180.61,
+    "total": 179.18,
+    "txn": 147.6,
+    "commit": 146.28,
+    "marker": 29.99,
+    "ok": true
+   },
+   {
+    "rt": 161.21,
+    "total": 159.72,
+    "txn": 127.51,
+    "commit": 126.8,
+    "marker": 31.18,
+    "ok": true
+   },
+   {
+    "rt": 160.83,
+    "total": 159.43,
+    "txn": 127.26,
+    "commit": 126.46,
+    "marker": 30.87,
+    "ok": true
+   },
+   {
+    "rt": 170.96,
+    "total": 169.49,
+    "txn": 137.6,
+    "commit": 136.47,
+    "marker": 30.8,
+    "ok": true
+   },
+   {
+    "rt": 151.44,
+    "total": 149.69,
+    "txn": 117.55,
+    "commit": 116.64,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 160.2,
+    "total": 159.27,
+    "txn": 127.8,
+    "commit": 126.98,
+    "marker": 30.66,
+    "ok": true
+   },
+   {
+    "rt": 161.36,
+    "total": 159.9,
+    "txn": 127.59,
+    "commit": 126.62,
+    "marker": 31.42,
+    "ok": true
+   },
+   {
+    "rt": 161.77,
+    "total": 159.96,
+    "txn": 127.38,
+    "commit": 126.39,
+    "marker": 31.54,
+    "ok": true
+   },
+   {
+    "rt": 161.58,
+    "total": 160.07,
+    "txn": 127.97,
+    "commit": 126.98,
+    "marker": 31.05,
+    "ok": true
+   },
+   {
+    "rt": 181.28,
+    "total": 179.64,
+    "txn": 136.55,
+    "commit": 135.71,
+    "marker": 41.66,
+    "ok": true
+   },
+   {
+    "rt": 182.81,
+    "total": 181.77,
+    "txn": 140.12,
+    "commit": 139.91,
+    "marker": 41.33,
+    "ok": true
+   },
+   {
+    "rt": 181.8,
+    "total": 179.91,
+    "txn": 138.04,
+    "commit": 136.89,
+    "marker": 40.65,
+    "ok": true
+   },
+   {
+    "rt": 201.84,
+    "total": 199.65,
+    "txn": 136.71,
+    "commit": 135.83,
+    "marker": 61.95,
+    "ok": true
+   },
+   {
+    "rt": 171.56,
+    "total": 169.95,
+    "txn": 139.08,
+    "commit": 138.21,
+    "marker": 29.9,
+    "ok": true
+   },
+   {
+    "rt": 162.62,
+    "total": 161.05,
+    "txn": 127.07,
+    "commit": 126.86,
+    "marker": 33.28,
+    "ok": true
+   },
+   {
+    "rt": 160.12,
+    "total": 157.89,
+    "txn": 125.25,
+    "commit": 124.17,
+    "marker": 31.3,
+    "ok": true
+   },
+   {
+    "rt": 190.2,
+    "total": 188.69,
+    "txn": 156.43,
+    "commit": 155.79,
+    "marker": 31.58,
+    "ok": true
+   },
+   {
+    "rt": 170.11,
+    "total": 168.97,
+    "txn": 136.89,
+    "commit": 135.52,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 161.31,
+    "total": 160.13,
+    "txn": 127.29,
+    "commit": 126.59,
+    "marker": 32.06,
+    "ok": true
+   },
+   {
+    "rt": 159.86,
+    "total": 158.23,
+    "txn": 126.97,
+    "commit": 126.12,
+    "marker": 30.49,
+    "ok": true
+   },
+   {
+    "rt": 161.04,
+    "total": 159.41,
+    "txn": 127.43,
+    "commit": 126.48,
+    "marker": 30.72,
+    "ok": true
+   },
+   {
+    "rt": 160.92,
+    "total": 159.37,
+    "txn": 127.24,
+    "commit": 126.33,
+    "marker": 31.1,
+    "ok": true
+   },
+   {
+    "rt": 151.67,
+    "total": 149.95,
+    "txn": 117.79,
+    "commit": 116.71,
+    "marker": 31.07,
+    "ok": true
+   },
+   {
+    "rt": 161.72,
+    "total": 160.06,
+    "txn": 127.69,
+    "commit": 126.68,
+    "marker": 31.3,
+    "ok": true
+   },
+   {
+    "rt": 160.79,
+    "total": 159.21,
+    "txn": 127.25,
+    "commit": 125.72,
+    "marker": 30.81,
+    "ok": true
+   },
+   {
+    "rt": 187.29,
+    "total": 185.7,
+    "txn": 147.69,
+    "commit": 146.73,
+    "marker": 37.05,
+    "ok": true
+   },
+   {
+    "rt": 200.72,
+    "total": 199.22,
+    "txn": 167.38,
+    "commit": 166.22,
+    "marker": 30.63,
+    "ok": true
+   },
+   {
+    "rt": 181.66,
+    "total": 179.68,
+    "txn": 147.64,
+    "commit": 146.73,
+    "marker": 30.84,
+    "ok": true
+   },
+   {
+    "rt": 292.14,
+    "total": 290.73,
+    "txn": 177.84,
+    "commit": 176.53,
+    "marker": 111.66,
+    "ok": true
+   },
+   {
+    "rt": 180.92,
+    "total": 179.41,
+    "txn": 146.63,
+    "commit": 145.86,
+    "marker": 31.9,
+    "ok": true
+   },
+   {
+    "rt": 198.77,
+    "total": 197.58,
+    "txn": 167.14,
+    "commit": 166.04,
+    "marker": 29.47,
+    "ok": true
+   },
+   {
+    "rt": 181.59,
+    "total": 179.63,
+    "txn": 149.43,
+    "commit": 148.44,
+    "marker": 29.17,
+    "ok": true
+   },
+   {
+    "rt": 181.11,
+    "total": 179.61,
+    "txn": 147.3,
+    "commit": 146.4,
+    "marker": 31.38,
+    "ok": true
+   },
+   {
+    "rt": 191.71,
+    "total": 189.94,
+    "txn": 157.44,
+    "commit": 156.57,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 170.89,
+    "total": 169.47,
+    "txn": 138.13,
+    "commit": 137.34,
+    "marker": 30.64,
+    "ok": true
+   },
+   {
+    "rt": 172.53,
+    "total": 171.17,
+    "txn": 138.72,
+    "commit": 137.84,
+    "marker": 31.73,
+    "ok": true
+   },
+   {
+    "rt": 171.64,
+    "total": 169.98,
+    "txn": 138.37,
+    "commit": 137.58,
+    "marker": 30.75,
+    "ok": true
+   },
+   {
+    "rt": 171.38,
+    "total": 169.66,
+    "txn": 137.87,
+    "commit": 136.9,
+    "marker": 30.46,
+    "ok": true
+   },
+   {
+    "rt": 170.86,
+    "total": 169.07,
+    "txn": 136.23,
+    "commit": 135.07,
+    "marker": 31.7,
+    "ok": true
+   },
+   {
+    "rt": 171.19,
+    "total": 169.39,
+    "txn": 137.5,
+    "commit": 136.56,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 161.61,
+    "total": 159.9,
+    "txn": 128.2,
+    "commit": 127.36,
+    "marker": 30.49,
+    "ok": true
+   },
+   {
+    "rt": 171.86,
+    "total": 169.91,
+    "txn": 137.02,
+    "commit": 136.0,
+    "marker": 31.24,
+    "ok": true
+   },
+   {
+    "rt": 171.62,
+    "total": 169.93,
+    "txn": 137.06,
+    "commit": 136.25,
+    "marker": 31.32,
+    "ok": true
+   },
+   {
+    "rt": 211.03,
+    "total": 209.44,
+    "txn": 157.32,
+    "commit": 156.36,
+    "marker": 51.11,
+    "ok": true
+   },
+   {
+    "rt": 162.99,
+    "total": 161.88,
+    "txn": 130.42,
+    "commit": 130.21,
+    "marker": 31.12,
+    "ok": true
+   },
+   {
+    "rt": 159.86,
+    "total": 158.24,
+    "txn": 126.14,
+    "commit": 125.18,
+    "marker": 30.64,
+    "ok": true
+   },
+   {
+    "rt": 159.28,
+    "total": 157.44,
+    "txn": 117.01,
+    "commit": 116.1,
+    "marker": 39.48,
+    "ok": true
+   },
+   {
+    "rt": 160.77,
+    "total": 158.96,
+    "txn": 127.23,
+    "commit": 126.31,
+    "marker": 30.63,
+    "ok": true
+   },
+   {
+    "rt": 161.57,
+    "total": 159.57,
+    "txn": 126.59,
+    "commit": 125.41,
+    "marker": 32.08,
+    "ok": true
+   },
+   {
+    "rt": 161.41,
+    "total": 159.63,
+    "txn": 127.3,
+    "commit": 126.03,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 162.1,
+    "total": 160.14,
+    "txn": 127.23,
+    "commit": 126.34,
+    "marker": 31.54,
+    "ok": true
+   },
+   {
+    "rt": 159.93,
+    "total": 158.06,
+    "txn": 126.62,
+    "commit": 125.72,
+    "marker": 30.5,
+    "ok": true
+   },
+   {
+    "rt": 150.39,
+    "total": 148.66,
+    "txn": 117.22,
+    "commit": 116.1,
+    "marker": 30.42,
+    "ok": true
+   },
+   {
+    "rt": 160.17,
+    "total": 158.33,
+    "txn": 125.89,
+    "commit": 124.94,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 161.75,
+    "total": 159.84,
+    "txn": 126.91,
+    "commit": 125.66,
+    "marker": 31.33,
+    "ok": true
+   },
+   {
+    "rt": 160.06,
+    "total": 158.08,
+    "txn": 126.11,
+    "commit": 125.26,
+    "marker": 30.96,
+    "ok": true
+   },
+   {
+    "rt": 160.22,
+    "total": 159.16,
+    "txn": 128.12,
+    "commit": 127.39,
+    "marker": 30.18,
+    "ok": true
+   },
+   {
+    "rt": 161.7,
+    "total": 160.72,
+    "txn": 128.87,
+    "commit": 128.52,
+    "marker": 31.43,
+    "ok": true
+   },
+   {
+    "rt": 160.83,
+    "total": 159.82,
+    "txn": 128.89,
+    "commit": 128.17,
+    "marker": 30.17,
+    "ok": true
+   },
+   {
+    "rt": 171.8,
+    "total": 170.13,
+    "txn": 137.67,
+    "commit": 136.19,
+    "marker": 31.3,
+    "ok": true
+   },
+   {
+    "rt": 190.27,
+    "total": 189.16,
+    "txn": 137.34,
+    "commit": 136.6,
+    "marker": 51.09,
+    "ok": true
+   },
+   {
+    "rt": 162.38,
+    "total": 161.34,
+    "txn": 129.56,
+    "commit": 129.3,
+    "marker": 31.38,
+    "ok": true
+   },
+   {
+    "rt": 161.27,
+    "total": 159.98,
+    "txn": 127.32,
+    "commit": 126.96,
+    "marker": 32.22,
+    "ok": true
+   },
+   {
+    "rt": 160.34,
+    "total": 159.41,
+    "txn": 127.62,
+    "commit": 126.87,
+    "marker": 31.11,
+    "ok": true
+   },
+   {
+    "rt": 150.49,
+    "total": 149.55,
+    "txn": 118.3,
+    "commit": 117.75,
+    "marker": 30.39,
+    "ok": true
+   },
+   {
+    "rt": 160.4,
+    "total": 159.64,
+    "txn": 130.14,
+    "commit": 129.88,
+    "marker": 29.15,
+    "ok": true
+   },
+   {
+    "rt": 160.83,
+    "total": 159.7,
+    "txn": 127.86,
+    "commit": 127.1,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 160.63,
+    "total": 159.82,
+    "txn": 128.3,
+    "commit": 127.71,
+    "marker": 30.81,
+    "ok": true
+   },
+   {
+    "rt": 174.2,
+    "total": 172.99,
+    "txn": 129.31,
+    "commit": 128.57,
+    "marker": 43.0,
+    "ok": true
+   },
+   {
+    "rt": 158.89,
+    "total": 158.11,
+    "txn": 128.98,
+    "commit": 128.35,
+    "marker": 28.52,
+    "ok": true
+   },
+   {
+    "rt": 150.69,
+    "total": 149.64,
+    "txn": 118.27,
+    "commit": 117.3,
+    "marker": 30.43,
+    "ok": true
+   },
+   {
+    "rt": 161.19,
+    "total": 160.23,
+    "txn": 128.74,
+    "commit": 128.19,
+    "marker": 30.91,
+    "ok": true
+   },
+   {
+    "rt": 159.78,
+    "total": 157.94,
+    "txn": 125.14,
+    "commit": 124.2,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 161.3,
+    "total": 160.32,
+    "txn": 128.31,
+    "commit": 127.7,
+    "marker": 31.23,
+    "ok": true
+   },
+   {
+    "rt": 192.16,
+    "total": 190.75,
+    "txn": 157.21,
+    "commit": 155.77,
+    "marker": 31.79,
+    "ok": true
+   },
+   {
+    "rt": 199.18,
+    "total": 197.83,
+    "txn": 155.11,
+    "commit": 153.83,
+    "marker": 41.7,
+    "ok": true
+   },
+   {
+    "rt": 213.6,
+    "total": 212.64,
+    "txn": 168.65,
+    "commit": 168.14,
+    "marker": 43.58,
+    "ok": true
+   },
+   {
+    "rt": 231.42,
+    "total": 229.97,
+    "txn": 168.98,
+    "commit": 168.05,
+    "marker": 60.27,
+    "ok": true
+   },
+   {
+    "rt": 198.52,
+    "total": 197.44,
+    "txn": 165.74,
+    "commit": 164.9,
+    "marker": 30.78,
+    "ok": true
+   },
+   {
+    "rt": 180.98,
+    "total": 180.04,
+    "txn": 148.25,
+    "commit": 147.68,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 183.16,
+    "total": 181.66,
+    "txn": 148.44,
+    "commit": 147.8,
+    "marker": 32.45,
+    "ok": true
+   },
+   {
+    "rt": 171.38,
+    "total": 170.56,
+    "txn": 138.22,
+    "commit": 137.8,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 181.87,
+    "total": 180.01,
+    "txn": 148.04,
+    "commit": 147.07,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 181.67,
+    "total": 180.42,
+    "txn": 148.85,
+    "commit": 148.47,
+    "marker": 30.79,
+    "ok": true
+   },
+   {
+    "rt": 190.11,
+    "total": 188.52,
+    "txn": 156.4,
+    "commit": 155.45,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 181.75,
+    "total": 180.6,
+    "txn": 148.37,
+    "commit": 147.66,
+    "marker": 31.58,
+    "ok": true
+   },
+   {
+    "rt": 170.12,
+    "total": 169.5,
+    "txn": 138.76,
+    "commit": 138.19,
+    "marker": 30.26,
+    "ok": true
+   },
+   {
+    "rt": 160.62,
+    "total": 158.94,
+    "txn": 126.31,
+    "commit": 125.5,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 159.61,
+    "total": 157.5,
+    "txn": 125.54,
+    "commit": 124.73,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 162.3,
+    "total": 160.75,
+    "txn": 128.09,
+    "commit": 127.15,
+    "marker": 31.6,
+    "ok": true
+   },
+   {
+    "rt": 160.76,
+    "total": 159.74,
+    "txn": 128.48,
+    "commit": 127.79,
+    "marker": 30.55,
+    "ok": true
+   },
+   {
+    "rt": 171.26,
+    "total": 169.36,
+    "txn": 137.39,
+    "commit": 136.37,
+    "marker": 31.07,
+    "ok": true
+   },
+   {
+    "rt": 151.2,
+    "total": 149.52,
+    "txn": 118.49,
+    "commit": 117.44,
+    "marker": 30.01,
+    "ok": true
+   },
+   {
+    "rt": 162.05,
+    "total": 160.29,
+    "txn": 128.95,
+    "commit": 128.04,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 160.89,
+    "total": 159.01,
+    "txn": 126.91,
+    "commit": 126.08,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 160.68,
+    "total": 159.21,
+    "txn": 126.51,
+    "commit": 125.62,
+    "marker": 31.21,
+    "ok": true
+   },
+   {
+    "rt": 160.04,
+    "total": 159.1,
+    "txn": 128.24,
+    "commit": 127.67,
+    "marker": 30.32,
+    "ok": true
+   },
+   {
+    "rt": 159.92,
+    "total": 158.33,
+    "txn": 126.98,
+    "commit": 125.92,
+    "marker": 30.25,
+    "ok": true
+   },
+   {
+    "rt": 169.89,
+    "total": 168.15,
+    "txn": 135.67,
+    "commit": 134.73,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 169.91,
+    "total": 168.44,
+    "txn": 136.72,
+    "commit": 135.8,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 162.42,
+    "total": 161.23,
+    "txn": 129.0,
+    "commit": 128.38,
+    "marker": 31.57,
+    "ok": true
+   },
+   {
+    "rt": 162.01,
+    "total": 160.82,
+    "txn": 128.26,
+    "commit": 127.64,
+    "marker": 31.89,
+    "ok": true
+   },
+   {
+    "rt": 162.0,
+    "total": 160.32,
+    "txn": 127.76,
+    "commit": 126.88,
+    "marker": 31.66,
+    "ok": true
+   },
+   {
+    "rt": 152.16,
+    "total": 151.19,
+    "txn": 119.45,
+    "commit": 118.18,
+    "marker": 30.91,
+    "ok": true
+   },
+   {
+    "rt": 161.44,
+    "total": 159.46,
+    "txn": 126.95,
+    "commit": 126.05,
+    "marker": 31.23,
+    "ok": true
+   },
+   {
+    "rt": 161.47,
+    "total": 160.34,
+    "txn": 128.25,
+    "commit": 127.38,
+    "marker": 31.37,
+    "ok": true
+   },
+   {
+    "rt": 183.17,
+    "total": 181.48,
+    "txn": 148.43,
+    "commit": 147.69,
+    "marker": 32.28,
+    "ok": true
+   },
+   {
+    "rt": 182.3,
+    "total": 180.93,
+    "txn": 138.02,
+    "commit": 136.99,
+    "marker": 41.87,
+    "ok": true
+   },
+   {
+    "rt": 180.43,
+    "total": 178.78,
+    "txn": 146.21,
+    "commit": 145.36,
+    "marker": 31.46,
+    "ok": true
+   },
+   {
+    "rt": 162.94,
+    "total": 161.14,
+    "txn": 128.4,
+    "commit": 127.72,
+    "marker": 32.01,
+    "ok": true
+   },
+   {
+    "rt": 160.01,
+    "total": 158.85,
+    "txn": 127.3,
+    "commit": 126.59,
+    "marker": 30.86,
+    "ok": true
+   },
+   {
+    "rt": 161.28,
+    "total": 159.68,
+    "txn": 127.44,
+    "commit": 126.33,
+    "marker": 31.12,
+    "ok": true
+   },
+   {
+    "rt": 162.61,
+    "total": 160.46,
+    "txn": 126.77,
+    "commit": 125.52,
+    "marker": 32.29,
+    "ok": true
+   },
+   {
+    "rt": 180.45,
+    "total": 179.46,
+    "txn": 147.54,
+    "commit": 146.62,
+    "marker": 31.15,
+    "ok": true
+   },
+   {
+    "rt": 163.71,
+    "total": 162.7,
+    "txn": 130.47,
+    "commit": 129.93,
+    "marker": 31.78,
+    "ok": true
+   },
+   {
+    "rt": 160.01,
+    "total": 158.03,
+    "txn": 126.5,
+    "commit": 125.66,
+    "marker": 30.56,
+    "ok": true
+   },
+   {
+    "rt": 161.74,
+    "total": 159.92,
+    "txn": 127.35,
+    "commit": 126.35,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 160.44,
+    "total": 159.41,
+    "txn": 128.04,
+    "commit": 127.42,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 171.75,
+    "total": 170.18,
+    "txn": 138.75,
+    "commit": 137.94,
+    "marker": 30.54,
+    "ok": true
+   },
+   {
+    "rt": 200.51,
+    "total": 199.84,
+    "txn": 148.67,
+    "commit": 148.17,
+    "marker": 50.66,
+    "ok": true
+   },
+   {
+    "rt": 189.64,
+    "total": 188.0,
+    "txn": 156.71,
+    "commit": 155.92,
+    "marker": 30.41,
+    "ok": true
+   },
+   {
+    "rt": 170.9,
+    "total": 169.78,
+    "txn": 137.21,
+    "commit": 136.43,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 161.08,
+    "total": 159.49,
+    "txn": 127.03,
+    "commit": 125.9,
+    "marker": 31.46,
+    "ok": true
+   },
+   {
+    "rt": 161.3,
+    "total": 159.82,
+    "txn": 127.6,
+    "commit": 126.75,
+    "marker": 31.3,
+    "ok": true
+   },
+   {
+    "rt": 170.77,
+    "total": 169.26,
+    "txn": 135.87,
+    "commit": 134.62,
+    "marker": 31.73,
+    "ok": true
+   },
+   {
+    "rt": 181.01,
+    "total": 180.17,
+    "txn": 148.45,
+    "commit": 147.77,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 181.07,
+    "total": 179.58,
+    "txn": 147.26,
+    "commit": 146.03,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 180.76,
+    "total": 178.98,
+    "txn": 146.41,
+    "commit": 145.62,
+    "marker": 31.78,
+    "ok": true
+   },
+   {
+    "rt": 182.88,
+    "total": 181.25,
+    "txn": 149.27,
+    "commit": 148.64,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 211.07,
+    "total": 209.28,
+    "txn": 177.22,
+    "commit": 175.9,
+    "marker": 30.99,
+    "ok": true
+   },
+   {
+    "rt": 200.77,
+    "total": 199.1,
+    "txn": 167.09,
+    "commit": 165.67,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 201.78,
+    "total": 199.9,
+    "txn": 167.4,
+    "commit": 166.46,
+    "marker": 31.68,
+    "ok": true
+   },
+   {
+    "rt": 212.64,
+    "total": 211.29,
+    "txn": 178.3,
+    "commit": 177.56,
+    "marker": 32.21,
+    "ok": true
+   },
+   {
+    "rt": 210.87,
+    "total": 209.5,
+    "txn": 178.1,
+    "commit": 177.35,
+    "marker": 30.57,
+    "ok": true
+   },
+   {
+    "rt": 201.65,
+    "total": 199.83,
+    "txn": 167.22,
+    "commit": 166.03,
+    "marker": 31.44,
+    "ok": true
+   },
+   {
+    "rt": 189.68,
+    "total": 188.54,
+    "txn": 157.33,
+    "commit": 156.44,
+    "marker": 30.46,
+    "ok": true
+   },
+   {
+    "rt": 180.59,
+    "total": 178.6,
+    "txn": 147.01,
+    "commit": 146.23,
+    "marker": 30.75,
+    "ok": true
+   },
+   {
+    "rt": 191.09,
+    "total": 189.66,
+    "txn": 156.84,
+    "commit": 155.75,
+    "marker": 31.99,
+    "ok": true
+   },
+   {
+    "rt": 202.18,
+    "total": 201.4,
+    "txn": 148.98,
+    "commit": 148.37,
+    "marker": 51.86,
+    "ok": true
+   },
+   {
+    "rt": 191.26,
+    "total": 189.9,
+    "txn": 147.03,
+    "commit": 146.3,
+    "marker": 42.08,
+    "ok": true
+   },
+   {
+    "rt": 169.82,
+    "total": 168.98,
+    "txn": 137.3,
+    "commit": 136.58,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 232.15,
+    "total": 231.37,
+    "txn": 149.51,
+    "commit": 149.27,
+    "marker": 81.46,
+    "ok": true
+   },
+   {
+    "rt": 180.04,
+    "total": 179.35,
+    "txn": 148.43,
+    "commit": 147.79,
+    "marker": 30.31,
+    "ok": true
+   },
+   {
+    "rt": 201.26,
+    "total": 200.26,
+    "txn": 170.05,
+    "commit": 169.35,
+    "marker": 29.43,
+    "ok": true
+   },
+   {
+    "rt": 200.9,
+    "total": 199.33,
+    "txn": 166.86,
+    "commit": 165.59,
+    "marker": 31.65,
+    "ok": true
+   },
+   {
+    "rt": 202.69,
+    "total": 201.8,
+    "txn": 159.82,
+    "commit": 159.51,
+    "marker": 41.61,
+    "ok": true
+   },
+   {
+    "rt": 189.61,
+    "total": 188.92,
+    "txn": 157.11,
+    "commit": 156.78,
+    "marker": 31.43,
+    "ok": true
+   },
+   {
+    "rt": 181.49,
+    "total": 180.73,
+    "txn": 149.21,
+    "commit": 148.48,
+    "marker": 30.9,
+    "ok": true
+   },
+   {
+    "rt": 181.44,
+    "total": 180.78,
+    "txn": 149.21,
+    "commit": 148.95,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 183.39,
+    "total": 182.38,
+    "txn": 149.57,
+    "commit": 148.94,
+    "marker": 32.16,
+    "ok": true
+   },
+   {
+    "rt": 193.56,
+    "total": 192.45,
+    "txn": 160.39,
+    "commit": 160.11,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 180.86,
+    "total": 179.51,
+    "txn": 147.96,
+    "commit": 146.7,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 201.49,
+    "total": 199.68,
+    "txn": 168.33,
+    "commit": 167.31,
+    "marker": 29.72,
+    "ok": true
+   },
+   {
+    "rt": 179.79,
+    "total": 178.21,
+    "txn": 147.03,
+    "commit": 146.2,
+    "marker": 30.22,
+    "ok": true
+   },
+   {
+    "rt": 181.75,
+    "total": 180.02,
+    "txn": 146.73,
+    "commit": 145.86,
+    "marker": 31.98,
+    "ok": true
+   },
+   {
+    "rt": 192.04,
+    "total": 190.91,
+    "txn": 169.74,
+    "commit": 169.4,
+    "marker": 20.76,
+    "ok": true
+   },
+   {
+    "rt": 189.46,
+    "total": 188.32,
+    "txn": 151.36,
+    "commit": 150.71,
+    "marker": 36.19,
+    "ok": true
+   },
+   {
+    "rt": 181.92,
+    "total": 180.18,
+    "txn": 146.58,
+    "commit": 145.85,
+    "marker": 32.34,
+    "ok": true
+   },
+   {
+    "rt": 206.9,
+    "total": 206.01,
+    "txn": 181.37,
+    "commit": 180.62,
+    "marker": 23.62,
+    "ok": true
+   },
+   {
+    "rt": 196.07,
+    "total": 195.03,
+    "txn": 165.37,
+    "commit": 164.31,
+    "marker": 28.79,
+    "ok": true
+   },
+   {
+    "rt": 199.66,
+    "total": 197.66,
+    "txn": 156.36,
+    "commit": 155.24,
+    "marker": 39.99,
+    "ok": true
+   },
+   {
+    "rt": 206.49,
+    "total": 204.53,
+    "txn": 168.69,
+    "commit": 167.76,
+    "marker": 34.88,
+    "ok": true
+   },
+   {
+    "rt": 201.45,
+    "total": 200.45,
+    "txn": 167.8,
+    "commit": 167.03,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 189.09,
+    "total": 187.67,
+    "txn": 154.95,
+    "commit": 154.17,
+    "marker": 31.87,
+    "ok": true
+   },
+   {
+    "rt": 189.84,
+    "total": 188.01,
+    "txn": 155.73,
+    "commit": 154.84,
+    "marker": 31.0,
+    "ok": true
+   },
+   {
+    "rt": 191.53,
+    "total": 189.97,
+    "txn": 157.34,
+    "commit": 156.5,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 189.9,
+    "total": 187.71,
+    "txn": 154.94,
+    "commit": 154.06,
+    "marker": 31.83,
+    "ok": true
+   },
+   {
+    "rt": 192.37,
+    "total": 190.42,
+    "txn": 157.51,
+    "commit": 156.52,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 191.57,
+    "total": 189.8,
+    "txn": 157.0,
+    "commit": 156.02,
+    "marker": 31.87,
+    "ok": true
+   },
+   {
+    "rt": 210.62,
+    "total": 209.35,
+    "txn": 178.76,
+    "commit": 177.61,
+    "marker": 29.77,
+    "ok": true
+   },
+   {
+    "rt": 202.1,
+    "total": 200.37,
+    "txn": 157.67,
+    "commit": 156.91,
+    "marker": 41.87,
+    "ok": true
+   },
+   {
+    "rt": 208.95,
+    "total": 207.47,
+    "txn": 157.53,
+    "commit": 156.64,
+    "marker": 49.07,
+    "ok": true
+   },
+   {
+    "rt": 199.51,
+    "total": 198.14,
+    "txn": 166.36,
+    "commit": 165.47,
+    "marker": 30.84,
+    "ok": true
+   },
+   {
+    "rt": 210.81,
+    "total": 209.25,
+    "txn": 177.23,
+    "commit": 176.25,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 240.46,
+    "total": 238.82,
+    "txn": 196.21,
+    "commit": 194.77,
+    "marker": 41.17,
+    "ok": true
+   },
+   {
+    "rt": 210.55,
+    "total": 209.03,
+    "txn": 177.35,
+    "commit": 176.48,
+    "marker": 30.75,
+    "ok": true
+   },
+   {
+    "rt": 230.67,
+    "total": 229.11,
+    "txn": 188.12,
+    "commit": 187.35,
+    "marker": 40.15,
+    "ok": true
+   },
+   {
+    "rt": 210.41,
+    "total": 209.45,
+    "txn": 177.96,
+    "commit": 177.16,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 211.48,
+    "total": 210.42,
+    "txn": 178.79,
+    "commit": 178.08,
+    "marker": 31.04,
+    "ok": true
+   },
+   {
+    "rt": 220.55,
+    "total": 219.2,
+    "txn": 188.79,
+    "commit": 187.84,
+    "marker": 29.58,
+    "ok": true
+   },
+   {
+    "rt": 201.68,
+    "total": 200.47,
+    "txn": 168.78,
+    "commit": 168.06,
+    "marker": 30.9,
+    "ok": true
+   },
+   {
+    "rt": 211.58,
+    "total": 210.1,
+    "txn": 178.39,
+    "commit": 177.32,
+    "marker": 30.54,
+    "ok": true
+   },
+   {
+    "rt": 231.24,
+    "total": 229.82,
+    "txn": 199.47,
+    "commit": 198.56,
+    "marker": 29.46,
+    "ok": true
+   },
+   {
+    "rt": 211.35,
+    "total": 209.75,
+    "txn": 177.31,
+    "commit": 176.06,
+    "marker": 31.04,
+    "ok": true
+   },
+   {
+    "rt": 220.83,
+    "total": 219.25,
+    "txn": 187.67,
+    "commit": 186.61,
+    "marker": 30.51,
+    "ok": true
+   },
+   {
+    "rt": 211.69,
+    "total": 210.67,
+    "txn": 179.96,
+    "commit": 179.58,
+    "marker": 30.18,
+    "ok": true
+   },
+   {
+    "rt": 191.7,
+    "total": 189.8,
+    "txn": 157.87,
+    "commit": 156.92,
+    "marker": 31.0,
+    "ok": true
+   },
+   {
+    "rt": 190.12,
+    "total": 188.64,
+    "txn": 157.33,
+    "commit": 156.62,
+    "marker": 30.18,
+    "ok": true
+   },
+   {
+    "rt": 201.18,
+    "total": 199.77,
+    "txn": 168.52,
+    "commit": 167.64,
+    "marker": 30.38,
+    "ok": true
+   },
+   {
+    "rt": 191.9,
+    "total": 189.92,
+    "txn": 157.47,
+    "commit": 156.12,
+    "marker": 31.39,
+    "ok": true
+   },
+   {
+    "rt": 180.27,
+    "total": 179.05,
+    "txn": 147.19,
+    "commit": 146.18,
+    "marker": 31.07,
+    "ok": true
+   },
+   {
+    "rt": 170.49,
+    "total": 168.87,
+    "txn": 136.94,
+    "commit": 135.91,
+    "marker": 30.89,
+    "ok": true
+   },
+   {
+    "rt": 180.64,
+    "total": 179.21,
+    "txn": 147.01,
+    "commit": 146.02,
+    "marker": 31.28,
+    "ok": true
+   },
+   {
+    "rt": 180.76,
+    "total": 179.39,
+    "txn": 147.72,
+    "commit": 147.03,
+    "marker": 30.98,
+    "ok": true
+   },
+   {
+    "rt": 182.51,
+    "total": 181.05,
+    "txn": 149.01,
+    "commit": 148.22,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 191.6,
+    "total": 189.62,
+    "txn": 157.45,
+    "commit": 156.17,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 192.99,
+    "total": 191.79,
+    "txn": 159.85,
+    "commit": 159.51,
+    "marker": 31.5,
+    "ok": true
+   },
+   {
+    "rt": 200.72,
+    "total": 199.27,
+    "txn": 169.2,
+    "commit": 168.32,
+    "marker": 29.24,
+    "ok": true
+   },
+   {
+    "rt": 201.36,
+    "total": 200.18,
+    "txn": 169.66,
+    "commit": 168.96,
+    "marker": 29.85,
+    "ok": true
+   },
+   {
+    "rt": 228.7,
+    "total": 227.08,
+    "txn": 185.09,
+    "commit": 184.21,
+    "marker": 41.15,
+    "ok": true
+   },
+   {
+    "rt": 202.33,
+    "total": 200.42,
+    "txn": 147.04,
+    "commit": 146.07,
+    "marker": 52.07,
+    "ok": true
+   },
+   {
+    "rt": 250.84,
+    "total": 249.02,
+    "txn": 185.4,
+    "commit": 184.39,
+    "marker": 62.41,
+    "ok": true
+   },
+   {
+    "rt": 191.25,
+    "total": 190.03,
+    "txn": 157.38,
+    "commit": 156.7,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 190.64,
+    "total": 189.0,
+    "txn": 157.37,
+    "commit": 156.12,
+    "marker": 30.72,
+    "ok": true
+   },
+   {
+    "rt": 190.68,
+    "total": 189.17,
+    "txn": 156.84,
+    "commit": 155.76,
+    "marker": 31.47,
+    "ok": true
+   },
+   {
+    "rt": 191.71,
+    "total": 190.15,
+    "txn": 157.66,
+    "commit": 156.76,
+    "marker": 31.68,
+    "ok": true
+   },
+   {
+    "rt": 200.42,
+    "total": 198.7,
+    "txn": 166.07,
+    "commit": 164.54,
+    "marker": 31.56,
+    "ok": true
+   },
+   {
+    "rt": 192.01,
+    "total": 190.46,
+    "txn": 158.63,
+    "commit": 157.85,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 191.23,
+    "total": 189.83,
+    "txn": 156.81,
+    "commit": 155.27,
+    "marker": 32.1,
+    "ok": true
+   },
+   {
+    "rt": 192.06,
+    "total": 190.38,
+    "txn": 157.82,
+    "commit": 156.97,
+    "marker": 31.72,
+    "ok": true
+   },
+   {
+    "rt": 191.76,
+    "total": 190.56,
+    "txn": 159.16,
+    "commit": 158.65,
+    "marker": 30.84,
+    "ok": true
+   },
+   {
+    "rt": 190.76,
+    "total": 188.96,
+    "txn": 155.81,
+    "commit": 154.84,
+    "marker": 32.05,
+    "ok": true
+   },
+   {
+    "rt": 217.14,
+    "total": 216.16,
+    "txn": 167.43,
+    "commit": 166.42,
+    "marker": 47.93,
+    "ok": true
+   },
+   {
+    "rt": 191.77,
+    "total": 190.25,
+    "txn": 157.81,
+    "commit": 156.98,
+    "marker": 31.51,
+    "ok": true
+   },
+   {
+    "rt": 191.12,
+    "total": 189.46,
+    "txn": 157.48,
+    "commit": 156.27,
+    "marker": 31.1,
+    "ok": true
+   },
+   {
+    "rt": 190.31,
+    "total": 188.9,
+    "txn": 157.12,
+    "commit": 156.24,
+    "marker": 30.75,
+    "ok": true
+   },
+   {
+    "rt": 190.01,
+    "total": 188.98,
+    "txn": 157.43,
+    "commit": 156.71,
+    "marker": 30.86,
+    "ok": true
+   },
+   {
+    "rt": 201.21,
+    "total": 199.8,
+    "txn": 167.27,
+    "commit": 166.43,
+    "marker": 31.71,
+    "ok": true
+   },
+   {
+    "rt": 192.16,
+    "total": 190.95,
+    "txn": 158.78,
+    "commit": 158.22,
+    "marker": 31.6,
+    "ok": true
+   },
+   {
+    "rt": 199.89,
+    "total": 198.4,
+    "txn": 166.01,
+    "commit": 165.0,
+    "marker": 31.41,
+    "ok": true
+   },
+   {
+    "rt": 192.46,
+    "total": 191.51,
+    "txn": 159.57,
+    "commit": 159.23,
+    "marker": 31.53,
+    "ok": true
+   },
+   {
+    "rt": 191.38,
+    "total": 190.54,
+    "txn": 159.44,
+    "commit": 159.15,
+    "marker": 30.76,
+    "ok": true
+   },
+   {
+    "rt": 193.02,
+    "total": 191.1,
+    "txn": 158.53,
+    "commit": 158.05,
+    "marker": 32.09,
+    "ok": true
+   },
+   {
+    "rt": 191.13,
+    "total": 190.21,
+    "txn": 157.89,
+    "commit": 157.1,
+    "marker": 31.74,
+    "ok": true
+   },
+   {
+    "rt": 210.33,
+    "total": 208.92,
+    "txn": 176.35,
+    "commit": 175.02,
+    "marker": 31.66,
+    "ok": true
+   },
+   {
+    "rt": 199.71,
+    "total": 198.61,
+    "txn": 166.26,
+    "commit": 165.32,
+    "marker": 31.18,
+    "ok": true
+   },
+   {
+    "rt": 201.41,
+    "total": 200.62,
+    "txn": 168.24,
+    "commit": 167.73,
+    "marker": 31.9,
+    "ok": true
+   },
+   {
+    "rt": 230.35,
+    "total": 228.91,
+    "txn": 197.5,
+    "commit": 196.28,
+    "marker": 30.22,
+    "ok": true
+   },
+   {
+    "rt": 271.23,
+    "total": 269.84,
+    "txn": 228.45,
+    "commit": 227.45,
+    "marker": 40.58,
+    "ok": true
+   },
+   {
+    "rt": 251.54,
+    "total": 250.56,
+    "txn": 209.24,
+    "commit": 208.65,
+    "marker": 40.62,
+    "ok": true
+   },
+   {
+    "rt": 222.08,
+    "total": 221.41,
+    "txn": 189.94,
+    "commit": 189.7,
+    "marker": 31.17,
+    "ok": true
+   },
+   {
+    "rt": 211.06,
+    "total": 209.45,
+    "txn": 175.96,
+    "commit": 175.03,
+    "marker": 32.27,
+    "ok": true
+   },
+   {
+    "rt": 221.72,
+    "total": 220.91,
+    "txn": 190.77,
+    "commit": 190.55,
+    "marker": 29.64,
+    "ok": true
+   },
+   {
+    "rt": 210.93,
+    "total": 209.59,
+    "txn": 178.15,
+    "commit": 177.44,
+    "marker": 30.72,
+    "ok": true
+   },
+   {
+    "rt": 211.17,
+    "total": 209.71,
+    "txn": 177.69,
+    "commit": 176.84,
+    "marker": 31.18,
+    "ok": true
+   },
+   {
+    "rt": 201.13,
+    "total": 199.96,
+    "txn": 168.27,
+    "commit": 167.63,
+    "marker": 31.04,
+    "ok": true
+   },
+   {
+    "rt": 191.56,
+    "total": 189.93,
+    "txn": 157.14,
+    "commit": 155.79,
+    "marker": 31.76,
+    "ok": true
+   },
+   {
+    "rt": 191.24,
+    "total": 189.69,
+    "txn": 156.67,
+    "commit": 155.74,
+    "marker": 31.59,
+    "ok": true
+   },
+   {
+    "rt": 201.81,
+    "total": 201.11,
+    "txn": 169.19,
+    "commit": 168.96,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 201.32,
+    "total": 200.67,
+    "txn": 169.68,
+    "commit": 169.4,
+    "marker": 30.7,
+    "ok": true
+   },
+   {
+    "rt": 221.87,
+    "total": 220.87,
+    "txn": 190.25,
+    "commit": 189.74,
+    "marker": 30.06,
+    "ok": true
+   },
+   {
+    "rt": 201.39,
+    "total": 200.58,
+    "txn": 169.25,
+    "commit": 168.24,
+    "marker": 30.92,
+    "ok": true
+   },
+   {
+    "rt": 200.71,
+    "total": 199.23,
+    "txn": 167.1,
+    "commit": 166.06,
+    "marker": 31.21,
+    "ok": true
+   },
+   {
+    "rt": 191.18,
+    "total": 189.42,
+    "txn": 156.16,
+    "commit": 154.9,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 201.64,
+    "total": 200.04,
+    "txn": 169.74,
+    "commit": 168.99,
+    "marker": 29.58,
+    "ok": true
+   },
+   {
+    "rt": 190.79,
+    "total": 189.79,
+    "txn": 157.9,
+    "commit": 157.12,
+    "marker": 31.18,
+    "ok": true
+   },
+   {
+    "rt": 191.09,
+    "total": 189.47,
+    "txn": 157.3,
+    "commit": 156.34,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 192.07,
+    "total": 191.1,
+    "txn": 159.66,
+    "commit": 159.35,
+    "marker": 30.78,
+    "ok": true
+   },
+   {
+    "rt": 191.27,
+    "total": 190.38,
+    "txn": 158.48,
+    "commit": 158.1,
+    "marker": 31.5,
+    "ok": true
+   },
+   {
+    "rt": 192.19,
+    "total": 191.28,
+    "txn": 159.72,
+    "commit": 159.46,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 210.78,
+    "total": 209.85,
+    "txn": 177.35,
+    "commit": 176.13,
+    "marker": 31.77,
+    "ok": true
+   },
+   {
+    "rt": 190.43,
+    "total": 189.64,
+    "txn": 158.26,
+    "commit": 157.59,
+    "marker": 30.74,
+    "ok": true
+   },
+   {
+    "rt": 191.75,
+    "total": 191.09,
+    "txn": 160.53,
+    "commit": 160.16,
+    "marker": 30.2,
+    "ok": true
+   },
+   {
+    "rt": 191.86,
+    "total": 191.01,
+    "txn": 158.68,
+    "commit": 158.36,
+    "marker": 31.97,
+    "ok": true
+   },
+   {
+    "rt": 190.82,
+    "total": 190.19,
+    "txn": 158.88,
+    "commit": 158.53,
+    "marker": 30.96,
+    "ok": true
+   },
+   {
+    "rt": 190.12,
+    "total": 189.54,
+    "txn": 159.04,
+    "commit": 158.42,
+    "marker": 30.0,
+    "ok": true
+   },
+   {
+    "rt": 200.75,
+    "total": 200.11,
+    "txn": 169.34,
+    "commit": 168.99,
+    "marker": 30.27,
+    "ok": true
+   },
+   {
+    "rt": 220.87,
+    "total": 219.99,
+    "txn": 179.0,
+    "commit": 178.23,
+    "marker": 40.33,
+    "ok": true
+   },
+   {
+    "rt": 228.99,
+    "total": 227.77,
+    "txn": 186.54,
+    "commit": 185.5,
+    "marker": 39.89,
+    "ok": true
+   },
+   {
+    "rt": 210.74,
+    "total": 210.03,
+    "txn": 169.19,
+    "commit": 168.91,
+    "marker": 40.47,
+    "ok": true
+   },
+   {
+    "rt": 211.27,
+    "total": 210.69,
+    "txn": 160.39,
+    "commit": 160.15,
+    "marker": 50.01,
+    "ok": true
+   },
+   {
+    "rt": 201.02,
+    "total": 200.43,
+    "txn": 169.42,
+    "commit": 169.07,
+    "marker": 30.49,
+    "ok": true
+   },
+   {
+    "rt": 239.66,
+    "total": 238.94,
+    "txn": 160.02,
+    "commit": 159.65,
+    "marker": 78.51,
+    "ok": true
+   },
+   {
+    "rt": 202.16,
+    "total": 200.48,
+    "txn": 168.37,
+    "commit": 167.64,
+    "marker": 30.84,
+    "ok": true
+   },
+   {
+    "rt": 202.0,
+    "total": 200.44,
+    "txn": 167.3,
+    "commit": 166.28,
+    "marker": 32.16,
+    "ok": true
+   },
+   {
+    "rt": 202.8,
+    "total": 201.99,
+    "txn": 169.75,
+    "commit": 169.49,
+    "marker": 31.91,
+    "ok": true
+   },
+   {
+    "rt": 191.03,
+    "total": 189.63,
+    "txn": 157.21,
+    "commit": 156.11,
+    "marker": 31.32,
+    "ok": true
+   },
+   {
+    "rt": 190.43,
+    "total": 189.22,
+    "txn": 157.77,
+    "commit": 156.94,
+    "marker": 30.67,
+    "ok": true
+   },
+   {
+    "rt": 191.35,
+    "total": 189.75,
+    "txn": 157.64,
+    "commit": 156.81,
+    "marker": 31.35,
+    "ok": true
+   },
+   {
+    "rt": 191.79,
+    "total": 190.13,
+    "txn": 158.39,
+    "commit": 157.57,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 191.29,
+    "total": 189.85,
+    "txn": 158.45,
+    "commit": 157.39,
+    "marker": 30.53,
+    "ok": true
+   },
+   {
+    "rt": 191.22,
+    "total": 189.93,
+    "txn": 157.76,
+    "commit": 156.65,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 220.27,
+    "total": 218.66,
+    "txn": 175.6,
+    "commit": 174.62,
+    "marker": 41.64,
+    "ok": true
+   },
+   {
+    "rt": 191.8,
+    "total": 190.49,
+    "txn": 158.43,
+    "commit": 157.49,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 190.8,
+    "total": 190.21,
+    "txn": 159.33,
+    "commit": 158.99,
+    "marker": 30.53,
+    "ok": true
+   },
+   {
+    "rt": 191.05,
+    "total": 189.7,
+    "txn": 157.57,
+    "commit": 155.65,
+    "marker": 31.09,
+    "ok": true
+   },
+   {
+    "rt": 191.13,
+    "total": 189.82,
+    "txn": 157.76,
+    "commit": 156.89,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 191.61,
+    "total": 190.27,
+    "txn": 158.08,
+    "commit": 157.2,
+    "marker": 31.19,
+    "ok": true
+   },
+   {
+    "rt": 210.23,
+    "total": 208.86,
+    "txn": 176.94,
+    "commit": 175.68,
+    "marker": 30.78,
+    "ok": true
+   },
+   {
+    "rt": 231.08,
+    "total": 229.78,
+    "txn": 197.9,
+    "commit": 196.43,
+    "marker": 30.87,
+    "ok": true
+   },
+   {
+    "rt": 240.28,
+    "total": 239.09,
+    "txn": 207.59,
+    "commit": 206.68,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 210.97,
+    "total": 209.41,
+    "txn": 176.89,
+    "commit": 176.09,
+    "marker": 30.98,
+    "ok": true
+   },
+   {
+    "rt": 211.23,
+    "total": 209.62,
+    "txn": 177.12,
+    "commit": 176.03,
+    "marker": 31.44,
+    "ok": true
+   },
+   {
+    "rt": 231.67,
+    "total": 230.47,
+    "txn": 197.4,
+    "commit": 196.16,
+    "marker": 31.96,
+    "ok": true
+   },
+   {
+    "rt": 210.43,
+    "total": 208.95,
+    "txn": 176.65,
+    "commit": 175.49,
+    "marker": 31.34,
+    "ok": true
+   },
+   {
+    "rt": 210.73,
+    "total": 209.39,
+    "txn": 176.51,
+    "commit": 174.61,
+    "marker": 31.64,
+    "ok": true
+   },
+   {
+    "rt": 211.0,
+    "total": 209.74,
+    "txn": 176.79,
+    "commit": 175.73,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 209.99,
+    "total": 208.98,
+    "txn": 177.79,
+    "commit": 176.5,
+    "marker": 30.5,
+    "ok": true
+   },
+   {
+    "rt": 220.98,
+    "total": 220.19,
+    "txn": 191.28,
+    "commit": 191.03,
+    "marker": 28.59,
+    "ok": true
+   },
+   {
+    "rt": 211.68,
+    "total": 210.27,
+    "txn": 166.98,
+    "commit": 165.98,
+    "marker": 42.23,
+    "ok": true
+   },
+   {
+    "rt": 191.74,
+    "total": 191.26,
+    "txn": 159.34,
+    "commit": 159.08,
+    "marker": 31.59,
+    "ok": true
+   },
+   {
+    "rt": 220.67,
+    "total": 219.67,
+    "txn": 176.46,
+    "commit": 175.21,
+    "marker": 42.44,
+    "ok": true
+   },
+   {
+    "rt": 191.16,
+    "total": 189.21,
+    "txn": 156.88,
+    "commit": 156.0,
+    "marker": 31.3,
+    "ok": true
+   },
+   {
+    "rt": 191.23,
+    "total": 189.81,
+    "txn": 157.47,
+    "commit": 156.62,
+    "marker": 31.49,
+    "ok": true
+   },
+   {
+    "rt": 200.16,
+    "total": 198.86,
+    "txn": 166.7,
+    "commit": 165.78,
+    "marker": 31.38,
+    "ok": true
+   },
+   {
+    "rt": 200.54,
+    "total": 198.94,
+    "txn": 167.0,
+    "commit": 166.0,
+    "marker": 30.57,
+    "ok": true
+   },
+   {
+    "rt": 191.51,
+    "total": 190.25,
+    "txn": 158.54,
+    "commit": 157.79,
+    "marker": 31.01,
+    "ok": true
+   },
+   {
+    "rt": 189.89,
+    "total": 188.77,
+    "txn": 157.53,
+    "commit": 156.42,
+    "marker": 30.09,
+    "ok": true
+   },
+   {
+    "rt": 191.32,
+    "total": 190.83,
+    "txn": 159.91,
+    "commit": 159.67,
+    "marker": 30.61,
+    "ok": true
+   },
+   {
+    "rt": 190.68,
+    "total": 189.07,
+    "txn": 157.57,
+    "commit": 156.7,
+    "marker": 30.27,
+    "ok": true
+   },
+   {
+    "rt": 190.86,
+    "total": 189.24,
+    "txn": 157.81,
+    "commit": 156.75,
+    "marker": 30.53,
+    "ok": true
+   },
+   {
+    "rt": 201.56,
+    "total": 200.12,
+    "txn": 168.04,
+    "commit": 167.2,
+    "marker": 31.28,
+    "ok": true
+   },
+   {
+    "rt": 200.31,
+    "total": 198.69,
+    "txn": 166.07,
+    "commit": 165.01,
+    "marker": 31.35,
+    "ok": true
+   },
+   {
+    "rt": 191.67,
+    "total": 190.16,
+    "txn": 158.08,
+    "commit": 157.22,
+    "marker": 31.23,
+    "ok": true
+   },
+   {
+    "rt": 190.81,
+    "total": 189.63,
+    "txn": 157.76,
+    "commit": 156.76,
+    "marker": 30.92,
+    "ok": true
+   },
+   {
+    "rt": 200.82,
+    "total": 199.45,
+    "txn": 167.16,
+    "commit": 166.13,
+    "marker": 31.28,
+    "ok": true
+   },
+   {
+    "rt": 221.81,
+    "total": 220.43,
+    "txn": 158.11,
+    "commit": 157.06,
+    "marker": 61.48,
+    "ok": true
+   },
+   {
+    "rt": 190.83,
+    "total": 189.46,
+    "txn": 158.14,
+    "commit": 157.05,
+    "marker": 30.56,
+    "ok": true
+   },
+   {
+    "rt": 221.52,
+    "total": 220.35,
+    "txn": 188.56,
+    "commit": 180.61,
+    "marker": 31.01,
+    "ok": true
+   },
+   {
+    "rt": 191.06,
+    "total": 189.46,
+    "txn": 156.83,
+    "commit": 155.78,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 191.13,
+    "total": 189.5,
+    "txn": 157.55,
+    "commit": 156.5,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 190.63,
+    "total": 189.23,
+    "txn": 157.61,
+    "commit": 156.53,
+    "marker": 30.73,
+    "ok": true
+   },
+   {
+    "rt": 201.75,
+    "total": 200.67,
+    "txn": 168.07,
+    "commit": 166.67,
+    "marker": 31.73,
+    "ok": true
+   },
+   {
+    "rt": 202.39,
+    "total": 201.65,
+    "txn": 167.94,
+    "commit": 166.91,
+    "marker": 32.99,
+    "ok": true
+   },
+   {
+    "rt": 201.0,
+    "total": 199.29,
+    "txn": 166.3,
+    "commit": 165.38,
+    "marker": 31.98,
+    "ok": true
+   },
+   {
+    "rt": 200.41,
+    "total": 198.78,
+    "txn": 167.04,
+    "commit": 166.13,
+    "marker": 30.8,
+    "ok": true
+   },
+   {
+    "rt": 271.85,
+    "total": 270.06,
+    "txn": 207.89,
+    "commit": 205.87,
+    "marker": 60.84,
+    "ok": true
+   },
+   {
+    "rt": 199.41,
+    "total": 198.32,
+    "txn": 166.38,
+    "commit": 165.45,
+    "marker": 31.07,
+    "ok": true
+   },
+   {
+    "rt": 209.15,
+    "total": 207.64,
+    "txn": 175.5,
+    "commit": 174.64,
+    "marker": 31.0,
+    "ok": true
+   },
+   {
+    "rt": 188.31,
+    "total": 187.25,
+    "txn": 156.59,
+    "commit": 155.74,
+    "marker": 29.85,
+    "ok": true
+   },
+   {
+    "rt": 191.22,
+    "total": 189.64,
+    "txn": 157.29,
+    "commit": 156.35,
+    "marker": 31.47,
+    "ok": true
+   },
+   {
+    "rt": 201.05,
+    "total": 199.33,
+    "txn": 167.44,
+    "commit": 166.64,
+    "marker": 30.62,
+    "ok": true
+   },
+   {
+    "rt": 191.07,
+    "total": 189.84,
+    "txn": 158.02,
+    "commit": 157.16,
+    "marker": 30.98,
+    "ok": true
+   },
+   {
+    "rt": 201.17,
+    "total": 199.75,
+    "txn": 166.76,
+    "commit": 165.66,
+    "marker": 31.65,
+    "ok": true
+   },
+   {
+    "rt": 201.5,
+    "total": 200.02,
+    "txn": 167.59,
+    "commit": 166.03,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 219.39,
+    "total": 218.4,
+    "txn": 187.38,
+    "commit": 185.84,
+    "marker": 30.06,
+    "ok": true
+   },
+   {
+    "rt": 221.3,
+    "total": 219.9,
+    "txn": 187.44,
+    "commit": 186.23,
+    "marker": 31.58,
+    "ok": true
+   },
+   {
+    "rt": 240.67,
+    "total": 239.19,
+    "txn": 206.76,
+    "commit": 205.63,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 210.65,
+    "total": 207.3,
+    "txn": 175.21,
+    "commit": 174.54,
+    "marker": 31.36,
+    "ok": true
+   },
+   {
+    "rt": 211.08,
+    "total": 209.87,
+    "txn": 179.04,
+    "commit": 178.47,
+    "marker": 30.22,
+    "ok": true
+   },
+   {
+    "rt": 210.06,
+    "total": 208.15,
+    "txn": 175.65,
+    "commit": 174.64,
+    "marker": 30.89,
+    "ok": true
+   },
+   {
+    "rt": 210.41,
+    "total": 209.05,
+    "txn": 176.72,
+    "commit": 175.81,
+    "marker": 31.43,
+    "ok": true
+   },
+   {
+    "rt": 222.06,
+    "total": 220.82,
+    "txn": 188.9,
+    "commit": 187.87,
+    "marker": 31.2,
+    "ok": true
+   },
+   {
+    "rt": 220.06,
+    "total": 218.37,
+    "txn": 166.77,
+    "commit": 165.75,
+    "marker": 50.65,
+    "ok": true
+   },
+   {
+    "rt": 190.58,
+    "total": 189.37,
+    "txn": 158.37,
+    "commit": 157.69,
+    "marker": 30.36,
+    "ok": true
+   },
+   {
+    "rt": 203.07,
+    "total": 202.0,
+    "txn": 158.18,
+    "commit": 157.4,
+    "marker": 43.04,
+    "ok": true
+   },
+   {
+    "rt": 189.74,
+    "total": 188.34,
+    "txn": 157.46,
+    "commit": 156.52,
+    "marker": 30.08,
+    "ok": true
+   },
+   {
+    "rt": 191.15,
+    "total": 189.18,
+    "txn": 157.04,
+    "commit": 156.15,
+    "marker": 31.2,
+    "ok": true
+   },
+   {
+    "rt": 200.59,
+    "total": 199.14,
+    "txn": 168.01,
+    "commit": 167.02,
+    "marker": 30.2,
+    "ok": true
+   },
+   {
+    "rt": 201.93,
+    "total": 200.82,
+    "txn": 168.85,
+    "commit": 168.24,
+    "marker": 31.36,
+    "ok": true
+   },
+   {
+    "rt": 202.15,
+    "total": 200.86,
+    "txn": 168.37,
+    "commit": 167.22,
+    "marker": 31.62,
+    "ok": true
+   },
+   {
+    "rt": 192.25,
+    "total": 190.48,
+    "txn": 157.25,
+    "commit": 156.26,
+    "marker": 31.77,
+    "ok": true
+   },
+   {
+    "rt": 200.99,
+    "total": 199.45,
+    "txn": 167.44,
+    "commit": 166.28,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 191.1,
+    "total": 189.75,
+    "txn": 157.41,
+    "commit": 156.48,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 191.07,
+    "total": 189.62,
+    "txn": 158.15,
+    "commit": 156.96,
+    "marker": 30.53,
+    "ok": true
+   },
+   {
+    "rt": 190.64,
+    "total": 189.08,
+    "txn": 156.92,
+    "commit": 155.91,
+    "marker": 31.43,
+    "ok": true
+   },
+   {
+    "rt": 201.54,
+    "total": 200.49,
+    "txn": 171.47,
+    "commit": 170.92,
+    "marker": 28.44,
+    "ok": true
+   },
+   {
+    "rt": 201.09,
+    "total": 199.59,
+    "txn": 167.45,
+    "commit": 166.39,
+    "marker": 31.31,
+    "ok": true
+   },
+   {
+    "rt": 248.08,
+    "total": 246.34,
+    "txn": 166.43,
+    "commit": 165.46,
+    "marker": 79.09,
+    "ok": true
+   },
+   {
+    "rt": 200.61,
+    "total": 198.83,
+    "txn": 165.71,
+    "commit": 164.68,
+    "marker": 31.7,
+    "ok": true
+   },
+   {
+    "rt": 201.64,
+    "total": 199.22,
+    "txn": 156.65,
+    "commit": 155.56,
+    "marker": 41.18,
+    "ok": true
+   },
+   {
+    "rt": 200.46,
+    "total": 198.73,
+    "txn": 168.58,
+    "commit": 167.71,
+    "marker": 28.78,
+    "ok": true
+   },
+   {
+    "rt": 191.04,
+    "total": 189.66,
+    "txn": 157.53,
+    "commit": 156.93,
+    "marker": 31.24,
+    "ok": true
+   },
+   {
+    "rt": 190.86,
+    "total": 189.46,
+    "txn": 156.54,
+    "commit": 155.5,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 200.59,
+    "total": 198.93,
+    "txn": 169.75,
+    "commit": 168.81,
+    "marker": 28.24,
+    "ok": true
+   },
+   {
+    "rt": 200.74,
+    "total": 199.67,
+    "txn": 168.62,
+    "commit": 167.83,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 190.09,
+    "total": 188.77,
+    "txn": 156.27,
+    "commit": 155.37,
+    "marker": 31.7,
+    "ok": true
+   },
+   {
+    "rt": 192.02,
+    "total": 190.0,
+    "txn": 158.29,
+    "commit": 157.93,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 191.0,
+    "total": 188.92,
+    "txn": 156.85,
+    "commit": 153.63,
+    "marker": 30.99,
+    "ok": true
+   },
+   {
+    "rt": 189.12,
+    "total": 188.15,
+    "txn": 156.87,
+    "commit": 155.86,
+    "marker": 30.39,
+    "ok": true
+   },
+   {
+    "rt": 200.03,
+    "total": 198.77,
+    "txn": 166.73,
+    "commit": 165.8,
+    "marker": 31.17,
+    "ok": true
+   },
+   {
+    "rt": 191.13,
+    "total": 190.63,
+    "txn": 159.56,
+    "commit": 159.07,
+    "marker": 30.65,
+    "ok": true
+   },
+   {
+    "rt": 198.94,
+    "total": 197.79,
+    "txn": 166.4,
+    "commit": 165.5,
+    "marker": 30.19,
+    "ok": true
+   },
+   {
+    "rt": 201.87,
+    "total": 201.45,
+    "txn": 169.71,
+    "commit": 169.43,
+    "marker": 31.46,
+    "ok": true
+   },
+   {
+    "rt": 192.03,
+    "total": 190.93,
+    "txn": 158.61,
+    "commit": 157.97,
+    "marker": 31.65,
+    "ok": true
+   },
+   {
+    "rt": 191.28,
+    "total": 190.56,
+    "txn": 159.17,
+    "commit": 158.78,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 191.77,
+    "total": 190.11,
+    "txn": 157.33,
+    "commit": 156.07,
+    "marker": 31.24,
+    "ok": true
+   },
+   {
+    "rt": 189.6,
+    "total": 188.54,
+    "txn": 156.93,
+    "commit": 155.8,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 189.55,
+    "total": 187.97,
+    "txn": 156.89,
+    "commit": 155.66,
+    "marker": 30.04,
+    "ok": true
+   },
+   {
+    "rt": 190.6,
+    "total": 188.5,
+    "txn": 157.44,
+    "commit": 156.52,
+    "marker": 29.54,
+    "ok": true
+   },
+   {
+    "rt": 190.2,
+    "total": 189.06,
+    "txn": 157.25,
+    "commit": 156.37,
+    "marker": 30.98,
+    "ok": true
+   },
+   {
+    "rt": 190.97,
+    "total": 189.9,
+    "txn": 158.11,
+    "commit": 157.39,
+    "marker": 31.15,
+    "ok": true
+   },
+   {
+    "rt": 180.37,
+    "total": 179.12,
+    "txn": 147.9,
+    "commit": 146.91,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 182.18,
+    "total": 180.94,
+    "txn": 149.35,
+    "commit": 148.55,
+    "marker": 30.86,
+    "ok": true
+   },
+   {
+    "rt": 182.2,
+    "total": 180.4,
+    "txn": 147.23,
+    "commit": 145.92,
+    "marker": 31.88,
+    "ok": true
+   },
+   {
+    "rt": 180.78,
+    "total": 179.73,
+    "txn": 148.04,
+    "commit": 147.33,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 200.85,
+    "total": 199.56,
+    "txn": 169.42,
+    "commit": 168.59,
+    "marker": 29.29,
+    "ok": true
+   },
+   {
+    "rt": 229.35,
+    "total": 228.02,
+    "txn": 167.22,
+    "commit": 166.24,
+    "marker": 59.7,
+    "ok": true
+   },
+   {
+    "rt": 231.5,
+    "total": 230.03,
+    "txn": 197.75,
+    "commit": 196.97,
+    "marker": 31.58,
+    "ok": true
+   },
+   {
+    "rt": 241.26,
+    "total": 239.7,
+    "txn": 177.68,
+    "commit": 176.53,
+    "marker": 61.06,
+    "ok": true
+   },
+   {
+    "rt": 221.53,
+    "total": 220.16,
+    "txn": 188.28,
+    "commit": 187.33,
+    "marker": 30.92,
+    "ok": true
+   },
+   {
+    "rt": 211.29,
+    "total": 209.83,
+    "txn": 178.12,
+    "commit": 177.22,
+    "marker": 30.93,
+    "ok": true
+   },
+   {
+    "rt": 232.41,
+    "total": 231.33,
+    "txn": 199.1,
+    "commit": 198.75,
+    "marker": 31.68,
+    "ok": true
+   },
+   {
+    "rt": 211.36,
+    "total": 210.08,
+    "txn": 177.74,
+    "commit": 176.97,
+    "marker": 31.57,
+    "ok": true
+   }
+  ],
+  "sell_items": [
+   {
+    "rt": 200.66,
+    "total": 200.18,
+    "txn": 139.8,
+    "commit": 139.62,
+    "marker": 60.13,
+    "ok": true
+   },
+   {
+    "rt": 170.5,
+    "total": 169.63,
+    "txn": 139.07,
+    "commit": 138.91,
+    "marker": 30.22,
+    "ok": true
+   },
+   {
+    "rt": 159.69,
+    "total": 158.45,
+    "txn": 127.33,
+    "commit": 126.67,
+    "marker": 30.38,
+    "ok": true
+   },
+   {
+    "rt": 157.55,
+    "total": 156.52,
+    "txn": 125.75,
+    "commit": 125.06,
+    "marker": 29.77,
+    "ok": true
+   },
+   {
+    "rt": 158.71,
+    "total": 156.94,
+    "txn": 125.08,
+    "commit": 124.3,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 161.58,
+    "total": 159.8,
+    "txn": 127.58,
+    "commit": 126.94,
+    "marker": 31.47,
+    "ok": true
+   },
+   {
+    "rt": 170.17,
+    "total": 168.37,
+    "txn": 126.47,
+    "commit": 125.66,
+    "marker": 41.1,
+    "ok": true
+   },
+   {
+    "rt": 168.78,
+    "total": 166.99,
+    "txn": 136.31,
+    "commit": 135.51,
+    "marker": 29.96,
+    "ok": true
+   },
+   {
+    "rt": 169.52,
+    "total": 167.64,
+    "txn": 136.98,
+    "commit": 136.33,
+    "marker": 29.89,
+    "ok": true
+   },
+   {
+    "rt": 171.18,
+    "total": 170.17,
+    "txn": 138.74,
+    "commit": 138.47,
+    "marker": 31.1,
+    "ok": true
+   },
+   {
+    "rt": 180.06,
+    "total": 178.51,
+    "txn": 147.07,
+    "commit": 146.48,
+    "marker": 30.61,
+    "ok": true
+   },
+   {
+    "rt": 170.46,
+    "total": 168.72,
+    "txn": 137.3,
+    "commit": 136.42,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 168.78,
+    "total": 166.7,
+    "txn": 134.51,
+    "commit": 133.83,
+    "marker": 31.44,
+    "ok": true
+   },
+   {
+    "rt": 159.59,
+    "total": 157.9,
+    "txn": 125.93,
+    "commit": 125.18,
+    "marker": 30.87,
+    "ok": true
+   },
+   {
+    "rt": 160.73,
+    "total": 159.12,
+    "txn": 127.65,
+    "commit": 126.83,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 159.07,
+    "total": 157.54,
+    "txn": 126.46,
+    "commit": 125.73,
+    "marker": 30.32,
+    "ok": true
+   },
+   {
+    "rt": 160.13,
+    "total": 158.81,
+    "txn": 126.7,
+    "commit": 126.13,
+    "marker": 31.47,
+    "ok": true
+   },
+   {
+    "rt": 158.94,
+    "total": 157.56,
+    "txn": 125.97,
+    "commit": 124.98,
+    "marker": 30.84,
+    "ok": true
+   },
+   {
+    "rt": 169.89,
+    "total": 168.3,
+    "txn": 135.74,
+    "commit": 134.86,
+    "marker": 31.86,
+    "ok": true
+   },
+   {
+    "rt": 168.78,
+    "total": 167.51,
+    "txn": 136.36,
+    "commit": 135.67,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 158.25,
+    "total": 156.63,
+    "txn": 126.24,
+    "commit": 125.72,
+    "marker": 29.79,
+    "ok": true
+   },
+   {
+    "rt": 160.92,
+    "total": 160.11,
+    "txn": 129.13,
+    "commit": 128.91,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 159.81,
+    "total": 158.32,
+    "txn": 125.82,
+    "commit": 125.23,
+    "marker": 31.81,
+    "ok": true
+   },
+   {
+    "rt": 158.38,
+    "total": 156.69,
+    "txn": 125.7,
+    "commit": 125.04,
+    "marker": 30.29,
+    "ok": true
+   },
+   {
+    "rt": 158.46,
+    "total": 157.56,
+    "txn": 127.19,
+    "commit": 126.43,
+    "marker": 29.69,
+    "ok": true
+   },
+   {
+    "rt": 189.76,
+    "total": 188.25,
+    "txn": 156.55,
+    "commit": 155.91,
+    "marker": 30.67,
+    "ok": true
+   },
+   {
+    "rt": 189.04,
+    "total": 187.11,
+    "txn": 154.73,
+    "commit": 153.99,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 176.57,
+    "total": 175.24,
+    "txn": 144.74,
+    "commit": 144.04,
+    "marker": 29.74,
+    "ok": true
+   },
+   {
+    "rt": 258.74,
+    "total": 257.19,
+    "txn": 195.78,
+    "commit": 195.16,
+    "marker": 60.38,
+    "ok": true
+   },
+   {
+    "rt": 169.93,
+    "total": 168.26,
+    "txn": 136.12,
+    "commit": 135.07,
+    "marker": 31.36,
+    "ok": true
+   },
+   {
+    "rt": 158.42,
+    "total": 157.1,
+    "txn": 126.36,
+    "commit": 125.72,
+    "marker": 30.04,
+    "ok": true
+   },
+   {
+    "rt": 167.36,
+    "total": 165.57,
+    "txn": 125.82,
+    "commit": 124.98,
+    "marker": 39.12,
+    "ok": true
+   },
+   {
+    "rt": 158.7,
+    "total": 157.28,
+    "txn": 126.96,
+    "commit": 126.15,
+    "marker": 29.46,
+    "ok": true
+   },
+   {
+    "rt": 160.15,
+    "total": 159.23,
+    "txn": 128.82,
+    "commit": 128.67,
+    "marker": 30.11,
+    "ok": true
+   },
+   {
+    "rt": 170.73,
+    "total": 168.79,
+    "txn": 138.87,
+    "commit": 138.04,
+    "marker": 29.11,
+    "ok": true
+   },
+   {
+    "rt": 170.75,
+    "total": 169.01,
+    "txn": 137.68,
+    "commit": 137.06,
+    "marker": 30.61,
+    "ok": true
+   },
+   {
+    "rt": 170.16,
+    "total": 168.16,
+    "txn": 136.28,
+    "commit": 135.63,
+    "marker": 31.2,
+    "ok": true
+   },
+   {
+    "rt": 170.39,
+    "total": 168.59,
+    "txn": 136.91,
+    "commit": 136.23,
+    "marker": 30.87,
+    "ok": true
+   },
+   {
+    "rt": 159.67,
+    "total": 158.12,
+    "txn": 126.44,
+    "commit": 125.71,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 160.87,
+    "total": 158.73,
+    "txn": 126.95,
+    "commit": 125.88,
+    "marker": 30.85,
+    "ok": true
+   },
+   {
+    "rt": 191.11,
+    "total": 189.33,
+    "txn": 156.36,
+    "commit": 155.48,
+    "marker": 32.09,
+    "ok": true
+   },
+   {
+    "rt": 164.1,
+    "total": 162.32,
+    "txn": 130.64,
+    "commit": 129.92,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 180.47,
+    "total": 179.11,
+    "txn": 147.15,
+    "commit": 146.62,
+    "marker": 31.35,
+    "ok": true
+   },
+   {
+    "rt": 179.68,
+    "total": 178.23,
+    "txn": 146.68,
+    "commit": 145.71,
+    "marker": 30.63,
+    "ok": true
+   },
+   {
+    "rt": 369.21,
+    "total": 367.77,
+    "txn": 287.1,
+    "commit": 286.5,
+    "marker": 80.1,
+    "ok": true
+   },
+   {
+    "rt": 169.42,
+    "total": 167.89,
+    "txn": 136.33,
+    "commit": 135.74,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 172.13,
+    "total": 171.16,
+    "txn": 139.2,
+    "commit": 138.91,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 168.16,
+    "total": 166.51,
+    "txn": 135.33,
+    "commit": 134.37,
+    "marker": 30.35,
+    "ok": true
+   },
+   {
+    "rt": 168.63,
+    "total": 167.53,
+    "txn": 135.81,
+    "commit": 134.9,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 169.24,
+    "total": 167.84,
+    "txn": 136.42,
+    "commit": 135.92,
+    "marker": 30.77,
+    "ok": true
+   },
+   {
+    "rt": 170.46,
+    "total": 169.03,
+    "txn": 138.09,
+    "commit": 137.6,
+    "marker": 30.3,
+    "ok": true
+   },
+   {
+    "rt": 199.77,
+    "total": 198.21,
+    "txn": 171.0,
+    "commit": 170.19,
+    "marker": 26.35,
+    "ok": true
+   },
+   {
+    "rt": 158.94,
+    "total": 157.37,
+    "txn": 126.36,
+    "commit": 125.63,
+    "marker": 30.18,
+    "ok": true
+   },
+   {
+    "rt": 160.03,
+    "total": 158.18,
+    "txn": 127.16,
+    "commit": 126.58,
+    "marker": 30.29,
+    "ok": true
+   },
+   {
+    "rt": 170.25,
+    "total": 168.09,
+    "txn": 135.78,
+    "commit": 135.06,
+    "marker": 31.49,
+    "ok": true
+   },
+   {
+    "rt": 161.09,
+    "total": 159.25,
+    "txn": 127.57,
+    "commit": 126.82,
+    "marker": 30.85,
+    "ok": true
+   },
+   {
+    "rt": 169.7,
+    "total": 167.79,
+    "txn": 136.4,
+    "commit": 135.74,
+    "marker": 30.13,
+    "ok": true
+   },
+   {
+    "rt": 199.58,
+    "total": 197.8,
+    "txn": 155.53,
+    "commit": 154.65,
+    "marker": 41.51,
+    "ok": true
+   },
+   {
+    "rt": 209.63,
+    "total": 208.09,
+    "txn": 157.54,
+    "commit": 156.77,
+    "marker": 49.7,
+    "ok": true
+   },
+   {
+    "rt": 179.42,
+    "total": 178.11,
+    "txn": 135.89,
+    "commit": 135.27,
+    "marker": 41.19,
+    "ok": true
+   },
+   {
+    "rt": 159.8,
+    "total": 158.27,
+    "txn": 126.22,
+    "commit": 125.54,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 161.71,
+    "total": 160.38,
+    "txn": 128.98,
+    "commit": 128.21,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 192.3,
+    "total": 190.8,
+    "txn": 158.39,
+    "commit": 157.83,
+    "marker": 31.64,
+    "ok": true
+   },
+   {
+    "rt": 160.35,
+    "total": 158.65,
+    "txn": 127.3,
+    "commit": 126.54,
+    "marker": 30.66,
+    "ok": true
+   },
+   {
+    "rt": 159.08,
+    "total": 157.25,
+    "txn": 125.57,
+    "commit": 124.86,
+    "marker": 30.8,
+    "ok": true
+   },
+   {
+    "rt": 159.06,
+    "total": 157.5,
+    "txn": 126.35,
+    "commit": 125.73,
+    "marker": 30.41,
+    "ok": true
+   },
+   {
+    "rt": 157.55,
+    "total": 155.89,
+    "txn": 125.85,
+    "commit": 125.16,
+    "marker": 29.22,
+    "ok": true
+   },
+   {
+    "rt": 161.54,
+    "total": 159.95,
+    "txn": 127.61,
+    "commit": 127.08,
+    "marker": 31.62,
+    "ok": true
+   },
+   {
+    "rt": 160.48,
+    "total": 158.83,
+    "txn": 126.36,
+    "commit": 125.76,
+    "marker": 31.75,
+    "ok": true
+   },
+   {
+    "rt": 160.35,
+    "total": 159.12,
+    "txn": 128.11,
+    "commit": 127.39,
+    "marker": 30.22,
+    "ok": true
+   },
+   {
+    "rt": 159.51,
+    "total": 157.53,
+    "txn": 125.46,
+    "commit": 124.78,
+    "marker": 31.31,
+    "ok": true
+   },
+   {
+    "rt": 160.8,
+    "total": 158.83,
+    "txn": 126.35,
+    "commit": 125.71,
+    "marker": 31.67,
+    "ok": true
+   },
+   {
+    "rt": 159.84,
+    "total": 159.06,
+    "txn": 127.72,
+    "commit": 127.25,
+    "marker": 30.86,
+    "ok": true
+   },
+   {
+    "rt": 159.89,
+    "total": 158.64,
+    "txn": 127.86,
+    "commit": 127.38,
+    "marker": 30.32,
+    "ok": true
+   },
+   {
+    "rt": 160.39,
+    "total": 159.59,
+    "txn": 127.82,
+    "commit": 127.66,
+    "marker": 31.53,
+    "ok": true
+   },
+   {
+    "rt": 160.0,
+    "total": 158.3,
+    "txn": 126.02,
+    "commit": 125.37,
+    "marker": 31.53,
+    "ok": true
+   },
+   {
+    "rt": 159.48,
+    "total": 158.52,
+    "txn": 127.13,
+    "commit": 126.71,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 159.04,
+    "total": 157.84,
+    "txn": 125.99,
+    "commit": 125.39,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 159.94,
+    "total": 158.43,
+    "txn": 126.26,
+    "commit": 125.44,
+    "marker": 31.37,
+    "ok": true
+   },
+   {
+    "rt": 180.02,
+    "total": 179.23,
+    "txn": 149.04,
+    "commit": 148.61,
+    "marker": 29.8,
+    "ok": true
+   },
+   {
+    "rt": 160.08,
+    "total": 159.2,
+    "txn": 128.04,
+    "commit": 127.57,
+    "marker": 30.67,
+    "ok": true
+   },
+   {
+    "rt": 162.65,
+    "total": 161.57,
+    "txn": 127.89,
+    "commit": 127.41,
+    "marker": 33.12,
+    "ok": true
+   },
+   {
+    "rt": 169.62,
+    "total": 168.97,
+    "txn": 127.59,
+    "commit": 127.17,
+    "marker": 40.97,
+    "ok": true
+   },
+   {
+    "rt": 160.28,
+    "total": 159.74,
+    "txn": 128.49,
+    "commit": 128.2,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 166.52,
+    "total": 165.72,
+    "txn": 134.18,
+    "commit": 133.75,
+    "marker": 31.15,
+    "ok": true
+   },
+   {
+    "rt": 181.99,
+    "total": 181.45,
+    "txn": 150.09,
+    "commit": 149.89,
+    "marker": 31.12,
+    "ok": true
+   },
+   {
+    "rt": 160.55,
+    "total": 159.33,
+    "txn": 128.2,
+    "commit": 127.74,
+    "marker": 30.65,
+    "ok": true
+   },
+   {
+    "rt": 160.69,
+    "total": 159.34,
+    "txn": 127.47,
+    "commit": 126.95,
+    "marker": 31.11,
+    "ok": true
+   },
+   {
+    "rt": 171.08,
+    "total": 169.37,
+    "txn": 138.14,
+    "commit": 137.43,
+    "marker": 30.5,
+    "ok": true
+   },
+   {
+    "rt": 158.72,
+    "total": 157.43,
+    "txn": 126.63,
+    "commit": 125.68,
+    "marker": 30.06,
+    "ok": true
+   },
+   {
+    "rt": 180.06,
+    "total": 178.61,
+    "txn": 147.37,
+    "commit": 146.7,
+    "marker": 30.57,
+    "ok": true
+   },
+   {
+    "rt": 209.82,
+    "total": 209.19,
+    "txn": 178.84,
+    "commit": 178.5,
+    "marker": 30.05,
+    "ok": true
+   },
+   {
+    "rt": 177.99,
+    "total": 176.7,
+    "txn": 146.2,
+    "commit": 145.62,
+    "marker": 29.87,
+    "ok": true
+   },
+   {
+    "rt": 198.89,
+    "total": 197.74,
+    "txn": 136.07,
+    "commit": 135.51,
+    "marker": 61.08,
+    "ok": true
+   },
+   {
+    "rt": 201.03,
+    "total": 199.81,
+    "txn": 168.61,
+    "commit": 168.2,
+    "marker": 30.73,
+    "ok": true
+   },
+   {
+    "rt": 190.26,
+    "total": 189.43,
+    "txn": 158.12,
+    "commit": 157.37,
+    "marker": 30.83,
+    "ok": true
+   },
+   {
+    "rt": 167.49,
+    "total": 165.73,
+    "txn": 134.27,
+    "commit": 133.57,
+    "marker": 30.69,
+    "ok": true
+   },
+   {
+    "rt": 180.65,
+    "total": 179.47,
+    "txn": 149.38,
+    "commit": 148.93,
+    "marker": 29.58,
+    "ok": true
+   },
+   {
+    "rt": 169.74,
+    "total": 167.86,
+    "txn": 135.96,
+    "commit": 135.29,
+    "marker": 31.24,
+    "ok": true
+   },
+   {
+    "rt": 168.61,
+    "total": 167.26,
+    "txn": 136.37,
+    "commit": 135.51,
+    "marker": 30.14,
+    "ok": true
+   },
+   {
+    "rt": 180.17,
+    "total": 178.86,
+    "txn": 147.08,
+    "commit": 146.51,
+    "marker": 31.17,
+    "ok": true
+   },
+   {
+    "rt": 170.49,
+    "total": 168.8,
+    "txn": 136.51,
+    "commit": 135.87,
+    "marker": 31.33,
+    "ok": true
+   },
+   {
+    "rt": 151.63,
+    "total": 150.9,
+    "txn": 119.62,
+    "commit": 119.44,
+    "marker": 31.01,
+    "ok": true
+   },
+   {
+    "rt": 160.84,
+    "total": 159.55,
+    "txn": 126.83,
+    "commit": 126.12,
+    "marker": 32.0,
+    "ok": true
+   },
+   {
+    "rt": 160.48,
+    "total": 158.32,
+    "txn": 126.35,
+    "commit": 125.61,
+    "marker": 30.87,
+    "ok": true
+   },
+   {
+    "rt": 168.53,
+    "total": 167.05,
+    "txn": 136.45,
+    "commit": 135.6,
+    "marker": 29.9,
+    "ok": true
+   },
+   {
+    "rt": 160.4,
+    "total": 159.22,
+    "txn": 128.58,
+    "commit": 127.98,
+    "marker": 30.1,
+    "ok": true
+   },
+   {
+    "rt": 160.34,
+    "total": 158.66,
+    "txn": 126.65,
+    "commit": 125.91,
+    "marker": 31.32,
+    "ok": true
+   },
+   {
+    "rt": 173.71,
+    "total": 172.19,
+    "txn": 136.73,
+    "commit": 136.06,
+    "marker": 34.62,
+    "ok": true
+   },
+   {
+    "rt": 179.66,
+    "total": 177.92,
+    "txn": 144.63,
+    "commit": 143.55,
+    "marker": 32.42,
+    "ok": true
+   },
+   {
+    "rt": 169.51,
+    "total": 167.76,
+    "txn": 137.65,
+    "commit": 136.86,
+    "marker": 29.27,
+    "ok": true
+   },
+   {
+    "rt": 169.97,
+    "total": 168.74,
+    "txn": 136.75,
+    "commit": 136.3,
+    "marker": 31.42,
+    "ok": true
+   },
+   {
+    "rt": 160.22,
+    "total": 159.57,
+    "txn": 129.44,
+    "commit": 129.09,
+    "marker": 29.76,
+    "ok": true
+   },
+   {
+    "rt": 151.16,
+    "total": 149.58,
+    "txn": 117.9,
+    "commit": 117.41,
+    "marker": 31.14,
+    "ok": true
+   },
+   {
+    "rt": 159.18,
+    "total": 158.49,
+    "txn": 127.42,
+    "commit": 127.04,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 168.62,
+    "total": 167.73,
+    "txn": 128.12,
+    "commit": 127.65,
+    "marker": 39.09,
+    "ok": true
+   },
+   {
+    "rt": 159.31,
+    "total": 157.84,
+    "txn": 126.15,
+    "commit": 125.55,
+    "marker": 31.01,
+    "ok": true
+   },
+   {
+    "rt": 168.98,
+    "total": 167.52,
+    "txn": 135.64,
+    "commit": 134.99,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 179.87,
+    "total": 177.86,
+    "txn": 135.9,
+    "commit": 135.24,
+    "marker": 40.83,
+    "ok": true
+   },
+   {
+    "rt": 159.61,
+    "total": 158.2,
+    "txn": 126.42,
+    "commit": 125.95,
+    "marker": 31.19,
+    "ok": true
+   },
+   {
+    "rt": 159.81,
+    "total": 158.04,
+    "txn": 125.38,
+    "commit": 124.7,
+    "marker": 31.89,
+    "ok": true
+   },
+   {
+    "rt": 169.62,
+    "total": 168.31,
+    "txn": 127.34,
+    "commit": 126.76,
+    "marker": 40.33,
+    "ok": true
+   },
+   {
+    "rt": 167.41,
+    "total": 165.98,
+    "txn": 133.9,
+    "commit": 133.24,
+    "marker": 31.19,
+    "ok": true
+   },
+   {
+    "rt": 208.76,
+    "total": 207.49,
+    "txn": 156.81,
+    "commit": 156.24,
+    "marker": 49.73,
+    "ok": true
+   },
+   {
+    "rt": 149.44,
+    "total": 148.22,
+    "txn": 116.71,
+    "commit": 116.1,
+    "marker": 30.62,
+    "ok": true
+   },
+   {
+    "rt": 178.84,
+    "total": 176.76,
+    "txn": 135.19,
+    "commit": 134.54,
+    "marker": 40.81,
+    "ok": true
+   },
+   {
+    "rt": 160.88,
+    "total": 159.22,
+    "txn": 126.83,
+    "commit": 126.01,
+    "marker": 31.83,
+    "ok": true
+   },
+   {
+    "rt": 168.86,
+    "total": 167.63,
+    "txn": 126.32,
+    "commit": 125.59,
+    "marker": 40.6,
+    "ok": true
+   },
+   {
+    "rt": 179.22,
+    "total": 177.45,
+    "txn": 135.86,
+    "commit": 135.11,
+    "marker": 40.8,
+    "ok": true
+   },
+   {
+    "rt": 171.43,
+    "total": 170.56,
+    "txn": 139.7,
+    "commit": 139.55,
+    "marker": 30.59,
+    "ok": true
+   },
+   {
+    "rt": 180.08,
+    "total": 177.99,
+    "txn": 147.49,
+    "commit": 146.79,
+    "marker": 29.75,
+    "ok": true
+   },
+   {
+    "rt": 170.27,
+    "total": 168.34,
+    "txn": 137.2,
+    "commit": 136.46,
+    "marker": 30.27,
+    "ok": true
+   },
+   {
+    "rt": 168.75,
+    "total": 167.44,
+    "txn": 135.28,
+    "commit": 134.63,
+    "marker": 31.39,
+    "ok": true
+   },
+   {
+    "rt": 179.74,
+    "total": 178.78,
+    "txn": 148.68,
+    "commit": 148.33,
+    "marker": 29.7,
+    "ok": true
+   },
+   {
+    "rt": 170.0,
+    "total": 168.09,
+    "txn": 135.87,
+    "commit": 135.14,
+    "marker": 31.33,
+    "ok": true
+   },
+   {
+    "rt": 169.45,
+    "total": 168.93,
+    "txn": 138.32,
+    "commit": 138.08,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 180.97,
+    "total": 179.11,
+    "txn": 138.49,
+    "commit": 137.79,
+    "marker": 39.89,
+    "ok": true
+   },
+   {
+    "rt": 195.71,
+    "total": 194.79,
+    "txn": 127.93,
+    "commit": 127.47,
+    "marker": 66.31,
+    "ok": true
+   },
+   {
+    "rt": 160.5,
+    "total": 158.76,
+    "txn": 126.57,
+    "commit": 125.93,
+    "marker": 31.43,
+    "ok": true
+   },
+   {
+    "rt": 170.52,
+    "total": 169.07,
+    "txn": 137.94,
+    "commit": 136.98,
+    "marker": 30.5,
+    "ok": true
+   },
+   {
+    "rt": 191.03,
+    "total": 187.94,
+    "txn": 156.42,
+    "commit": 155.95,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 179.99,
+    "total": 179.44,
+    "txn": 147.35,
+    "commit": 147.14,
+    "marker": 31.77,
+    "ok": true
+   },
+   {
+    "rt": 179.87,
+    "total": 178.44,
+    "txn": 146.77,
+    "commit": 146.29,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 189.62,
+    "total": 188.11,
+    "txn": 156.63,
+    "commit": 155.95,
+    "marker": 30.41,
+    "ok": true
+   },
+   {
+    "rt": 179.42,
+    "total": 177.61,
+    "txn": 145.57,
+    "commit": 144.52,
+    "marker": 31.18,
+    "ok": true
+   },
+   {
+    "rt": 179.87,
+    "total": 177.98,
+    "txn": 146.16,
+    "commit": 145.48,
+    "marker": 31.01,
+    "ok": true
+   },
+   {
+    "rt": 170.49,
+    "total": 168.63,
+    "txn": 136.33,
+    "commit": 135.59,
+    "marker": 31.55,
+    "ok": true
+   },
+   {
+    "rt": 179.16,
+    "total": 177.23,
+    "txn": 144.91,
+    "commit": 144.21,
+    "marker": 31.57,
+    "ok": true
+   },
+   {
+    "rt": 179.3,
+    "total": 177.67,
+    "txn": 146.0,
+    "commit": 145.36,
+    "marker": 31.0,
+    "ok": true
+   },
+   {
+    "rt": 180.41,
+    "total": 178.93,
+    "txn": 147.67,
+    "commit": 146.64,
+    "marker": 30.25,
+    "ok": true
+   },
+   {
+    "rt": 178.98,
+    "total": 177.2,
+    "txn": 146.39,
+    "commit": 145.66,
+    "marker": 30.08,
+    "ok": true
+   },
+   {
+    "rt": 169.71,
+    "total": 169.09,
+    "txn": 138.18,
+    "commit": 137.82,
+    "marker": 30.6,
+    "ok": true
+   },
+   {
+    "rt": 159.19,
+    "total": 157.74,
+    "txn": 126.67,
+    "commit": 126.01,
+    "marker": 30.33,
+    "ok": true
+   },
+   {
+    "rt": 170.81,
+    "total": 169.17,
+    "txn": 126.74,
+    "commit": 126.07,
+    "marker": 41.42,
+    "ok": true
+   },
+   {
+    "rt": 179.58,
+    "total": 178.48,
+    "txn": 148.02,
+    "commit": 147.57,
+    "marker": 29.95,
+    "ok": true
+   },
+   {
+    "rt": 159.65,
+    "total": 158.33,
+    "txn": 125.43,
+    "commit": 124.61,
+    "marker": 32.09,
+    "ok": true
+   },
+   {
+    "rt": 180.55,
+    "total": 180.03,
+    "txn": 148.3,
+    "commit": 148.11,
+    "marker": 31.49,
+    "ok": true
+   },
+   {
+    "rt": 297.94,
+    "total": 296.83,
+    "txn": 206.47,
+    "commit": 205.7,
+    "marker": 89.79,
+    "ok": true
+   },
+   {
+    "rt": 221.27,
+    "total": 220.49,
+    "txn": 159.75,
+    "commit": 159.59,
+    "marker": 60.45,
+    "ok": true
+   },
+   {
+    "rt": 170.07,
+    "total": 169.01,
+    "txn": 138.23,
+    "commit": 137.74,
+    "marker": 30.21,
+    "ok": true
+   },
+   {
+    "rt": 169.78,
+    "total": 168.23,
+    "txn": 137.52,
+    "commit": 136.87,
+    "marker": 29.75,
+    "ok": true
+   },
+   {
+    "rt": 198.43,
+    "total": 197.24,
+    "txn": 166.76,
+    "commit": 166.07,
+    "marker": 29.85,
+    "ok": true
+   },
+   {
+    "rt": 180.26,
+    "total": 179.48,
+    "txn": 147.81,
+    "commit": 147.35,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 170.03,
+    "total": 169.21,
+    "txn": 136.92,
+    "commit": 136.52,
+    "marker": 31.91,
+    "ok": true
+   },
+   {
+    "rt": 170.85,
+    "total": 169.81,
+    "txn": 137.84,
+    "commit": 137.56,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 169.7,
+    "total": 167.8,
+    "txn": 134.68,
+    "commit": 133.94,
+    "marker": 32.32,
+    "ok": true
+   },
+   {
+    "rt": 168.93,
+    "total": 167.24,
+    "txn": 135.29,
+    "commit": 134.61,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 170.38,
+    "total": 168.93,
+    "txn": 136.94,
+    "commit": 136.33,
+    "marker": 31.4,
+    "ok": true
+   },
+   {
+    "rt": 170.1,
+    "total": 168.67,
+    "txn": 137.3,
+    "commit": 136.65,
+    "marker": 30.66,
+    "ok": true
+   },
+   {
+    "rt": 181.41,
+    "total": 179.8,
+    "txn": 147.81,
+    "commit": 147.16,
+    "marker": 31.3,
+    "ok": true
+   },
+   {
+    "rt": 178.24,
+    "total": 176.63,
+    "txn": 146.04,
+    "commit": 145.31,
+    "marker": 29.72,
+    "ok": true
+   },
+   {
+    "rt": 182.48,
+    "total": 181.09,
+    "txn": 147.59,
+    "commit": 146.96,
+    "marker": 32.57,
+    "ok": true
+   },
+   {
+    "rt": 180.82,
+    "total": 179.63,
+    "txn": 138.25,
+    "commit": 137.61,
+    "marker": 40.72,
+    "ok": true
+   },
+   {
+    "rt": 169.43,
+    "total": 168.0,
+    "txn": 135.17,
+    "commit": 134.28,
+    "marker": 32.08,
+    "ok": true
+   },
+   {
+    "rt": 184.91,
+    "total": 183.88,
+    "txn": 144.37,
+    "commit": 144.19,
+    "marker": 39.26,
+    "ok": true
+   },
+   {
+    "rt": 191.95,
+    "total": 190.64,
+    "txn": 150.1,
+    "commit": 149.62,
+    "marker": 40.06,
+    "ok": true
+   },
+   {
+    "rt": 181.19,
+    "total": 179.55,
+    "txn": 137.49,
+    "commit": 136.8,
+    "marker": 41.29,
+    "ok": true
+   },
+   {
+    "rt": 181.12,
+    "total": 179.4,
+    "txn": 141.8,
+    "commit": 141.0,
+    "marker": 36.47,
+    "ok": true
+   },
+   {
+    "rt": 209.1,
+    "total": 208.06,
+    "txn": 176.87,
+    "commit": 176.16,
+    "marker": 30.59,
+    "ok": true
+   },
+   {
+    "rt": 170.24,
+    "total": 168.65,
+    "txn": 136.01,
+    "commit": 135.32,
+    "marker": 31.96,
+    "ok": true
+   },
+   {
+    "rt": 180.66,
+    "total": 178.53,
+    "txn": 146.67,
+    "commit": 146.03,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 179.59,
+    "total": 178.11,
+    "txn": 145.91,
+    "commit": 145.24,
+    "marker": 31.46,
+    "ok": true
+   },
+   {
+    "rt": 179.77,
+    "total": 177.81,
+    "txn": 145.21,
+    "commit": 144.51,
+    "marker": 31.63,
+    "ok": true
+   },
+   {
+    "rt": 199.13,
+    "total": 197.67,
+    "txn": 165.25,
+    "commit": 164.62,
+    "marker": 31.74,
+    "ok": true
+   },
+   {
+    "rt": 209.07,
+    "total": 207.7,
+    "txn": 156.01,
+    "commit": 155.46,
+    "marker": 50.8,
+    "ok": true
+   },
+   {
+    "rt": 199.43,
+    "total": 197.61,
+    "txn": 145.59,
+    "commit": 144.74,
+    "marker": 51.19,
+    "ok": true
+   },
+   {
+    "rt": 218.59,
+    "total": 216.99,
+    "txn": 165.95,
+    "commit": 165.17,
+    "marker": 50.3,
+    "ok": true
+   },
+   {
+    "rt": 202.86,
+    "total": 201.52,
+    "txn": 159.6,
+    "commit": 158.94,
+    "marker": 41.2,
+    "ok": true
+   },
+   {
+    "rt": 210.9,
+    "total": 209.73,
+    "txn": 177.43,
+    "commit": 176.87,
+    "marker": 31.74,
+    "ok": true
+   },
+   {
+    "rt": 190.79,
+    "total": 189.27,
+    "txn": 157.66,
+    "commit": 157.11,
+    "marker": 30.79,
+    "ok": true
+   },
+   {
+    "rt": 190.32,
+    "total": 188.99,
+    "txn": 157.22,
+    "commit": 156.65,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 190.28,
+    "total": 188.93,
+    "txn": 157.35,
+    "commit": 156.76,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 190.14,
+    "total": 188.59,
+    "txn": 156.24,
+    "commit": 155.63,
+    "marker": 31.6,
+    "ok": true
+   },
+   {
+    "rt": 191.19,
+    "total": 190.3,
+    "txn": 157.83,
+    "commit": 157.66,
+    "marker": 32.18,
+    "ok": true
+   },
+   {
+    "rt": 231.09,
+    "total": 229.08,
+    "txn": 186.31,
+    "commit": 185.62,
+    "marker": 42.01,
+    "ok": true
+   },
+   {
+    "rt": 190.18,
+    "total": 189.04,
+    "txn": 156.84,
+    "commit": 155.74,
+    "marker": 31.53,
+    "ok": true
+   },
+   {
+    "rt": 190.38,
+    "total": 188.77,
+    "txn": 155.69,
+    "commit": 155.0,
+    "marker": 31.84,
+    "ok": true
+   },
+   {
+    "rt": 199.51,
+    "total": 197.3,
+    "txn": 155.09,
+    "commit": 154.05,
+    "marker": 41.32,
+    "ok": true
+   },
+   {
+    "rt": 190.85,
+    "total": 189.35,
+    "txn": 157.06,
+    "commit": 156.46,
+    "marker": 31.65,
+    "ok": true
+   },
+   {
+    "rt": 188.96,
+    "total": 187.0,
+    "txn": 155.73,
+    "commit": 155.0,
+    "marker": 30.54,
+    "ok": true
+   },
+   {
+    "rt": 189.81,
+    "total": 187.78,
+    "txn": 156.13,
+    "commit": 155.46,
+    "marker": 30.96,
+    "ok": true
+   },
+   {
+    "rt": 170.11,
+    "total": 168.91,
+    "txn": 137.39,
+    "commit": 136.81,
+    "marker": 30.99,
+    "ok": true
+   },
+   {
+    "rt": 179.42,
+    "total": 177.52,
+    "txn": 145.06,
+    "commit": 144.38,
+    "marker": 31.72,
+    "ok": true
+   },
+   {
+    "rt": 179.38,
+    "total": 178.38,
+    "txn": 147.24,
+    "commit": 146.39,
+    "marker": 30.49,
+    "ok": true
+   },
+   {
+    "rt": 178.93,
+    "total": 177.26,
+    "txn": 145.65,
+    "commit": 144.97,
+    "marker": 30.85,
+    "ok": true
+   },
+   {
+    "rt": 198.88,
+    "total": 197.26,
+    "txn": 166.03,
+    "commit": 165.28,
+    "marker": 30.42,
+    "ok": true
+   },
+   {
+    "rt": 179.99,
+    "total": 178.75,
+    "txn": 147.12,
+    "commit": 146.59,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 170.12,
+    "total": 168.26,
+    "txn": 136.85,
+    "commit": 136.11,
+    "marker": 30.67,
+    "ok": true
+   },
+   {
+    "rt": 169.93,
+    "total": 168.45,
+    "txn": 136.46,
+    "commit": 135.84,
+    "marker": 31.15,
+    "ok": true
+   },
+   {
+    "rt": 169.08,
+    "total": 168.02,
+    "txn": 136.95,
+    "commit": 136.05,
+    "marker": 30.48,
+    "ok": true
+   },
+   {
+    "rt": 170.45,
+    "total": 168.69,
+    "txn": 136.45,
+    "commit": 135.83,
+    "marker": 31.54,
+    "ok": true
+   },
+   {
+    "rt": 179.53,
+    "total": 177.92,
+    "txn": 146.46,
+    "commit": 145.68,
+    "marker": 30.59,
+    "ok": true
+   },
+   {
+    "rt": 169.1,
+    "total": 167.45,
+    "txn": 135.85,
+    "commit": 135.16,
+    "marker": 30.89,
+    "ok": true
+   },
+   {
+    "rt": 189.9,
+    "total": 188.51,
+    "txn": 147.62,
+    "commit": 146.97,
+    "marker": 40.25,
+    "ok": true
+   },
+   {
+    "rt": 190.18,
+    "total": 188.89,
+    "txn": 158.2,
+    "commit": 157.54,
+    "marker": 29.99,
+    "ok": true
+   },
+   {
+    "rt": 199.7,
+    "total": 198.37,
+    "txn": 166.14,
+    "commit": 165.41,
+    "marker": 31.57,
+    "ok": true
+   },
+   {
+    "rt": 239.42,
+    "total": 237.9,
+    "txn": 186.65,
+    "commit": 181.48,
+    "marker": 50.57,
+    "ok": true
+   },
+   {
+    "rt": 178.94,
+    "total": 177.56,
+    "txn": 146.81,
+    "commit": 146.23,
+    "marker": 30.09,
+    "ok": true
+   },
+   {
+    "rt": 169.51,
+    "total": 167.81,
+    "txn": 135.8,
+    "commit": 135.07,
+    "marker": 31.25,
+    "ok": true
+   },
+   {
+    "rt": 169.92,
+    "total": 168.07,
+    "txn": 135.64,
+    "commit": 134.97,
+    "marker": 31.8,
+    "ok": true
+   },
+   {
+    "rt": 169.58,
+    "total": 168.04,
+    "txn": 136.7,
+    "commit": 136.01,
+    "marker": 30.57,
+    "ok": true
+   },
+   {
+    "rt": 170.04,
+    "total": 168.79,
+    "txn": 136.21,
+    "commit": 135.55,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 189.95,
+    "total": 188.16,
+    "txn": 156.14,
+    "commit": 155.34,
+    "marker": 31.11,
+    "ok": true
+   },
+   {
+    "rt": 179.45,
+    "total": 177.54,
+    "txn": 145.77,
+    "commit": 144.92,
+    "marker": 30.96,
+    "ok": true
+   },
+   {
+    "rt": 179.45,
+    "total": 178.25,
+    "txn": 146.37,
+    "commit": 145.79,
+    "marker": 31.23,
+    "ok": true
+   },
+   {
+    "rt": 179.79,
+    "total": 178.35,
+    "txn": 146.02,
+    "commit": 145.33,
+    "marker": 31.62,
+    "ok": true
+   },
+   {
+    "rt": 180.16,
+    "total": 178.62,
+    "txn": 146.6,
+    "commit": 145.59,
+    "marker": 31.06,
+    "ok": true
+   },
+   {
+    "rt": 199.79,
+    "total": 198.14,
+    "txn": 166.58,
+    "commit": 165.89,
+    "marker": 30.96,
+    "ok": true
+   },
+   {
+    "rt": 163.66,
+    "total": 162.65,
+    "txn": 131.86,
+    "commit": 131.68,
+    "marker": 30.5,
+    "ok": true
+   },
+   {
+    "rt": 189.36,
+    "total": 187.92,
+    "txn": 156.1,
+    "commit": 155.43,
+    "marker": 31.15,
+    "ok": true
+   },
+   {
+    "rt": 189.66,
+    "total": 188.25,
+    "txn": 155.46,
+    "commit": 154.57,
+    "marker": 32.05,
+    "ok": true
+   },
+   {
+    "rt": 190.12,
+    "total": 188.84,
+    "txn": 157.17,
+    "commit": 156.47,
+    "marker": 30.9,
+    "ok": true
+   },
+   {
+    "rt": 190.06,
+    "total": 189.08,
+    "txn": 158.57,
+    "commit": 158.07,
+    "marker": 29.97,
+    "ok": true
+   },
+   {
+    "rt": 179.02,
+    "total": 177.79,
+    "txn": 146.73,
+    "commit": 146.04,
+    "marker": 30.26,
+    "ok": true
+   },
+   {
+    "rt": 179.71,
+    "total": 178.35,
+    "txn": 146.02,
+    "commit": 145.33,
+    "marker": 31.44,
+    "ok": true
+   },
+   {
+    "rt": 181.04,
+    "total": 179.75,
+    "txn": 146.77,
+    "commit": 146.22,
+    "marker": 32.37,
+    "ok": true
+   },
+   {
+    "rt": 180.2,
+    "total": 178.71,
+    "txn": 147.08,
+    "commit": 146.43,
+    "marker": 30.77,
+    "ok": true
+   },
+   {
+    "rt": 181.48,
+    "total": 179.93,
+    "txn": 146.87,
+    "commit": 146.26,
+    "marker": 32.39,
+    "ok": true
+   },
+   {
+    "rt": 197.99,
+    "total": 197.02,
+    "txn": 166.8,
+    "commit": 166.28,
+    "marker": 29.58,
+    "ok": true
+   },
+   {
+    "rt": 189.59,
+    "total": 188.39,
+    "txn": 157.64,
+    "commit": 157.3,
+    "marker": 30.43,
+    "ok": true
+   },
+   {
+    "rt": 220.57,
+    "total": 219.05,
+    "txn": 187.41,
+    "commit": 186.82,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 190.55,
+    "total": 189.81,
+    "txn": 157.83,
+    "commit": 157.56,
+    "marker": 31.67,
+    "ok": true
+   },
+   {
+    "rt": 199.83,
+    "total": 199.17,
+    "txn": 168.03,
+    "commit": 167.69,
+    "marker": 30.81,
+    "ok": true
+   },
+   {
+    "rt": 220.18,
+    "total": 218.83,
+    "txn": 187.71,
+    "commit": 187.15,
+    "marker": 30.54,
+    "ok": true
+   },
+   {
+    "rt": 208.79,
+    "total": 207.62,
+    "txn": 176.5,
+    "commit": 175.32,
+    "marker": 30.23,
+    "ok": true
+   },
+   {
+    "rt": 227.96,
+    "total": 227.17,
+    "txn": 166.57,
+    "commit": 166.09,
+    "marker": 60.05,
+    "ok": true
+   },
+   {
+    "rt": 189.54,
+    "total": 188.64,
+    "txn": 157.03,
+    "commit": 156.54,
+    "marker": 31.05,
+    "ok": true
+   },
+   {
+    "rt": 189.93,
+    "total": 188.51,
+    "txn": 155.89,
+    "commit": 155.24,
+    "marker": 31.92,
+    "ok": true
+   },
+   {
+    "rt": 190.58,
+    "total": 189.24,
+    "txn": 157.88,
+    "commit": 157.13,
+    "marker": 30.72,
+    "ok": true
+   },
+   {
+    "rt": 210.13,
+    "total": 208.67,
+    "txn": 176.88,
+    "commit": 176.12,
+    "marker": 31.11,
+    "ok": true
+   },
+   {
+    "rt": 189.11,
+    "total": 187.78,
+    "txn": 155.84,
+    "commit": 154.94,
+    "marker": 31.25,
+    "ok": true
+   },
+   {
+    "rt": 188.86,
+    "total": 187.92,
+    "txn": 157.19,
+    "commit": 156.55,
+    "marker": 30.15,
+    "ok": true
+   },
+   {
+    "rt": 189.77,
+    "total": 188.22,
+    "txn": 156.49,
+    "commit": 155.77,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 189.61,
+    "total": 188.5,
+    "txn": 156.19,
+    "commit": 155.53,
+    "marker": 31.39,
+    "ok": true
+   },
+   {
+    "rt": 189.36,
+    "total": 188.54,
+    "txn": 156.61,
+    "commit": 156.16,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 181.06,
+    "total": 180.38,
+    "txn": 148.52,
+    "commit": 148.31,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 179.93,
+    "total": 178.95,
+    "txn": 147.04,
+    "commit": 146.42,
+    "marker": 31.28,
+    "ok": true
+   },
+   {
+    "rt": 180.48,
+    "total": 179.17,
+    "txn": 147.68,
+    "commit": 147.2,
+    "marker": 31.0,
+    "ok": true
+   },
+   {
+    "rt": 180.1,
+    "total": 178.73,
+    "txn": 147.25,
+    "commit": 146.51,
+    "marker": 30.78,
+    "ok": true
+   },
+   {
+    "rt": 179.08,
+    "total": 177.81,
+    "txn": 145.13,
+    "commit": 144.47,
+    "marker": 31.75,
+    "ok": true
+   },
+   {
+    "rt": 189.29,
+    "total": 187.81,
+    "txn": 155.77,
+    "commit": 154.98,
+    "marker": 31.31,
+    "ok": true
+   },
+   {
+    "rt": 180.41,
+    "total": 179.34,
+    "txn": 147.14,
+    "commit": 146.55,
+    "marker": 31.49,
+    "ok": true
+   },
+   {
+    "rt": 170.69,
+    "total": 168.76,
+    "txn": 137.53,
+    "commit": 136.86,
+    "marker": 30.56,
+    "ok": true
+   },
+   {
+    "rt": 170.22,
+    "total": 168.82,
+    "txn": 137.18,
+    "commit": 136.52,
+    "marker": 30.93,
+    "ok": true
+   },
+   {
+    "rt": 168.83,
+    "total": 167.98,
+    "txn": 137.2,
+    "commit": 136.7,
+    "marker": 30.25,
+    "ok": true
+   },
+   {
+    "rt": 168.68,
+    "total": 167.72,
+    "txn": 135.99,
+    "commit": 135.45,
+    "marker": 31.04,
+    "ok": true
+   },
+   {
+    "rt": 199.33,
+    "total": 198.6,
+    "txn": 166.89,
+    "commit": 166.42,
+    "marker": 31.2,
+    "ok": true
+   },
+   {
+    "rt": 180.36,
+    "total": 179.69,
+    "txn": 148.92,
+    "commit": 148.6,
+    "marker": 30.44,
+    "ok": true
+   },
+   {
+    "rt": 179.73,
+    "total": 179.0,
+    "txn": 147.54,
+    "commit": 146.77,
+    "marker": 31.06,
+    "ok": true
+   },
+   {
+    "rt": 179.28,
+    "total": 178.14,
+    "txn": 146.89,
+    "commit": 146.27,
+    "marker": 30.68,
+    "ok": true
+   },
+   {
+    "rt": 179.76,
+    "total": 179.14,
+    "txn": 147.45,
+    "commit": 147.17,
+    "marker": 31.37,
+    "ok": true
+   },
+   {
+    "rt": 190.96,
+    "total": 190.34,
+    "txn": 159.51,
+    "commit": 159.3,
+    "marker": 30.57,
+    "ok": true
+   },
+   {
+    "rt": 180.58,
+    "total": 180.01,
+    "txn": 148.88,
+    "commit": 148.63,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 199.78,
+    "total": 199.33,
+    "txn": 168.46,
+    "commit": 168.27,
+    "marker": 30.49,
+    "ok": true
+   },
+   {
+    "rt": 202.18,
+    "total": 201.07,
+    "txn": 169.24,
+    "commit": 169.01,
+    "marker": 31.54,
+    "ok": true
+   },
+   {
+    "rt": 220.05,
+    "total": 219.23,
+    "txn": 187.76,
+    "commit": 187.28,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 190.06,
+    "total": 189.44,
+    "txn": 157.79,
+    "commit": 157.53,
+    "marker": 31.36,
+    "ok": true
+   },
+   {
+    "rt": 191.44,
+    "total": 190.38,
+    "txn": 159.15,
+    "commit": 158.87,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 211.61,
+    "total": 210.74,
+    "txn": 159.69,
+    "commit": 158.88,
+    "marker": 50.5,
+    "ok": true
+   },
+   {
+    "rt": 178.9,
+    "total": 177.19,
+    "txn": 145.62,
+    "commit": 144.54,
+    "marker": 30.63,
+    "ok": true
+   },
+   {
+    "rt": 179.08,
+    "total": 177.74,
+    "txn": 146.07,
+    "commit": 145.3,
+    "marker": 30.84,
+    "ok": true
+   },
+   {
+    "rt": 179.29,
+    "total": 178.17,
+    "txn": 147.3,
+    "commit": 146.64,
+    "marker": 30.3,
+    "ok": true
+   },
+   {
+    "rt": 200.09,
+    "total": 198.76,
+    "txn": 167.32,
+    "commit": 166.59,
+    "marker": 30.75,
+    "ok": true
+   },
+   {
+    "rt": 191.42,
+    "total": 190.19,
+    "txn": 157.8,
+    "commit": 157.23,
+    "marker": 31.94,
+    "ok": true
+   },
+   {
+    "rt": 179.04,
+    "total": 177.62,
+    "txn": 145.19,
+    "commit": 144.44,
+    "marker": 31.7,
+    "ok": true
+   },
+   {
+    "rt": 210.03,
+    "total": 208.55,
+    "txn": 176.49,
+    "commit": 175.75,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 180.53,
+    "total": 179.16,
+    "txn": 147.56,
+    "commit": 146.78,
+    "marker": 30.82,
+    "ok": true
+   },
+   {
+    "rt": 180.58,
+    "total": 179.21,
+    "txn": 147.72,
+    "commit": 147.05,
+    "marker": 30.82,
+    "ok": true
+   },
+   {
+    "rt": 190.73,
+    "total": 188.62,
+    "txn": 156.63,
+    "commit": 155.91,
+    "marker": 31.33,
+    "ok": true
+   },
+   {
+    "rt": 189.94,
+    "total": 188.66,
+    "txn": 156.52,
+    "commit": 155.52,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 181.53,
+    "total": 180.5,
+    "txn": 148.14,
+    "commit": 147.86,
+    "marker": 31.99,
+    "ok": true
+   },
+   {
+    "rt": 199.66,
+    "total": 198.38,
+    "txn": 166.66,
+    "commit": 166.0,
+    "marker": 31.11,
+    "ok": true
+   },
+   {
+    "rt": 179.86,
+    "total": 178.56,
+    "txn": 146.41,
+    "commit": 145.43,
+    "marker": 31.41,
+    "ok": true
+   },
+   {
+    "rt": 208.71,
+    "total": 207.54,
+    "txn": 175.44,
+    "commit": 174.53,
+    "marker": 31.19,
+    "ok": true
+   },
+   {
+    "rt": 190.5,
+    "total": 189.39,
+    "txn": 158.14,
+    "commit": 157.28,
+    "marker": 30.68,
+    "ok": true
+   },
+   {
+    "rt": 190.26,
+    "total": 189.1,
+    "txn": 157.41,
+    "commit": 156.67,
+    "marker": 31.04,
+    "ok": true
+   },
+   {
+    "rt": 189.89,
+    "total": 188.82,
+    "txn": 157.2,
+    "commit": 156.61,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 190.38,
+    "total": 188.82,
+    "txn": 155.83,
+    "commit": 155.16,
+    "marker": 32.31,
+    "ok": true
+   },
+   {
+    "rt": 190.22,
+    "total": 188.76,
+    "txn": 156.62,
+    "commit": 156.04,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 190.02,
+    "total": 188.35,
+    "txn": 156.17,
+    "commit": 155.47,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 189.15,
+    "total": 187.81,
+    "txn": 156.11,
+    "commit": 155.28,
+    "marker": 30.94,
+    "ok": true
+   },
+   {
+    "rt": 189.11,
+    "total": 188.06,
+    "txn": 156.91,
+    "commit": 156.37,
+    "marker": 30.56,
+    "ok": true
+   },
+   {
+    "rt": 188.25,
+    "total": 187.41,
+    "txn": 155.79,
+    "commit": 155.22,
+    "marker": 31.03,
+    "ok": true
+   },
+   {
+    "rt": 210.62,
+    "total": 209.95,
+    "txn": 158.51,
+    "commit": 158.25,
+    "marker": 51.12,
+    "ok": true
+   },
+   {
+    "rt": 230.93,
+    "total": 229.98,
+    "txn": 178.0,
+    "commit": 177.33,
+    "marker": 51.44,
+    "ok": true
+   },
+   {
+    "rt": 219.11,
+    "total": 218.17,
+    "txn": 166.63,
+    "commit": 165.94,
+    "marker": 50.75,
+    "ok": true
+   },
+   {
+    "rt": 219.96,
+    "total": 219.49,
+    "txn": 158.47,
+    "commit": 158.25,
+    "marker": 60.74,
+    "ok": true
+   },
+   {
+    "rt": 180.46,
+    "total": 179.27,
+    "txn": 147.41,
+    "commit": 147.03,
+    "marker": 31.41,
+    "ok": true
+   },
+   {
+    "rt": 179.48,
+    "total": 177.8,
+    "txn": 145.79,
+    "commit": 145.03,
+    "marker": 31.29,
+    "ok": true
+   },
+   {
+    "rt": 178.63,
+    "total": 177.38,
+    "txn": 146.32,
+    "commit": 145.49,
+    "marker": 30.4,
+    "ok": true
+   },
+   {
+    "rt": 180.81,
+    "total": 179.14,
+    "txn": 146.51,
+    "commit": 145.87,
+    "marker": 32.02,
+    "ok": true
+   },
+   {
+    "rt": 200.73,
+    "total": 199.23,
+    "txn": 156.93,
+    "commit": 156.3,
+    "marker": 41.54,
+    "ok": true
+   },
+   {
+    "rt": 190.35,
+    "total": 188.92,
+    "txn": 155.71,
+    "commit": 155.09,
+    "marker": 32.33,
+    "ok": true
+   },
+   {
+    "rt": 190.68,
+    "total": 189.85,
+    "txn": 159.49,
+    "commit": 159.29,
+    "marker": 30.07,
+    "ok": true
+   },
+   {
+    "rt": 201.6,
+    "total": 200.61,
+    "txn": 158.92,
+    "commit": 158.74,
+    "marker": 41.39,
+    "ok": true
+   },
+   {
+    "rt": 200.09,
+    "total": 198.71,
+    "txn": 166.9,
+    "commit": 165.76,
+    "marker": 30.76,
+    "ok": true
+   },
+   {
+    "rt": 179.83,
+    "total": 178.45,
+    "txn": 146.17,
+    "commit": 145.46,
+    "marker": 31.54,
+    "ok": true
+   },
+   {
+    "rt": 180.19,
+    "total": 178.79,
+    "txn": 146.59,
+    "commit": 145.71,
+    "marker": 31.45,
+    "ok": true
+   },
+   {
+    "rt": 180.19,
+    "total": 178.83,
+    "txn": 147.42,
+    "commit": 146.65,
+    "marker": 30.79,
+    "ok": true
+   },
+   {
+    "rt": 179.55,
+    "total": 178.23,
+    "txn": 145.83,
+    "commit": 145.07,
+    "marker": 31.64,
+    "ok": true
+   },
+   {
+    "rt": 190.27,
+    "total": 188.9,
+    "txn": 146.97,
+    "commit": 146.26,
+    "marker": 41.33,
+    "ok": true
+   },
+   {
+    "rt": 190.22,
+    "total": 188.57,
+    "txn": 155.68,
+    "commit": 154.86,
+    "marker": 32.1,
+    "ok": true
+   },
+   {
+    "rt": 219.68,
+    "total": 218.44,
+    "txn": 186.7,
+    "commit": 185.84,
+    "marker": 30.86,
+    "ok": true
+   },
+   {
+    "rt": 190.04,
+    "total": 188.73,
+    "txn": 157.25,
+    "commit": 156.46,
+    "marker": 30.81,
+    "ok": true
+   },
+   {
+    "rt": 178.78,
+    "total": 177.9,
+    "txn": 147.47,
+    "commit": 146.88,
+    "marker": 29.81,
+    "ok": true
+   },
+   {
+    "rt": 179.71,
+    "total": 177.96,
+    "txn": 146.53,
+    "commit": 145.88,
+    "marker": 30.47,
+    "ok": true
+   },
+   {
+    "rt": 199.59,
+    "total": 198.27,
+    "txn": 166.62,
+    "commit": 165.69,
+    "marker": 30.82,
+    "ok": true
+   },
+   {
+    "rt": 189.8,
+    "total": 188.38,
+    "txn": 157.35,
+    "commit": 156.59,
+    "marker": 30.29,
+    "ok": true
+   },
+   {
+    "rt": 189.67,
+    "total": 188.15,
+    "txn": 156.06,
+    "commit": 155.15,
+    "marker": 31.15,
+    "ok": true
+   },
+   {
+    "rt": 189.56,
+    "total": 188.53,
+    "txn": 157.77,
+    "commit": 157.51,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 189.65,
+    "total": 188.2,
+    "txn": 157.03,
+    "commit": 156.4,
+    "marker": 30.41,
+    "ok": true
+   },
+   {
+    "rt": 190.56,
+    "total": 189.21,
+    "txn": 157.33,
+    "commit": 156.66,
+    "marker": 31.12,
+    "ok": true
+   },
+   {
+    "rt": 188.69,
+    "total": 187.05,
+    "txn": 155.19,
+    "commit": 154.5,
+    "marker": 31.16,
+    "ok": true
+   },
+   {
+    "rt": 189.97,
+    "total": 189.14,
+    "txn": 157.01,
+    "commit": 156.56,
+    "marker": 31.7,
+    "ok": true
+   },
+   {
+    "rt": 240.77,
+    "total": 239.16,
+    "txn": 197.08,
+    "commit": 190.47,
+    "marker": 41.37,
+    "ok": true
+   },
+   {
+    "rt": 202.61,
+    "total": 201.65,
+    "txn": 170.75,
+    "commit": 170.56,
+    "marker": 30.62,
+    "ok": true
+   },
+   {
+    "rt": 199.7,
+    "total": 198.21,
+    "txn": 167.6,
+    "commit": 166.88,
+    "marker": 29.8,
+    "ok": true
+   },
+   {
+    "rt": 237.81,
+    "total": 236.05,
+    "txn": 176.91,
+    "commit": 176.2,
+    "marker": 58.46,
+    "ok": true
+   },
+   {
+    "rt": 186.03,
+    "total": 184.72,
+    "txn": 146.85,
+    "commit": 146.22,
+    "marker": 37.27,
+    "ok": true
+   },
+   {
+    "rt": 180.07,
+    "total": 178.47,
+    "txn": 146.47,
+    "commit": 145.66,
+    "marker": 31.13,
+    "ok": true
+   },
+   {
+    "rt": 179.19,
+    "total": 177.58,
+    "txn": 146.48,
+    "commit": 145.72,
+    "marker": 30.37,
+    "ok": true
+   },
+   {
+    "rt": 180.81,
+    "total": 179.97,
+    "txn": 149.23,
+    "commit": 149.04,
+    "marker": 30.4,
+    "ok": true
+   },
+   {
+    "rt": 260.16,
+    "total": 258.88,
+    "txn": 226.6,
+    "commit": 225.75,
+    "marker": 31.77,
+    "ok": true
+   },
+   {
+    "rt": 189.86,
+    "total": 188.57,
+    "txn": 157.02,
+    "commit": 156.29,
+    "marker": 30.99,
+    "ok": true
+   },
+   {
+    "rt": 200.14,
+    "total": 198.93,
+    "txn": 156.06,
+    "commit": 155.34,
+    "marker": 41.98,
+    "ok": true
+   },
+   {
+    "rt": 189.67,
+    "total": 188.18,
+    "txn": 156.82,
+    "commit": 156.0,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 190.07,
+    "total": 188.34,
+    "txn": 156.79,
+    "commit": 156.07,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 200.62,
+    "total": 199.15,
+    "txn": 156.31,
+    "commit": 155.66,
+    "marker": 42.08,
+    "ok": true
+   },
+   {
+    "rt": 209.3,
+    "total": 207.67,
+    "txn": 175.64,
+    "commit": 174.81,
+    "marker": 31.22,
+    "ok": true
+   },
+   {
+    "rt": 190.37,
+    "total": 188.92,
+    "txn": 156.22,
+    "commit": 155.37,
+    "marker": 31.79,
+    "ok": true
+   },
+   {
+    "rt": 190.17,
+    "total": 188.78,
+    "txn": 158.03,
+    "commit": 157.42,
+    "marker": 30.11,
+    "ok": true
+   },
+   {
+    "rt": 177.51,
+    "total": 176.86,
+    "txn": 144.8,
+    "commit": 144.36,
+    "marker": 31.61,
+    "ok": true
+   },
+   {
+    "rt": 180.73,
+    "total": 179.47,
+    "txn": 147.73,
+    "commit": 147.17,
+    "marker": 31.11,
+    "ok": true
+   },
+   {
+    "rt": 189.4,
+    "total": 188.26,
+    "txn": 157.84,
+    "commit": 157.14,
+    "marker": 29.66,
+    "ok": true
+   },
+   {
+    "rt": 179.58,
+    "total": 178.36,
+    "txn": 146.99,
+    "commit": 146.26,
+    "marker": 30.71,
+    "ok": true
+   },
+   {
+    "rt": 179.61,
+    "total": 177.99,
+    "txn": 145.48,
+    "commit": 143.24,
+    "marker": 31.52,
+    "ok": true
+   },
+   {
+    "rt": 190.02,
+    "total": 188.57,
+    "txn": 157.71,
+    "commit": 157.06,
+    "marker": 30.19,
+    "ok": true
+   },
+   {
+    "rt": 178.87,
+    "total": 177.31,
+    "txn": 146.35,
+    "commit": 145.59,
+    "marker": 30.32,
+    "ok": true
+   },
+   {
+    "rt": 179.24,
+    "total": 177.95,
+    "txn": 145.96,
+    "commit": 145.22,
+    "marker": 30.97,
+    "ok": true
+   },
+   {
+    "rt": 210.74,
+    "total": 209.32,
+    "txn": 178.95,
+    "commit": 178.33,
+    "marker": 29.5,
+    "ok": true
+   },
+   {
+    "rt": 221.09,
+    "total": 219.48,
+    "txn": 187.2,
+    "commit": 186.21,
+    "marker": 31.53,
+    "ok": true
+   },
+   {
+    "rt": 209.58,
+    "total": 208.29,
+    "txn": 146.25,
+    "commit": 145.56,
+    "marker": 61.31,
+    "ok": true
+   },
+   {
+    "rt": 210.75,
+    "total": 209.48,
+    "txn": 168.13,
+    "commit": 167.5,
+    "marker": 40.68,
+    "ok": true
+   },
+   {
+    "rt": 220.0,
+    "total": 218.51,
+    "txn": 188.07,
+    "commit": 187.44,
+    "marker": 29.75,
+    "ok": true
+   },
+   {
+    "rt": 192.0,
+    "total": 190.77,
+    "txn": 159.84,
+    "commit": 159.1,
+    "marker": 30.2,
+    "ok": true
+   },
+   {
+    "rt": 188.81,
+    "total": 187.55,
+    "txn": 156.54,
+    "commit": 155.54,
+    "marker": 30.0,
+    "ok": true
+   },
+   {
+    "rt": 179.0,
+    "total": 177.21,
+    "txn": 146.04,
+    "commit": 145.3,
+    "marker": 30.45,
+    "ok": true
+   },
+   {
+    "rt": 179.59,
+    "total": 178.58,
+    "txn": 147.47,
+    "commit": 146.65,
+    "marker": 30.07,
+    "ok": true
+   },
+   {
+    "rt": 180.45,
+    "total": 178.99,
+    "txn": 147.84,
+    "commit": 147.24,
+    "marker": 30.58,
+    "ok": true
+   },
+   {
+    "rt": 180.22,
+    "total": 179.02,
+    "txn": 146.83,
+    "commit": 146.1,
+    "marker": 31.41,
+    "ok": true
+   },
+   {
+    "rt": 221.52,
+    "total": 220.33,
+    "txn": 187.42,
+    "commit": 186.67,
+    "marker": 32.23,
+    "ok": true
+   },
+   {
+    "rt": 180.01,
+    "total": 178.91,
+    "txn": 147.64,
+    "commit": 146.89,
+    "marker": 30.64,
+    "ok": true
+   },
+   {
+    "rt": 189.09,
+    "total": 188.46,
+    "txn": 157.08,
+    "commit": 156.45,
+    "marker": 30.72,
+    "ok": true
+   },
+   {
+    "rt": 198.98,
+    "total": 197.67,
+    "txn": 166.25,
+    "commit": 165.46,
+    "marker": 30.65,
+    "ok": true
+   },
+   {
+    "rt": 189.65,
+    "total": 188.49,
+    "txn": 157.18,
+    "commit": 156.56,
+    "marker": 30.57,
+    "ok": true
+   },
+   {
+    "rt": 191.05,
+    "total": 190.56,
+    "txn": 158.94,
+    "commit": 158.75,
+    "marker": 31.37,
+    "ok": true
+   },
+   {
+    "rt": 189.71,
+    "total": 189.14,
+    "txn": 157.53,
+    "commit": 157.22,
+    "marker": 31.27,
+    "ok": true
+   },
+   {
+    "rt": 179.83,
+    "total": 179.13,
+    "txn": 148.31,
+    "commit": 148.1,
+    "marker": 30.5,
+    "ok": true
+   },
+   {
+    "rt": 179.51,
+    "total": 178.79,
+    "txn": 147.65,
+    "commit": 147.12,
+    "marker": 30.64,
+    "ok": true
+   },
+   {
+    "rt": 180.2,
+    "total": 179.37,
+    "txn": 148.06,
+    "commit": 147.86,
+    "marker": 31.02,
+    "ok": true
+   },
+   {
+    "rt": 179.74,
+    "total": 178.51,
+    "txn": 146.66,
+    "commit": 146.1,
+    "marker": 31.26,
+    "ok": true
+   },
+   {
+    "rt": 200.87,
+    "total": 199.65,
+    "txn": 167.81,
+    "commit": 167.25,
+    "marker": 31.34,
+    "ok": true
+   },
+   {
+    "rt": 188.91,
+    "total": 187.88,
+    "txn": 155.67,
+    "commit": 154.98,
+    "marker": 31.45,
+    "ok": true
+   },
+   {
+    "rt": 191.67,
+    "total": 190.51,
+    "txn": 158.27,
+    "commit": 157.99,
+    "marker": 31.84,
+    "ok": true
+   },
+   {
+    "rt": 201.11,
+    "total": 199.45,
+    "txn": 148.14,
+    "commit": 147.54,
+    "marker": 50.58,
+    "ok": true
+   },
+   {
+    "rt": 179.49,
+    "total": 178.12,
+    "txn": 146.31,
+    "commit": 145.58,
+    "marker": 31.05,
+    "ok": true
+   },
+   {
+    "rt": 192.3,
+    "total": 190.24,
+    "txn": 157.47,
+    "commit": 156.72,
+    "marker": 32.26,
+    "ok": true
+   },
+   {
+    "rt": 179.68,
+    "total": 178.4,
+    "txn": 147.37,
+    "commit": 146.67,
+    "marker": 30.34,
+    "ok": true
+   },
+   {
+    "rt": 170.64,
+    "total": 169.55,
+    "txn": 138.25,
+    "commit": 137.43,
+    "marker": 30.74,
+    "ok": true
+   },
+   {
+    "rt": 169.33,
+    "total": 167.78,
+    "txn": 136.45,
+    "commit": 135.75,
+    "marker": 30.41,
+    "ok": true
+   },
+   {
+    "rt": 167.78,
+    "total": 166.26,
+    "txn": 134.34,
+    "commit": 133.68,
+    "marker": 31.25,
+    "ok": true
+   },
+   {
+    "rt": 179.94,
+    "total": 178.88,
+    "txn": 148.74,
+    "commit": 148.56,
+    "marker": 29.79,
+    "ok": true
+   },
+   {
+    "rt": 209.84,
+    "total": 208.82,
+    "txn": 168.27,
+    "commit": 167.6,
+    "marker": 39.93,
+    "ok": true
+   },
+   {
+    "rt": 222.17,
+    "total": 221.13,
+    "txn": 168.9,
+    "commit": 168.71,
+    "marker": 51.96,
+    "ok": true
+   },
+   {
+    "rt": 189.37,
+    "total": 187.76,
+    "txn": 156.19,
+    "commit": 155.5,
+    "marker": 30.85,
+    "ok": true
+   },
+   {
+    "rt": 210.08,
+    "total": 208.66,
+    "txn": 176.88,
+    "commit": 176.23,
+    "marker": 30.79,
+    "ok": true
+   },
+   {
+    "rt": 199.42,
+    "total": 198.31,
+    "txn": 166.19,
+    "commit": 165.33,
+    "marker": 31.33,
+    "ok": true
+   },
+   {
+    "rt": 189.94,
+    "total": 188.08,
+    "txn": 156.45,
+    "commit": 155.67,
+    "marker": 30.88,
+    "ok": true
+   },
+   {
+    "rt": 190.18,
+    "total": 188.81,
+    "txn": 156.68,
+    "commit": 156.04,
+    "marker": 31.46,
+    "ok": true
+   },
+   {
+    "rt": 189.25,
+    "total": 187.85,
+    "txn": 156.23,
+    "commit": 155.35,
+    "marker": 30.84,
+    "ok": true
+   }
+  ],
+  "sync": [
+   {
+    "rt": 138.84,
+    "total": 136.75,
+    "ok": true
+   },
+   {
+    "rt": 154.21,
+    "total": 152.97,
+    "ok": true
+   },
+   {
+    "rt": 138.75,
+    "total": 137.08,
+    "ok": true
+   },
+   {
+    "rt": 153.95,
+    "total": 152.04,
+    "ok": true
+   },
+   {
+    "rt": 168.95,
+    "total": 168.15,
+    "ok": true
+   },
+   {
+    "rt": 167.33,
+    "total": 165.61,
+    "ok": true
+   },
+   {
+    "rt": 160.39,
+    "total": 158.47,
+    "ok": true
+   },
+   {
+    "rt": 166.54,
+    "total": 164.76,
+    "ok": true
+   }
+  ],
+  "end_day": [
+   {
+    "rt": 150.76,
+    "total": 150.23,
+    "ok": true
+   },
+   {
+    "rt": 148.54,
+    "total": 146.91,
+    "ok": true
+   },
+   {
+    "rt": 149.35,
+    "total": 148.35,
+    "ok": true
+   },
+   {
+    "rt": 189.99,
+    "total": 188.75,
+    "ok": true
+   }
+  ]
+ }
+}

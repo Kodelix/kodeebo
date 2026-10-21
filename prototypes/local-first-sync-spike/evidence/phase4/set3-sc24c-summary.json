@@ -1,0 +1,254 @@
+{
+ "harness_commit": "b6b7150",
+ "gap_s": 5.0,
+ "rows": [
+  {
+   "rep": 1,
+   "store": "n30000",
+   "boot_s": 40.4,
+   "ready_ms_host": 13249.6,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 3329,
+    "total": 3329,
+    "copy_s": 5.7,
+    "check_s": 0.1,
+    "ms": {
+     "total": 0.02
+    }
+   },
+   "bg_elapsed_s": 5.5,
+   "sales": 2,
+   "sale_total_ms": {
+    "n": 2,
+    "p50": 173.61,
+    "p95": 312.7,
+    "max": 312.7
+   },
+   "bg_trace": [
+    {
+     "t": 0.3,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792519374 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792519374 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g1000 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g10000 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g10001 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "boot_s": 41.0,
+   "ready_ms_host": 12637.1,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 34465,
+    "total": 34465,
+    "copy_s": 69.8,
+    "check_s": 0.5,
+    "ms": {
+     "total": 0.01
+    }
+   },
+   "bg_elapsed_s": 73.9,
+   "sales": 11,
+   "sale_total_ms": {
+    "n": 11,
+    "p50": 818.96,
+    "p95": 2646.09,
+    "max": 2646.09
+   },
+   "bg_trace": [
+    {
+     "t": 0.4,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    },
+    {
+     "t": 73.9,
+     "state": "ok",
+     "pages": 34465,
+     "total": 34465
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792519507 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792519507 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b10-1792519507 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b2-1792519507 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b3-1792519507 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "boot_s": 40.4,
+   "ready_ms_host": 12776.3,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 3329,
+    "total": 3329,
+    "copy_s": 5.4,
+    "check_s": 0.1,
+    "ms": {
+     "total": 0.02
+    }
+   },
+   "bg_elapsed_s": 5.5,
+   "sales": 2,
+   "sale_total_ms": {
+    "n": 2,
+    "p50": 173.65,
+    "p95": 319.01,
+    "max": 319.01
+   },
+   "bg_trace": [
+    {
+     "t": 0.3,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792519374 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792519716 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792519374 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792519716 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "g1000 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "boot_s": 40.4,
+   "ready_ms_host": 12415.7,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 34465,
+    "total": 34465,
+    "copy_s": 72.3,
+    "check_s": 0.6,
+    "ms": {
+     "total": 0.01
+    }
+   },
+   "bg_elapsed_s": 77.1,
+   "sales": 11,
+   "sale_total_ms": {
+    "n": 11,
+    "p50": 1209.47,
+    "p95": 2939.54,
+    "max": 2939.54
+   },
+   "bg_trace": [
+    {
+     "t": 0.4,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    },
+    {
+     "t": 77.1,
+     "state": "ok",
+     "pages": 34465,
+     "total": 34465
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792519507 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792519849 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792519507 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792519849 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b10-1792519507 recorded on the device but missing on the server"
+    ]
+   ]
+  }
+ ]
+}

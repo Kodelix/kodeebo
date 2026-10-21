@@ -1,0 +1,8 @@
+phase 4 counter timings, commit b6b7150, 400 iterations, journal persist, marker slots, throttled VM
+  start_session  n  400 failed 0  total p50/p95/max 125.51/245.98/749.76  rt p50/p95/max 126.88/247.42/751.62
+  change_tier    n  400 failed 0  total p50/p95/max 118.76/226.92/520.83  rt p50/p95/max 119.99/228.07/522.4
+  close_session  n  400 failed 0  total p50/p95/max 269.28/522.85/2046.04  commit p50/p95/max 216.68/410.6/1920.73  marker p50/p95/max 49.89/101.68/351.35  rt p50/p95/max 270.45/524.55/2047.5
+  sell_items     n  400 failed 0  total p50/p95/max 259.01/468.19/1535.89  commit p50/p95/max 208.9/407.01/1504.95  marker p50/p95/max 49.01/100.02/318.07  rt p50/p95/max 260.21/469.62/1537.45
+  sync           n    8 failed 0  total p50/p95/max 292.06/299.54/299.54  rt p50/p95/max 293.82/301.56/301.56
+  end_day        n    4 failed 0  total p50/p95/max 245.5/277.95/277.95  rt p50/p95/max 246.62/279.77/279.77
+timings: violations 0 (369 s)

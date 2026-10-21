@@ -2013,3 +2013,67 @@ Evidence: `evidence/phase4/set2-*` (runner `set2-runner.sh`, status `set2.status
 - **The disk's own write cache** (S104 above: QEMU does not emulate a disk that acknowledges a flush it did not do).
 - **Every device timing** (`docs/architecture/perf-budgets.md`: the pilot PC replaces the VM proxy), including P4-F3's commit cost and P4-F5's start check on a real HDD or SSD.
 - **Defender's scheduled-scan settings** chosen for P4-F4, once decided.
+
+#### Leg set 3 (2026-10-20 19:50 – 22:00, and the S309 rerun 2026-10-21 04:36 – 12:41)
+
+Evidence: `evidence/phase4/set3-*`. SC-24 options ran on `8dfdc86+dirty`: the dirt was set 2's evidence and README, which were being written during the leg; the spike's code was identical to `7862d0f` (`git diff 7862d0f 8dfdc86` on this folder is empty). Every later leg logged a clean tree (`b6b7150`; the S309 rerun `0b4dbbe`, whose spike folder equals `b6b7150`'s). Indicative only: one throttled VM.
+
+**S309 of set 3: INTERRUPTED (host suspend/shutdown).** The runner was stopped by systemd at 2026-10-21 00:24, when the host went down; the host came back at 04:33. The leg's log is empty and nothing from it is used (`set3.status`). The VM was reverted to `clean-ssh2` once, and S309 was rerun from the start on a fresh boot (`set3-s309b-*`).
+
+**SC-24 options (P4-F5), cold after a reboot, 2 runs; "ready" = the first reply to the light `marker` op, timed inside the VM (s):**
+
+| Start check | 30k store (13.6 MB) | 300k store (141.2 MB, 60 days) |
+|---|---|---|
+| full | 45.3 / 76.8 | 384.7 / 378.8 |
+| quick | 43.6 / 44.8 | 376.8 / 373.8 |
+| partial (page 1 + the hot tables) | 7.7 / 8.0 | 8.1 / 8.4 |
+| unclean (partial after a clean exit) | 8.2 / 8.6 | 17.1 / 9.0 |
+| full, 16 KB pages | 17.3 / 15.0 | — |
+| full, 64 KB pages | 9.8 / 9.5 | — |
+
+- Partial and unclean do not grow with the store: about 8 s at 6 and at 60 days, under the 10 s ready budget on this disk. Larger pages speed up the full check but it still scales with the store.
+- Two outliers are not explained: full at 30k (76.8 s) and unclean at 300k (17.1 s).
+
+**SC-24 option 4 (background check), cold, a café sale every 5 s (ready timed from the host, so it includes the ssh call and process launch and is not comparable with the table above):**
+
+| Store | Ready | Copy + check of the copy | Sales during the copy |
+|---|---|---|---|
+| 30k | 13.2 / 12.8 s | 5.7 + 0.1 / 5.4 + 0.1 s, ok | 2 sales, max 313 / 319 ms |
+| 300k | 12.6 / 12.4 s | 69.8 + 0.5 / 72.3 + 0.6 s, ok | 11 sales, p50 0.82 / 1.21 s, max 2.65 / 2.94 s |
+
+- **The set 2 threading fix holds on Windows:** the 300k store ends "ok" in both runs (set 2 refused it).
+- **Sales slow down while the copy runs** (p50 about 1 s, max 2.9 s: under the 3 s ceiling, over the 500 ms café budget). **Likely cause, to confirm in set 4:** the copy reads through its own connection, and SQLite restarts a backup at its next step whenever the source "is modified by an external process or via a database connection other than the one being used by the backup operation" ([sqlite3_backup](https://www.sqlite.org/c3ref/backup_finish.html)), so each sale probably restarts the copy and the copy file is written again. Set 3 did not count restarts.
+- **Set 4 (founder, 2026-10-20):** fix 4 alone, the copy steps on the counter's own connection and thread between operations, so the counter's writes update the copy instead of restarting it; restarts counted for fix 4 and for today's copy; pass = café sale p95 ≤ 500 ms while the check runs, and the check completes on the 300k store. A copy into memory is **rejected (security):** SQLite3MC's encryption "can support only databases based on ordinary files, not memory based databases" (SQLite3MC docs, Architecture, Virtual File System), so the copy would be the whole store in plaintext, pageable to `pagefile.sys`.
+
+**P4-F3 commit options, three alternating rounds of 400 (ms, total inside the client):**
+
+| Option | Round | Close bill p50 / p95 / max | Café sale p50 / p95 / max | Start p95 | Commit p95 (close / café) |
+|---|---|---|---|---|---|
+| truncate / slots | r1 | 210 / 281 / 469 | 199 / 270 / 690 | 119 | 208 / 198 |
+| | r2 | 241 / 405 / 530 | 229 / 409 / 861 | 198 | 299 / 305 |
+| | r3 | 190 / 228 / 291 | 179 / 218 / 368 | 98 | 187 / 176 |
+| persist / slots | r1 | 269 / 523 / 2,046 | 259 / 468 / 1,536 | 246 | 411 / 407 |
+| | r2 | 250 / 326 / 570 | 229 / 297 / 513 | 149 | 265 / 237 |
+| | r3 | 238 / 279 / 330 | 228 / 259 / 311 | 128 | 239 / 225 |
+| delete / file (phase 0–3 design) | r1 | 305 / 595 / 1,487 | 298 / 579 / 1,601 | 262 | 411 / 384 |
+| | r2 | 264 / 317 / 486 | 258 / 309 / 2,138 | 141 | 235 / 223 |
+| | r3 | 266 / 317 / 658 | 259 / 318 / 390 | 134 | 235 / 223 |
+
+- No sale lost or doubled in any round.
+- **truncate / slots** has the lowest p50 in every round and the lowest p95 in two of three; it meets start p95 ≤ 200 and café sale p95 ≤ 500 in all three. delete / file missed the café sale budget in round 1.
+- **No option meets commit p95 ≤ 150 ms** (truncate / slots 176–305). The budget stays until the pilot PC's numbers (founder, 2026-10-20).
+- **Not adoptable yet:** truncate / slots is among the four variants whose tamper suite is **not passed — not rerun after the `4ddb601` fix**.
+
+**S309 (the one-minute heartbeat for 8 h, a sale every 30 s), rerun: no violation, nothing failed, but the ceiling was broken twice.**
+
+| Op | n | p50 | p95 | p99 | max |
+|---|---|---|---|---|---|
+| Heartbeat (`tick`, a committed write) | 480 | 16 | 197 | 500 | **4,712** |
+| Café sale | 960 | 241 | 459 | 1,023 | **4,864** |
+| Sync (every 20 sales) | 48 | 163 | 221 | 562 | 562 |
+
+- **Two operations broke the 3 s ceiling:** the 24th heartbeat (about 23 minutes after the start) at 4.7 s, and the 474th sale (about 4 h in) at 4.9 s. In the sale, the time was spent inside the transaction before the commit (4,756 ms; commit 219 ms, marker 107 ms), so it waited on reads, not on its forced writes. The cause is **not identified** (candidates: Windows' own work on the same throttled disk, such as Defender or maintenance tasks; not traced).
+- 10 of the 12 sales over 1 s came in the first 28 minutes after the boot; after that, sale p95 was 278 ms.
+- **The bytes-written measurement failed:** every `WriteTransferCount` reading came back empty (the query ran in the cashier's session; why it returned nothing is not investigated), so S309's write volume is **not measured**.
+
+**Open question OQ32 (founder, 2026-10-20; owner: the sync ADR; carried in phase 5's list in the sync note).** A store fault found while offline stops the counter: today's design (OQ31) refuses every sale until the device reloads from the server, so an offline venue sells only on paper until its internet returns, against principle 2 ("The counter never waits"); principle 1 ("Every pound leaves a trail") is the constraint any way of selling on must keep. Candidate to evaluate: a fresh store that keeps selling, with the salvage store kept for upload; what happens to open sessions, bill numbering (continue above the MAC'd marker, never reuse), the lease and the lost-range count, and what the fresh store needs before its first sale (catalogue, prices, PIN verifiers). Also: whether PIN verifiers and the lease copied from a damaged store are trusted on the page HMAC alone or only as a server-signed copy, and how the owner is told the venue sells on a rebuilt store. A question only: OQ31 point 7 (no offline selling on a fresh, empty store) and the `sell_on_fresh` mutant stay in force until the sync ADR decides, and that decision goes back to the founder. Not tested in phase 4. Full text: sync note OQ32.

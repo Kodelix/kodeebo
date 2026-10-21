@@ -1,0 +1,206 @@
+{
+ "harness_commit": "8dfdc86+dirty",
+ "started": "2026-10-20 19:53:57",
+ "rows": [
+  {
+   "rep": 1,
+   "store": "n30000",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 45340.7,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000",
+   "start_check": "quick",
+   "boot_s": 40.3,
+   "ms": 43558.6,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 7655.1,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000",
+   "start_check": "unclean",
+   "boot_s": 40.3,
+   "ms": 8179.2,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 384709.6,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "start_check": "quick",
+   "boot_s": 40.4,
+   "ms": 376839.2,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "start_check": "partial",
+   "boot_s": 40.4,
+   "ms": 8064.1,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n300000",
+   "start_check": "unclean",
+   "boot_s": 40.4,
+   "ms": 17124.6,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000-p16384",
+   "start_check": "full",
+   "boot_s": 40.4,
+   "ms": 17258.6,
+   "db_bytes": 13844480,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 1,
+   "store": "n30000-p65536",
+   "start_check": "full",
+   "boot_s": 40.8,
+   "ms": 9800.2,
+   "db_bytes": 15794176,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "start_check": "full",
+   "boot_s": 40.9,
+   "ms": 76798.1,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "start_check": "quick",
+   "boot_s": 40.4,
+   "ms": 44751.6,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 8037.5,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000",
+   "start_check": "unclean",
+   "boot_s": 40.3,
+   "ms": 8585.0,
+   "db_bytes": 13635584,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 378843.2,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "start_check": "quick",
+   "boot_s": 40.3,
+   "ms": 373752.1,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "start_check": "partial",
+   "boot_s": 40.3,
+   "ms": 8360.6,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "start_check": "unclean",
+   "boot_s": 40.4,
+   "ms": 9013.6,
+   "db_bytes": 141168640,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000-p16384",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 15001.5,
+   "db_bytes": 13844480,
+   "ready_ok": true,
+   "error": null
+  },
+  {
+   "rep": 2,
+   "store": "n30000-p65536",
+   "start_check": "full",
+   "boot_s": 40.3,
+   "ms": 9521.1,
+   "db_bytes": 15794176,
+   "ready_ok": true,
+   "error": null
+  }
+ ]
+}

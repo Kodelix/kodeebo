@@ -1,0 +1,6 @@
+phase 4 SC-24 option 4 (background check), commit b6b7150
+  rep 1 n30000   ready 13249.6 ms  background ok copy 5.7 s check 0.1 s (elapsed 5.5 s)  sales {'n': 2, 'p50': 173.61, 'p95': 312.7, 'max': 312.7}
+  rep 1 n300000  ready 12637.1 ms  background ok copy 69.8 s check 0.5 s (elapsed 73.9 s)  sales {'n': 11, 'p50': 818.96, 'p95': 2646.09, 'max': 2646.09}
+  rep 2 n30000   ready 12776.3 ms  background ok copy 5.4 s check 0.1 s (elapsed 5.5 s)  sales {'n': 2, 'p50': 173.65, 'p95': 319.01, 'max': 319.01}
+  rep 2 n300000  ready 12415.7 ms  background ok copy 72.3 s check 0.6 s (elapsed 77.1 s)  sales {'n': 11, 'p50': 1209.47, 'p95': 2939.54, 'max': 2939.54}
+SC-24 option 4: done

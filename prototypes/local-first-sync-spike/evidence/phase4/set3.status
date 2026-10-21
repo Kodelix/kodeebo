@@ -1,0 +1,15 @@
+--- queued 2026-10-20 17:06:15
+--- start 2026-10-20 19:50:16 8dfdc86 dirty=[0]
+install 19:53:55
+sc24b rc=0 21:00:47
+sc24c rc=0 21:12:21
+t-truncate-slots-r1 rc=0 21:16:40
+t-persist-slots-r1 rc=0 21:22:54
+t-delete-file-r1 rc=0 21:29:54
+t-truncate-slots-r2 rc=0 21:35:06
+t-persist-slots-r2 rc=0 21:40:25
+t-delete-file-r2 rc=0 21:45:52
+t-truncate-slots-r3 rc=0 21:49:45
+t-persist-slots-r3 rc=0 21:54:43
+t-delete-file-r3 rc=0 22:00:11
+s309 INTERRUPTED (host suspend/shutdown: runner stopped by systemd 2026-10-21 00:24, host back 04:33; log empty) — numbers NOT used; rerun as s309b
