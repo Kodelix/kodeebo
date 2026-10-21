@@ -138,7 +138,7 @@ Not set — `/setup-stack`, after the desktop-client `/research` and the Windows
 
 **Reference product:** the founder's previous system (Glitch) — as a capability baseline only, never as a design or code source.
 
-**Compliance / data:** Egypt PDPL (Law 151/2020) — staff data (attendance, passcodes) in Tier 1, customer PII in Tier 2. Egyptian VAT and e-receipt obligations — **NOT SOURCEABLE** yet, `/research`. Hosted data residency — open, `/research`. No card data handled.
+**Compliance / data:** Egypt PDPL (Law 151/2020) — staff data (attendance, passcodes) in Tier 1, customer PII in Tier 2. Egyptian VAT and e-receipt obligations — **NOT SOURCEABLE** yet, `/research`. Hosted data residency — research dropped by the founder (2026-10-20, decision log): the server-location question is part of the founder's PDPL question to counsel before the pilot; nothing waits on it. No card data handled.
 
 ---
 
