@@ -19,9 +19,11 @@ Proposed
 **Acceptance blockers.**
 1. **Closed 2026-10-21:** S31c passed (research F342–F347). With `transaction_timeout` at 1,500 ms and 2,500 ms, under a 3,000 ms runner stop and without `client_connection_check_interval`, the server ended the blocking statement, the runner join finished in time and the rows were free at the next sample. The 6,000 ms control kept them locked about 2.4 s after JVM exit. The body ran once in every case. Decision 7 needs no revision; its worst-case reading is added to rule 1. Not covered: F346, F349.
 2. **Closed 2026-10-21:** the founder confirmed the retention defaults in Decision 4 (done rows 7 days, dead rows 90 days).
-3. **Open:** the CTO-ADR gate runs and its verdict is recorded (founder, 2026-10-21; see Decision Makers).
+3. **Open:** the CTO-ADR gate passes on re-check. The first run (2026-10-21) returned **CONCERNS**; its six required items and the minor items are applied in this revision (see Decision Makers). The re-check is pending.
+4. **Open (security-lead, 2026-10-21):** a Draft extension of `docs/architecture/threat-models/tenant-isolation.md` boundary TB6 (scheduler and jobs ↔ database) exists. It must cover the nine abuse cases listed in Related → Threat model. ADR-0012 changes grants and policies, which is the "authorization model" trigger in `security-baseline.md`.
+5. **Joint acceptance (ADR-0010 Ordering Note 1, founder 2026-10-21):** ADR-0010, ADR-0011 and ADR-0012 are accepted together, after one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012. ADR-0011 is not yet written.
 
-**Order (founder, 2026-10-21):** written as Proposed → S31c → CTO-ADR → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
+**Order (founder, 2026-10-21):** written as Proposed → S31c (done) → CTO-ADR (CONCERNS, revised) → CTO re-check → the TB6 threat-model extension → the joint independent review with ADR-0010 and ADR-0011 → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
 
 ## Date
 
@@ -39,7 +41,14 @@ Proposed
   - `ktor-lead`: **MINOR NOTES**. No deprecated or changed API is used. The draft was corrected on the stop budgets running in sequence, the `runBlocking` bridge and the start gate, cancellation handling, the explicit `Database`, pool and dispatcher sizing, and the single `options` string.
   - `data-lead`: **3 BLOCKING items, all fixed in this draft.** C9 now lists only claimed tables, a grant matrix matches the policies, and the gauges are computed per tenant. Its minor notes were also applied: `idle_in_transaction_session_timeout`, churn and autovacuum, EXPLAIN of the claim branches, prune batching and the idempotency window, purged tenants, lock order, a read-first schedule pass, UUIDv7.
   - Exposed deprecations other than `newSuspendedTransaction` are NOT SOURCEABLE (the stack reference has no Exposed table).
-- **CTO-ADR: pending — required before acceptance** (founder, 2026-10-21). This ADR is Critical and amends ADR-0001's catalogue list (C9), so the gate runs as if `--review full` for this gate only, even though `review_mode` is lean. It runs after S31c. Verdict: [to be recorded].
+- **CTO-ADR: pending — required before acceptance** (founder, 2026-10-21). This ADR is Critical and amends ADR-0001's catalogue list (C9), so the gate runs as if `--review full` for this gate only, even though `review_mode` is lean. It runs after S31c. **First run, 2026-10-21: CONCERNS.** Six required items:
+  1. Exports were missing from the suspended list.
+  2. A recurring job that keeps failing raised no alert.
+  3. Retry bookkeeping could overwrite another runner's result.
+  4. The `purged` claim on ADR-0005 was not stated in ADR-0005.
+  5. No threat model was linked.
+  6. The C9 amendment was incomplete.
+  It also listed 11 minor items. The founder chose **Revise flagged items**; all of them are applied in this revision, with amendment notes in ADR-0001, ADR-0005 and ADR-0009, and `security-lead` decided the threat-model placement. One minor item, ADR-0010's line about this ADR's trigger, was already fixed by the map session (`1ac6d3d`). **Re-check: pending.**
 - **CTO-STACK-RISK: skipped — founder decision, 2026-10-21, not a lean-mode default.** This ADR relies on two behaviours beyond `docs/stack-reference/`: Exposed 1.5.1's default retry of a failed `suspendTransaction` block, and the Ktor 3.6.0 stop sequence. Both are covered by executed spikes on exactly those behaviours (research F326, F329–F340), and the one combination not yet run, S31c (F341), is already acceptance blocker 1. A skipped gate is not a passed gate.
 
 ## Summary
@@ -57,7 +66,7 @@ Kodeebo's hosted backend needs one way to run background work for every tenant. 
 | **References Consulted** | `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F349; evidence `docs/research/evidence/jobs-and-outbox/`); `docs/research/backend-track.md` (bt-F201–F215); `docs/stack-reference/ktor/{VERSION,best-practices,deprecated-apis,breaking-changes}.md`, `docs/stack-reference/kotlin/deprecated-apis.md`, `docs/stack-reference/postgres/{VERSION,best-practices}.md` (all Last verified 2026-10-11); `docs/registry/architecture.yaml`; `.claude/docs/standing-decisions.md` |
 | **Pinned versions relied on** | `postgres:18.6`; Ktor 3.6.0; Exposed 1.5.1; HikariCP 7.1.0; Kotlin 2.4.21; kotlinx.coroutines 1.11.0; JVM toolchain 21 (`pins.yaml`); pgjdbc 42.7.14 (not yet pinned; pin proposed, research part 3 § 10) |
 | **Post-Cutoff APIs Used** | Exposed `Query.forUpdate(ForUpdateOption.PostgreSQL.ForUpdate(MODE.SKIP_LOCKED))` (F321, F323); `DatabaseConfig { defaultMaxAttempts }` and `JdbcTransaction.maxAttempts` (F335–F337); `suspendTransaction` (stack reference, best-practices line 55); Ktor `ApplicationStarted`, `ApplicationStopping`, `ApplicationStopped` and the engine's `shutdownTimeout` (F313, F329–F334); `Dispatchers.IO.limitedParallelism(n, name)` (kotlin deprecated-apis line 25); PostgreSQL `transaction_timeout` (best-practices line 53) and `client_connection_check_interval` (F312) |
-| **Verification Required** | (1) ~~S31c (F341)~~ **done 2026-10-21, passed (F342–F347)**: with the helper's `transaction_timeout` below the runner stop timeout, a stop during a blocking statement ended inside the stop window and freed the rows without `client_connection_check_interval`. Still open from it: the cancellation-branch test (F346) and the F349 cases, in the Ktor-side integration tests. (2) A two-instance run on the real backend image: two runners sweeping one database at once produce no duplicate effect and claim each row once (research part 2 S23). (3) The real Gradle build resolves `kotlin-stdlib` 2.4.21, not Exposed's declared 2.3.21 (F320). (4) Idle sweep duration on the JVM at the expected tenant count, against the budget this ADR proposes (Decision 10). (5) Re-run S31/S31b on every Exposed, HikariCP, pgjdbc or Ktor bump. (6) The Compose stop grace period (ADR-0009) exceeds the sum of the engine's grace and timeout, the runner stop timeout and `shutdownTimeout` (Decision 7, rule 2). (7) A churn test on `job_outbox` (`n_dead_tup` under realistic enqueue, claim and prune) sets its autovacuum parameters. (8) EXPLAIN of both claim branches with the kind filter (Decision 2). (9) Whether `ON CONFLICT DO NOTHING` needs the table-level SELECT privilege, proved by the enqueue integration test with the Decision 2 grants. |
+| **Verification Required** | (1) ~~S31c (F341)~~ **done 2026-10-21, passed (F342–F347)**: with the helper's `transaction_timeout` below the runner stop timeout, a stop during a blocking statement ended inside the stop window and freed the rows without `client_connection_check_interval`. Still open from it: the cancellation-branch test (F346) and the F349 cases, in the Ktor-side integration tests. (2) A two-instance run on the real backend image: two runners sweeping one database at once produce no duplicate effect and claim each row once (research part 2 S23). (3) The real Gradle build resolves `kotlin-stdlib` 2.4.21, not Exposed's declared 2.3.21 (F320). (4) Idle sweep duration on the JVM at the expected tenant count, against the budget this ADR proposes (Decision 10). (5) Re-run S31/S31b on every Exposed, HikariCP, pgjdbc or Ktor bump. (6) Owner `platform-lead`, before the first job story: ADR-0009 sets no stop grace period, so the backend container's Compose stop grace period is set to exceed the sum of the engine's grace and timeout, the runner stop timeout and `shutdownTimeout` (Decision 7, rule 2). (7) A churn test on `job_outbox` (`n_dead_tup` under realistic enqueue, claim and prune) sets its autovacuum parameters. (8) EXPLAIN of both claim branches with the kind filter (Decision 2). (9) Whether `ON CONFLICT DO NOTHING` needs the table-level SELECT privilege, proved by the enqueue integration test with the Decision 2 grants. |
 
 > If Knowledge Risk is MEDIUM or HIGH, re-validate this ADR whenever a pin in
 > `pins.yaml` changes. Mark it "Superseded" and write a new ADR if it no longer holds.
@@ -70,7 +79,7 @@ Critical ADR: yes — messaging and background processing for every context; Fou
 |-------|-------|
 | **Depends On** | ADR-0001 (table classes, role inventory, suspension contract), ADR-0002 (scope helper, Job kind, J1), ADR-0005 (retention, closure and export jobs), ADR-0006 (Ktor track, Decision 5/5a pools and dispatchers, Decision 6 jobs direction), ADR-0007 (`auth_notices`, M31 notice gating), ADR-0008 (two-key advisory-lock scheme and lock order; trail jobs), ADR-0009 (deploy overlap, `catalogue_rt` checks) — all Accepted |
 | **Enables** | ADR-0013 (notifications: provider adapters as external-effect job kinds, the `auth_notices` claim/ack functions); every story with a background job (ADR-0005 closure steps, retention purges, exports; ADR-0001 usage counts and suspension notices; ADR-0007 owner notices; ADR-0008 trail verification and pruning; backfills); `project.yaml` `stack.messaging: none` |
-| **Blocks** | Any job, outbox or scheduler code (registry FP-QUEUE-WITHOUT-ADR-R2); the first work-table migration |
+| **Blocks** | Any job, outbox or scheduler code (registry FP-QUEUE-WITHOUT-ADR-R2); the first work-table migration. Per ADR-0010 Ordering Note 1, no Layer 1 code (this ADR's included) starts before ADR-0010 and ADR-0011 are also Accepted. |
 | **Ordering Note** | Coordinates with ADR-0010 (core-extraction policy; Proposed, written by the map session) and ADR-0011 (module structure; not yet written, map session): they decide the module and package of the runner and of the `WorkQueue` port. This ADR fixes the behaviour and the port, not the module path. |
 
 ## Context
@@ -149,9 +158,9 @@ Table grants match the policies exactly, as ADR-0001 check C2 requires (a grant 
   - Partial indexes `(tenant_id, run_at) WHERE status = 'pending'` and `(tenant_id, lease_until) WHERE status = 'running'`, plus `(tenant_id, done_at) WHERE status IN ('done', 'dead')` for the prune.
   - Before the first release, EXPLAIN both claim branches (pending and expired lease) with the kind filter; `kind` joins the indexes if rows of kinds a tenant's status does not allow are re-scanned on every pass. F116 measured only the pending branch.
   - Per-table autovacuum settings for `job_outbox` are set from a churn test (`n_dead_tup` under a realistic enqueue, claim and prune rate). F116 measured static rows only, and the stack reference has no autovacuum guidance.
-- `job_schedule` columns: `kind`, `next_run_at`, `last_run_at`, `last_outcome`, `runs`; primary key `(tenant_id, kind)`. Each kind's interval comes from config, not from a column.
+- `job_schedule` columns: `kind`, `next_run_at`, `last_run_at`, `last_outcome`, `runs`, `consecutive_failures`, `last_error_class`; primary key `(tenant_id, kind)`. Each kind's interval comes from config, not from a column. A recurring row has no `dead` state (Decision 4).
 - Every table is recorded in the class list in its own migration, and owned by `migrator`.
-- **New catalogue check C9 (CI and the scheduled `catalogue_rt` run, ADR-0009; amends ADR-0001's catalogue list C1–C8):** every table listed as **claimed** in the class list (today `job_outbox` and `job_schedule`, the tables read with `FOR UPDATE`) must carry `job_rt` permissive SELECT **and** UPDATE policies. Without the UPDATE policy a claim returns 0 rows and no error, so the queue goes dark silently (F112). Without the SELECT policy the claim also sees nothing, and the per-tenant metrics read nothing, so the metric canary cannot catch it; C9 covers both. `job_dedup` is never claimed and is not in C9's list. C9 is proved by a planted claimed table that lacks each policy in turn.
+- **New catalogue check C9 (CI and the scheduled `catalogue_rt` run; amends ADR-0001's checks C1–C6 and C8, of which there is no C7, and ADR-0009's "C1–C8" wording, by dated amendment notes in both ADRs):** every table listed as **claimed** in the class list (today `job_outbox` and `job_schedule`, the tables read with `FOR UPDATE`) must carry `job_rt` permissive SELECT **and** UPDATE policies. Without the UPDATE policy a claim returns 0 rows and no error, so the queue goes dark silently (F112). Without the SELECT policy the claim also sees nothing, and the per-tenant metrics read nothing, so the metric canary cannot catch it; C9 covers both. `job_dedup` is never claimed and is not in C9's list. C9 is proved by a planted claimed table that lacks each policy in turn. **How C9 relates to C2:** C2 already fails a role that has a grant without a matching policy, which covers F112's case of an UPDATE grant with no UPDATE policy. C9 is the per-table declared-intent check: a table marked claimed must have both policies, even if someone dropped the grant and the policy together. The `claimed` marker is kept by hand, so an integration test fails when the job adapter claims a table that is not marked. ADR-0001 § 1a lists the three tables as TD, and its class-list format gains the marker (ADR-0001 amendment 2026-10-21). S58 is re-run so that `catalogue_rt` provably needs no new grant (ADR-0009 amendment 2026-10-21).
 - No other role gets a policy on these tables. `platform_rt` never reads them. No class G, CP or PL work table is created by this ADR.
 
 **3. The sweep: per tenant, one item per transaction.** Each pass of the `JobRunner`:
@@ -165,16 +174,17 @@ Rules that follow from this design:
 - **One item per transaction** isolates failures. A failing item rolls back only itself, its retry bookkeeping is written in a fresh transaction, and no nested transaction or savepoint is used (registry FP-NEW-SUSPENDED-TRANSACTION).
 - **No singleton and no new advisory lock.** Two runners (the deploy overlap, F220, or a second instance) sweep the same database safely: every claim is a row lock and is skipped by the other runner (F305, F323). A recurring run is advanced in the same transaction as its effect (F118). Session-level advisory locks are forbidden in job code (F103, F119). A job kind that needs serialisation within a tenant uses the existing two-key, transaction-level scheme of ADR-0008 (TR-OWNER-ROLE-R3), with its own class id registered there. **Lock order inside a job transaction:** the claim's row lock first, then any ADR-0008 advisory locks in their order (journal, trail, last-owner, then job class ids), then the inserts that enqueue follow-up work.
 - **Tenant status gates kinds.** Every job kind declares the tenant statuses it runs in, and the sweep filters claims by them. The defaults come from Accepted contracts (TR-SUSPENSION-CONTRACT-R3, TR-CLOSURE-STATES-R4):
-  - **suspended:** usage counts, routine retention, suspension and auth notices, trail verification. No closure purge.
-  - **closure states:** their ADR-0005 step plus the kinds that contract keeps.
-  - **purged:** nothing. The ADR-0005 purge deletes the tenant's `job_*` rows, so the prune kind never needs to visit a purged tenant.
+  - **suspended:** usage counts, routine retention, suspension and auth notices, trail verification, and the **owner's tenant-wide export** (the suspended dashboard keeps export and payment, TR-SUSPENSION-CONTRACT-R3 and ADR-0001 Decision 4; the export runs as `job_rt` per ADR-0005 Decision 5), with job pruning. No closure purge.
+  - **closure states:** their ADR-0005 step plus the kinds that contract keeps. **`archive_retained`** lists them explicitly: the archive export (after `ArchiveRequest.verify`), the archive purge when `retain_until` passes with no legal hold, and job pruning.
+  - **purged:** nothing. The step that reaches `purged` deletes the tenant's `job_*` rows, its own claimed row included, inside its own transaction; its record is the deletion-journal entry (ADR-0005 Decision 1, amendment 2026-10-21). No job row reappears, because no kind runs for `purged` and the sweep creates no schedule rows for it.
   - A kind's feature spec may narrow this list, never widen it.
 
 **4. Enqueue, retry, dead items and retention.**
 - **Enqueue** is an insert into `job_outbox` inside the business transaction that causes it: `app_rt` in a Staff scope, `device_rt` in a Device scope, or `job_rt` for a job that chains another. It uses `ON CONFLICT (tenant_id, kind, idempotency_key) DO NOTHING`, so repeating it is harmless.
   - The payload holds ids and enums only, never personal data or free text, and stays under the configured size cap.
   - `traceparent` is stored only if it matches the W3C format. The consumer starts its own trace with a **span link** to the stored context, never a parent taken from a producer-controlled string.
-- **Retry:** on failure, a fresh transaction sets `attempts + 1`, a `last_error_class`, and `run_at = now + min(cap, base · 2^(attempts−1)) · jitter`. The jitter comes from an injected random source in [0.5, 1.0]. At `max_attempts` the row becomes `dead`. `base`, `cap` and `max_attempts` are per-kind config with typed defaults; the spike's 30 s / 3600 s / 4 are placeholders (F117).
+- **Retry:** on failure, a fresh transaction sets `attempts + 1`, a `last_error_class`, and `run_at = now + min(cap, base · 2^(attempts−1)) · jitter`. **The update is guarded:** the fresh transaction first re-claims the row with `FOR UPDATE SKIP LOCKED WHERE id = :id AND status = :seenStatus AND attempts = :seenAttempts` (for a schedule row: `AND next_run_at = :seenNextRunAt`). If it gets no row, another runner has claimed or finished the item since the failed transaction released its lock, and the bookkeeping is dropped, never written over that runner's result. A two-runner test on the failure path proves this. The jitter comes from an injected random source in [0.5, 1.0]. At `max_attempts` the row becomes `dead`. `base`, `cap` and `max_attempts` are per-kind config with typed defaults; the spike's 30 s / 3600 s / 4 are placeholders (F117).
+- **Recurring rows that fail** do not go dead, because the kind must keep running. The same guarded transaction sets `consecutive_failures + 1`, `last_error_class`, and `next_run_at = now + min(interval, backoff)` with the same formula, so a failing kind retries sooner than its interval but never more often than the backoff allows. A success resets `consecutive_failures` to 0. An alert fires when `consecutive_failures` reaches a per-kind threshold (config) or the row is overdue (Decision 9).
 - **Dead items** keep their row and payload, raise an alert (Decision 9) and are never retried automatically. This ADR provides no requeue path; one is decided with `security-lead` before the first job kind ships.
 - **Retention** (ADR-0005 G retention table, added by a reviewed migration):
   - `job_done_rows`: default **7 days** (founder, 2026-10-21).
@@ -195,7 +205,7 @@ Rules that follow from this design:
   4. An expired lease makes the row claimable by any runner. Because the item id is the provider key, a duplicate call is absorbed by the provider.
   - `leaseDuration` (config) must exceed the provider timeout plus the retry budget.
   - "Done" means **the provider accepted the message**, which is the event ADR-0007's M31 notice gating needs.
-- **`auth_notices`** (class PL, ADR-0007) follows the external-effect contract. Its claim and acknowledge functions are amended into ADR-0001 § 1c by **ADR-0013** once the provider is chosen; until then, no notice kind ships. Today the § 1c list has only `AuthNotices.claim(batch)`.
+- **`auth_notices`** (class PL, ADR-0007) follows the external-effect contract. Its claim and acknowledge functions are amended into ADR-0001 § 1c by **ADR-0013** once the provider is chosen; until then, no notice kind ships. Today the § 1c list has only `AuthNotices.claim(batch)`. This ADR's rule is one item per transaction (Decision 3), so ADR-0013 either claims one notice per call or states why a batch is safe under the external-effect contract (each notice leased and acknowledged on its own).
 - **`job_dedup`** is written in the effect's transaction only by handlers whose effect can be reached by more than one item (fan-out), or whose cause can recur after the idempotency window. Others rely on the outbox row.
 - **Cancellation (coroutines):**
   - A `CancellationException` is always rethrown and never classified as a `Retry` or `Dead` outcome.
@@ -204,12 +214,12 @@ Rules that follow from this design:
   - Each of these has a test.
 
 **6. Exposed and connection rules for job work.**
-- The `job_rt` and `platform_rt` `Database` objects are created with `DatabaseConfig { defaultMaxAttempts = 1 }`. With Exposed's default (3), a failed block runs again: a `transaction_timeout` stretched from 500 ms to 1.6 s and ran the body three times (F326, F336). With 1, it ran once and failed in 505 ms (F337). Every job transaction also asserts `maxAttempts == 1` at runtime.
+- The `job_rt` and `platform_rt` `Database` objects are created with `DatabaseConfig { defaultMaxAttempts = 1 }`. For `platform_rt` this also applies to its per-request tenant-status reads (ADR-0001): this ADR **refines ADR-0006 § 5a** for that pool. With Exposed's default (3), a failed block runs again: a `transaction_timeout` stretched from 500 ms to 1.6 s and ran the body three times (F326, F336). With 1, it ran once and failed in 505 ms (F337). Every job transaction also asserts `maxAttempts == 1` at runtime.
 - **The helper always passes the role's `Database` explicitly** to `suspendTransaction`. There are five `Database` objects, one per LOGIN role (ADR-0006 § 5a), and which one is the default when none is passed was not sourced. An integration test asserts `current_user` equals the intended role for each kind of transaction.
 - **Handlers never open their own transaction.** A `db` handler uses the `ScopedTransaction` it is given. A nested block shares the outer transaction (ktor best-practices line 55), so retry bookkeeping opens only after the failed block has exited.
 - **Connection settings:**
-  - Each pool sets `client_connection_check_interval` (config; typed default 1 s, the value used in F339) through the pgjdbc `options` data-source property. A statement still running when the JVM goes away then ends within about a second, and its rows are freed (F311, F338, F339).
-  - The `job_rt` role also gets `idle_in_transaction_session_timeout` (config, typed default), which bounds a `db` handler that suspends inside its transaction (F113 left this untested; postgres best-practices line 53).
+  - The `job_rt` and `platform_rt` pools set `client_connection_check_interval` (config; typed default 1 s, the value used in F339) through the pgjdbc `options` data-source property. A statement still running when the JVM goes away then ends within about a second, and its rows are freed (F311, F338, F339).
+  - The `job_rt` pool also sets `idle_in_transaction_session_timeout` (config, typed default) in the same `options` string, not by `ALTER ROLE`, so no privileged migration is needed (ADR-0001 § 1b, ADR-0009). It bounds a `db` handler that suspends inside its transaction (F113 left this untested; postgres best-practices line 53).
   - `options` is a single string, and a second assignment overwrites the first, so it is built in **one place** from all the `-c` settings a pool needs.
   - The evidence is Linux and loopback only (F339).
 - **Pools and dispatchers:**
@@ -244,10 +254,11 @@ Rules that follow from this design:
 - Each process start generates an `instanceId`, used for leases and as a metric label.
 
 **9. Observability (required spans, metrics and alerts).**
+- **Sampling:** the Java agent instruments every JDBC call, so idle tenant visits produce spans that grow with tenants × passes. Each `job.sweep` pass is a trace root sampled at a configured ratio (typed default; `observability-engineer` sets it). `job.run` starts its own trace with a span link and is always recorded, so the spans of idle visits appear only in sampled sweep traces.
 - **Spans:** `job.sweep` per pass; `job.tenant` per tenant visit; `job.run` per item (kind, attempt, effect, outcome; a link to the stored `traceparent`); `outbox.enqueue` inside the business span; `job.deliver` for the provider call of an external item.
 - **Metrics:**
   - `jobs_claimed_total{kind}`, `jobs_completed_total{kind,outcome}`, `jobs_retried_total{kind}`, `jobs_dead_total{kind}`, `job_duration_seconds{kind}`.
-  - `job_pending{kind}` and `job_oldest_pending_age_seconds{kind}` (the dark-queue canary).
+  - `job_pending{kind}` and `job_oldest_pending_age_seconds{kind}` (the dark-queue canary); `job_schedule_overdue_seconds{kind}` (the largest `now − next_run_at` among due schedule rows of allowed kinds) and `job_schedule_consecutive_failures{kind}` (the largest value), both read in Decision 3a.
   - `sweep_duration_seconds`, `sweep_tenants_visited`, `sweep_last_success_timestamp`.
   - `job_claims_total{instance_id}`, transaction attempts per job block (above 1 is a bug), 25P04 terminations, pool in-use / idle / wait for both pools, and runner drain time with its timed-out flag.
   - A tenant id is never a metric label.
@@ -258,6 +269,7 @@ Rules that follow from this design:
 - **Alerts:**
   - Any increase in dead items.
   - The oldest pending age above a per-kind threshold.
+  - A recurring kind overdue beyond a per-kind threshold, or its consecutive failures at the threshold (Decision 4).
   - No successful sweep within N intervals.
   - Two `instance_id`s claiming within one window outside a deploy.
 - **Runbooks:** outbox backlog, dead items, stuck rows after a kill (`sre-lead`).
@@ -281,7 +293,7 @@ Rules that follow from this design:
 
 The thresholds are set by `performance-engineer` with the budgets in Decision 10.
 
-**12. Shared core.** `saas-core-kotlin` has no jobs module yet, so this is a **product-local adapter behind the port** that the core module will expose (ADR-0006 lists `Outbox/WorkQueue`; `coordination-rules.md` § Shared core absent). Extraction per ADR-0010's trigger. It is scheduled with `/core-extract`. The ports below must not change when the code moves.
+**12. Shared core.** `saas-core-kotlin` has no jobs module yet, so this is a **product-local adapter behind the port** that the core module will expose (ADR-0006 lists `Outbox/WorkQueue`; `coordination-rules.md` § Shared core absent). Extraction per ADR-0010's trigger (Decision 7). `jobs` is outside `/core-extract`'s core-module categories and is a core module only by ADR-0010 Decision 8's founder exception. It is scheduled with `/core-extract`. The ports below must not change when the code moves.
 
 ### Architecture
 
@@ -363,7 +375,7 @@ interface JobRunner {
   - Must use `suspendTransaction`, never the deprecated `newSuspendedTransaction`.
   - Must use the Exposed DSL claim (`forUpdate(...SKIP_LOCKED)`, `limit(1)`).
   - Must create the job and platform `Database` objects with `defaultMaxAttempts = 1`.
-  - Must set `client_connection_check_interval` on both pools.
+  - Must set `client_connection_check_interval` on the `job_rt` and `platform_rt` pools.
   - Must never open a raw JDBC connection (registry FP-RAW-JDBC-OUTSIDE-HELPER).
 - **Must never:**
   - poll `job_*` tables without a tenant scope;
@@ -473,6 +485,9 @@ interface JobRunner {
 | A half-open connection (host loss, network partition) holds row locks | Low | Medium | `transaction_timeout` per kind; keepalive settings — open question for `sre-lead` and `infra-engineer` |
 | Idle sweep cost grows past its budget as tenants grow | Medium (over time) | Medium | Measured budget (Decision 10); adopt W2 with an insert-if-absent hint and a periodic full sweep (F115) |
 | An external effect repeats after a lease expires | Medium | Low–Medium (a duplicate email or push) | The item id as the provider idempotency key; `leaseDuration` above provider timeout plus retry budget |
+| A recurring kind fails on every run and nobody notices | Medium | High (retention or closure silently stops) | `consecutive_failures` with backoff; overdue and failure-count alerts (Decisions 4 and 9); owner `sre-lead`, reviewed at the first job story |
+| Retry bookkeeping overwrites another runner's result | Medium | Medium | The guarded re-claim on `id`, status and attempts seen (Decision 4); two-runner failure-path test; owner `ktor-lead`, reviewed at the first job story |
+| Owner exports blocked during suspension | High if shipped as first drafted | High | Tenant-wide export added to the suspended list (Decision 3); validation criterion below |
 | Exposed declares kotlin-stdlib 2.3.21 against the pinned 2.4.21 (F320) | Low | Low | Verification Required (3) in the real Gradle build |
 | A behaviour beyond the stack reference changes on a bump (Exposed retry, Ktor stop order) | Medium on bumps | High | Verification Required (5): re-run S31 and S31b on each bump; Knowledge Risk HIGH |
 
@@ -480,7 +495,7 @@ interface JobRunner {
 
 | Concern | Impact |
 |---------|--------|
-| **Security / tenancy** | No new role, class or trust boundary in the database. Three TD tables under FORCE RLS; C9 added. ASVS 5.0.0 8.4.1 (L2), 8.3.1 (L1), 8.2.2 (L1) looked up (F316); V13 and V16 IDs NOT SOURCEABLE. The provider path (external effects) is a new outbound boundary carrying ids only; its threat model goes with ADR-0013. `security-lead` decides whether the job path gets its own threat model or extends the ADR-0005 and ADR-0007 models (open question). |
+| **Security / tenancy** | No new role, class or trust boundary in the database. Three TD tables under FORCE RLS; C9 added. ASVS 5.0.0 8.4.1 (L2), 8.3.1 (L1), 8.2.2 (L1) looked up (F316); V13 and V16 IDs NOT SOURCEABLE. The provider path (external effects) is a new outbound boundary carrying ids only; its threat model goes with ADR-0013. Threat models (security-lead, 2026-10-21): the job path extends `threat-models/tenant-isolation.md` boundary TB6 (Draft before acceptance, blocker 4); the notice job stays in `threat-models/staff-auth.md` TB7 (T7.4, M32). |
 | **Observability** | New spans, metrics, logs and alerts as Decision 9; three runbooks (`sre-lead`) |
 | **Caching** | No cache. The claim must read committed state, and the tenant list comes from CP per pass (ADR-0001: status is read per request with no cache). |
 | **Self-hosted** | Not in scope (hosted only). Nothing chosen here needs an extra service, so a later customer bundle would run it unchanged. |
@@ -499,15 +514,15 @@ interface JobRunner {
 
 ## Migration Plan
 
-1. **First work-table migration** (not privileged; run by `deploy_rt`): creates `job_outbox`, `job_schedule` and `job_dedup` with RLS, policies, indexes and their class-list entries. CI's catalogue test gains C9 with its planted-table tests, and the class list gains a "claimed" marker for `job_outbox` and `job_schedule`. On acceptance, ADR-0001's catalogue list (C1–C8) records C9 by an amendment block that cites this ADR, appended to its Status without editing its decision text. Forward-only in production; reversible (a `U` file) in development, per ADR-0009.
+1. **First work-table migration** (not privileged; run by `deploy_rt`): creates `job_outbox`, `job_schedule` and `job_dedup` with RLS, policies, indexes and their class-list entries. CI's catalogue test gains C9 with its planted-table tests, and the class list gains a "claimed" marker for `job_outbox` and `job_schedule`. ADR-0001 records C9, the three TD tables and the marker in dated amendment blocks (2026-10-21) that take effect when this ADR is Accepted; ADR-0005 (`purged` removes `job_*` rows) and ADR-0009 (`catalogue_rt` runs C1–C6, C8 and C9; stop grace period owner) carry the same kind of note. Their decision text is not edited. Forward-only in production; reversible (a `U` file) in development, per ADR-0009.
 2. **Retention rows:** a reviewed migration adds `job_done_rows` and `job_dead_rows` to the G retention table, through `SET ROLE migrator` (ADR-0001 § 1b exception), with the founder's defaults (7 and 90 days, 2026-10-21).
 3. **Runner:** the `JobRunner` and adapters ship with the first job story, together with Testcontainers suites X1–X9, S31b, the two-runner test and the cross-tenant negative tests.
 4. **Config:** `project.yaml` `stack.messaging: none`. The pgjdbc pin `ktor.pgjdbc: 42.7.14` is applied by the user with its stack-reference row.
 5. **Registry:** IC-OUTBOX-SWEEP-R2 is superseded by this ADR's contract, and FP-QUEUE-WITHOUT-ADR-R2 is kept.
 
 **Rollback plan**:
-- No production data exists yet, so before the first release the decision can be reversed by a new ADR.
-- After release, the work tables are expand-only. A move to a library or a broker (Decision 11) would run both paths side by side, draining the outbox before the old runner is removed. No work row is ever migrated out of RLS.
+- No production data exists yet, so before the first release the decision can be reversed by a new ADR. Estimated cost: hours (documents and one migration file).
+- After release, the work tables are expand-only. A move to a library or a broker (Decision 11) would run both paths side by side, draining the outbox before the old runner is removed. No work row is ever migrated out of RLS. Estimated cost after release: one to three weeks for one developer (a new ADR, the relay or library adapter, a dual-run period and the drain). This is an estimate, not a measurement.
 
 ## Validation Criteria
 
@@ -515,6 +530,10 @@ interface JobRunner {
 - [ ] An enqueue under scope A for tenant B is refused by the restrictive policy (negative test).
 - [ ] C9 fails the build on a planted claimed table that lacks `job_rt`'s UPDATE policy, and again on one that lacks its SELECT policy.
 - [ ] Each job transaction runs as the intended role (`current_user` assertion) on the `Database` the helper passed.
+- [ ] A suspended tenant's owner-started tenant-wide export runs; a closure purge for that tenant does not.
+- [ ] A recurring kind that fails on every run backs off, raises the overdue alert and the consecutive-failure alert, and recovers its counter after one success.
+- [ ] Two runners on the failure path: when the second runner claims the item between the failed transaction and the bookkeeping, the bookkeeping is dropped and the second runner's result stands.
+- [ ] The job adapter cannot claim a table that is not marked `claimed` (integration test against the class list).
 - [ ] A stop during retry bookkeeping or transaction B leaves the row consistent (`NonCancellable`), and a `CancellationException` is never recorded as an attempt.
 - [ ] With `defaultMaxAttempts = 1`, a block that hits `transaction_timeout` runs exactly once (S31b case a2, kept as a regression test).
 - [ ] Two runners on one database: every row is claimed once and no effect is duplicated (Verification Required 2).
@@ -540,6 +559,22 @@ Foundational — no spec requirement. Enables:
 - Enables: ADR-0013 (notifications provider; amends ADR-0001 § 1c for `auth_notices`).
 - Coordinates with: ADR-0010 (core-extraction policy; Proposed, map session; Decision 12 defers to its extraction trigger) and ADR-0011 (module structure; not yet written, map session).
 - Research note: `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F349); evidence `docs/research/evidence/jobs-and-outbox/`. Earlier evidence: `docs/research/backend-track.md` bt-F201–F215.
-- Threat model: none written for the job path. `security-lead` decides between a new `docs/architecture/threat-models/jobs-and-outbox.md` and extending the ADR-0005 and ADR-0007 models. An outbound-webhooks threat model is required before trigger 2.
+- Threat models (security-lead, 2026-10-21, option C):
+  - `docs/architecture/threat-models/tenant-isolation.md`, boundary TB6 (scheduler and jobs ↔ database), is extended for the work tables, C9, enqueue by `app_rt`/`device_rt`, dead items and requeue. It must exist as a Draft before acceptance (blocker 4).
+  - `docs/architecture/threat-models/staff-auth.md` TB7 (T7.4, M32) already covers the notice job.
+  - The provider and external-effect boundary goes to the ADR-0013 notifications model, which must exist before the first `external` kind ships.
+  - An outbound-webhooks model is required before trigger 2.
+  - Already mitigated in TI: a forgotten scope returns 0 rows (T6.9 / M26); `job_rt` cross-tenant writes (T6.3 / M46); `platform_rt` list misuse (T6.11 / M19, M46).
+  - **To be added to TI:**
+    1. A cross-tenant enqueue or `job_dedup` write by `app_rt` or `device_rt` (M46 tests only `job_rt`).
+    2. The dark queue from a missing UPDATE or SELECT policy (C9).
+    3. A poison item until it goes dead.
+    4. Replay after a crash, absorbed by dedup.
+    5. Exposed's automatic retry re-running an effect.
+    6. One tenant flooding the queue (enqueue is never refused).
+    7. A session-level advisory lock leaking through the pool.
+    8. A producer-controlled `traceparent`.
+    9. An operator requeueing dead items as a privileged action.
+  - Before the first job story, each mitigation has a story and a negative test, and the requeue path is decided.
 - Runbooks (to write, `sre-lead`): outbox backlog, dead items, stuck rows after a kill.
 - Code paths: none yet. The module location follows ADR-0011.
