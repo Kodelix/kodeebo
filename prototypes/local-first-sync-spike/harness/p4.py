@@ -396,11 +396,11 @@ class BgRun(TimedRun):
     the full check in the background while idle), sells one café sale every `gap_s` seconds, and polls the background
     check until it finishes."""
 
-    def __init__(self, store, key, gap_s=5.0, limit_s=5400, mode="background", **kw):
-        super().__init__(240, 0, label=f"p4-sc24c-{store}-{mode}", **kw)
+    def __init__(self, store, key, gap_s=5.0, limit_s=5400, mode="background", bg_mode="thread", **kw):
+        super().__init__(240, 0, label=f"p4-sc24c-{store}-{mode}-{bg_mode}", **kw)
         self.key, self.keep_dir = key, True
         self.vdir = f"{WDIR}\\sc24\\{store}"
-        self.client_env.update(START_CHECK=mode, RETENTION="1")
+        self.client_env.update(START_CHECK=mode, RETENTION="1", BG_MODE=bg_mode)
         self.client_env.pop("ENDDAY", None)
         self.gap_s, self.limit_s, self.res = gap_s, limit_s, {}
 
@@ -425,12 +425,12 @@ class BgRun(TimedRun):
         self.res.update(bg_final=st, bg_elapsed_s=round(time.time() - t1, 1), sales=k, bg_trace=states[::10])
 
 
-def sc24c(reps=2, gap_s=5.0):
+def sc24c(reps=2, gap_s=5.0, bg_mode="thread", tag=""):
     """P4-F5 option 4: ready time and sale latency with the background check, on the 30k and 300k stores, cold."""
     assert vm_state() == "running"
     tunnel()
     sh("put", os.path.join(os.path.dirname(HERE), "sut", "client.py"), "C:/Users/cashier/p4/client.py")
-    summary = {"harness_commit": git_state(), "gap_s": gap_s, "rows": []}
+    summary = {"harness_commit": git_state(), "gap_s": gap_s, "bg_mode": bg_mode, "tag": tag, "rows": []}
     print(f"phase 4 SC-24 option 4 (background check), commit {summary['harness_commit']}", flush=True)
     for rep in range(1, reps + 1):
         for name in ("n30000", "n300000"):
@@ -442,7 +442,7 @@ def sc24c(reps=2, gap_s=5.0):
                     sh("put", os.path.join(src, f), f"C:/Users/cashier/p4/sc24/{name}/{f}", timeout=3600)
             boot = reboot_cold()
             tunnel()
-            run = BgRun(name, key, gap_s)
+            run = BgRun(name, key, gap_s, bg_mode=bg_mode)
             r = run.go()
             xs = run.samples.get("sell_items", [])
             tot = [x["total"] for x in xs if "total" in x]
@@ -454,7 +454,7 @@ def sc24c(reps=2, gap_s=5.0):
             print(f"  rep {rep} {name:8s} ready {row.get('ready_ms_host')} ms  background {row.get('bg_final', {}).get('state')} "
                   f"copy {row.get('bg_final', {}).get('copy_s')} s check {row.get('bg_final', {}).get('check_s')} s "
                   f"(elapsed {row.get('bg_elapsed_s')} s)  sales {row['sale_total_ms']}", flush=True)
-    with open(os.path.join(RUNS, "p4-sc24c-summary.json"), "w") as f:
+    with open(os.path.join(RUNS, f"p4-sc24c-{tag}-summary.json" if tag else "p4-sc24c-summary.json"), "w") as f:
         json.dump(summary, f, indent=1)
     print("SC-24 option 4: done")
 
@@ -634,9 +634,11 @@ def wait_off(timeout=900):
 
 
 TRANSITIONS = ("restart", "hybrid", "full", "poweroff", "hibernate")
+SHUTDOWN_CMD = {"hybrid": "shutdown.exe /s /hybrid /t 0", "full": "shutdown.exe /s /t 0",
+                "fullold": "shutdown.exe /s /full /t 0", "hibernate": "shutdown.exe /h"}
 
 
-def s30x(reps=10, off_s=30):
+def s30x(reps=10, off_s=30, only=None):
     """S301/S302 (+ S305's hibernate leg): every clock and boot marker across restart, Fast Startup shutdown
     (hybrid), full shutdown, hard power-off and hibernate; `off_s` seconds powered off each time."""
     assert vm_state() == "running"
@@ -649,8 +651,9 @@ def s30x(reps=10, off_s=30):
     summary = {"harness_commit": git_state(), "setup": setup, "rows": []}
     print(f"phase 4 S301/S302 clocks and boot markers, commit {summary['harness_commit']}", flush=True)
     for rep in range(1, reps + 1):
-        for t in TRANSITIONS:
+        for t in (only.split(",") if only else TRANSITIONS):
             before = probe("mark")
+            cmd_out = None
             time.sleep(5)
             if t == "restart":
                 sh("ad", "shutdown /r /t 0")
@@ -660,8 +663,9 @@ def s30x(reps=10, off_s=30):
                 if t == "poweroff":
                     subprocess.run(V + ["destroy", DOM], capture_output=True)
                 else:
-                    sh("ad", {"hybrid": "shutdown /s /hybrid /t 0", "full": "shutdown /s /full /t 0",
-                              "hibernate": "shutdown /h"}[t])
+                    # keep the command's own output and exit code (set 2 lost them: `/full` did nothing, unexplained)
+                    cmd_out = sh("ad", f"powershell -NoProfile -Command \"$o = & {SHUTDOWN_CMD[t]} 2>&1 | Out-String; "
+                                       f"'rc=' + $LASTEXITCODE; $o\"", timeout=120)[-600:]
                 ok = wait_off()
                 t_off = time.time()
                 time.sleep(off_s)
@@ -672,7 +676,8 @@ def s30x(reps=10, off_s=30):
             after = probe("read")
             d = lambda k: round(after[k] - before[k], 3) if isinstance(after.get(k), (int, float)) and \
                 isinstance(before.get(k), (int, float)) else None
-            row = {"rep": rep, "transition": t, "off_s": off, "back_s": boot,
+            row = {"rep": rep, "transition": t, "command": SHUTDOWN_CMD.get(t), "command_output": cmd_out,
+                   "off_s": off, "back_s": boot,
                    "wall_delta": d("wall"), "tick_delta": d("tick_s"), "qpc_delta": d("qpc_s"),
                    "unbiased_delta": d("unbiased_s"), "interrupt_delta": d("interrupt_s"),
                    "py_monotonic_delta": d("py_monotonic"),
@@ -685,7 +690,7 @@ def s30x(reps=10, off_s=30):
                   f"qpc +{row['qpc_delta']} unbiased +{row['unbiased_delta']} boot_from_tick changed "
                   f"{row['boot_from_tick_changed']} BootId {row['boot_id_before_after']} volatile survived {row['volatile_marker_survived']} "
                   f"event27 {(row['boot_event_27_after'] or {}).get('desc', '')[:70]}", flush=True)
-    with open(os.path.join(RUNS, "p4-s30x-summary.json"), "w") as f:
+    with open(os.path.join(RUNS, f"p4-s30x-{only.replace(',', '-')}-summary.json" if only else "p4-s30x-summary.json"), "w") as f:
         json.dump(summary, f, indent=1)
     print("S301/S302: done")
 
@@ -1024,11 +1029,12 @@ if __name__ == "__main__":
     elif sys.argv[1] == "sc27":
         sc27(int(sys.argv[2]) if len(sys.argv) > 2 else 200, *(sys.argv[3:4]))
     elif sys.argv[1] == "sc24c":
-        sc24c(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
+        sc24c(int(sys.argv[2]) if len(sys.argv) > 2 else 2, float(sys.argv[3]) if len(sys.argv) > 3 else 5.0,
+              *(sys.argv[4:6]))
     elif sys.argv[1] == "sc24b":
         sc24b(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
     elif sys.argv[1] == "s30x":
-        s30x(int(sys.argv[2]) if len(sys.argv) > 2 else 10)
+        s30x(int(sys.argv[2]) if len(sys.argv) > 2 else 10, 30, sys.argv[3] if len(sys.argv) > 3 else None)
     elif sys.argv[1] == "ts07b":
         ts07b()
     elif sys.argv[1] == "s303":

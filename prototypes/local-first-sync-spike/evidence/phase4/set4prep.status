@@ -1,0 +1,16 @@
+start 2026-10-21 15:31:37 0b4dbbe uncommitted:  M prototypes/local-first-sync-spike/README.md  M prototypes/local-first-sync-spike/harness/p4.py  M prototypes/local-first-sync-spike/sut/client.py 
+tamper truncate file rc=0 pass=38 fail=0 15:31:46
+tamper persist file rc=0 pass=38 fail=0 15:31:56
+tamper persist slots rc=0 pass=38 fail=0 15:32:05
+tamper truncate slots rc=0 pass=38 fail=0 15:32:15
+stopped 15:33:05: bgwindow harness fault (window empty), debugging
+--- resume (tamper done above; bgwindow fixed: late-page target, pacing, unchanged-from-fault check)
+start 2026-10-21 15:34:48 3be7a5c uncommitted:  M prototypes/local-first-sync-spike/harness/p4.py  M prototypes/local-first-sync-spike/sut/client.py 
+bgwindow rc=0 P4-F5 window sales: FAIL (1041.2 s) 15:52:09
+bgcheck rc=0 6 cases 15:56:55
+selftest rc=0 GATE: PASS  (total 191.7 s) 16:00:07
+phase1 rc=0 GATE (process-kill part): PASS  (total 475.4 s) 16:08:03
+DONE
+--- bgwindow final run 2026-10-21 16:09:29 3be7a5c (classification fixed: sent-in-sync, fault moment = first sign)
+bgwindow rc=0 P4-F5 window sales: PASS (1028.7 s) 16:26:38
+DONE-FINAL

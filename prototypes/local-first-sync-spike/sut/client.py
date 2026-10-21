@@ -628,7 +628,10 @@ START_CHECK = os.environ.get("START_CHECK", "full")
 # phase 4, P4-F5: full | quick | partial | unclean | background | background_unclean
 BG_IDLE_S = float(os.environ.get("BG_IDLE_S", "1.0"))  # background check: only after this long without a counter op
 BG_STEP = int(os.environ.get("BG_STEP", "64"))  # pages copied per step (each step holds the store briefly)
-bg = {"wanted": False, "state": "off", "fault": None, "pages": 0, "total": None, "copy_s": None, "check_s": None}
+BG_MODE = os.environ.get("BG_MODE", "thread")  # thread: copy on its own connection (set 3) | counter: fix 4 (set 4)
+bg = {"wanted": False, "state": "off", "fault": None, "pages": 0, "total": None, "copy_s": None, "check_s": None,
+      "mode": BG_MODE, "restarts": 0}
+bgc = {"b": None, "d": None, "src": None, "prev": None, "t0": None}  # fix 4: the copy driven by the counter's thread
 op_busy = threading.Event()  # set while the counter handles an operation (a sale commits inside one)
 store_mx = threading.Lock()  # the counter's connection: one user at a time (the counter, or one background copy step)
 last_op = {"t": time.monotonic()}
@@ -904,6 +907,8 @@ def salvage_upload():
     s_.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
     meta = dict(s_.execute("SELECT k, v FROM meta").fetchall())
     lost = json.loads(meta["lost"])
+    if MUTANT == "salvage_hides_lost":  # planted defect: the unreadable sequences are not declared to the server
+        lost = []
     first = True
     while True:
         rows = s_.execute("SELECT seq, command_id, payload, payload_hash FROM cmds WHERE uploaded = 0 ORDER BY seq "
@@ -1010,6 +1015,25 @@ elif open_error is not None and not REBOOTSTRAP:  # with REBOOTSTRAP the refusal
     record_event("store_unusable_at_start", open_error, originals_preserved_in=recovery_copy)
 
 
+def bg_fault(e):
+    """A fault found by the background check (either mode): stop new sales, report, salvage at once (OQ31)."""
+    bg["state"], bg["fault"] = "fault", f"{type(e).__name__}: {e}"[:200]
+    record_event("store_fault_background", e)
+    if SALVAGE:  # OQ31: salvage at once, offline; the upload waits for the next contact
+        try:
+            salvage_store(e)
+        except Exception as e2:  # noqa: BLE001 - recorded; the next contact retries
+            record_event("salvage_failed", e2)
+
+
+def bg_note_step(b):
+    """Pages done, and the restart count: `remaining` rising between two steps means SQLite restarted the copy."""
+    if bgc["prev"] is not None and b.remaining > bgc["prev"]:
+        bg["restarts"] += 1
+    bgc["prev"] = b.remaining
+    bg["pages"], bg["total"] = b.page_count - b.remaining, b.page_count
+
+
 def background_check(main):
     """P4-F5 option 4: the full integrity check off the counter's path. The store is copied with SQLite's online
     backup in small steps, only while the counter is idle (no operation for BG_IDLE_S) and never during one (a sale
@@ -1042,6 +1066,7 @@ def background_check(main):
                     time.sleep(0.05)
                 with store_mx:
                     b = d.backup("main", main, "main")
+                bgc["prev"] = None
                 try:
                     while True:
                         while op_busy.is_set() or time.monotonic() - last_op["t"] < BG_IDLE_S:
@@ -1050,7 +1075,7 @@ def background_check(main):
                             if op_busy.is_set():
                                 continue
                             b.step(BG_STEP)
-                            bg["pages"], bg["total"] = b.page_count - b.remaining, b.page_count
+                            bg_note_step(b)
                             if b.done:
                                 break
                 finally:
@@ -1073,13 +1098,80 @@ def background_check(main):
             raise RuntimeError(f"integrity_check: {r[:3]}")
         bg["state"] = "ok"
     except Exception as e:  # noqa: BLE001 - any failure of the copy or the check is a store fault to report
-        bg["state"], bg["fault"] = "fault", f"{type(e).__name__}: {e}"[:200]
-        record_event("store_fault_background", e)
-        if SALVAGE:  # OQ31: salvage at once, offline; the upload waits for the next contact
+        bg_fault(e)
+    finally:
+        for x in (path, path + "-journal"):
             try:
-                salvage_store(e)
-            except Exception as e2:  # noqa: BLE001 - recorded; the next contact retries
-                record_event("salvage_failed", e2)
+                os.remove(x)
+            except OSError:
+                pass
+
+
+def bgc_begin(src):
+    """Fix 4: start the copy with the counter's own connection as the source. Writes the counter makes through it
+    update the copy (SQLite keeps the destination in step), so a sale does not restart the copy. Steps run only on
+    the counter's thread, between operations (_ops), so no connection is ever shared across threads."""
+    path = DB + ".bgcheck"
+    for x in (path, path + "-journal"):
+        if os.path.exists(x):
+            os.remove(x)
+    d = apsw.Connection(path)
+    d.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+    d.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+    d.execute("PRAGMA synchronous = OFF").fetchall()  # a throwaway copy: no forced writes for it
+    bgc.update(b=d.backup("main", src, "main"), d=d, src=src, prev=None, t0=time.monotonic())
+    bg["state"] = "copying"
+
+
+def bgc_abort():
+    """The counter's connection is closing or being replaced: drop the copy (it restarts at the next start)."""
+    if bgc["b"] is not None:
+        try:
+            bgc["b"].finish()
+            bgc["d"].close()
+        except Exception:  # noqa: BLE001 - a throwaway copy
+            pass
+        bgc.update(b=None, d=None, src=None)
+        if bg["state"] == "copying":
+            bg["state"] = "off"
+
+
+def bgc_step():
+    """One copy step on the counter's thread. When the copy is complete, it is checked on its own connection in a
+    thread (the check holds no lock on the store)."""
+    b = bgc["b"]
+    try:
+        b.step(BG_STEP)
+        bg_note_step(b)
+        if b.done:
+            b.finish()
+            bgc["d"].close()
+            bgc.update(b=None, d=None, src=None)
+            bg["copy_s"] = round(time.monotonic() - bgc["t0"], 1)
+            threading.Thread(target=bgc_check, daemon=True).start()
+    except Exception as e:  # noqa: BLE001 - a page that fails its authentication during the copy is a store fault
+        bgc_abort()
+        bg_fault(e)
+
+
+def bgc_check():
+    if WINDOWS:  # THREAD_MODE_BACKGROUND_BEGIN: low I/O priority for the check of the copy
+        ctypes.windll.kernel32.SetThreadPriority(ctypes.windll.kernel32.GetCurrentThread(), 0x00010000)
+    path = DB + ".bgcheck"
+    bg["state"] = "checking"
+    t1 = time.monotonic()
+    try:
+        d = apsw.Connection(path)
+        d.execute(f"PRAGMA cipher = {CIPHER}").fetchall()
+        d.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
+        r = d.execute("PRAGMA integrity_check").fetchall()
+        d.close()
+        bg["check_s"] = round(time.monotonic() - t1, 1)
+        if r != [("ok",)]:
+            raise RuntimeError(f"integrity_check: {r[:3]}")
+        bg["state"] = "ok"
+    except Exception as e:  # noqa: BLE001 - any failure of the check is a store fault to report
+        bg_fault(e)
     finally:
         for x in (path, path + "-journal"):
             try:
@@ -1847,7 +1939,20 @@ if CLOCKED and not refused and not INSPECT:
         record_event("store_error_during_operation", e)
         refused = True
 if open_error is None and con is not None and bg["wanted"] and STORE == "sqlite3mc":
-    threading.Thread(target=background_check, args=(con,), daemon=True).start()
+    if BG_MODE == "counter":
+        bgc_begin(con)
+    else:
+        threading.Thread(target=background_check, args=(con,), daemon=True).start()
+_inq = None
+if BG_MODE == "counter":  # fix 4: read operations in a thread, so the counter's thread can step the copy while idle
+    import queue
+    _inq = queue.Queue()
+
+    def _reader():
+        for ln in iter(sys.stdin.readline, ""):
+            _inq.put(ln)
+        _inq.put("")
+    threading.Thread(target=_reader, daemon=True).start()
 
 
 def _ops():
@@ -1855,7 +1960,19 @@ def _ops():
     while True:
         op_busy.clear()
         last_op["t"] = time.monotonic()
-        line = sys.stdin.readline()
+        if _inq is None:
+            line = sys.stdin.readline()
+        else:
+            while True:
+                try:
+                    line = _inq.get(timeout=0.02)
+                    break
+                except queue.Empty:  # idle: one copy step once the counter has been idle for BG_IDLE_S
+                    if bgc["b"] is not None:
+                        if bgc["src"] is not con:  # the connection was replaced (re-bootstrap): drop the copy
+                            bgc_abort()
+                        elif time.monotonic() - last_op["t"] >= BG_IDLE_S:
+                            bgc_step()
         if not line:
             return
         yield line
@@ -1873,6 +1990,7 @@ for line in _ops():
         timing.clear()
         timing["t0"] = time.perf_counter()
     if op == "exit":
+        bgc_abort()
         if con is not None:
             con.close()
             if START_CHECK in ("unclean", "background_unclean"):
@@ -1920,7 +2038,8 @@ for line in _ops():
         reply({"ok": False, "op": op, "error": "sync_quarantined"})  # planted defect: the counter stops
         continue
     gated = ("sale", "start_session", "sell_items", "sell_stock") + (("close_session",) if MUTANT == "expiry_blocks_close" else ())
-    if bg["fault"] and op in gated + ("close_session",):  # P4-F5: the background check found a fault: no new sales
+    if bg["fault"] and MUTANT != "bg_fault_ignored" and op in gated + ("close_session",):
+        # P4-F5: the background check found a fault: no new sales (mutant bg_fault_ignored: the counter sells on)
         reply({"ok": False, "op": op, "error": "store_fault", "warning": "store_fault", "detail": bg["fault"]})
         report_events()
         op_busy.clear()

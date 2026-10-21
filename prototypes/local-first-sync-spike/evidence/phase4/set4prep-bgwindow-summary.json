@@ -1,0 +1,137 @@
+{
+ "harness_commit": "3be7a5c+dirty",
+ "cells": {
+  "end_online": {
+   "seeds": 5,
+   "violating": 0,
+   "example": {
+    "outcome": {
+     "window": 3,
+     "on_server": 3,
+     "flagged": 0,
+     "counted_lost": 0,
+     "silent": 0
+    },
+    "first_refused": "s1-a303",
+    "bg_final": {
+     "state": null,
+     "fault": null,
+     "pages": null,
+     "total": null
+    }
+   }
+  },
+  "end_offline": {
+   "seeds": 5,
+   "violating": 0,
+   "example": {
+    "outcome": {
+     "window": 10,
+     "on_server": 10,
+     "flagged": 10,
+     "counted_lost": 0,
+     "silent": 0
+    },
+    "first_refused": "s1-a310",
+    "bg_final": {
+     "state": "fault",
+     "fault": "CorruptError: database disk image is malformed",
+     "pages": 256,
+     "total": 258
+    }
+   }
+  },
+  "salepages_start_offline": {
+   "seeds": 5,
+   "violating": 0,
+   "example": {
+    "outcome": {
+     "window": 0,
+     "on_server": 0,
+     "flagged": 0,
+     "counted_lost": 0,
+     "silent": 0
+    },
+    "first_refused": "s1-a300",
+    "bg_final": {
+     "state": null,
+     "fault": null,
+     "pages": null,
+     "total": null
+    }
+   }
+  },
+  "salepages_window_offline": {
+   "seeds": 5,
+   "violating": 0,
+   "example": {
+    "outcome": {
+     "window": 10,
+     "on_server": 9,
+     "flagged": 9,
+     "counted_lost": 1,
+     "silent": 0
+    },
+    "first_refused": "s1-a310",
+    "bg_final": {
+     "state": "fault",
+     "fault": "CorruptError: database disk image is malformed",
+     "pages": 0,
+     "total": null
+    }
+   }
+  },
+  "salepages_window_online": {
+   "seeds": 5,
+   "violating": 0,
+   "example": {
+    "outcome": {
+     "window": 10,
+     "on_server": 10,
+     "flagged": 1,
+     "counted_lost": 0,
+     "silent": 0
+    },
+    "first_refused": "s1-a310",
+    "bg_final": {
+     "state": "fault",
+     "fault": "CorruptError: database disk image is malformed",
+     "pages": 0,
+     "total": null
+    }
+   }
+  }
+ },
+ "mutants": {
+  "bg_fault_ignored": [
+   "end_offline",
+   [
+    "I1",
+    "s1-a310 acknowledged but missing on the server"
+   ]
+  ],
+  "rebootstrap_no_salvage": [
+   "end_offline",
+   [
+    "I1",
+    "s1-a300 acknowledged but missing on the server"
+   ]
+  ],
+  "salvage_hides_lost": [
+   "salepages_window_offline",
+   [
+    "I1",
+    "s1-a300 acknowledged but missing on the server"
+   ]
+  ],
+  "salvage_silent": [
+   "end_offline",
+   [
+    "W2",
+    "s1-a300 reached the server only through the salvage but is not flagged for the owner"
+   ]
+  ]
+ },
+ "result": "PASS",
+ "seconds": 1028.7
+}

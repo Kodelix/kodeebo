@@ -1945,7 +1945,7 @@ Evidence: `evidence/phase4/set2-*` (runner `set2-runner.sh`, status `set2.status
 
 - `slots`: the marker is two 128-byte MAC'd slots written in place with one flush, instead of a temporary file, its flush and a write-through rename.
 - The spread between single runs is larger than the differences (truncate / file's p95 is four times truncate / slots'), so nothing is ranked from this table. No variant reaches the commit p95 ≤ 150 ms.
-- **Linux checks per variant (`evidence/phase4/p4f3-*`, harness `901f3b8`):** the phase 1 kill matrix PASS for all six. Tamper 38 of 38 for delete / file and delete / slots. For the four truncate and persist variants, 28 of 38: the 10 wrong-key rows reported `client.db-journal` as a stray file, with the store unchanged and every attempt refused and recorded. Those two modes keep the journal file by design, so the file existed before the probe. The check was fixed in `4ddb601` (a journal file is a stray only if the probe changed it), but the four variants' tamper suite was not rerun after it: **not passed — not rerun after the `4ddb601` fix.** The rerun follows set 3 (founder, 2026-10-20), so it cannot disturb set 3's timings.
+- **Linux checks per variant (`evidence/phase4/p4f3-*`, harness `901f3b8`):** the phase 1 kill matrix PASS for all six. Tamper 38 of 38 for delete / file and delete / slots. For the four truncate and persist variants, 28 of 38: the 10 wrong-key rows reported `client.db-journal` as a stray file, with the store unchanged and every attempt refused and recorded. Those two modes keep the journal file by design, so the file existed before the probe. The check was fixed in `4ddb601` (a journal file is a stray only if the probe changed it), but the four variants' tamper suite was not rerun after it: **Rerun after set 3 (2026-10-21, `evidence/phase4/set4prep-tamper-*`): 38 of 38 for all four.** See "Linux checks after set 3" below.
 - **Next (founder, 2026-10-20):** set 3 repeats the three leading options (truncate / slots, persist / slots, delete / file) alternately, three rounds of 400.
 
 **SC-27 with the P4-F4 exclusion options (200 rounds each, ms).** A custom Defender scan of the client's `runs` folder (every earlier run's store included) every 20 s, and a `FullScan` request. As in set 1, `Start-MpScan -ScanType FullScan` returned after 2–6 s, so whether a full scan ran is **not established**.
@@ -2062,7 +2062,7 @@ Evidence: `evidence/phase4/set3-*`. SC-24 options ran on `8dfdc86+dirty`: the di
 - No sale lost or doubled in any round.
 - **truncate / slots** has the lowest p50 in every round and the lowest p95 in two of three; it meets start p95 ≤ 200 and café sale p95 ≤ 500 in all three. delete / file missed the café sale budget in round 1.
 - **No option meets commit p95 ≤ 150 ms** (truncate / slots 176–305). The budget stays until the pilot PC's numbers (founder, 2026-10-20).
-- **Not adoptable yet:** truncate / slots is among the four variants whose tamper suite is **not passed — not rerun after the `4ddb601` fix**.
+- **Tamper:** at the time of set 3, truncate / slots was among the four variants whose tamper suite was not passed (not rerun after the `4ddb601` fix). The rerun after set 3 passed 38 of 38 (below), so truncate / slots is the proposed commit option for set 4's S104 run, pending the founder's decision.
 
 **S309 (the one-minute heartbeat for 8 h, a sale every 30 s), rerun: no violation, nothing failed, but the ceiling was broken twice.**
 
@@ -2077,3 +2077,29 @@ Evidence: `evidence/phase4/set3-*`. SC-24 options ran on `8dfdc86+dirty`: the di
 - **The bytes-written measurement failed:** every `WriteTransferCount` reading came back empty (the query ran in the cashier's session; why it returned nothing is not investigated), so S309's write volume is **not measured**.
 
 **Open question OQ32 (founder, 2026-10-20; owner: the sync ADR; carried in phase 5's list in the sync note).** A store fault found while offline stops the counter: today's design (OQ31) refuses every sale until the device reloads from the server, so an offline venue sells only on paper until its internet returns, against principle 2 ("The counter never waits"); principle 1 ("Every pound leaves a trail") is the constraint any way of selling on must keep. Candidate to evaluate: a fresh store that keeps selling, with the salvage store kept for upload; what happens to open sessions, bill numbering (continue above the MAC'd marker, never reuse), the lease and the lost-range count, and what the fresh store needs before its first sale (catalogue, prices, PIN verifiers). Also: whether PIN verifiers and the lease copied from a damaged store are trusted on the page HMAC alone or only as a server-signed copy, and how the owner is told the venue sells on a rebuilt store. A question only: OQ31 point 7 (no offline selling on a fresh, empty store) and the `sell_on_fresh` mutant stay in force until the sync ADR decides, and that decision goes back to the founder. Not tested in phase 4. Full text: sync note OQ32.
+
+#### Linux checks after set 3 (2026-10-21, host only; founder go 2026-10-21)
+
+Evidence: `evidence/phase4/set4prep-*`. They ran on `3be7a5c` plus the uncommitted set 4 changes to `sut/client.py` and `harness/p4.py` (`set4prep.status` records the tree at each start): the restart count, the `BG_MODE=counter` copy (off by default), and two client mutants. The default code paths are unchanged.
+
+**Tamper for the four truncate and persist variants: 38 of 38 each** (`TAMPER_JOURNAL` × `MARKER_MODE`: truncate / file, persist / file, persist / slots, truncate / slots). The wrong-key rows now report no stray file: the journal these modes keep is no longer counted when the probe did not change it (the `4ddb601` fix).
+
+**Regression on the patched client: PASS.** `harness/bgcheck.py` 6 of 6 cases; phase 0 self-test gate PASS; phase 1 kill matrix gate PASS.
+
+**The background-check window test (`harness/bgwindow.py`; founder, 2026-10-20): PASS, 5 cells × 5 seeds, all 4 mutants caught.**
+- **The question:** the background check finds the store damaged after the counter has already sold on it. What happens to the sales made in that window?
+- **Pass rule (founder): no sale is lost silently.** Every acknowledged sale ends on the server once (applied normally if a sync carried it; otherwise through the salvage, which reads only rows that pass the page HMAC, flagged "salvaged" for the owner), or inside a reported lost range (`store_fault_unreadable`, counted from the MAC'd marker) with an owner alert. No sale is acknowledged once the fault is known; the damaged store is not written to between the fault and the contact.
+
+| Cell | What is damaged, when | Window sales (seed 1) | Outcome |
+|---|---|---|---|
+| end_online | a minutes page new sales never write to, before the start; a sync every 3 sales | 3 | the third sale's sync read the damaged page first: the operation failed, sales stopped; the 3 sales were already on the server through that sync (the salvage upload came back "duplicate"; not flagged) |
+| end_offline | the same page; server down | 10 | the background copy hit the page (page 256 of 258): all 10 salvaged, applied once, flagged |
+| salepages_start_offline | the last leaf of the bills and of the minutes table (where new sales write), before the start | 0 | the first sale read the damage and was refused; nothing acknowledged, nothing to lose |
+| salepages_window_offline | every outbox page and the last bills leaf, after 10 window sales, while the app runs | 10 | 9 salvaged and flagged; **1 unreadable, counted in a reported lost range with the owner alert**; 0 silent |
+| salepages_window_online | the same, syncing every 3 sales | 10 | 9 synced normally, 1 salvaged and flagged |
+
+- **Mutants:** `bg_fault_ignored` (sells on after the fault), `rebootstrap_no_salvage`, `salvage_hides_lost` (declares no lost range), `salvage_silent` (server applies salvaged sales without the flag): all caught.
+- **Two things the window test shows besides the rule:**
+  - With today's copy (its own connection), the copy restarts at every sale, so it completes only in an idle gap long enough for the whole copy; the test sells 10 sales close together and then pauses. On a busy counter the background check may not finish for a long time (set 4 counts restarts).
+  - A normal operation that reads a damaged page (a sale, a sync) finds the fault on its own, before the background check, and stops sales the same way.
+- **Harness faults found and fixed on the way** (`set4prep-bgwindow-run1-harness-fault.log` is the second attempt, after the first two fixes: 2 of 5 cells failed; the first attempt, stopped once its first cells failed every seed with an empty window, was overwritten by it): the "late page" was the minutes table's rightmost leaf, where new sales write (now: the highest page that is not the rightmost leaf); the window was one sale long (the copy finished in the first gap: now 10 sales, then a pause); "unchanged" was compared with the store before the window (now from the first sign of the fault); and a sale carried by a sync that did not reply was required to be flagged (it may have been applied normally by that batch: now exempt).
