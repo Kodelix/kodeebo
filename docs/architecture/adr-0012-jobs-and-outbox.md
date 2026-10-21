@@ -26,6 +26,8 @@ Proposed
 
 **Order (founder, 2026-10-21):** written as Proposed → S31c (done) → CTO-ADR (CONCERNS, revised) → CTO re-check (APPROVE) → the TB6 threat-model extension → the joint independent review with ADR-0010 and ADR-0011 → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
 
+**Text correction 2026-10-21 (founder, after the CTO final look):** Decision 5, external effects, steps 2 and 4 and the repeated-effect risk row no longer say the provider absorbs a duplicate call. The notifications research found that SMTP, Web Push and FCM take no idempotency key (`docs/research/notifications-provider.md` F106, F112, F218), so an external effect is at-least-once. The contract itself is unchanged. Registry: `IC-EXTERNAL-EFFECT-R3`. The joint independent review (blocker 5) reads this text.
+
 ## Date
 
 2026-10-21
@@ -242,9 +244,9 @@ Rules that follow from this design:
   - A killed or stopped worker's transaction aborts and the row becomes claimable again (F311, F333, F340). The outbox row itself is the dedup record (F306, F324).
 - **`external` effects** (an email, a push or any provider call):
   1. Transaction A claims the row and sets `status = 'running'`, `lease_until = now() + leaseDuration` (database time, M84), a fresh `lease_token`, `lease_owner = instanceId` and `attempts + 1`, then commits.
-  2. The provider is called **outside any transaction**, with the item id as the provider's idempotency key, under a timeout, a retry policy and a circuit breaker.
+  2. The provider is called **outside any transaction**, with the item id as the idempotency key (passed to the provider where it accepts one), under a timeout, a retry policy and a circuit breaker.
   3. Transaction B marks the row `done`, but only `WHERE status = 'running' AND lease_token = :token` (the token of this claim). On failure, B sets it back to `pending` with backoff, or `dead`, under the **same guard**. A claim per process could not tell two coroutines apart, so the token is per claim (threat model T6.26, M84).
-  4. An expired lease makes the row claimable by any runner. Because the item id is the provider key, a duplicate call is absorbed by the provider.
+  4. An expired lease makes the row claimable by any runner, so an external effect is **at-least-once**: after a lost reply or an expired lease the provider can receive the same call twice. SMTP, Web Push and FCM take no idempotency key (`docs/research/notifications-provider.md` F106, F112, F218): a duplicate email is accepted, and a duplicate push is dropped on the client by notice id. ADR-0013 states this per channel.
   - `leaseDuration` (config) must exceed the provider timeout plus the retry budget.
   - "Done" means **the provider accepted the message**, which is the event ADR-0007's M31 notice gating needs.
 - **`auth_notices`** (class PL, ADR-0007) follows the external-effect contract. Its claim and acknowledge functions are amended into ADR-0001 § 1c by **ADR-0013** once the provider is chosen; until then, no notice kind ships. Today the § 1c list has only `AuthNotices.claim(batch)`. This ADR's rule is one item per transaction (Decision 3), so ADR-0013 either claims one notice per call or states why a batch is safe under the external-effect contract (each notice leased and acknowledged on its own).
@@ -529,7 +531,7 @@ interface JobRunner {
 | A blocking statement outlives the stop window and keeps rows locked (F338) | Medium | Medium (work delayed until the statement ends) | Decision 7 ordering, confirmed by S31c (F342–F344); `client_connection_check_interval` |
 | A half-open connection (host loss, network partition) holds row locks | Low | Medium | `transaction_timeout` per kind; keepalive settings — open question for `sre-lead` and `infra-engineer` |
 | Idle sweep cost grows past its budget as tenants grow | Medium (over time) | Medium | Measured budget (Decision 10); adopt W2 with an insert-if-absent hint and a periodic full sweep (F115) |
-| An external effect repeats after a lease expires | Medium | Low–Medium (a duplicate email or push) | The item id as the provider idempotency key; `leaseDuration` above provider timeout plus retry budget |
+| An external effect repeats after a lease expires | Medium | Low–Medium (a duplicate email or push) | At-least-once by design; the item id as the idempotency key where the provider takes one, otherwise de-duplication on the client by notice id (push) or an accepted duplicate (email); `leaseDuration` above provider timeout plus retry budget |
 | A recurring kind fails on every run and nobody notices | Medium | High (retention or closure silently stops) | `consecutive_failures` with backoff; overdue and failure-count alerts (Decisions 4 and 9); owner `sre-lead`, reviewed at the first job story |
 | Retry bookkeeping overwrites another runner's result | Medium | Medium | The guarded re-claim on `id`, status and attempts seen (Decision 4); two-runner failure-path test; owner `ktor-lead`, reviewed at the first job story |
 | Owner exports blocked during suspension | High if shipped as first drafted | High | Tenant-wide export added to the suspended list (Decision 3); validation criterion below |

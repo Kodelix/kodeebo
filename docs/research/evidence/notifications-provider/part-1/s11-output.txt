@@ -1,0 +1,70 @@
+== Angus LICENSE.md head
+# Eclipse Public License - v 2.0
+        THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE
+        PUBLIC LICENSE ("AGREEMENT"). ANY USE, REPRODUCTION OR DISTRIBUTION
+        OF THE PROGRAM CONSTITUTES RECIPIENT'S ACCEPTANCE OF THIS AGREEMENT.
+    1. DEFINITIONS
+    "Contribution" means:
+      a) in the case of the initial Contributor, the initial content
+         Distributed under this Agreement, and
+      b) in the case of each subsequent Contributor: 
+         i) changes to the Program, and 
+         ii) additions to the Program;
+      where such changes and/or additions to the Program originate from
+      and are Distributed by that particular Contributor. A Contr
+== NOTICE head
+# Notices for Jakarta Mail
+
+This content is produced and maintained by the Jakarta Mail project.
+
+* Project home: https://projects.eclipse.org/projects/ee4j.mail
+
+## Trademarks
+
+Jakarta Mail is a trademark of the Eclipse Foundation.
+
+## Copyright
+
+All content is the property of the respective authors or their employers. For
+more information regarding authorship of content, please consult the listed
+source code repository logs.
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License v. 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0. This Source Code may also be made
+available under the following Secondary Licenses when the conditions for such
+availability set forth in the Eclipse Public License v. 2.0 are satisfied: GNU
+General Public License, version 2 with the GNU Classpath Exception whic
+== angus-mail 2.0.5 pom: groupId/artifactId/version of dependencies
+jakarta.activation jakarta.activation-api - -
+jakarta.mail jakarta.mail-api - -
+org.eclipse.angus angus-activation - runtime
+junit junit - test
+org.eclipse.angus angus-core - provided
+org.eclipse.angus imap - provided
+org.eclipse.angus smtp - provided
+org.eclipse.angus pop3 - provided
+org.eclipse.angus logging-mailhandler - provided
+org.graalvm.sdk graal-sdk - provided
+== simple-java-mail 9.3.8 pom dependencies
+org.simplejavamail core-module ${project.version} compile
+org.eclipse.angus angus-mail - -
+org.simplejavamail authenticated-socks-module ${project.version} -
+org.simplejavamail dkim-module ${project.version} -
+org.simplejavamail smime-module ${project.version} -
+org.simplejavamail batch-module ${project.version} -
+org.simplejavamail outlook-module ${project.version} -
+org.simplejavamail core-test-module ${project.version} test
+org.mnode.ical4j ical4j-vcard 2.0.0-beta2 test
+com.github.davidmoten subethasmtp 7.2.2 test
+org.junit-pioneer junit-pioneer 1.9.1 test
+== OSV querybatch, right names
+org.eclipse.angus:smtp 2.0.5 []
+org.eclipse.angus:smtp 2.0.3 ['GHSA-9342-92gg-6v29']
+org.eclipse.angus:angus-core 2.0.5 []
+org.simplejavamail:simple-java-mail 9.3.8 []
+org.simplejavamail:core-module 9.3.8 []
+== SMTP property docs location in tag 2.0.5
+['providers/smtp/src/main/java/org/eclipse/angus/mail/smtp/SMTPAddressSucceededException.java', 'providers/smtp/src/main/java/org/eclipse/angus/mail/smtp/SMTPSendFailedException.java', 'providers/smtp/src/main/java/org/eclipse/angus/mail/smtp/SMTPTransport.java', 'providers/smtp/src/main/java/org/eclipse/angus/mail/smtp/package-info.java']

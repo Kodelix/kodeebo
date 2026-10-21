@@ -1,0 +1,22 @@
+== angus-releases.json
+2.0.5 2026-02-27T17:45:00Z False
+2.0.4 2025-09-04T06:13:13Z False
+2.0.3 2024-03-04T13:23:05Z False
+2.0.2 2023-05-22T06:51:52Z False
+2.0.1 2023-01-26T11:33:00Z False
+2.0.0 2023-01-24T12:01:59Z False
+== sjm-releases.json
+9.3.8 2026-10-21T15:21:42Z False
+9.3.7 2026-10-21T12:40:15Z False
+9.3.6 2026-10-17T12:10:03Z False
+== angus-license.json {'key': 'other', 'name': 'Other', 'spdx_id': 'NOASSERTION', 'url': None, 'node_id': 'MDc6TGljZW5zZTA='}
+== sjm-license.json {'key': 'apache-2.0', 'name': 'Apache License 2.0', 'spdx_id': 'Apache-2.0', 'url': 'https://api.github.com/licenses/apache-2.0', 'node_id': 'MDc6TGljZW5zZTI='}
+== ghsa-angus.json (global advisories, affects=org.eclipse.angus:angus-mail)
+list 0
+== OSV control: GHSA-9342-92gg-6v29
+GHSA-9342-92gg-6v29 ['CVE-2025-7962'] 2025-07-21T18:32:19Z Jakarta Mail vulnerable to SMTP Injection
+In Jakarta Mail 2.2 it is possible to preform a SMTP Injection by utilizing the \r and \n UTF-8 characters to separate different messages.
+   {'name': 'org.eclipse.angus:smtp', 'ecosystem': 'Maven', 'purl': 'pkg:maven/org.eclipse.angus/smtp'} [{'type': 'ECOSYSTEM', 'events': [{'introduced': '0'}, {'fixed': '2.0.4'}]}]
+   {'name': 'com.sun.mail:jakarta.mail', 'ecosystem': 'Maven', 'purl': 'pkg:maven/com.sun.mail/jakarta.mail'} [{'type': 'ECOSYSTEM', 'events': [{'introduced': '0'}, {'fixed': '1.6.8'}]}]
+   {'name': 'com.sun.mail:jakarta.mail', 'ecosystem': 'Maven', 'purl': 'pkg:maven/com.sun.mail/jakarta.mail'} [{'type': 'ECOSYSTEM', 'events': [{'introduced': '2.0.0'}, {'fixed': '2.0.2'}]}]
+{'cwe_ids': ['CWE-147'], 'severity': 'MODERATE', 'github_reviewed': True, 'github_reviewed_at': '2025-08-06T20:44:37Z', 'nvd_published_at': '2025-07-21T18:15:28Z'}

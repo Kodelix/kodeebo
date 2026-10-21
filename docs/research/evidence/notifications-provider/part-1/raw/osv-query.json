@@ -1,0 +1,7 @@
+{"queries":[
+{"package":{"ecosystem":"Maven","name":"org.eclipse.angus:angus-mail"},"version":"2.0.5"},
+{"package":{"ecosystem":"Maven","name":"org.eclipse.angus:angus-mail"},"version":"2.0.3"},
+{"package":{"ecosystem":"Maven","name":"org.eclipse.angus:angus-activation"},"version":"2.0.3"},
+{"package":{"ecosystem":"Maven","name":"jakarta.mail:jakarta.mail-api"},"version":"2.1.5"},
+{"package":{"ecosystem":"Maven","name":"org.simplejavamail:simple-java-mail"}}
+]}

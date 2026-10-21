@@ -1,0 +1,97 @@
+package-info bytes 32162 SMTPTransport bytes 107588
+-- mail.smtp.connectiontimeout | NOT FOUND in package-info
+-- mail.smtp.timeout | NOT FOUND in package-info
+-- mail.smtp.writetimeout | NOT FOUND in package-info
+-- mail.smtp.sendpartial | NOT FOUND in package-info
+-- mail.smtp.from | NOT FOUND in package-info
+-- mail.smtp.starttls.enable | NOT FOUND in package-info
+-- mail.smtp.starttls.required | NOT FOUND in package-info
+-- mail.smtp.ssl.checkserveridentity | NOT FOUND in package-info
+-- mail.smtp.ssl.enable | NOT FOUND in package-info
+-- mail.smtp.ssl.protocols | NOT FOUND in package-info
+-- mail.smtp.auth.mechanisms | NOT FOUND in package-info
+-- mail.smtp.allow8bitmime | NOT FOUND in package-info
+-- mail.smtp.dsn.notify | NOT FOUND in package-info
+-- mail.smtp.dsn.ret | NOT FOUND in package-info
+-- mail.smtp.submitter | NOT FOUND in package-info
+-- mail.smtp.reportsuccess | NOT FOUND in package-info
+-- mail.smtp.localhost | NOT FOUND in package-info
+-- mail.smtp.quitwait | NOT FOUND in package-info
+-- mail.smtp.connectionpool | NOT FOUND in package-info
+-- mail.smtp.mailextension | NOT FOUND in package-info
+-- mail.smtp.ehlo | NOT FOUND in package-info
+-- mail.smtp.sasl | NOT FOUND in package-info
+-- mail.smtp.auth.disable | NOT FOUND in package-info
+-- mail.smtp.auth.plain.disable | NOT FOUND in package-info
+-- mail.smtp.noop.strict | NOT FOUND in package-info
+-- mail.smtp.userset | NOT FOUND in package-info
+== SMTPTransport.sendMessage javadoc and partial handling
+er st = new StringTokenizer(a); while (st.hasMoreTokens()) v.add(st.nextToken()); } } } String[] mechs = v.toArray(new String[0]); try { if (noauthdebug && isTracing()) { logger.fine("SASL AUTH command trace suppressed"); suspendTracing(); } return saslAuthenticator.authenticate(mechs, realm, authzid, u, p); } finally { resumeTracing(); } } /** * Send the Message to the specified list of addresses.<p> * * If all the <code>addresses</code> succeed the SMTP check * using the <code>RCPT TO:</code> command, we attempt to send the message. * A TransportEvent of type MESSAGE_DELIVERED is fired indicating the * successful submission of a message to the SMTP host.<p> * * If some of the <code>addresses</code> fail the SMTP check, * and the <code>mail.smtp.sendpartial</code> property is not set, * sending is aborted. The TransportEvent of type MESSAGE_NOT_DELIVERED * is fired containing the valid and invalid addresses. The * SendFailedException is also thrown. <p> * * If some of the <code>addresses</code> fail the SMTP check, * and the <code>mail.smtp.sendpartial</code> property is set to true, * the message is sent. The TransportEvent of type * MESSAGE_PARTIALLY_DELIVERED * is fired containing the valid and invalid addresses. The * SMTPSendFailedException is also thrown. <p> * * MessagingException is thrown if the message can't write out * an RFC822-compliant stream using its <code>writeTo</code> method. <p> * * @param message The MimeMessage to be sent * @param addresses List of addresses to send this message to * @throws SMTPSendFailedException if the send failed because of * an SMTP command error * @throws SendFailedException if the send failed because of * invalid addresses. * @throws MessagingException if the connection is dead * or not in the connected state or if the message is * not a MimeMessage. * @see jakarta.mail.event.TransportEvent */ @Override 
+== uses of sendPartial in SMTPTransport (line numbers)
+117 private boolean sendPartiallyFailed = false;
+1308 if (sendPartiallyFailed) {
+1363 sendPartiallyFailed = false;
+1868 boolean sendPartial = false;
+1870 sendPartial = ((SMTPMessage) message).getSendPartial();
+1871 if (!sendPartial)
+1872 sendPartial = PropUtil.getBooleanProperty(session.getProperties(),
+1874 if (sendPartial)
+1875 logger.fine("sendPartial set");
+1926 if (!sendPartial)
+1943 if (!sendPartial)
+1994 if (!sendPartial)
+2009 if (sendPartial && valid.size() == 0)
+2025 } else if (reportSuccess || (sendPartial &&
+2029 sendPartiallyFailed = true;
+== ASVS files ['5.0/en/0x01-Frontispiece.md', '5.0/en/0x02-Preface.md', '5.0/en/0x03-What-is-the-ASVS.md', '5.0/en/0x04-Assessment_and_Certification.md', '5.0/en/0x05-For-Users-Of-4.0.md', '5.0/en/0x10-V1-Encoding-and-Sanitization.md', '5.0/en/0x11-V2-Validation-and-Business-Logic.md', '5.0/en/0x12-V3-Web-Frontend-Security.md', '5.0/en/0x13-V4-API-and-Web-Service.md', '5.0/en/0x14-V5-File-Handling.md', '5.0/en/0x15-V6-Authentication.md', '5.0/en/0x16-V7-Session-Management.md', '5.0/en/0x17-V8-Authorization.md', '5.0/en/0x18-V9-Self-contained-Tokens.md', '5.0/en/0x19-V10-OAuth-and-OIDC.md', '5.0/en/0x20-V11-Cryptography.md', '5.0/en/0x21-V12-Secure-Communication.md', '5.0/en/0x22-V13-Configuration.md', '5.0/en/0x23-V14-Data-Protection.md', '5.0/en/0x24-V15-Secure-Coding-and-Architecture.md', '5.0/en/0x25-V16-Security-Logging-and-Error-Handling.md', '5.0/en/0x26-V17-WebRTC.md', '5.0/en/0x90-Appendix-A_Glossary.md', '5.0/en/0x91-Appendix-B_References.md', '5.0/en/0x92-Appendix-C_Cryptography.md', '5.0/en/0x93-Appendix-D_Recommendations.md', '5.0/en/0x94-Appendix-E_Contributors.md']
+0x11-V2-Vali | **2.3.1** | Verify that the application will only process business logic flows for the same user in the expected sequential step order and without skipping steps. | 1 |
+0x11-V2-Vali | **2.3.2** | Verify that business logic limits are implemented per the application's documentation to avoid business logic flaws being exploited. | 2 |
+0x11-V2-Vali | **2.3.3** | Verify that transactions are being used at the business logic level such that either a business logic operation succeeds in its entirety or it is rolled back to the previous correct state. | 2 |
+0x11-V2-Vali | **2.3.4** | Verify that business logic level locking mechanisms are used to ensure that limited quantity resources (such as theater seats or delivery slots) cannot be double-booked by manipulating the application's logic. | 2 |
+0x11-V2-Vali | **2.3.5** | Verify that high-value business logic flows require multi-user approval to prevent unauthorized or accidental actions. This could include but is not limited to large monetary transfers, contract approvals, access to classified information, or safety overrides in manufacturing. | 3 |
+0x11-V2-Vali | **2.4.1** | Verify that anti-automation controls are in place to protect against excessive calls to application functions that could lead to data exfiltration, garbage-data creation, quota exhaustion, rate-limit breaches, denial-of-service, or overuse of costly resources. | 2 |
+0x11-V2-Vali | **2.4.2** | Verify that business logic flows require realistic human timing, preventing excessively rapid transaction submissions. | 3 |
+0x14-V5-File | **5.2.1** | Verify that the application will only accept files of a size which it can process without causing a loss of performance or a denial of service attack. | 1 |
+0x14-V5-File | **5.2.2** | Verify that when the application accepts a file, either on its own or within an archive such as a zip file, it checks if the file extension matches an expected file extension and validates that the contents correspond to the type represented by the extension. This includes, but is not 
+0x14-V5-File | **5.2.3** | Verify that the application checks compressed files (e.g., zip, gz, docx, odt) against maximum allowed uncompressed size and against maximum number of files before uncompressing the file. | 2 |
+0x14-V5-File | **5.2.4** | Verify that a file size quota and maximum number of files per user are enforced to ensure that a single user cannot fill up the storage with too many files, or excessively large files. | 3 |
+0x14-V5-File | **5.2.5** | Verify that the application does not allow uploading compressed files containing symlinks unless this is specifically required (in which case it will be necessary to enforce an allowlist of the files that can be symlinked to). | 3 |
+0x14-V5-File | **5.2.6** | Verify that the application rejects uploaded images with a pixel size larger than the maximum allowed, to prevent pixel flood attacks. | 3 |
+0x15-V6-Auth | **6.4.1** | Verify that system generated initial passwords or activation codes are securely randomly generated, follow the existing password policy, and expire after a short period of time or after they are initially used. These initial secrets must not be permitted to become the long term passwor
+0x15-V6-Auth | **6.4.2** | Verify that password hints or knowledge-based authentication (so-called "secret questions") are not present. | 1 |
+0x15-V6-Auth | **6.4.3** | Verify that a secure process for resetting a forgotten password is implemented, that does not bypass any enabled multi-factor authentication mechanisms. | 2 |
+0x15-V6-Auth | **6.4.4** | Verify that if a multi-factor authentication factor is lost, evidence of identity proofing is performed at the same level as during enrollment. | 2 |
+0x15-V6-Auth | **6.4.5** | Verify that renewal instructions for authentication mechanisms which expire are sent with enough time to be carried out before the old authentication mechanism expires, configuring automated reminders if necessary. | 3 |
+0x15-V6-Auth | **6.4.6** | Verify that administrative users can initiate the password reset process for the user, but that this does not allow them to change or choose the user's password. This prevents a situation where they know the user's password. | 3 |
+0x21-V12-Sec | **12.3.1** | Verify that an encrypted protocol such as TLS is used for all inbound and outbound connections to and from the application, including monitoring systems, management tools, remote access and SSH, middleware, databases, mainframes, partner systems, or external APIs. The server must not 
+0x21-V12-Sec | **12.3.2** | Verify that TLS clients validate certificates received before communicating with a TLS server. | 2 |
+0x21-V12-Sec | **12.3.3** | Verify that TLS or another appropriate transport encryption mechanism used for all connectivity between internal, HTTP-based services within the application, and does not fall back to insecure or unencrypted communications. | 2 |
+0x21-V12-Sec | **12.3.4** | Verify that TLS connections between internal services use trusted certificates. Where internally generated or self-signed certificates are used, the consuming service must be configured to only trust specific internal CAs and specific self-signed certificates. | 2 |
+0x21-V12-Sec | **12.3.5** | Verify that services communicating internally within a system (intra-service communications) use strong authentication to ensure that each endpoint is verified. Strong authentication methods, such as TLS client authentication, must be employed to ensure identity, using public-key infr
+0x22-V13-Con | **13.2.1** | Verify that communications between backend application components that don't support the application's standard user session mechanism, including APIs, middleware, and data layers, are authenticated. Authentication must use individual service accounts, short-term tokens, or certificat
+0x22-V13-Con | **13.2.2** | Verify that communications between backend application components, including local or operating system services, APIs, middleware, and data layers, are performed with accounts assigned the least necessary privileges. | 2 |
+0x22-V13-Con | **13.2.3** | Verify that if a credential has to be used for service authentication, the credential being used by the consumer is not a default credential (e.g., root/root or admin/admin). | 2 |
+0x22-V13-Con | **13.2.4** | Verify that an allowlist is used to define the external resources or systems with which the application is permitted to communicate (e.g., for outbound requests, data loads, or file access). This allowlist can be implemented at the application layer, web server, firewall, or a combina
+0x22-V13-Con | **13.2.5** | Verify that the web or application server is configured with an allowlist of resources or systems to which the server can send requests or load data or files from. | 2 |
+0x22-V13-Con | **13.2.6** | Verify that where the application connects to separate services, it follows the documented configuration for each connection, such as maximum parallel connections, behavior when maximum allowed connections is reached, connection timeouts, and retry strategies. | 3 |
+0x22-V13-Con | **13.3.1** | Verify that a secrets management solution, such as a key vault, is used to securely create, store, control access to, and destroy backend secrets. These could include passwords, key material, integrations with databases and third-party systems, keys and seeds for time-based tokens, ot
+0x22-V13-Con | **13.3.2** | Verify that access to secret assets adheres to the principle of least privilege. | 2 |
+0x22-V13-Con | **13.3.3** | Verify that all cryptographic operations are performed using an isolated security module (such as a vault or hardware security module) to securely manage and protect key material from exposure outside of the security module. | 3 |
+0x22-V13-Con | **13.3.4** | Verify that secrets are configured to expire and be rotated based on the application's documentation. | 3 |
+0x23-V14-Dat | **14.2.1** | Verify that sensitive data is only sent to the server in the HTTP message body or header fields, and that the URL and query string do not contain sensitive information, such as an API key or session token. | 1 |
+0x23-V14-Dat | **14.2.2** | Verify that the application prevents sensitive data from being cached in server components, such as load balancers and application caches, or ensures that the data is securely purged after use. | 2 |
+0x23-V14-Dat | **14.2.3** | Verify that defined sensitive data is not sent to untrusted parties (e.g., user trackers) to prevent unwanted collection of data outside of the application's control. | 2 |
+0x23-V14-Dat | **14.2.4** | Verify that controls around sensitive data related to encryption, integrity verification, retention, how the data is to be logged, access controls around sensitive data in logs, privacy and privacy-enhancing technologies, are implemented as defined in the documentation for the specifi
+0x23-V14-Dat | **14.2.5** | Verify that caching mechanisms are configured to only cache responses which have the expected content type for that resource and do not contain sensitive, dynamic content. The web server should return a 404 or 302 response when a non-existent file is accessed rather than returning a d
+0x23-V14-Dat | **14.2.6** | Verify that the application only returns the minimum required sensitive data for the application's functionality. For example, only returning some of the digits of a credit card number and not the full number. If the complete data is required, it should be masked in the user interface
+0x23-V14-Dat | **14.2.7** | Verify that sensitive information is subject to data retention classification, ensuring that outdated or unnecessary data is deleted automatically, on a defined schedule, or as the situation requires. | 3 |
+0x23-V14-Dat | **14.2.8** | Verify that sensitive information is removed from the metadata of user-submitted files unless storage is consented to by the user. | 3 |
+0x25-V16-Sec | **16.2.1** | Verify that each log entry includes necessary metadata (such as when, where, who, what) that would allow for a detailed investigation of the timeline when an event happens. | 2 |
+0x25-V16-Sec | **16.2.2** | Verify that time sources for all logging components are synchronized, and that timestamps in security event metadata use UTC or include an explicit time zone offset. UTC is recommended to ensure consistency across distributed systems and to prevent confusion during daylight saving tim
+0x25-V16-Sec | **16.2.3** | Verify that the application only stores or broadcasts logs to the files and services that are documented in the log inventory. | 2 |
+0x25-V16-Sec | **16.2.4** | Verify that logs can be read and correlated by the log processor that is in use, preferably by using a common logging format. | 2 |
+0x25-V16-Sec | **16.2.5** | Verify that when logging sensitive data, the application enforces logging based on the data's protection level. For example, it may not be allowed to log certain data, such as credentials or payment details. Other data, such as session tokens, may only be logged by being hashed or mas
+0x25-V16-Sec | **16.3.1** | Verify that all authentication operations are logged, including successful and unsuccessful attempts. Additional metadata, such as the type of authentication or factors used, should also be collected. | 2 |
+0x25-V16-Sec | **16.3.2** | Verify that failed authorization attempts are logged. For L3, this must include logging all authorization decisions, including logging when sensitive data is accessed (without logging the sensitive data itself). | 2 |
+0x25-V16-Sec | **16.3.3** | Verify that the application logs the security events that are defined in the documentation and also logs attempts to bypass the security controls, such as input validation, business logic, and anti-automation. | 2 |
+0x25-V16-Sec | **16.3.4** | Verify that the application logs unexpected errors and security control failures such as backend TLS failures. | 2 |

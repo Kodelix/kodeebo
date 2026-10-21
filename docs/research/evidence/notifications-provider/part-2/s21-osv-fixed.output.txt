@@ -1,0 +1,12 @@
+date: 2026-10-21 ; curl curl 8.23.0
+nl.martijndwars:web-push 5.1.2: 0 advisories: 
+nl.martijndwars:web-push ANY-VERSION: 0 advisories: 
+com.google.firebase:firebase-admin 9.11.0: 0 advisories: 
+com.google.firebase:firebase-admin ANY-VERSION: 0 advisories: 
+com.google.auth:google-auth-library-oauth2-http 1.54.0: 0 advisories: 
+org.bouncycastle:bcprov-jdk18on 1.86: 0 advisories: 
+org.bouncycastle:bcprov-jdk18on ANY-VERSION: 12 advisories: GHSA-4h8f-2wvx-gg5w GHSA-574f-3g2m-x479 GHSA-67mf-3cr5-8w23 GHSA-8xfc-gm6g-vgpv GHSA-9pwp-9qqc-pr26 GHSA-c3fc-8qff-9hwx GHSA-hr8g-6v94-x4m9 GHSA-m44j-cfrm-g8qc GHSA-p93r-85wp-75v3 GHSA-qp49-qgx5-5m26 GHSA-v435-xc8x-wvr9 GHSA-wjxj-5m7g-mg7q
+io.ktor:ktor-client-cio 3.6.0: 0 advisories: 
+io.ktor:ktor-client-core 3.6.0: 0 advisories: 
+control (expect >0):
+org.apache.logging.log4j:log4j-core 2.14.1: 7 advisories: GHSA-3pxv-7cmr-fjr4 GHSA-6hg6-v5c8-fphq GHSA-7rjr-3q55-vv33 GHSA-8489-44mv-ggj8 GHSA-jfh8-c2jp-5v3q GHSA-p6xc-xr62-6r2g GHSA-vc5p-v9hr-52mj

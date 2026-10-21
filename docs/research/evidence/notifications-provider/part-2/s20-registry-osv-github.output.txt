@@ -1,0 +1,71 @@
+date: 2026-10-21 ; curl curl 8.23.0 (x86_64-pc-linux-gnu) libcurl/8.23.0 OpenSSL/3.6.5 zlib/1.3.1.zlib-ng brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 nghttp2/1.70.0 ngtcp2/1.25.0 nghttp3/1.18.0 mit-krb5/1.22.2
+== nl.martijndwars:web-push release=5.1.2
+pom Last-Modified: last-modified: Mon, 17 Feb 2025 09:32:11 GMT
+OSV vulns for exact version: sed: -e expression #1, char 26: unknown option to 's'
+
+OSV vulns, package any version (ids): sed: -e expression #1, char 26: unknown option to 's'
+
+== com.google.firebase:firebase-admin release=9.11.0
+pom Last-Modified: last-modified: Thu, 24 Sep 2026 22:54:20 GMT
+OSV vulns for exact version: sed: -e expression #1, char 26: unknown option to 's'
+
+OSV vulns, package any version (ids): sed: -e expression #1, char 26: unknown option to 's'
+
+== com.google.auth:google-auth-library-oauth2-http release=1.54.0
+pom Last-Modified: last-modified: Wed, 30 Sep 2026 21:23:27 GMT
+OSV vulns for exact version: sed: -e expression #1, char 26: unknown option to 's'
+
+OSV vulns, package any version (ids): sed: -e expression #1, char 26: unknown option to 's'
+
+== org.bouncycastle:bcprov-jdk18on release=1.86
+pom Last-Modified: last-modified: Fri, 11 Sep 2026 02:42:07 GMT
+OSV vulns for exact version: sed: -e expression #1, char 26: unknown option to 's'
+
+OSV vulns, package any version (ids): sed: -e expression #1, char 26: unknown option to 's'
+
+== org.bouncycastle:bcpkix-jdk18on release=1.86
+pom Last-Modified: last-modified: Fri, 11 Sep 2026 02:44:56 GMT
+OSV vulns for exact version: sed: -e expression #1, char 26: unknown option to 's'
+
+OSV vulns, package any version (ids): sed: -e expression #1, char 26: unknown option to 's'
+
+== control: log4j-core 2.14.1
+sed: -e expression #1, char 26: unknown option to 's'
+0
+== GitHub web-push-libs/webpush-java
+  "pushed_at": "2026-10-20T11:11:38Z",
+  "archived": false,
+  "open_issues_count": 59,
+  "license": {
+    "spdx_id": "MIT",
+  "default_branch": "master",
+-- latest release:
+== GitHub firebase/firebase-admin-java
+  "pushed_at": "2026-10-21T15:38:52Z",
+  "archived": false,
+  "open_issues_count": 104,
+  "license": {
+    "spdx_id": "Apache-2.0",
+  "default_branch": "main",
+-- latest release:
+  "tag_name": "v9.11.0",
+  "published_at": "2026-09-24T22:58:45Z",
+== webpush-java source tree (encoding support)
+    "name": "AbstractPushService.java",
+    "name": "ClosableCallback.java",
+    "name": "Encoding.java",
+    "name": "Encrypted.java",
+    "name": "HttpEce.java",
+    "name": "HttpRequest.java",
+    "name": "Notification.java",
+    "name": "PushAsyncService.java",
+    "name": "PushService.java",
+    "name": "Subscription.java",
+    "name": "Urgency.java",
+    "name": "Utils.java",
+    "name": "cli",
+package nl.martijndwars.webpush;
+
+public enum Encoding {
+    AESGCM, AES128GCM
+}
