@@ -1,0 +1,5 @@
+start 2026-10-21 19:32:33 1ab30a5 uncommitted:  M prototypes/local-first-sync-spike/harness/bgcheck.py  M prototypes/local-first-sync-spike/harness/p4.py ?? prototypes/local-first-sync-spike/harness/guest/bootwatch.ps1 
+bgcheck counter rc=0 6 cases 19:37:04
+bgcheck thread rc=0 6 cases 19:41:30
+phase1 truncate/slots+bg counter rc=0 GATE (process-kill part): PASS  (total 466.4 s) 19:49:17
+DONE

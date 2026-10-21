@@ -223,9 +223,16 @@ def s104_one(kind, seed, point, hit):
                      | {"violations": r["violations"][:5]}))
 
 
-def s104(cuts=30, nmi=10):
+def s104(cuts=30, nmi=10, journal=None, marker=None, start_check=None, bg_mode=None, tag=""):
+    """S104; set 4 (founder, 2026-10-21): the same 30 power-offs and 10 OS crashes on a candidate commit option
+    (journal, marker) with the background check running (start_check, bg_mode), so cuts can land in a copy step."""
     prep_crash()
-    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "runs": []}
+    env = {k: v for k, v in (("JOURNAL", journal), ("MARKER_MODE", marker), ("START_CHECK", start_check),
+                             ("BG_MODE", bg_mode)) if v}
+    if start_check and start_check.startswith("background"):
+        env.update(BG_IDLE_S="0.3", BG_STEP="16")  # the small S104 store: short idle gates so copy steps happen
+    summary = {"harness_commit": git_state(), "started": time.strftime("%Y-%m-%d %H:%M:%S"), "client_env": env,
+               "tag": tag, "runs": []}
     print(f"phase 4 S104 (power-off and OS crash on Windows), commit {summary['harness_commit']}", flush=True)
     # half of each kind at a held failpoint (deterministic: inside the transaction, the send, the ack write), the rest
     # at a seeded moment after a seeded action
@@ -242,7 +249,9 @@ def s104(cuts=30, nmi=10):
         else:
             at = (rr.randint(3, 55), round(rr.uniform(0.0, 0.8), 2))
         t0 = time.time()
-        r = WinRun(seed, (kind, *at)).go()
+        run = WinRun(seed, (kind, *at), label=f"p4-s104{'-' + tag if tag else ''}")
+        run.client_env.update(env)
+        r = run.go()
         bad += bool(r["violations"])
         row = {"seed": seed, "kind": kind, "cut": list(at), "hot_journal_at_restart": r["hot_journal_at_restart"], "boot_s": r["boot_s"],  "fired": r["fired"], "acked": r["acked"],
                "server_sales": r["server_sales"], "violations": r["violations"][:3], "seconds": round(time.time() - t0)}
@@ -253,7 +262,7 @@ def s104(cuts=30, nmi=10):
               f"{r['violations'][:1]} ({row['seconds']} s)", flush=True)
     summary["hot_journal_runs"] = sum(1 for x in summary["runs"] if x["hot_journal_at_restart"])
     summary["result"] = "PASS" if not bad else "FAIL"
-    with open(os.path.join(RUNS, "p4-s104-summary.json"), "w") as f:
+    with open(os.path.join(RUNS, f"p4-s104-{tag}-summary.json" if tag else "p4-s104-summary.json"), "w") as f:
         json.dump(summary, f, indent=1, default=str)
     print(f"S104: {summary['result']}  ({len(plan)} runs, violating {bad}, a hot journal at restart in "
           f"{summary['hot_journal_runs']})")
@@ -425,7 +434,7 @@ class BgRun(TimedRun):
         self.res.update(bg_final=st, bg_elapsed_s=round(time.time() - t1, 1), sales=k, bg_trace=states[::10])
 
 
-def sc24c(reps=2, gap_s=5.0, bg_mode="thread", tag=""):
+def sc24c(reps=2, gap_s=5.0, bg_mode="thread", tag="", limit_s=5400, stores="n30000,n300000"):
     """P4-F5 option 4: ready time and sale latency with the background check, on the 30k and 300k stores, cold."""
     assert vm_state() == "running"
     tunnel()
@@ -433,7 +442,7 @@ def sc24c(reps=2, gap_s=5.0, bg_mode="thread", tag=""):
     summary = {"harness_commit": git_state(), "gap_s": gap_s, "bg_mode": bg_mode, "tag": tag, "rows": []}
     print(f"phase 4 SC-24 option 4 (background check), commit {summary['harness_commit']}", flush=True)
     for rep in range(1, reps + 1):
-        for name in ("n30000", "n300000"):
+        for name in stores.split(","):
             src = os.path.join(RUNS, "sc24", name)
             key = open(os.path.join(src, "key.txt")).read().strip()
             sh("cs", f"if not exist {WDIR}\\sc24\\{name}\\client.db mkdir {WDIR}\\sc24\\{name}")
@@ -442,7 +451,7 @@ def sc24c(reps=2, gap_s=5.0, bg_mode="thread", tag=""):
                     sh("put", os.path.join(src, f), f"C:/Users/cashier/p4/sc24/{name}/{f}", timeout=3600)
             boot = reboot_cold()
             tunnel()
-            run = BgRun(name, key, gap_s, bg_mode=bg_mode)
+            run = BgRun(name, key, gap_s, limit_s=limit_s, bg_mode=bg_mode)
             r = run.go()
             xs = run.samples.get("sell_items", [])
             tot = [x["total"] for x in xs if "total" in x]
@@ -813,14 +822,14 @@ class HeartbeatRun(TimedRun):
     """S309: the one-minute last-alive checkpoint (`tick`, a committed write) for `hours`, with a sale every 30 s;
     measures both and the bytes the client process wrote (Win32_Process.WriteTransferCount)."""
 
-    def __init__(self, hours, tick_s=60, sale_s=30, **kw):
-        super().__init__(309, 0, label="p4-s309", **kw)
+    def __init__(self, hours, tick_s=60, sale_s=30, io_every=120, **kw):
+        super().__init__(309, 0, label=kw.pop("label", "p4-s309"), **kw)
         self.client_env.update(REALCLOCK="1", CLOCKED="1")
-        self.hours, self.tick_s, self.sale_s = hours, tick_s, sale_s
+        self.hours, self.tick_s, self.sale_s, self.io_every = hours, tick_s, sale_s, io_every
         self.io = []
 
     def io_bytes(self):
-        out = sh("cs", "powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\"Name='python.exe'\\\" | "
+        out = sh("ad", "powershell -NoProfile -Command \"Get-CimInstance Win32_Process -Filter \\\"Name='python.exe'\\\" | "
                        "Measure-Object -Property WriteTransferCount -Sum | ForEach-Object { $_.Sum }\"")
         try:
             return int(out.strip().splitlines()[-1])
@@ -845,7 +854,7 @@ class HeartbeatRun(TimedRun):
                 next_sale += self.sale_s
                 if k % 20 == 0:
                     self.op({"op": "sync"})
-            if k % 120 == 0 and k and (not self.io or self.io[-1][0] != k):
+            if k % self.io_every == 0 and k and (not self.io or self.io[-1][0] != k):
                 self.io.append((round(time.time() - t0), self.io_bytes()))
             time.sleep(0.2)
         self.io.append((round(time.time() - t0), self.io_bytes()))
@@ -863,6 +872,53 @@ def s309(hours=8.0):
         out["ops"][op_] = {"n": len(xs), "failed": sum(1 for x in xs if not x["ok"]),
                            "p50": pct(v, 0.5), "p95": pct(v, 0.95), "p99": pct(v, 0.99), "max": max(v) if v else None}
     with open(os.path.join(RUNS, "p4-s309-summary.json"), "w") as f:
+        json.dump({**out, "samples": run.samples}, f, indent=1)
+    print(json.dumps(out, indent=1))
+
+
+DIAG = "C:\\Users\\Public\\p4diag"  # written by SYSTEM and the administrator, readable by the cashier (fetch)
+
+
+def bootwatch(minutes=30, trace=False, tag="b1"):
+    """Set 4 (founder, 2026-10-21): the first minutes after a cold boot, when S309's slow sales came. A guest restart
+    with the disk throttle kept on (an HDD is slow from power-on), then at once: the sampler (guest/bootwatch.ps1, run
+    as SYSTEM by a one-time scheduled task: processes by disk I/O and CPU, running tasks, the services usually busy
+    after a boot, a Defender scan), optionally a WPR disk trace (DiskIO.light, file mode), and the S309 workload (the
+    one-minute heartbeat and a sale every 30 s) for `minutes`. The trace writes to the same throttled disk, so a traced
+    boot names processes; the untraced boots give the timings."""
+    assert vm_state() == "running"
+    sh("put", os.path.join(HERE, "guest", "bootwatch.ps1"), "C:/Users/cashier/p4/bootwatch.ps1")
+    sh("ad", f"cmd /c \"if not exist {DIAG} mkdir {DIAG}\" && icacls {DIAG} /grant Users:(OI)(CI)R")
+    sh("ad", f"cmd /c del /q {DIAG}\\*")
+    sh("ad", "shutdown /r /t 0")  # the live throttle stays on across a guest restart
+    time.sleep(40)
+    boot_s = round(wait_boot() + 40, 1)
+    task = (f"powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\cashier\\p4\\bootwatch.ps1 "
+            f"-Out {DIAG}\\bootwatch.jsonl -Minutes {minutes + 3} -Every 10")
+    sh("ad", f"schtasks /create /tn p4bootwatch /tr \"{task}\" /sc once /st 00:00 /ru SYSTEM /f")
+    sh("ad", "schtasks /run /tn p4bootwatch")
+    if trace:
+        sh("ad", "wpr -start DiskIO.light -filemode")
+    last_boot = sh("ad", "powershell -NoProfile -Command \"(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString('o')\"").strip()
+    started = sh("ad", "powershell -NoProfile -Command \"(Get-Date).ToString('o')\"").strip()
+    tunnel()
+    run = HeartbeatRun(minutes / 60, io_every=10, label=f"p4-bootwatch-{tag}")
+    r = run.go()
+    out = {"harness_commit": git_state(), "tag": tag, "minutes": minutes, "trace": trace, "boot_s": boot_s,
+           "last_boot": last_boot, "workload_started": started, "io_bytes_series": run.io,
+           "violations": [v for v in r["violations"] if v[0] != "I8"][:5], "ops": {}}
+    for op_, xs in run.samples.items():
+        v = [x["total"] for x in xs if "total" in x]
+        out["ops"][op_] = {"n": len(xs), "failed": sum(1 for x in xs if not x["ok"]), "p50": pct(v, 0.5),
+                           "p95": pct(v, 0.95), "p99": pct(v, 0.99), "max": max(v) if v else None}
+    if trace:
+        sh("ad", f"wpr -stop {DIAG}\\boot-{tag}.etl \"set 4 boot {tag}\"", timeout=1800)
+        sh("ad", f"tracerpt {DIAG}\\boot-{tag}.etl -o {DIAG}\\boot-{tag}.csv -of CSV -y", timeout=3600)
+        sh("get", f"C:/Users/Public/p4diag/boot-{tag}.csv", os.path.join(RUNS, f"p4-bootwatch-{tag}.csv"), timeout=3600)
+    time.sleep(200)  # the sampler runs 3 minutes past the workload
+    sh("ad", "schtasks /delete /tn p4bootwatch /f")
+    sh("get", "C:/Users/Public/p4diag/bootwatch.jsonl", os.path.join(RUNS, f"p4-bootwatch-{tag}.jsonl"))
+    with open(os.path.join(RUNS, f"p4-bootwatch-{tag}-summary.json"), "w") as f:
         json.dump({**out, "samples": run.samples}, f, indent=1)
     print(json.dumps(out, indent=1))
 
@@ -1021,7 +1077,7 @@ def ts01c():
 
 if __name__ == "__main__":
     if sys.argv[1] == "s104":
-        s104(int(sys.argv[2]), int(sys.argv[3]))
+        s104(int(sys.argv[2]), int(sys.argv[3]), *(sys.argv[4:9]))
     elif sys.argv[1] == "s104one":
         s104_one(sys.argv[2], int(sys.argv[3]), sys.argv[4], sys.argv[5])
     elif sys.argv[1] == "sc26":
@@ -1030,7 +1086,7 @@ if __name__ == "__main__":
         sc27(int(sys.argv[2]) if len(sys.argv) > 2 else 200, *(sys.argv[3:4]))
     elif sys.argv[1] == "sc24c":
         sc24c(int(sys.argv[2]) if len(sys.argv) > 2 else 2, float(sys.argv[3]) if len(sys.argv) > 3 else 5.0,
-              *(sys.argv[4:6]))
+              *(sys.argv[4:6]), *([int(sys.argv[6])] if len(sys.argv) > 6 else []), *(sys.argv[7:8]))
     elif sys.argv[1] == "sc24b":
         sc24b(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
     elif sys.argv[1] == "s30x":
@@ -1039,6 +1095,8 @@ if __name__ == "__main__":
         ts07b()
     elif sys.argv[1] == "s303":
         s303()
+    elif sys.argv[1] == "bootwatch":
+        bootwatch(int(sys.argv[2]), sys.argv[3] == "trace", sys.argv[4])
     elif sys.argv[1] == "s309":
         s309(float(sys.argv[2]) if len(sys.argv) > 2 else 8.0)
     elif sys.argv[1] == "sc21b":

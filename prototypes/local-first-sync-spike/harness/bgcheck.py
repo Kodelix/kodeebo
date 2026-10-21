@@ -7,6 +7,7 @@
 #   full                -> refused at start (the phase 0-3 rule)
 #   background_unclean  -> after a kill with a hot journal: the full check runs before any sale
 #   background (clean)  -> on an undamaged store the background check ends "ok" and sales go on
+# BG_MODE in the environment (thread | counter, set 4) selects the copy mode; each row reports it and the restarts.
 import json
 import os
 import sys
@@ -81,7 +82,8 @@ def run(mode, damaged=True, end="clean", stress=False):
     _, rc = cl.exit()
     return {"case": name, "damaged_page": pg, "ready_ms": ready_ms, "store_at_start": "refused" if (first or {}).get("store") == "refused" else ("open" if first else "no reply"),
             "sales_ok": sum(sales), "sales_tried": len(sales), "first_refused_sale": refused_at,
-            "bg_state": bg.get("state"), "bg_fault": bg.get("fault"), "events": t.events(db)}
+            "bg_state": bg.get("state"), "bg_fault": bg.get("fault"), "bg_mode": bg.get("mode"),
+            "bg_restarts": bg.get("restarts"), "events": t.events(db)}
 
 
 if __name__ == "__main__":

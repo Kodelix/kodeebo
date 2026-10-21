@@ -2103,3 +2103,20 @@ Evidence: `evidence/phase4/set4prep-*`. They ran on `3be7a5c` plus the uncommitt
   - With today's copy (its own connection), the copy restarts at every sale, so it completes only in an idle gap long enough for the whole copy; the test sells 10 sales close together and then pauses. On a busy counter the background check may not finish for a long time (set 4 counts restarts).
   - A normal operation that reads a damaged page (a sale, a sync) finds the fault on its own, before the background check, and stops sales the same way.
 - **Harness faults found and fixed on the way** (`set4prep-bgwindow-run1-harness-fault.log` is the second attempt, after the first two fixes: 2 of 5 cells failed; the first attempt, stopped once its first cells failed every seed with an empty window, was overwritten by it): the "late page" was the minutes table's rightmost leaf, where new sales write (now: the highest page that is not the rightmost leaf); the window was one sale long (the copy finished in the first gap: now 10 sales, then a pause); "unchanged" was compared with the store before the window (now from the first sign of the fault); and a sale carried by a sync that did not reply was required to be flagged (it may have been applied normally by that batch: now exempt).
+
+#### Set 4 preparation: the short Linux check (2026-10-21; founder go)
+
+Evidence: `evidence/phase4/set4-linuxcheck-*`; the tree was `1ab30a5` plus the set 4 harness changes (`set4-linuxcheck.status`).
+
+| `harness/bgcheck.py` case | Fix 4 (`BG_MODE=counter`) | Today's copy (`BG_MODE=thread`) |
+|---|---|---|
+| background, damaged page | found after 15 sales, sales stopped; 0 restarts | found after 1 sale |
+| partial (control) | the damage is not seen (expected) | the same |
+| full; background_unclean after a kill | refused at start | the same |
+| background, clean store | "ok" after 31 sales; 0 restarts | "ok" after 4 sales |
+| background, clean, stress (no idle wait, a sale every 20 ms) | "ok" after 8 sales; **0 restarts** | "ok" after 97 sales; **31 restarts** |
+
+- **The restart cause is confirmed on Linux:** today's copy, on its own connection, restarted 31 times in 97 sales; fix 4, on the counter's own connection, never restarted.
+- **The trade-off:** on an idle counter fix 4 finishes later, because it copies only in short idle slices on the counter's own thread. Set 4 measures both on the 300k store.
+- **The S104 configuration under the phase 1 kill matrix: PASS** (truncate / slots, `START_CHECK=background`, `BG_MODE=counter`).
+- **Requirement for the counter-shell spec (founder, 2026-10-21):** fix 4 reported the damaged page as `CorruptError: not an error`, which is SQLite's wording for that path. Such text must never reach a cashier or the owner. A detected store fault is reported in the product's own words: what happened, that sales have stopped, and what to do next. SQLite's text goes only to the diagnostic log.
