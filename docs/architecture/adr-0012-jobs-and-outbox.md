@@ -20,8 +20,9 @@ Proposed
 1. **Closed 2026-10-21:** S31c passed (research F342–F347). With `transaction_timeout` at 1,500 ms and 2,500 ms, under a 3,000 ms runner stop and without `client_connection_check_interval`, the server ended the blocking statement, the runner join finished in time and the rows were free at the next sample. The 6,000 ms control kept them locked about 2.4 s after JVM exit. The body ran once in every case. Decision 7 needs no revision; its worst-case reading is added to rule 1. Not covered: F346, F349.
 2. **Closed 2026-10-21:** the founder confirmed the retention defaults in Decision 4 (done rows 7 days, dead rows 90 days).
 3. **Closed 2026-10-21:** the CTO-ADR gate passed on re-check (**APPROVE**). The first run returned CONCERNS; this revision resolved its six required items and its minor items (see Decision Makers).
-4. **Open (security-lead, 2026-10-21):** a Draft extension of `docs/architecture/threat-models/tenant-isolation.md` boundary TB6 (scheduler and jobs ↔ database) exists. It must cover the nine abuse cases listed in Related → Threat model. ADR-0012 changes grants and policies, which is the "authorization model" trigger in `security-baseline.md`.
-5. **Joint acceptance (ADR-0010 Ordering Note 1, founder 2026-10-21):** ADR-0010, ADR-0011 and ADR-0012 are accepted together, after one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012. ADR-0011 is not yet written.
+4. **Closed 2026-10-21:** the Draft extension of `docs/architecture/threat-models/tenant-isolation.md` boundary TB6 exists (`/threat-model tenant-isolation --update`). It adds T3.13–T3.18, T5.15–T5.18, T6.15–T6.30, AB27–AB37, M69–M87 and R-11–R-14, and covers all nine cases. Its verdict for this extension is COMPLETE WITH GAPS: R-11–R-13 are deferred to named owners, and M77 and M83 wait on decisions. The design changes it required are amended into this ADR on the same day (Decision Makers, "Threat-model amendment").
+5. **Joint acceptance (ADR-0010 Ordering Note 1, founder 2026-10-21):** ADR-0010, ADR-0011 and ADR-0012 are accepted together, after one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012. ADR-0011 is written and Proposed.
+6. **Open:** a short CTO re-check of the threat-model amendment delta (founder, 2026-10-21).
 
 **Order (founder, 2026-10-21):** written as Proposed → S31c (done) → CTO-ADR (CONCERNS, revised) → CTO re-check (APPROVE) → the TB6 threat-model extension → the joint independent review with ADR-0010 and ADR-0011 → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
 
@@ -49,6 +50,21 @@ Proposed
   5. No threat model was linked.
   6. The C9 amendment was incomplete.
   It also listed 11 minor items. The founder chose **Revise flagged items**; all of them are applied in this revision, with amendment notes in ADR-0001, ADR-0005 and ADR-0009, and `security-lead` decided the threat-model placement. One minor item, ADR-0010's line about this ADR's trigger, was already fixed by the map session (`1ac6d3d`). **Re-check, 2026-10-21 (commit `cfb006e`): APPROVE.** All six required items and the minor items are resolved, and no new contradiction was found in ADR-0001, ADR-0005, ADR-0009 or the registry. The two wording slips it flagged are fixed: the ADR-0001 C9 line now states that a missing grant fails loudly (42501, F112) and C9 catches it in CI, and the registry's IC-OUTBOX-SWEEP-R2 status points to R4. Still open, outside this gate: blockers 4 and 5.
+- **Threat-model amendment, 2026-10-21 (founder: "Amend ADR-0012 now").** The TB6 extension of `threat-models/tenant-isolation.md` found design gaps, which are amended here:
+  - Producer rows are fixed by the database (M70).
+  - Per-kind producer authorisation, a producer stamp and run-time re-authorisation (M71, the confused deputy).
+  - A lease token per claim guarding both branches of transaction B, on database time (M84; R-14 closed).
+  - An enforced status gate with a re-read inside the transaction (M86).
+  - Typed payloads and idempotency keys (M82, M73).
+  - From the privacy review:
+    - `job_dedup` rows kept 30 days and pending rows dead after 90 days (founder defaults);
+    - the `other` marker, with person erasure reaching job rows;
+    - the dead-row purpose;
+    - the EXP-2 exclusion;
+    - the log field allow-list.
+  - ADR-0011 is now cited (Proposed, `:core:jobs`).
+  - Founder decisions in the same session: the requeue path is deferred to `security-lead` with M83's constraints; R-11 (M77, crash-loop guard) is deferred to `ktor-lead` + `cto`; R-13 (a hard per-tenant ceiling) is deferred to the founder.
+  - **CTO re-check of this delta: pending** (blocker 6).
 - **CTO-STACK-RISK: skipped — founder decision, 2026-10-21, not a lean-mode default.** This ADR relies on two behaviours beyond `docs/stack-reference/`: Exposed 1.5.1's default retry of a failed `suspendTransaction` block, and the Ktor 3.6.0 stop sequence. Both are covered by executed spikes on exactly those behaviours (research F326, F329–F340), and the one combination not yet run, S31c (F341), is already acceptance blocker 1. A skipped gate is not a passed gate.
 
 ## Summary
@@ -80,7 +96,7 @@ Critical ADR: yes — messaging and background processing for every context; Fou
 | **Depends On** | ADR-0001 (table classes, role inventory, suspension contract), ADR-0002 (scope helper, Job kind, J1), ADR-0005 (retention, closure and export jobs), ADR-0006 (Ktor track, Decision 5/5a pools and dispatchers, Decision 6 jobs direction), ADR-0007 (`auth_notices`, M31 notice gating), ADR-0008 (two-key advisory-lock scheme and lock order; trail jobs), ADR-0009 (deploy overlap, `catalogue_rt` checks) — all Accepted |
 | **Enables** | ADR-0013 (notifications: provider adapters as external-effect job kinds, the `auth_notices` claim/ack functions); every story with a background job (ADR-0005 closure steps, retention purges, exports; ADR-0001 usage counts and suspension notices; ADR-0007 owner notices; ADR-0008 trail verification and pruning; backfills); `project.yaml` `stack.messaging: none` |
 | **Blocks** | Any job, outbox or scheduler code (registry FP-QUEUE-WITHOUT-ADR-R2); the first work-table migration. Per ADR-0010 Ordering Note 1, no Layer 1 code (this ADR's included) starts before ADR-0010 and ADR-0011 are also Accepted. |
-| **Ordering Note** | Coordinates with ADR-0010 (core-extraction policy; Proposed, written by the map session) and ADR-0011 (module structure; not yet written, map session): they decide the module and package of the runner and of the `WorkQueue` port. This ADR fixes the behaviour and the port, not the module path. |
+| **Ordering Note** | Coordinates with ADR-0010 (core-extraction policy; Proposed, written by the map session) and ADR-0011 (module structure; Proposed, written by the map session; it places the runner and the `WorkQueue` port in `:core:jobs`). This ADR fixes the behaviour and the port, not the module path. |
 
 ## Context
 
@@ -148,12 +164,21 @@ Table grants match the policies exactly, as ADR-0001 check C2 requires (a grant 
 
 - The SELECT grant for `app_rt` and `device_rt` on `job_outbox` exists only for `ON CONFLICT DO NOTHING`. Whether PostgreSQL needs the table-level SELECT privilege for that statement was not sourced (F124 covers policies only), so the grant is given explicitly and the integration test proves the enqueue.
 - No other role gets a grant on these tables.
+- **Producer rows are fixed by the database** (threat model M70, T3.14):
+  - The `app_rt` and `device_rt` INSERT `WITH CHECK` on `job_outbox` requires `status = 'pending'`, `attempts = 0`, NULL lease, done and error columns, and `run_at` within the kind's window. Column-level INSERT privileges are the alternative; `data-lead` chooses one and confirms C2 still holds.
+  - A trigger makes `tenant_id`, `kind`, `payload`, `idempotency_key` and the producer stamp immutable for every role.
+  - The runner takes `effect` and `max_attempts` from the compiled kind registry, never from the row.
+- **Producer authorisation** (M71, T3.15 confused deputy, T6.20):
+  - Every kind declares the producer scope kinds it accepts: Staff-owner, Staff-any, Device or Job.
+  - The `WorkQueue` adapter refuses any other producer, and stamps `producer_kind` and `producer_subject` from the scoped transaction, never from the `WorkItem`. For `device_rt`, the `WITH CHECK` also requires `producer_subject = current_setting('app.device_id')`.
+  - Enforcing the allow-list in the database through a G table of kinds is optional; `data-lead` decides it on cost.
+  - Handlers of person-started or branch-limited kinds re-check the producer's status and permission at run time (as ADR-0003's export rule does) and re-load payload ids under RLS. A failed re-check ends the item as `Dead(reauth_refused)` with a security event.
 
 - `job_outbox` columns:
   - `id` (a UUIDv7 from the injected `IdGenerator`, postgres best-practices line 51), `kind`, `effect` (`db` | `external`), `idempotency_key`.
   - `payload jsonb`: ids and enums only, with a size cap from config.
   - `status` (`pending` | `running` | `done` | `dead`; `running` is used only by `external` items), `run_at`, `attempts`, `max_attempts`.
-  - `lease_until`, `lease_owner`, `last_error_class` (an enum, never message text), `traceparent`, `created_at`, `done_at`.
+  - `lease_until`, `lease_token` (a fresh UUIDv7 per claim, M84), `lease_owner` (the `instanceId`, for metrics only), `producer_kind`, `producer_subject`, `last_error_class` (an enum, never message text), `traceparent`, `created_at`, `done_at`.
   - Unique `(tenant_id, kind, idempotency_key)`.
   - Partial indexes `(tenant_id, run_at) WHERE status = 'pending'` and `(tenant_id, lease_until) WHERE status = 'running'`, plus `(tenant_id, done_at) WHERE status IN ('done', 'dead')` for the prune.
   - Before the first release, EXPLAIN both claim branches (pending and expired lease) with the kind filter; `kind` joins the indexes if rows of kinds a tenant's status does not allow are re-scanned on every pass. F116 measured only the pending branch.
@@ -173,7 +198,11 @@ Table grants match the policies exactly, as ADR-0001 check C2 requires (a grant 
 Rules that follow from this design:
 - **One item per transaction** isolates failures. A failing item rolls back only itself, its retry bookkeeping is written in a fresh transaction, and no nested transaction or savepoint is used (registry FP-NEW-SUSPENDED-TRANSACTION).
 - **No singleton and no new advisory lock.** Two runners (the deploy overlap, F220, or a second instance) sweep the same database safely: every claim is a row lock and is skipped by the other runner (F305, F323). A recurring run is advanced in the same transaction as its effect (F118). Session-level advisory locks are forbidden in job code (F103, F119). A job kind that needs serialisation within a tenant uses the existing two-key, transaction-level scheme of ADR-0008 (TR-OWNER-ROLE-R3), with its own class id registered there. **Lock order inside a job transaction:** the claim's row lock first, then any ADR-0008 advisory locks in their order (journal, trail, last-owner, then job class ids), then the inserts that enqueue follow-up work.
-- **Tenant status gates kinds.** Every job kind declares the tenant statuses it runs in, and the sweep filters claims by them. The defaults come from Accepted contracts (TR-SUSPENSION-CONTRACT-R3, TR-CLOSURE-STATES-R4):
+- **Tenant status gates kinds.** Every job kind declares the tenant statuses it runs in, and the sweep filters claims by them. The gate is enforced, not just declared (threat model M86, T6.28):
+  - A registry unit test fails when a kind's `runsWhen` is not a subset of its class default, or when any kind runs for `purged`.
+  - State-sensitive kinds (closure steps, purges, exports) re-read `tenant_status` inside their own transaction before acting. A plain re-read or `FOR SHARE` (which needs SELECT and UPDATE policies) is `data-lead`'s choice.
+
+  The defaults come from Accepted contracts (TR-SUSPENSION-CONTRACT-R3, TR-CLOSURE-STATES-R4):
   - **suspended:** usage counts, routine retention, suspension and auth notices, trail verification, and the **owner's tenant-wide export** (the suspended dashboard keeps export and payment, TR-SUSPENSION-CONTRACT-R3 and ADR-0001 Decision 4; the export runs as `job_rt` per ADR-0005 Decision 5), with job pruning. No closure purge.
   - **closure states:** their ADR-0005 step plus the kinds that contract keeps. **`archive_retained`** lists them explicitly: the archive export (after `ArchiveRequest.verify`), the archive purge when `retain_until` passes with no legal hold, and job pruning.
   - **purged:** nothing. The step that reaches `purged` deletes the tenant's `job_*` rows, its own claimed row included, inside its own transaction; its record is the deletion-journal entry (ADR-0005 Decision 1, amendment 2026-10-21). No job row reappears, because no kind runs for `purged` and the sweep creates no schedule rows for it.
@@ -181,14 +210,22 @@ Rules that follow from this design:
 
 **4. Enqueue, retry, dead items and retention.**
 - **Enqueue** is an insert into `job_outbox` inside the business transaction that causes it: `app_rt` in a Staff scope, `device_rt` in a Device scope, or `job_rt` for a job that chains another. It uses `ON CONFLICT (tenant_id, kind, idempotency_key) DO NOTHING`, so repeating it is harmless.
-  - The payload holds ids and enums only, never personal data or free text, and stays under the configured size cap.
+  - The payload holds ids and enums only, never personal data or free text, and stays under the configured size cap. This is **enforced by type** (founder, 2026-10-21; threat model T6.24, M82):
+    - `JobPayload` is a sealed domain type whose properties may only be typed id value classes, enums, bounded integers and instants.
+    - An architecture test covers every subtype, a CHECK enforces the size cap, and `/code-review` carries the checklist item "payload and key hold ids only".
+    - Owner: `ktor-lead`, story S-TI-76, delivered with the first job story.
+  - The **idempotency key is a typed value built from domain ids and versions** by one builder per kind, never from a request field or a personal value, and never a hash of one (privacy F1, M73). Suppression-sensitive kinds (security notices, erasure) are enqueued only by their owning use case.
   - `traceparent` is stored only if it matches the W3C format. The consumer starts its own trace with a **span link** to the stored context, never a parent taken from a producer-controlled string.
 - **Retry:** on failure, a fresh transaction sets `attempts + 1`, a `last_error_class`, and `run_at = now + min(cap, base · 2^(attempts−1)) · jitter`. **The update is guarded:** the fresh transaction first re-claims the row with `FOR UPDATE SKIP LOCKED WHERE id = :id AND status = :seenStatus AND attempts = :seenAttempts` (for a schedule row: `AND next_run_at = :seenNextRunAt`). If it gets no row, another runner has claimed or finished the item since the failed transaction released its lock, and the bookkeeping is dropped, never written over that runner's result. A two-runner test on the failure path proves this. The jitter comes from an injected random source in [0.5, 1.0]. At `max_attempts` the row becomes `dead`. `base`, `cap` and `max_attempts` are per-kind config with typed defaults; the spike's 30 s / 3600 s / 4 are placeholders (F117).
 - **Recurring rows that fail** do not go dead, because the kind must keep running. The same guarded transaction sets `consecutive_failures + 1`, `last_error_class`, and `next_run_at = now + min(interval, backoff)` with the same formula, so a failing kind retries sooner than its interval but never more often than the backoff allows. A success resets `consecutive_failures` to 0. An alert fires when `consecutive_failures` reaches a per-kind threshold (config) or the row is overdue (Decision 9).
 - **Dead items** keep their row and payload, raise an alert (Decision 9) and are never retried automatically. This ADR provides no requeue path; one is decided with `security-lead` before the first job kind ships.
 - **Retention** (ADR-0005 G retention table, added by a reviewed migration):
   - `job_done_rows`: default **7 days** (founder, 2026-10-21).
-  - `job_dead_rows`: default **90 days**, the same as `auth_notices` after sending (founder, 2026-10-21).
+  - `job_dead_rows`: default **90 days**, the same as `auth_notices` after sending (founder, 2026-10-21). Purpose: failure investigation and, once the requeue path is decided (threat model R-12), replay. The period is revisited with that decision.
+  - `job_dedup_rows`: default **30 days** (founder, 2026-10-21; privacy F2). That is longer than the done window and the external lease and retry window, and equal to the backup window.
+  - **Maximum pending age:** a pending row older than **90 days** (founder, 2026-10-21; privacy F3; a per-kind typed default) goes `dead` with error class `expired` and raises the dead alert. Closure and purge steps are exempt.
+  - **Personal-data marker (ADR-0005):** `other` for all three tables, so `purge_personal` does not delete in-flight closure items. **Person erasure (ADR-0005 M55) reaches them:** in the same `job_rt` transaction that deletes the person mapping, it deletes every `job_outbox` and `job_dedup` row whose kind-declared person-id field names the erased person, in any status. A `db` row locked by a handler waits at most one `transaction_timeout`; an `external` row already leased may still complete its provider call, after which its transaction B updates 0 rows.
+  - **Export:** EXP-2 excludes the three tables (operational state, ids only), as listed in the export coverage test. A person's data request returns metadata only (kind, status, timestamps, error class) for rows naming that person.
   - Pruning is itself a recurring kind (`job_rt`, per tenant), deleting in batches through the `done_at` index.
   - The done-row period is also the **idempotency window**: once a done row is pruned, an enqueue with the same key runs again. Causes whose key can recur after that window use `job_dedup` or a natural key that cannot repeat.
   - Both are typed defaults in the retention table, changed only by a reviewed migration (TR-RETENTION-DEFAULTS-R5); acceptance blocker 2 is closed.
@@ -199,9 +236,9 @@ Rules that follow from this design:
   - Claim, effect and `status = 'done'` (or the advanced `job_schedule` row) commit in **one** transaction. The open transaction is the lease.
   - A killed or stopped worker's transaction aborts and the row becomes claimable again (F311, F333, F340). The outbox row itself is the dedup record (F306, F324).
 - **`external` effects** (an email, a push or any provider call):
-  1. Transaction A claims the row and sets `status = 'running'`, `lease_until = now + leaseDuration`, `lease_owner = instanceId` and `attempts + 1`, then commits.
+  1. Transaction A claims the row and sets `status = 'running'`, `lease_until = now() + leaseDuration` (database time, M84), a fresh `lease_token`, `lease_owner = instanceId` and `attempts + 1`, then commits.
   2. The provider is called **outside any transaction**, with the item id as the provider's idempotency key, under a timeout, a retry policy and a circuit breaker.
-  3. Transaction B marks the row `done`, but only `WHERE status = 'running' AND lease_owner = instanceId`. On failure, B sets it back to `pending` with backoff, or `dead`.
+  3. Transaction B marks the row `done`, but only `WHERE status = 'running' AND lease_token = :token` (the token of this claim). On failure, B sets it back to `pending` with backoff, or `dead`, under the **same guard**. A claim per process could not tell two coroutines apart, so the token is per claim (threat model T6.26, M84).
   4. An expired lease makes the row claimable by any runner. Because the item id is the provider key, a duplicate call is absorbed by the provider.
   - `leaseDuration` (config) must exceed the provider timeout plus the retry budget.
   - "Done" means **the provider accepted the message**, which is the event ADR-0007's M31 notice gating needs.
@@ -266,6 +303,7 @@ Rules that follow from this design:
 - **Logs:**
   - Structured, carrying `trace_id`, with ids and enums only and no payloads: `job.claimed`, `job.succeeded`, `job.failed`, `job.dead`, `sweep.completed`, `sweep.missed`, `job.loop.started`, `job.loop.stopping`, `job.loop.stopped`.
   - Hikari's "marked as broken" and Exposed's rollback-failed WARNs are never the only record of a failure.
+  - **Field allow-list** (privacy F8; threat model M87): job logs and spans carry only the tenant id, job id, kind, trace id, attempt, outcome and error class, enforced by a test. Exposed and Hikari failures are logged through a wrapper that drops SQL text and parameter values. Further events: `job.bookkeeping.dropped`, `job.requeued` and `job.discarded` (actor id), and a dated daily dead-count summary per kind kept beyond the 90-day prune.
 - **Alerts:**
   - Any increase in dead items.
   - The oldest pending age above a per-kind threshold.
@@ -336,8 +374,8 @@ interface WorkQueue {
 
 data class WorkItem(
     val kind: JobKind,
-    val idempotencyKey: String,          // natural key of the cause; unique per (tenant, kind)
-    val payload: JobPayload,              // ids and enums only; size-capped
+    val idempotencyKey: IdempotencyKey,  // typed, built from domain ids by the kind's builder; unique per (tenant, kind)
+    val payload: JobPayload,              // sealed type: typed ids, enums, bounded integers, instants only; size-capped
     val runAt: Instant? = null,           // null = now (from the injected Clock)
     val traceparent: String? = null,      // stored only if W3C-valid
 )
@@ -348,7 +386,9 @@ enum class EffectClass { DB, EXTERNAL }
 interface JobHandler {
     val kind: JobKind
     val effect: EffectClass
-    val runsWhen: Set<TenantStatus>       // narrowing of the Decision 3 defaults only
+    val runsWhen: Set<TenantStatus>       // narrowing of the Decision 3 defaults only; checked by a registry test
+    val producers: Set<ProducerScope>     // Staff-owner, Staff-any, Device, Job; the WorkQueue adapter refuses others
+    val personRefs: Set<PayloadField>     // payload fields that may name a person; person erasure deletes rows by them
     suspend fun run(ctx: JobContext, item: ClaimedItem): JobOutcome
 }
 
@@ -515,7 +555,7 @@ interface JobRunner {
 ## Migration Plan
 
 1. **First work-table migration** (not privileged; run by `deploy_rt`): creates `job_outbox`, `job_schedule` and `job_dedup` with RLS, policies, indexes and their class-list entries. CI's catalogue test gains C9 with its planted-table tests, and the class list gains a "claimed" marker for `job_outbox` and `job_schedule`. ADR-0001 records C9, the three TD tables and the marker in dated amendment blocks (2026-10-21) that take effect when this ADR is Accepted; ADR-0005 (`purged` removes `job_*` rows) and ADR-0009 (`catalogue_rt` runs C1–C6, C8 and C9; stop grace period owner) carry the same kind of note. Their decision text is not edited. Forward-only in production; reversible (a `U` file) in development, per ADR-0009.
-2. **Retention rows:** a reviewed migration adds `job_done_rows` and `job_dead_rows` to the G retention table, through `SET ROLE migrator` (ADR-0001 § 1b exception), with the founder's defaults (7 and 90 days, 2026-10-21).
+2. **Retention rows:** a reviewed migration adds `job_done_rows`, `job_dead_rows`, `job_dedup_rows` and the maximum pending age to the G retention table, through `SET ROLE migrator` (ADR-0001 § 1b exception), with the founder's defaults (7, 90 and 30 days, and 90 days, 2026-10-21). The ADR-0005 amendment note records these rows, the `other` marker, person erasure reaching job rows, and the EXP-2 exclusion.
 3. **Runner:** the `JobRunner` and adapters ship with the first job story, together with Testcontainers suites X1–X9, S31b, the two-runner test and the cross-tenant negative tests.
 4. **Config:** `project.yaml` `stack.messaging: none`. The pgjdbc pin `ktor.pgjdbc: 42.7.14` is applied by the user with its stack-reference row.
 5. **Registry:** IC-OUTBOX-SWEEP-R2 is superseded by this ADR's contract, and FP-QUEUE-WITHOUT-ADR-R2 is kept.
@@ -534,6 +574,12 @@ interface JobRunner {
 - [ ] A recurring kind that fails on every run backs off, raises the overdue alert and the consecutive-failure alert, and recovers its counter after one success.
 - [ ] Two runners on the failure path: when the second runner claims the item between the failed transaction and the bookkeeping, the bookkeeping is dropped and the second runner's result stands.
 - [ ] The job adapter cannot claim a table that is not marked `claimed` (integration test against the class list).
+- [ ] Producer rows: an `app_rt` INSERT with `status = 'done'`, attempts above 0, a lease set, or `run_at` beyond the kind's window is refused; an UPDATE of `payload`, `kind` or the producer stamp is refused for every role (M70).
+- [ ] Confused deputy: a branch-limited Staff scope or a device enqueuing a tenant-wide kind is refused; an actor disabled after enqueue ends the item as `Dead(reauth_refused)` with no effect (M71).
+- [ ] Two claims of the same expired external item in one process: only the latest claim's transaction B applies, on both the done and the failure branch (M84).
+- [ ] A kind declaring `purged`, or a purge declaring `suspended`, fails the registry test; a closure cancelled between the pass read and the claim makes the purge step re-read and do nothing (M86).
+- [ ] A `JobPayload` subtype with a `String` field, or a key built from a non-id, fails the build; after a person is erased, no `job_*` row names them (M82).
+- [ ] A pending row older than its maximum age goes `dead` as `expired`; `job_dedup` rows are pruned after 30 days.
 - [ ] A stop during retry bookkeeping or transaction B leaves the row consistent (`NonCancellable`), and a `CancellationException` is never recorded as an attempt.
 - [ ] With `defaultMaxAttempts = 1`, a block that hits `transaction_timeout` runs exactly once (S31b case a2, kept as a regression test).
 - [ ] Two runners on one database: every row is claimed once and no effect is duplicated (Verification Required 2).
@@ -560,7 +606,7 @@ Foundational — no spec requirement. Enables:
 - Coordinates with: ADR-0010 (core-extraction policy; Proposed, map session; Decision 12 defers to its extraction trigger) and ADR-0011 (module structure; not yet written, map session).
 - Research note: `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F349); evidence `docs/research/evidence/jobs-and-outbox/`. Earlier evidence: `docs/research/backend-track.md` bt-F201–F215.
 - Threat models (security-lead, 2026-10-21, option C):
-  - `docs/architecture/threat-models/tenant-isolation.md`, boundary TB6 (scheduler and jobs ↔ database), is extended for the work tables, C9, enqueue by `app_rt`/`device_rt`, dead items and requeue. It must exist as a Draft before acceptance (blocker 4).
+  - `docs/architecture/threat-models/tenant-isolation.md`, boundary TB6 (scheduler and jobs ↔ database), is extended for the work tables, C9, enqueue by `app_rt`/`device_rt`, dead items and requeue. **Written 2026-10-21 as a Draft** (blocker 4 closed): T3.13–T3.18, T5.15–T5.18, T6.15–T6.30, AB27–AB37, M69–M87, R-11–R-14; stories S-TI-68 to S-TI-78 (all `NEW:`).
   - `docs/architecture/threat-models/staff-auth.md` TB7 (T7.4, M32) already covers the notice job.
   - The provider and external-effect boundary goes to the ADR-0013 notifications model, which must exist before the first `external` kind ships.
   - An outbound-webhooks model is required before trigger 2.
@@ -577,4 +623,4 @@ Foundational — no spec requirement. Enables:
     9. An operator requeueing dead items as a privileged action.
   - Before the first job story, each mitigation has a story and a negative test, and the requeue path is decided.
 - Runbooks (to write, `sre-lead`): outbox backlog, dead items, stuck rows after a kill.
-- Code paths: none yet. The module location follows ADR-0011.
+- Code paths: none yet. The module is `:core:jobs` per ADR-0011 (Proposed).
