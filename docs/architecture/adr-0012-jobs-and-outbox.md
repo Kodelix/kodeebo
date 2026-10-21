@@ -22,7 +22,7 @@ Proposed
 3. **Closed 2026-10-21:** the CTO-ADR gate passed on re-check (**APPROVE**). The first run returned CONCERNS; this revision resolved its six required items and its minor items (see Decision Makers).
 4. **Closed 2026-10-21:** the Draft extension of `docs/architecture/threat-models/tenant-isolation.md` boundary TB6 exists (`/threat-model tenant-isolation --update`). It adds T3.13–T3.18, T5.15–T5.18, T6.15–T6.30, AB27–AB37, M69–M87 and R-11–R-14, and covers all nine cases. Its verdict for this extension is COMPLETE WITH GAPS: R-11–R-13 are deferred to named owners, and M77 and M83 wait on decisions. The design changes it required are amended into this ADR on the same day (Decision Makers, "Threat-model amendment").
 5. **Joint acceptance (ADR-0010 Ordering Note 1, founder 2026-10-21):** ADR-0010, ADR-0011 and ADR-0012 are accepted together, after one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012. ADR-0011 is written and Proposed.
-6. **Open:** a short CTO re-check of the threat-model amendment delta (founder, 2026-10-21).
+6. **Closed 2026-10-21:** the CTO re-check of the threat-model amendment delta returned CONCERNS (three text items). After the founder chose Revise, the final look at `8679b41` returned **APPROVE**.
 
 **Order (founder, 2026-10-21):** written as Proposed → S31c (done) → CTO-ADR (CONCERNS, revised) → CTO re-check (APPROVE) → the TB6 threat-model extension → the joint independent review with ADR-0010 and ADR-0011 → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
 
@@ -68,7 +68,7 @@ Proposed
     1. Erasure deletes its own claimed row, with a tombstone as its record, and is exempt from the 90-day expiry.
     2. Steps that a cancel can race act only through a conditional transition owned by the closure flow (founder's choice); there is no `FOR SHARE` and no CP grant.
     3. An explicit `priority` column and index.
-  - The re-check found the rest coherent with ADR-0001/0002/0003/0005/0008 and the registry. The deferred R-11, R-12 and R-13 do not block, provided R-11 is decided before the first export or backfill story. **Final look at the three fixes: pending** (blocker 6).
+  - The re-check found the rest coherent with ADR-0001/0002/0003/0005/0008 and the registry. The deferred R-11, R-12 and R-13 do not block, provided R-11 is decided before the first export or backfill story. **Final look at the three fixes (commit `8679b41`): APPROVE** (blocker 6 closed). The one wording note it raised is fixed: the threat model's M86 now names only closure steps and purges as kinds that must use the conditional transition.
 - **CTO-STACK-RISK: skipped — founder decision, 2026-10-21, not a lean-mode default.** This ADR relies on two behaviours beyond `docs/stack-reference/`: Exposed 1.5.1's default retry of a failed `suspendTransaction` block, and the Ktor 3.6.0 stop sequence. Both are covered by executed spikes on exactly those behaviours (research F326, F329–F340), and the one combination not yet run, S31c (F341), is already acceptance blocker 1. A skipped gate is not a passed gate.
 
 ## Summary
