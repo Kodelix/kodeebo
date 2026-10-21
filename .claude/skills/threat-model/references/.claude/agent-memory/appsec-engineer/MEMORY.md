@@ -1,1 +1,0 @@
-- [Discipline rules are threats](feedback_discipline-assumptions-are-threats.md) — "devs will only put ids in payloads"-type rules become threat rows with a mechanical test and an owning story

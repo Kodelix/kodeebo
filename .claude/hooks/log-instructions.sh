@@ -17,7 +17,10 @@
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-if [ -f "project.yaml" ] || [ -d ".claude" ]; then
+# A cwd inside any .claude/ tree is never a project root, even when a nested
+# .claude/ exists there (dogfood #40: an agent memory note written under a skill
+# folder made every hook log into that folder).
+if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -d ".claude" ]; }; then
   STUDIO_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ]; then
   STUDIO_ROOT="$CLAUDE_PROJECT_DIR"

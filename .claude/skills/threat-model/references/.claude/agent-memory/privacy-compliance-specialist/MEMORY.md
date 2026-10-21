@@ -1,1 +1,0 @@
-- [PDPL/GDPR source locations](reference_pdpl_sources.md) — saved PDPL text extracts (WebFetch can't read the PDFs); GDPR EUR-Lex offsets

@@ -5,7 +5,10 @@
 # already exists on disk. OBSERVATIONS, never verdicts: every line names what
 # was compared and suggests a skill; nothing is blocked.
 
-if [ -f "project.yaml" ] || [ -d ".claude" ]; then
+# A cwd inside any .claude/ tree is never a project root, even when a nested
+# .claude/ exists there (dogfood #40: an agent memory note written under a skill
+# folder made every hook log into that folder).
+if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -d ".claude" ]; }; then
   STUDIO_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ]; then
   STUDIO_ROOT="$CLAUDE_PROJECT_DIR"
@@ -41,6 +44,15 @@ SRC=$(count_src)
 echo "=== Checking for Gaps ==="
 GAPS=0
 gap() { GAPS=$((GAPS + 1)); echo ""; echo "⚠️  $1"; shift; for l in "$@"; do echo "    $l"; done; }
+
+# --- 0a. Stray nested .claude/ trees (checked before the fresh-project exit) -----------------------------------------
+# A session or agent that ran from inside .claude/ can leave agent memory or
+# session logs there (dogfood #40). Observation only; nothing is moved.
+STRAY=$(find .claude -mindepth 2 -type d -name .claude 2>/dev/null | head -5)
+if [ -n "$STRAY" ]; then
+    gap "Stray nested .claude/ folder(s) inside .claude/: $(printf '%s ' $STRAY)" \
+        "Move agent memory to .claude/agent-memory/<agent>/, delete stray session logs, then remove the folder. Run commands from the project root."
+fi
 
 # --- 0. Fresh project -------------------------------------------------------
 if [ -z "$BACKEND" ] && [ ! -f design/product-brief.md ] && [ "$SRC" = 0 ]; then
