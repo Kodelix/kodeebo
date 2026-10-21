@@ -30,6 +30,7 @@
 
 # 2026-10-21: ADR-0012 jobs and outbox written (Proposed): TR-JOB-TABLES, TR-JOB-RETENTION, IC-OUTBOX-SWEEP-R3, IC-EXTERNAL-EFFECT, IC-JOB-LIFECYCLE, 6 FP-* and TECH-MESSAGING-NONE added, each effective when ADR-0012 is Accepted; IC-OUTBOX-SWEEP-R2 stays active until then (founder, 2026-10-21: superseded by R3 on acceptance, not now).
 # 2026-10-21: ADR-0010 core-extraction policy written (Proposed, r2 after CTO-ADR): TR-BRANCH-ROW-IN-TENANCY, IC-CORE-MODULE-IDENTITY, IC-RETENTION-PARTICIPANT, IC-CORE-ROLES-BOOTSTRAP, FP-LAYER1-DEPENDS-ON-PRODUCT, FP-FK-LAYER1-TO-PRODUCT, FP-EXPOSED-CROSS-MODULE-REFERENCE, FP-ROLE-IN-MIGRATION added, each effective when ADR-0010 is Accepted; IC-MIGRATION-JOB, IC-RELEASE-MANIFEST, IC-DEPLOY-ENTRY and TECH-MIGRATION-FLYWAY are superseded with <module>:<version> ids at acceptance (ADR-0010 Ordering Note 4).
+# 2026-10-21: ADR-0010 r3 (CTO re-check CONCERNS; founder: later roles by privileged migration): FP-ROLE-IN-MIGRATION superseded by FP-ROLE-IN-MIGRATION-R2.
 data_ownership: []
 
 tenancy_rules:
@@ -1199,6 +1200,11 @@ forbidden_patterns:
     status: active
   - id: FP-ROLE-IN-MIGRATION
     pattern: "Effective when ADR-0010 is Accepted: creating or altering a role in a Flyway migration, or a Layer 1 migration granting to a role outside ADR-0001 1b as amended; roles come only from the bootstrap roles script (core or product part) after an ADR-0001 amendment."
+    adr: ADR-0010
+    adr_status: Proposed
+    status: "superseded_by: ADR-0010 r3 (2026-10-21) -> FP-ROLE-IN-MIGRATION-R2"
+  - id: FP-ROLE-IN-MIGRATION-R2
+    pattern: "Effective when ADR-0010 is Accepted: creating or altering a role in a non-privileged migration (one not on privileged-migrations.txt as <module>:<version>), or a Layer 1 migration granting to a role outside ADR-0001 1b as amended. Roles come from the bootstrap roles script (initial; core part in tenancy, product part in the product) or, for a role added later, from a privileged migration applied by the founder as the bootstrap superuser (ADR-0001 1b, ADR-0009 4a), each after an ADR-0001 amendment; the privileged migration applies attributes, memberships and defaults unconditionally and a CI test compares pg_roles, pg_auth_members and pg_db_role_setting between a database bootstrapped from the current script and one from the previous version."
     adr: ADR-0010
     adr_status: Proposed
     status: active
