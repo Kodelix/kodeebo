@@ -557,7 +557,7 @@ interface_contracts:
     contract: "Jobs direction (details in the jobs/outbox ADR): own transactional outbox in TD under the tenant policy; platform_rt lists tenant ids from CP tenant_status; one job_rt transaction per tenant through withScope on Exposed suspendTransaction (raw SQL via Exposed exec) claims work with FOR UPDATE SKIP LOCKED; the dedup row is written in the effect's transaction; traceparent stored on work rows; a CP pending-work list before tenant counts grow."
     adr: ADR-0006
     adr_status: Accepted
-    status: "active (superseded_by: ADR-0012, effective on acceptance -> IC-OUTBOX-SWEEP-R3)"
+    status: "active (superseded_by: ADR-0012, effective on acceptance -> IC-OUTBOX-SWEEP-R4)"
   - id: IC-BILLING-VECTORS
     contract: "Device and server billing: integer money in piasters and integer milliseconds, no floating point (F401); billing rules as data where possible; one shared vector suite in contracts/ or tools/ that the server CI runs (and the device CI), with a drift test (S47)."
     adr: ADR-0006

@@ -19,11 +19,11 @@ Proposed
 **Acceptance blockers.**
 1. **Closed 2026-10-21:** S31c passed (research F342–F347). With `transaction_timeout` at 1,500 ms and 2,500 ms, under a 3,000 ms runner stop and without `client_connection_check_interval`, the server ended the blocking statement, the runner join finished in time and the rows were free at the next sample. The 6,000 ms control kept them locked about 2.4 s after JVM exit. The body ran once in every case. Decision 7 needs no revision; its worst-case reading is added to rule 1. Not covered: F346, F349.
 2. **Closed 2026-10-21:** the founder confirmed the retention defaults in Decision 4 (done rows 7 days, dead rows 90 days).
-3. **Open:** the CTO-ADR gate passes on re-check. The first run (2026-10-21) returned **CONCERNS**; its six required items and the minor items are applied in this revision (see Decision Makers). The re-check is pending.
+3. **Closed 2026-10-21:** the CTO-ADR gate passed on re-check (**APPROVE**). The first run returned CONCERNS; this revision resolved its six required items and its minor items (see Decision Makers).
 4. **Open (security-lead, 2026-10-21):** a Draft extension of `docs/architecture/threat-models/tenant-isolation.md` boundary TB6 (scheduler and jobs ↔ database) exists. It must cover the nine abuse cases listed in Related → Threat model. ADR-0012 changes grants and policies, which is the "authorization model" trigger in `security-baseline.md`.
 5. **Joint acceptance (ADR-0010 Ordering Note 1, founder 2026-10-21):** ADR-0010, ADR-0011 and ADR-0012 are accepted together, after one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012. ADR-0011 is not yet written.
 
-**Order (founder, 2026-10-21):** written as Proposed → S31c (done) → CTO-ADR (CONCERNS, revised) → CTO re-check → the TB6 threat-model extension → the joint independent review with ADR-0010 and ADR-0011 → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
+**Order (founder, 2026-10-21):** written as Proposed → S31c (done) → CTO-ADR (CONCERNS, revised) → CTO re-check (APPROVE) → the TB6 threat-model extension → the joint independent review with ADR-0010 and ADR-0011 → founder's acceptance. Nothing else blocks acceptance; the remaining open items have owners and do not change the decision.
 
 ## Date
 
@@ -48,7 +48,7 @@ Proposed
   4. The `purged` claim on ADR-0005 was not stated in ADR-0005.
   5. No threat model was linked.
   6. The C9 amendment was incomplete.
-  It also listed 11 minor items. The founder chose **Revise flagged items**; all of them are applied in this revision, with amendment notes in ADR-0001, ADR-0005 and ADR-0009, and `security-lead` decided the threat-model placement. One minor item, ADR-0010's line about this ADR's trigger, was already fixed by the map session (`1ac6d3d`). **Re-check: pending.**
+  It also listed 11 minor items. The founder chose **Revise flagged items**; all of them are applied in this revision, with amendment notes in ADR-0001, ADR-0005 and ADR-0009, and `security-lead` decided the threat-model placement. One minor item, ADR-0010's line about this ADR's trigger, was already fixed by the map session (`1ac6d3d`). **Re-check, 2026-10-21 (commit `cfb006e`): APPROVE.** All six required items and the minor items are resolved, and no new contradiction was found in ADR-0001, ADR-0005, ADR-0009 or the registry. The two wording slips it flagged are fixed: the ADR-0001 C9 line now states that a missing grant fails loudly (42501, F112) and C9 catches it in CI, and the registry's IC-OUTBOX-SWEEP-R2 status points to R4. Still open, outside this gate: blockers 4 and 5.
 - **CTO-STACK-RISK: skipped — founder decision, 2026-10-21, not a lean-mode default.** This ADR relies on two behaviours beyond `docs/stack-reference/`: Exposed 1.5.1's default retry of a failed `suspendTransaction` block, and the Ktor 3.6.0 stop sequence. Both are covered by executed spikes on exactly those behaviours (research F326, F329–F340), and the one combination not yet run, S31c (F341), is already acceptance blocker 1. A skipped gate is not a passed gate.
 
 ## Summary
