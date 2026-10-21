@@ -266,7 +266,7 @@ migration id (manifest, privileged list, deploy record) = <module>:<version>
 
 - **Description**: Twelve (or fourteen) ADRs, each recording locality, liftability rules and its own extraction trigger.
 - **Cost**: Twelve ADRs repeating the same reasoning, each reviewed separately.
-- **Risk**: Drift — capability ADRs choose different triggers or package rules (ADR-0012 § 12 already states a different trigger).
+- **Risk**: Drift — capability ADRs choose different triggers or package rules (ADR-0012 § 12 first stated its own trigger; since side-session commit `3054f1a` it defers to this ADR's Decision 7).
 - **Performance**: None.
 - **Operability**: More documents to keep consistent on every Kotlin, Gradle or Flyway pin change.
 - **Rejection Reason**: The founder chose one umbrella ADR (2026-10-20); capability ADRs keep their design content and cite this one.
