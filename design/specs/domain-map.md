@@ -26,7 +26,7 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 **Contexts, one paragraph each.**
 
 *Layer 1 — Kodelix capabilities (Extract-candidate: product-local behind the future `saas-core-kotlin` port).*
-- **Tenancy & Tenant Lifecycle** owns tenants, tenant status, the ADR-0002 scope helper and tenant-to-connection resolver, closure (DEL-2), export (EXP-2), provisioning, and the import jobs of a future onboarding. Core module `tenancy`.
+- **Tenancy & Tenant Lifecycle** owns tenants, tenant status, the bare branch row `branches (tenant_id, id, status)` (ADR-0010 Decision 3, founder 2026-10-21: Layer 1 tables such as devices and seats need a foreign key to it), the ADR-0002 scope helper and tenant-to-connection resolver, closure (DEL-2), export (EXP-2), provisioning, and the import jobs of a future onboarding. Core module `tenancy`.
 - **Identity & Authentication** owns the three realms' credentials, sessions, second factors, passkeys, recovery and the counter PIN verifier (ADR-0007). Core module `identity`, with `otp` and `ratelimit` inside it.
 - **Roles & Permissions** owns roles as tenant rows, the permission catalogue and limits, the authority snapshot and one-shot overrides (ADR-0008). The mechanism is the core module `authz`; the Kodeebo catalogue stays product-only.
 - **Audit & Activity Trail** owns the hash-chained activity trail kept 5 years (ADR-0008). Core module `audit`.
@@ -40,7 +40,7 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 - **Storage & Backup** owns object-storage access, backups, restore replay, the control-journal home. Core module `storage`.
 
 *Layer 2 — Kodeebo platform modules, shared by every vertical (product-only).*
-- **Venue Configuration** owns branches, branch settings, owner-set limits and thresholds and reason lists: the owner-sets-the-rules principle as data.
+- **Venue Configuration** owns everything about a branch except its bare row (name, logo, phone numbers, opening hours, settings; keyed by `(tenant_id, branch_id)` with a foreign key to tenancy's `branches`), owner-set limits and thresholds and reason lists: the owner-sets-the-rules principle as data.
 - **Sync** owns the command protocol, inbox, ordering, idempotency, server-to-device feeds, the review queue and clone/restore detection. A money fact is never rejected: it is recorded and flagged for review.
 - **Counter Shell** is the Windows client: encrypted local store, start check and salvage, printing and cash drawer, installer and updater, and PIN sign-in and override on the device. Runtime pends the desktop ADR.
 - **Catalogue** owns the sellable side of the one catalogue and item core shared by every vertical (founder, 2026-10-20): categories and subcategories, items, variants and sizes, combos and bundles, counter quick-button presets, modifiers and modifier groups, prices per branch and per order type, availability per branch, barcode/SKU per variant, menu schedules and retail variant attributes. No vertical adds its own item model. Tax and service values for a category or item are not catalogue data: Tax & Receipts owns them (override hierarchy, below).
@@ -138,7 +138,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 
 | # | Context | Kind | Purpose | Owns (data / language) | Owner (agent / person) | Core module? |
 |---|---------|------|---------|------------------------|------------------------|--------------|
-| 1 | Tenancy & Tenant Lifecycle | L1 · Generic | Tenant isolation, provisioning, closure, export | tenants, tenant_status, import_jobs; scope, resolver | multitenancy-specialist / cto | `tenancy` — Extract-candidate |
+| 1 | Tenancy & Tenant Lifecycle | L1 · Generic | Tenant isolation, provisioning, closure, export | tenants, tenant_status, branches (bare row), import_jobs; scope, resolver | multitenancy-specialist / cto | `tenancy` — Extract-candidate |
 | 2 | Identity & Authentication | L1 · Generic | Sign-in on three realms, second factors, recovery, counter PIN | logins, credentials, sessions, PIN verifiers | auth-identity-specialist / security-lead | `identity` (+ `otp`, `ratelimit`) — Extract-candidate |
 | 3 | Roles & Permissions | L1 · Generic (catalogue product-only) | Custom roles, permission catalogue, limits, overrides | roles, role assignments, authority snapshot, override grants | auth-identity-specialist / product-manager | `authz` mechanism — Extract-candidate; catalogue Product-only |
 | 4 | Audit & Activity Trail | L1 · Generic | One tamper-evident record for every change | activity trail, chain heads | security-lead / principal-engineer | `audit` — Extract-candidate |
@@ -150,7 +150,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 | 10 | Observability | L1 · Generic | Logs, metrics, traces, SLOs, alerts | pipelines, dashboards, alert rules | observability-engineer / sre-lead | `observability` — Extract-candidate (adopts open source, no fork) |
 | 11 | Product Analytics | L1 · Generic | Server-side business events, activation measures | event taxonomy, event records | product-analytics-engineer / product-director | `analytics` — Extract-candidate |
 | 12 | Storage & Backup | L1 · Generic | Object storage, backups, restore replay | exports, backups, control journal | infra-engineer / data-lead | `storage` — Extract-candidate |
-| 13 | Venue Configuration | L2 · Product-specific | Branches, settings, owner-set limits and reasons | branches, settings, limits, reason lists | product-manager / domain-architect | — |
+| 13 | Venue Configuration | L2 · Product-specific | Branch attributes and settings, owner-set limits and reasons | branch attributes, settings, limits, reason lists | product-manager / domain-architect | — |
 | 14 | Sync | L2 · Product-specific | Local-first protocol between counter and server | inbox, command log, feeds, review queue | offline-sync-specialist / cto | — |
 | 15 | Counter Shell | L2 · Product-specific | The Windows client | local encrypted store, device settings | principal-engineer / ux-designer | — |
 | 16 | Catalogue | L2 · Product-specific | One catalogue and item model for every vertical (sellable side) | categories, items, variants, combos, modifiers, presets, prices per branch and order type, availability, barcodes, menu schedules | product-manager / domain-architect | — |
@@ -355,6 +355,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 | Data / capability | Owning context | Read by | Access path (API / event / read model) |
 |-------------------|----------------|---------|---------------------------------------|
 | tenants, tenant_status (CP) | Tenancy & Tenant Lifecycle | Plans, Licensing, Jobs, Operator Console | Tenancy port; job scheduler lists ids as `platform_rt` |
+| branches — bare row `(tenant_id, id, status)` (TD) | Tenancy & Tenant Lifecycle | Venue Configuration, Licensing, Operator Console, every branch-scoped table | composite FK (TR-BRANCH-SCOPE-R2); branch lookup through the Tenancy port (ADR-0010 Decision 3) |
 | logins, credentials, sessions (PL) | Identity & Authentication | every authenticated context | `LoginLookup`, session port; never the tables |
 | roles, assignments, authority snapshot | Roles & Permissions | Sync (feed), Counter Shell, all use cases | `PermissionChecker` port; snapshot in the config feed |
 | activity trail | Audit & Activity Trail | Dashboard, Operator Console | `ActivityTrail.record`; read model for views |
@@ -363,7 +364,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 | plan catalogue (G), entitlements, limits, subscription state | Plans, Entitlements & Subscription | Licensing, verticals, Counter Shell, Dashboard | `EntitlementChecker` port; event `tenant_suspended` |
 | notification channels, templates, delivery log | Notifications | any context that notifies | `Notifier` port; the caller passes the recipient |
 | outbox rows, job state | Jobs & Outbox | every context that emits events | outbox port; per-tenant sweep |
-| branches, settings, owner limits, reason lists | Venue Configuration | Tax & Receipts, Orders, Shifts, Gaming, Sync (feed) | settings port; config feed to devices |
+| branch attributes, settings, owner limits, reason lists (the bare branch row is Tenancy's, ADR-0010) | Venue Configuration | Tax & Receipts, Orders, Shifts, Gaming, Sync (feed) | settings port; config feed to devices |
 | inbox, command log, feeds, review queue | Sync | Reports, Fleet Health, Dashboard | command ports of the owning contexts; review-queue read model |
 | local encrypted store (device) | Counter Shell | — | device-local; synced only through Sync |
 | the item core, sellable side: categories, items, variants, combos, modifiers and groups, quick-button presets, prices per branch and order type, availability per branch, barcode/SKU, menu schedules, retail attributes | Catalogue | Orders, Gaming, Inventory, Counter Shell, Dashboard | catalogue port; price resolution receives the order type id as a caller-passed value |
