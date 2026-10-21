@@ -28,6 +28,7 @@
 # 2026-10-20: ADR-0009 S1-S4 (re-check of r3: PASS, 0 BLOCKER, 0 MAJOR, 4 MINOR) applied in place before any commit (IC-RELEASE-CEREMONY build-step network wording, IC-DEPLOY-ENTRY vocabulary includes record_failed); ADR-0009 Accepted by the founder (Kamel Mohamed) 2026-10-20; adr_status set to Accepted on its 18 entries; its amendments to ADR-0001 § 1b, ADR-0007 § 2 and ADR-0008 item 10 are in effect; none superseded.
 # 2026-10-20: ADR-0009 amendment note (threat-model amendment review, findings 1-3; approved by the founder, Kamel Mohamed, 2026-10-20): IC-RELEASE-CEREMONY superseded by IC-RELEASE-CEREMONY-R2 (rootless build account, fetch/build split, offline build with read-only caches, reboot before signing, S59; no admin-key host step before the agent-account move); adr_status Accepted.
 
+# 2026-10-21: ADR-0012 jobs and outbox written (Proposed): TR-JOB-TABLES, TR-JOB-RETENTION, IC-OUTBOX-SWEEP-R3, IC-EXTERNAL-EFFECT, IC-JOB-LIFECYCLE, 6 FP-* and TECH-MESSAGING-NONE added, each effective when ADR-0012 is Accepted; IC-OUTBOX-SWEEP-R2 stays active until then (founder, 2026-10-21: superseded by R3 on acceptance, not now).
 data_ownership: []
 
 tenancy_rules:
@@ -417,6 +418,16 @@ tenancy_rules:
     adr: ADR-0009
     adr_status: Accepted
     status: active
+  - id: TR-JOB-TABLES
+    rule: "Effective when ADR-0012 is Accepted (amends ADR-0001's catalogue list with C9): the work tables job_outbox, job_schedule and job_dedup are class TD (tenant_id NOT NULL, ENABLE + FORCE RLS, restrictive tenant_isolation with no TO), owned by migrator, each recorded in the class list in its own migration. Grants equal policies (ADR-0001 C2): job_outbox app_rt and device_rt SELECT+INSERT (the SELECT only for ON CONFLICT DO NOTHING), job_rt SELECT+INSERT+UPDATE+DELETE; job_schedule job_rt SELECT+INSERT+UPDATE+DELETE; job_dedup job_rt SELECT+INSERT+DELETE; no other role (platform_rt none). job_outbox and job_schedule carry the class-list marker 'claimed'; catalogue check C9 (CI and the catalogue_rt timer) fails any claimed table without job_rt permissive SELECT and UPDATE policies (a missing UPDATE policy makes FOR UPDATE return 0 rows with no error), proved by planted tables. Ids are UUIDv7 from the injected IdGenerator; payloads hold ids and enums only."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: TR-JOB-RETENTION
+    rule: "Effective when ADR-0012 is Accepted: the class-G retention table gains job_done_rows (default 7 days) and job_dead_rows (default 90 days), founder 2026-10-21, changed only by a reviewed migration (TR-RETENTION-DEFAULTS-R5); pruning is a recurring job_rt kind per tenant, batched through the done_at index; the done-row period is the idempotency window (after it an enqueue with the same key runs again, so causes whose key can recur use job_dedup); the ADR-0005 purge deletes a purged tenant's job_* rows."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
 interface_contracts:
   - id: IC-TENANT-CONNECTION-RESOLVER
     contract: "TenantConnectionResolver.resolve(TenantId) -> TenantDataSource; the only way app code reaches tenant data; today returns the shared pool."
@@ -538,7 +549,7 @@ interface_contracts:
     contract: "Jobs direction (details in the jobs/outbox ADR): own transactional outbox in TD under the tenant policy; platform_rt lists tenant ids from CP tenant_status; one job_rt transaction per tenant through withScope on Exposed suspendTransaction (raw SQL via Exposed exec) claims work with FOR UPDATE SKIP LOCKED; the dedup row is written in the effect's transaction; traceparent stored on work rows; a CP pending-work list before tenant counts grow."
     adr: ADR-0006
     adr_status: Accepted
-    status: active
+    status: "active (superseded_by: ADR-0012, effective on acceptance -> IC-OUTBOX-SWEEP-R3)"
   - id: IC-BILLING-VECTORS
     contract: "Device and server billing: integer money in piasters and integer milliseconds, no floating point (F401); billing rules as data where possible; one shared vector suite in contracts/ or tools/ that the server CI runs (and the device CI), with a drift test (S47)."
     adr: ADR-0006
@@ -773,6 +784,21 @@ interface_contracts:
     contract: "Effective (ADR-0009 Accepted; amendment note 2026-10-20 approved by the founder): every release is built, scanned, signed and sent by the founder in the release ceremony, with no AI agent session running (checked, S48), in a split order so that agent-written build code never runs while the signing USB is present: (1) clean-session check, USB in, scripts' hash checked, scripts copied to a root-owned read-only location, USB out; (2) with the USB absent (step 2 refuses to start while the USB block device is present), under a dedicated build account (neither the founder's nor the agent's) on a rootless Docker runtime, never the founder account's rootful daemon: (2a) fetch, network on: Gradle resolves dependencies under strict verification into the dependency cache (only caches/modules-2 persists), base images pulled by digest from the official repository with tag->digest shown to the founder; (2b) build, --network none: Gradle --offline in a throwaway container with the scanner flags (non-root, cap-drop ALL, no-new-privileges, read-only root, bounded tmpfs, limits), the dependency cache read-only, a fresh GRADLE_USER_HOME on tmpfs, no init scripts, build and configuration caches off; image build --network none from the pinned base, installing no packages; docker save, Trivy scan and image SBOM in the scanner container, CycloneDX Gradle plugin SBOM; S59 proves a changed cached JAR fails the build, else the dependency cache is fresh per release; (3) image digest and SBOM hashes recorded; (4) reboot, clean-session check again (also covering the build account and system units and timers), USB in, scripts' hash re-checked, manifest printed field by field with its SHA-256, ssh-keygen -Y sign, send on the founder deploy key's stdin, USB out. The build account's Gradle and Docker caches (never the agent's) are filled only after the agent-account move; no release ceremony and no admin-key host step runs before it (Migration Plan order 1-4, 7, 5, 6, 8, 9). Remaining trust: the founder's review of build files and dependency updates. The ceremony runs from scripts plus docs/runbooks/release-ceremony.md (every command, what it does, expected output, what to do on failure). The AI writes the scripts; every change is reviewed by the founder as a git diff before first use; the ceremony runs only the reviewed copy on the signing USB, never the repository copy; its SHA-256 is recorded off-machine (paper or the Bitwarden app on the founder's phone, never the Bitwarden browser extension on the workstation) and checked against the value the founder types at the start of every ceremony. The one-time dependency download into the build account's caches (or the per-release download if S59 fails) is recorded with its size once measured."
     adr: ADR-0009
     adr_status: Accepted
+    status: active
+  - id: IC-OUTBOX-SWEEP-R3
+    contract: "Effective when ADR-0012 is Accepted (replaces IC-OUTBOX-SWEEP-R2 then): the JobRunner pass reads tenant ids and status from CP tenant_status as platform_rt (no cache); per tenant, one withScope(Job, tenant) transaction reads job_schedule and inserts only missing (tenant, kind) rows for kinds the status allows (ON CONFLICT DO NOTHING) and reads the tenant's metric counts; then one item per transaction: claim one due job_schedule row or job_outbox row (pending with run_at <= now, or running with lease_until < now) of an allowed kind with the Exposed DSL forUpdate(ForUpdateOption.PostgreSQL.ForUpdate(MODE.SKIP_LOCKED)) and limit(1), run it, commit; up to batchPerTenant items per tenant per pass; no singleton or new advisory lock (two runners are safe by row locks); lock order claim row lock, then ADR-0008 advisory locks, then enqueue inserts. Each kind declares the tenant statuses it runs in (defaults from TR-SUSPENSION-CONTRACT-R3 and TR-CLOSURE-STATES-R4; a feature spec may only narrow them). Enqueue is an INSERT into job_outbox in the causing transaction (app_rt Staff, device_rt Device, job_rt chained) with ON CONFLICT (tenant_id, kind, idempotency_key) DO NOTHING; traceparent stored only if W3C-valid and used as a span link. Retry in a fresh transaction: attempts + 1, last_error_class enum, run_at = now + min(cap, base * 2^(attempts-1)) * jitter[0.5,1.0] from an injected source, dead at max_attempts, all per-kind config. Job and platform Database objects use DatabaseConfig { defaultMaxAttempts = 1 }; the helper passes the role's Database explicitly; handlers never open their own transaction."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: IC-EXTERNAL-EFFECT
+    contract: "Effective when ADR-0012 is Accepted: a job whose effect calls a provider (email, push, any outbound call) runs as: transaction A claims the job_outbox row and sets status running, lease_until = now + leaseDuration, lease_owner = instanceId, attempts + 1, commits; the provider is called outside any transaction with the item id as the provider's idempotency key, under a timeout, retry policy and circuit breaker; transaction B (NonCancellable) marks done WHERE status = 'running' AND lease_owner = instanceId, or sets pending with backoff or dead. Done means the provider accepted the message (the event ADR-0007 M31 gating needs). An expired lease makes the row claimable again; leaseDuration exceeds the provider timeout plus the retry budget. auth_notices (PL) follows this contract; its claim and ack functions are added to ADR-0001 § 1c by ADR-0013, and no notice kind ships before that. Database-only effects instead commit claim, effect and done in one transaction (the open transaction is the lease)."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: IC-JOB-LIFECYCLE
+    contract: "Effective when ADR-0012 is Accepted: one JobRunner per backend process with its own CoroutineScope(SupervisorJob() + db-job dispatcher), start() from an ApplicationStarted handler gated by config jobs.enabled (so testApplication never starts it), stop(timeout) from an ApplicationStopping handler bridged with runBlocking and bounded by its own withTimeoutOrNull (logs drain time and timed-out); Hikari pools closed in ApplicationStopped; ApplicationStopPreparing and @InternalAPI disposeAndJoin never used; the loop is never launched on the Application scope. Timeout rule 1: per-kind transaction_timeout < runner stop timeout. Rule 2: Ktor's stop phases are sequential (engine stop, ApplicationStopping handlers, disposeAndJoin under shutdownTimeout set explicitly), and their sum stays below the Compose stop grace period. job_rt and platform_rt pools set client_connection_check_interval (typed default 1 s) through the pgjdbc options string built in one place; job_rt also has idle_in_transaction_session_timeout. CancellationException is always rethrown, never an attempt; retry bookkeeping runs in NonCancellable. instanceId per process start for leases and metrics."
+    adr: ADR-0012
+    adr_status: Proposed
     status: active
 performance_budgets: []
 
@@ -1105,6 +1131,36 @@ forbidden_patterns:
     adr: ADR-0009
     adr_status: Accepted
     status: active
+  - id: FP-JOB-POLL-WITHOUT-SCOPE
+    pattern: "Effective when ADR-0012 is Accepted: reading or claiming job_outbox, job_schedule or job_dedup outside a withScope(Job, tenant) transaction (a global poll), any platform_rt grant or policy on those tables, or computing job metrics with a cross-tenant query (it is silently filtered to 0 rows)."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: FP-SESSION-ADVISORY-LOCK
+    pattern: "Effective when ADR-0012 is Accepted: a session-level advisory lock (pg_advisory_lock, pg_try_advisory_lock) in job code; it survives rollback and pooled-connection reuse. Serialisation uses the ADR-0008 two-key transaction-level scheme with a registered class id."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: FP-PROVIDER-CALL-IN-TX
+    pattern: "Effective when ADR-0012 is Accepted: calling an external provider (email, push, webhook, any outbound HTTP) inside a database transaction; external effects follow IC-EXTERNAL-EFFECT."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: FP-POOL-CLOSE-BEFORE-RUNNER
+    pattern: "Effective when ADR-0012 is Accepted: closing a Hikari pool in ApplicationStopping or anywhere before the JobRunner has stopped; an in-use connection is closed and the rollback fails."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: FP-EXPOSED-RETRY-IN-JOBS
+    pattern: "Effective when ADR-0012 is Accepted: a job_rt or platform_rt Exposed Database without DatabaseConfig { defaultMaxAttempts = 1 }, or a job transaction with maxAttempts > 1; Exposed's default re-runs a failed block (3 runs observed, timeout tripled)."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
+  - id: FP-LISTEN-NOTIFY
+    pattern: "Effective when ADR-0012 is Accepted: LISTEN/NOTIFY in the backend until a revisit trigger in ADR-0012 Decision 11 reopens Decision 1; polling is the floor even then."
+    adr: ADR-0012
+    adr_status: Proposed
+    status: active
 # 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
 # 2026-10-19 (ADR-0006 review): only TECH-* entries belong here; the IC-* and FP-* entries first placed here are superseded by copies in interface_contracts and forbidden_patterns.
 technology_choices:
@@ -1167,4 +1223,9 @@ technology_choices:
     choice: "Effective when ADR-0009 is Accepted: release manifests are signed with ssh-keygen -Y sign in the release ceremony and verified on the VPS with ssh-keygen -Y verify against a root-owned allowed_signers file (no cosign, no registry, no transparency log). The VPS's OpenSSH 9.6p1 (openssh-client) passed S40v on 2026-10-20 (valid signature accepted; tampered, wrong-namespace, unknown-signer and expired-signer cases refused). minisign is the named fallback. The OpenSSH licence is fetched before the first image ships."
     adr: ADR-0009
     adr_status: Accepted
+    status: active
+  - id: TECH-MESSAGING-NONE
+    choice: "Effective when ADR-0012 is Accepted: no message broker (stack.messaging: none, founder 2026-10-20); background work and the transactional outbox live in PostgreSQL 18.6 and run in the backend process; no queue library. Revisit triggers (founder) with their signals: (1) a second backend instance kept running beyond the deploy overlap (second replica; two instance_ids claiming outside a deploy; claim or poll load above budget) -> first a worker container and LISTEN/NOTIFY as a hint; (2) many integrations (destination count; oldest pending age rising while workers idle; per-destination retry or dead share) -> per-destination delivery rows behind the egress client after a webhooks threat model, then a broker (NATS JetStream, then RabbitMQ, Kafka once sourced) or CDC; (3) advanced search (a requirement PostgreSQL FTS or pg_trgm fails on real data, Arabic included; search p95 or index cost over budget) -> an external engine fed idempotently from the outbox. Thresholds are set by performance-engineer."
+    adr: ADR-0012
+    adr_status: Proposed
     status: active
