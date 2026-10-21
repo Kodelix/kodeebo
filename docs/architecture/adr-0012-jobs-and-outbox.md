@@ -281,7 +281,7 @@ Rules that follow from this design:
 
 The thresholds are set by `performance-engineer` with the budgets in Decision 10.
 
-**12. Shared core.** `saas-core-kotlin` has no jobs module yet, so this is a **product-local adapter behind the port** that the core module will expose (ADR-0006 lists `Outbox/WorkQueue`; `coordination-rules.md` § Shared core absent). The extraction trigger is the creation of `saas-core-kotlin` or a second product needing background jobs, whichever comes first. It is scheduled with `/core-extract`. The ports below must not change when the code moves.
+**12. Shared core.** `saas-core-kotlin` has no jobs module yet, so this is a **product-local adapter behind the port** that the core module will expose (ADR-0006 lists `Outbox/WorkQueue`; `coordination-rules.md` § Shared core absent). Extraction per ADR-0010's trigger. It is scheduled with `/core-extract`. The ports below must not change when the code moves.
 
 ### Architecture
 
