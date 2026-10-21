@@ -1,4 +1,4 @@
-# ADR-0010: Core-extraction policy — twelve Layer 1 capabilities built product-local as fourteen core-shaped modules
+# ADR-0010: Core-extraction policy — thirteen Layer 1 capabilities built product-local as fifteen core-shaped modules
 
 ## Status
 
@@ -41,7 +41,7 @@ The founder (user) decided on 2026-10-20, in the `/map-domains` and `/architectu
 
 ## Summary
 
-Kodeebo must build the twelve Layer 1 capabilities of `design/specs/domain-map.md` (tenancy, identity with otp and ratelimit, authorization, audit, operator access, licensing, plans and subscription, notifications, jobs, observability, analytics, storage) before `saas-core-kotlin` exists, without a rewrite of their callers when they later move into it. Decision: fourteen core-shaped Gradle modules under `net.kodelix.core.<module>` (otp and ratelimit split out of identity), each with strict explicit API, a committed ABI dump, its own Flyway location and history table, a separate conformance module and publishable coordinates; one umbrella ADR replaces "one ADR per capability"; `/core-extract` runs per module when it is both stable and needed.
+Kodeebo must build the thirteen Layer 1 capabilities of `design/specs/domain-map.md` (tenancy, identity with otp and ratelimit, authorization, audit, operator access, licensing, plans and subscription, notifications, jobs, observability, analytics, storage, egress) before `saas-core-kotlin` exists, without a rewrite of their callers when they later move into it. Decision: fifteen core-shaped Gradle modules under `net.kodelix.core.<module>` (otp and ratelimit split out of identity), each with strict explicit API, a committed ABI dump, its own Flyway location and history table, a separate conformance module and publishable coordinates; one umbrella ADR replaces "one ADR per capability"; `/core-extract` runs per module when it is both stable and needed.
 
 ## Stack Compatibility
 
@@ -77,7 +77,7 @@ The founder defined Layer 1 on 2026-10-19 as the capabilities any Kodelix SaaS n
 
 ### Current State
 
-No backend code. ADR-0001 to ADR-0009 are Accepted and fix the tenancy model, scope helper, branch scope, operator access, retention, backend track, staff auth, roles and the deploy and migration job. The research note (Draft, 2026-10-20) ran five parts of executed probes: a six-module Gradle build, a lift of two modules into a separate core build by coordinates (S31, ABI dumps byte-identical, no Kotlin source change), per-module Flyway history tables in one schema (S13, S30), and Gradle 9.8.2 with Kotlin 2.4.21. The domain map (third pass, 2026-10-21) lists the twelve Layer 1 contexts (rows 1–12), gives `branches` to Venue Configuration (row 13, Layer 2), and records the one catalogue and item core as Layer 2.
+No backend code. ADR-0001 to ADR-0009 are Accepted and fix the tenancy model, scope helper, branch scope, operator access, retention, backend track, staff auth, roles and the deploy and migration job. The research note (Draft, 2026-10-20) ran five parts of executed probes: a six-module Gradle build, a lift of two modules into a separate core build by coordinates (S31, ABI dumps byte-identical, no Kotlin source change), per-module Flyway history tables in one schema (S13, S30), and Gradle 9.8.2 with Kotlin 2.4.21. The domain map (third pass, 2026-10-21) lists the Layer 1 contexts (rows 1–12, and row 12a Egress added 2026-10-21 from ADR-0013), gives `branches` to Venue Configuration (row 13, Layer 2), and records the one catalogue and item core as Layer 2.
 
 ### Constraints
 
@@ -102,7 +102,7 @@ Research note: `docs/research/module-structure-and-core-boundary.md` (Status Dra
 
 ## Decision
 
-**1. Scope: twelve capabilities, fourteen modules.** The twelve Layer 1 capabilities are built in this product as **fourteen** core-shaped Gradle modules; identity's two sub-capabilities otp and ratelimit are their own modules because each is its own core category, so the unit of a lift is the unit of the core:
+**1. Scope: thirteen capabilities, fifteen modules.** The thirteen Layer 1 capabilities are built in this product as **fifteen** core-shaped Gradle modules (egress added 2026-10-21 at ADR-0013's request); identity's two sub-capabilities otp and ratelimit are their own modules because each is its own core category, so the unit of a lift is the unit of the core:
 
 | # | Capability (domain-map row) | Module | Package root | Design ADR(s) | `/core-extract` evidence route | Sensitive (threat model) |
 |---|---|---|---|---|---|---|
@@ -120,12 +120,13 @@ Research note: `docs/research/module-structure-and-core-boundary.md` (Status Dra
 | 12 | Observability (10) | `observability` | `net.kodelix.core.observability` | ADR-0006 Decision 7; observability plan (pending) | CATEGORY | no PII by rule — per its plan |
 | 13 | Product Analytics (11) | `analytics` | `net.kodelix.core.analytics` | event taxonomy (pending) | **founder exception** (owner: the founder; review: the `saas-core-kotlin` repository decision) | per its taxonomy (consent) |
 | 14 | Storage & Backup (12) | `storage` | `net.kodelix.core.storage` | ADR-0005; storage ADR (pending) | CATEGORY | yes — `tenant-isolation.md` |
+| 15 | Egress (new domain-map row 12a) | `egress` | `net.kodelix.core.egress` | ADR-0013 | **founder exception** (owner: the founder; review at the `saas-core-kotlin` repository decision, like authz/operator/jobs/analytics) | yes — `notifications.md` |
 
 - **authz** holds the mechanism (roles, grants, the deny-by-default `Authorizer`, limits). The **permission catalogue** (which keys Kodeebo has) is product code (domain-map row 3).
 - **observability** adopts open source, no fork (domain-map row 10): its module holds configuration and the one thin Ktor plugin of P-PLUMB; the OpenTelemetry Java agent stays the only SDK (ADR-0006 Decision 7).
 - **Everything in Layers 2 and 3 is product code** under `net.kodelix.kodeebo.<context>`, including the one catalogue and item core (domain map § Recorded Feature Rules, founder 2026-10-20): it is shared by every Kodeebo vertical, not by every Kodelix product, so it is never a core candidate under this ADR. Moving a Layer 2 module into the core needs a new founder decision and `/core-extract` with EVIDENCED (two products).
 
-**2. Liftability contract (D1, D3).** Each of the fourteen modules, from its first line:
+**2. Liftability contract (D1, D3).** Each of the fifteen modules, from its first line:
 - **Package** `net.kodelix.core.<module>`; **Gradle `group = "net.kodelix.core"`** and **project name = module name**. Kotlin 2.4 derives the JVM module name from `{group}:{project_name}` (`kotlin/breaking-changes.md` line 24), which also names `internal` members in bytecode, and `includeBuild` substitution matches on `group:name` (F325, F330); fixing both now means a lift renames nothing. Layer 1 and Layer 2 project names never repeat.
 - **Dependencies:** other Layer 1 modules and third-party libraries only (F111); never a Layer 2 or Layer 3 module. `implementation` by default, `api` only for types in the module's public API (F106).
 - **Strict `explicitApi()`** (F112) and a **committed ABI dump** `api/<module>.api`, checked by the built-in `abiValidation()` (`@OptIn(ExperimentalAbiValidation::class)`, 2.4 DSL, no `legacyDump {}`) with `checkKotlinAbi` on every PR (F113, F523), configured once in the convention plugin so a DSL change is one edit (F101). Fallback if the built-in validation breaks: the kotlinx binary-compatibility-validator plugin (F104; S16 before use).
@@ -158,9 +159,9 @@ Research note: `docs/research/module-structure-and-core-boundary.md` (Status Dra
 - **Needed:** a second Kodelix product starts (its repository exists under `~/saas-products/` with a spec or brief that needs the module), **or** the `saas-core-kotlin` repository is created. Creating that repository is **its own founder decision, recorded with its reason** in the decision log (founder, 2026-10-21), so the second route cannot start a one-consumer core by default — the "stable only" trigger rejected in Alternative 4(a).
 - Then `/core-extract <module>` runs for that module alone; modules are never extracted as a forced batch. Extraction follows module dependency order (a module moves only after the Layer 1 modules it depends on, or with them). This trigger governs every Layer 1 module; capability ADRs cite it (ADR-0012 § 12 does since commit `3054f1a`).
 
-**8. Category exception (founder, 2026-10-20).** The authorization mechanism (`authz`), operator console and support access (`operator`), jobs and outbox (`jobs`) and product analytics (`analytics`) are not in `/core-extract`'s core-module categories. The founder's 2026-10-19 definition of Layer 1 — capabilities any Kodelix SaaS needs — is the recorded reason. For these four, `/core-extract`'s evidence verdict is **`NOT EVIDENCED`**, passed by the **user exception** the skill provides: recorded in each module's `production/core/proposals/<module>/evidence.md` with the founder's words, the risk (a core module with one consumer is a core module nobody has proven general), the **owner: the founder**, and the **review date: when the founder takes the `saas-core-kotlin` repository decision** (the recorded decision Decision 7 requires; founder, 2026-10-21), and repeated as a Consequence below. The core repository's module list adds the four categories when it is created; from then on they take the `CATEGORY` route.
+**8. Category exception (founder, 2026-10-20).** The authorization mechanism (`authz`), operator console and support access (`operator`), jobs and outbox (`jobs`), product analytics (`analytics`) and the outbound-request guard (`egress`, added 2026-10-21: an SSRF guard is needed by any Kodelix SaaS that calls a user-supplied URL — webhooks, push, image fetch — the same reasoning as the other four) are not in `/core-extract`'s core-module categories. The founder's 2026-10-19 definition of Layer 1 — capabilities any Kodelix SaaS needs — is the recorded reason. For these five, `/core-extract`'s evidence verdict is **`NOT EVIDENCED`**, passed by the **user exception** the skill provides: recorded in each module's `production/core/proposals/<module>/evidence.md` with the founder's words, the risk (a core module with one consumer is a core module nobody has proven general), the **owner: the founder**, and the **review date: when the founder takes the `saas-core-kotlin` repository decision** (the recorded decision Decision 7 requires; founder, 2026-10-21), and repeated as a Consequence below. The core repository's module list adds the five categories when it is created; from then on they take the `CATEGORY` route.
 
-**9. One umbrella ADR; amendments to ADR-0006 and ADR-0009.** This ADR records, for all twelve capabilities, what is local, why, and the extraction trigger — the content `coordination-rules.md` § Shared core absent asks of "an ADR". Each capability still gets its own **design** ADR where its design is architectural (the table in Decision 1); those ADRs cite this one for locality and trigger and do not repeat them. Dated notes, added when this ADR is Accepted:
+**9. One umbrella ADR; amendments to ADR-0006 and ADR-0009.** This ADR records, for all thirteen capabilities, what is local, why, and the extraction trigger — the content `coordination-rules.md` § Shared core absent asks of "an ADR". Each capability still gets its own **design** ADR where its design is architectural (the table in Decision 1); those ADRs cite this one for locality and trigger and do not repeat them. Dated notes, added when this ADR is Accepted:
 - **ADR-0006 Decision 1** ("each capability is a product-local adapter … recorded in its own ADR") and its **Related** line ("one ADR per product-local adapter"): "Amended 2026-10-21 by ADR-0010: locality and the extraction trigger of every Layer 1 capability are recorded once in ADR-0010; capability ADRs record design only." (The source-tree layout of Decision 1 is ADR-0011's to amend.)
 - **ADR-0009, the migration job (IC-MIGRATION-JOB), the privileged procedure (§ 4a), the release manifest (IC-RELEASE-MANIFEST) and the deploy record (IC-DEPLOY-ENTRY):** "Amended 2026-10-21 by ADR-0010: one Flyway run and one history table `flyway_<module>` per module, in the order of ADR-0010 Decision 5; every migration id in `privileged-migrations.txt`, the signed manifest and the deploy record's `migrations=` field is `<module>:<version>`; the privileged procedure's `target=` takes `<module>:<version>`; S52 asserts every `flyway_<module>` table is owned by `migrator`; the CI role-change scan covers migrations and the core part of the bootstrap roles script shipped inside a core jar after a lift, not only the source tree; `baselineOnMigrate=true` with `baselineVersion=0` is allowed under the guards of ADR-0010 Decision 5."
 
@@ -185,7 +186,7 @@ flowchart TB
       VC[":venue-config<br/>branch settings → FK to tenancy.branches"]
       CAT[":catalogue / :inventory<br/>one item core (product only)"]
     end
-    subgraph L1["Layer 1 — net.kodelix.core.* (14 modules + -conformance)"]
+    subgraph L1["Layer 1 — net.kodelix.core.* (15 modules + -conformance)"]
       TEN[":tenancy<br/>tenants, branches (bare row)"]
       LIC[":licensing<br/>devices, seats → FK to branches"]
       ID[":identity"] --> OTP[":otp"]
@@ -264,8 +265,8 @@ migration id (manifest, privileged list, deploy record) = <module>:<version>
 
 ### Alternative 3: One ADR per Layer 1 capability (ADR-0006 Decision 1 as written)
 
-- **Description**: Twelve (or fourteen) ADRs, each recording locality, liftability rules and its own extraction trigger.
-- **Cost**: Twelve ADRs repeating the same reasoning, each reviewed separately.
+- **Description**: Thirteen (or fifteen) ADRs, each recording locality, liftability rules and its own extraction trigger.
+- **Cost**: Thirteen ADRs repeating the same reasoning, each reviewed separately.
 - **Risk**: Drift — capability ADRs choose different triggers or package rules (ADR-0012 § 12 first stated its own trigger; since side-session commit `3054f1a` it defers to this ADR's Decision 7).
 - **Performance**: None.
 - **Operability**: More documents to keep consistent on every Kotlin, Gradle or Flyway pin change.
@@ -292,10 +293,10 @@ migration id (manifest, privileged list, deploy record) = <module>:<version>
 
 ### Negative
 
-- Fourteen modules plus fourteen conformance modules: about 28 more Gradle projects, each with a lock file and an ABI dump; a dependency change re-locks every module above it (F116).
+- Fifteen modules plus fifteen conformance modules: about 30 more Gradle projects, each with a lock file and an ABI dump; a dependency change re-locks every module above it (F116).
 - About 25 Flyway runs per deploy instead of one (one per module with migrations, Layer 1 and product; tens of milliseconds each; total not measured).
 - The core contract carries ADR-0001's role model and the core part of the bootstrap roles script: a future product with a different role model cannot use the Layer 1 SQL unchanged, and runs the core part before its first migration.
-- **Exception consequence (Decision 8):** `authz`, `operator`, `jobs` and `analytics` may become core modules with one consumer — modules nobody has proven general. Owner: the founder; review date: when the founder takes the `saas-core-kotlin` repository decision (Decision 7; founder, 2026-10-21).
+- **Exception consequence (Decision 8):** `authz`, `operator`, `jobs`, `analytics` and `egress` may become core modules with one consumer — modules nobody has proven general. Owner: the founder; review date: when the founder takes the `saas-core-kotlin` repository decision (Decision 7; founder, 2026-10-21).
 - Every module with tenant or personal data carries a retention participant (Decision 11).
 - **Cost to reverse:** before the first migration, near zero (text and build files). After it, merging or splitting `flyway_<module>` history tables on a live database means a hand-written migration of history rows and a privileged repair — weeks of careful work — and re-packaging changes every caller.
 - ABI validation is experimental; a DSL break costs a convention-plugin edit (F101).
@@ -319,7 +320,7 @@ migration id (manifest, privileged list, deploy record) = <module>:<version>
 | A capability ADR states its own trigger | LOW | LOW | Decision 7 governs; ADR-0012 already cites it |
 | The core part of the bootstrap roles script drifts from ADR-0001 § 1b | MEDIUM | HIGH | The script changes only with an ADR-0001 amendment; the catalogue test fails on any role not listed (ADR-0001); owner `cto`, review 2026-11-04 |
 | A module with tenant or personal data registers no retention participant, so closure or erasure leaves rows behind | MEDIUM | HIGH | Coverage tests (Decision 11, ADR-0005 M47); owner `data-lead` with `multitenancy-specialist`, at `/design-spec tenant-foundation` |
-| A founder-exception module (authz, operator, jobs, analytics) is not general enough for a second product | MEDIUM | MEDIUM | Port strip test in `/core-extract`; owner the founder, reviewed at the `saas-core-kotlin` repository decision (Decision 8) |
+| A founder-exception module (authz, operator, jobs, analytics, egress) is not general enough for a second product | MEDIUM | MEDIUM | Port strip test in `/core-extract`; owner the founder, reviewed at the `saas-core-kotlin` repository decision (Decision 8) |
 | Locking all configurations fails offline on `kotlin-klib-commonizer-embeddable` (F521) | MEDIUM | LOW | Re-lock with the note's command set (D2), online, reviewed as a diff |
 | Private repository for published modules not chosen | — | MEDIUM | Open question below, before the first lift |
 
@@ -373,7 +374,7 @@ Foundational — no spec requirement. Enables: every Layer 1 spec (`tenant-found
 - **Depends on:** ADR-0001, ADR-0002, ADR-0003, ADR-0004, ADR-0005, ADR-0007, ADR-0008 (Accepted); ADR-0011 (not yet written).
 - **Coordinates with:** ADR-0012 (jobs and outbox; § 12 cites Decision 7 since `3054f1a`).
 - **Research note:** `docs/research/module-structure-and-core-boundary.md` (D1, D3, D4, D5).
-- **Domain map:** `design/specs/domain-map.md` (Layer 1 rows 1–12; Venue Configuration row 13; P-CORE).
+- **Domain map:** `design/specs/domain-map.md` (Layer 1 rows 1–12 and 12a; Venue Configuration row 13; P-CORE).
 - **Threat models:** `docs/architecture/threat-models/tenant-isolation.md`, `staff-auth.md`, `licensing.md`.
 - **Skills:** `/core-extract` (evidence route per Decision 1 and 8), `/core-use`.
 - **Code paths:** none yet; module layout per ADR-0011.

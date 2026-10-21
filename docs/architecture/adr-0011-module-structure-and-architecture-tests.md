@@ -76,7 +76,7 @@ Critical ADR: yes — it fixes the build structure, the enforcement of the archi
 
 ### Problem Statement
 
-ADR-0006 left three items for "a follow-up `cto` ADR, required before the first Kotlin story": the Kotlin lint path (no stable ktlint or detekt supports Kotlin 2.4.21), the architecture-test tool (gate 2), and the Gradle wrapper version (Q7; `pins.yaml` `"9.7"` does not resolve). The domain map adds that P-ONCE, P-CLEAN, P-CORE and P-VERTICAL are enforced by architecture tests, and leaves the mapping of 32 logical contexts to Gradle modules to this ADR. ADR-0010 fixes the shape of the fourteen Layer 1 modules but not the rest of the build. Without this decision the first story would invent the layout, and a lint or architecture gate would be reported "not run" indefinitely.
+ADR-0006 left three items for "a follow-up `cto` ADR, required before the first Kotlin story": the Kotlin lint path (no stable ktlint or detekt supports Kotlin 2.4.21), the architecture-test tool (gate 2), and the Gradle wrapper version (Q7; `pins.yaml` `"9.7"` does not resolve). The domain map adds that P-ONCE, P-CLEAN, P-CORE and P-VERTICAL are enforced by architecture tests, and leaves the mapping of 32 logical contexts to Gradle modules to this ADR. ADR-0010 fixes the shape of the fifteen Layer 1 modules but not the rest of the build. Without this decision the first story would invent the layout, and a lint or architecture gate would be reported "not run" indefinitely.
 
 ### Current State
 
@@ -106,7 +106,7 @@ Research note: `docs/research/module-structure-and-core-boundary.md` (Status Dra
 
 | Path | Directory | What | Group / package |
 |---|---|---|---|
-| `:core:<module>` | `backend/core/<module>` | the fourteen Layer 1 modules (ADR-0010 Decision 1) | `net.kodelix.core` / `net.kodelix.core.<module>` |
+| `:core:<module>` | `backend/core/<module>` | the fifteen Layer 1 modules (ADR-0010 Decision 1; egress added 2026-10-21) | `net.kodelix.core` / `net.kodelix.core.<module>` |
 | `:core:<module>-conformance` | `backend/core/<module>-conformance` | each Layer 1 module's conformance suite (ADR-0010 Decision 6) | `net.kodelix.core` / `net.kodelix.core.<module>.conformance` |
 | `:platform:<context>` | `backend/platform/<context>` | Layer 2 backend contexts: `venue-config`, `sync`, `catalogue`, `orders`, `payments`, `tax-receipts`, `money-ledger`, `shifts`, `staff`, `inventory`, `customers`, `reports`, `fleet-health`, `integrations` | `net.kodelix.kodeebo` / `net.kodelix.kodeebo.<context>` |
 | `:kernel:<name>` | `backend/kernel/<name>` | the shared kernels `money-time-rules`, `localization-kernel` and the `vertical-module-contract` (Layer 2) | `net.kodelix.kodeebo` / `net.kodelix.kodeebo.kernel.<name>` |
