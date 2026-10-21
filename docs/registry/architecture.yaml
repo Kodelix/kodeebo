@@ -36,6 +36,7 @@
 # 2026-10-21: ADR-0012 revised after the CTO delta re-check (CONCERNS, 3 text items): TR-JOB-RETENTION-R2 superseded by R3 (erasure exempt from the pending expiry, erasure own row), IC-OUTBOX-SWEEP-R5 superseded by R6 (priority column, conditional transition for cancel-racing steps); still effective only when ADR-0012 is Accepted.
 # 2026-10-21: ADR-0012 text correction (founder, from docs/research/notifications-provider.md): IC-EXTERNAL-EFFECT-R2 superseded by IC-EXTERNAL-EFFECT-R3 (external effects are at-least-once; the item id goes to the provider as an idempotency key only where it accepts one); still effective only when ADR-0012 is Accepted.
 # 2026-10-21: ADR-0013 notifications written (Proposed): 14 entries appended, each effective when ADR-0013 is Accepted (IC-OUTBOX-SWEEP-R7 when ADR-0012 and ADR-0013 are both Accepted): 11 new (TECH-MAIL-ANGUS, IC-NOTIFY-MAIL-SEND, IC-AUTH-NOTICE-FANOUT, IC-SEND-ADMISSION, IC-BOUNCE-READER, IC-EGRESS-GUARD, IC-PUSH-SENDER, IC-APPROVAL-NUDGE, FP-RAW-LINK-TOKEN-AT-REST, FP-UNGUARDED-OUTBOUND-HTTP, FP-APPROVE-FROM-NOTIFICATION) and 3 replacements (IC-NOTICE-GATED-FACTOR-CHANGE-R2, IC-PRE-CONTEXT-LOOKUPS-R12, IC-OUTBOX-SWEEP-R7); the 3 old entries stay active until then.
+# 2026-10-21: ADR-0010 egress module added at ADR-0013's request (founder): IC-CORE-MODULE-IDENTITY superseded by IC-CORE-MODULE-IDENTITY-R2 (fifteen modules), effective when ADR-0010 is Accepted.
 data_ownership: []
 
 tenancy_rules:
@@ -856,7 +857,7 @@ interface_contracts:
     contract: "Effective when ADR-0010 is Accepted: each of the fourteen Layer 1 modules (tenancy, identity, otp, ratelimit, authz, audit, operator, licensing, billing, notify, jobs, observability, analytics, storage) and its <module>-conformance module has Gradle group net.kodelix.core, project name = module name, package net.kodelix.core.<module>, strict explicitApi(), a committed ABI dump <module>/api/<module>.api checked by checkKotlinAbi on every PR, migrations in src/main/resources/db/migration/net/kodelix/core/<module>/V0001__<verb>_<object>.sql (4-digit, never reused), history table flyway_<module>, and migration id <module>:<version> in the job, manifest, privileged list and deploy record; product contexts use net.kodelix.kodeebo.<context> with the same migration layout. A lift changes build files and regenerated lock and verification files only, never Kotlin source."
     adr: ADR-0010
     adr_status: Proposed
-    status: active
+    status: "superseded_by: ADR-0010 (2026-10-21, egress added) -> IC-CORE-MODULE-IDENTITY-R2"
   - id: IC-RETENTION-PARTICIPANT
     contract: "Effective when ADR-0010 is Accepted (founder 2026-10-21): tenancy defines TenantDataParticipant (export its tables EXP-2, purge personal data, delete, for one tenant) and identity defines the per-person form (de-identify, delete personal fields, extract); steps and signatures are ADR-0005s, written in /design-spec tenant-foundation. Every module holding tenant or personal data implements it; only :app registers participants; the orchestrator deletes in reverse dependency order (children first) and exports in dependency order; coverage tests (ADR-0005 M47, erasure) fail when a module with tenant tables registers none."
     adr: ADR-0010
@@ -915,6 +916,11 @@ interface_contracts:
   - id: IC-APPROVAL-NUDGE
     contract: "Effective when ADR-0013 is Accepted: a push for a remote-approval request carries only the request id and a generic localised text; the owner approves only in the signed-in dashboard with step-up bound to the request (ADR-0007 § 7 pattern); nothing is approved from a notification and email is never an approval channel; remote approval never sits on a counter path: the counter's own action completes locally under 3 s and shows a waiting state, and the answer arrives by the sync nudge or a poll of 2 s or less."
     adr: ADR-0013
+    adr_status: Proposed
+    status: active
+  - id: IC-CORE-MODULE-IDENTITY-R2
+    contract: "Effective when ADR-0010 is Accepted: each of the fifteen Layer 1 modules (tenancy, identity, otp, ratelimit, authz, audit, operator, licensing, billing, notify, jobs, observability, analytics, storage, egress — egress added 2026-10-21 from ADR-0013) and its <module>-conformance module has Gradle group net.kodelix.core, project name = module name, package net.kodelix.core.<module>, strict explicitApi(), a committed ABI dump <module>/api/<module>.api checked by checkKotlinAbi on every PR, migrations in src/main/resources/db/migration/net/kodelix/core/<module>/V0001__<verb>_<object>.sql (4-digit, never reused), history table flyway_<module>, and migration id <module>:<version> in the job, manifest, privileged list and deploy record; product contexts use net.kodelix.kodeebo.<context> with the same migration layout. A lift changes build files and regenerated lock and verification files only, never Kotlin source."
+    adr: ADR-0010
     adr_status: Proposed
     status: active
 performance_budgets: []
