@@ -1,0 +1,18 @@
+python 3.14.8
+case1 float grams left after 10000 x 0.1 g: -1.588713327560498e-10 (exact answer 0.0)
+case1 integer mg left after 10000 x 100 mg: 0
+case2 shots per bag: 55 remainder mg: 10000
+case3 exact cost of one dose (piasters): 299997/500 = 599.994
+case3 A: round each sale to whole piasters, 1000 sales: 600000 exact total: 599994.0 drift: 6.0
+case3 B: 55 shots cost sum: 33000 remaining value for 10000 mg left: 333 -> total accounted: 33333 must equal 33333
+case4 yield 80.0%: gross per dose 22500.0000 mg, rounded 22500; 10000 sales rounded 225000000 vs exact 225000000.0 (drift 0.0 mg)
+case4 yield 83.0%: gross per dose 21686.7470 mg, rounded 21687; 10000 sales rounded 216870000 vs exact 216867469.9 (drift 2530.1 mg)
+case5 sugar per drink (mg) exact: 40000/3 = 13333.333333333334
+case5 Decimal(40)/Decimal(3) g = 13.33333333333333333333333333 (not exact)
+case5 explode at sale, rounded to mg per drink x 75 drinks: 999975 mg vs batch input 1000000 mg; drift -25 mg
+case5 stock the syrup in ml: deduct 20 ml x 75 = 1500 ml; raw sugar 1000000 mg moved once at batch time, drift 0
+case6 stock after void by reversing stored movement: 1000000 | by recomputing from current recipe: 1002000 (excess 2000 mg)
+case7 2.5 cartons x 24 = 60.0 cans; whole: True
+case7 2.3333 cartons x 24 = 55.9992 cans; whole: False
+case7 2.34 cartons x 24 = 56.16 cans; whole: False
+exit=0

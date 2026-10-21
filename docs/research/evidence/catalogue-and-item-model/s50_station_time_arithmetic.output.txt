@@ -1,0 +1,28 @@
+Python 3.14.8
+== case 1: rounding mode and float, one session line ==
+rate=5400 s=1 exact=1.5000 half_up=2 python_round_float=2 floor=1 ceil=2
+rate=5400 s=3 exact=4.5000 half_up=5 python_round_float=4 floor=4 ceil=5
+rate=5400 s=5 exact=7.5000 half_up=8 python_round_float=8 floor=7 ceil=8
+rate=5400 s=4033 exact=6049.5000 half_up=6050 python_round_float=6050 floor=6049 ceil=6050
+seconds in 1..86400 where python round(float) != exact half_up, by hourly rate: {6000: 0, 5400: 21600, 7000: 2400, 4500: 10800, 3000: 7200}
+
+== case 2: rate boundary and pauses, round per segment vs once per line ==
+two segments [(8000, 1230), (5000, 1500)]: round once=4817 sum of rounded segments=4816
+same 1500 s at off-peak, uncut vs cut by a pause:
+  round once: 2083 vs 2083
+  per piece : 2083 vs 2084
+
+== case 3: blocks and minimum charge ==
+elapsed=100s blocks_of_15min=1 block_charge=1500 minimum=6000 -> 6000
+elapsed=4033s blocks_of_15min=5 block_charge=7500 minimum=6000 -> 7500
+
+== case 4: rule priority, stackable or not, tie on priority ==
+order R1,R2 (R1 stackable -10%, R2 non-stackable -20%): 4320
+order R2,R1 (same priority, other tie-break)           : 4800
+
+== case 5: extras per hour, one line per unit vs one line with quantity ==
+headset 1000/h for 3300s: one unit=917; two units as two rounded lines=1834; two units as one line (qty x rate x time, round once)=1833
+
+== case 6: bundle with one included hour, session longer or shorter ==
+elapsed=4800s included=3600s overtime=1200s overtime_charge=2000
+elapsed=3000s included=3600s overtime=0s overtime_charge=0
