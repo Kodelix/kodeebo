@@ -1,0 +1,83 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31c-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31c-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Start completed.
+[+203ms @1792547458354] config: WORK_SEC=12 TX_TIMEOUT_MS=1500 RUNNER_STOP_MS=3000 shutdownTimeout=4000 grace=500 defaultMaxAttempts=1
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.107 seconds.
+[+328ms @1792547458479] event ApplicationStarted
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:51489
+[+368ms @1792547458519] loop: body run #1 (transaction.maxAttempts=1) claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0] transaction_timeout=[1500ms]; REAL blocking JDBC: select pg_sleep(12)
+[+1093ms @1792547459244] event ApplicationStopPreparing
+[+1094ms @1792547459245] main: start(wait=true) returned
+[+1094ms @1792547459245] event ApplicationStopping
+[DefaultDispatcher-worker-1] WARN com.zaxxer.hikari.pool.ProxyConnection - s31c-app-job - Connection org.postgresql.jdbc.PgConnection@7bc1a03d marked as broken because of SQLSTATE(08006), ErrorCode(0)
+org.postgresql.util.PSQLException: An I/O error occurred while sending to the backend.
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:474)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:533)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:449)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:197)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:140)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.v1.jdbc.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:53)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction$exec$2.executeInternal(JdbcTransaction.kt:177)
+	at org.jetbrains.exposed.v1.jdbc.statements.BlockingExecutableKt.executeIn(BlockingExecutable.kt:157)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.exec$lambda$3(JdbcTransaction.kt:237)
+	at org.jetbrains.exposed.v1.core.transactions.TransactionsKt.withThreadLocalTransaction(Transactions.kt:47)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.exec(JdbcTransaction.kt:233)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.exec(JdbcTransaction.kt:209)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransaction.exec(JdbcTransaction.kt:170)
+	at App3$main$loop$2$1.invokeSuspend(S31c.kt:79)
+	at App3$main$loop$2$1.invoke(S31c.kt)
+	at App3$main$loop$2$1.invoke(S31c.kt)
+	at S31cKt$withScope$2.invokeSuspend(S31c.kt:34)
+	at S31cKt$withScope$2.invoke(S31c.kt)
+	at S31cKt$withScope$2.invoke(S31c.kt)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt$inTopLevelSuspendTransaction$2.invokeSuspend(Transactions.kt:367)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt$inTopLevelSuspendTransaction$2.invoke(Transactions.kt)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt$inTopLevelSuspendTransaction$2.invoke(Transactions.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatched(Undispatched.kt:66)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.withContext(Builders.common.kt:497)
+	at kotlinx.coroutines.BuildersKt.withContext(Unknown Source)
+	at org.jetbrains.exposed.v1.jdbc.JdbcTransactionKt.withTransactionContext(JdbcTransaction.kt:352)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt.inTopLevelSuspendTransaction(Transactions.kt:363)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt.suspendTransaction(Transactions.kt:309)
+	at org.jetbrains.exposed.v1.jdbc.transactions.TransactionsKt.suspendTransaction$default(Transactions.kt:282)
+	at S31cKt.withScope(S31c.kt:31)
+	at App3$main$loop$2.invokeSuspend(S31c.kt:74)
+	at App3$main$loop$2.invoke(S31c.kt)
+	at App3$main$loop$2.invoke(S31c.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatched(Undispatched.kt:66)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.withContext(Builders.common.kt:497)
+	at kotlinx.coroutines.BuildersKt.withContext(Unknown Source)
+	at App3.main$loop(S31c.kt:74)
+	at App3.access$main$loop(S31c.kt:54)
+	at App3$main$server$2$1$1.invokeSuspend(S31c.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:124)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:798)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+Caused by: java.io.EOFException
+	at org.postgresql.core.PGStream.receiveChar(PGStream.java:482)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2383)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:446)
+	... 50 more
+[+1869ms @1792547460020] loop: outcome=FAILED sqlState=25P04 ExposedSQLException: org.postgresql.util.PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- 
+[+1869ms @1792547460020] loop: cancelled (JobCancellationException)
+[+1869ms @1792547460020] loop: exited
+[+1871ms @1792547460022] runner: stop() JOINED after 775ms (runner timeout 3000)
+[+1877ms @1792547460028] event ApplicationStopped; bodyRuns=1 ok=0 cancelled=0 failed25P04=1 failedOther=0; closing pools
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Shutdown completed.
+[+1901ms @1792547460052] pools: closed

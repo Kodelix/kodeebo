@@ -1,0 +1,92 @@
+### S31c start 2026-10-21T01:50:52Z; postgres (PostgreSQL) 18.6 (Debian 18.6-1.pgdg13+2); java: openjdk version "21.0.12.1" 2026-08-18
+
+### Rc1-tx1500-stop3000-shutdown4000: WORK_SEC=12 TX_TIMEOUT_MS=1500 RUNNER_STOP_MS=3000 TIMEOUT_MS=4000 GRACE_MS=500 PGPORT_S31=48071 KPORT=51489
+before SIGTERM: claimable rows (expect 8): 8; job backends: active/PgSleep 
+SIGTERM sent at epoch_ms=1792547459240
+  +110 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +367 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +622 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +890 ms | claimable=10/10 | job backends not idle=0 | jvm=gone
+exit code: 143  (first sample that saw the JVM gone: +889 ms; coarse, sampler period includes docker exec)
+-- server log lines for the timeout (docker timestamps, UTC) and JVM epoch for comparison:
+2026-10-21T01:51:00.012854110Z 2026-10-21 01:51:00.012 UTC [110] FATAL:  terminating connection due to transaction timeout
+-- JVM log (epoch in @ms; SIGTERM epoch above):
+[+203ms @1792547458354] config: WORK_SEC=12 TX_TIMEOUT_MS=1500 RUNNER_STOP_MS=3000 shutdownTimeout=4000 grace=500 defaultMaxAttempts=1
+[+328ms @1792547458479] event ApplicationStarted
+[+368ms @1792547458519] loop: body run #1 (transaction.maxAttempts=1) claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0] transaction_timeout=[1500ms]; REAL blocking JDBC: select pg_sleep(12)
+[+1093ms @1792547459244] event ApplicationStopPreparing
+[+1094ms @1792547459245] main: start(wait=true) returned
+[+1094ms @1792547459245] event ApplicationStopping
+[+1869ms @1792547460020] loop: outcome=FAILED sqlState=25P04 ExposedSQLException: org.postgresql.util.PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- PSQLException: FATAL: terminating connection due to transaction ti
+[+1869ms @1792547460020] loop: cancelled (JobCancellationException)
+[+1869ms @1792547460020] loop: exited
+[+1871ms @1792547460022] runner: stop() JOINED after 775ms (runner timeout 3000)
+[+1877ms @1792547460028] event ApplicationStopped; bodyRuns=1 ok=0 cancelled=0 failed25P04=1 failedOther=0; closing pools
+[+1901ms @1792547460052] pools: closed
+
+### Rc2-tx2500-stop3000-shutdown4000: WORK_SEC=12 TX_TIMEOUT_MS=2500 RUNNER_STOP_MS=3000 TIMEOUT_MS=4000 GRACE_MS=500 PGPORT_S31=48071 KPORT=51489
+before SIGTERM: claimable rows (expect 8): 8; job backends: active/PgSleep 
+SIGTERM sent at epoch_ms=1792547465981
+  +134 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +392 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +651 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +910 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1192 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1447 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1722 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1991 ms | claimable=10/10 | job backends not idle=0 | jvm=gone
+exit code: 143  (first sample that saw the JVM gone: +1990 ms; coarse, sampler period includes docker exec)
+-- server log lines for the timeout (docker timestamps, UTC) and JVM epoch for comparison:
+2026-10-21T01:51:07.814574047Z 2026-10-21 01:51:07.814 UTC [109] FATAL:  terminating connection due to transaction timeout
+-- JVM log (epoch in @ms; SIGTERM epoch above):
+[+195ms @1792547465146] config: WORK_SEC=12 TX_TIMEOUT_MS=2500 RUNNER_STOP_MS=3000 shutdownTimeout=4000 grace=500 defaultMaxAttempts=1
+[+325ms @1792547465276] event ApplicationStarted
+[+373ms @1792547465324] loop: body run #1 (transaction.maxAttempts=1) claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0] transaction_timeout=[2500ms]; REAL blocking JDBC: select pg_sleep(12)
+[+1033ms @1792547465984] event ApplicationStopPreparing
+[+1034ms @1792547465985] main: start(wait=true) returned
+[+1034ms @1792547465985] event ApplicationStopping
+[+2885ms @1792547467836] loop: outcome=FAILED sqlState=25P04 ExposedSQLException: org.postgresql.util.PSQLException: FATAL: terminating connection due to transaction timeout [sqlState=25P04] <- PSQLException: FATAL: terminating connection due to transaction ti
+[+2885ms @1792547467836] loop: cancelled (JobCancellationException)
+[+2885ms @1792547467836] loop: exited
+[+2890ms @1792547467841] runner: stop() JOINED after 1852ms (runner timeout 3000)
+[+2900ms @1792547467851] event ApplicationStopped; bodyRuns=1 ok=0 cancelled=0 failed25P04=1 failedOther=0; closing pools
+[+2917ms @1792547467868] pools: closed
+
+### Rc3-control-tx6000-stop3000-shutdown4000: WORK_SEC=12 TX_TIMEOUT_MS=6000 RUNNER_STOP_MS=3000 TIMEOUT_MS=4000 GRACE_MS=500 PGPORT_S31=48071 KPORT=51489
+before SIGTERM: claimable rows (expect 8): 8; job backends: active/PgSleep 
+SIGTERM sent at epoch_ms=1792547473789
+  +114 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +413 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +697 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +968 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1275 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1602 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +1915 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +2208 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +2484 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +2774 ms | claimable=8/10 | job backends not idle=1 | jvm=alive
+  +3085 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +3359 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +3629 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +3901 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +4179 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +4437 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +4705 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +4969 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +5240 ms | claimable=8/10 | job backends not idle=1 | jvm=gone
+  +5529 ms | claimable=10/10 | job backends not idle=0 | jvm=gone
+exit code: 143  (first sample that saw the JVM gone: +3084 ms; coarse, sampler period includes docker exec)
+-- server log lines for the timeout (docker timestamps, UTC) and JVM epoch for comparison:
+2026-10-21T01:51:19.164834271Z 2026-10-21 01:51:19.164 UTC [110] FATAL:  terminating connection due to transaction timeout
+-- JVM log (epoch in @ms; SIGTERM epoch above):
+[+207ms @1792547472993] config: WORK_SEC=12 TX_TIMEOUT_MS=6000 RUNNER_STOP_MS=3000 shutdownTimeout=4000 grace=500 defaultMaxAttempts=1
+[+346ms @1792547473132] event ApplicationStarted
+[+383ms @1792547473169] loop: body run #1 (transaction.maxAttempts=1) claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0] transaction_timeout=[6s]; REAL blocking JDBC: select pg_sleep(12)
+[+1007ms @1792547473793] event ApplicationStopPreparing
+[+1008ms @1792547473794] main: start(wait=true) returned
+[+1009ms @1792547473795] event ApplicationStopping
+[+4012ms @1792547476798] runner: stop() TIMED OUT after 3001ms (runner timeout 3000)
+[+4021ms @1792547476807] event ApplicationStopped; bodyRuns=1 ok=0 cancelled=0 failed25P04=0 failedOther=0; closing pools
+[+4024ms @1792547476810] pools: closed
+
+### done 2026-10-21T01:51:19Z

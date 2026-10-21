@@ -1,0 +1,22 @@
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31c-app-job - Added connection org.postgresql.jdbc.PgConnection@7bc1a03d
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Start completed.
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Starting...
+[main] INFO com.zaxxer.hikari.pool.HikariPool - s31c-app-plat - Added connection org.postgresql.jdbc.PgConnection@4450d156
+[main] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Start completed.
+[+207ms @1792547472993] config: WORK_SEC=12 TX_TIMEOUT_MS=6000 RUNNER_STOP_MS=3000 shutdownTimeout=4000 grace=500 defaultMaxAttempts=1
+[main] INFO io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+[main] INFO io.ktor.server.Application - Application started in 0.119 seconds.
+[+346ms @1792547473132] event ApplicationStarted
+[DefaultDispatcher-worker-6] INFO io.ktor.server.Application - Responding at http://127.0.0.1:51489
+[+383ms @1792547473169] loop: body run #1 (transaction.maxAttempts=1) claimed [1, 2] for aaaaaaaa-0000-4000-8000-000000000001; client_connection_check_interval=[0] transaction_timeout=[6s]; REAL blocking JDBC: select pg_sleep(12)
+[+1007ms @1792547473793] event ApplicationStopPreparing
+[+1008ms @1792547473794] main: start(wait=true) returned
+[+1009ms @1792547473795] event ApplicationStopping
+[+4012ms @1792547476798] runner: stop() TIMED OUT after 3001ms (runner timeout 3000)
+[+4021ms @1792547476807] event ApplicationStopped; bodyRuns=1 ok=0 cancelled=0 failed25P04=0 failedOther=0; closing pools
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-job - Shutdown completed.
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Shutdown initiated...
+[KtorShutdownHook] INFO com.zaxxer.hikari.HikariDataSource - s31c-app-plat - Shutdown completed.
+[+4024ms @1792547476810] pools: closed

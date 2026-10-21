@@ -1,0 +1,5 @@
+warning: opt-in requirement marker 'kotlin.ExperimentalCoroutinesApi' is unresolved. Make sure it's present in the module dependencies.
+compile exit=0
+App3$main$loop$1.class
+App3$main$loop$2$1.class
+App3$main$loop$2.class

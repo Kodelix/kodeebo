@@ -17,7 +17,7 @@ Proposed
 > escalates; it does not edit this field.
 
 **Acceptance blockers.**
-1. **Open:** S31c, the stop test with the helper's `transaction_timeout` below the runner stop timeout (research F341), passes, or the timeout-ordering rule (Decision 7) is revised.
+1. **Closed 2026-10-21:** S31c passed (research F342–F347). With `transaction_timeout` at 1,500 ms and 2,500 ms, under a 3,000 ms runner stop and without `client_connection_check_interval`, the server ended the blocking statement, the runner join finished in time and the rows were free at the next sample. The 6,000 ms control kept them locked about 2.4 s after JVM exit. The body ran once in every case. Decision 7 needs no revision; its worst-case reading is added to rule 1. Not covered: F346, F349.
 2. **Closed 2026-10-21:** the founder confirmed the retention defaults in Decision 4 (done rows 7 days, dead rows 90 days).
 3. **Open:** the CTO-ADR gate runs and its verdict is recorded (founder, 2026-10-21; see Decision Makers).
 
@@ -54,10 +54,10 @@ Kodeebo's hosted backend needs one way to run background work for every tenant. 
 | **Domain** | Messaging; Data; Tenancy |
 | **Layer** | Foundation |
 | **Knowledge Risk** | HIGH — Ktor 3.6.0, Exposed 1.5.1, HikariCP 7.1.0, kotlinx.coroutines 1.11.0 and PostgreSQL 18.6 are past what the model reliably knows; every behaviour used here was fetched or executed in `docs/research/jobs-and-outbox.md` |
-| **References Consulted** | `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F341; evidence `docs/research/evidence/jobs-and-outbox/`); `docs/research/backend-track.md` (bt-F201–F215); `docs/stack-reference/ktor/{VERSION,best-practices,deprecated-apis,breaking-changes}.md`, `docs/stack-reference/kotlin/deprecated-apis.md`, `docs/stack-reference/postgres/{VERSION,best-practices}.md` (all Last verified 2026-10-11); `docs/registry/architecture.yaml`; `.claude/docs/standing-decisions.md` |
+| **References Consulted** | `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F349; evidence `docs/research/evidence/jobs-and-outbox/`); `docs/research/backend-track.md` (bt-F201–F215); `docs/stack-reference/ktor/{VERSION,best-practices,deprecated-apis,breaking-changes}.md`, `docs/stack-reference/kotlin/deprecated-apis.md`, `docs/stack-reference/postgres/{VERSION,best-practices}.md` (all Last verified 2026-10-11); `docs/registry/architecture.yaml`; `.claude/docs/standing-decisions.md` |
 | **Pinned versions relied on** | `postgres:18.6`; Ktor 3.6.0; Exposed 1.5.1; HikariCP 7.1.0; Kotlin 2.4.21; kotlinx.coroutines 1.11.0; JVM toolchain 21 (`pins.yaml`); pgjdbc 42.7.14 (not yet pinned; pin proposed, research part 3 § 10) |
 | **Post-Cutoff APIs Used** | Exposed `Query.forUpdate(ForUpdateOption.PostgreSQL.ForUpdate(MODE.SKIP_LOCKED))` (F321, F323); `DatabaseConfig { defaultMaxAttempts }` and `JdbcTransaction.maxAttempts` (F335–F337); `suspendTransaction` (stack reference, best-practices line 55); Ktor `ApplicationStarted`, `ApplicationStopping`, `ApplicationStopped` and the engine's `shutdownTimeout` (F313, F329–F334); `Dispatchers.IO.limitedParallelism(n, name)` (kotlin deprecated-apis line 25); PostgreSQL `transaction_timeout` (best-practices line 53) and `client_connection_check_interval` (F312) |
-| **Verification Required** | (1) S31c (F341): with the helper's `transaction_timeout` below the runner stop timeout, a stop during a blocking statement ends inside the stop window and frees the rows without `client_connection_check_interval`. (2) A two-instance run on the real backend image: two runners sweeping one database at once produce no duplicate effect and claim each row once (research part 2 S23). (3) The real Gradle build resolves `kotlin-stdlib` 2.4.21, not Exposed's declared 2.3.21 (F320). (4) Idle sweep duration on the JVM at the expected tenant count, against the budget this ADR proposes (Decision 10). (5) Re-run S31/S31b on every Exposed, HikariCP, pgjdbc or Ktor bump. (6) The Compose stop grace period (ADR-0009) exceeds the sum of the engine's grace and timeout, the runner stop timeout and `shutdownTimeout` (Decision 7, rule 2). (7) A churn test on `job_outbox` (`n_dead_tup` under realistic enqueue, claim and prune) sets its autovacuum parameters. (8) EXPLAIN of both claim branches with the kind filter (Decision 2). (9) Whether `ON CONFLICT DO NOTHING` needs the table-level SELECT privilege, proved by the enqueue integration test with the Decision 2 grants. |
+| **Verification Required** | (1) ~~S31c (F341)~~ **done 2026-10-21, passed (F342–F347)**: with the helper's `transaction_timeout` below the runner stop timeout, a stop during a blocking statement ended inside the stop window and freed the rows without `client_connection_check_interval`. Still open from it: the cancellation-branch test (F346) and the F349 cases, in the Ktor-side integration tests. (2) A two-instance run on the real backend image: two runners sweeping one database at once produce no duplicate effect and claim each row once (research part 2 S23). (3) The real Gradle build resolves `kotlin-stdlib` 2.4.21, not Exposed's declared 2.3.21 (F320). (4) Idle sweep duration on the JVM at the expected tenant count, against the budget this ADR proposes (Decision 10). (5) Re-run S31/S31b on every Exposed, HikariCP, pgjdbc or Ktor bump. (6) The Compose stop grace period (ADR-0009) exceeds the sum of the engine's grace and timeout, the runner stop timeout and `shutdownTimeout` (Decision 7, rule 2). (7) A churn test on `job_outbox` (`n_dead_tup` under realistic enqueue, claim and prune) sets its autovacuum parameters. (8) EXPLAIN of both claim branches with the kind filter (Decision 2). (9) Whether `ON CONFLICT DO NOTHING` needs the table-level SELECT privilege, proved by the enqueue integration test with the Decision 2 grants. |
 
 > If Knowledge Risk is MEDIUM or HIGH, re-validate this ADR whenever a pin in
 > `pins.yaml` changes. Mark it "Superseded" and write a new ADR if it no longer holds.
@@ -71,7 +71,7 @@ Critical ADR: yes — messaging and background processing for every context; Fou
 | **Depends On** | ADR-0001 (table classes, role inventory, suspension contract), ADR-0002 (scope helper, Job kind, J1), ADR-0005 (retention, closure and export jobs), ADR-0006 (Ktor track, Decision 5/5a pools and dispatchers, Decision 6 jobs direction), ADR-0007 (`auth_notices`, M31 notice gating), ADR-0008 (two-key advisory-lock scheme and lock order; trail jobs), ADR-0009 (deploy overlap, `catalogue_rt` checks) — all Accepted |
 | **Enables** | ADR-0013 (notifications: provider adapters as external-effect job kinds, the `auth_notices` claim/ack functions); every story with a background job (ADR-0005 closure steps, retention purges, exports; ADR-0001 usage counts and suspension notices; ADR-0007 owner notices; ADR-0008 trail verification and pruning; backfills); `project.yaml` `stack.messaging: none` |
 | **Blocks** | Any job, outbox or scheduler code (registry FP-QUEUE-WITHOUT-ADR-R2); the first work-table migration |
-| **Ordering Note** | Coordinates with ADR-0010 (core extraction) and ADR-0011 (module structure), both owned by the map session and not yet written: they decide the module and package of the runner and of the `WorkQueue` port. This ADR fixes the behaviour and the port, not the module path. |
+| **Ordering Note** | Coordinates with ADR-0010 (core-extraction policy; Proposed, written by the map session) and ADR-0011 (module structure; not yet written, map session): they decide the module and package of the runner and of the `WorkQueue` port. This ADR fixes the behaviour and the port, not the module path. |
 
 ## Context
 
@@ -221,7 +221,7 @@ Rules that follow from this design:
 
 **7. Timeout ordering.**
 - Every kind has a transaction budget, which the helper sets first as `transaction_timeout` (ADR-0002, F308).
-- **Rule 1:** `transaction_timeout` (per kind) < `JobRunner` stop timeout. Coroutine cancellation does not interrupt a JDBC statement (F338), so the server, not the runner, has to end an item that is still running when the stop arrives.
+- **Rule 1:** `transaction_timeout` (per kind) < `JobRunner` stop timeout. Coroutine cancellation does not interrupt a JDBC statement (F338), so the server, not the runner, has to end an item that is still running when the stop arrives. `transaction_timeout` counts from the start of the transaction, so the worst case from the stop signal to the server ending the statement is the kind's full timeout (a stop just after the claim). That full value must fit under the runner stop timeout. Executed in S31c: 1,500 ms and 2,500 ms passed under 3,000 ms, and the 6,000 ms control failed as predicted (F342–F344).
 - **Rule 2:** Ktor's stop phases run **one after another, not nested** (F313, F332, F338):
   1. `engine.stop(gracePeriod, timeout)`;
   2. the `ApplicationStopping` handlers (the runner's stop, bounded by its own timeout);
@@ -231,7 +231,7 @@ Rules that follow from this design:
   The sum of the engine's grace and timeout, the runner stop timeout and `shutdownTimeout` must stay **below the container's stop grace period** in Compose (ADR-0009). Otherwise the process is killed before `ApplicationStopped` closes the pools. That Compose value was not checked here (Verification Required).
 - Without these two rules, the process exits with work in flight and its rows stay locked until the statement ends.
 - **Long kinds**, whose budget exceeds the stop timeout (tenant exports, for example), are restartable by construction. On stop they are abandoned, the server rolls them back when the connection drops (Decision 6), and they run again at the next start.
-- The S31c test (F341) confirms the ordering before acceptance.
+- S31c (F342–F347) confirmed the ordering on 2026-10-21.
 
 **8. Lifecycle in Ktor 3.6.0.**
 - One `JobRunner` per process, with its own `CoroutineScope(SupervisorJob() + jobDispatcher)`:
@@ -469,7 +469,7 @@ interface JobRunner {
 |------|------------|--------|-----------|
 | A work table ships without `job_rt`'s UPDATE policy, so the queue goes silently dark (F112) | Medium | High (closure, retention or notices stop unseen) | C9 catalogue check in CI and on the `catalogue_rt` timer; the oldest-pending-age alert |
 | Exposed's default retry re-runs a job body (F326) | Medium if missed | High (duplicate effects, stretched timeouts) | `defaultMaxAttempts = 1` on both pools; a runtime assert; S31b kept as a regression test |
-| A blocking statement outlives the stop window and keeps rows locked (F338) | Medium | Medium (work delayed until the statement ends) | Decision 7 ordering; `client_connection_check_interval`; S31c before acceptance |
+| A blocking statement outlives the stop window and keeps rows locked (F338) | Medium | Medium (work delayed until the statement ends) | Decision 7 ordering, confirmed by S31c (F342–F344); `client_connection_check_interval` |
 | A half-open connection (host loss, network partition) holds row locks | Low | Medium | `transaction_timeout` per kind; keepalive settings — open question for `sre-lead` and `infra-engineer` |
 | Idle sweep cost grows past its budget as tenants grow | Medium (over time) | Medium | Measured budget (Decision 10); adopt W2 with an insert-if-absent hint and a periodic full sweep (F115) |
 | An external effect repeats after a lease expires | Medium | Low–Medium (a duplicate email or push) | The item id as the provider idempotency key; `leaseDuration` above provider timeout plus retry budget |
@@ -538,8 +538,8 @@ Foundational — no spec requirement. Enables:
 
 - Depends on: ADR-0001, ADR-0002, ADR-0005, ADR-0006 (refines its Decision 6 and IC-OUTBOX-SWEEP-R2), ADR-0007, ADR-0008, ADR-0009.
 - Enables: ADR-0013 (notifications provider; amends ADR-0001 § 1c for `auth_notices`).
-- Coordinates with: ADR-0010 (core extraction) and ADR-0011 (module structure), both from the map session.
-- Research note: `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F341); evidence `docs/research/evidence/jobs-and-outbox/`. Earlier evidence: `docs/research/backend-track.md` bt-F201–F215.
+- Coordinates with: ADR-0010 (core-extraction policy; Proposed, map session; Decision 12 defers to its extraction trigger) and ADR-0011 (module structure; not yet written, map session).
+- Research note: `docs/research/jobs-and-outbox.md` (F101–F124, F201–F224, F301–F349); evidence `docs/research/evidence/jobs-and-outbox/`. Earlier evidence: `docs/research/backend-track.md` bt-F201–F215.
 - Threat model: none written for the job path. `security-lead` decides between a new `docs/architecture/threat-models/jobs-and-outbox.md` and extending the ADR-0005 and ADR-0007 models. An outbound-webhooks threat model is required before trigger 2.
 - Runbooks (to write, `sre-lead`): outbox backlog, dead items, stuck rows after a kill.
 - Code paths: none yet. The module location follows ADR-0011.

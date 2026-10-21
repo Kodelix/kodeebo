@@ -1,0 +1,27 @@
+du before: cache dir jobs-and-outbox exists: no (absent = 0 bytes)
+plan identical to F320 plan: TOTAL jars: 24 artifacts, 13252399 bytes (12.64 MiB)
+TOTAL jars: 24 artifacts, 13252399 bytes (12.64 MiB)
+PROBLEM: org.slf4j:slf4j-api version unresolved (None) from org.slf4j:slf4j-simple
+OK config-1.4.9.jar 297970
+OK HikariCP-7.1.0.jar 172996
+OK ktor-events-jvm-3.6.0.jar 6397
+OK ktor-http-cio-jvm-3.6.0.jar 134494
+OK ktor-http-jvm-3.6.0.jar 458908
+OK ktor-io-jvm-3.6.0.jar 303591
+OK ktor-network-jvm-3.6.0.jar 202163
+OK ktor-serialization-jvm-3.6.0.jar 23007
+OK ktor-server-cio-jvm-3.6.0.jar 121973
+OK ktor-server-core-jvm-3.6.0.jar 1014279
+OK ktor-utils-jvm-3.6.0.jar 397498
+OK ktor-websockets-jvm-3.6.0.jar 192926
+OK annotations-23.0.0.jar 29371
+OK exposed-core-1.5.1.jar 1169949
+OK exposed-jdbc-1.5.1.jar 319137
+OK kotlinx-coroutines-core-jvm-1.11.0.jar 1577052
+OK kotlinx-datetime-jvm-0.7.1-0.6.x-compat.jar 725229
+OK kotlinx-io-bytestring-jvm-0.9.1.jar 22776
+OK kotlinx-io-core-jvm-0.9.1.jar 153576
+OK kotlinx-serialization-core-jvm-1.11.0.jar 404509
+OK slf4j-api-2.0.19.jar 70246
+OK slf4j-simple-2.0.19.jar 15709
+du after: 7.7M; lib bytes: 7813756; jars: 22; poms bytes: 78741
