@@ -88,7 +88,7 @@ Research note: `docs/research/tenant-isolation.md` (part 5; § 5). Threat model:
 ## Decision
 **Amendment 2026-10-22 (ADR-0013 notifications) — Proposed; takes effect only when ADR-0013 is Accepted.** Owner of the retention rows below: `data-lead`. The decision text above is not edited.
 - **Closure notices and the archive one-time code are email sent through `notify`** (ADR-0013 Decision 7a): notify mail kinds in `job_outbox`, one item per recipient, in the reserved lane; closure notices go to every owner contact, flagged or not.
-- **`archive_requests` holds up to `max_attempts` code hashes per (request, item)** instead of "only the code's hash" (Decision 2): each attempt mints its own code in its claim transaction; an earlier code stays valid until a later attempt is accepted; a valid bounce voids the item's codes.
+- **`archive_requests` holds up to `max_attempts` code hashes per (request, item)** instead of "only the code's hash" (Decision 2), through `ArchiveRequests.addCode(requestId, itemId, codeHash, expiresAt)` (refuses a closed, used or expired request), `confirmCode` and `voidItemCodes` (EXECUTE `job_rt`, tenant match): each attempt mints its own code in its claim transaction; an earlier code stays valid until a later attempt is accepted; a valid bounce voids the item's codes.
 - **Retention:** a notice's retention counts from its terminal state (accepted, all recipients failed, or expired at the M31 bound); `auth_notice_recipients` follows its notice; per-attempt cancel-token and archive-code hash rows are deleted with their request — the exact rows are set by `data-lead` (threat model M38) before S-NT-04; `Closure.purgeLogins` also covers `auth_notices`.
 
 
