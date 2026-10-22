@@ -1,0 +1,8 @@
+--- start 2026-10-22 18:43:41 c93b4f6 dirty=[0]
+Domain snapshot clean-ssh2 reverted
+
+
+18:43:57 p4 up: reverted clean-ssh2, booted, throttled (100 IOPS + 80 MiB/s)
+install 18:46:08
+s104 rc=1 20:28:47 transport retries: 0
+STOPPED 2026-10-22 20:28:47: s104 failed (rc=1, see runs/p4-set5-s104.log) — VM (running) and stores left as they are; no retry

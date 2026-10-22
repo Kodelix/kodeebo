@@ -1,0 +1,78 @@
+  restart: BootId 6 -> 7 after 202.6 s
+phase 4 S104 (power-off and OS crash on Windows), commit 9799f34
+  power seed     1 held at client:before_local_commit #1      fired True acked  64 server  64 hot journal False boot 11.6 s violations 0 [] (221 s)
+  power seed     2 held at client:mid_local_txn #1            fired True acked  64 server  64 hot journal False boot 11.5 s violations 0 [] (132 s)
+  power seed     3 held at client:after_local_commit #1       fired True acked  64 server  65 hot journal False boot 12.6 s violations 0 [] (120 s)
+  power seed     4 held at client:before_send #1              fired True acked  65 server  65 hot journal False boot 11.6 s violations 0 [] (158 s)
+  power seed     5 held at client:after_response_before_mark #1 fired True acked  65 server  65 hot journal False boot 11.5 s violations 0 [] (145 s)
+  power seed     6 held at client:after_mark #1               fired True acked  65 server  65 hot journal False boot 11.5 s violations 0 [] (144 s)
+  power seed     7 held at client:mid_mark #1                 fired True acked  65 server  65 hot journal False boot 11.5 s violations 0 [] (144 s)
+  power seed     8 held at client:before_local_commit #2      fired True acked  64 server  64 hot journal False boot 11.5 s violations 0 [] (144 s)
+  power seed     9 held at client:mid_local_txn #2            fired True acked  64 server  64 hot journal False boot 11.5 s violations 0 [] (156 s)
+  power seed    10 held at client:after_local_commit #2       fired True acked  64 server  65 hot journal False boot 11.6 s violations 0 [] (157 s)
+  power seed    11 held at client:before_send #2              fired True acked  65 server  65 hot journal False boot 11.6 s violations 0 [] (146 s)
+  power seed    12 held at client:after_response_before_mark #2 fired True acked  65 server  65 hot journal False boot 9.1 s violations 0 [] (175 s)
+  power seed    13 held at client:after_mark #2               fired True acked  65 server  65 hot journal False boot 11.6 s violations 0 [] (178 s)
+  power seed    14 held at client:mid_mark #2                 fired True acked  65 server  65 hot journal False boot 8.7 s violations 0 [] (178 s)
+  power seed    15 held at client:before_local_commit #3      fired True acked  64 server  64 hot journal False boot 12.6 s violations 0 [] (176 s)
+  power seed    16 after a44+0.14s                            fired True acked  64 server  64 hot journal True boot 11.5 s violations 0 [] (150 s)
+  power seed    17 after a43+0.11s                            fired True acked  64 server  64 hot journal True boot 11.4 s violations 0 [] (139 s)
+  power seed    18 after a14+0.43s                            fired True acked  64 server  64 hot journal True boot 8.1 s violations 0 [] (182 s)
+  power seed    19 after a29+0.12s                            fired True acked  64 server  64 hot journal True boot 11.5 s violations 0 [] (176 s)
+  power seed    20 after a04+0.32s                            fired True acked  64 server  65 hot journal False boot 8.0 s violations 0 [] (179 s)
+  power seed    21 after a23+0.52s                            fired True acked  64 server  64 hot journal True boot 8.7 s violations 0 [] (200 s)
+  power seed    22 after a28+0.05s                            fired True acked  64 server  64 hot journal True boot 11.5 s violations 0 [] (184 s)
+  power seed    23 after a19+0.74s                            fired True acked  64 server  64 hot journal False boot 25.1 s violations 0 [] (162 s)
+  power seed    24 after a35+0.46s                            fired True acked  64 server  64 hot journal False boot 9.2 s violations 0 [] (150 s)
+  power seed    25 after a18+0.31s                            fired True acked  64 server  65 hot journal False boot 8.9 s violations 0 [] (209 s)
+  power seed    26 after a37+0.56s                            fired True acked  64 server  64 hot journal False boot 11.9 s violations 0 [] (152 s)
+  power seed    27 after a13+0.79s                            fired True acked  64 server  65 hot journal False boot 8.8 s violations 0 [] (165 s)
+  power seed    28 after a46+0.34s                            fired True acked  64 server  65 hot journal False boot 11.6 s violations 0 [] (163 s)
+  power seed    29 after a40+0.78s                            fired True acked  65 server  65 hot journal True boot 11.5 s violations 0 [] (146 s)
+  power seed    30 after a36+0.67s                            fired True acked  64 server  64 hot journal True boot 11.5 s violations 0 [] (146 s)
+  nmi   seed  1001 held at client:before_local_commit #1      fired True acked  64 server  64 hot journal False boot 187.8 s violations 0 [] (396 s)
+  nmi   seed  1002 held at client:mid_local_txn #1            fired True acked  64 server  64 hot journal False boot 187.4 s violations 0 [] (427 s)
+Traceback (most recent call last):
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 1342, in <module>
+    s104(int(sys.argv[2]), int(sys.argv[3]), *(sys.argv[4:9]))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 327, in s104
+    r = run.go()
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 238, in go
+    r = super().go()
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/driver.py", line 353, in go
+    self.script(self)
+    ~~~~~~~~~~~^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 265, in loop
+    self.log("sync", self.send({"op": "sync"}))
+                     ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/driver.py", line 273, in send
+    self.ensure_alive()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 220, in ensure_alive
+    self.recover()
+    ~~~~~~~~~~~~^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 205, in recover
+    self.boot_s = round(wait_boot(900), 1)
+                        ~~~~~~~~~^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 78, in wait_boot
+    if "up" in sh("cs", "echo up", timeout=30):
+               ~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 34, in sh
+    return subprocess.run(["bash", P4, *args], capture_output=True, text=True, timeout=timeout).stdout
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['bash', '/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.sh', 'cs', 'echo up']' timed out after 30 seconds
+transport retries: 0

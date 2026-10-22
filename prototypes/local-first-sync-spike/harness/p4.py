@@ -67,6 +67,8 @@ def restart_and_wait(timeout=900):
         now = boot_id()
         if now is not None and now != before:
             print(f"  restart: BootId {before} -> {now} after {round(time.time() - t0, 1)} s", flush=True)
+            if now != before + 1:  # exactly the one boot this restart caused; any extra boot is a fault
+                raise UnexpectedReboot(f"restart: BootId {before} -> {now}, {now - before} boots where one was asked")
             BOOT.update(expected=now, allow_change=False)
             return time.time() - t0
     raise RuntimeError(f"restart_and_wait: no new boot within {timeout} s (BootId before {before}, last read {now})")
@@ -75,8 +77,15 @@ def restart_and_wait(timeout=900):
 def wait_boot(timeout=1800):
     t0 = time.time()
     while time.time() - t0 < timeout:
-        if "up" in sh("cs", "echo up", timeout=30):
-            return time.time() - t0
+        try:
+            if "up" in sh("cs", "echo up", timeout=30):
+                return time.time() - t0
+        except subprocess.TimeoutExpired:
+            # set 5 finding: during an OS-crash reboot (about 3 min) an ssh probe can hang while sshd is still
+            # starting; that is "not up yet", logged and counted as a transport retry, not a fault
+            TRANSPORT["retries"].append({"t": time.strftime("%Y-%m-%d %H:%M:%S"), "error": "boot probe hung > 30 s"})
+            print(f"  transport retry {len(TRANSPORT['retries'])} at {TRANSPORT['retries'][-1]['t']}: "
+                  f"boot probe hung > 30 s", flush=True)
         time.sleep(5)
     raise RuntimeError("VM did not come back")
 
@@ -99,12 +108,16 @@ def check_boot(where):
     bid = boot_id()
     if bid is None:
         return
-    if BOOT["expected"] is None or (bid != BOOT["expected"] and BOOT["allow_change"]):
+    if BOOT["expected"] is None or bid == BOOT["expected"]:
+        BOOT["expected"] = bid
+        return
+    if BOOT["allow_change"] and bid == BOOT["expected"] + 1:  # exactly the one boot the harness caused
         BOOT.update(expected=bid, allow_change=False)
         return
-    if bid != BOOT["expected"]:
-        raise UnexpectedReboot(f"the VM rebooted on its own: BootId {BOOT['expected']} -> {bid}, found at {where} "
-                               f"({time.strftime('%Y-%m-%d %H:%M:%S')}); no harness restart was pending")
+    why = (f"{bid - BOOT['expected']} boots where the harness caused one" if BOOT["allow_change"]
+           else "no harness restart was pending")
+    raise UnexpectedReboot(f"the VM rebooted on its own: BootId {BOOT['expected']} -> {bid}, found at {where} "
+                           f"({time.strftime('%Y-%m-%d %H:%M:%S')}); {why}")
 
 
 @atexit.register
