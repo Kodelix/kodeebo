@@ -2,7 +2,7 @@
 
 > **Status**: Draft
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-22 (Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
+> **Last Updated**: 2026-10-22 (counter operations specs rule and threat-model coverage; Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
 > **Source**: design/product-brief.md (Tier 1/Tier 2 from the brief; founder decisions of 2026-10-19 and 2026-10-20 recorded below)
 
 ---
@@ -140,6 +140,40 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 - `branches-settings`: store logo and phone numbers on the receipt; opening hours, including hours past midnight (Tier 2).
 - `customers`: promote a walk-in to a registered customer. `loyalty-price-groups`: points expire oldest first.
 - `support-desk`: daily ticket number, priority, assignee, timeline, and links to a bill or a session.
+
+
+**Counter operations specs (founder, 2026-10-22; `counter-pin`, `counter-overrides`, `shifts-cash`, `paid-outs`, `x-z-reports`, `business-day-end-day`, `clock-in-out`, `bills-and-tabs`, `cafe-table-tabs`).**
+- **Order for each of these nine specs:** `/research` (primary sources: Square, Toast, Lightspeed, Deputy or similar workforce tools, NIST and OWASP where relevant) → its threat model → `/design-spec` → `/spec-review`, all before `/create-stories`.
+- **Design constraint for all of them: secure without stopping a sale.** Every control in the counter flow names its non-blocking path (record and flag, one-shot approval, or a fallback), resolved by the ranking in `design/product-principles.md`: Every pound leaves a trail, then The counter never waits.
+- **Threat-model coverage** (founder; security-lead, 2026-10-22):
+  - `bills-and-tabs`, `cafe-table-tabs`, `shifts-cash`, `x-z-reports` and `business-day-end-day` are money flows and join the **Sync and money trail** model.
+  - `clock-in-out` (attendance and pay-relevant time) goes to the **staff-auth** model as a dated amendment, written before spec 34 `counter-pin`, the first spec that reads clock state (security-lead: the PIN, acting for another person, offline device time, the trail and staff personal data are already modelled there, and "approver must be clocked in" makes attendance an input to override authority). It adds punch and correction assets, buddy punching, backdated or edited punches, forgotten clock-outs, ghost employees and punch-in-to-approve, and cross-references the money-trail model for how a punch syncs. Pay calculation is out of scope until `payroll-contracts`.
+- **Founder decisions to carry into these specs** (inputs, not yet spec text):
+  - **Sign-in:**
+    - the sign-in list shows names only (no roles), clocked-in staff first, with search by first letters;
+    - the owner may raise the PIN minimum;
+    - PIN re-entry at shift open and close.
+  - **Approvals:**
+    - the approval dialog lists only people who can approve that action within its limit;
+    - "approver must be clocked in" is an owner setting, default off; the owner is always exempt.
+  - **Shifts and cash:**
+    - blind cash count;
+    - one drawer = one open shift;
+    - no sale without an open shift;
+    - a shift belongs to whoever opened it, and closing another's needs `shift.close_other`.
+  - **Lock and user switching (addendum, 2026-10-22):**
+    1. A one-tap lock button beside the signed-in name.
+    2. Auto-lock after an owner-set idle time (30–60 s is typical in a busy café).
+    3. An owner setting "sign out after every sale", common in restaurants (a candidate default for the Restaurant vertical later).
+    4. The lock screen shows names, search and a PIN pad. The same person resumes where they were; anyone else signs in as themselves, everything after is in their name, and the switch is recorded.
+    5. A person's open bills stay protected: others can see them but cannot void or discount without the permission or an approval.
+  - **Drawer (addendum, 2026-10-22):**
+    - both modes happen in real venues (a colleague covers the drawer in cyber cafés and restaurants), so a personal drawer and a shared or cover mode are both supported, as a per-branch owner setting;
+    - in both modes every cash payment records the person who took it, so a count difference can be traced per person.
+- **Open questions for research:**
+  - off-schedule clock-in handling;
+  - best practice for a relief or cover cashier;
+  - must a cashier be clocked in to sign in or sell, or only to open a cash shift (security-lead: the answer changes the clock-in-out denial-of-service and elevation rows).
 
 ---
 
@@ -571,7 +605,7 @@ Ordered by what unblocks the specification order. Every item is `NOT DONE` excep
 | Owner Android app | Provider | PWA in a Play wrapper is provisional | Spikes S32/S33; owner-client ADR |
 | Dashboard real-time | Technical | One backend instance and no broker: fan-out lives in the process | Dashboard real-time ADR names the limit and the revisit trigger |
 | Crash capture, fleet health | Compliance | Diagnostics must stay PII-free (PDPL) | Telemetry/diagnostics threat model; redaction in the observability plan |
-| Staff attendance, customers, customer complaints, station reservations, data-import | Compliance | Personal data (PDPL); import is an untrusted file upload | Privacy review; personal-data intake threat model before customers, customer-complaints, station-reservations and data-import |
+| Staff attendance, customers, customer complaints, station reservations, data-import | Compliance | Personal data (PDPL); import is an untrusted file upload | Privacy review; attendance (`clock-in-out`) in the staff-auth threat model by amendment before spec 34 (security-lead, 2026-10-22); personal-data intake threat model before customers, customer-complaints, station-reservations and data-import |
 | ETA e-receipt | Compliance | Mandate depends on the venue's ETA list (brief, risk 7) | Tier 1 is ETA-ready; ETA ADR; trigger moves it into Tier 1 |
 | Jobs on PostgreSQL | Technical | Per-tenant sweep cost grows with tenant count | Jobs ADR; control-plane pending-work list (registry `IC-OUTBOX-SWEEP-R2`) |
 | Tier 1 scope | Scope | 10–14 months, team of 2, unvalidated; 62 Tier 1 and foundation specs | `/estimate`; the slice first; the build order |
@@ -580,11 +614,11 @@ Ordered by what unblocks the specification order. Every item is `NOT DONE` excep
 
 ### Threat models
 
-Grouped so one model covers several features. **13 features are covered by existing threat models** (update at spec time if the spec changes the surface): tenant-isolation covers `tenant-foundation`, `tenant-provisioning`, `tenant-closure-export`; staff-auth covers `dashboard-sign-in`, `counter-pin`, `roles-permissions`, `counter-overrides`, `activity-trail`, `operator-console`, `support-access`, `staff-records`; licensing covers `device-seats-enrolment`, `offline-lease`. **23 features need 6 new models**, each written **before the first spec of its group**, not all now:
+Grouped so one model covers several features. **14 features are covered by existing threat models** (update at spec time if the spec changes the surface): tenant-isolation covers `tenant-foundation`, `tenant-provisioning`, `tenant-closure-export`; staff-auth covers `dashboard-sign-in`, `counter-pin`, `roles-permissions`, `counter-overrides`, `activity-trail`, `operator-console`, `support-access`, `staff-records`, `clock-in-out` (by a dated amendment written before spec 34 `counter-pin`; security-lead, 2026-10-22); licensing covers `device-seats-enrolment`, `offline-lease`. **28 features need 6 new models**, each written **before the first spec of its group**, not all now:
 
 | New threat model | Covers | Written before |
 |------------------|--------|----------------|
-| Sync and money trail | sync-protocol, sync-review-conflicts, bill-exceptions, discounts, payments-tender, tips, refunds, money-ledger, paid-outs, backdated-start (10) | spec 20, `sync-protocol` (backdated-start extends it when specified) |
+| Sync and money trail | sync-protocol, sync-review-conflicts, bill-exceptions, discounts, payments-tender, tips, refunds, money-ledger, paid-outs, backdated-start, bills-and-tabs, cafe-table-tabs, shifts-cash, x-z-reports, business-day-end-day (15; the last five added by the founder, 2026-10-22) | spec 20, `sync-protocol` (backdated-start extends it when specified) |
 | Telemetry and diagnostics | fleet-health, crash-capture (2) | spec 53, `fleet-health` |
 | Owner clients and approvals | dashboard-live-floor, owner-android-app, remote-approval (3) | spec 56, `dashboard-live-floor` |
 | Personal-data intake | customers, customer-complaints, station-reservations, data-import (4) | spec 67, `customers` |
@@ -603,7 +637,7 @@ Grouped so one model covers several features. **13 features are covered by exist
 | Specs reviewed | 0 |
 | Specs approved | 0 |
 | MVP features specified | 0/48 (0/62 including the Vertical Slice) |
-| Features needing a threat model | 36 (13 covered by existing models, 23 need 6 new models) |
+| Features needing a threat model | 42 (14 covered by existing models, 28 need 6 new models) |
 
 ---
 
