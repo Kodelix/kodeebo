@@ -6,7 +6,10 @@
 #   s104 <cuts> <nmi>   S104: hard power-offs (virsh destroy) and OS crashes (NMI -> bugcheck) at seeded moments while
 #                       the client sells and syncs; after the reboot the client restarts, drains, and the phase 0
 #                       oracle (I1-I10) checks the server against every sale the client acknowledged before the cut
+import atexit
+import datetime
 import json
+import re
 import os
 import random
 import shutil
@@ -40,6 +43,35 @@ def ssh_argv():
     return [x for x in sh("argv", timeout=30).split("\n") if x]
 
 
+BOOTID_Q = ('reg query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management'
+            '\\PrefetchParameters" /v BootId')
+
+
+def boot_id():
+    """Windows' boot counter (S30x), or None while the VM does not answer."""
+    m = re.search(r"BootId\s+REG_DWORD\s+0x([0-9a-fA-F]+)", sh("cs", BOOTID_Q, timeout=30))
+    return int(m.group(1), 16) if m else None
+
+
+def restart_and_wait(timeout=900):
+    """Restart the guest and return once a NEW boot answers (BootId changed): the seconds it took. A hard timeout:
+    no new boot within `timeout` s raises, naming the BootId before and the last one read (founder, 2026-10-22)."""
+    before = boot_id()
+    if before is None:
+        raise RuntimeError("restart_and_wait: the VM does not answer before the restart (BootId unreadable)")
+    t0, now = time.time(), None
+    allow_reboot()
+    sh("ad", "shutdown /r /t 0")
+    while time.time() - t0 < timeout:
+        time.sleep(5)
+        now = boot_id()
+        if now is not None and now != before:
+            print(f"  restart: BootId {before} -> {now} after {round(time.time() - t0, 1)} s", flush=True)
+            BOOT.update(expected=now, allow_change=False)
+            return time.time() - t0
+    raise RuntimeError(f"restart_and_wait: no new boot within {timeout} s (BootId before {before}, last read {now})")
+
+
 def wait_boot(timeout=1800):
     t0 = time.time()
     while time.time() - t0 < timeout:
@@ -47,6 +79,37 @@ def wait_boot(timeout=1800):
             return time.time() - t0
         time.sleep(5)
     raise RuntimeError("VM did not come back")
+
+
+class UnexpectedReboot(RuntimeError):
+    pass
+
+
+BOOT = {"expected": None, "allow_change": False}
+TRANSPORT = {"retries": []}
+
+
+def allow_reboot():
+    """The harness is about to restart or cut the VM: the next BootId change is expected."""
+    BOOT["allow_change"] = True
+
+
+def check_boot(where):
+    """After a (re)connect: the VM must still be on the boot the harness knows, unless the harness restarted it."""
+    bid = boot_id()
+    if bid is None:
+        return
+    if BOOT["expected"] is None or (bid != BOOT["expected"] and BOOT["allow_change"]):
+        BOOT.update(expected=bid, allow_change=False)
+        return
+    if bid != BOOT["expected"]:
+        raise UnexpectedReboot(f"the VM rebooted on its own: BootId {BOOT['expected']} -> {bid}, found at {where} "
+                               f"({time.strftime('%Y-%m-%d %H:%M:%S')}); no harness restart was pending")
+
+
+@atexit.register
+def _transport_report():
+    print(f"transport retries: {len(TRANSPORT['retries'])}", flush=True)
 
 
 def tunnel(tries=10):
@@ -60,10 +123,21 @@ def tunnel(tries=10):
             except (OSError, ValueError):
                 pass
         time.sleep(2)
-        sh("tunnel", "18471")
+        out_t = sh("tunnel", "18471")
         # the forward must be bound on the VM side (the host server may not be running yet)
-        if "LISTENING" in sh("cs", "netstat -an -p TCP | findstr 127.0.0.1:18471", timeout=30):
+        ns = sh("cs", "netstat -an -p TCP | findstr 127.0.0.1:18471", timeout=30)
+        if "LISTENING" in ns:
+            check_boot("tunnel")
             return True
+        err = ""
+        try:
+            err = open(os.path.join(RUNS, "p4-tunnel.log")).read().strip()[-200:]
+        except OSError:
+            pass
+        TRANSPORT["retries"].append({"t": time.strftime("%Y-%m-%d %H:%M:%S"),
+                                     "error": err or out_t.strip()[-200:] or "the forward was not listening on the VM"})
+        print(f"  transport retry {len(TRANSPORT['retries'])} at {TRANSPORT['retries'][-1]['t']}: "
+              f"{TRANSPORT['retries'][-1]['error']}", flush=True)
         time.sleep(5)
     raise RuntimeError("reverse tunnel did not carry traffic after retries")
 
@@ -107,6 +181,7 @@ class WinRun(Run):
     def fire(self):
         kind = self.cut[0]
         t = time.time()
+        allow_reboot()
         if kind == "power":
             subprocess.run(V + ["destroy", DOM], capture_output=True)
         else:
@@ -207,9 +282,7 @@ def prep_crash():
     # P4-F1: without these, two unexpected shutdowns within 2 min of boot stop Windows at the Recovery screen
     sh("ad", "bcdedit /set {current} recoveryenabled No")
     sh("ad", "bcdedit /set {current} bootstatuspolicy IgnoreAllFailures")
-    sh("ad", "shutdown /r /t 0")  # NMICrashDump and the boot settings take effect at the next boot
-    time.sleep(40)
-    wait_boot()
+    restart_and_wait()  # NMICrashDump and the boot settings take effect at the next boot
     subprocess.run(V + ["blkdeviotune", DOM, "sda", "--live", "--total-iops-sec", "100",
                         "--total-bytes-sec", "83886080"], capture_output=True)
     tunnel()
@@ -268,13 +341,25 @@ def s104(cuts=30, nmi=10, journal=None, marker=None, start_check=None, bg_mode=N
           f"{summary['hot_journal_runs']})")
 
 
+def throttle_on():
+    subprocess.run(V + ["blkdeviotune", DOM, "sda", "--live", "--total-iops-sec", "100",
+                        "--total-bytes-sec", "83886080"], capture_output=True)
+
+
+def assert_throttled(where):
+    """The HDD-class profile must be on before any timing: 100 IOPS and 80 MiB/s, read back from libvirt."""
+    out = subprocess.run(V + ["blkdeviotune", DOM, "sda"], capture_output=True, text=True).stdout
+    iops = re.search(r"total_iops_sec\s*:\s*(\d+)", out)
+    bps = re.search(r"total_bytes_sec\s*:\s*(\d+)", out)
+    if not (iops and bps and int(iops.group(1)) == 100 and int(bps.group(1)) == 83886080):
+        raise RuntimeError(f"the disk throttle is not on at {where}: {' '.join(out.split())[:200]}")
+
+
 def reboot_cold():
     """Clean restart for a cold cache: unthrottled boot, 60 s for the post-logon burst, then the throttle again."""
     subprocess.run(V + ["blkdeviotune", DOM, "sda", "--live", "--total-iops-sec", "0", "--total-bytes-sec", "0"],
                    capture_output=True)
-    sh("ad", "shutdown /r /t 0")
-    time.sleep(40)
-    b = wait_boot()
+    b = restart_and_wait() - 40  # keeps the old meaning of the return value (it added the fixed 40 s)
     time.sleep(60)
     subprocess.run(V + ["blkdeviotune", DOM, "sda", "--live", "--total-iops-sec", "100",
                         "--total-bytes-sec", "83886080"], capture_output=True)
@@ -372,6 +457,7 @@ class TimedRun(WinRun):
         self.samples = {}
 
     def go(self):
+        assert_throttled(f"the start of {type(self).__name__}")  # every timing leg (set 4b finding)
         self.script = self.timed
         self.hot_journal = None
         return Run.go(self)
@@ -432,6 +518,169 @@ class BgRun(TimedRun):
                 break
             time.sleep(self.gap_s)
         self.res.update(bg_final=st, bg_elapsed_s=round(time.time() - t1, 1), sales=k, bg_trace=states[::10])
+
+
+class LoadRun(BgRun):
+    """Fix 4 under a sale profile with repeated checks; every sale is kept for the diagnosis."""
+
+    def __init__(self, store, key, profile="rush", gap_s=5.0, min_sales=200, idle_s=1.0, step=64, seed=1,
+                 limit_s=7200, **kw):
+        super().__init__(store, key, gap_s=gap_s, limit_s=limit_s, bg_mode="counter", **kw)
+        self.client_env.update(BG_REPEAT="1", BG_IDLE_S=str(idle_s), BG_STEP=str(step))
+        self.profile, self.min_sales, self.rng = profile, min_sales, random.Random(f"rush|{seed}")
+        self.final_quiet_s = 900
+        self.sales = []
+
+    def sale_now(self, k, t1):
+        t0 = time.perf_counter()
+        r = self.send({"op": "sell_items", "action_id": f"l{k}-{int(t1)}", "n": 1}) or {}
+        rt = (time.perf_counter() - t0) * 1000
+        st = self.send({"op": "bg_state"}) or {}
+        self.sales.append({"k": k, "t": round(time.time() - t1, 2), "rt": round(rt, 1), "ok": r.get("ok"),
+                           **{f: (r.get("ms") or {}).get(f) for f in ("total", "txn", "commit", "marker", "queued",
+                                                                       "step_ms")},
+                           "bg": st.get("state"), "pages": st.get("pages"), "bg_now": st.get("now_rel"),
+                           "vm_wall": st.get("now_wall"), "checks_done": st.get("checks_done")})
+
+    def timed(self, run):
+        t0 = time.perf_counter()
+        r = self.send({"op": "marker"})
+        self.res["ready_ms_host"] = round((time.perf_counter() - t0) * 1000, 1)
+        driver.post_json("/config", {"prices": {"std": 6000, "vip": 9000, "cafe": 1500, "round_piasters": 25}})
+        self.send({"op": "pull_config"})
+        t1, k, bursts = time.time(), 0, []
+        while k < self.min_sales and time.time() - t1 < self.limit_s:
+            if self.profile == "rush":
+                n, start = self.rng.randint(5, 10), round(time.time() - t1, 1)
+                for i in range(n):
+                    self.sale_now(k, t1)
+                    k += 1
+                    if i < n - 1:
+                        time.sleep(self.rng.uniform(2.0, 3.0))
+                quiet = self.rng.uniform(30.0, 120.0)
+                bursts.append({"start": start, "sales": n, "quiet_s": round(quiet, 1)})
+                time.sleep(quiet)
+            else:
+                self.sale_now(k, t1)
+                k += 1
+                time.sleep(self.gap_s)
+        # the selling is over: no more sales; the check in progress gets up to final_quiet_s of quiet to finish
+        # (polled every 15 s: a poll is an operation, so it costs the copy one idle gate per poll)
+        st = self.send({"op": "bg_state"}) or {}
+        n0, t_q = st.get("checks_done") or 0, time.time()
+        in_progress = {"started_rel": st.get("copy_started_rel"), "at_end_rel": st.get("now_rel"),
+                       "state_at_end": st.get("state"), "sales_overlapping": None}
+        while time.time() - t_q < self.final_quiet_s and st.get("state") in ("copying", "checking"):
+            time.sleep(15)
+            st = self.send({"op": "bg_state"}) or {}
+            if (st.get("checks_done") or 0) > n0:
+                break
+        in_progress.update(finished_in_quiet=(st.get("checks_done") or 0) > n0,
+                           quiet_waited_s=round(time.time() - t_q, 1))
+        self.res.update(bg_final=st, elapsed_s=round(time.time() - t1, 1), sales_n=k, bursts=bursts,
+                        last_check=in_progress)
+
+
+def sampler_start(minutes, tag):
+    """The boot-watch sampler as SYSTEM for `minutes` (+3), writing C:\\Users\\Public\\p4diag\\<tag>.jsonl."""
+    sh("put", os.path.join(HERE, "guest", "bootwatch.ps1"), "C:/Users/cashier/p4/bootwatch.ps1")
+    sh("ad", f"cmd /c \"if not exist {DIAG} mkdir {DIAG}\" && icacls {DIAG} /grant Users:(OI)(CI)R")
+    task = (f"powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\cashier\\p4\\bootwatch.ps1 "
+            f"-Out {DIAG}\\{tag}.jsonl -Minutes {int(minutes) + 3} -Every 10")
+    sh("ad", f"schtasks /create /tn p4sampler /tr \"{task}\" /sc once /st 00:00 /ru SYSTEM /f")
+    sh("ad", "schtasks /run /tn p4sampler")
+
+
+def sampler_fetch(tag):
+    sh("ad", "schtasks /end /tn p4sampler")
+    sh("ad", "schtasks /delete /tn p4sampler /f")
+    sh("get", f"C:/Users/Public/p4diag/{tag}.jsonl", os.path.join(RUNS, f"p4-sc24r-{tag}-sampler.jsonl"))
+
+
+def sc24r(tag, profile="rush", idle_s=1.0, step=64, min_sales=200, gap_s=5.0, limit_s=7200, store="n300000"):
+    """Fix 4 follow-up (founder, 2026-10-22): the 300k store, cold, a sale profile, repeated checks, the sampler
+    alongside. Pass: café sale p95 <= 500 ms, nothing over 3 s, and each check completes within the quiet periods."""
+    assert vm_state() == "running"
+    tunnel()
+    sh("put", os.path.join(os.path.dirname(HERE), "sut", "client.py"), "C:/Users/cashier/p4/client.py")
+    src = os.path.join(RUNS, "sc24", store)
+    key = open(os.path.join(src, "key.txt")).read().strip()
+    sh("cs", f"if not exist {WDIR}\\sc24\\{store}\\client.db mkdir {WDIR}\\sc24\\{store}")
+    if "YES" not in sh("cs", f"if exist {WDIR}\\sc24\\{store}\\client.db (echo YES) else (echo NO)"):
+        for f in ("client.db", "client.db.hwm"):
+            sh("put", os.path.join(src, f), f"C:/Users/cashier/p4/sc24/{store}/{f}", timeout=3600)
+    boot = reboot_cold()
+    tunnel()
+    sampler_start(limit_s / 60, tag)
+    run = LoadRun(store, key, profile=profile, gap_s=gap_s, min_sales=min_sales, idle_s=idle_s, step=step,
+                  limit_s=limit_s)
+    r = run.go()
+    sampler_fetch(tag)
+    xs = [x for x in run.sales if x["ok"]]
+    during = [x for x in xs if x["bg"] in ("copying", "checking")]
+    tot = [x["rt"] for x in during]
+    fin = run.res.get("bg_final") or {}
+    # founder 2026-10-22: per check, finished or not, its duration, the sales that overlapped it
+    checks = []
+    for c in fin.get("check_log") or []:
+        start, end, copy_s, check_s = c
+        checks.append({"start_rel": start, "end_rel": end, "finished": True, "duration_s": round(end - start, 1),
+                       "copy_s": copy_s, "check_s": check_s,
+                       "sales_overlapping": sum(1 for x in xs if x["bg_now"] is not None and start <= x["bg_now"] <= end)})
+    last = run.res.get("last_check") or {}
+    if last.get("state_at_end") in ("copying", "checking") and not last.get("finished_in_quiet"):
+        st_ = last.get("started_rel") or 0
+        checks.append({"start_rel": st_, "end_rel": None, "finished": False,
+                       "duration_s": round((fin.get("now_rel") or 0) - st_, 1),
+                       "sales_overlapping": sum(1 for x in xs if x["bg_now"] is not None and x["bg_now"] >= st_)})
+    finished_while_selling = sum(1 for c in checks if c["finished"] and c["end_rel"] is not None
+                                 and c["end_rel"] <= max((x["bg_now"] or 0) for x in xs))
+    # founder 2026-10-22: for every sale over 500 ms, the split and what Windows was doing then (the sampler line
+    # nearest in the VM's wall clock, within 15 s)
+    samp = []
+    sp = os.path.join(RUNS, f"p4-sc24r-{tag}-sampler.jsonl")
+    if os.path.exists(sp):
+        for ln in open(sp, encoding="utf-8-sig"):
+            try:
+                o = json.loads(ln)
+                samp.append((datetime.datetime.fromisoformat(o["t"]).timestamp(), o))
+            except (ValueError, KeyError):
+                pass
+    slow = []
+    for x in xs:
+        if x["rt"] <= 500:
+            continue
+        near = min(samp, key=lambda p_: abs(p_[0] - x["vm_wall"]), default=None) if x.get("vm_wall") else None
+        w = near[1] if near and abs(near[0] - x["vm_wall"]) <= 15 else None
+        slow.append({"k": x["k"], "t": x["t"], "rt": x["rt"], "queued": x.get("queued"), "step_ms": x.get("step_ms"),
+                     "total": x.get("total"), "txn": x.get("txn"), "commit": x.get("commit"),
+                     "transport_ms": round(x["rt"] - (x.get("queued") or 0) - (x.get("total") or 0), 1),
+                     "bg": x["bg"],
+                     "windows": {"io_top": (w or {}).get("io", [])[:4], "cpu_top": (w or {}).get("cpu", [])[:3],
+                                 "tasks": (w or {}).get("tasks"), "services": (w or {}).get("services"),
+                                 "defender_scan": (w or {}).get("defender_scan")} if w else None})
+    p95 = pct(tot, 0.95)
+    verdict = {"p95_le_500": p95 is not None and p95 <= 500, "none_over_3s": all(x["rt"] <= 3000 for x in xs),
+               "every_check_finishes": bool(checks) and all(c["finished"] for c in checks) and finished_while_selling > 0}
+    verdict["PASS"] = all(verdict.values())
+    out = {"harness_commit": git_state(), "tag": tag, "profile": profile, "idle_s": idle_s, "step": step,
+           "gap_s": gap_s, "store": store, "boot_s": boot, "ready_ms_host": run.res.get("ready_ms_host"),
+           "sales": len(xs), "failed": len(run.sales) - len(xs), "sales_during_check": len(during),
+           "rt_during_check": {"p50": pct(tot, 0.5), "p95": p95, "p99": pct(tot, 0.99), "max": max(tot) if tot else None},
+           "verdict": verdict, "checks": checks, "checks_finished_while_selling": finished_while_selling,
+           "slow_sales": slow, "restarts": fin.get("restarts"), "steps": fin.get("steps"),
+           "step_ms_max": fin.get("step_ms_max"), "step_buckets": fin.get("step_buckets"),
+           "slow_steps": fin.get("slow_steps"), "bursts": run.res.get("bursts"), "elapsed_s": run.res.get("elapsed_s"),
+           "violations_except_I1_I8": [v for v in r["violations"] if v[0] not in ("I1", "I8")][:5]}
+    with open(os.path.join(RUNS, f"p4-sc24r-{tag}-summary.json"), "w") as f:
+        json.dump({**out, "sales_detail": run.sales}, f, indent=1)
+    print(json.dumps({k: v for k, v in out.items() if k not in ("slow_sales", "bursts", "slow_steps", "checks")},
+                     indent=1))
+    for c in checks:
+        print(f"  check {c}")
+    for x in slow:
+        print(f"  slow sale {x['k']}: rt {x['rt']} queued {x['queued']} step {x['step_ms']} txn {x['txn']} "
+              f"commit {x['commit']} windows {json.dumps(x['windows'])[:300] if x['windows'] else 'no sampler line'}")
 
 
 def sc24c(reps=2, gap_s=5.0, bg_mode="thread", tag="", limit_s=5400, stores="n30000,n300000"):
@@ -664,6 +913,7 @@ def s30x(reps=10, off_s=30, only=None):
             before = probe("mark")
             cmd_out = None
             time.sleep(5)
+            allow_reboot()
             if t == "restart":
                 sh("ad", "shutdown /r /t 0")
                 time.sleep(15)
@@ -679,6 +929,7 @@ def s30x(reps=10, off_s=30, only=None):
                 t_off = time.time()
                 time.sleep(off_s)
                 subprocess.run(V + ["start", DOM], capture_output=True)
+                throttle_on()  # a new qemu process starts without the live throttle (set 4b finding)
                 off = round(time.time() - t_off, 1) if ok else "did not power off"
             boot = round(wait_boot(), 1)
             time.sleep(20)
@@ -747,6 +998,7 @@ class ClockRun(WinRun):
             self.client.wait()
             self.result["clock_after_edit"] = self.set_clock(self.shift_h)
             self.cut_fired = {"kind": "reboot"}
+            allow_reboot()
             sh("ad", "shutdown /r /t 0")
             time.sleep(15)
             self.recover()
@@ -854,7 +1106,8 @@ class HeartbeatRun(TimedRun):
                 next_sale += self.sale_s
                 if k % 20 == 0:
                     self.op({"op": "sync"})
-            if k % self.io_every == 0 and k and (not self.io or self.io[-1][0] != k):
+            if k % self.io_every == 0 and k and getattr(self, "_io_k", None) != k:
+                self._io_k = k
                 self.io.append((round(time.time() - t0), self.io_bytes()))
             time.sleep(0.2)
         self.io.append((round(time.time() - t0), self.io_bytes()))
@@ -890,15 +1143,16 @@ def bootwatch(minutes=30, trace=False, tag="b1"):
     sh("put", os.path.join(HERE, "guest", "bootwatch.ps1"), "C:/Users/cashier/p4/bootwatch.ps1")
     sh("ad", f"cmd /c \"if not exist {DIAG} mkdir {DIAG}\" && icacls {DIAG} /grant Users:(OI)(CI)R")
     sh("ad", f"cmd /c del /q {DIAG}\\*")
-    sh("ad", "shutdown /r /t 0")  # the live throttle stays on across a guest restart
-    time.sleep(40)
-    boot_s = round(wait_boot() + 40, 1)
+    throttle_on()
+    boot_s = round(restart_and_wait(), 1)  # the live throttle stays on across a guest restart (same qemu process)
+    assert_throttled("the boot watch, after the restart")
     task = (f"powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\cashier\\p4\\bootwatch.ps1 "
             f"-Out {DIAG}\\bootwatch.jsonl -Minutes {minutes + 3} -Every 10")
     sh("ad", f"schtasks /create /tn p4bootwatch /tr \"{task}\" /sc once /st 00:00 /ru SYSTEM /f")
     sh("ad", "schtasks /run /tn p4bootwatch")
+    trace_log = []
     if trace:
-        sh("ad", "wpr -start DiskIO.light -filemode")
+        trace_log.append(("wpr -start", sh("ad", "wpr -start DiskIO.light -filemode 2>&1")[-400:]))
     last_boot = sh("ad", "powershell -NoProfile -Command \"(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToString('o')\"").strip()
     started = sh("ad", "powershell -NoProfile -Command \"(Get-Date).ToString('o')\"").strip()
     tunnel()
@@ -911,10 +1165,18 @@ def bootwatch(minutes=30, trace=False, tag="b1"):
         v = [x["total"] for x in xs if "total" in x]
         out["ops"][op_] = {"n": len(xs), "failed": sum(1 for x in xs if not x["ok"]), "p50": pct(v, 0.5),
                            "p95": pct(v, 0.95), "p99": pct(v, 0.99), "max": max(v) if v else None}
-    if trace:
-        sh("ad", f"wpr -stop {DIAG}\\boot-{tag}.etl \"set 4 boot {tag}\"", timeout=1800)
-        sh("ad", f"tracerpt {DIAG}\\boot-{tag}.etl -o {DIAG}\\boot-{tag}.csv -of CSV -y", timeout=3600)
-        sh("get", f"C:/Users/Public/p4diag/boot-{tag}.csv", os.path.join(RUNS, f"p4-bootwatch-{tag}.csv"), timeout=3600)
+    if trace:  # every step's own output is kept; a missing export fails the leg (set 4b lost it silently)
+        trace_log.append(("wpr -stop", sh("ad", f"wpr -stop {DIAG}\\boot-{tag}.etl boot-{tag} 2>&1", timeout=1800)[-400:]))
+        trace_log.append(("tracerpt", sh("ad", f"tracerpt {DIAG}\\boot-{tag}.etl -o {DIAG}\\boot-{tag}.csv -of CSV -y 2>&1",
+                                         timeout=3600)[-400:]))
+        trace_log.append(("dir", sh("ad", f"dir {DIAG} 2>&1")[-600:]))
+        csv_ = os.path.join(RUNS, f"p4-bootwatch-{tag}.csv")
+        sh("get", f"C:/Users/Public/p4diag/boot-{tag}.csv", csv_, timeout=3600)
+        out["trace_log"] = trace_log
+        if not os.path.exists(csv_) or os.path.getsize(csv_) == 0:
+            with open(os.path.join(RUNS, f"p4-bootwatch-{tag}-summary.json"), "w") as f:
+                json.dump({**out, "samples": run.samples}, f, indent=1)
+            raise RuntimeError(f"the boot trace export did not reach the host: {trace_log}")
     time.sleep(200)  # the sampler runs 3 minutes past the workload
     sh("ad", "schtasks /delete /tn p4bootwatch /f")
     sh("get", "C:/Users/Public/p4diag/bootwatch.jsonl", os.path.join(RUNS, f"p4-bootwatch-{tag}.jsonl"))
@@ -1095,6 +1357,10 @@ if __name__ == "__main__":
         ts07b()
     elif sys.argv[1] == "s303":
         s303()
+    elif sys.argv[1] == "sc24r":
+        a = sys.argv[2:]
+        sc24r(a[0], a[1], float(a[2]), int(a[3]), int(a[4]), *([float(a[5])] if len(a) > 5 else []),
+              *([int(a[6])] if len(a) > 6 else []))
     elif sys.argv[1] == "bootwatch":
         bootwatch(int(sys.argv[2]), sys.argv[3] == "trace", sys.argv[4])
     elif sys.argv[1] == "s309":

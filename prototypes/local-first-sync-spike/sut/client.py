@@ -632,6 +632,11 @@ BG_MODE = os.environ.get("BG_MODE", "thread")  # thread: copy on its own connect
 bg = {"wanted": False, "state": "off", "fault": None, "pages": 0, "total": None, "copy_s": None, "check_s": None,
       "mode": BG_MODE, "restarts": 0}
 bgc = {"b": None, "d": None, "src": None, "prev": None, "t0": None}  # fix 4: the copy driven by the counter's thread
+BG_REPEAT = os.environ.get("BG_REPEAT") == "1"  # a long measurement: start the next check when one completes
+T_START = time.monotonic()
+bg.update(steps=0, step_ms_max=0.0, step_buckets={"lt100": 0, "lt300": 0, "lt1000": 0, "ge1000": 0}, slow_steps=[],
+          checks_done=0, check_log=[])
+last_arrival = {"t": None}  # fix 4: when the operation being handled arrived from the till
 op_busy = threading.Event()  # set while the counter handles an operation (a sale commits inside one)
 store_mx = threading.Lock()  # the counter's connection: one user at a time (the counter, or one background copy step)
 last_op = {"t": time.monotonic()}
@@ -1120,6 +1125,7 @@ def bgc_begin(src):
     d.execute(key_pragma(os.environ.get("SPIKE_DB_KEY", ""))).fetchall()
     d.execute("PRAGMA synchronous = OFF").fetchall()  # a throwaway copy: no forced writes for it
     bgc.update(b=d.backup("main", src, "main"), d=d, src=src, prev=None, t0=time.monotonic())
+    bg["copy_started_rel"] = round(bgc["t0"] - T_START, 1)
     bg["state"] = "copying"
 
 
@@ -1141,13 +1147,22 @@ def bgc_step():
     thread (the check holds no lock on the store)."""
     b = bgc["b"]
     try:
+        t_s = time.monotonic()
         b.step(BG_STEP)
+        dt = time.monotonic() - t_s
+        bgc["last_step"] = (t_s, t_s + dt)  # a sale that arrived during this step waited for it
+        bg["steps"] += 1
+        bg["step_ms_max"] = max(bg["step_ms_max"], round(dt * 1000, 1))
+        bg["step_buckets"]["lt100" if dt < 0.1 else "lt300" if dt < 0.3 else "lt1000" if dt < 1.0 else "ge1000"] += 1
+        if dt >= 0.3:  # the slow ones, with their time since the client started (the last 50)
+            bg["slow_steps"] = (bg["slow_steps"] + [[round(t_s - T_START, 1), round(dt * 1000)]])[-50:]
         bg_note_step(b)
         if b.done:
             b.finish()
             bgc["d"].close()
             bgc.update(b=None, d=None, src=None)
             bg["copy_s"] = round(time.monotonic() - bgc["t0"], 1)
+            bgc["t_copy_start"] = bgc["t0"]
             threading.Thread(target=bgc_check, daemon=True).start()
     except Exception as e:  # noqa: BLE001 - a page that fails its authentication during the copy is a store fault
         bgc_abort()
@@ -1169,6 +1184,10 @@ def bgc_check():
         bg["check_s"] = round(time.monotonic() - t1, 1)
         if r != [("ok",)]:
             raise RuntimeError(f"integrity_check: {r[:3]}")
+        bg["checks_done"] += 1
+        t0_ = bgc.get("t_copy_start") or t1
+        bg["check_log"] = (bg["check_log"] + [[round(t0_ - T_START, 1), round(time.monotonic() - T_START, 1),
+                                               bg["copy_s"], bg["check_s"]]])[-50:]
         bg["state"] = "ok"
     except Exception as e:  # noqa: BLE001 - any failure of the check is a store fault to report
         bg_fault(e)
@@ -1950,8 +1969,8 @@ if BG_MODE == "counter":  # fix 4: read operations in a thread, so the counter's
 
     def _reader():
         for ln in iter(sys.stdin.readline, ""):
-            _inq.put(ln)
-        _inq.put("")
+            _inq.put((time.monotonic(), ln))  # with its arrival time: the diagnosis of a wait behind a copy step
+        _inq.put((time.monotonic(), ""))
     threading.Thread(target=_reader, daemon=True).start()
 
 
@@ -1965,7 +1984,7 @@ def _ops():
         else:
             while True:
                 try:
-                    line = _inq.get(timeout=0.02)
+                    last_arrival["t"], line = _inq.get(timeout=0.02)
                     break
                 except queue.Empty:  # idle: one copy step once the counter has been idle for BG_IDLE_S
                     if bgc["b"] is not None:
@@ -1973,6 +1992,9 @@ def _ops():
                             bgc_abort()
                         elif time.monotonic() - last_op["t"] >= BG_IDLE_S:
                             bgc_step()
+                    elif BG_REPEAT and bg["state"] == "ok" and con is not None and not bg["fault"] \
+                            and time.monotonic() - last_op["t"] >= BG_IDLE_S:
+                        bgc_begin(con)  # the next check of a long measurement
         if not line:
             return
         yield line
@@ -1989,6 +2011,11 @@ for line in _ops():
     if TIMING:
         timing.clear()
         timing["t0"] = time.perf_counter()
+        if _inq is not None and last_arrival["t"] is not None:  # fix 4: the wait in the queue (behind a copy step)
+            timing["queued"] = round((time.monotonic() - last_arrival["t"]) * 1000, 2)
+            ls_ = bgc.get("last_step")
+            timing["step_ms"] = round((ls_[1] - ls_[0]) * 1000, 1) if ls_ and ls_[0] <= last_arrival["t"] < ls_[1] \
+                else 0.0
     if op == "exit":
         bgc_abort()
         if con is not None:
@@ -2045,7 +2072,7 @@ for line in _ops():
         op_busy.clear()
         continue
     if op == "bg_state":
-        reply({"ok": True, "op": op, **bg})
+        reply({"ok": True, "op": op, **bg, "now_rel": round(time.monotonic() - T_START, 1), "now_wall": time.time()})
         op_busy.clear()
         last_op["t"] = time.monotonic()
         continue

@@ -1,0 +1,6 @@
+start 2026-10-22 17:46:56 4718d33 uncommitted:  M prototypes/local-first-sync-spike/harness/p4.py  M prototypes/local-first-sync-spike/sut/client.py ?? prototypes/local-first-sync-spike/harness/repeatcheck.py 
+repeatcheck rc=0 repeatcheck: PASS 17:47:30
+bgcheck counter rc=0 6 cases 17:52:02
+bgcheck thread rc=0 6 cases 17:56:19
+selftest rc=0 GATE: PASS  (total 158.2 s) 17:58:58
+DONE
