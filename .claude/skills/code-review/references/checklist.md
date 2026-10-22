@@ -11,7 +11,7 @@
 
 | Level | Meaning | Examples |
 |---|---|---|
-| **BLOCKER** | A BLOCKING DoD gate is unmet by the code, or an ADR/rule is violated in a way that must not merge | domain imports a framework/DB/HTTP package; a query can return another tenant's row; tenant read from the request body; missing authorization before a side effect; secret in code/log/URL; pattern the ADR rejected; non-idempotent repeatable write on money/state; stack trace or SQL in a client response; migration locking a hot table with no plan; re-implementing `saas-core` identity/OTP/billing/licensing |
+| **BLOCKER** | A BLOCKING DoD gate is unmet by the code, or an ADR/rule is violated in a way that must not merge | domain imports a framework/DB/HTTP package; a query can return another tenant's row; tenant read from the request body; a client-computed price, total or other derived value accepted as authoritative; missing authorization before a side effect; secret in code/log/URL; pattern the ADR rejected; non-idempotent repeatable write on money/state; stack trace or SQL in a client response; migration locking a hot table with no plan; re-implementing `saas-core` identity/OTP/billing/licensing |
 | **MAJOR** | Real defect or standards breach that should be fixed before merge; an ADVISORY gate gap with real consequence | ADR drift; external call with no timeout; retry on a non-idempotent call; hardcoded business value (price, limit, quota, TTL, flag); exported API with no doc comment; use case not constructible with fakes; span/RED metrics/trace-carrying log missing on a new endpoint; N+1 on a list path; unbounded pagination; no cache decision on a hot read; cache failure fails the request |
 | **MINOR** | Improves quality, no behavioural risk | naming, small duplication, function slightly over 40 lines with clear reason, missing optional comment |
 
@@ -70,6 +70,7 @@ Run the import greps below — by tool, not by eye — and list each violating i
 **Authorization and abuse**
 - [ ] Every new endpoint declares a policy; deny by default; a route with no policy fails.
 - [ ] Mass assignment blocked: explicit request DTOs, never bound into domain/DB models.
+- [ ] Server authority (`security-baseline.md` § Server authority): no client-sent derived value (price, discount, tax, total, time amount, stock effect, entitlement) is stored or acted on as authoritative; the server recomputes it from its own versioned data; an offline client's result is kept only as a claim and a difference is flagged; a negative test sends a tampered value. A violation is a BLOCKER.
 - [ ] Rate limit / quota per tenant+actor+route on new endpoints; body size and pagination limits server-side; timeouts on every handler.
 - [ ] Outbound requests to user-supplied URLs only through the allow-listing egress client (SSRF).
 

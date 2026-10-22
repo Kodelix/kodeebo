@@ -26,6 +26,16 @@ mapping time — never recalled from memory (see `research-protocol.md`).
 - Mass assignment blocked: explicit request DTOs, never bind into domain/DB models.
 - SSRF: outbound requests to user-supplied URLs only through an allowlisting egress client that blocks private/link-local/metadata ranges.
 
+### Server authority — the client is never trusted
+Every client — web SPA, mobile app, desktop or counter client, partner integration, webhook sender — runs on hardware we do not control. What it sends is a claim.
+- Every rule, permission check and validation runs on the server. Client-side checks are UX only: a request the server would refuse is refused (RFC 9457) whatever the client showed.
+- The server takes from a client only **raw facts and intents**: what the actor chose (ids, quantities, options), the version of the server data it chose from, and — for an offline client — device time, a sequence number and observations only a person on site can make (a counted quantity, waste, a quantity received). Each of these is still checked.
+- **Every derived value is recomputed on the server** from its own versioned data: prices, discounts, taxes and fees, totals, time-based amounts, entitlements, stock effects, differences. A client-sent derived value is never stored or acted on as authoritative; at most it is kept beside the server's value as a claim to compare.
+- **Offline clients** run the same rules (one shared kernel and test-vector suite) so they work without a network; their results stay claims. Where the product rule is that a recorded fact is never rejected (money already taken), the server records the fact, recomputes, and flags every difference for review: never a silent rejection, never silent trust. Server data an offline client may have used is versioned, so the server recomputes at the version the client used.
+- Every command from a device is checked for enrolment and revocation, licence or lease, the actor's permission and limits **at the time of the act** (from a versioned authority record), that the claimed data version existed then, clock plausibility, and idempotency.
+- Tenant, branch or location, and actor come from the authenticated credential or session, never from the payload.
+- Evidence: every story that accepts client input carries a negative test that a tampered value (price, total, derived quantity, foreign id, version) is refused or flagged.
+
 ### Authentication & sessions (A07)
 - Passwords: Argon2id (parameters from current OWASP guidance at implementation time); breached-password check; no composition rules theatre.
 - MFA available for all, enforced for admins; WebAuthn/passkeys preferred over SMS OTP.

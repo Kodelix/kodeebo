@@ -23,12 +23,17 @@ when it exists) to detect contradictions. A conflict exists when:
   state (e.g. both Billing and Identity ADRs claim to own the plan or entitlements)
 - **Edition conflict**: an ADR that works hosted but breaks the self-hosted bundle
   against another ADR that promises both editions (detail in Phase 5)
+- **Server-authority conflict**: an ADR makes a client-computed derived value
+  authoritative (price, total, stock effect, entitlement), or leaves unversioned
+  server data that an offline client may have computed from, against
+  `.claude/docs/security-baseline.md` § Server authority. Check every ADR for this
+  even when no second ADR contradicts it; name the baseline as "ADR-MMMM"
 
 For each conflict found:
 
 ```
 ## Conflict: [ADR-NNNN] vs [ADR-MMMM]
-Type: [Data ownership / Integration / Performance / Dependency / Pattern / Tenancy / State / Edition]
+Type: [Data ownership / Integration / Performance / Dependency / Pattern / Tenancy / State / Edition / Server authority]
 ADR-NNNN claims: [...]
 ADR-MMMM claims: [...]
 Impact: [What breaks if both are implemented as written]

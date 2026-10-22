@@ -44,6 +44,7 @@ Per-type evidence and defaults are in **Test evidence by story type** below.
 - **Errors are values with context.** Wrap with cause; map to RFC 9457 problem details at the HTTP edge only; never leak internals or stack traces to clients.
 - **Every external call has a timeout, a retry policy (idempotent calls only) and a circuit breaker or bulkhead** where failure can cascade.
 - **Every write that a client or webhook can repeat is idempotent** (idempotency key or natural key).
+- **The server never trusts a client.** Every rule and validation runs on the server; every derived value (price, discount, tax, total, time amount, stock effect) is recomputed there from its own versioned data, and an offline client's results are claims to compare, never facts to store (`security-baseline.md` § Server authority).
 - **Every query is tenant-scoped.** A query that can return another tenant's row is a security bug, not a logic bug.
 - **Secrets never in code, logs, URLs or client bundles.** Read from the environment or a secret store.
 - **Migrations are forward-only in production and reversible in development**, and never lock a hot table without a written plan.
