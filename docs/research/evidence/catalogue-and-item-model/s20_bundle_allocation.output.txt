@@ -1,0 +1,20 @@
+S20 largest-remainder allocation, run with python3 -I (stdlib only)
+-- named edge cases --
+1 one component free (burger 45, drink 25, free sauce) in a 60 EGP combo: price 6000, components [(4500, 1), (2500, 1), (0, 1)] -> [3857, 2143, 0] (sum 6000)
+2 one-piaster combo, three components: price 1, components [(3000, 1), (2000, 1), (1000, 1)] -> [1, 0, 0] (sum 1)
+3 one-piaster combo, three equal components (tie -> slot order): price 1, components [(1000, 1), (1000, 1), (1000, 1)] -> [1, 0, 0] (sum 1)
+4 three components, 100 EGP: price 10000, components [(3333, 1), (3333, 1), (3334, 1)] -> [3333, 3333, 3334] (sum 10000)
+5 100 piasters over three equal components: price 100, components [(1, 1), (1, 1), (1, 1)] -> [34, 33, 33] (sum 100)
+6 zero-price combo (giveaway): price 0, components [(4500, 1), (2500, 1)] -> [0, 0] (sum 0)
+7 every component free -> equal split: price 500, components [(0, 1), (0, 1), (0, 1)] -> [167, 167, 166] (sum 500)
+8 quantity 2 on a slot (two drinks): price 9000, components [(2500, 2), (3000, 1)] -> [5625, 3375] (sum 9000)
+9 combo dearer than its parts: price 12000, components [(4500, 1), (2500, 1)] -> [7714, 4286] (sum 12000)
+10 single component: price 6000, components [(6000, 1)] -> [6000] (sum 6000)
+11 rejected (-1, [(1, 100, 1)])
+11 rejected (100, [(1, -5, 1)])
+11 rejected (100, [(1, 5, 0)])
+-- bound check (Kotlin Long) --
+12 10M EGP price, 10M EGP component: price 1000000000, components [(1000000000, 1), (1, 1)] -> [999999999, 1] (sum 1000000000)
+13 overflow flagged above the bound: price*weight 10000000000000000000 exceeds Long
+-- property run, seed 20 --
+property cases passed: 200000 (sum exact, non-negative, within 1 piaster of exact, zero weight -> 0, order independent)

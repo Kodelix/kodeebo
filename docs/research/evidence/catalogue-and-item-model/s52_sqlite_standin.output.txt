@@ -1,0 +1,18 @@
+version 3.54.0
+-- E1 foreign_keys pragma default: 0
+E1 link to missing stock item accepted with the pragma off: rows=1
+-- E1b foreign_key_check finds it afterwards:
+link_immediate|1|stock_item|0
+-- E2 pragma on: 1
+Error near line 20: FOREIGN KEY constraint failed
+-- E3 feed order, immediate FK: Catalogue feed (link) before Inventory feed (stock item 5) in one transaction
+Error near line 23: FOREIGN KEY constraint failed
+E3 rows link_immediate for item 5: 0
+-- E4 same order, DEFERRABLE INITIALLY DEFERRED: checked at COMMIT
+E4 rows link_deferred for item 6: 1
+-- E5 deferred, Inventory feed NOT in the same transaction: COMMIT fails
+Error near line 36: FOREIGN KEY constraint failed
+E5 rows link_deferred for item 7: 0
+-- E6 cross-tenant: tenant a link to tenant b stock item 901 (composite key)
+Error near line 41: FOREIGN KEY constraint failed
+-- E7 deleting a linked stock item (default NO ACTION) with pragma on

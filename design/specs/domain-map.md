@@ -64,7 +64,7 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 
 ## Architecture Principles
 
-Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by name.
+Founder decisions of 2026-10-19, 2026-10-20 and 2026-10-22. Stories and reviews cite them by name.
 
 **P-ONCE — every shared capability exists once.** A shared capability lives in its owning context behind one port, and every feature uses that port. No feature re-implements notifications, the activity trail, authorization, or money, tax and time rules, or localization. Enforced by architecture tests (the Kotlin option — for example Konsist or ArchUnit — is chosen by `/research` in the module-structure ADR; for instance, no context but Notifications may import a mail client) plus code review.
 
@@ -77,6 +77,17 @@ Founder decisions of 2026-10-19 and 2026-10-20. Stories and reviews cite them by
 **P-CORE — nothing core-first.** Layer 1 is product code behind core-shaped ports. Extraction is a scheduled `/core-extract`, once the module is stable and a second product needs it.
 
 **P-VERTICAL — platform never imports a vertical.** A vertical implements platform ports (`EndDayBlocker`, entitlement check, floor-view tiles); the platform defines them.
+
+**P-TRUST — never trust the client, in every case (founder, 2026-10-22).**
+- **Dashboard, Android app and any web client:** every rule, permission and validation runs on the server; client checks are UX only.
+- **Counter (offline):** it runs the same rules so it can sell offline, but its results are **claims**.
+- **What the server takes from a device:** raw facts only — variant and option ids and quantities, order type, device time and sequence, staff id, amounts tendered, every server-data version it used (catalogue and inventory today; any future versioned data), and physical observations only a person on site can make (counted quantity, waste, quantity received).
+- **What the server recomputes:** every derived value — price, discounts, tax, service and minimum charge, totals, time amounts, stock movements, count differences — from its own versioned data.
+- **A difference** is never a rejection of a money fact (rule kept) and never trusted: it is a **review flag**, and the owner sees the claimed and the server figure side by side.
+- **Every command is checked** for device enrolment and lease, the staff member's permission and limits at that time (authority snapshot), that the claimed versions existed then, clock plausibility and idempotency.
+- **Tenant and branch** come only from the device credential or the session, never from the payload.
+- **Every spec** carries a negative test: "a tampered client value is flagged or refused".
+Registry: `TR-NEVER-TRUST-CLIENT-R2`. The sync ADR implements P-TRUST on every command.
 
 ## Recorded Feature Rules
 
@@ -520,7 +531,7 @@ Ordered by what unblocks the specification order. Every item is `NOT DONE` excep
 
 | # | Item | Kind | Unblocks | Trigger / note |
 |---|------|------|----------|----------------|
-| 1 | Sync ADR (OQ3, 5, 6, 7, 13, 27, 29, 30 and OQ31 salvage) | ADR | sync-protocol, sync-feeds, sync-review-conflicts, fleet-health, crash-capture | After the sync spike's phases 4 and 5 |
+| 1 | Sync ADR (OQ3, 5, 6, 7, 13, 27, 29, 30 and OQ31 salvage). **Must implement P-TRUST on every command** (founder, 2026-10-22): raw facts only from devices, derived values recomputed on the server, the per-command checks, tenant and branch from the credential | ADR | sync-protocol, sync-feeds, sync-review-conflicts, fleet-health, crash-capture | After the sync spike's phases 4 and 5 |
 | 2 | Desktop-runtime ADR (Compose Desktop or Electron); sets `stack.desktop` | ADR | counter-shell and everything on the counter | After the sync spike's phase 5 |
 | 3 | Core-extraction policy (umbrella): what is local, why, extraction trigger per Layer 1 module | ADR | every Layer 1 story | Before the first Layer 1 story; `/core-extract` scheduled per module |
 | 4 | Module-structure and architecture-test ADR: which contexts share a Gradle module, P-ONCE enforcement (test tool by `/research`, for example Konsist or ArchUnit) | ADR + research | first backend story | Before the first backend story |

@@ -1,0 +1,44 @@
+# ---- call 1 (roles, D1 migration order) ----
+-- D1a migration catalogue:0001 applied BEFORE inventory:0001 (expect failure: referenced table missing)
+   ERROR:  relation "stock_item" does not exist
+   rc=3
+-- D1b inventory:0001 first (expect ok)
+   rc=0
+-- D1c catalogue:0001 after inventory (expect ok; same SQL as D1a plus RLS)
+   rc=0
+                    List of tables
+ Schema |           Name            | Type  |  Owner
+--------+---------------------------+-------+----------
+ public | stock_item                | table | migrator
+ public | stock_item_bad_unique     | table | migrator
+ public | variant                   | table | migrator
+ public | variant_stock_link        | table | migrator
+ public | variant_stock_link_single | table | migrator
+(5 rows)
+# ---- call 2 (contrast table, second runtime role, seed) ----
+seed rc=0
+# ---- call 3 (D2-D7 as runtime roles) ----
+-- D2 tenant A links its variant 1 to its own stock item 1 (expect ok)
+   inserted
+-- D3 tenant A links to tenant B's stock id 901, composite FK (expect refused)
+   ERROR:  insert or update on table "variant_stock_link" violates foreign key constraint "variant_stock_link_tenant_id_stock_item_id_fkey"
+   DETAIL:  Key is not present in table "stock_item".
+-- D3b tenant A links to nonexistent id 902, composite FK (expect refused, same message shape as D3)
+   ERROR:  insert or update on table "variant_stock_link" violates foreign key constraint "variant_stock_link_tenant_id_stock_item_id_fkey"
+   DETAIL:  Key is not present in table "stock_item".
+-- D4 contrast, id-only FK: tenant A links to B's 901 under FORCE RLS
+   inserted: cross-tenant link stored
+-- D4b contrast, id-only FK: nonexistent 902
+   ERROR:  insert or update on table "link_id_only" violates foreign key constraint "link_id_only_stock_item_id_fkey"
+   DETAIL:  Key is not present in table "stock_item".
+-- D4c tenant A sees B's row 901? (count)
+   0
+-- D6 role with no privilege on stock_item: SELECT stock_item (expect permission denied)
+   ERROR:  permission denied for table stock_item
+-- D6b same role inserts variant 2 + link to A's stock 1 (expect ok: RI check runs as owner)
+   inserted
+-- D6c same role links to nonexistent 902 (expect refused by FK)
+   ERROR:  insert or update on table "variant_stock_link" violates foreign key constraint "variant_stock_link_tenant_id_stock_item_id_fkey"
+   DETAIL:  Key is not present in table "stock_item".
+-- D7 tenant A writes a link row tagged with tenant B (expect refused by WITH CHECK)
+   ERROR:  new row violates row-level security policy "tenant_isolation" for table "variant_stock_link"

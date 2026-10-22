@@ -1,0 +1,107 @@
+# ---- call 1 (part A) ----
+CREATE DATABASE s41a;
+CREATE DATABASE
+You are now connected to database "s41a" as user "postgres".
+CREATE TABLE movement (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, qty_base bigint NOT NULL, value_piasters bigint NOT NULL);
+CREATE TABLE
+SELECT 9223372036854775807::bigint AS bigint_max, (9223372036854775807 / 1000 / 1000 / 1000) AS max_tonnes_in_mg;
+     bigint_max      | max_tonnes_in_mg
+---------------------+------------------
+ 9223372036854775807 |       9223372036
+
+INSERT INTO movement (qty_base, value_piasters) VALUES (9223372036854775807 + 1, 0);
+ERROR:  bigint out of range
+SELECT 9223372036854775807::bigint * 2;
+ERROR:  bigint out of range
+SELECT (5000000000::bigint) * (5000000000::bigint);
+ERROR:  bigint out of range
+INSERT INTO movement (qty_base, value_piasters) VALUES (9223372036854775807, 1), (9223372036854775807, 1);
+INSERT 0 2
+SELECT sum(qty_base) AS s, pg_typeof(sum(qty_base)) AS sum_type, pg_typeof(sum(value_piasters)) AS sum_type_value FROM movement;
+          s           | sum_type | sum_type_value
+----------------------+----------+----------------
+ 18446744073709551614 | numeric  | numeric
+
+SELECT sum(qty_base)::bigint FROM movement;
+ERROR:  bigint out of range
+TRUNCATE movement;
+TRUNCATE TABLE
+SELECT 7/2 AS pos, (-7)/2 AS neg_trunc, div(-7, 2) AS div_fn, mod(-7, 2) AS mod_neg, floor((-7)::numeric/2) AS floor_neg;
+ pos | neg_trunc | div_fn | mod_neg | floor_neg
+-----+-----------+--------+---------+-----------
+   3 |        -3 |     -3 |      -1 |        -4
+
+SELECT 33333::bigint * 18000 / 1000000 AS trunc_bigint, round(33333::numeric * 18000 / 1000000) AS half_up_numeric, round(-(33333::numeric * 18000 / 1000000)) AS half_away_negative;
+ trunc_bigint | half_up_numeric | half_away_negative
+--------------+-----------------+--------------------
+          599 |             600 |               -600
+
+INSERT INTO movement (qty_base, value_piasters) SELECT -18000, -600 FROM generate_series(1, 10000);
+INSERT 0 10000
+INSERT INTO movement (qty_base, value_piasters) SELECT -qty_base, -value_piasters FROM movement;
+INSERT 0 10000
+SELECT count(*), sum(qty_base) AS qty_sum, sum(value_piasters) AS value_sum FROM movement;
+ count | qty_sum | value_sum
+-------+---------+-----------
+ 20000 |       0 |         0
+
+CREATE TABLE unit (id int PRIMARY KEY, factor_to_base bigint NOT NULL CHECK (factor_to_base > 0), whole_number boolean NOT NULL);
+CREATE TABLE
+INSERT INTO unit VALUES (1, 0, true);
+INSERT INTO unit VALUES (2, 1000, false);
+ERROR:  new row for relation "unit" violates check constraint "unit_factor_to_base_check"
+DETAIL:  Failing row contains (1, 0, t).
+INSERT 0 1
+# ---- call 2 (part B setup) ----
+setup rc=0
+# ---- call 3 (B1-B5) ----
+-- B1 self loop 1->1 (expect refused)
+   ERROR:  recipe cycle: 1 -> 1
+   CONTEXT:  PL/pgSQL function refuse_recipe_cycle() line 11 at RAISE
+-- B2 chain 1->2, 2->3 (expect accepted)
+-- B2 closing edge 3->1 (expect refused)
+   ERROR:  recipe cycle: 3 -> 1
+   CONTEXT:  PL/pgSQL function refuse_recipe_cycle() line 11 at RAISE
+-- B3 diamond 10->11, 10->12, 11->13, 12->13 (expect accepted, not a cycle)
+-- B4 chain 100->...->150, 50 edges (expect accepted)
+-- B4 closing edge 150->100 (expect refused), timed
+   ERROR:  recipe cycle: 150 -> 100
+   CONTEXT:  PL/pgSQL function refuse_recipe_cycle() line 11 at RAISE
+   Time: 1.505 ms
+-- B5 UPDATE repointing 2's line to 1 (expect refused)
+   ERROR:  recipe cycle: 2 -> 1
+   CONTEXT:  PL/pgSQL function refuse_recipe_cycle() line 11 at RAISE
+# ---- call 4 (B6) ----
+-- B6 race, READ COMMITTED, check without lock (20->21 vs 21->20)
+   s2: Time: 0.083 ms
+   s2: Time: 1.252 ms
+   s2: Time: 0.725 ms
+   s1:  pg_sleep
+   s1: ----------
+   s1:
+   s1: (1 row)
+   s1:
+   cycle rows reachable from 20 (CYCLE clause): 1
+# ---- call 5 (B7) ----
+-- B7 race with the per-tenant lock (30->31 vs 31->30)
+   s1:  pg_sleep
+   s1: ----------
+   s1:
+   s1: (1 row)
+   s1:
+   s2: Time: 0.079 ms
+   s2: ERROR:  recipe cycle: 31 -> 30
+   s2: CONTEXT:  PL/pgSQL function refuse_recipe_cycle() line 12 at RAISE
+   s2: Time: 1474.209 ms (00:01.474)
+   s2: Time: 0.096 ms
+   cycle rows reachable from 30 (CYCLE clause): 0
+-- B7b a different tenant is not blocked by tenant a's lock
+   tenant b: Time: 4.852 ms
+# ---- call 6 (B8) ----
+INSERT 0 4
+UPDATE 1
+ stock_item_id | qty_base_per_sale | sum_type
+---------------+-------------------+----------
+             1 |             24000 | numeric
+             2 |               500 | numeric
+             3 |                 3 | numeric

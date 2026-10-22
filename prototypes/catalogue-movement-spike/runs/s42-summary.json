@@ -1,0 +1,193 @@
+{
+ "versions": {
+  "python": "3.14.8",
+  "apsw": "3.54.0.0",
+  "sqlite": "3.54.0"
+ },
+ "settings": {
+  "cipher": "chacha20",
+  "journal_mode": "DELETE",
+  "synchronous": "FULL",
+  "strict": true,
+  "foreign_keys": true,
+  "gap_s": 1.0,
+  "sales_per_n": 400,
+  "voids_per_n": 100,
+  "history_lines": 50000
+ },
+ "history_seed_s": 17.0,
+ "run_s": 4188.6,
+ "store_bytes": 29917184,
+ "row_counts": {
+  "bill_line": 53000,
+  "stock_movement": 313358,
+  "outbox": 53000
+ },
+ "quick_check": [
+  "ok",
+  "ok"
+ ],
+ "invariants": {
+  "sales_with_wrong_movement_count": 0,
+  "voids_not_netting_to_zero": 0
+ },
+ "first_op_ms": 360.498,
+ "cells": [
+  {
+   "kind": "sale",
+   "n": 0,
+   "count": 400,
+   "p50_ms": 57.868,
+   "p95_ms": 498.448,
+   "p99_ms": 710.331,
+   "max_ms": 3586.396,
+   "over_1s": 3,
+   "over_3s": 1,
+   "p95_over_n0_ms": 0.0,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "sale",
+   "n": 1,
+   "count": 400,
+   "p50_ms": 96.561,
+   "p95_ms": 538.796,
+   "p99_ms": 671.666,
+   "max_ms": 1490.111,
+   "over_1s": 3,
+   "over_3s": 0,
+   "p95_over_n0_ms": 40.348,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "sale",
+   "n": 5,
+   "count": 400,
+   "p50_ms": 149.394,
+   "p95_ms": 711.181,
+   "p99_ms": 1329.714,
+   "max_ms": 2674.202,
+   "over_1s": 7,
+   "over_3s": 0,
+   "p95_over_n0_ms": 212.733,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "sale",
+   "n": 10,
+   "count": 400,
+   "p50_ms": 239.087,
+   "p95_ms": 902.135,
+   "p99_ms": 1458.542,
+   "max_ms": 1864.477,
+   "over_1s": 16,
+   "over_3s": 0,
+   "p95_over_n0_ms": 403.687,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "sale",
+   "n": 20,
+   "count": 400,
+   "p50_ms": 318.193,
+   "p95_ms": 950.614,
+   "p99_ms": 1453.197,
+   "max_ms": 12639.576,
+   "over_1s": 14,
+   "over_3s": 4,
+   "p95_over_n0_ms": 452.166,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "sale",
+   "n": 40,
+   "count": 400,
+   "p50_ms": 519.553,
+   "p95_ms": 1260.734,
+   "p99_ms": 2711.03,
+   "max_ms": 5627.791,
+   "over_1s": 86,
+   "over_3s": 4,
+   "p95_over_n0_ms": 762.286,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "void",
+   "n": 0,
+   "count": 100,
+   "p50_ms": 57.395,
+   "p95_ms": 549.159,
+   "p99_ms": 816.277,
+   "max_ms": 1411.528,
+   "over_1s": 1,
+   "over_3s": 0,
+   "p95_over_n0_ms": 0.0,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "void",
+   "n": 1,
+   "count": 100,
+   "p50_ms": 106.516,
+   "p95_ms": 637.702,
+   "p99_ms": 788.375,
+   "max_ms": 2604.428,
+   "over_1s": 1,
+   "over_3s": 0,
+   "p95_over_n0_ms": 88.543,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "void",
+   "n": 5,
+   "count": 100,
+   "p50_ms": 158.774,
+   "p95_ms": 732.529,
+   "p99_ms": 1063.003,
+   "max_ms": 1699.116,
+   "over_1s": 2,
+   "over_3s": 0,
+   "p95_over_n0_ms": 183.37,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "void",
+   "n": 10,
+   "count": 100,
+   "p50_ms": 226.582,
+   "p95_ms": 1067.243,
+   "p99_ms": 1703.885,
+   "max_ms": 8808.523,
+   "over_1s": 6,
+   "over_3s": 1,
+   "p95_over_n0_ms": 518.084,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "void",
+   "n": 20,
+   "count": 100,
+   "p50_ms": 337.521,
+   "p95_ms": 1099.871,
+   "p99_ms": 2854.702,
+   "max_ms": 3330.424,
+   "over_1s": 7,
+   "over_3s": 1,
+   "p95_over_n0_ms": 550.712,
+   "pass_p95_200_max_3000": false
+  },
+  {
+   "kind": "void",
+   "n": 40,
+   "count": 100,
+   "p50_ms": 535.477,
+   "p95_ms": 2108.729,
+   "p99_ms": 3324.179,
+   "max_ms": 11266.942,
+   "over_1s": 26,
+   "over_3s": 3,
+   "p95_over_n0_ms": 1559.57,
+   "pass_p95_200_max_3000": false
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+05:08:55 s42: VM state before: running
+05:09:26 s42 up: reverted clean-ssh2, booted, throttled (100 IOPS + 80 MiB/s)
+Write-Progress : Win32 internal error "Access is denied" 0x5 occurred while reading the console output buffer. Contact 
+Microsoft Customer Support Services.
+At 
+C:\Windows\system32\WindowsPowerShell\v1.0\Modules\Microsoft.PowerShell.Archive\Microsoft.PowerShell.Archive.psm1:1132 
+char:9
++         Write-Progress -Activity $cmdletName -Status $status -Percent ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ReadError: (:) [Write-Progress], HostException
+    + FullyQualifiedErrorId : ReadConsoleOutput,Microsoft.PowerShell.Commands.WriteProgressCommand
+ 
+Write-Progress : Win32 internal error "Access is denied" 0x5 occurred while reading the console output buffer. Contact 
+Microsoft Customer Support Services.
+At 
+C:\Windows\system32\WindowsPowerShell\v1.0\Modules\Microsoft.PowerShell.Archive\Microsoft.PowerShell.Archive.psm1:1132 
+char:9
++         Write-Progress -Activity $cmdletName -Status $status -Percent ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ReadError: (:) [Write-Progress], HostException
+    + FullyQualifiedErrorId : ReadConsoleOutput,Microsoft.PowerShell.Commands.WriteProgressCommand
+ 
+3.14.8 3.54.0.0 3.54.0
+05:12:28 s42 run: set SALES_PER_N=400&& set VOIDS_PER_N=100&& set GAP_S=1.0&& set HISTORY_LINES=50000&&
+06:22:38 s42 run rc=0
+06:23:20 s42 down: shut off, reverted clean-ssh2

@@ -1,0 +1,19 @@
+version
+3.54.0
+product|type
+1.8446744073709552e+19|real
+plus_one|type
+9.2233720368547758e+18|real
+qty_base|typeof(qty_base)
+1.8446744073709552e+19|real
+Error near line 15: cannot store REAL value in INTEGER column movement.qty_base
+Error near line 16: cannot store REAL value in INTEGER column movement.qty_base
+qty_base|typeof(qty_base)
+18000|integer
+Error near line 22: integer overflow
+total(qty_base)|typeof(total(qty_base))
+9.2233720368547758e+18|real
+pos|neg_trunc|mod_neg
+3|-3|-1
+count(*)|sum(qty_base)|sum(value_piasters)|typeof(sum(qty_base))
+20000|0|0|integer
