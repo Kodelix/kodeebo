@@ -638,5 +638,6 @@ Foundational — no spec requirement. Enables:
     8. A producer-controlled `traceparent`.
     9. An operator requeueing dead items as a privileged action.
   - Before the first job story, each mitigation has a story and a negative test, and the requeue path is decided.
+- **Open question R-12 — the requeue path for dead items** (founder, 2026-10-23; owner **`security-lead`**; decided **before the first job kind ships**): requeue must be **permission-gated**, **audited**, and **limited to listed kinds** (for example, never re-send an old password-reset email). Related founder rules of the same day are in the domain map (Recorded Feature Rules, "Dead job items"): dead-item alerts go to Kodelix through a channel that does not depend on email, the console lists dead items per tenant by ids, kinds and error classes only, and the owner is told only when a failure affects them, in business words.
 - Runbooks (to write, `sre-lead`): outbox backlog, dead items, stuck rows after a kill.
 - Code paths: none yet. The module is `:core:jobs` per ADR-0011 (Proposed).

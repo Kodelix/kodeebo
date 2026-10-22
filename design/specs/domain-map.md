@@ -2,7 +2,7 @@
 
 > **Status**: Draft
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-23 (clock-in and selling, counter operations rule); 2026-10-22 (counter operations specs rule and threat-model coverage; Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
+> **Last Updated**: 2026-10-23 (bills ownership, void and partial refund; dead job items rule; clock-in and selling, counter operations rule); 2026-10-22 (counter operations specs rule and threat-model coverage; Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
 > **Source**: design/product-brief.md (Tier 1/Tier 2 from the brief; founder decisions of 2026-10-19 and 2026-10-20 recorded below)
 
 ---
@@ -178,6 +178,28 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
   - off-schedule clock-in handling;
   - best practice for a relief or cover cashier;
   - ~~must a cashier be clocked in to sign in or sell, or only to open a cash shift~~ — answered by the founder on 2026-10-23 (clock-in and selling, above); the staff-auth amendment's denial-of-service and elevation rows follow that answer.
+
+
+**Dead job items (founder, 2026-10-23; ADR-0012).**
+- **(a) For the observability plan** (Still-Missing item 10):
+  - dead-item alerts go to **Kodelix**, not to the tenant;
+  - the operator console lists dead items **per tenant**, showing ids, kinds and error classes only (no payloads, no personal data);
+  - the alert channel **does not depend on email**, because the dead kind may be mail itself.
+- **(b) For every feature spec:** the owner is told **only when a failure affects them, in business words**. Examples:
+  - an ETA receipt not yet submitted goes to the owner's review queue;
+  - a failing address is already handled by ADR-0013;
+  - a failed export says "try again".
+- **(c)** The requeue path for dead items (ADR-0012, threat-model R-12) is an open question in ADR-0012 with owner `security-lead`.
+
+
+**Bills: ownership, attribution, void and partial refund (founder, 2026-10-23; input to `bills-and-tabs`, `bill-exceptions` and `refunds`, with the counter operations rule).**
+- **Ownership and attribution:**
+  - A bill belongs to whoever opened it.
+  - Every action on any bill (add or remove a line, discount, void, close, take payment) is recorded under the person whose PIN is active, plus the approver when an approval was used.
+  - Every bill line records who added it.
+- **Void and refund:**
+  - A void works on a whole bill or on a single line.
+  - A partial refund works on a line or on part of a line's quantity (for example 1 of 3).
 
 ---
 
@@ -579,7 +601,7 @@ Ordered by what unblocks the specification order. Every item is `NOT DONE` excep
 | 7 | Localization architecture (`localization-lead`, `/localize`; glossary in `design/localization/`; pseudo-localization test) | Research + ADR | localization-kernel, every screen | Before the first screen |
 | 8 | **`/research catalogue-and-item-model`**: the one item model for every vertical (§ Recorded Feature Rules). Primary sources: Square Catalog API, Toast menus API, Shopify product and variant model, Lightspeed (retail), Odoo and ERPNext documentation for units of measure and bills of materials — compared, none copied | Research | the item-model ADR; product-catalogue, stock-core, recipes, accessories, combos-bundles, menu-scheduling | Before `/design-spec product-catalogue` |
 | 9 | Item-model ADR: the one catalogue and item core, its split between Catalogue and Inventory, and where station time sits in it | ADR | product-catalogue and every spec that cites the catalogue note | After the catalogue research, before the product-catalogue spec |
-| 10 | **`/observability-plan`** (OpenTelemetry Collector pipelines, redaction, fleet health, crash capture, the thin Ktor plugin) | Plan | telemetry-pipeline, fleet-health, crash-capture, slos-alerting | Before the telemetry-pipeline spec |
+| 10 | **`/observability-plan`** (OpenTelemetry Collector pipelines, redaction, fleet health, crash capture, the thin Ktor plugin; dead job items per the founder's 2026-10-23 rule: alerts to Kodelix, a per-tenant console list of ids, kinds and error classes only, an alert channel that does not depend on email) | Plan | telemetry-pipeline, fleet-health, crash-capture, slos-alerting | Before the telemetry-pipeline spec |
 | 11 | **Event taxonomy** (`docs/analytics/`, `product-analytics-engineer`) | Plan | event-taxonomy-analytics | After the observability plan |
 | 12 | **Notifications provider research** → notifications ADR (email, Web Push, FCM; remote-approval channel; no SMS for recovery, ADR-0007) | Research + ADR | owner-alerts, push-notifications, remote-approval | Before the owner-alerts spec |
 | 13 | Credential ADR (device credentials; `device_rt` or merged into `app_rt`) | ADR | device-seats-enrolment, sync-protocol | Before device-seats-enrolment |
