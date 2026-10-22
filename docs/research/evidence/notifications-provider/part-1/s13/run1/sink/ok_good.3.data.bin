@@ -1,0 +1,11 @@
+Date: Thu, 22 Oct 2026 04:54:38 +0300 (EEST)
+From: no-reply@example.test
+To: rcpt@example.test
+Message-ID: <item-i1.a1@example.test>
+Subject: Hi
+ Bcc: evil@example.test
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+body

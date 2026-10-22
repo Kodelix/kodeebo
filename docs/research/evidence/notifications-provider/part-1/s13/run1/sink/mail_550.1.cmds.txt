@@ -1,0 +1,19 @@
++0.000 EVENT tcp accepted
++0.054 EVENT tls TLSv1.3 TLS_AES_256_GCM_SHA384 cert=good
++0.054 S: 220 sink.example.test ESMTP ready
++0.095 C: EHLO mail.example.test
++0.095 S: 250-sink.example.test | 250-AUTH PLAIN LOGIN | 250-8BITMIME | 250 SIZE 104857600
++0.096 C: AUTH LOGIN <redacted>
++0.096 S: 334 VXNlcm5hbWU6
++0.097 C: <auth data redacted>
++0.097 S: 334 UGFzc3dvcmQ6
++0.098 C: <auth data redacted>
++0.098 S: 235 2.7.0 Authentication successful
++0.099 C: MAIL FROM:<bounces+t1.i1@example.test>
++0.099 S: 550 5.7.1 sender refused
++0.099 C: RSET
++0.099 S: 250 OK
++0.100 C: NOOP
++0.100 S: 250 OK
++0.100 C: QUIT
++0.100 S: 221 2.0.0 bye

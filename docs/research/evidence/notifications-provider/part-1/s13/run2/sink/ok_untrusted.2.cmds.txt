@@ -1,0 +1,2 @@
++0.000 EVENT tcp accepted
++0.005 EVENT SSLError: [SSL: SSLV3_ALERT_CERTIFICATE_UNKNOWN] ssl/tls alert certificate unknown (_ssl.c:1082)

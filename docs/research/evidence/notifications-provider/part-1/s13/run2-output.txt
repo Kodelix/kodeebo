@@ -1,0 +1,185 @@
+== S13 run run2, 2026-10-22T01:58:12Z
+openjdk version "21.0.12.1" 2026-08-18
+OpenJDK Runtime Environment (build 21.0.12.1+1)
+OpenJDK 64-Bit Server VM (build 21.0.12.1+1, mixed mode, sharing)
+javac 21.0.12.1
+python 3.14.8
+OpenSSL 3.6.5 29 Sep 2026 (Library: OpenSSL 3.6.5 29 Sep 2026)
+-- angus-activation-2.0.3.jar 26729 bytes sha1 7f80607ea5014fef0b1779e6c33d63a88a45a563
+     Bundle-SymbolicName: angus-activation
+     Bundle-Version: 2.0.3
+-- angus-mail-2.0.5.jar 501288 bytes sha1 427f6d52ec0782f7efaca0c0732042e347a6cb4f
+     Bundle-SymbolicName: org.eclipse.angus.mail
+     Bundle-Version: 2.0.5
+-- jakarta.activation-api-2.1.4.jar 67380 bytes sha1 9e5c2a0d75dde71a0bedc4dbdbe47b78a5dc50f8
+     Bundle-SymbolicName: jakarta.activation-api
+     Bundle-Version: 2.1.4
+-- jakarta.mail-api-2.1.5.jar 237267 bytes sha1 be9b3b677ed6083f575c437ebc442a6a4bd2b931
+     Bundle-SymbolicName: jakarta.mail-api
+     Bundle-Version: 2.1.5
+cert good: subject=CN=localhost X509v3 Subject Alternative Name:      DNS:localhost, IP Address:127.0.0.1 sha256 Fingerprint=67:84:5E:88:CE:97:A0:8A:AC:97:B5:C3:63:05:75:0D:A6:56:DA:11:B4:58:1F:C0:A9:80:58:31:D7:9F:0C:50 
+cert wrong: subject=CN=other.example.test X509v3 Subject Alternative Name:      DNS:other.example.test sha256 Fingerprint=D9:B9:81:14:D0:78:82:96:49:D4:16:9E:C4:0A:7E:16:BA:B4:18:E3:39:CC:93:47:99:BF:B8:E5:D1:B2:0E:1B 
+cert untrusted: subject=CN=localhost X509v3 Subject Alternative Name:      DNS:localhost, IP Address:127.0.0.1 sha256 Fingerprint=49:79:D8:FD:08:5E:0E:93:D2:3F:2C:A0:B6:11:F9:AE:38:F6:37:16:7E:11:20:F1:16:25:29:31:DA:D0:A9:FB 
+keytool: Certificate was added to keystore
+keytool: Certificate was added to keystore
+sink pid 139614, ports file lines: 21
+== angus-mail 2.0.5 IMAP doc lines (source tag 2.0.5, saved in raw/) naming the imaps prefix
+28: * {@link org.eclipse.angus.mail.imap.IMAPStore#hasCapability IMAPStore hasCapability}
+80: * A connected IMAPStore maintains a pool of IMAP protocol objects for
+81: * use in communicating with the IMAP server. The IMAPStore will create
+84: * needed, the IMAPStore will provide them from the connection pool,
+95: * The connected IMAPStore object may or may not maintain a separate IMAP
+106: * {@link org.eclipse.angus.mail.imap.IMAPStore IMAPStore}, and the
+237: * Note that if you're using the "imaps" protocol to access IMAP over SSL,
+238: * all the properties would be named "mail.imaps.*".
+== java
+JAVA 21.0.12.1+1 | StageTransport extends org.eclipse.angus.mail.smtp.SMTPTransport
+
+=== RUN 2, part A: stage marker and corrected classifier (timeouts connect 1000, read 1500, write 1500) ===
+[S2.1] sink ok_good (normal send)
+    endMs=268 sendStartMs=265 stage=DONE ok=true
+    exception: -
+    classify -> ACCEPTED
+RESULT S2.1 PASS - ok_good: stage=DONE -> ACCEPTED (expected ACCEPTED), ended 268 ms
+[S2.2] sink close_dot (FIN after the dot, no reply)
+    endMs=93 sendStartMs=90 stage=DOT ok=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("[EOF]") getReturnCode=-1 getCommand="."
+    classify -> AMBIGUOUS(I/O in stage DOT)
+RESULT S2.2 PASS - close_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 93 ms
+[S2.3] sink rst_dot (RST after the dot, no reply)
+    endMs=94 sendStartMs=91 stage=DOT ok=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketException ("Connection reset")
+    classify -> AMBIGUOUS(I/O in stage DOT)
+RESULT S2.3 PASS - rst_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 94 ms
+[S2.4] sink stall_dot (no reply to the dot, read timeout)
+    endMs=1599 sendStartMs=94 stage=DOT ok=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> AMBIGUOUS(I/O in stage DOT)
+RESULT S2.4 PASS - stall_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 1599 ms
+[S2.5] sink close_354 (closed after 354)
+    endMs=91 sendStartMs=88 stage=DOT ok=false
+    exception: jakarta.mail.MessagingException ("Can't send command to SMTP host")
+      <- java.net.SocketException ("Broken pipe")
+    classify -> AMBIGUOUS(I/O in stage DOT)
+RESULT S2.5 PASS - close_354: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 91 ms
+[S2.6] sink stall_read_data (40 MB body, sink stops reading, write timeout)
+    endMs=1775 sendStartMs=173 stage=BODY ok=false
+    exception: jakarta.mail.MessagingException ("IOException while sending message")
+      <- java.io.IOException ("Write timed out")
+      <- java.net.SocketException ("Socket closed")
+    classify -> AMBIGUOUS(I/O in stage BODY)
+RESULT S2.6 PASS - stall_read_data: stage=BODY -> AMBIGUOUS(I/O in stage BODY) (expected AMBIGUOUS), ended 1775 ms
+[S2.7] sink close_data_cmd (closed on the DATA command)
+    endMs=100 sendStartMs=99 stage=DATA_CMD ok=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("[EOF]") getReturnCode=-1 getCommand="DATA"
+    classify -> TRANSIENT(I/O in stage DATA_CMD)
+RESULT S2.7 PASS - close_data_cmd: stage=DATA_CMD -> TRANSIENT(I/O in stage DATA_CMD) (expected TRANSIENT), ended 100 ms
+[S2.8] sink close_rcpt (closed on RCPT)
+    endMs=100 sendStartMs=99 stage=RCPT ok=false
+    exception: org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("[EOF]") getReturnCode=-1 getCommand="RCPT TO:<rcpt@example.test>"
+    classify -> TRANSIENT(I/O in stage RCPT)
+RESULT S2.8 PASS - close_rcpt: stage=RCPT -> TRANSIENT(I/O in stage RCPT) (expected TRANSIENT), ended 100 ms
+[S2.9] sink stall_greeting (no greeting)
+    endMs=1597 sendStartMs=-1 stage=NONE ok=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O in stage NONE)
+RESULT S2.9 PASS - stall_greeting: stage=NONE -> TRANSIENT(I/O in stage NONE) (expected TRANSIENT), ended 1597 ms
+[S2.10] sink mail_550 (reply)
+    endMs=96 sendStartMs=94 stage=MAIL ok=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("550 5.7.1 sender refused\n") getReturnCode=550 getCommand="MAIL FROM:<bounces+t1.i1@example.test>"
+      <- org.eclipse.angus.mail.smtp.SMTPSenderFailedException ("550 5.7.1 sender refused\n") getReturnCode=550 getCommand="MAIL FROM:<bounces+t1.i1@example.test>"
+    classify -> CONFIG_FAULT(mail from 550)
+RESULT S2.10 PASS - mail_550: stage=MAIL -> CONFIG_FAULT(mail from 550) (expected CONFIG_FAULT), ended 96 ms
+[S2.11] sink rcpt_552 (reply)
+    endMs=93 sendStartMs=93 stage=RCPT ok=false
+    exception: jakarta.mail.SendFailedException ("Invalid Addresses")
+      <- org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("552 5.2.2 mailbox full\n") getReturnCode=552 getCommand="RCPT TO:<rcpt@example.test>"
+    classify -> REJECTED(recipient 552)
+RESULT S2.11 PASS - rcpt_552: stage=RCPT -> REJECTED(recipient 552) (expected REJECTED(recipient), ended 93 ms
+[S2.12] sink rcpt_450 (reply)
+    endMs=87 sendStartMs=87 stage=RCPT ok=false
+    exception: jakarta.mail.SendFailedException ("Invalid Addresses")
+      <- org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("450 4.2.0 mailbox busy\n") getReturnCode=450 getCommand="RCPT TO:<rcpt@example.test>"
+    classify -> TRANSIENT(rcpt 450)
+RESULT S2.12 PASS - rcpt_450: stage=RCPT -> TRANSIENT(rcpt 450) (expected TRANSIENT(rcpt 450)), ended 87 ms
+[S2.13] sink auth_535 (reply)
+    endMs=88 sendStartMs=-1 stage=NONE ok=false
+    exception: jakarta.mail.AuthenticationFailedException ("535 5.7.8 Authentication credentials invalid\n")
+    classify -> CONFIG_FAULT(auth)
+RESULT S2.13 PASS - auth_535: stage=NONE -> CONFIG_FAULT(auth) (expected CONFIG_FAULT(auth)), ended 88 ms
+[S2.14] sink dot_451 (reply)
+    endMs=101 sendStartMs=92 stage=DOT ok=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("451 4.3.0 local error in processing\n") getReturnCode=451 getCommand="."
+    classify -> TRANSIENT(dot 451)
+RESULT S2.14 PASS - dot_451: stage=DOT -> TRANSIENT(dot 451) (expected TRANSIENT(dot 451)), ended 101 ms
+[S2.15] sink dot_554 (reply)
+    endMs=98 sendStartMs=94 stage=DOT ok=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("554 5.6.0 message rejected\n") getReturnCode=554 getCommand="."
+    classify -> REJECTED(message, to dot 554)
+RESULT S2.15 PASS - dot_554: stage=DOT -> REJECTED(message, to dot 554) (expected REJECTED(message, to dot 554)), ended 98 ms
+
+=== RUN 2, part B: socket-close watchdog at 2000 ms (backstop read timeout 8000) with the tracking factory AND the stage marker; identity check on ===
+[S2.16] sink stall_dot (watchdog closes sockets at 2000 ms)
+    endMs=2005 sendStartMs=102 stage=DOT ok=false watchdogReturnedMs=2005
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketException ("Socket closed")
+    classify -> AMBIGUOUS(I/O in stage DOT)
+RESULT S2.16 PASS - stall_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 2005 ms
+[S2.17] sink stall_greeting (watchdog closes sockets at 2000 ms)
+    endMs=2001 sendStartMs=-1 stage=NONE ok=false watchdogReturnedMs=2000
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketException ("Socket closed")
+    classify -> TRANSIENT(I/O in stage NONE)
+RESULT S2.17 PASS - stall_greeting: stage=NONE -> TRANSIENT(I/O in stage NONE) (expected TRANSIENT), ended 2001 ms
+
+=== RUN 2, part C: identity check with the tracking socket factory installed (trust store: good and wrong certificates) ===
+[S2.18] sink ok_good (right name, tracking factory)
+    endMs=96 sendStartMs=94 stage=DONE ok=true
+    exception: -
+    classify -> ACCEPTED
+RESULT S2.18 PASS - ok_good: stage=DONE -> ACCEPTED (expected ACCEPTED), ended 96 ms
+[S2.19] sink ok_wrong (certificate for another name, tracking factory)
+    endMs=17 sendStartMs=-1 stage=NONE ok=false
+    exception: jakarta.mail.MessagingException ("Could not connect to SMTP host: localhost, port: 44907")
+      <- javax.net.ssl.SSLHandshakeException ("(certificate_unknown) No subject alternative DNS name matching localhost found.")
+      <- java.security.cert.CertificateException ("No subject alternative DNS name matching localhost found.")
+    classify -> CONFIG_FAULT(tls)
+RESULT S2.19 PASS - ok_wrong: stage=NONE -> CONFIG_FAULT(tls) (expected CONFIG_FAULT(tls)), ended 17 ms
+[S2.20] sink ok_untrusted (untrusted certificate, tracking factory)
+    endMs=16 sendStartMs=-1 stage=NONE ok=false
+    exception: jakarta.mail.MessagingException ("Could not connect to SMTP host: localhost, port: 40573")
+      <- javax.net.ssl.SSLHandshakeException ("(certificate_unknown) PKIX path validation failed: java.security.cert.CertPathValidatorException: Path does not chain with any of the trust anchors")
+      <- sun.security.validator.ValidatorException ("PKIX path validation failed: java.security.cert.CertPathValidatorException: Path does not chain with any of the trust anchors")
+      <- java.security.cert.CertPathValidatorException ("Path does not chain with any of the trust anchors")
+    classify -> CONFIG_FAULT(tls)
+RESULT S2.20 PASS - ok_untrusted: stage=NONE -> CONFIG_FAULT(tls) (expected CONFIG_FAULT(tls)), ended 16 ms
+RESULT S2.21 PASS - the whole run-2 harness ran to its end on JDK 21.0.12.1+1
+
+=== SUMMARY (run 2): 21 PASS, 0 FAIL of 21 ===
+RESULT S2.1 PASS - ok_good: stage=DONE -> ACCEPTED (expected ACCEPTED), ended 268 ms
+RESULT S2.2 PASS - close_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 93 ms
+RESULT S2.3 PASS - rst_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 94 ms
+RESULT S2.4 PASS - stall_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 1599 ms
+RESULT S2.5 PASS - close_354: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 91 ms
+RESULT S2.6 PASS - stall_read_data: stage=BODY -> AMBIGUOUS(I/O in stage BODY) (expected AMBIGUOUS), ended 1775 ms
+RESULT S2.7 PASS - close_data_cmd: stage=DATA_CMD -> TRANSIENT(I/O in stage DATA_CMD) (expected TRANSIENT), ended 100 ms
+RESULT S2.8 PASS - close_rcpt: stage=RCPT -> TRANSIENT(I/O in stage RCPT) (expected TRANSIENT), ended 100 ms
+RESULT S2.9 PASS - stall_greeting: stage=NONE -> TRANSIENT(I/O in stage NONE) (expected TRANSIENT), ended 1597 ms
+RESULT S2.10 PASS - mail_550: stage=MAIL -> CONFIG_FAULT(mail from 550) (expected CONFIG_FAULT), ended 96 ms
+RESULT S2.11 PASS - rcpt_552: stage=RCPT -> REJECTED(recipient 552) (expected REJECTED(recipient), ended 93 ms
+RESULT S2.12 PASS - rcpt_450: stage=RCPT -> TRANSIENT(rcpt 450) (expected TRANSIENT(rcpt 450)), ended 87 ms
+RESULT S2.13 PASS - auth_535: stage=NONE -> CONFIG_FAULT(auth) (expected CONFIG_FAULT(auth)), ended 88 ms
+RESULT S2.14 PASS - dot_451: stage=DOT -> TRANSIENT(dot 451) (expected TRANSIENT(dot 451)), ended 101 ms
+RESULT S2.15 PASS - dot_554: stage=DOT -> REJECTED(message, to dot 554) (expected REJECTED(message, to dot 554)), ended 98 ms
+RESULT S2.16 PASS - stall_dot: stage=DOT -> AMBIGUOUS(I/O in stage DOT) (expected AMBIGUOUS), ended 2005 ms
+RESULT S2.17 PASS - stall_greeting: stage=NONE -> TRANSIENT(I/O in stage NONE) (expected TRANSIENT), ended 2001 ms
+RESULT S2.18 PASS - ok_good: stage=DONE -> ACCEPTED (expected ACCEPTED), ended 96 ms
+RESULT S2.19 PASS - ok_wrong: stage=NONE -> CONFIG_FAULT(tls) (expected CONFIG_FAULT(tls)), ended 17 ms
+RESULT S2.20 PASS - ok_untrusted: stage=NONE -> CONFIG_FAULT(tls) (expected CONFIG_FAULT(tls)), ended 16 ms
+RESULT S2.21 PASS - the whole run-2 harness ran to its end on JDK 21.0.12.1+1
+java exit: 0
+sink files: 30
+keys and certificates deleted: yes

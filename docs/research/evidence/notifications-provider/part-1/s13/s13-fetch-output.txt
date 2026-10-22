@@ -1,0 +1,30 @@
+date: 2026-10-22T01:45:19Z
+cache total BEFORE: 1.8G; notifications-provider dir: 
+POM CHAIN (fetched, small):
+  org.eclipse.angus:angus-mail:2.0.5  8005 bytes  https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/2.0.5/angus-mail-2.0.5.pom
+  org.eclipse.angus:all:2.0.5  32386 bytes  https://repo1.maven.org/maven2/org/eclipse/angus/all/2.0.5/all-2.0.5.pom
+  org.eclipse.ee4j:project:1.0.9  16135 bytes  https://repo1.maven.org/maven2/org/eclipse/ee4j/project/1.0.9/project-1.0.9.pom
+dependencyManagement jakarta.mail:jakarta.mail-api = '${mail-api.version}' -> '2.1.5'
+dependencyManagement jakarta.activation:jakarta.activation-api = '${activation-api.version}' -> '2.1.4'
+dependencyManagement org.eclipse.angus:angus-activation = '${angus.activation.version}' -> '2.0.3'
+
+JAR LIST (HEAD sizes):
+  org.eclipse.angus:angus-mail:2.0.5  501288 bytes  https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/2.0.5/angus-mail-2.0.5.jar
+  jakarta.mail:jakarta.mail-api:2.1.5  237267 bytes  https://repo1.maven.org/maven2/jakarta/mail/jakarta.mail-api/2.1.5/jakarta.mail-api-2.1.5.jar
+  jakarta.activation:jakarta.activation-api:2.1.4  67380 bytes  https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar
+  org.eclipse.angus:angus-activation:2.0.3  26729 bytes  https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/2.0.3/angus-activation-2.0.3.jar
+TOTAL 832664 bytes (0.79 MiB); limit 3145728
+
+DOWNLOAD + VERIFY:
+  angus-mail-2.0.5.jar  501288 bytes  sha1 427f6d52ec0782f7efaca0c0732042e347a6cb4f  maven-central .sha1 427f6d52ec0782f7efaca0c0732042e347a6cb4f  MATCH
+  jakarta.mail-api-2.1.5.jar  237267 bytes  sha1 be9b3b677ed6083f575c437ebc442a6a4bd2b931  maven-central .sha1 be9b3b677ed6083f575c437ebc442a6a4bd2b931  MATCH
+  jakarta.activation-api-2.1.4.jar  67380 bytes  sha1 9e5c2a0d75dde71a0bedc4dbdbe47b78a5dc50f8  maven-central .sha1 9e5c2a0d75dde71a0bedc4dbdbe47b78a5dc50f8  MATCH
+  angus-activation-2.0.3.jar  26729 bytes  sha1 7f80607ea5014fef0b1779e6c33d63a88a45a563  maven-central .sha1 7f80607ea5014fef0b1779e6c33d63a88a45a563  MATCH
+ALL SHA1 MATCH
+exit: 0
+cache total AFTER: 1.8G; notifications-provider dir: 876K
+total 820
+-rw-r--r-- 1 kiko kiko  26729 Oct 22 04:47 angus-activation-2.0.3.jar
+-rw-r--r-- 1 kiko kiko 501288 Oct 22 04:46 angus-mail-2.0.5.jar
+-rw-r--r-- 1 kiko kiko  67380 Oct 22 04:47 jakarta.activation-api-2.1.4.jar
+-rw-r--r-- 1 kiko kiko 237267 Oct 22 04:46 jakarta.mail-api-2.1.5.jar

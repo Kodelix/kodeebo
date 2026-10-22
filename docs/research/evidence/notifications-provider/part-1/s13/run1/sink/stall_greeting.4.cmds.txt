@@ -1,0 +1,4 @@
++0.000 EVENT tcp accepted
++0.043 EVENT tls TLSv1.3 TLS_AES_256_GCM_SHA384 cert=good
++0.043 EVENT sink sends no greeting
++2.000 EVENT client closed (EOF)

@@ -1,0 +1,4 @@
++0.000 EVENT tcp accepted
++0.053 EVENT tls TLSv1.3 TLS_AES_256_GCM_SHA384 cert=good
++0.053 EVENT sink sends no greeting
++30.083 EVENT stall cap 30s reached, sink closes

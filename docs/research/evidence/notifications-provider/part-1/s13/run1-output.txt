@@ -1,0 +1,328 @@
+== S13 run run1, 2026-10-22T01:54:05Z
+openjdk version "21.0.12.1" 2026-08-18
+OpenJDK Runtime Environment (build 21.0.12.1+1)
+OpenJDK 64-Bit Server VM (build 21.0.12.1+1, mixed mode, sharing)
+javac 21.0.12.1
+python 3.14.8
+OpenSSL 3.6.5 29 Sep 2026 (Library: OpenSSL 3.6.5 29 Sep 2026)
+-- angus-activation-2.0.3.jar 26729 bytes sha1 7f80607ea5014fef0b1779e6c33d63a88a45a563
+     Bundle-SymbolicName: angus-activation
+     Bundle-Version: 2.0.3
+-- angus-mail-2.0.5.jar 501288 bytes sha1 427f6d52ec0782f7efaca0c0732042e347a6cb4f
+     Bundle-SymbolicName: org.eclipse.angus.mail
+     Bundle-Version: 2.0.5
+-- jakarta.activation-api-2.1.4.jar 67380 bytes sha1 9e5c2a0d75dde71a0bedc4dbdbe47b78a5dc50f8
+     Bundle-SymbolicName: jakarta.activation-api
+     Bundle-Version: 2.1.4
+-- jakarta.mail-api-2.1.5.jar 237267 bytes sha1 be9b3b677ed6083f575c437ebc442a6a4bd2b931
+     Bundle-SymbolicName: jakarta.mail-api
+     Bundle-Version: 2.1.5
+cert good: subject=CN=localhost X509v3 Subject Alternative Name:      DNS:localhost, IP Address:127.0.0.1 sha256 Fingerprint=82:13:45:0F:01:F8:C4:F9:D4:9A:B5:D0:E8:52:6F:7A:01:C7:FF:99:60:19:FF:A9:3C:1F:6F:1F:A5:66:D7:0F 
+cert wrong: subject=CN=other.example.test X509v3 Subject Alternative Name:      DNS:other.example.test sha256 Fingerprint=7D:54:75:77:FE:C2:EA:35:A4:2C:64:56:C8:28:11:FB:67:9C:5F:05:6C:BC:12:36:A0:26:A3:4E:A5:CC:48:B8 
+cert untrusted: subject=CN=localhost X509v3 Subject Alternative Name:      DNS:localhost, IP Address:127.0.0.1 sha256 Fingerprint=4C:2A:78:B6:98:F8:42:0C:34:D2:4A:B6:26:0C:2A:EF:C0:28:24:7D:FA:B3:95:29:E6:90:BC:9D:55:9A:E5:8E 
+keytool: Certificate was added to keystore
+keytool: Certificate was added to keystore
+sink pid 131161, ports file lines: 21
+== angus-mail 2.0.5 IMAP doc lines (source tag 2.0.5, saved in raw/) naming the imaps prefix
+28: * {@link org.eclipse.angus.mail.imap.IMAPStore#hasCapability IMAPStore hasCapability}
+80: * A connected IMAPStore maintains a pool of IMAP protocol objects for
+81: * use in communicating with the IMAP server. The IMAPStore will create
+84: * needed, the IMAPStore will provide them from the connection pool,
+95: * The connected IMAPStore object may or may not maintain a separate IMAP
+106: * {@link org.eclipse.angus.mail.imap.IMAPStore IMAPStore}, and the
+237: * Note that if you're using the "imaps" protocol to access IMAP over SSL,
+238: * all the properties would be named "mail.imaps.*".
+== java
+JAVA 21.0.12.1+1 | Arch Linux | OpenJDK 64-Bit Server VM
+SMTPTransport from file:/home/kiko/saas-products/kodeebo/production/session-state/cache/notifications-provider/jars/angus-mail-2.0.5.jar
+Session from file:/home/kiko/saas-products/kodeebo/production/session-state/cache/notifications-provider/jars/jakarta.mail-api-2.1.5.jar
+ports: 21 scenarios
+
+=== CASE 1: timeouts and watchdog (scaled for speed: connect 1000, read 1500, write 1500 ms; hard cap 12000 ms per send) ===
+[1a] sink: TLS ok, no 220 greeting
+    endMs=1730 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1a PASS - greeting stall ended 1730 ms after start (read timeout 1500)
+[1b] sink: TCP accepted, TLS handshake never answered
+    endMs=1504 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=0 lastServerResponse="null" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Could not connect to SMTP host: localhost, port: 40703")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1b PASS - handshake stall ended 1504 ms (connect 1000, read 1500)
+[1c] sink: dot received, no reply, connection held
+    endMs=1667 connectDoneMs=98 sendStartMs=161 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1c PASS - stall after the dot ended 1506 ms after sendMessage began (read timeout 1500)
+[1d] sink: 354 sent, then the sink stops reading a ~40 MB body
+    endMs=1776 connectDoneMs=87 sendStartMs=161 ok=false lastReturnCode=354 lastServerResponse="354 End data with <CR><LF>.<CR><LF>\n" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("IOException while sending message")
+      <- java.io.IOException ("Write timed out")
+      <- java.net.SocketException ("Socket closed")
+    classify -> AMBIGUOUS(I/O after DATA began)
+RESULT 1d PASS - blocked write ended 1615 ms after sendMessage began (write timeout 1500)
+[1e] CONTROL, no timeout properties, same greeting stall, cap 4000 ms
+    endMs=NOT ENDED at cap connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: -
+    classify -> n/a
+RESULT 1e PASS - without timeouts the send was still blocked at the 4000 ms cap (default is infinite)
+[1f] watchdog at 2000 ms calls Transport.close(); backstop read timeout 8000; sink: no greeting (blocked inside connect())
+    watchdog close() returned at 8063 ms, wdErr=null
+    endMs=8063 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1f FAIL - Transport.close() returned at 8063 ms; blocked connect() ended at 8063 ms (deadline 2000)
+[1g] watchdog at 2000 ms calls Transport.close(); backstop read timeout 8000; sink: no reply to the dot (blocked inside sendMessage())
+    watchdog close() returned at 8100 ms, wdErr=null
+    endMs=8100 connectDoneMs=88 sendStartMs=88 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1g FAIL - Transport.close() returned at 8100 ms; blocked sendMessage() ended at 8100 ms (deadline 2000)
+[1h] ALTERNATIVE watchdog: close the tracked socket (own SSLSocketFactory records sockets) at 2000 ms; sink: no reply to the dot; sockets tracked=2
+    watchdog returned at 2000 ms, wdErr=null
+    endMs=2000 connectDoneMs=90 sendStartMs=90 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketException ("Socket closed")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1h PASS - socket close at 2000 ms ended sendMessage() at 2000 ms
+[1i] ALTERNATIVE watchdog on a greeting stall (blocked in connect()); sockets tracked=2
+    watchdog returned at 2000 ms, wdErr=null
+    endMs=2001 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketException ("Socket closed")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 1i PASS - socket close at 2000 ms ended connect() at 2001 ms
+
+=== CASE 2: lost reply after the end-of-data dot, and failures before/after DATA began (read timeout 5000) ===
+[2a] sink: dot received, FIN, no reply
+    endMs=96 connectDoneMs=94 sendStartMs=94 ok=false lastReturnCode=-1 lastServerResponse="[EOF]" isConnectedAtFail=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("[EOF]") getReturnCode=-1 getCommand="." validSent=null validUnsent=[rcpt@example.test ] invalid=null
+    classify -> TRANSIENT(dot -1)
+RESULT 2a FAIL - afterDataBegan expected true, lastReturnCode=-1 says false; classify=TRANSIENT(dot -1)
+[2b] sink: dot received, RST, no reply
+    endMs=94 connectDoneMs=88 sendStartMs=89 ok=false lastReturnCode=0 lastServerResponse="" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Exception reading response")
+      <- java.net.SocketException ("Connection reset")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 2b FAIL - afterDataBegan expected true, lastReturnCode=0 says false; classify=TRANSIENT(I/O before DATA)
+[2c] sink: 354 sent then closed before the body
+    endMs=97 connectDoneMs=93 sendStartMs=94 ok=false lastReturnCode=-1 lastServerResponse="[EOF]" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Can't send command to SMTP host")
+      <- java.net.SocketException ("Broken pipe")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 2c FAIL - afterDataBegan expected true, lastReturnCode=-1 says false; classify=TRANSIENT(I/O before DATA)
+[2d] sink: closed on the DATA command, no 354
+    endMs=100 connectDoneMs=97 sendStartMs=98 ok=false lastReturnCode=-1 lastServerResponse="[EOF]" isConnectedAtFail=false
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("[EOF]") getReturnCode=-1 getCommand="DATA" validSent=null validUnsent=[rcpt@example.test ] invalid=null
+    classify -> TRANSIENT(data -1)
+RESULT 2d PASS - afterDataBegan expected false, lastReturnCode=-1 says false; classify=TRANSIENT(data -1)
+[2e] sink: closed on RCPT, no reply
+    endMs=100 connectDoneMs=99 sendStartMs=99 ok=false lastReturnCode=-1 lastServerResponse="[EOF]" isConnectedAtFail=false
+    exception: org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("[EOF]") getReturnCode=-1 getCommand="RCPT TO:<rcpt@example.test>" validSent=null validUnsent=null invalid=null
+    classify -> TRANSIENT(rcpt -1)
+RESULT 2e PASS - afterDataBegan expected false, lastReturnCode=-1 says false; classify=TRANSIENT(rcpt -1)
+
+=== CASE 3: Message-ID and envelope (sink ok_good) ===
+[3a] send ok=true
+    sink commands:
+      EVENT tcp accepted
+      EVENT tls TLSv1.3 TLS_AES_256_GCM_SHA384 cert=good
+      S: 220 sink.example.test ESMTP ready
+      C: EHLO mail.example.test
+      S: 250-sink.example.test | 250-AUTH PLAIN LOGIN | 250-8BITMIME | 250 SIZE 104857600
+      C: AUTH LOGIN <redacted>
+      S: 334 VXNlcm5hbWU6
+      C: <auth data redacted>
+      S: 334 UGFzc3dvcmQ6
+      C: <auth data redacted>
+      S: 235 2.7.0 Authentication successful
+      C: MAIL FROM:<bounces+t1.i1@example.test>
+      S: 250 2.1.0 OK
+      C: RCPT TO:<rcpt@example.test>
+      S: 250 2.1.5 OK
+      C: DATA
+      S: 354 End data with <CR><LF>.<CR><LF>
+      EVENT end-of-data dot received, body 265 bytes
+      S: 250 2.0.0 queued as TESTID1
+      C: QUIT
+      S: 221 2.0.0 bye
+    sink received header block:
+      Date: Thu, 22 Oct 2026 04:54:38 +0300 (EEST)
+      From: no-reply@example.test
+      To: rcpt@example.test
+      Message-ID: <item-i1.a1@example.test>
+      Subject: S13 id test
+      MIME-Version: 1.0
+      Content-Type: text/plain; charset=UTF-8
+      Content-Transfer-Encoding: 7bit
+RESULT 3a PASS - Message-ID headers on the wire=[<item-i1.a1@example.test>], expected exactly [<item-i1.a1@example.test>]
+RESULT 3b PASS - MAIL FROM is the VERP address from mail.smtps.from=true; header From stays no-reply@=true
+RESULT 3c PASS - RCPT commands for one recipient=1
+RESULT 3d PASS - EHLO name from mail.smtps.localhost seen as 'EHLO mail.example.test'=true
+[3e] CONTROL, plain MimeMessage: generated Message-ID=<16576322.0.1792634078741@Keko>
+RESULT 3e PASS - without the override the library generates its own ID: <16576322.0.1792634078741@Keko>
+[3f] EXTRA: Subject containing CRLF then 'Bcc:' ok=true
+    header block received:
+      Date: Thu, 22 Oct 2026 04:54:38 +0300 (EEST)
+      From: no-reply@example.test
+      To: rcpt@example.test
+      Message-ID: <item-i1.a1@example.test>
+      Subject: Hi
+       Bcc: evil@example.test
+      MIME-Version: 1.0
+      Content-Type: text/plain; charset=UTF-8
+      Content-Transfer-Encoding: 7bit
+RESULT 3f PASS - CRLF in Subject sent; a separate Bcc header line on the wire=false
+
+=== CASE 4: reply classification (Decision 3 table) ===
+[4a] sink: mail_550
+    endMs=101 connectDoneMs=99 sendStartMs=99 ok=false lastReturnCode=550 lastServerResponse="550 5.7.1 sender refused\n" isConnectedAtFail=true
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("550 5.7.1 sender refused\n") getReturnCode=550 getCommand="MAIL FROM:<bounces+t1.i1@example.test>" validSent=null validUnsent=[rcpt@example.test ] invalid=null
+      <- org.eclipse.angus.mail.smtp.SMTPSenderFailedException ("550 5.7.1 sender refused\n") getReturnCode=550 getCommand="MAIL FROM:<bounces+t1.i1@example.test>" validSent=null validUnsent=null invalid=null
+    classify -> CONFIG_FAULT(mail from 550)
+RESULT 4a PASS - mail_550 -> CONFIG_FAULT(mail from 550) (expected prefix CONFIG_FAULT)
+[4b] sink: rcpt_552
+    endMs=92 connectDoneMs=90 sendStartMs=91 ok=false lastReturnCode=552 lastServerResponse="552 5.2.2 mailbox full\n" isConnectedAtFail=true
+    exception: jakarta.mail.SendFailedException ("Invalid Addresses") validSent=null validUnsent=[rcpt@example.test ] invalid=[]
+      <- org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("552 5.2.2 mailbox full\n") getReturnCode=552 getCommand="RCPT TO:<rcpt@example.test>" validSent=null validUnsent=null invalid=null
+    classify -> REJECTED(recipient 552)
+    (F123 check) 552 on RCPT lands in validUnsent: true
+RESULT 4b PASS - rcpt_552 -> REJECTED(recipient 552) (expected prefix REJECTED(recipient); address in the validUnsent list=true
+[4c] sink: rcpt_550
+    endMs=97 connectDoneMs=95 sendStartMs=96 ok=false lastReturnCode=550 lastServerResponse="550 5.1.1 no such user\n" isConnectedAtFail=true
+    exception: jakarta.mail.SendFailedException ("Invalid Addresses") validSent=null validUnsent=[] invalid=[rcpt@example.test ]
+      <- org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("550 5.1.1 no such user\n") getReturnCode=550 getCommand="RCPT TO:<rcpt@example.test>" validSent=null validUnsent=null invalid=null
+    classify -> REJECTED(recipient 550)
+RESULT 4c PASS - rcpt_550 -> REJECTED(recipient 550) (expected prefix REJECTED(recipient)
+[4d] sink: rcpt_450
+    endMs=91 connectDoneMs=90 sendStartMs=90 ok=false lastReturnCode=450 lastServerResponse="450 4.2.0 mailbox busy\n" isConnectedAtFail=true
+    exception: jakarta.mail.SendFailedException ("Invalid Addresses") validSent=null validUnsent=[rcpt@example.test ] invalid=[]
+      <- org.eclipse.angus.mail.smtp.SMTPAddressFailedException ("450 4.2.0 mailbox busy\n") getReturnCode=450 getCommand="RCPT TO:<rcpt@example.test>" validSent=null validUnsent=null invalid=null
+    classify -> TRANSIENT(rcpt 450)
+RESULT 4d PASS - rcpt_450 -> TRANSIENT(rcpt 450) (expected prefix TRANSIENT)
+[4e] sink: auth_535
+    endMs=87 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=535 lastServerResponse="535 5.7.8 Authentication credentials invalid\n" isConnectedAtFail=false
+    exception: jakarta.mail.AuthenticationFailedException ("535 5.7.8 Authentication credentials invalid\n")
+    classify -> CONFIG_FAULT(auth)
+RESULT 4e PASS - auth_535 -> CONFIG_FAULT(auth) (expected prefix CONFIG_FAULT(auth))
+[4f] sink: data_cmd_554
+    endMs=91 connectDoneMs=88 sendStartMs=89 ok=false lastReturnCode=554 lastServerResponse="554 5.5.1 no valid recipients\n" isConnectedAtFail=true
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("554 5.5.1 no valid recipients\n") getReturnCode=554 getCommand="DATA" validSent=null validUnsent=[rcpt@example.test ] invalid=null
+    classify -> REJECTED(message, to DATA 554)
+RESULT 4f PASS - data_cmd_554 -> REJECTED(message, to DATA 554) (expected prefix REJECTED(message)
+[4g] sink: dot_451
+    endMs=100 connectDoneMs=94 sendStartMs=96 ok=false lastReturnCode=451 lastServerResponse="451 4.3.0 local error in processing\n" isConnectedAtFail=true
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("451 4.3.0 local error in processing\n") getReturnCode=451 getCommand="." validSent=null validUnsent=[rcpt@example.test ] invalid=null
+    classify -> TRANSIENT(dot 451)
+RESULT 4g PASS - dot_451 -> TRANSIENT(dot 451) (expected prefix TRANSIENT(dot 451))
+[4h] sink: dot_554
+    endMs=99 connectDoneMs=93 sendStartMs=94 ok=false lastReturnCode=554 lastServerResponse="554 5.6.0 message rejected\n" isConnectedAtFail=true
+    exception: org.eclipse.angus.mail.smtp.SMTPSendFailedException ("554 5.6.0 message rejected\n") getReturnCode=554 getCommand="." validSent=null validUnsent=[rcpt@example.test ] invalid=null
+    classify -> REJECTED(message, to dot 554)
+RESULT 4h PASS - dot_554 -> REJECTED(message, to dot 554) (expected prefix REJECTED(message, to dot 554))
+
+=== CASE 5: implicit TLS with identity check (host 'localhost'; JVM trust store holds the 'good' and 'wrong' certificates, not 'untrusted'; no ssl.trust set) ===
+[5a] certificate for localhost, trusted
+    endMs=93 connectDoneMs=90 sendStartMs=91 ok=true lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: -
+    classify -> ACCEPTED
+RESULT 5a PASS - matching name + trusted cert: ok=true
+[5b] certificate issued for other.example.test, in the trust store, connecting to 'localhost'
+    endMs=8 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=0 lastServerResponse="null" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Could not connect to SMTP host: localhost, port: 42917")
+      <- javax.net.ssl.SSLHandshakeException ("(certificate_unknown) No subject alternative DNS name matching localhost found.")
+      <- java.security.cert.CertificateException ("No subject alternative DNS name matching localhost found.")
+    classify -> CONFIG_FAULT(tls)
+RESULT 5b PASS - wrong-name certificate refused=true; CONFIG_FAULT(tls)
+[5c] certificate for localhost but not in the trust store
+    endMs=9 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=0 lastServerResponse="null" isConnectedAtFail=false
+    exception: jakarta.mail.MessagingException ("Could not connect to SMTP host: localhost, port: 41897")
+      <- javax.net.ssl.SSLHandshakeException ("(certificate_unknown) PKIX path validation failed: java.security.cert.CertPathValidatorException: Path does not chain with any of the trust anchors")
+      <- sun.security.validator.ValidatorException ("PKIX path validation failed: java.security.cert.CertPathValidatorException: Path does not chain with any of the trust anchors")
+      <- java.security.cert.CertPathValidatorException ("Path does not chain with any of the trust anchors")
+    classify -> CONFIG_FAULT(tls)
+RESULT 5c PASS - untrusted certificate refused=true; CONFIG_FAULT(tls)
+[5d] CONTROL: same wrong-name certificate with ssl.checkserveridentity=false
+    endMs=91 connectDoneMs=87 sendStartMs=88 ok=true lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: -
+    classify -> ACCEPTED
+RESULT 5d PASS - with the identity check off the wrong-name certificate is accepted: ok=true (shows the property is what refuses 5b)
+
+=== CASE 6: IMAP (imaps) timeouts (connect 1000, read 1500, write 1500; cap 12000) ===
+[6a] imaps, TLS ok, no greeting
+    endMs=1551 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: jakarta.mail.MessagingException ("Read timed out")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 6a PASS - no-greeting stall ended 1551 ms (read timeout 1500)
+[6b] imaps, greeting then silence
+    endMs=1591 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: jakarta.mail.MessagingException ("* BYE Jakarta Mail Exception: java.net.SocketTimeoutException: Read timed out")
+      <- org.eclipse.angus.mail.iap.ConnectionException ("* BYE Jakarta Mail Exception: java.net.SocketTimeoutException: Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 6b PASS - post-greeting stall ended 1591 ms (read timeout 1500)
+[6c] imaps, TLS handshake never answered
+    endMs=1505 connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: jakarta.mail.MessagingException ("Read timed out")
+      <- java.net.SocketTimeoutException ("Read timed out")
+    classify -> TRANSIENT(I/O before DATA)
+RESULT 6c PASS - handshake stall ended 1505 ms
+[6d] CONTROL no timeout properties, cap 4000
+    endMs=NOT ENDED at cap connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: -
+    classify -> n/a
+RESULT 6d PASS - without timeouts the IMAP connect was still blocked at the 4000 ms cap
+[6e] CONTROL timeouts set under 'mail.imap.' (not 'mail.imaps.') with protocol imaps, cap 4000
+    endMs=NOT ENDED at cap connectDoneMs=-1 sendStartMs=-1 ok=false lastReturnCode=null lastServerResponse="null" isConnectedAtFail=null
+    exception: -
+    classify -> n/a
+RESULT 6e PASS - informational: timeouts under the mail.imap. prefix with the imaps protocol did NOT apply (still blocked at 4000 ms)
+RESULT 7 PASS - the whole harness ran to its end on JDK 21.0.12.1+1
+
+=== SUMMARY: 33 PASS, 5 FAIL of 38 ===
+RESULT 1a PASS - greeting stall ended 1730 ms after start (read timeout 1500)
+RESULT 1b PASS - handshake stall ended 1504 ms (connect 1000, read 1500)
+RESULT 1c PASS - stall after the dot ended 1506 ms after sendMessage began (read timeout 1500)
+RESULT 1d PASS - blocked write ended 1615 ms after sendMessage began (write timeout 1500)
+RESULT 1e PASS - without timeouts the send was still blocked at the 4000 ms cap (default is infinite)
+RESULT 1f FAIL - Transport.close() returned at 8063 ms; blocked connect() ended at 8063 ms (deadline 2000)
+RESULT 1g FAIL - Transport.close() returned at 8100 ms; blocked sendMessage() ended at 8100 ms (deadline 2000)
+RESULT 1h PASS - socket close at 2000 ms ended sendMessage() at 2000 ms
+RESULT 1i PASS - socket close at 2000 ms ended connect() at 2001 ms
+RESULT 2a FAIL - afterDataBegan expected true, lastReturnCode=-1 says false; classify=TRANSIENT(dot -1)
+RESULT 2b FAIL - afterDataBegan expected true, lastReturnCode=0 says false; classify=TRANSIENT(I/O before DATA)
+RESULT 2c FAIL - afterDataBegan expected true, lastReturnCode=-1 says false; classify=TRANSIENT(I/O before DATA)
+RESULT 2d PASS - afterDataBegan expected false, lastReturnCode=-1 says false; classify=TRANSIENT(data -1)
+RESULT 2e PASS - afterDataBegan expected false, lastReturnCode=-1 says false; classify=TRANSIENT(rcpt -1)
+RESULT 3a PASS - Message-ID headers on the wire=[<item-i1.a1@example.test>], expected exactly [<item-i1.a1@example.test>]
+RESULT 3b PASS - MAIL FROM is the VERP address from mail.smtps.from=true; header From stays no-reply@=true
+RESULT 3c PASS - RCPT commands for one recipient=1
+RESULT 3d PASS - EHLO name from mail.smtps.localhost seen as 'EHLO mail.example.test'=true
+RESULT 3e PASS - without the override the library generates its own ID: <16576322.0.1792634078741@Keko>
+RESULT 3f PASS - CRLF in Subject sent; a separate Bcc header line on the wire=false
+RESULT 4a PASS - mail_550 -> CONFIG_FAULT(mail from 550) (expected prefix CONFIG_FAULT)
+RESULT 4b PASS - rcpt_552 -> REJECTED(recipient 552) (expected prefix REJECTED(recipient); address in the validUnsent list=true
+RESULT 4c PASS - rcpt_550 -> REJECTED(recipient 550) (expected prefix REJECTED(recipient)
+RESULT 4d PASS - rcpt_450 -> TRANSIENT(rcpt 450) (expected prefix TRANSIENT)
+RESULT 4e PASS - auth_535 -> CONFIG_FAULT(auth) (expected prefix CONFIG_FAULT(auth))
+RESULT 4f PASS - data_cmd_554 -> REJECTED(message, to DATA 554) (expected prefix REJECTED(message)
+RESULT 4g PASS - dot_451 -> TRANSIENT(dot 451) (expected prefix TRANSIENT(dot 451))
+RESULT 4h PASS - dot_554 -> REJECTED(message, to dot 554) (expected prefix REJECTED(message, to dot 554))
+RESULT 5a PASS - matching name + trusted cert: ok=true
+RESULT 5b PASS - wrong-name certificate refused=true; CONFIG_FAULT(tls)
+RESULT 5c PASS - untrusted certificate refused=true; CONFIG_FAULT(tls)
+RESULT 5d PASS - with the identity check off the wrong-name certificate is accepted: ok=true (shows the property is what refuses 5b)
+RESULT 6a PASS - no-greeting stall ended 1551 ms (read timeout 1500)
+RESULT 6b PASS - post-greeting stall ended 1591 ms (read timeout 1500)
+RESULT 6c PASS - handshake stall ended 1505 ms
+RESULT 6d PASS - without timeouts the IMAP connect was still blocked at the 4000 ms cap
+RESULT 6e PASS - informational: timeouts under the mail.imap. prefix with the imaps protocol did NOT apply (still blocked at 4000 ms)
+RESULT 7 PASS - the whole harness ran to its end on JDK 21.0.12.1+1
+java exit: 0
+sink files: 46
+keys and certificates deleted: yes

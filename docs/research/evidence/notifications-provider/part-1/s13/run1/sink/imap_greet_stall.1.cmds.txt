@@ -1,0 +1,5 @@
++0.000 EVENT tcp accepted
++0.047 EVENT tls TLSv1.3 TLS_AES_256_GCM_SHA384 cert=good
++0.047 S: * OK [CAPABILITY IMAP4rev1 AUTH=PLAIN] sink ready
++0.047 EVENT IMAP greeting sent; the sink now stays silent
++1.591 EVENT client closed (EOF)

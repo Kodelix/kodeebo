@@ -1,0 +1,12 @@
++0.000 EVENT tcp accepted
++0.045 EVENT tls TLSv1.3 TLS_AES_256_GCM_SHA384 cert=good
++0.045 S: 220 sink.example.test ESMTP ready
++0.086 C: EHLO mail.example.test
++0.086 S: 250-sink.example.test | 250-AUTH PLAIN LOGIN | 250-8BITMIME | 250 SIZE 104857600
++0.086 C: AUTH LOGIN <redacted>
++0.086 S: 334 VXNlcm5hbWU6
++0.086 C: <auth data redacted>
++0.086 S: 334 UGFzc3dvcmQ6
++0.086 C: <auth data redacted>
++0.086 S: 535 5.7.8 Authentication credentials invalid
++0.086 EVENT client closed (EOF)
