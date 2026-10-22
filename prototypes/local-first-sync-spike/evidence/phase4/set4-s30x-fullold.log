@@ -1,0 +1,3 @@
+phase 4 S301/S302 clocks and boot markers, commit 4718d33
+  rep  1 fullold   off did not power off s back 0.8 s wall +None tick +None qpc +None unbiased +None boot_from_tick changed False BootId [None, None] volatile survived True event27 
+S301/S302: done

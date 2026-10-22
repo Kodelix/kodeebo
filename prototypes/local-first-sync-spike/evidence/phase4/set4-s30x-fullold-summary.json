@@ -1,0 +1,36 @@
+{
+ "harness_commit": "4718d33",
+ "setup": {
+  "powercfg_a_before": "ssh: connect to host 192.168.122.208 port 22: Connection refused\n",
+  "powercfg_a_after": "ssh: connect to host 192.168.122.208 port 22: Connection refused\n"
+ },
+ "rows": [
+  {
+   "rep": 1,
+   "transition": "fullold",
+   "command": "shutdown.exe /s /full /t 0",
+   "command_output": "ssh: connect to host 192.168.122.208 port 22: Connection refused\n",
+   "off_s": "did not power off",
+   "back_s": 0.8,
+   "wall_delta": null,
+   "tick_delta": null,
+   "qpc_delta": null,
+   "unbiased_delta": null,
+   "interrupt_delta": null,
+   "py_monotonic_delta": null,
+   "boot_from_tick_changed": false,
+   "boot_id_before_after": [
+    null,
+    null
+   ],
+   "volatile_marker_survived": true,
+   "boot_event_27_after": null,
+   "before": {
+    "error": "ssh: connect to host 192.168.122.208 port 22: Connection refused\n"
+   },
+   "after": {
+    "error": "C:\\Users\\cashier\\p4\\py\\python.exe: can't open file 'C:\\\\Users\\\\cashier\\\\p4\\\\clockprobe.py': [Errno 2] No such file or directory\n"
+   }
+  }
+ ]
+}

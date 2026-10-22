@@ -1,0 +1,26 @@
+--- start 2026-10-21 19:54:37 7e1a2d3 dirty=[0]
+Domain snapshot clean-ssh2 reverted
+
+
+19:54:54 p4 up: reverted clean-ssh2, booted, throttled (100 IOPS + 80 MiB/s)
+install 19:56:55
+sc24c-thread-g5 rc=0 20:04:11
+sc24c-counter-g5 rc=0 20:10:10
+sc24c-counter-g1 rc=0 23:16:34
+sc24c-thread-g1 INTERRUPTED (runner stopped by systemd 2026-10-21 23:46; numbers NOT used)
+--- resume (set 4b) 2026-10-22 15:32:13 4718d33 dirty=[0]
+Domain snapshot clean-ssh2 reverted
+
+
+15:32:29 p4 up: reverted clean-ssh2, booted, throttled (100 IOPS + 80 MiB/s)
+install 15:34:45
+s104 rc=1 15:37:40
+s30x-fullold rc=0 15:53:46
+s30x-full rc=0 16:02:34
+boot-1 rc=0 16:36:46
+boot-2 rc=0 17:10:59
+boot-3 rc=0 17:45:13
+Domain snapshot clean-ssh2 reverted
+
+17:46:13 p4 down: shut off, reverted clean-ssh2
+DONE 2026-10-22 17:46:13

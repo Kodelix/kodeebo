@@ -1,0 +1,22 @@
+phase 4 S301/S302 clocks and boot markers, commit 4718d33
+  rep  1 full      off 30.3 s back 8.6 s wall +135.989 tick +-1036.0 qpc +-1036.008 unbiased +-1036.003 boot_from_tick changed True BootId [7, 8] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  2 full      off 30.2 s back 8.7 s wall +105.447 tick +-0.563 qpc +-0.558 unbiased +-0.564 boot_from_tick changed True BootId [8, 9] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  3 full      off 30.3 s back 8.6 s wall +83.566 tick +-0.437 qpc +-0.429 unbiased +-0.426 boot_from_tick changed True BootId [9, 10] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  4 full      off 30.3 s back 24.6 s wall +104.909 tick +15.922 qpc +15.905 unbiased +15.914 boot_from_tick changed True BootId [10, 11] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+  rep  5 full      off 30.3 s back 8.6 s wall +90.74 tick +-16.265 qpc +-16.247 unbiased +-16.264 boot_from_tick changed True BootId [11, 12] volatile survived False event27 Access is denied.
+
+Failed to open event query.
+Access is denied.
+S301/S302: done

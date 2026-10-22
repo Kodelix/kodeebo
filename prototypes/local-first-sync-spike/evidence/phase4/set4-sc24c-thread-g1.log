@@ -1,0 +1,2 @@
+phase 4 SC-24 option 4 (background check), commit 15d27ad
+  rep 1 n300000  ready 26481.3 ms  background copying copy None s check None s (elapsed 1200.8 s)  sales {'n': 1010, 'p50': 162.27, 'p95': 307.44, 'max': 3576.77}

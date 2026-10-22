@@ -1997,7 +1997,7 @@ Evidence: `evidence/phase4/set2-*` (runner `set2-runner.sh`, status `set2.status
 | Hibernate (`shutdown /h`) | 10 | did not shut down | — | — |
 
 - **The registry `BootId` counter rose by exactly one at every boot measured** and did not move on any clock edit (TS-07b). A boot time computed as wall clock minus uptime is not reliable on its own: it moved once without a boot, from rounding.
-- **"PC was off" is NOT verified for a true full shutdown.** It holds here for a restart and a hard power-off only.
+- **"PC was off" is NOT verified for a true full shutdown.** It holds here for a restart and a hard power-off only. **Update (set 4, 2026-10-22): verified** — 5 plain `shutdown /s /t 0` (exit code 0, the VM powered off, 30 s off): `BootId` +1 every time, the in-memory marker lost every time (see "Leg set 4" below).
   - The `/full` leg did not shut the VM down in any round. Likely cause, to confirm after set 3: Microsoft's documented `shutdown` syntax has no `/full` parameter, and a plain `shutdown /s` is already a full shutdown ("Full shutdown is the default when you use Shutdown.exe", [KB 3211190](https://learn.microsoft.com/en-us/troubleshoot/windows-client/setup-upgrade-and-drivers/fast-startup-causes-system-hibernation-shutdown-fail); [shutdown command reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/shutdown), both fetched 2026-10-20). The harness did not record the command's error output, so this is not yet established.
   - The `/hybrid` leg asks for a Fast Startup shutdown, but the VM's firmware supports neither hibernation nor Fast Startup (`powercfg /a`), so what it actually did is not established either.
   - After set 3: rerun the leg with `shutdown /s /t 0` and keep the command's output.
@@ -2120,3 +2120,33 @@ Evidence: `evidence/phase4/set4-linuxcheck-*`; the tree was `1ab30a5` plus the s
 - **The trade-off:** on an idle counter fix 4 finishes later, because it copies only in short idle slices on the counter's own thread. Set 4 measures both on the 300k store.
 - **The S104 configuration under the phase 1 kill matrix: PASS** (truncate / slots, `START_CHECK=background`, `BG_MODE=counter`).
 - **Requirement for the counter-shell spec (founder, 2026-10-21):** fix 4 reported the damaged page as `CorruptError: not an error`, which is SQLite's wording for that path. Such text must never reach a cashier or the owner. A detected store fault is reported in the product's own words: what happened, that sales have stopped, and what to do next. SQLite's text goes only to the diagnostic log.
+
+#### Leg set 4 (2026-10-21 19:54 – 23:46, interrupted; resumed as set 4b 2026-10-22 15:32 – 17:46)
+
+Evidence: `evidence/phase4/set4-*`, `set4b-runner.sh`, `set4.status`. Harness `7e1a2d3` (set 4) and `4718d33` (set 4b, whose spike folder equals `7e1a2d3`'s); clean tree both times. The runner was stopped by systemd at 23:46 when the host went down; the VM was then used by the catalogue session (S42) and left on `clean-ssh2`.
+
+**Fix 4 against today's copy, 300k store, cold (sc24c; restarts counted):**
+
+| Copy | Sale profile | Runs | Restarts | Check | Sales during the check |
+|---|---|---|---|---|---|
+| today's (own connection) | every 5 s | 2 | **9 / 1** | ok: copy 82.3 / 29.7 s + check 0.6 / 0.5 s | 12 / 4 sales; p50 1.58 / 2.66 s; **max 3.34 / 5.41 s** |
+| fix 4 (counter's connection) | every 5 s | 2 | 0 / 0 | ok: copy 26.7 / 28.1 s + check 0.9 / 1.2 s | 6 / 6 sales; p50 347 / 449 ms; max 741 / 842 ms |
+| fix 4 | every 1 s | 2 | 0 / 0 | **never finished**: 73 % of the pages (25,728 / 35,176 and 26,176 / 35,915) in the 90-minute cap | 4,296 / 4,115 sales; p50 163 / 164 ms; p95 707 / 776 ms; **max 6,310 / 11,117 ms** |
+| today's | every 1 s | — | — | **INTERRUPTED** (host down at 23:46): not used | — |
+| fix 4, 30k store | every 1 s | — | — | not run | — |
+
+- **The restart cause is confirmed on Windows:** today's copy restarted with the sales and broke the 3 s ceiling (3.3 s, 5.4 s); fix 4 never restarted and finished the check in 27–28 s with a sale every 5 s.
+- **Fix 4 fails a sale every second:** with its 1 s idle gate a sale every second leaves the copy almost no idle time, so the check never finishes, and single sales took 6.3 s and 11.1 s. The run kept only aggregate timings, so the slow sales cannot be split (queue wait, copy step, Windows) from this data.
+- **Founder (2026-10-22), option A:** no single till sells once a second (the estimate is one sale every ~18 s on average), so the busy profile is replaced by a rush (bursts of 5–10 sales 2–3 s apart, then 30–120 s of quiet); fix 4 is measured under it with today's gate (1 s, 64 pages) and a short one (0.2 s, 16 pages), and the sale-every-5-s case again with at least 200 sales; every sale over 500 ms gets its split. Pass: café sale p95 ≤ 500 ms, nothing over 3 s, every check finishes within the quiet periods.
+
+**S104 on truncate / slots: did not start (harness fault).** Before S104 the harness restarts the VM (`prep_crash`); it waited a fixed 40 s after `shutdown /r` and took the first ssh answer as the new boot. On the throttled disk the old boot was still answering, so the tunnel was opened on a VM that then went down ("reverse tunnel did not carry traffic after retries"). No cut was made, no store touched. Fixed for set 5: every restart waits until `BootId` changes (hard 15-minute limit, both values logged).
+
+**S30x, the shutdown diagnosis:**
+- **`shutdown /s /t 0`, 5 rounds: PASS.** Exit code 0, the VM powered off every time; `BootId` +1 every time (7→8 … 11→12), the in-memory marker lost every time. So **"PC was off" is verified for a true full shutdown** (`shutdown.exe /s` is a full shutdown by default, KB 3211190; Shut down from the Start menu with Fast Startup on is the pilot-PC check).
+- **`/full` once: INVALID.** It ran while the VM was still restarting from the failed S104 start, so the command never reached Windows ("Connection refused"). Rerun in set 5.
+
+**First 30 minutes after a cold boot (boot watch × 3): timings INVALID — the disk was not throttled.** The S30x power cycles start a new qemu process, which does not carry the live throttle, and nothing re-applied it (libvirt read back 0 IOPS and 0 bytes/s afterwards). Sales ran at p50 15–19 ms, max 204 ms: not the HDD-class PC. Set 5 re-applies the throttle after every start and every timing leg reads it back before measuring. What remains usable:
+- **Write volume (does not depend on disk speed):** the counter process wrote about 6.1 MB in 30 minutes (about 12 MB an hour) at a sale every 30 s and the one-minute heartbeat, read as administrator.
+- **What Windows ran after boot (indicative, unthrottled):** Defender's engine (`msmpeng`) did most of the disk I/O in boot 1, `svchost` in boot 2; no Defender scan was flagged as running; `TrustedInstaller` ran for about the first 4 minutes; scheduled tasks seen: Windows Update `ScanForUpdates`, `ProgramDataUpdater`, Edge Update, Windows Error Reporting `QueueReporting`.
+- **The boot trace (boot 3) never reached the host,** and the harness did not record why; set 5 keeps every trace step's output and fails the leg if the export is missing.
+- **Harness bug:** the write-volume series recorded one reading every 0.2 s instead of one every 10 sales (it compared a time with a sale count); the readings themselves are right. Fixed for set 5.

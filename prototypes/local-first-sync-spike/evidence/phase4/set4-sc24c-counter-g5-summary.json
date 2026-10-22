@@ -1,0 +1,130 @@
+{
+ "harness_commit": "7e1a2d3",
+ "gap_s": 5.0,
+ "bg_mode": "counter",
+ "tag": "s4-counter-g5",
+ "rows": [
+  {
+   "rep": 1,
+   "store": "n300000",
+   "boot_s": 40.3,
+   "ready_ms_host": 14747.8,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 34465,
+    "total": 34465,
+    "copy_s": 26.7,
+    "check_s": 0.9,
+    "mode": "counter",
+    "restarts": 0,
+    "ms": {
+     "total": 0.01
+    }
+   },
+   "bg_elapsed_s": 27.5,
+   "sales": 6,
+   "sale_total_ms": {
+    "n": 6,
+    "p50": 346.55,
+    "p95": 741.32,
+    "max": 741.32
+   },
+   "bg_trace": [
+    {
+     "t": 0.5,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792601952 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792602196 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792602391 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792601952 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792602196 recorded on the device but missing on the server"
+    ]
+   ]
+  },
+  {
+   "rep": 2,
+   "store": "n300000",
+   "boot_s": 40.3,
+   "ready_ms_host": 14457.7,
+   "ready_reply_ok": true,
+   "bg_final": {
+    "ok": true,
+    "op": "bg_state",
+    "wanted": true,
+    "state": "ok",
+    "fault": null,
+    "pages": 34465,
+    "total": 34465,
+    "copy_s": 28.1,
+    "check_s": 1.2,
+    "mode": "counter",
+    "restarts": 0,
+    "ms": {
+     "total": 0.02
+    }
+   },
+   "bg_elapsed_s": 28.0,
+   "sales": 6,
+   "sale_total_ms": {
+    "n": 6,
+    "p50": 449.26,
+    "p95": 842.41,
+    "max": 842.41
+   },
+   "bg_trace": [
+    {
+     "t": 0.5,
+     "state": "copying",
+     "pages": 0,
+     "total": null
+    }
+   ],
+   "violations": [
+    [
+     "I1",
+     "b0-1792601952 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792602196 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792602391 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b0-1792602568 recorded on the device but missing on the server"
+    ],
+    [
+     "I1",
+     "b1-1792601952 recorded on the device but missing on the server"
+    ]
+   ]
+  }
+ ]
+}

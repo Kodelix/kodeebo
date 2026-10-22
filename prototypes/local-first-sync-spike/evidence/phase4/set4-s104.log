@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 1080, in <module>
+    s104(int(sys.argv[2]), int(sys.argv[3]), *(sys.argv[4:9]))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 229, in s104
+    prep_crash()
+    ~~~~~~~~~~^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 215, in prep_crash
+    tunnel()
+    ~~~~~~^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 68, in tunnel
+    raise RuntimeError("reverse tunnel did not carry traffic after retries")
+RuntimeError: reverse tunnel did not carry traffic after retries

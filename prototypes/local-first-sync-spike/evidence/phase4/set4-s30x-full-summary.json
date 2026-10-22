@@ -1,0 +1,369 @@
+{
+ "harness_commit": "4718d33",
+ "setup": {
+  "powercfg_a_before": "The following sleep states are not available on this system:\n    Standby (S1)\n\tThe system firmware does not support this standby state.\n\tAn internal system component has disabled this standby state.\n\t\tGraphics\n\n    Standby (S2)\n\tThe system firmware does not support this standby state.\n\tAn internal system component has disabled this standby state.\n\t\tGraphics\n\n    Standby (S3)\n\tThe system firmware does not support this standby state.\n\tAn internal system component has disabled this standby state.\n\t\tGraphics\n\n    Hibernate\n\tThe system firmware does not support hibernation.\n\n    Standby (S0 Low Power Idle)\n\tThe system firmware does not support this standby state.\n\n    Hybrid Sleep\n\tStandby (S3) is not available.\n\tHibernation is not available.\n\n    Fast Startup\n\tHibernation is not available.\n\n",
+  "powercfg_a_after": "The following sleep states are not available on this system:\n    Standby (S1)\n\tThe system firmware does not support this standby state.\n\tAn internal system component has disabled this standby state.\n\t\tGraphics\n\n    Standby (S2)\n\tThe system firmware does not support this standby state.\n\tAn internal system component has disabled this standby state.\n\t\tGraphics\n\n    Standby (S3)\n\tThe system firmware does not support this standby state.\n\tAn internal system component has disabled this standby state.\n\t\tGraphics\n\n    Hibernate\n\tThe system firmware does not support hibernation.\n\n    Standby (S0 Low Power Idle)\n\tThe system firmware does not support this standby state.\n\n    Hybrid Sleep\n\tStandby (S3) is not available.\n\tHibernation is not available.\n\n    Fast Startup\n\tHibernation is not available.\n\n"
+ },
+ "rows": [
+  {
+   "rep": 1,
+   "transition": "full",
+   "command": "shutdown.exe /s /t 0",
+   "command_output": "rc=0\n\n",
+   "off_s": 30.3,
+   "back_s": 8.6,
+   "wall_delta": 135.989,
+   "tick_delta": -1036.0,
+   "qpc_delta": -1036.008,
+   "unbiased_delta": -1036.003,
+   "interrupt_delta": -1036.003,
+   "py_monotonic_delta": -1036.008,
+   "boot_from_tick_changed": true,
+   "boot_id_before_after": [
+    7,
+    8
+   ],
+   "volatile_marker_survived": false,
+   "boot_event_27_after": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "before": {
+    "wall": 1792709631.827,
+    "tick_s": 1062.406,
+    "qpc_s": 1062.4517112,
+    "unbiased_s": 1062.412404,
+    "interrupt_s": 1062.412404,
+    "py_monotonic": 1062.451755,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792708569,
+    "boot_id": 7,
+    "volatile_marker": null,
+    "volatile_marker_set": "ed912d673959",
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   },
+   "after": {
+    "wall": 1792709767.816,
+    "tick_s": 26.406,
+    "qpc_s": 26.4439764,
+    "unbiased_s": 26.4089927,
+    "interrupt_s": 26.4089927,
+    "py_monotonic": 26.4440325,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792709741,
+    "boot_id": 8,
+    "volatile_marker": null,
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   }
+  },
+  {
+   "rep": 2,
+   "transition": "full",
+   "command": "shutdown.exe /s /t 0",
+   "command_output": "rc=0\n\n",
+   "off_s": 30.2,
+   "back_s": 8.7,
+   "wall_delta": 105.447,
+   "tick_delta": -0.563,
+   "qpc_delta": -0.558,
+   "unbiased_delta": -0.564,
+   "interrupt_delta": -0.564,
+   "py_monotonic_delta": -0.558,
+   "boot_from_tick_changed": true,
+   "boot_id_before_after": [
+    8,
+    9
+   ],
+   "volatile_marker_survived": false,
+   "boot_event_27_after": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "before": {
+    "wall": 1792709768.157,
+    "tick_s": 26.75,
+    "qpc_s": 26.7845434,
+    "unbiased_s": 26.7526845,
+    "interrupt_s": 26.7526845,
+    "py_monotonic": 26.7845743,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792709741,
+    "boot_id": 8,
+    "volatile_marker": null,
+    "volatile_marker_set": "76e750b5cfbd",
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   },
+   "after": {
+    "wall": 1792709873.604,
+    "tick_s": 26.187,
+    "qpc_s": 26.2268692,
+    "unbiased_s": 26.1890969,
+    "interrupt_s": 26.1890969,
+    "py_monotonic": 26.2269048,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792709847,
+    "boot_id": 9,
+    "volatile_marker": null,
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   }
+  },
+  {
+   "rep": 3,
+   "transition": "full",
+   "command": "shutdown.exe /s /t 0",
+   "command_output": "rc=0\n\n",
+   "off_s": 30.3,
+   "back_s": 8.6,
+   "wall_delta": 83.566,
+   "tick_delta": -0.437,
+   "qpc_delta": -0.429,
+   "unbiased_delta": -0.426,
+   "interrupt_delta": -0.426,
+   "py_monotonic_delta": -0.429,
+   "boot_from_tick_changed": true,
+   "boot_id_before_after": [
+    9,
+    10
+   ],
+   "volatile_marker_survived": false,
+   "boot_event_27_after": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "before": {
+    "wall": 1792709873.883,
+    "tick_s": 26.468,
+    "qpc_s": 26.5061748,
+    "unbiased_s": 26.4703479,
+    "interrupt_s": 26.4703479,
+    "py_monotonic": 26.5062055,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792709847,
+    "boot_id": 9,
+    "volatile_marker": null,
+    "volatile_marker_set": "093cc59a4aa1",
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   },
+   "after": {
+    "wall": 1792709957.449,
+    "tick_s": 26.031,
+    "qpc_s": 26.0774495,
+    "unbiased_s": 26.0447082,
+    "interrupt_s": 26.0447082,
+    "py_monotonic": 26.0774886,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792709931,
+    "boot_id": 10,
+    "volatile_marker": null,
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   }
+  },
+  {
+   "rep": 4,
+   "transition": "full",
+   "command": "shutdown.exe /s /t 0",
+   "command_output": "rc=0\n\n",
+   "off_s": 30.3,
+   "back_s": 24.6,
+   "wall_delta": 104.909,
+   "tick_delta": 15.922,
+   "qpc_delta": 15.905,
+   "unbiased_delta": 15.914,
+   "interrupt_delta": 15.914,
+   "py_monotonic_delta": 15.905,
+   "boot_from_tick_changed": true,
+   "boot_id_before_after": [
+    10,
+    11
+   ],
+   "volatile_marker_survived": false,
+   "boot_event_27_after": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "before": {
+    "wall": 1792709957.759,
+    "tick_s": 26.328,
+    "qpc_s": 26.3877878,
+    "unbiased_s": 26.3415825,
+    "interrupt_s": 26.3415825,
+    "py_monotonic": 26.3878211,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792709931,
+    "boot_id": 10,
+    "volatile_marker": null,
+    "volatile_marker_set": "c828dc64f02b",
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   },
+   "after": {
+    "wall": 1792710062.668,
+    "tick_s": 42.25,
+    "qpc_s": 42.2926084,
+    "unbiased_s": 42.2558448,
+    "interrupt_s": 42.2558448,
+    "py_monotonic": 42.2926587,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792710020,
+    "boot_id": 11,
+    "volatile_marker": null,
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   }
+  },
+  {
+   "rep": 5,
+   "transition": "full",
+   "command": "shutdown.exe /s /t 0",
+   "command_output": "rc=0\n\n",
+   "off_s": 30.3,
+   "back_s": 8.6,
+   "wall_delta": 90.74,
+   "tick_delta": -16.265,
+   "qpc_delta": -16.247,
+   "unbiased_delta": -16.264,
+   "interrupt_delta": -16.264,
+   "py_monotonic_delta": -16.247,
+   "boot_from_tick_changed": true,
+   "boot_id_before_after": [
+    11,
+    12
+   ],
+   "volatile_marker_survived": false,
+   "boot_event_27_after": {
+    "rc": 5,
+    "date": null,
+    "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+   },
+   "before": {
+    "wall": 1792710062.961,
+    "tick_s": 42.546,
+    "qpc_s": 42.5850677,
+    "unbiased_s": 42.5527091,
+    "interrupt_s": 42.5527091,
+    "py_monotonic": 42.5850981,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792710020,
+    "boot_id": 11,
+    "volatile_marker": null,
+    "volatile_marker_set": "f5026bee5ba1",
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   },
+   "after": {
+    "wall": 1792710153.701,
+    "tick_s": 26.281,
+    "qpc_s": 26.3379805,
+    "unbiased_s": 26.2888585,
+    "interrupt_s": 26.2888585,
+    "py_monotonic": 26.3380186,
+    "py_monotonic_impl": "QueryPerformanceCounter()",
+    "py_perf_impl": "QueryPerformanceCounter()",
+    "boot_from_tick": 1792710127,
+    "boot_id": 12,
+    "volatile_marker": null,
+    "boot_event_27": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    },
+    "time_changed_event_1": {
+     "rc": 5,
+     "date": null,
+     "desc": "Access is denied.\n\nFailed to open event query.\nAccess is denied."
+    }
+   }
+  }
+ ]
+}
