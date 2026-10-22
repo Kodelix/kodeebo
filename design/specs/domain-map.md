@@ -2,7 +2,7 @@
 
 > **Status**: Draft
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
+> **Last Updated**: 2026-10-22 (Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
 > **Source**: design/product-brief.md (Tier 1/Tier 2 from the brief; founder decisions of 2026-10-19 and 2026-10-20 recorded below)
 
 ---
@@ -40,7 +40,7 @@ Kodeebo is one product in three layers (founder, 2026-10-19). **Layer 1** holds 
 - **Storage & Backup** owns object-storage access, backups, restore replay, the control-journal home. Core module `storage`.
 
 *Layer 2 — Kodeebo platform modules, shared by every vertical (product-only).*
-- **Venue Configuration** owns everything about a branch except its bare row (name, logo, phone numbers, opening hours, settings; keyed by `(tenant_id, branch_id)` with a foreign key to tenancy's `branches`), owner-set limits and thresholds and reason lists: the owner-sets-the-rules principle as data.
+- **Venue Configuration** owns everything about a branch except its bare row (name, logo, phone numbers, opening hours, settings; keyed by `(tenant_id, branch_id)` with a foreign key to tenancy's `branches`), owner-set limits and thresholds and reason lists: the owner-sets-the-rules principle as data. Venue Configuration owns prep stations and kitchen and bar routing; Counter Shell consumes them. (ADR-0014 Decision 18; founder, 2026-10-22.)
 - **Sync** owns the command protocol, inbox, ordering, idempotency, server-to-device feeds, the review queue and clone/restore detection. A money fact is never rejected: it is recorded and flagged for review.
 - **Counter Shell** is the Windows client: encrypted local store, start check and salvage, printing and cash drawer, installer and updater, and PIN sign-in and override on the device. Runtime pends the desktop ADR.
 - **Catalogue** owns the sellable side of the one catalogue and item core shared by every vertical (founder, 2026-10-20): categories and subcategories, items, variants and sizes, combos and bundles, counter quick-button presets, modifiers and modifier groups, prices per branch and per order type, availability per branch, barcode/SKU per variant, menu schedules and retail variant attributes. No vertical adds its own item model. Tax and service values for a category or item are not catalogue data: Tax & Receipts owns them (override hierarchy, below).
@@ -162,7 +162,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 | 11 | Product Analytics | L1 · Generic | Server-side business events, activation measures | event taxonomy, event records | product-analytics-engineer / product-director | `analytics` — Extract-candidate |
 | 12 | Storage & Backup | L1 · Generic | Object storage, backups, restore replay | exports, backups, control journal | infra-engineer / data-lead | `storage` — Extract-candidate |
 | 12a | Egress (outbound requests) | L1 · Generic | One guard for every request to a user-influenced URL (SSRF, DNS rebinding) | per-caller host allowlists, destination breakers (no tables) | security-lead / integrations-engineer | `egress` — Extract-candidate (founder exception, ADR-0010 Decision 8; added 2026-10-21 from ADR-0013) |
-| 13 | Venue Configuration | L2 · Product-specific | Branch attributes and settings, owner-set limits and reasons | branch attributes, settings, limits, reason lists | product-manager / domain-architect | — |
+| 13 | Venue Configuration | L2 · Product-specific | Branch attributes and settings, owner-set limits and reasons | branch attributes, settings, limits, reason lists, prep stations, routing rules | product-manager / domain-architect | — |
 | 14 | Sync | L2 · Product-specific | Local-first protocol between counter and server | inbox, command log, feeds, review queue | offline-sync-specialist / cto | — |
 | 15 | Counter Shell | L2 · Product-specific | The Windows client | local encrypted store, device settings | principal-engineer / ux-designer | — |
 | 16 | Catalogue | L2 · Product-specific | One catalogue and item model for every vertical (sellable side) | categories, items, variants, combos, modifiers, presets, prices per branch and order type, availability, barcodes, menu schedules | product-manager / domain-architect | — |
@@ -227,7 +227,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 | 34 | Counter app shell: runtime, encrypted store, start check, salvage [T1] | Counter Shell | Client surfaces | Vertical Slice | Not Started | design/specs/counter-shell.md | sync-protocol, localization-kernel, money-time-rules |
 | 35 | Receipt printing and cash drawer (D1) [T1] | Counter Shell | Client surfaces | Vertical Slice | Not Started | design/specs/counter-printing-drawer.md | counter-shell, localization-kernel |
 | 36 | Counter installer, updater and minimum version [new] (inferred) | Counter Shell | Client surfaces | MVP | Not Started | design/specs/counter-install-update.md | counter-shell, sync-protocol |
-| 37 | Kitchen and bar printers, displays (D1) [T2] | Counter Shell | Client surfaces | Beta | Not Started | design/specs/kitchen-bar-printers-displays.md | counter-printing-drawer |
+| 37 | Kitchen and bar printers, displays (D1) [T2] | Counter Shell | Client surfaces | Beta | Not Started | design/specs/kitchen-bar-printers-displays.md | counter-printing-drawer, branches-settings, product-catalogue |
 | 38 | Barcode scanning at the counter [new] [T2] (founder, 2026-10-21) | Counter Shell | Client surfaces | Beta | Not Started | design/specs/barcode-scanning.md | counter-shell, product-catalogue |
 | 39 | Catalogue and item core: one model for every vertical (I1) [T1] | Catalogue | Core domain | Vertical Slice | Not Started | design/specs/product-catalogue.md | tenant-foundation, branches-settings |
 | 40 | Combos and bundles UI (the model is in the core from Tier 1) [new] [T2] (founder, 2026-10-21) | Catalogue | Core domain | Beta | Not Started | design/specs/combos-bundles.md | product-catalogue, bills-and-tabs, session-pricing, tax-service-rules |
@@ -377,6 +377,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 | notification channels, templates, delivery log | Notifications | any context that notifies | `Notifier` port; the caller passes the recipient |
 | outbox rows, job state | Jobs & Outbox | every context that emits events | outbox port; per-tenant sweep |
 | branch attributes, settings, owner limits, reason lists (the bare branch row is Tenancy's, ADR-0010) | Venue Configuration | Tax & Receipts, Orders, Shifts, Gaming, Sync (feed) | settings port; config feed to devices |
+| prep stations, routing rules `(tenant_id, branch_id, target kind, target id) → prep station` (TD, branch-scoped; target ids are Catalogue category, item or modifier option ids held by value, no foreign key), the branch's default prep station (a branch setting) | Venue Configuration | Counter Shell, Sync (feed), Dashboard | config feed to devices; Catalogue gains no printer, station or routing column; an archived target id is ignored at routing time (ADR-0014 Decision 18) |
 | inbox, command log, feeds, review queue | Sync | Reports, Fleet Health, Dashboard | command ports of the owning contexts; review-queue read model |
 | local encrypted store (device) | Counter Shell | — | device-local; synced only through Sync |
 | the item core, sellable side: categories, items, variants, combos, modifiers and groups, quick-button presets, prices per branch and order type, availability per branch, barcode/SKU, menu schedules, retail attributes | Catalogue | Orders, Gaming, Inventory, Counter Shell, Dashboard | catalogue port; price resolution receives the order type id as a caller-passed value |
