@@ -72,6 +72,9 @@ Every task follows: **Question -> Options -> Decision -> Draft -> Approval**
   use, asked for like any new file. Never write outside the repository: `/tmp`,
   `/dev/shm` and home paths are not draft locations (`validate-scratch-paths.sh`
   blocks the common forms; a temp dir is `mktemp -d -p production/session-state/drafts`)
+- Spawn agents from the repository root: `cd` back before any `Agent` call
+  (`validate-agent-cwd.sh` blocks a spawn from a subfolder, where Claude Code
+  would leave a stray `.claude/agent-memory/`)
 - Multi-file changes require explicit approval for the full changeset
 - No commits without user instruction
 - A skipped or dismissed question is not an answer: act on nothing, re-ask in

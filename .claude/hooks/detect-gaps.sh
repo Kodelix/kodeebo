@@ -5,10 +5,10 @@
 # already exists on disk. OBSERVATIONS, never verdicts: every line names what
 # was compared and suggests a skill; nothing is blocked.
 
-# A cwd inside any .claude/ tree is never a project root, even when a nested
-# .claude/ exists there (dogfood #40: an agent memory note written under a skill
-# folder made every hook log into that folder).
-if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -d ".claude" ]; }; then
+# A cwd inside any .claude/ tree is never a project root, and a cwd counts only
+# with project.yaml or .claude/settings.json: a stray .claude/agent-memory/ left
+# where an agent was spawned (dogfood #40, #41) must not make hooks log there.
+if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -f ".claude/settings.json" ]; }; then
   STUDIO_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ]; then
   STUDIO_ROOT="$CLAUDE_PROJECT_DIR"
@@ -46,11 +46,13 @@ GAPS=0
 gap() { GAPS=$((GAPS + 1)); echo ""; echo "⚠️  $1"; shift; for l in "$@"; do echo "    $l"; done; }
 
 # --- 0a. Stray nested .claude/ trees (checked before the fresh-project exit) -----------------------------------------
-# A session or agent that ran from inside .claude/ can leave agent memory or
-# session logs there (dogfood #40). Observation only; nothing is moved.
-STRAY=$(find .claude -mindepth 2 -type d -name .claude 2>/dev/null | head -5)
+# An agent spawned away from the root leaves .claude/agent-memory/ there, and
+# old hooks then wrote session logs beside it (dogfood #40, #41). Searched across
+# the repository, caches and build output pruned. Observation only.
+STRAY=$(find . \( -path ./.git -o -path "*/node_modules" -o -path "*/build" -o -path ./production/session-state/cache \) -prune \
+    -o -type d -name .claude -print 2>/dev/null | grep -vx "./.claude" | head -5)
 if [ -n "$STRAY" ]; then
-    gap "Stray nested .claude/ folder(s) inside .claude/: $(printf '%s ' $STRAY)" \
+    gap "Stray .claude/ folder(s) outside the project root's own: $(printf '%s ' $STRAY)" \
         "Move agent memory to .claude/agent-memory/<agent>/, delete stray session logs, then remove the folder. Run commands from the project root."
 fi
 

@@ -294,6 +294,16 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/validate-agent-cwd.sh\"",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [

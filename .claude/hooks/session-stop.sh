@@ -11,17 +11,19 @@
 # project, not this one. Resolving to the script's own location first would
 # override them. So, in order:
 #   1. cwd holds project.yaml   -> cwd   (a project root)
-#   2. cwd holds .claude/       -> cwd   (a project root not yet configured)
+#   2. cwd holds .claude/settings.json -> cwd (a project root not yet configured;
+#      a bare .claude/ is not enough: Claude Code creates .claude/agent-memory/
+#      wherever a memory agent is spawned, dogfood #40/#41)
 #   3. CLAUDE_PROJECT_DIR       -> that  (populated in the hook environment)
 #   4. this script's location   -> <root>/.claude/hooks/../.. by construction
 # Rule 4 always works and needs no environment at all; rules 1-2 stop it from
 # overriding a caller that legitimately means somewhere else.
 #
 # NOT an upward search: that resolves a nested project to its parent's config.
-# A cwd inside any .claude/ tree is never a project root, even when a nested
-# .claude/ exists there (dogfood #40: an agent memory note written under a skill
-# folder made every hook log into that folder).
-if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -d ".claude" ]; }; then
+# A cwd inside any .claude/ tree is never a project root, and a cwd counts only
+# with project.yaml or .claude/settings.json: a stray .claude/agent-memory/ left
+# where an agent was spawned (dogfood #40, #41) must not make hooks log there.
+if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -f ".claude/settings.json" ]; }; then
   STUDIO_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ]; then
   STUDIO_ROOT="$CLAUDE_PROJECT_DIR"

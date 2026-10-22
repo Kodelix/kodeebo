@@ -6,10 +6,10 @@
 # head, not at commit time. Advisory only: observations from
 # .claude/scripts/migration-lint.sh, never a block. Rules: .claude/rules/migrations.md.
 
-# A cwd inside any .claude/ tree is never a project root, even when a nested
-# .claude/ exists there (dogfood #40: an agent memory note written under a skill
-# folder made every hook log into that folder).
-if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -d ".claude" ]; }; then
+# A cwd inside any .claude/ tree is never a project root, and a cwd counts only
+# with project.yaml or .claude/settings.json: a stray .claude/agent-memory/ left
+# where an agent was spawned (dogfood #40, #41) must not make hooks log there.
+if case "$PWD/" in */.claude/*) false ;; *) true ;; esac && { [ -f "project.yaml" ] || [ -f ".claude/settings.json" ]; }; then
   STUDIO_ROOT="$PWD"
 elif [ -n "${CLAUDE_PROJECT_DIR:-}" ] && [ -d "${CLAUDE_PROJECT_DIR}" ]; then
   STUDIO_ROOT="$CLAUDE_PROJECT_DIR"
