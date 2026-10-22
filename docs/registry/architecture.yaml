@@ -44,6 +44,7 @@
 # 2026-10-22: ADR-0013 CTO-ADR re-check (founder: adopt): 5 entries appended (IC-NOTIFY-MAIL-SEND-R5, IC-BOUNCE-READER-R4, IC-AUTH-NOTICE-FANOUT-R4, IC-PRE-CONTEXT-LOOKUPS-R14, IC-NOTIFY-CLOSURE-ARCHIVE-MAIL-R2: deferred flagging on a first RCPT 5yz and on permanent DSNs, Contacts.markOk dropped, archive-code function names), each effective when ADR-0013 is Accepted; the five replaced entries are marked superseded (IC-NOTIFY-CLOSURE-ARCHIVE-MAIL gains the status field it lacked) and IC-PRE-CONTEXT-LOOKUPS-R11 now points at R14.
 # 2026-10-22: ADR-0013 CTO-ADR re-check minors (cto: APPROVE; founder: fold in now): 3 entries appended (IC-NOTIFY-MAIL-SEND-R6, IC-BOUNCE-READER-R5, IC-AUTH-NOTICE-FANOUT-R5: the deferred flag as a job item decided from recorded burst-caused breaker opens, owner alert deferred with it, M13 pause immediate, max_attempts at least 2 and no flag on exhaustion), each effective when ADR-0013 is Accepted; the three replaced entries are marked superseded.
 # 2026-10-22: founder principle P-TRUST recorded in the domain map; TR-NEVER-TRUST-CLIENT added (never trust the client: raw facts only from devices, derived values recomputed by the server, differences flagged, per-command checks, tenant and branch from the credential).
+# 2026-10-22: ADR-0014 item model written (Proposed; CTO-ADR CONCERNS, all findings revised): 20 entries added, each effective when ADR-0014 is Accepted (TR-ITEM-MODEL-OWNERSHIP, TR-ITEM-ARCHIVE-PURGE, TR-CATALOGUE-VERSIONS, TR-INVENTORY-VERSIONS, TR-ITEM-TABLE-GRANTS, IC-STOCK-LEDGER, IC-DEFERRED-MOVEMENT-WRITE, IC-STOCK-TRANSFERS, IC-BUNDLE-ALLOCATION, IC-PRICE-RESOLUTION, IC-RECIPE-GRAPH-LOCK, IC-ITEM-RULES, IC-COUNTER-LAYOUT, IC-KITCHEN-ROUTING, IC-COUNTER-STORE-RULES, IC-ITEM-ARITHMETIC, FP-CATALOGUE-FOREIGN-DATA, FP-DEVICE-FIGURE-AS-SERVER-FIGURE, FP-DELETE-REFERENCED-ITEM-ROW, FP-SECOND-PRICE-LIST); TR-OWNER-ROLE-R4 added (recipe-graph lock class first in the lock order), TR-OWNER-ROLE-R3 stays active until ADR-0014 is Accepted; TR-NEVER-TRUST-CLIENT superseded now by TR-NEVER-TRUST-CLIENT-R2 (founder wording: every server-data version it used), in effect 2026-10-22.
 data_ownership: []
 
 tenancy_rules:
@@ -397,7 +398,7 @@ tenancy_rules:
     rule: "effective when ADR-0008 is Accepted: exactly one owner role per tenant (roles.is_owner = true; partial unique index on roles (tenant_id) WHERE is_owner; app_rt has no INSERT or UPDATE privilege on is_owner), written by the provisioning job; its permission set is the whole permission catalogue including keys added later, evaluated from is_owner; a BEFORE UPDATE OR DELETE trigger refuses any change but the label (F322); holding it sets app.branch_all = 'on'. At least one active owner (owner role + staff status active + enabled dashboard login) always remains: the guard runs on staff_roles delete or update (cascades included), staff status update or delete, and the § 1c functions Logins.disable and Erasure.erasePersonLogin; on the tables it is a CONSTRAINT TRIGGER ... DEFERRABLE INITIALLY DEFERRED counting after pg_advisory_xact_lock(<last-owner class id>, <tenant key>) (two-key, transaction-level; lock order journal, trail, last-owner); the trigger runs as the queuing role (PostgreSQL 18) and is tested as app_rt and job_rt under FORCE RLS. Closure exception: a delete passes only when the current role is job_rt and CP tenant_status is purge_personal or later (ADR-0005 Decision 1). Owner-only keys cannot be stored in a custom role. The § 1c owner checks read staff_roles and roles.is_owner through auth_lookup's narrow read (TR-TABLE-CLASSES-R8); the TD trigger learns a login's enabled state through Logins.statusOf (EXECUTE also for job_rt); Logins.disable and Erasure.erasePersonLogin take the last-owner lock after any trail append in the same transaction."
     adr: ADR-0008
     adr_status: Accepted
-    status: active
+    status: "active (superseded_by: ADR-0014, effective on acceptance -> TR-OWNER-ROLE-R4)"
   - id: TR-STRICT-SUBSET-R2
     rule: "effective when ADR-0008 is Accepted: where a non-owner acts on another person (staff.manage: disable, enable, temporary password; staff.reset_pin: counter temporary PIN, require a PIN reset; staff.enrol_device; staff.suspend_local), the target's permission set (keys and limits) must be a strict subset of the actor's and the target assigned to a branch the actor holds; an owner is never the target of a non-owner. Checked in the Authorizer; Logins.issueTemporary and Logins.disable also refuse an owner target unless app.branch_all = 'on'. The § 1c owner-target check reads the owner role through auth_lookup's narrow read (TR-TABLE-CLASSES-R8)."
     adr: ADR-0008
@@ -465,6 +466,41 @@ tenancy_rules:
     status: active
   - id: TR-NEVER-TRUST-CLIENT
     rule: "P-TRUST (founder 2026-10-22, design/specs/domain-map.md Architecture Principles): never trust the client, in every case. Dashboard, Android app and any web client: every rule, permission and validation runs on the server; client checks are UX only. Counter (offline): runs the same rules to sell offline, but its results are claims. From a device the server takes only raw facts: variant/option ids and quantities, order type, device time and sequence, staff id, amounts tendered, the catalogue version used, and physical observations only a person on site can make (counted quantity, waste, quantity received). Every derived value (price, discounts, tax/service/minimum charge, totals, time amounts, stock movements, count differences) is recomputed by the server from its own versioned data. A difference is never a rejection of a money fact and never trusted: it is a review flag showing the claimed and the server figure side by side. Every command is checked for device enrolment and lease, the staff member's permission and limits at that time (authority snapshot), that the claimed versions existed then, clock plausibility and idempotency. Tenant and branch come only from the device credential or session, never from the payload. Forbidden: storing or acting on a client-computed derived value as the server's figure; taking tenant_id or branch_id from a request body. Every spec carries a negative test: a tampered client value is flagged or refused. The sync ADR implements it on every command; ADR-0014 applies it to the item model."
+    adr: "Founder principle P-TRUST (domain map); applied by ADR-0014, sync ADR"
+    adr_status: "In effect (founder principle, 2026-10-22)"
+    status: "superseded_by: founder 2026-10-22 (wording: every server-data version it used) -> TR-NEVER-TRUST-CLIENT-R2"
+  - id: TR-ITEM-MODEL-OWNERSHIP
+    rule: "Effective when ADR-0014 is Accepted: one catalogue and item core. Catalogue (:platform:catalogue) owns the sellable side (categories, items, variants, item sale rules, modifiers, bundles, presets, prices, availability, schedules, barcodes, translations, counter layouts) and the variant-to-stock and variant-to-recipe links; Inventory (:platform:inventory) owns stock items, units, recipes and recipe deltas with their versions, the movement ledger, claims, observations, counts, balances and transfers. Gradle edges: catalogue -> inventory (composite FKs in SQL, ON DELETE RESTRICT), orders -> catalogue, orders -> inventory (StockEffects, StockLedger, StockClaims), gaming -> catalogue (StationTimeItems), all -> :kernel:money-time-rules; Inventory never depends on Catalogue or Orders. By id value, no FK: order types (Orders), the option id and line id on movements, the image reference (core storage until its ADR), Tax & Receipts rule keys. Branch-scoped tables have branch_id NOT NULL; tenant-wide rows never share a table with branch rows."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: TR-ITEM-ARCHIVE-PURGE
+    rule: "Effective when ADR-0014 is Accepted: a referenced catalogue or stock row is archived, never deleted; no runtime role holds DELETE. The one exception is the ADR-0005 closure purge at purged: each module implements a TenantDataParticipant (only :app registers), run as job_rt in reverse Gradle order, children first (pending effects in the first chunk; the ledger in bounded chunks of job items). Every job_rt DELETE policy calls USING ((SELECT purge_allowed())): CP tenant_status = archive_retained, archive_retention.retain_until passed, no legal hold; purge_allowed() is STABLE, SECURITY INVOKER, owned by migrator. archive_retention and the tenant's purge facts are removed after the last participant. Cross-module FKs RESTRICT; the category parent and in-module references NO ACTION. Every referencing column is indexed, leading with tenant_id."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: TR-CATALOGUE-VERSIONS
+    rule: "Effective when ADR-0014 is Accepted: each tenant has one catalogue version, incremented in the same transaction as every saved change to a versioned row; every saved change is its own version, with no separate publish step. Versioned rows: item sale rules (kind, open_price), base, order-type and branch prices, option and branch option prices, modifier attachment rules (min, max, defaults, free, unique, excluded, quantity_mode, max_repeat, open_price), bundle sizes, slots, slot choices, pricing mode and slot prices, stock, recipe and option-delta links. They carry valid_from_version and valid_to_version; an edit closes the current row and inserts its successor; app_rt holds only a column-level UPDATE of valid_to_version, whose policy requires valid_to_version IS NULL and a new value equal to the current catalogue version. selling_method is immutable; a kind change to or from kind 5 or on a time item is refused by a deferred constraint trigger. Lines stamp the catalogue version; the server re-prices at it."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: TR-INVENTORY-VERSIONS
+    rule: "Effective when ADR-0014 is Accepted: each tenant has one inventory version, incremented in the same transaction as every activation of a recipe version or recipe-delta version and every new pack-unit factor; version rows record the inventory version from which they are active and at which they stopped. A recipe version is draft, active or superseded; only drafts are updatable (UPDATE policy requires status = 'draft'; status changes by trigger); saving a version as active flattens it into recipe_flat_lines in the same transaction and fails on any cycle row. Pack-unit factors are fixed once used. Lines stamp the inventory version; the server derives with the versions active at it and flags a different claimed version."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: TR-ITEM-TABLE-GRANTS
+    rule: "Effective when ADR-0014 is Accepted: every Catalogue and Inventory table is class TD with the restrictive tenant_isolation policy (no TO) and one permissive policy per role and command (ADR-0001 C2), branch-scoped tables add branch_scope TO app_rt, device_rt, support_rt, support_fn (ADR-0003), and support_rt gets ADR-0004's grant-gated SELECT; per-table grants as ADR-0014 Decision 17's matrix: app_rt S I U on definitions, S I U* on versioned rows; device_rt S on definitions, writes only facts and claims (pending_stock_effects, stock_movement_claims, stock_observations, stock_count_records, transfer sides of its own branch, availability toggles), never the server's stock_movements or stock_balances; job_rt S everywhere, I U where it derives (movements, balances, transfer destination sides, claims and observations results), D only under purge_allowed(). Markers: stock_movements tax (proposed), all others other. device_rt grants are confirmed or narrowed by the sync ADR."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: TR-OWNER-ROLE-R4
+    rule: "effective when ADR-0014 is Accepted (replaces TR-OWNER-ROLE-R3, which stays in force until then; only the lock order changes): exactly one owner role per tenant (roles.is_owner = true; partial unique index on roles (tenant_id) WHERE is_owner; app_rt has no INSERT or UPDATE privilege on is_owner), written by the provisioning job; its permission set is the whole permission catalogue including keys added later, evaluated from is_owner; a BEFORE UPDATE OR DELETE trigger refuses any change but the label (F322); holding it sets app.branch_all = 'on'. At least one active owner (owner role + staff status active + enabled dashboard login) always remains: the guard runs on staff_roles delete or update (cascades included), staff status update or delete, and the § 1c functions Logins.disable and Erasure.erasePersonLogin; on the tables it is a CONSTRAINT TRIGGER ... DEFERRABLE INITIALLY DEFERRED counting after pg_advisory_xact_lock(<last-owner class id>, <tenant key>) (two-key, transaction-level; lock order recipe graph, journal, trail, last-owner (the recipe-graph class added by ADR-0014)); the trigger runs as the queuing role (PostgreSQL 18) and is tested as app_rt and job_rt under FORCE RLS. Closure exception: a delete passes only when the current role is job_rt and CP tenant_status is purge_personal or later (ADR-0005 Decision 1). Owner-only keys cannot be stored in a custom role. The § 1c owner checks read staff_roles and roles.is_owner through auth_lookup's narrow read (TR-TABLE-CLASSES-R8); the TD trigger learns a login's enabled state through Logins.statusOf (EXECUTE also for job_rt); Logins.disable and Erasure.erasePersonLogin take the last-owner lock after any trail append in the same transaction."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: TR-NEVER-TRUST-CLIENT-R2
+    rule: "P-TRUST (founder 2026-10-22, wording revised the same day; design/specs/domain-map.md Architecture Principles): never trust the client, in every case. Dashboard, Android app and any web client: every rule, permission and validation runs on the server; client checks are UX only. Counter (offline): runs the same rules to sell offline, but its results are claims. From a device the server takes only raw facts: variant/option ids and quantities, order type, device time and sequence, staff id, amounts tendered, every server-data version it used (catalogue and inventory today; any future versioned data), and physical observations only a person on site can make (counted quantity, waste, quantity received). Every derived value (price, discounts, tax/service/minimum charge, totals, time amounts, stock movements, count differences) is recomputed by the server from its own versioned data. A difference is never a rejection of a money fact and never trusted: it is a review flag showing the claimed and the server figure side by side. Every command is checked for device enrolment and lease, the staff member's permission and limits at that time (authority snapshot), that the claimed versions existed then, clock plausibility and idempotency. Tenant and branch come only from the device credential or session, never from the payload. Forbidden: storing or acting on a client-computed derived value as the server's figure; taking tenant_id or branch_id from a request body. Every spec carries a negative test: a tampered client value is flagged or refused. The sync ADR implements it on every command; ADR-0014 applies it to the item model."
     adr: "Founder principle P-TRUST (domain map); applied by ADR-0014, sync ADR"
     adr_status: "In effect (founder principle, 2026-10-22)"
     status: active
@@ -1060,6 +1096,61 @@ interface_contracts:
     adr: ADR-0013
     adr_status: Proposed
     status: active
+  - id: IC-STOCK-LEDGER
+    contract: "Effective when ADR-0014 is Accepted: one movement ledger in Inventory. Fixed kinds with a sign check: opening_balance, sale, void_return, waste, adjustment, stock_count, transfer_out, transfer_in, supplier_receiving, return_to_supplier; a new kind needs an ADR amendment. Natural unique key (tenant_id, source_kind, source_id, kind, seq) plus a UUIDv7 surrogate; on conflict the writer compares the stored row and flags any difference. Under P-TRUST the server's ledger is built from the server's own derivation: job kind stock.derive (owned by Orders, job_rt) resolves each synced line at its catalogue and inventory versions and writes through StockLedger.writeDerived, which never refuses and flags a negative crossing; a void first derives its voided line, then copies the server's movements sign-flipped (plus waste for the waste disposition). The device's reference and movements are claims (stock_movement_claims, StockClaims), compared and flagged. Physical observations (waste, receiving, transfer quantities, counted quantity) are accepted as facts after permission and authority checks, with anomaly flags; counts are records (absolute quantity, time, ledger cursor) applied by stock.count_apply. The negative-stock policy lives on the stock item; the counter may refuse on it, the server only flags."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-DEFERRED-MOVEMENT-WRITE
+    contract: "Effective when ADR-0014 is Accepted: on the counter the sale transaction commits the bill line, its outbox command and one pending_stock_effects row (ids and numbers only: recipe version id or kind-2 link and quantity, order type, options with repeat counts and delta ids, catalogue and inventory versions) through StockEffects.recordPending, and runs the negative-stock check over the rebased balance plus pending; the movements are written afterwards in bounded chunks (at most k rows per transaction, a per-line cursor, applied set in the last chunk with one outbox claim), in commit order, resumable after a crash. k and the chunk time budget come from the sync spike's busy-counter results; S42's re-run on the adopted store, on the founder's go, is ADR-0014's acceptance blocker 1. The device rebases balances on the server balance at its feed cursor plus its own unacknowledged effects."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-STOCK-TRANSFERS
+    contract: "Effective when ADR-0014 is Accepted: branch-to-branch transfers are two-sided with an in-transit state: an out side (source branch) and an in side (destination branch), each branch-scoped; dispatch writes transfer_out at the source; the server's apply enqueues a job_rt item that creates the in side with the sent quantities copied; the destination confirms received quantities (transfer_in), a shortfall or surplus is a discrepancy flag, not a movement; cancel before receipt is a transfer_in at the source; duplicate receipts write one movement (natural key) and a differing one is flagged; a receipt after a cancel or a cancel after a receipt is recorded and flagged, never refused; on the server transfer movements are written by job_rt from observations or by app_rt from the dashboard. Send and receive are separate permission keys."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-BUNDLE-ALLOCATION
+    contract: "Effective when ADR-0014 is Accepted: a combo prices by one of two modes per combo: one combo price split across child lines by largest remainder in integer piasters (weight = list price x slot quantity; leftover to the largest remainders, ties by larger weight then slot order; equal weights when all are free; overflow-checked; S20 executed) stored as child line amounts, never unit prices; or owner-set prices per slot option, size and branch. A combo price is never a discount; station time in a combo is prepaid time."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-PRICE-RESOLUTION
+    contract: "Effective when ADR-0014 is Accepted: price precedence branch + order type, then order type, then branch, then the variant's base price, read at a catalogue version (PriceResolver.resolve(..., at: CatalogueVersion?)); a catalogue price has no time dimension and no percentage (time-based changes are G9 rules in the one discount model, reported as their own category); a line freezes price, provenance and versions; open-price items and options use ADR-0008's bill.open_item limit unless the permission work gives them their own key."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-RECIPE-GRAPH-LOCK
+    contract: "Effective when ADR-0014 is Accepted: the sub-recipe graph is acyclic per tenant, checked by a BEFORE INSERT OR UPDATE OF component_recipe_id trigger (SECURITY INVOKER, owned by migrator) that first takes pg_advisory_xact_lock(<recipe-graph class id>, <tenant key>) and walks the graph at READ COMMITTED (S41 B6/B7); the recipe-graph class id is registered beside the journal, trail and last-owner class ids (amends ADR-0008 sections 3.5 and 6); lock order recipe graph, journal, trail, last-owner; a lock-wait timeout is a retryable RFC 9457 problem."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-ITEM-RULES
+    contract: "Effective when ADR-0014 is Accepted: every item has at least one variant; kind 2 has exactly one stock link with a whole-number quantity (default 1), kind 3 one recipe link, kinds 1 and 5 none, checked by a deferred constraint trigger on item_sale_rules and both link tables; selling_method unit, weight or time is immutable and carried to price tables, which refuse time items; kind 5 is one seeded custom item; open price and sold by weight are attributes of ordinary items. Modifier groups carry quantity_mode per_unit (default) or per_line; options may be open_price and carry max_repeat (unique_options wins); no modifier is sold on its own. Station time: one kind-1 time item per station type, created and archived by Gaming through StationTimeItems; tiers, rules and the meter stay in Gaming; player mode is a tier; per-person pricing and extras are Later, extras as catalogue items linked to the Inventory asset type. Translation rows by BCP 47 tag; receipt fallback to the primary language. Description, display order and an image reference on categories, items, variants and modifier options."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-COUNTER-LAYOUT
+    contract: "Effective when ADR-0014 is Accepted: Catalogue owns the counter quick-button layout: tenant-level layouts (one default per tenant, partial unique index) of pages and buttons (position, design-token colour, optional translated label, target item, variant, preset or category); each branch selects one layout through a branch-scoped assignment; no per-device layout; a button whose target is archived or unavailable is hidden."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-KITCHEN-ROUTING
+    contract: "Effective when ADR-0014 is Accepted: Venue Configuration owns prep stations and kitchen and bar routing rules (domain-map line before acceptance): rule (tenant_id, branch_id, target kind category, item or modifier option, target id by value) -> prep station; resolution option, item, nearest category, branch default station (a Venue Configuration branch setting); Counter Shell prints from them; Catalogue never gains a printer, station or routing column; rules on archived ids are listed on the routing screen for clean-up."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-COUNTER-STORE-RULES
+    contract: "Effective when ADR-0014 is Accepted: on the counter's local store every table is STRICT, every connection sets foreign_keys = ON, adapters bind Long values (never numeric text), a Catalogue feed item is applied in the same local transaction as the Inventory rows it references (Inventory first, or deferred keys in one transaction), and the counter holds flattened recipes only; the SQLite facts are re-run on the engine the desktop runtime ADR picks."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: IC-ITEM-ARITHMETIC
+    contract: "Effective when ADR-0014 is Accepted: quantities are whole numbers in the base unit of a unit category (mg, ml, units) as bigint; money in integer piasters; sums and products overflow-checked (Math.addExact, Math.multiplyExact); aggregate sums are cast to bigint in SQL (sum(x)::bigint) and BigDecimal never enters the domain; integer division truncates toward zero on PostgreSQL and SQLite; every money and wastage rounding uses the money and time rules ADR's one rule, never an implicit round(); recipe quantity and wastage arithmetic is one kernel function; the S20, S40 and S50 cases join IC-BILLING-VECTORS."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
 performance_budgets: []
 
 api_decisions: []
@@ -1468,6 +1559,26 @@ forbidden_patterns:
     status: active
 # 2026-10-19: technology_choices section added for ADR-0006 (backend track, Proposed); append-only like the other sections.
 # 2026-10-19 (ADR-0006 review): only TECH-* entries belong here; the IC-* and FP-* entries first placed here are superseded by copies in interface_contracts and forbidden_patterns.
+  - id: FP-CATALOGUE-FOREIGN-DATA
+    pattern: "Effective when ADR-0014 is Accepted: tax, service-charge or minimum-charge values in Catalogue; a catalogue price with a time-of-day dimension or a percentage; a printer, prep-station or routing column in Catalogue; a station concept in :platform:catalogue; a per-device counter layout."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: FP-DEVICE-FIGURE-AS-SERVER-FIGURE
+    pattern: "Effective when ADR-0014 is Accepted: storing a device-computed price, split, time amount, movement list, count difference or balance as the server's figure; device_rt INSERT on the server's stock_movements or stock_balances; deriving from a recipe version the device claims instead of the one active at the line's inventory version; refusing a derived money or stock fact on the server."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: FP-DELETE-REFERENCED-ITEM-ROW
+    pattern: "Effective when ADR-0014 is Accepted: deleting a catalogue or stock row (draft included) outside the ADR-0005 closure purge; a job_rt DELETE policy without purge_allowed(); recomputing a void's movements from the current recipe; updating any column of a versioned row other than closing it at the current version."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
+  - id: FP-SECOND-PRICE-LIST
+    pattern: "Effective when ADR-0014 is Accepted: a second price list for extras or accessories in Gaming (they are catalogue items linked to the asset type); a stand-alone modifier sold as an item; a combo price modelled as a discount."
+    adr: ADR-0014
+    adr_status: Proposed
+    status: active
 technology_choices:
   - id: TECH-BACKEND-KTOR
     choice: "Backend track Ktor on Kotlin/JVM (stack.backend: ktor, core.track: kotlin, saas-core-kotlin; founder 2026-10-19): Kotlin 2.4.21, kotlinx.coroutines 1.11.0, Ktor 3.6.0 exact, Exposed 1.5.1 with ADR-0002 J1 suspendTransaction, HikariCP 7.1.0, OpenTelemetry Java agent 2.32.0, Bouncy Castle 1.86 for Ed25519 and ETA CAdES-BES (C1). Still to pin: pgjdbc (42.7.14 seen 2026-10-18), an SLF4J 2 binding, Bouncy Castle; JDK 21 or 25 and its distribution open (Q8); Gradle wrapper 9.7.0 (\"9.7\" does not resolve) or 9.8.x per Q7. Mandatory in CI: dependency locking incl. buildscript, strict verification metadata, OSV-Scanner on every PR, base images by digest; no backend image before an image scanner and SBOM generator are pinned (Q6). Explicit heap and Compose memory limit from S18 before the first deploy. Billing: rules as data and one shared vector suite in every combination, one Kotlin module only if the desktop ADR picks Compose Desktop (S46). Switch-to-Go conditions recorded in ADR-0006 Decision 12; Compose Desktop x Go rejected."
