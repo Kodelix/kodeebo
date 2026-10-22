@@ -2,7 +2,7 @@
 
 > **Status**: Draft
 > **Created**: 2026-10-20
-> **Last Updated**: 2026-10-22 (counter operations specs rule and threat-model coverage; Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
+> **Last Updated**: 2026-10-23 (clock-in and selling, counter operations rule); 2026-10-22 (counter operations specs rule and threat-model coverage; Venue Configuration owns prep stations and kitchen and bar routing, ADR-0014 Decision 18); 2026-10-21 (third pass: one catalogue and item core; decisions from a Glitch feature-name comparison, names only)
 > **Source**: design/product-brief.md (Tier 1/Tier 2 from the brief; founder decisions of 2026-10-19 and 2026-10-20 recorded below)
 
 ---
@@ -161,6 +161,10 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
     - one drawer = one open shift;
     - no sale without an open shift;
     - a shift belongs to whoever opened it, and closing another's needs `shift.close_other`.
+  - **Clock-in and selling (founder, 2026-10-23; input to `clock-in-out`, `shifts-cash` and `counter-pin`):** clock-in is an owner setting.
+    - **Default:** being clocked in is required to **open a cash shift only**. Signing in to sell is never blocked by clock state; a person who is not clocked in gets a one-tap "clock in now?" prompt at sign-in.
+    - **Stricter option:** "clock-in required to sign in and sell", for venues that want it.
+    - **The owner is always exempt.**
   - **Lock and user switching (addendum, 2026-10-22):**
     1. A one-tap lock button beside the signed-in name.
     2. Auto-lock after an owner-set idle time (30–60 s is typical in a busy café).
@@ -173,7 +177,7 @@ Founder decisions that bind the named specs. `/design-spec` writes each as testa
 - **Open questions for research:**
   - off-schedule clock-in handling;
   - best practice for a relief or cover cashier;
-  - must a cashier be clocked in to sign in or sell, or only to open a cash shift (security-lead: the answer changes the clock-in-out denial-of-service and elevation rows).
+  - ~~must a cashier be clocked in to sign in or sell, or only to open a cash shift~~ — answered by the founder on 2026-10-23 (clock-in and selling, above); the staff-auth amendment's denial-of-service and elevation rows follow that answer.
 
 ---
 
