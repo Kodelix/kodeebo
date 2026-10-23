@@ -1,0 +1,9 @@
+  restart: BootId 18 -> 19 after 214.4 s
+seed-1006 replay, setup deletefile_bg, 5 runs, commit bf67e34
+  deletefile_bg r1: fired True acked 65 server 65 hot journal True boot 172.1 s violations 0 [] events [] (443 s)
+  deletefile_bg r2: fired True acked 65 server 65 hot journal True boot 124.9 s violations 0 [] events [] (413 s)
+  deletefile_bg r3: fired True acked 65 server 65 hot journal False boot 129.7 s violations 0 [] events [] (394 s)
+  deletefile_bg r4: fired True acked 65 server 65 hot journal False boot 151.3 s violations 0 [] events [] (421 s)
+  deletefile_bg r5: fired True acked 65 server 65 hot journal False boot 143.9 s violations 0 [] events [] (386 s)
+seed-1006 replay deletefile_bg: 0 of 5 runs with a violation or a store refusal
+transport retries: 0

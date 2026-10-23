@@ -1,0 +1,86 @@
+{
+ "harness_commit": "bf67e34",
+ "setup": "deletefile_bg",
+ "client_env": {
+  "JOURNAL": "delete",
+  "MARKER_MODE": "file",
+  "START_CHECK": "background",
+  "BG_MODE": "counter",
+  "BG_IDLE_S": "0.3",
+  "BG_STEP": "16"
+ },
+ "cut": [
+  "nmi",
+  1006,
+  "client:after_mark",
+  1
+ ],
+ "runs": [
+  {
+   "rep": 1,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": true,
+   "boot_s": 172.1,
+   "violations": [],
+   "store_events": [],
+   "seconds": 443
+  },
+  {
+   "rep": 2,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": true,
+   "boot_s": 124.9,
+   "violations": [],
+   "store_events": [],
+   "seconds": 413
+  },
+  {
+   "rep": 3,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 129.7,
+   "violations": [],
+   "store_events": [],
+   "seconds": 394
+  },
+  {
+   "rep": 4,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 151.3,
+   "violations": [],
+   "store_events": [],
+   "seconds": 421
+  },
+  {
+   "rep": 5,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 143.9,
+   "violations": [],
+   "store_events": [],
+   "seconds": 386
+  }
+ ],
+ "failures": 0
+}

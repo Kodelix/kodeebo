@@ -1,0 +1,9 @@
+  restart: BootId 6 -> 7 after 207.4 s
+seed-1006 replay, setup truncslots_bg, 5 runs, commit bf67e34
+  truncslots_bg r1: fired True acked 65 server 65 hot journal False boot 139.7 s violations 0 [] events [] (441 s)
+  truncslots_bg r2: fired True acked 65 server 65 hot journal False boot 148.2 s violations 0 [] events [] (355 s)
+  truncslots_bg r3: fired True acked 65 server 65 hot journal False boot 142.1 s violations 0 [] events [] (378 s)
+  truncslots_bg r4: fired True acked 65 server 65 hot journal False boot 174.4 s violations 0 [] events [] (391 s)
+  truncslots_bg r5: fired True acked 65 server 65 hot journal False boot 171.8 s violations 0 [] events [] (407 s)
+seed-1006 replay truncslots_bg: 0 of 5 runs with a violation or a store refusal
+transport retries: 0

@@ -1,0 +1,9 @@
+  restart: BootId 24 -> 25 after 185.5 s
+seed-1006 replay, setup deletefile, 5 runs, commit bf67e34
+  deletefile r1: fired True acked 65 server 65 hot journal False boot 159.6 s violations 0 [] events [] (417 s)
+  deletefile r2: fired True acked 65 server 65 hot journal False boot 118.4 s violations 0 [] events [] (367 s)
+  deletefile r3: fired True acked 65 server 65 hot journal False boot 144.4 s violations 0 [] events [] (417 s)
+  deletefile r4: fired True acked 65 server 65 hot journal False boot 143.4 s violations 0 [] events [] (383 s)
+  deletefile r5: fired True acked 65 server 65 hot journal False boot 135.3 s violations 0 [] events [] (375 s)
+seed-1006 replay deletefile: 0 of 5 runs with a violation or a store refusal
+transport retries: 0

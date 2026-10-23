@@ -1,0 +1,53 @@
+  restart: BootId 6 -> 7 after 214.8 s
+phase 4 S104 (power-off and OS crash on Windows), commit 94f53c3
+  power seed     1 held at client:before_local_commit #1      fired True acked  64 server  64 hot journal False boot 11.5 s violations 0 [] (205 s)
+  power seed     2 held at client:mid_local_txn #1            fired True acked  64 server  64 hot journal False boot 12.4 s violations 0 [] (157 s)
+  power seed     3 held at client:after_local_commit #1       fired True acked  64 server  65 hot journal False boot 13.5 s violations 0 [] (160 s)
+  power seed     4 held at client:before_send #1              fired True acked  65 server  65 hot journal False boot 11.8 s violations 0 [] (195 s)
+  power seed     5 held at client:after_response_before_mark #1 fired True acked  65 server  65 hot journal False boot 13.7 s violations 0 [] (194 s)
+  power seed     6 held at client:after_mark #1               fired True acked  65 server  65 hot journal False boot 11.9 s violations 0 [] (228 s)
+  power seed     7 held at client:mid_mark #1                 fired True acked  65 server  65 hot journal False boot 12.3 s violations 0 [] (222 s)
+  power seed     8 held at client:before_local_commit #2      fired True acked  64 server  64 hot journal False boot 12.1 s violations 0 [] (232 s)
+  power seed     9 held at client:mid_local_txn #2            fired True acked  64 server  64 hot journal False boot 11.9 s violations 0 [] (273 s)
+  power seed    10 held at client:after_local_commit #2       fired True acked  64 server  65 hot journal False boot 12.9 s violations 0 [] (194 s)
+  power seed    11 held at client:before_send #2              fired True acked  65 server  65 hot journal False boot 12.6 s violations 0 [] (200 s)
+  power seed    12 held at client:after_response_before_mark #2 fired True acked  65 server  65 hot journal False boot 11.4 s violations 0 [] (198 s)
+  power seed    13 held at client:after_mark #2               fired True acked  65 server  65 hot journal False boot 11.5 s violations 0 [] (228 s)
+  power seed    14 held at client:mid_mark #2                 fired True acked  65 server  65 hot journal False boot 13.3 s violations 0 [] (183 s)
+  power seed    15 held at client:before_local_commit #3      fired True acked  64 server  64 hot journal False boot 11.9 s violations 0 [] (227 s)
+  power seed    16 after a44+0.14s                            fired True acked  64 server  64 hot journal True boot 13.0 s violations 0 [] (168 s)
+  power seed    17 after a43+0.11s                            fired True acked  64 server  64 hot journal True boot 12.9 s violations 0 [] (194 s)
+  power seed    18 after a14+0.43s                            fired True acked  64 server  65 hot journal False boot 13.5 s violations 0 [] (164 s)
+  power seed    19 after a29+0.12s                            fired True acked  64 server  64 hot journal True boot 13.6 s violations 0 [] (182 s)
+  power seed    20 after a04+0.32s                            fired True acked  64 server  65 hot journal False boot 13.3 s violations 0 [] (167 s)
+  power seed    21 after a23+0.52s                            fired True acked  64 server  64 hot journal True boot 12.5 s violations 0 [] (173 s)
+  power seed    22 after a28+0.05s                            fired True acked  64 server  64 hot journal True boot 8.8 s violations 0 [] (201 s)
+  transport retry 1 at 2026-10-23 04:25:46: Connection timed out during banner exchange
+  power seed    23 after a19+0.74s                            fired True acked  64 server  64 hot journal True boot 12.8 s violations 0 [] (275 s)
+  power seed    24 after a35+0.46s                            fired True acked  64 server  64 hot journal True boot 9.1 s violations 0 [] (239 s)
+  power seed    25 after a18+0.31s                            fired True acked  64 server  64 hot journal True boot 13.4 s violations 0 [] (196 s)
+  power seed    26 after a37+0.56s                            fired True acked  65 server  65 hot journal False boot 13.0 s violations 0 [] (154 s)
+  power seed    27 after a13+0.79s                            fired True acked  64 server  64 hot journal True boot 25.9 s violations 0 [] (195 s)
+  power seed    28 after a46+0.34s                            fired True acked  64 server  65 hot journal False boot 9.9 s violations 0 [] (174 s)
+  power seed    29 after a40+0.78s                            fired True acked  64 server  64 hot journal True boot 12.7 s violations 0 [] (233 s)
+  power seed    30 after a36+0.67s                            fired True acked  64 server  65 hot journal False boot 13.3 s violations 0 [] (124 s)
+  nmi   seed  1001 held at client:before_local_commit #1      fired True acked  64 server  64 hot journal False boot 193.8 s violations 0 [] (395 s)
+  nmi   seed  1002 held at client:mid_local_txn #1            fired True acked  64 server  64 hot journal False boot 177.2 s violations 0 [] (388 s)
+  nmi   seed  1003 held at client:after_local_commit #1       fired True acked  64 server  65 hot journal False boot 178.2 s violations 0 [] (352 s)
+  nmi   seed  1004 held at client:before_send #1              fired True acked  65 server  65 hot journal False boot 195.3 s violations 0 [] (394 s)
+  nmi   seed  1005 held at client:after_response_before_mark #1 fired True acked  65 server  65 hot journal False boot 190.7 s violations 0 [] (386 s)
+  transport retry 2 at 2026-10-23 05:27:32: boot probe hung > 30 s
+Traceback (most recent call last):
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 1355, in <module>
+    s104(int(sys.argv[2]), int(sys.argv[3]), *(sys.argv[4:9]))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 340, in s104
+    r = run.go()
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/p4.py", line 251, in go
+    r = super().go()
+  File "/home/kiko/saas-products/kodeebo/prototypes/local-first-sync-spike/harness/driver.py", line 370, in go
+    integrity = c.execute("PRAGMA integrity_check").fetchall()[0][0]
+                ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/cursor.c", line 1356, in APSWCursor_execute.sqlite3_prepare_v3
+apsw.CorruptError: database disk image is malformed
+transport retries: 2

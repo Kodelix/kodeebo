@@ -1,0 +1,16 @@
+--- start 2026-10-23 16:08:34 bf67e34 dirty=[0]
+booted the reverted VM, throttled 16:08:45
+install 16:13:42
+STOPPED 2026-10-23 16:30:57: harness fault found by reading r2 — every rep reuses the VM folder runs\seed-1006 and the same seed-derived test key, and r2 started on r1's store (UNIQUE constraint failed: bills.action_id on the first sale; 0 acked); r2 INVALID, later reps would be too. r1 valid (PASS). VM left as is; no retry
+=== try 2 (founder 2026-10-23: restart all 20 with a fresh VM folder per replay; try 1: r1 PASS, r2 INVALID carry-over) ===
+--- start 2026-10-23 17:00:07 bf67e34 dirty=[0]
+booted the reverted VM, throttled 17:00:19
+install 17:05:58
+truncslots_bg rc=0 17:42:46 transport retries: 0 transport retries: 0
+truncslots rc=0 18:23:07 transport retries: 0 transport retries: 0
+deletefile_bg rc=0 19:01:15 transport retries: 0 transport retries: 0
+deletefile rc=0 19:37:15 transport retries: 0 transport retries: 0
+Domain snapshot clean-ssh2 reverted
+
+19:38:19 p4 down: shut off, reverted clean-ssh2
+DONE 2026-10-23 19:38:19

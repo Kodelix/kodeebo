@@ -1,0 +1,82 @@
+{
+ "harness_commit": "bf67e34",
+ "setup": "deletefile",
+ "client_env": {
+  "JOURNAL": "delete",
+  "MARKER_MODE": "file"
+ },
+ "cut": [
+  "nmi",
+  1006,
+  "client:after_mark",
+  1
+ ],
+ "runs": [
+  {
+   "rep": 1,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 159.6,
+   "violations": [],
+   "store_events": [],
+   "seconds": 417
+  },
+  {
+   "rep": 2,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 118.4,
+   "violations": [],
+   "store_events": [],
+   "seconds": 367
+  },
+  {
+   "rep": 3,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 144.4,
+   "violations": [],
+   "store_events": [],
+   "seconds": 417
+  },
+  {
+   "rep": 4,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 143.4,
+   "violations": [],
+   "store_events": [],
+   "seconds": 383
+  },
+  {
+   "rep": 5,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 135.3,
+   "violations": [],
+   "store_events": [],
+   "seconds": 375
+  }
+ ],
+ "failures": 0
+}

@@ -1,0 +1,86 @@
+{
+ "harness_commit": "bf67e34",
+ "setup": "truncslots_bg",
+ "client_env": {
+  "JOURNAL": "truncate",
+  "MARKER_MODE": "slots",
+  "START_CHECK": "background",
+  "BG_MODE": "counter",
+  "BG_IDLE_S": "0.3",
+  "BG_STEP": "16"
+ },
+ "cut": [
+  "nmi",
+  1006,
+  "client:after_mark",
+  1
+ ],
+ "runs": [
+  {
+   "rep": 1,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 139.7,
+   "violations": [],
+   "store_events": [],
+   "seconds": 441
+  },
+  {
+   "rep": 2,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 148.2,
+   "violations": [],
+   "store_events": [],
+   "seconds": 355
+  },
+  {
+   "rep": 3,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 142.1,
+   "violations": [],
+   "store_events": [],
+   "seconds": 378
+  },
+  {
+   "rep": 4,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 174.4,
+   "violations": [],
+   "store_events": [],
+   "seconds": 391
+  },
+  {
+   "rep": 5,
+   "fired": [
+    "nmi cut while held at client:after_mark (hit 1)"
+   ],
+   "acked": 65,
+   "server_sales": 65,
+   "hot_journal_at_restart": false,
+   "boot_s": 171.8,
+   "violations": [],
+   "store_events": [],
+   "seconds": 407
+  }
+ ],
+ "failures": 0
+}

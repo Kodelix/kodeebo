@@ -1,0 +1,4 @@
+  restart: BootId 6 -> 7 after 225.4 s
+seed-1006 replay, setup truncslots_bg, 5 runs, commit bf67e34
+  truncslots_bg r1: fired True acked 65 server 65 hot journal False boot 143.2 s violations 0 [] events [] (459 s)
+  truncslots_bg r2: fired True acked 0 server 0 hot journal False boot 142.5 s violations 67 [('I1', 's1006-a0 recorded on the device but missing on the server')] events ['{"event": "store_error_during_operation", "error": "ConstraintError: UNIQUE constraint failed: bills.action_id"}'] (254 s)
