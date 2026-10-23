@@ -1,0 +1,30 @@
+--- start 2026-10-22 18:43:41 c93b4f6 dirty=[0]
+Domain snapshot clean-ssh2 reverted
+
+
+18:43:57 p4 up: reverted clean-ssh2, booted, throttled (100 IOPS + 80 MiB/s)
+install 18:46:08
+s104 rc=1 20:28:47 transport retries: 0
+STOPPED 2026-10-22 20:28:47: s104 failed (rc=1, see runs/p4-set5-s104.log) — VM (running) and stores left as they are; no retry
+=== attempt 2 (after 48b1252; attempt 1 kept in evidence/phase4/set5-attempt1-*) ===
+--- start 2026-10-22 23:15:49 48b1252 dirty=[0]
+error: Failed to revert snapshot clean-ssh2
+error: unsupported configuration: external snapshot file for disk sda already exists and is not a block device: /var/lib/libvirt/images/kodeebo-win10.1792700149
+
+23:15:49 p4 up: VM did not come up
+STOPPED 2026-10-22 23:15:49: p4 up failed — VM (shut off) and stores left as they are; no retry
+=== attempt 2, restart without the second revert (VM reverted by p4.sh down at 23:15:49) ===
+--- start 2026-10-22 23:18:13 48b1252 dirty=[0]
+booted the reverted VM, throttled 23:18:21
+install 23:22:05
+INTERRUPTED 2026-10-23 02:46:10: the host shut down at 2026-10-23 00:44 (systemd stopped the runner; 'last' shows a clean system shutdown, host back 02:37); S104 attempt 2 had 28 of 40 cuts done (28 power-offs, 0 violations), seed 29 in progress; numbers so far kept, the leg is not complete; VM left shut off as found; no retry
+=== attempt 3 (founder 2026-10-23: split; S104 alone, then rush/5-s legs if clean; attempts 1-2 logs kept: runs/p4-set5-s104-attempt{1,2}.log, evidence/phase4/set5-attempt1-*) ===
+--- start 2026-10-23 03:04:22 94f53c3 dirty=[0]
+Domain snapshot clean-ssh2 reverted
+
+
+03:04:38 p4 up: reverted clean-ssh2, booted, throttled (100 IOPS + 80 MiB/s)
+install 03:06:45
+s104-a3 rc=1 05:28:48 transport retries: 2
+STOPPED 2026-10-23 05:28:48: s104-a3 failed (rc=1, see runs/p4-set5-s104-a3.log) — VM (running) and stores left as they are; no retry
+NOTE 2026-10-23 10:29:22: s104-a3 stopped on a REAL store failure, not a harness fault: seed 1006 (NMI, held at client:after_mark #1) -> after the reboot the client refused the store (store_unusable_at_start: CorruptError malformed; page 1 fails authentication; no zero pages); VM store sha256 = fetched copy (904caa70...); before it 30 power-offs + 5 NMI PASS; evidence copied to production/session-state/drafts/s104-seed1006/; VM left running as found
