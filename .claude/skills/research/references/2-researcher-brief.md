@@ -87,6 +87,12 @@ Rules you must follow:
   toolchain): an approval covers only the list you showed, so if the resolver
   wants more, stop again. Record the cache size (du -sh) before and after every
   approved fetch and put the real total in your return.
+- The host is shared with other sessions' spikes. Give every container you start
+  a run-unique name, and touch no container, database or service you did not
+  start: before writing, confirm the target is yours by that name or a label you
+  set; never infer it from a port that looked free.
+- A stop condition is followed literally: when one fires, stop and report, even
+  if the event looks harmless. Deciding it was harmless is the caller's call.
 - Never paste secrets, customer data or internal URLs into a search query or the
   note.
 - Recommend, do not decide: the Decision section holds your recommendation marked
