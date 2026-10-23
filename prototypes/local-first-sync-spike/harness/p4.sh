@@ -26,6 +26,20 @@ put() { scp -q "${OPTS[@]}" "$2" "$(who "$1")@$(ip):$3"; }
 get() { scp -q "${OPTS[@]}" "$(who "$1")@$(ip):$2" "$3"; }
 throttle() { $V blkdeviotune $DOM sda --live --total-iops-sec 100 --total-bytes-sec 83886080; }
 waitssh() { for _ in $(seq 1 180); do sshv "$1" 'echo up' 2>/dev/null | grep -q up && return 0; sleep 5; done; return 1; }
+# set 6 finding: right after a boot one upload can fail ("scp: Connection closed") and nothing noticed. Each install
+# upload is checked by its size on the VM and re-sent up to 10 times; every re-send is a logged transport retry.
+put_verified() {  # <local file> <VM path with forward slashes>
+  local want got n; want=$(stat -c %s "$1")
+  for n in $(seq 1 10); do
+    put cashier "$1" "$2"
+    got=$(sshv cashier "powershell -NoProfile -Command \"(Get-Item '$2').Length\"" | tr -d ' \r\n')
+    [ "$got" = "$want" ] && return 0
+    echo "transport retry (install upload $n): $(date '+%F %T') $(basename "$1") on the VM is ${got:-missing}, want $want" \
+      | tee -a "$RUNS/p4-install-retries.log" >&2
+    sleep 5
+  done
+  echo "install: $(basename "$1") never arrived intact after 10 sends" >&2; return 1
+}
 log() { printf '%s %s\n' "$(date +%H:%M:%S)" "$*" | tee -a "$RUNS/p4-$(date +%Y%m%d).log"; }
 W='C:\Users\cashier\p4'
 
@@ -40,10 +54,11 @@ down)
   $V snapshot-revert $DOM clean-ssh2 && log "p4 down: shut off, reverted clean-ssh2" ;;
 install)
   T="$HERE/tools/win-python-3.14.8"
+  waitssh cashier || { echo "install: the cashier account does not answer" >&2; exit 1; }
   sshv cashier "powershell -NoProfile -Command \"New-Item -ItemType Directory -Force $W | Out-Null\"" >/dev/null
-  put cashier "$T/python-3.14.8-embed-amd64.zip" "C:/Users/cashier/p4/py.zip"
-  put cashier "$T/apsw_sqlite3mc-3.54.0.0-cp314-cp314-win_amd64.whl" "C:/Users/cashier/p4/apsw.zip"
-  put cashier "$HERE/sut/client.py" "C:/Users/cashier/p4/client.py"
+  put_verified "$T/python-3.14.8-embed-amd64.zip" "C:/Users/cashier/p4/py.zip" || exit 1
+  put_verified "$T/apsw_sqlite3mc-3.54.0.0-cp314-cp314-win_amd64.whl" "C:/Users/cashier/p4/apsw.zip" || exit 1
+  put_verified "$HERE/sut/client.py" "C:/Users/cashier/p4/client.py" || exit 1
   sshv cashier "powershell -NoProfile -Command \"Expand-Archive -Force $W\\py.zip $W\\py; Expand-Archive -Force $W\\apsw.zip $W\\site; Add-Content $W\\py\\python314._pth '..\\site'; & $W\\py\\python.exe -c 'import sys, apsw; print(sys.version.split()[0], apsw.apsw_version(), apsw.sqlite_lib_version())'\""
   ;;
 tunnel)
