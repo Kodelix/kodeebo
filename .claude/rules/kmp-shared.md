@@ -11,6 +11,7 @@ paths:
 - The API client is generated from `contracts/` or hand-mapped behind a port — DTOs never leak into domain.
 - Coroutines: expose `Flow`/`suspend` APIs; provide Swift-friendly wrappers (or the chosen interop tool, per ADR) so iOS does not leak coroutine scopes.
 - Local persistence (SQLDelight or the ADR-chosen store) with migrations versioned and tested.
+- SQLite upserts use `INSERT ... ON CONFLICT (...) DO UPDATE`, never `INSERT OR REPLACE` / `REPLACE INTO`: REPLACE deletes the row first, so with foreign keys on it cascade-deletes or fails, it resets every column the statement does not name, and it changes the rowid.
 - Offline-first features define sync, conflict resolution and retry in the spec; the shared module owns that logic once.
 - Binary size and public API surface exported to iOS are kept minimal (`internal` by default).
 - Tests in `commonTest` run on both JVM and iOS targets in CI.
