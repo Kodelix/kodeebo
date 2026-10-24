@@ -1,0 +1,49 @@
+scp: Connection closed
+Write-Progress : Win32 internal error "Access is denied" 0x5 occurred while reading the console output buffer. Contact 
+Microsoft Customer Support Services.
+At 
+C:\Windows\system32\WindowsPowerShell\v1.0\Modules\Microsoft.PowerShell.Archive\Microsoft.PowerShell.Archive.psm1:1132 
+char:9
++         Write-Progress -Activity $cmdletName -Status $status -Percent ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ReadError: (:) [Write-Progress], HostException
+    + FullyQualifiedErrorId : ReadConsoleOutput,Microsoft.PowerShell.Commands.WriteProgressCommand
+ 
+Expand-Archive : The path 'C:\Users\cashier\p4\py.zip' either does not exist or is not a valid file system path.
+At line:1 char:1
++ Expand-Archive -Force C:\Users\cashier\p4\py.zip C:\Users\cashier\p4\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (C:\Users\cashier\p4\py.zip:String) [Expand-Archive], InvalidOperationE 
+   xception
+    + FullyQualifiedErrorId : ArchiveCmdletPathNotFound,Expand-Archive
+ 
+& : The term 'C:\Users\cashier\p4\py\python.exe' is not recognized as the name of a cmdlet, function, script file, or 
+operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try 
+again.
+At line:1 char:214
++ ... python314._pth '..\site'; & C:\Users\cashier\p4\py\python.exe -c 'imp ...
++                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\cashier\p4\py\python.exe:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+Write-Progress : Win32 internal error "Access is denied" 0x5 occurred while reading the console output buffer. Contact 
+Microsoft Customer Support Services.
+At 
+C:\Windows\system32\WindowsPowerShell\v1.0\Modules\Microsoft.PowerShell.Archive\Microsoft.PowerShell.Archive.psm1:1132 
+char:9
++         Write-Progress -Activity $cmdletName -Status $status -Percent ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ReadError: (:) [Write-Progress], HostException
+    + FullyQualifiedErrorId : ReadConsoleOutput,Microsoft.PowerShell.Commands.WriteProgressCommand
+ 
+Write-Progress : Win32 internal error "Access is denied" 0x5 occurred while reading the console output buffer. Contact 
+Microsoft Customer Support Services.
+At 
+C:\Windows\system32\WindowsPowerShell\v1.0\Modules\Microsoft.PowerShell.Archive\Microsoft.PowerShell.Archive.psm1:1132 
+char:9
++         Write-Progress -Activity $cmdletName -Status $status -Percent ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ReadError: (:) [Write-Progress], HostException
+    + FullyQualifiedErrorId : ReadConsoleOutput,Microsoft.PowerShell.Commands.WriteProgressCommand
+ 
+3.14.8 3.54.0.0 3.54.0

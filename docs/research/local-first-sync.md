@@ -1125,6 +1125,11 @@ Directory: `prototypes/local-first-sync-spike/`. Prototype rules apply: throwawa
 
 **Phase 5 list, carried item (founder, 2026-10-20):** OQ32 (a store fault while offline stops the counter until the internet returns). It is owned by the sync ADR, not by a spike leg; phase 5 lists it so the ADR does not close without it.
 
+**Phase 5 list, carried item (founder, 2026-10-24): the shipped SQLite build differs from the spike's.** The ADR-0015 session's S78 found that the counter's real driver, `io.github.willena:sqlite-jdbc` 3.53.4.0, bundles SQLite 3.53.4 and SQLite3 Multiple Ciphers 2.4.0 (also recorded in `desktop-client-adr-followups.md` § 2, F221). The spike runs `apsw-sqlite3mc` 3.54.0.0, which is SQLite 3.54.0 with SQLite3MC 2.6.1, and the plans assumed SQLite3MC 2.6.1. For the sync ADR and the desktop ADR:
+- the shipped SQLite and cipher versions are pinned;
+- the source reading the commit-option choice rests on is re-checked on the shipped version: in `pager.c`, PERSIST's header sync (`zeroJournalHdr`) and the sync after a truncate; in `os_win.c`, `winDelete` ignoring `syncDir`;
+- the adopted commit option's S104 run (30 power-offs, 10 OS crashes) is repeated on that exact build before adoption. A spike S104 pass on 3.54.0 does not meet this.
+
 **Phase 5 limits.** Phase 5 runs **without S308** (server billing parity). S308 is **PARKED. Trigger: the backend-track decision.** It does not hold up the spike's close or the sync ADR. Phase 5's tax order uses a configurable setting, inclusive or exclusive, until ETA answers (OQ8 rule 5).
 
 **Not in this spike (other owners):** S201 cursor under load and S204 tenant-counter cursor (`cto`); S202 push through the real proxy and a venue line (`infra-engineer`, after OQ19); S203 two offline devices per branch (risk 9, after Tier 1); S105 batch size and backoff on a venue link; S106 RLS policy matrix (`multitenancy-specialist`); S108 inbox growth; S307 JWS interoperability.

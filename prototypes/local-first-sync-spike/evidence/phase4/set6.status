@@ -1,0 +1,24 @@
+--- start 2026-10-23 22:14:59 89b6acb dirty=[0]
+booted the reverted VM, throttled 22:15:16
+NOTE 2026-10-23 22:16:59: ADR-0015 session's container kodeebo-bcc-s7a-pg ran 22:15:00-22:15:10 (reported by that session); the VM was booting then (booted 22:15:16), before the install and any timed sale: no measurement affected
+STOPPED 2026-10-23 22:18:53: install failed — VM (running) and stores left as they are; no retry
+=== restart after cc1e426 (install verifies uploads); the first start stopped at install, nothing measured ===
+--- start 2026-10-23 22:37:19 cc1e426 dirty=[0]
+booted the reverted VM, throttled 22:37:31
+install 22:44:26
+t-delete-file-s6r1 rc=0 22:55:23 transport retries: 0
+t-delete-slots-s6r1 rc=0 23:02:52 transport retries: 0
+t-persist-file-s6r1 rc=0 23:10:39 transport retries: 0
+t-persist-slots-s6r1 rc=0 23:21:10 transport retries: 0
+t-delete-file-s6r2 rc=0 23:27:23 transport retries: 0
+t-delete-slots-s6r2 rc=0 23:33:40 transport retries: 0
+t-persist-file-s6r2 rc=0 23:51:06 transport retries: 0
+t-persist-slots-s6r2 rc=0 23:58:09 transport retries: 0
+t-delete-file-s6r3 rc=0 00:04:38 transport retries: 0
+t-delete-slots-s6r3 rc=0 00:10:17 transport retries: 0
+t-persist-file-s6r3 rc=0 00:15:47 transport retries: 0
+t-persist-slots-s6r3 rc=0 00:20:49 transport retries: 0
+Domain snapshot clean-ssh2 reverted
+
+00:21:51 p4 down: shut off, reverted clean-ssh2
+DONE 2026-10-24 00:21:51

@@ -1,0 +1,9 @@
+phase 4 counter timings, commit cc1e426, 400 iterations, journal persist, marker slots, throttled VM
+  start_session  n  400 failed 0  total p50/p95/max 148.73/557.94/27408.2  rt p50/p95/max 149.8/559.14/27409.24
+  change_tier    n  400 failed 0  total p50/p95/max 139.05/484.45/2611.29  rt p50/p95/max 140.52/485.51/2612.83
+  close_session  n  400 failed 0  total p50/p95/max 308.61/1268.17/4419.22  commit p50/p95/max 247.94/871.21/3527.65  marker p50/p95/max 59.86/200.61/1100.45  rt p50/p95/max 310.18/1268.9/4420.12
+  sell_items     n  400 failed 0  total p50/p95/max 290.69/923.69/4580.26  commit p50/p95/max 236.99/759.8/3489.77  marker p50/p95/max 59.71/212.29/1389.13  rt p50/p95/max 291.27/924.71/4581.51
+  sync           n    8 failed 0  total p50/p95/max 487.86/3317.49/3317.49  rt p50/p95/max 489.26/3319.36/3319.36
+  end_day        n    4 failed 0  total p50/p95/max 237.32/1463.51/1463.51  rt p50/p95/max 238.68/1464.25/1464.25
+timings: violations 0 (625 s)
+transport retries: 0
