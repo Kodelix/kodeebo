@@ -480,7 +480,8 @@ class TimedRun(WinRun):
         r = self.send(msg)
         rt = (time.perf_counter() - t0) * 1000
         if record and r is not None:
-            self.samples.setdefault(msg["op"], []).append({"rt": round(rt, 2), **(r.get("ms") or {}), "ok": r.get("ok")})
+            self.samples.setdefault(msg["op"], []).append({"rt": round(rt, 2), **(r.get("ms") or {}), "ok": r.get("ok"),
+                                                           "at": round(time.time(), 1)})  # host clock: match VM events
         return r
 
     def timed(self, run):
@@ -746,14 +747,19 @@ def timings(iterations=200, journal="delete", marker="file", tag=""):
           f"marker {marker}, throttled VM", flush=True)
     for op_, xs in run.samples.items():
         row = {"n": len(xs), "failed": sum(1 for x in xs if not x["ok"])}
-        for f in ("total", "txn", "commit", "marker", "rt"):
+        for f in ("total", "read", "lock", "txn", "commit", "marker", "rt"):
             v = [x[f] for x in xs if f in x]
             if v:
                 row[f] = {"p50": pct(v, 0.5), "p95": pct(v, 0.95), "p99": pct(v, 0.99), "max": max(v)}
+        # set 7: every operation over the 3 s ceiling with its parts (a stall the parts do not cover is in "other")
+        row["over_3s"] = [{**x, "other": round(x["total"] - x.get("read", 0) - x.get("txn", 0) - x.get("marker", 0), 2)}
+                          for x in xs if x.get("total", 0) > 3000]
         out["ops"][op_] = row
         print(f"  {op_:14s} n {row['n']:4d} failed {row['failed']}  " + "  ".join(
-            f"{f} p50/p95/max {row[f]['p50']}/{row[f]['p95']}/{row[f]['max']}" for f in ("total", "commit", "marker", "rt")
-            if f in row), flush=True)
+            f"{f} p50/p95/max {row[f]['p50']}/{row[f]['p95']}/{row[f]['max']}"
+            for f in ("total", "lock", "commit", "marker", "rt") if f in row), flush=True)
+        for x in row["over_3s"]:
+            print(f"    OVER 3 s: {x}", flush=True)
     out["seconds"] = round(time.time() - t0)
     name = "p4-timings-summary.json" if (journal, marker, tag) == ("delete", "file", "") else \
         f"p4-timings-{journal}-{marker}{'-' + tag if tag else ''}-summary.json"

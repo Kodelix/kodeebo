@@ -1592,19 +1592,33 @@ def price_of(prices, key):
 
 
 def start_session(m):
+    t_r = time.perf_counter()
     v, prices = device_prices()
     clocked = CLOCKED and "start_min" not in m  # SC-30: anchored on the device clock
     start = 0 if clocked else m["start_min"]
     seg = [{"from": start, "tier": m["tier"], "rate": price_of(prices, m["tier"]), "v": v}]
+    t_b = time.perf_counter()
     q("BEGIN IMMEDIATE")
+    t_l = time.perf_counter()
     if ENDDAY:
         open_day()
     q("INSERT INTO sessions VALUES (?,?,?,?,?)", (m["session_id"], start, json.dumps(prices), v, json.dumps(seg)))
     if clocked:
         c = test_clock()
         q("INSERT INTO session_clock VALUES (?,?,?,0,?)", (m["session_id"], c["boot"], c["mono"], c["wall"]))
+    t_c = time.perf_counter()
     q("COMMIT")
+    if TIMING:
+        timing_split(t_r, t_b, t_l, t_c)
     reply({"ok": True, "op": "start_session", "rate": seg[0]["rate"], "v": v})
+
+
+def timing_split(t_r, t_b, t_l, t_c):
+    """Set 7: the parts of a write that writes no marker (start_session, change_tier): read = the price/session read
+    before BEGIN, lock = BEGIN IMMEDIATE (the wait for the write lock), txn = BEGIN to the end of COMMIT, commit."""
+    t_e = time.perf_counter()
+    timing.update(read=round((t_b - t_r) * 1000, 2), lock=round((t_l - t_b) * 1000, 2),
+                  txn=round((t_e - t_b) * 1000, 2), commit=round((t_e - t_c) * 1000, 2))
 
 
 def session_elapsed_s(session_id):
@@ -1689,6 +1703,7 @@ def check_outage():
 
 
 def change_tier(m):
+    t_r = time.perf_counter()
     v, prices = device_prices()
     start_prices, start_v, segs = q("SELECT start_prices, start_version, segments FROM sessions WHERE session_id = ?",
                                     (m["session_id"],))[0]
@@ -1696,7 +1711,15 @@ def change_tier(m):
         v, prices = start_v, json.loads(start_prices)
     rate = price_of(prices, m["tier"])
     segs = json.loads(segs) + [{"from": m["at_min"], "tier": m["tier"], "rate": rate, "v": v}]
+    # one statement in an explicit transaction (was autocommit: the same locks and sync), so its parts can be timed
+    t_b = time.perf_counter()
+    q("BEGIN IMMEDIATE")
+    t_l = time.perf_counter()
     q("UPDATE sessions SET segments = ? WHERE session_id = ?", (json.dumps(segs), m["session_id"]))
+    t_c = time.perf_counter()
+    q("COMMIT")
+    if TIMING:
+        timing_split(t_r, t_b, t_l, t_c)
     reply({"ok": True, "op": "change_tier", "rate": rate, "v": v})
 
 
