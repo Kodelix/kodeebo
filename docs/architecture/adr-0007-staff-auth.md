@@ -16,6 +16,12 @@ Accepted
 > confirmation exists. An agent that believes an ADR is ready says so and
 > escalates; it does not edit this field.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decision 6a) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- No IP address is blocked because of failed attempts. A per-address nginx request-rate cap may cover the sign-in and recovery locations: it counts requests, not failures, refuses only the excess within its short window with 429 + `Retry-After`, and keeps no state past that window. It does not feed the 100-failure ceiling or the M22 notices. Sign-in and recovery have their own nginx zone, keyed on the connection's peer address; no tool reads nginx's refusals or logs to ban an address (worded by `security-lead`, 2026-10-24).
+- Registry: FP-IP-ONLY-BLOCK is replaced by FP-IP-ONLY-BLOCK-R2.
+- Residual risk accepted by name by the founder (2026-10-24): while a flood from a shared CGNAT address lasts, a co-located owner can be kept out of sign-in and out of M22(d)'s known-device lane (a variant of staff-auth T1.18, recorded beside R22). Review at the KMS move, the first multi-counter venue, or 2027-04-18 at the latest.
+
 ## Date
 
 2026-10-19

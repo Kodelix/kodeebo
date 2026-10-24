@@ -64,6 +64,8 @@ The studio defaults apply until a measurement or a spec tightens them.
 | Web — initial JS | ≤ 170 KB gzipped for the authenticated shell |
 | Service memory | steady-state RSS within the container limit with 30 % headroom, on the 8 GB VPS |
 
+**Note 2026-10-24 (founder; ADR-0015, research `backend-code-conventions` part 4): counting "DB queries per request".** On reads, the gateway lookups (the session lookup and the principal read) count toward the 5, so a use case has 3 business statements. The tenant-scope statements (one per transaction; each also sets `transaction_timeout` and `lock_timeout`) are counted separately under their own cap of 2. A read that cannot fit 3 business statements does not meet this budget and is precomputed or redesigned (ADR-0016). The statement guard of ADR-0016 counts per attempt; request paths run once (`defaultMaxAttempts = 1`).
+
 ## Open
 
 - **The reference PC:** the first pilot café's PC replaces the VM proxy for every device number.

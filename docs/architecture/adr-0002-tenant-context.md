@@ -16,6 +16,12 @@ Accepted
 > confirmation exists. An agent that believes an ADR is ready says so and
 > escalates; it does not edit this field.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decision 5) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- Request-path scopes (Staff, Device, Support on the `app_rt`, `device_rt` and `support_rt` pools): the helper sets `transaction_timeout` and `lock_timeout` from configuration in the same single scope statement that sets the tenant and branch (one `set_config` statement), and acquires the pool's admission gate before it opens the transaction and releases it after commit or rollback. Two new failure results for these scopes, raised before any tenant query runs: `Overloaded` (waiters beyond the configured cap) and `Timeout` (the wait budget ran out). The gate is never nested; two transactions one after the other (the principal read, then the use case) each acquire and release on their own.
+- Job scopes and the export carrier (`exportSession`, EXP-2) keep their own timeouts and are never refused as `Overloaded`.
+- Registry: IC-SCOPE-HELPER-R6 replaces IC-SCOPE-HELPER-R5.
+
 ## Date
 
 2026-10-17

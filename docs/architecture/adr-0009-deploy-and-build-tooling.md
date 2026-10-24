@@ -22,6 +22,10 @@ Accepted
 - Wherever this ADR says `catalogue_rt` runs "C1–C8" (Decision text at `catalogue_rt`, the post-deploy check row, Validation), read **"C1–C6, C8 and C9"**. ADR-0001 has no C7, and ADR-0012 adds C9: every table marked `claimed` has `job_rt` SELECT and UPDATE policies. Like C2, C9 reads the policy catalogue, and it also reads the committed class list. S58 is re-run before the first work-table migration to show that `catalogue_rt` needs no new grant for it.
 - **Stop grace period.** This ADR does not set the backend container's Compose stop grace period. `platform-lead` sets it before the first job story, above the sum in ADR-0012 Decision 7 rule 2: the engine's grace and timeout, the runner stop timeout and `shutdownTimeout`.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decisions 3, 6 and 6a) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- nginx configuration (edited only by the founder): (1) the access log drops the client address or truncates it (IPv4 to the /24, IPv6 to the /48), retained 14 days (ADR-0005 amendment of the same date); (2) a per-address request-rate cap keyed on the connection's peer address on every location, with sign-in and recovery in their own zone, refusing the excess with 429 and `Retry-After` and never with nginx's default refusal status, so a 503 always comes from the backend (FP-IP-ONLY-BLOCK-R2); (3) a proxy timeout answers 504, which therefore always means nginx timed out waiting for the backend; (4) the client address reaches the backend only in the `X-Forwarded-For` header nginx sets; no tool reads nginx's refusals or logs to ban an address. `security-lead` proposes the defaults, the founder sets them; ADR-0015 V11 and V12 verify them.
+
 ## Date
 
 2026-10-20

@@ -635,7 +635,7 @@ interface_contracts:
     contract: "WithScope (Go) / withScope (Ktor)(src, Scope = Job | Staff | Device | Support, fn) -> ScopedTx / ScopedTransaction, the only handle tenant repositories accept; errors ScopeAlreadySet, InvalidScope, NoLiveGrant (Support, before any tenant query). Ktor track (ADR-0002 J1 addendum 2026-10-19, revised after the re-check; effective when ADR-0006 is Accepted): the helper module also offers exportSession(src, Scope = Job | Staff, block: ExportSession.() -> T) with ExportSession.copyOut(sql, OutputStream): Long, for the EXP-2 export only - one REPEATABLE READ transaction per session, scope set once and first, Support and Device refused, no Connection, CopyManager or statement exposed, connection evicted on any exception."
     adr: ADR-0002
     adr_status: Accepted
-    status: active
+    status: "active (superseded_by: ADR-0015, effective on acceptance -> IC-SCOPE-HELPER-R6)"
   - id: IC-JDBC-COPY-CARRIER-R3
     contract: "EXP-2 export only (ADR-0002 J1 addendum 2026-10-19, revised after the re-check, approved with ADR-0006): a small plain-JDBC carrier inside the ADR-0002 scope-helper module, until S23 shows a supported route from Exposed suspendTransaction to the JDBC Connection. Job and Staff scopes only (ADR-0005 Decision 4); Support and Device refused. One REPEATABLE READ transaction, auto-commit off, for the whole export; first statement the same set-once routine from the same constants module; reads back current_setting('app.tenant_id', true) and refuses if null; refuses a second scope; every table's copyOut runs in that transaction, so all tables come from one snapshot and the manifest row counts agree. Exposes only exportSession { copyOut(sql, OutputStream): Long }, never a Connection, CopyManager or statement; on any exception the connection is evicted from the pool (close() on the pool proxy does not count). Removed when S23 passes. Apart from the EXP-2 COPY statements, jobs and the outbox claim and sweep stay inside Exposed transactions."
     adr: ADR-0006
@@ -970,7 +970,7 @@ interface_contracts:
     contract: "Effective when ADR-0010 is Accepted: each of the fifteen Layer 1 modules (tenancy, identity, otp, ratelimit, authz, audit, operator, licensing, billing, notify, jobs, observability, analytics, storage, egress — egress added 2026-10-21 from ADR-0013) and its <module>-conformance module has Gradle group net.kodelix.core, project name = module name, package net.kodelix.core.<module>, strict explicitApi(), a committed ABI dump <module>/api/<module>.api checked by checkKotlinAbi on every PR, migrations in src/main/resources/db/migration/net/kodelix/core/<module>/V0001__<verb>_<object>.sql (4-digit, never reused), history table flyway_<module>, and migration id <module>:<version> in the job, manifest, privileged list and deploy record; product contexts use net.kodelix.kodeebo.<context> with the same migration layout. A lift changes build files and regenerated lock and verification files only, never Kotlin source."
     adr: ADR-0010
     adr_status: Proposed
-    status: active
+    status: "active (superseded_by: ADR-0015, effective on acceptance -> IC-CORE-MODULE-IDENTITY-R3)"
   - id: IC-NOTIFY-MAIL-SEND-R2
     contract: "Effective when ADR-0013 is Accepted (notifications threat-model revision 2026-10-21; replaces IC-NOTIFY-MAIL-SEND): notify's MailSender sends one recipient per message from a mail job item (an external effect, ADR-0012). The message is rebuilt on every attempt and never stored (no job or notice row holds a rendered body); a kind without a link may keep one Message-ID per item, a link-bearing kind gets a new Message-ID per attempt (M7). Two mailboxes, one direction each (ADR-0013 Decision 2a): no-reply@kodelix.net only sends and is the only notify mailbox in the MailChannels Domain Lockdown record; bounces@kodelix.net only receives and is never listed as a sender; the envelope sender is the VERP address bounces+<tenant>.<item>@kodelix.net (opaque full-entropy ids). Accepted = the 250 reply to the end of DATA. Classification by stage and reply code: 4yz, 421 and connect, TLS, greeting or EHLO failures are transient (retry); any I/O failure after DATA began is ambiguous (retry with the same item id; a duplicate email is accepted); an AUTH, MAIL FROM, certificate or TLS refusal is a sender configuration fault (retry, mail breaker open, operator alert); 5yz to RCPT is Dead(recipient_rejected) and flags the address failing; 5yz to DATA or to the dot is Dead(message_rejected). Typed config defaults, never code: connect 5 s, read 20 s, write 20 s, whole-send deadline 60 s by a watchdog off the send dispatcher, mail leaseDuration 120 s, Dispatchers.IO.limitedParallelism(2, \"notify-mail\"); Transport.close() in a finally; an outer cancellation is rethrown. The sending password is the 0400 secret file <notify-mail-send> read at start (start fails if missing, empty, wrongly owned or not 0400); host, ports and usernames are config. If the founder-run live test of ADR-0013 blocker 2 fails, one mailbox and one credential is the fallback, with the residual accepted by name."
     adr: ADR-0013
@@ -1151,9 +1151,49 @@ interface_contracts:
     adr: ADR-0014
     adr_status: Proposed
     status: active
-performance_budgets: []
+  - id: IC-SCOPE-HELPER-R6
+    contract: "Effective when ADR-0015 is Accepted (amends ADR-0002; replaces IC-SCOPE-HELPER-R5): everything in IC-SCOPE-HELPER-R5, plus for request-path scopes (Staff, Device, Support on the app_rt, device_rt, support_rt pools) the helper sets app.tenant_id, app.branch_ids, transaction_timeout and lock_timeout in ONE set_config statement, and acquires the pool's admission gate (Semaphore(n), tryAcquire fast path, at most W waiters, timed acquire) before opening the transaction and releases it after commit or rollback; new failures raised before any tenant query: Overloaded, Timeout; never nested. Job scopes and exportSession keep their own timeouts and are never refused as Overloaded."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: IC-CORE-MODULE-IDENTITY-R3
+    contract: "Effective when ADR-0015 and ADR-0010 are Accepted (replaces IC-CORE-MODULE-IDENTITY-R2): everything in IC-CORE-MODULE-IDENTITY-R2 for sixteen Layer 1 modules - the fifteen plus foundation (net.kodelix.core.foundation, ADR-0015 Decision 10), which has no -conformance module, depends only on the Kotlin standard library, and is a NOT EVIDENCED founder exception that moves to the core first or with the first extracted module."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: IC-FOUNDATION-CLOSED-LIST
+    contract: "Effective when ADR-0015 is Accepted: :core:foundation holds exactly ErrorKind, ErrorCode, AppException, FieldError, IdGenerator, TenantId, BranchId (time uses the stdlib kotlin.time.Clock/Instant); a blocking Konsist rule fails any other top-level declaration; adding one needs an amendment to ADR-0015."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: IC-ERROR-CONTRACT
+    contract: "Effective when ADR-0015 is Accepted: request-ending failures are AppException(ErrorCode: ErrorKind + snake_case wire code, field errors, log-only cause) mapped once by StatusPages to RFC 9457 problem+json {type derived from code, title, status, detail, instance, code, trace_id, errors[{field, code}]}; ErrorKind -> status by one exhaustive when: Malformed 400, Unauthenticated 401, Forbidden/TenantRefused 403, NotFound 404 (missing = other tenant = other branch), MethodNotAllowed 405, Conflict 409, PreconditionFailed 412, PayloadTooLarge 413, UnsupportedMediaType 415, Invalid 422, RateLimited 429 + Retry-After, Timeout/Overloaded/Transient 503 + Retry-After, Internal 500; a 504 is only ever nginx timing out; codes unique, append-only, never renamed; plugin refusals go through status(...) rewrites; values (sealed) where the caller branches (ports, jobs, notifications, Authorizer)."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: IC-GATEWAY-ORDER
+    contract: "Effective when ADR-0015 is Accepted: every request runs plugins -> authentication (one lookup) -> tenant status selecting allowed routes (a suspended or closing tenant's device backlog upload always passes, ADR-0001 Decision 4) -> device licence state selecting routes -> scope from the credential only -> coarse route permission (extra early gate) -> DTO toCommand() validation -> withScope -> in-scope lookup -> object-level Authorizer.require (mandatory in every use case) -> domain rules -> trail + outbox in the same transaction -> explicit toResponse() -> StatusPages."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: IC-RATE-LIMIT-LAYERS
+    contract: "Effective when ADR-0015 is Accepted: four layers, every number typed configuration with a default (security-lead proposes with performance-engineer; founder sets nginx; confirmed at the 10x load test): (1) nginx per-peer-address request-rate cap on every location, sign-in/recovery in their own zone, 429 rate_limited_edge; (2) Ktor per-IP named rateLimit scope on every subtree except sign-in and recovery, 429 rate_limited_ip; (3) Ktor per principal (staff login, device) after authentication, 429 rate_limited; (4) plan/tenant quotas per the pending Limits ADR, 429 quota_exceeded. Layers 2-3 in-process; shared store at a second backend instance."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+performance_budgets:
+  - id: PB-STATEMENT-COUNTING
+    budget: "Effective when ADR-0015 is Accepted (dated note in perf-budgets.md, founder 2026-10-24): on reads the gateway lookups (session lookup, principal read) count toward the 5 DB queries, leaving 3 business statements; the tenant-scope statements (one per transaction, also setting the timeouts) are counted separately under a cap of 2; counted per attempt with request paths running once."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
 
-api_decisions: []
+api_decisions:
+  - id: API-JSON-SNAKE-CASE
+    decision: "Effective when ADR-0015 is Accepted: JSON field names are snake_case on every API (api-standards.md), written as an explicit @SerialName per DTO property (JsonNamingStrategy is experimental at kotlinx.serialization 1.11.0), enforced by a Konsist rule and the contract test; unknown inbound keys are rejected."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
 
 forbidden_patterns:
   - id: FP-BYPASSRLS-RUNTIME-ROLE
@@ -1436,7 +1476,7 @@ forbidden_patterns:
     pattern: "Banning or blocking sign-in, recovery or any account action on a client IP address alone (venues share CGNAT addresses); an address-keyed delay may slow, never alone block, a known identifier; a 'not me' report locks the account's password path, never an address (staff-auth threat model M2, M22)."
     adr: ADR-0007
     adr_status: Accepted
-    status: active
+    status: "active (superseded_by: ADR-0015, effective on acceptance -> FP-IP-ONLY-BLOCK-R2)"
   - id: FP-COMPARE-AND-TAP-APPROVAL
     pattern: "Effective when the founder accepts the 2026-10-20 amendment: approving an approve-on-phone enrolment (or any out-of-band request) by comparing a code shown on both screens and tapping Approve, without the code having been typed or scanned on the approving device (NIST SP 800-63B-4 sec. 3.1.3.1)."
     adr: ADR-0007
@@ -1579,6 +1619,41 @@ forbidden_patterns:
     adr: ADR-0014
     adr_status: Proposed
     status: active
+  - id: FP-IP-ONLY-BLOCK-R2
+    pattern: "Effective when ADR-0015 is Accepted (worded by security-lead; replaces FP-IP-ONLY-BLOCK): blocking, banning or locking sign-in, recovery or any account action on a client IP address because of failed attempts or any other outcome (venues and carriers share CGNAT addresses); any address-keyed state that outlives a short rate window. Not this pattern: an address-keyed delay that may slow, never alone block, a known identifier; and the nginx per-address request-rate cap (ADR-0015 Decision 6a), which counts requests, not failures, is sized far above a whole venue behind one router or a carrier CGNAT address, refuses only the excess within its window with 429 + Retry-After, and never locks out. A 'not me' report locks the account's password path, never an address (staff-auth threat model M2, M22)."
+    adr: ADR-0007 / ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: FP-KTOR-DI-OUTSIDE-APP
+    pattern: "Effective when ADR-0015 is Accepted: importing io.ktor.server.plugins.di outside :app (routes receive their module API as a parameter); registering dependencies from configuration (ktor.application.dependencies or classpath strings); registering HikariCP pools, DataSources or the JobRunner in Ktor DI."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: FP-SWALLOWED-CANCELLATION-R2
+    pattern: "Effective when ADR-0015 is Accepted: catching Exception or Throwable outside the three sanctioned catch-all sites (StatusPages Throwable handler, job adapter, outbox bookkeeping), each of which rethrows CancellationException first; runCatching anywhere on a request path; raw withTimeout in a use case (use deadline())."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: FP-UNBOUNDED-DB-WAIT
+    pattern: "Effective when ADR-0015 is Accepted: bounding a request's wait for a database connection with withTimeout around withContext(dbView), with an async(dbView) child of the timeout, or with HikariCP connectionTimeout alone; leaving connectionTimeout at its 30 s default; a request-path Database with defaultMaxAttempts other than 1."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: FP-EXPERIMENTAL-API-WITHOUT-ADR
+    pattern: "Effective when ADR-0015 is Accepted: using an API marked experimental at the pinned version (for example JsonNamingStrategy, the typed authentication DSL, kotlin.uuid UUIDv7 generation) without an ADR; the one sanctioned opt-in is kotlinx.serialization exceptionsWithDebugInfo = false (ADR-0015 Decision 8)."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: FP-CLIENT-IP-IN-REQUEST-LOG
+    pattern: "Effective when ADR-0015 is Accepted: recording the client address in the backend request log; an nginx access log that keeps the full client address (it is dropped or truncated to IPv4 /24, IPv6 /48, retained 14 days per the ADR-0005 amendment); any tool that reads nginx refusals or logs to ban an address."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
+  - id: FP-GROWING-SHARED-MODULE
+    pattern: "Effective when ADR-0015 is Accepted: a growing common/utils/shared module, a generic Repository<T>, or a declaration in :core:foundation outside its closed list; a function over 40 lines or a file over 300 lines without an entry and reason in backend/gradle/size-exceptions.properties (blocking via Konsist or the build-logic check)."
+    adr: ADR-0015
+    adr_status: Proposed
+    status: active
 technology_choices:
   - id: TECH-BACKEND-KTOR
     choice: "Backend track Ktor on Kotlin/JVM (stack.backend: ktor, core.track: kotlin, saas-core-kotlin; founder 2026-10-19): Kotlin 2.4.21, kotlinx.coroutines 1.11.0, Ktor 3.6.0 exact, Exposed 1.5.1 with ADR-0002 J1 suspendTransaction, HikariCP 7.1.0, OpenTelemetry Java agent 2.32.0, Bouncy Castle 1.86 for Ed25519 and ETA CAdES-BES (C1). Still to pin: pgjdbc (42.7.14 seen 2026-10-18), an SLF4J 2 binding, Bouncy Castle; JDK 21 or 25 and its distribution open (Q8); Gradle wrapper 9.7.0 (\"9.7\" does not resolve) or 9.8.x per Q7. Mandatory in CI: dependency locking incl. buildscript, strict verification metadata, OSV-Scanner on every PR, base images by digest; no backend image before an image scanner and SBOM generator are pinned (Q6). Explicit heap and Compose memory limit from S18 before the first deploy. Billing: rules as data and one shared vector suite in every combination, one Kotlin module only if the desktop ADR picks Compose Desktop (S46). Switch-to-Go conditions recorded in ADR-0006 Decision 12; Compose Desktop x Go rejected."
@@ -1648,5 +1723,10 @@ technology_choices:
   - id: TECH-MAIL-ANGUS
     choice: "Effective when ADR-0013 is Accepted: transactional email is sent with Angus Mail (org.eclipse.angus:angus-mail 2.0.5, EPL-2.0; proposed pin, the user edits pins.yaml) over smtps (implicit TLS, port 465) to the founder's mail server, and bounces are read with its imaps provider (port 993); no hosted email provider; every timeout and TLS property is set explicitly (server identity check on, no trust wildcard)."
     adr: ADR-0013
+    adr_status: Proposed
+    status: active
+  - id: TECH-BACKEND-CONVENTIONS
+    choice: "Effective when ADR-0015 is Accepted: Eclipse Temurin 25 (jvmToolchain(25), Temurin 25 JRE image by digest; closes ADR-0006 Q8); Ktor DI ktor-server-di at the Ktor version confined to :app (manual wiring first fallback, Koin 4.2.2 second); hybrid error model; snake_case JSON by explicit @SerialName on every DTO property; request DTO fields nullable with presence checked in toCommand(); no RequestValidation, CallId, Task Scheduling, Static Content, KtorServerTelemetry or Sessions plugins; own request-log (P-PLUMB, :core:observability) and security-header plugins; CSRF plugin on cookie routes with allowOrigin only; no CORS plugin on the one-origin condition (constraint for Q-domains); value-class ids; every closed choice an enum persisted by dbValue with a named database CHECK."
+    adr: ADR-0015
     adr_status: Proposed
     status: active

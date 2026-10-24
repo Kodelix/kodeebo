@@ -16,6 +16,10 @@ Accepted
 > confirmation exists. An agent that believes an ADR is ready says so and
 > escalates; it does not edit this field.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decision 4) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- "Every route calls `Authorizer.require`" (Implementation Guidelines) is met through the use case each route calls: under ADR-0015's gateway B1 the object-level `Authorizer.require(principal, key, target, amount)` runs in every use case and is never optional. A route may also run a coarse, deny-by-default check from route metadata before the body is read, as an extra early gate, never as a replacement.
+
 ## Date
 
 2026-10-19

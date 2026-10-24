@@ -16,6 +16,10 @@ Accepted
 > confirmation exists. An agent that believes an ADR is ready says so and
 > escalates; it does not edit this field.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decision 6) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- New category for the retention table (Decision 6): **Proxy access log (nginx), client address dropped or truncated (IPv4 to the /24, IPv6 to the /48)** — default **14 days** (founder, 2026-10-24), typed configuration like every period here. The backend's own request log records no client address.
+
 ## Date
 
 2026-10-18

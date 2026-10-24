@@ -23,6 +23,13 @@ Proposed
 
 **Order (founder, 2026-10-21):** written as Proposed → CTO-ADR (done, r2) → CTO re-check (done, r3) → ADR-0011 written → **one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012** (not a separate review of this ADR) → founder's acceptance of ADR-0010, ADR-0011 and ADR-0012. The dated amendments to ADR-0006 and ADR-0009 (Decision 9) take effect only when this ADR is Accepted.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decision 10) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- Decision 1 gains row 16: **Building blocks | `foundation` | `net.kodelix.core.foundation` | ADR-0015 | NOT EVIDENCED founder exception (owner: the founder; review at the `saas-core-kotlin` repository decision) | no**. Thirteen capabilities, sixteen modules. It depends only on the Kotlin standard library and holds a closed list (ADR-0015 Decision 10: `ErrorKind`, `ErrorCode`, `AppException`, `FieldError`, `IdGenerator`, `TenantId`, `BranchId`), enforced by a Konsist rule.
+- Decision 6: no `foundation-conformance` module, because it holds no adapter.
+- Decisions 7 and 8: it is not a core category, so it is extracted under the founder exception and moves to the core first, or with the first extracted module.
+- Registry: IC-CORE-MODULE-IDENTITY-R3 replaces IC-CORE-MODULE-IDENTITY-R2.
+
 ## Date
 
 2026-10-21

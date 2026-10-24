@@ -26,6 +26,11 @@ Proposed
 
 **Order (founder, 2026-10-21):** written as Proposed → CTO-ADR (as if `--review full` for that gate) → **one independent `/architecture-review` in a fresh session over ADR-0001–ADR-0012** → founder's acceptance of ADR-0010, ADR-0011 and ADR-0012 together. Spike S60 (Decision 2) runs before the first module is created, not before acceptance.
 
+
+**Amendment 2026-10-24 (ADR-0015 backend code conventions, Decision 10) — Proposed; takes effect only when ADR-0015 is Accepted.** The text below is not edited.
+- Wherever this ADR says "the fifteen Layer 1 modules" (Context and the module table), read **sixteen**: `:core:foundation` is added by the ADR-0010 amendment of the same date, with no `-conformance` module.
+- Konsist in `:arch-tests` gains ADR-0015's rules: the closed list of `:core:foundation`; Ktor DI imports only in `:app`; a snake_case `@SerialName` on every DTO property; the catch-site, `runCatching` and `receiveNullable` bans; and the size limits (function at most 40 lines, file at most 300), blocking — or the build-logic check of ADR-0015 Decision 10 if Konsist 0.18.1 cannot count lines.
+
 ## Date
 
 2026-10-21
